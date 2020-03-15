@@ -17,3 +17,9 @@
 
 language:
     - shell
+
+os:
+    - linux
+
+dist:
+    - bionic
