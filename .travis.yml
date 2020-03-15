@@ -14,3 +14,6 @@
 
 # File: .travis.yml
 # Description: Travis CI build configuration for the picolibrary repository.
+
+language:
+    - shell
