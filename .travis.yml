@@ -23,4 +23,4 @@ jobs:
     include:
         - stage: "Static Analysis"
           name: "shellcheck"
-          script: ./ci/static-analysis-shellcheck
+          script: bash -x ./ci/static-analysis-shellcheck
