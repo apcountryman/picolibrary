@@ -18,3 +18,9 @@
 language: shell
 os: linux
 dist: bionic
+
+jobs:
+    include:
+        - stage: "Static Analysis"
+          name: "shellcheck"
+          script: ./ci/static-analysis-shellcheck
