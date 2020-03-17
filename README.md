@@ -1,4 +1,6 @@
 # picolibrary
+[![Build Status](https://travis-ci.com/apcountryman/picolibrary.svg?branch=master)](https://travis-ci.com/apcountryman/picolibrary)
+
 A C++ microcontroller driver/utility library targeted for use with resource
 constrained microcontrollers.
 
