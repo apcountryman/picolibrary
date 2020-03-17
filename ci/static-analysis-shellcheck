@@ -62,6 +62,8 @@ function display_version()
 
 function static_analysis_shellcheck()
 {
+    local -r foo="foo"
+
     local scripts; mapfile -t scripts < <( git -C "$repository" ls-files | xargs -r -d '\n' -I '{}' find "$repository/{}" -executable ); readonly scripts
 
     shellcheck "${scripts[@]}"
