@@ -55,16 +55,20 @@ function display_help_text()
     echo "SYNOPSIS"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
-    echo "    $mnemonic"
+    echo "    $mnemonic [--jobs <jobs>]"
     echo "OPTIONS"
     echo "    --help"
     echo "        Display this help text."
+    echo "    --jobs <jobs>"
+    echo "        Specify the number of build jobs to use when building. If the number of"
+    echo "        jobs is not specified, 'nproc - 1' jobs will be used."
     echo "    --version"
     echo "        Display the version of this script."
     echo "EXAMPLES"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
     echo "    $mnemonic"
+    echo "    $mnemonic --jobs 1"
 }
 
 function display_version()
@@ -135,6 +139,17 @@ function main()
                 display_version
                 exit
                 ;;
+            --jobs)
+                if [[ -n "$build_jobs" ]]; then
+                    abort "build job count already specified"
+                fi
+
+                if [[ "$#" -le 0 ]]; then
+                    abort "build job count not specified"
+                fi
+
+                local -r build_jobs="$1"; shift
+                ;;
             --*)
                 ;&
             -*)
@@ -150,6 +165,10 @@ function main()
         local -r against=HEAD
     else
         local -r against=$( git hash-object -t tree "/dev/null" )
+    fi
+
+    if [[ -z "$build_jobs" ]]; then
+        local -r build_jobs=$(( $( nproc ) - 1 ))
     fi
 
     ensure_filenames_are_portable
