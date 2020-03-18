@@ -119,6 +119,51 @@ function ensure_no_script_errors_are_present()
     echo "none"
 }
 
+function ensure_no_build_errors_are_present()
+{
+    local -r build_type="$1"
+    local -r ellipsis="$2"
+
+    message "checking for ($build_type) build errors $ellipsis "
+
+    local -r build_directory="$repository/build/$build_type"
+    local -r build_configuration="$repository/configuration/CMakeLists.txt.pre-commit-build-$build_type"
+
+    if [[ ! -d "$build_directory" ]]; then
+        if ! cmake -C "$build_configuration" -S "$repository" -B "$build_directory" > "/dev/null" 2>&1; then
+            errors_found
+            error "aborting commit due to ($build_type) build CMake initialization error(s), listed below"
+            rm -rf "$build_directory"
+            cmake -C "$build_configuration" -S "$repository" -B "$build_directory"
+            abort
+        fi
+    fi
+
+    if ! cmake -C "$build_configuration" "$build_directory" > "/dev/null" 2>&1; then
+        errors_found
+        error "aborting commit due to ($build_type) build CMake configuration error(s), listed below"
+        cmake -C "$build_configuration" "$build_directory"
+        abort
+    fi
+
+    if ! cmake --build "$build_directory" -j "$build_jobs" > "/dev/null" 2>&1; then
+        errors_found
+        error "aborting commit due to ($build_type) build CMake build error(s), listed below"
+        cmake --build "$build_directory" -j "$build_jobs"
+        abort
+    fi
+
+    echo "none"
+}
+
+function ensure_no_release_build_errors_are_present()
+{
+    local -r build_type="release"
+    local -r ellipsis="..............."
+
+    ensure_no_build_errors_are_present "$build_type" "$ellipsis"
+}
+
 function main()
 {
     local -r script=$( readlink -f "$0" )
@@ -174,6 +219,7 @@ function main()
     ensure_filenames_are_portable
     ensure_no_whitespace_errors_are_present
     ensure_no_script_errors_are_present
+    ensure_no_release_build_errors_are_present
 }
 
 main "$@"
