@@ -33,7 +33,7 @@ jobs:
           script: ./ci/build-release
 
         -
-          name: "clang"
+          name: "gcc"
           language: cpp
           compiler: gcc
           script: ./ci/build-release
