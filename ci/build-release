@@ -66,11 +66,11 @@ function build_release()
     local -r build_configuration="$repository/configuration/CMakeLists.txt.ci-build-release"
 
     if ! cmake -C "$build_configuration" -S "$repository" -b "$build_directory"; then
-        exit 1
+        abort "CMake initialization error(s)"
     fi
 
     if ! cmake --build "$build_directory" -j "$(( $( nproc ) - 1 ))"; then
-        exit 1
+        abort "CMake build error(s)"
     fi
 }
 
