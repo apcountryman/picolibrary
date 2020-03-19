@@ -13,3 +13,4 @@ UTC is used when determining release dates.
 - Project README.
 - Project CHANGELOG.
 - [Travis CI configuration](https://github.com/apcountryman/picolibrary/issues/1).
+- [Project build system infrastructure](https://github.com/apcountryman/picolibrary/issues/8).

@@ -12,28 +12,16 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: .travis.yml
-# Description: Travis CI build configuration for the picolibrary repository.
+# File: configuration/CMakeLists.txt.pre-commit-build-release
+# Description: picolibrary Git pre-commit hook release build configuration.
 
-os: linux
-dist: bionic
-language: minimal
+# CMake build type configuration
+set( CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE )
+mark_as_advanced(
+    CMAKE_BUILD_TYPE
+    CMAKE_INSTALL_PREFIX
+)
 
-jobs:
-    include:
-        - stage: "Static Analysis"
-          name: "shellcheck"
-          language: bash
-          script: ./ci/static-analysis-shellcheck
-
-        - stage: "(Release) Build"
-          name: "clang"
-          language: cpp
-          compiler: clang
-          script: ./ci/build-release
-
-        -
-          name: "gcc"
-          language: cpp
-          compiler: gcc
-          script: ./ci/build-release
+# CMake compile commands export configuration
+set( CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE BOOL "" FORCE )
+mark_as_advanced( CMAKE_EXPORT_COMPILE_COMMANDS )

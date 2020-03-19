@@ -12,28 +12,11 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: .travis.yml
-# Description: Travis CI build configuration for the picolibrary repository.
+# File: CMakeLists.txt
+# Description: picolibrary core CMake rules.
 
-os: linux
-dist: bionic
-language: minimal
-
-jobs:
-    include:
-        - stage: "Static Analysis"
-          name: "shellcheck"
-          language: bash
-          script: ./ci/static-analysis-shellcheck
-
-        - stage: "(Release) Build"
-          name: "clang"
-          language: cpp
-          compiler: clang
-          script: ./ci/build-release
-
-        -
-          name: "gcc"
-          language: cpp
-          compiler: gcc
-          script: ./ci/build-release
+cmake_minimum_required( VERSION 3.12.4 )
+project(
+    picolibrary
+    LANGUAGES CXX
+)
