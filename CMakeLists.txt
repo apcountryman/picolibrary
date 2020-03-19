@@ -20,3 +20,16 @@ project(
     picolibrary
     LANGUAGES CXX
 )
+
+# load additional CMake modules
+list(
+    APPEND CMAKE_MODULE_PATH
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/apcountryman-cmake-utilities"
+)
+include( git-utilities )
+
+# capture project version information
+execute_git_command(
+    PICOLIBRARY_VERSION
+    COMMAND describe --always --dirty --broken
+)
