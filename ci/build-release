@@ -65,7 +65,15 @@ function build_release()
     local -r build_directory="$repository/build/release"
     local -r build_configuration="$repository/configuration/CMakeLists.txt.ci-build-release"
 
-    if ! cmake -C "$build_configuration" -S "$repository" -B "$build_directory"; then
+    if ! mkdir -p "$build_directory"; then
+        abort "build directory creation error(s)"
+    fi
+
+    if ! cd "$build_directory"; then
+        abort "working directory change error(s)"
+    fi
+
+    if ! cmake -C "$build_configuration" "$repository"; then
         abort "CMake initialization error(s)"
     fi
 
