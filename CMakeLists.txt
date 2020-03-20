@@ -20,3 +20,43 @@ project(
     picolibrary
     LANGUAGES CXX
 )
+
+# load additional CMake modules
+list(
+    APPEND CMAKE_MODULE_PATH
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/apcountryman-cmake-utilities"
+)
+include( git-utilities )
+
+# capture project version information
+execute_git_command(
+    PICOLIBRARY_VERSION
+    COMMAND describe --always --dirty --broken
+)
+
+# configure Doxygen
+find_package( Doxygen )
+if( ${DOXYGEN_FOUND} )
+    set(
+        PICOLIBRARY_DOCUMENTATION_EXCLUDE_PATTERNS
+        " \
+        */.git/* \
+        */README.md \
+        */build/* \
+        */cmake/modules/* \
+        "
+    )
+
+    set( DOXYFILE "${CMAKE_CURRENT_BINARY_DIR}/documentation/Doxyfile" )
+    configure_file(
+        "${CMAKE_CURRENT_SOURCE_DIR}/documentation/Doxyfile.in"
+        "${DOXYFILE}"
+        @ONLY
+    )
+    add_custom_target(
+        picolibrary-documentation
+        ALL
+        COMMAND           "${DOXYGEN_EXECUTABLE}" "${DOXYFILE}"
+        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/documentation"
+    )
+endif( ${DOXYGEN_FOUND} )
