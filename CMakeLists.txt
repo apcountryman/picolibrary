@@ -36,7 +36,7 @@ execute_git_command(
 
 # configure Doxygen
 find_package( Doxygen )
-if( DEFINED Doxygen_FOUND )
+if( ${DOXYGEN_FOUND} )
     set(
         PICOLIBRARY_DOCUMENTATION_EXCLUDE_PATTERNS
         " \
@@ -59,4 +59,4 @@ if( DEFINED Doxygen_FOUND )
         COMMAND           "${DOXYGEN_EXECUTABLE}" "${DOXYFILE}"
         WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/documentation"
     )
-endif( DEFINED Doxygen_FOUND )
+endif( ${DOXYGEN_FOUND} )
