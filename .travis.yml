@@ -34,6 +34,7 @@ jobs:
               apt:
                   packages:
                       - doxygen
+                      - graphviz
           script: ./ci/build-release
 
         -
@@ -44,4 +45,5 @@ jobs:
               apt:
                   packages:
                       - doxygen
+                      - graphviz
           script: ./ci/build-release
