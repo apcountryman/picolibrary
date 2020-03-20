@@ -30,12 +30,18 @@ jobs:
           name: "clang"
           language: cpp
           compiler: clang
-          install: sudo apt -y install doxygen
+          addons:
+              apt:
+                  packages:
+                      - doxygen
           script: ./ci/build-release
 
         -
           name: "gcc"
           language: cpp
           compiler: gcc
-          install: sudo apt -y install doxygen
+          addons:
+              apt:
+                  packages:
+                      - doxygen
           script: ./ci/build-release
