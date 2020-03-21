@@ -21,13 +21,11 @@ language: minimal
 
 jobs:
     include:
-        - stage: "Static Analysis"
-          name: "shellcheck"
+        - name: "analyze (static) - shellcheck"
           language: bash
           script: ./ci/static-analysis-shellcheck
 
-        - stage: "(Release) Build"
-          name: "clang"
+        - name: "build (release) - clang"
           language: cpp
           compiler: clang
           addons:
@@ -37,8 +35,7 @@ jobs:
                       - graphviz
           script: ./ci/build-release
 
-        -
-          name: "gcc"
+        - name: "build (release) - gcc"
           language: cpp
           compiler: gcc
           addons:
