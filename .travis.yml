@@ -22,7 +22,7 @@ jobs:
     include:
         - name: "analyze (static) - shellcheck"
           language: bash
-          script: ./ci/static-analysis-shellcheck
+          script: ./ci/analyze --analyzer shellcheck
 
         - name: "build (release) - clang"
           language: cpp
@@ -32,7 +32,7 @@ jobs:
                   packages:
                       - doxygen
                       - graphviz
-          script: ./ci/build-release
+          script: ./ci/build --configuration release
 
         - name: "build (release) - gcc"
           language: cpp
@@ -42,4 +42,4 @@ jobs:
                   packages:
                       - doxygen
                       - graphviz
-          script: ./ci/build-release
+          script: ./ci/build --configuration release

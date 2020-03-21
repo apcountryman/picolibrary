@@ -14,8 +14,8 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: ci/static-analysis-shellcheck
-# Description: picolibrary repository CI static analysis stage shellcheck job.
+# File: ci/analyze
+# Description: picolibrary repository CI static analysis script.
 
 function error()
 {
@@ -38,13 +38,16 @@ function abort()
 function display_help_text()
 {
     echo "NAME"
-    echo "    $mnemonic - Execute the picolibrary repository CI static analysis stage"
-    echo "        shellcheck job."
+    echo "    $mnemonic - Run a static analyzer against picolibrary."
     echo "SYNOPSIS"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
-    echo "    $mnemonic"
+    echo "    $mnemonic --analyzer <analyzer>"
     echo "OPTIONS"
+    echo "    --analyzer <analyzer>"
+    echo "        Specify the analyzer to run against picolibrary. The following"
+    echo "        analyzers are supported:"
+    echo "            shellcheck"
     echo "    --help"
     echo "        Display this help text."
     echo "    --version"
@@ -52,7 +55,7 @@ function display_help_text()
     echo "EXAMPLES"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
-    echo "    $mnemonic"
+    echo "    $mnemonic --analyzer shellcheck"
 }
 
 function display_version()
@@ -60,13 +63,18 @@ function display_version()
     echo "$mnemonic, version $version"
 }
 
-function static_analysis_shellcheck()
+function run_shellcheck()
 {
     local scripts; mapfile -t scripts < <( git -C "$repository" ls-files ':!:cmake/modules/' | xargs -r -d '\n' -I '{}' find "$repository/{}" -executable ); readonly scripts
 
     if ! shellcheck "${scripts[@]}"; then
         abort "script error(s)"
     fi
+}
+
+function run_analyzer()
+{
+    "run_$analyzer"
 }
 
 function main()
@@ -88,6 +96,21 @@ function main()
                 display_version
                 exit
                 ;;
+            --analyzer)
+                if [[ -n "$analyzer" ]]; then
+                    abort "analyzer already specified"
+                fi
+
+                if [[ "$#" -le 0 ]]; then
+                    abort "analyzer not specified"
+                fi
+
+                local -r analyzer="$1"; shift
+
+                if [[ "$analyzer" != "shellcheck" ]]; then
+                    abort "'$analyzer' is not a supported analyzer"
+                fi
+                ;;
             --*)
                 ;&
             -*)
@@ -99,7 +122,11 @@ function main()
         esac
     done
 
-    static_analysis_shellcheck
+    if [[ -z "$analyzer" ]]; then
+        abort "'--analyzer' must be specified"
+    fi
+
+    run_analyzer
 }
 
 main "$@"

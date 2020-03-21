@@ -14,8 +14,8 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: ci/build-release
-# Description: picolibrary repository CI (release) build stage release build job.
+# File: ci/build
+# Description: picolibrary repository CI build script.
 
 function error()
 {
@@ -38,13 +38,16 @@ function abort()
 function display_help_text()
 {
     echo "NAME"
-    echo "    $mnemonic - Execute the picolibrary repository CI (release) build stage"
-    echo "        (release) build job."
+    echo "    $mnemonic - Build picolibrary."
     echo "SYNOPSIS"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
-    echo "    $mnemonic"
+    echo "    $mnemonic --configuration <configuration>"
     echo "OPTIONS"
+    echo "    --configuration <configuration"
+    echo "        Specify the configuration to build. The following configurations are"
+    echo "        supported:"
+    echo "            release"
     echo "    --help"
     echo "        Display this help text."
     echo "    --version"
@@ -52,7 +55,7 @@ function display_help_text()
     echo "EXAMPLES"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
-    echo "    $mnemonic"
+    echo "    $mnemonic --configuration release"
 }
 
 function display_version()
@@ -60,10 +63,10 @@ function display_version()
     echo "$mnemonic, version $version"
 }
 
-function build_release()
+function build()
 {
-    local -r build_directory="$repository/build/release"
-    local -r build_configuration="$repository/configuration/CMakeLists.txt.release"
+    local -r build_directory="$repository/build/$configuration"
+    local -r build_configuration="$repository/configuration/CMakeLists.txt.$configuration"
 
     if ! mkdir -p "$build_directory"; then
         abort "build directory creation error(s)"
@@ -101,6 +104,21 @@ function main()
                 display_version
                 exit
                 ;;
+            --configuration)
+                if [[ -n "$configuration" ]]; then
+                    abort "build configuration already specified"
+                fi
+
+                if [[ "$#" -le 0 ]]; then
+                    abort "build configuration not specified"
+                fi
+
+                local -r configuration="$1"; shift
+
+                if [[ "$configuration" != "release" ]]; then
+                    abort "'$configuration' is not a supported build configuration"
+                fi
+                ;;
             --*)
                 ;&
             -*)
@@ -112,7 +130,11 @@ function main()
         esac
     done
 
-    build_release
+    if [[ -z "$configuration" ]]; then
+        abort "'--configuration' must be specified"
+    fi
+
+    build
 }
 
 main "$@"
