@@ -63,7 +63,7 @@ function display_version()
 function build_release()
 {
     local -r build_directory="$repository/build/release"
-    local -r build_configuration="$repository/configuration/CMakeLists.txt.ci-build-release"
+    local -r build_configuration="$repository/configuration/CMakeLists.txt.release"
 
     if ! mkdir -p "$build_directory"; then
         abort "build directory creation error(s)"
