@@ -22,6 +22,7 @@ project(
 )
 
 # project configuration
+option( PICOLIBRARY_TESTING_INTERACTIVE_ENABLED    "picolibrary: enable interactive testing"       OFF )
 option( PICOLIBRARY_TESTING_UNIT_ENABLED           "picolibrary: enable unit testing"              OFF )
 option( PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS "picolibrary: use parent project's build flags" ON  )
 option( PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST "picolibrary: use parent project's Google Test" ON  )
