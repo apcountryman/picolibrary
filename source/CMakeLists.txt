@@ -42,6 +42,18 @@ if( ${PICOLIBRARY_TESTING_INTERACTIVE_ENABLED} )
     )
 endif( ${PICOLIBRARY_TESTING_INTERACTIVE_ENABLED} )
 
+if( ${PICOLIBRARY_TESTING_UNIT_ENABLED} )
+    list(
+        APPEND PICOLIBRARY_SOURCE_FILES
+        "picolibrary/testing/unit.cc"
+    )
+    list(
+        APPEND PICOLIBRARY_LINK_LIBRARIES
+        gmock
+        gtest
+    )
+endif( ${PICOLIBRARY_TESTING_UNIT_ENABLED} )
+
 add_library(
     picolibrary STATIC
     ${PICOLIBRARY_SOURCE_FILES}
