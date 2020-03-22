@@ -39,20 +39,13 @@ if( NOT ${PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS} )
         "${CMAKE_CXX_FLAGS} \
         -std=c++17 \
         -Werror -Wall -Wextra \
-        -Wcast-align=strict \
         -Wcast-qual \
-        -Wduplicated-cond \
-        -Wextra-semi \
         -Wfloat-equal \
-        -Wimplicit-fallthrough=5 \
-        -Wlogical-op \
+        -Wmissing-field-initializers \
         -Wmissing-include-dirs \
         -Wold-style-cast \
-        -Wplacement-new=2 \
         -Wpointer-arith \
         -Wshadow \
-        -Wunsafe-loop-optimizations \
-        -Wmissing-field-initializers \
         "
     )
 
