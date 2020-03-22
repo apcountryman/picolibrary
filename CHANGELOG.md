@@ -16,3 +16,4 @@ UTC is used when determining release dates.
 - [Project build system infrastructure](https://github.com/apcountryman/picolibrary/issues/8).
 - [Project documentation infrastructure](https://github.com/apcountryman/picolibrary/issues/10).
 - [Project unit testing infrastructure](https://github.com/apcountryman/picolibrary/issues/11).
+- [Project interactive testing infrastructure](https://github.com/apcountryman/picolibrary/issues/12).
