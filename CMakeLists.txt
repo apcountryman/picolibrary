@@ -129,5 +129,8 @@ if( ${PICOLIBRARY_TESTING_UNIT_ENABLED} )
     enable_testing()
 endif( ${PICOLIBRARY_TESTING_UNIT_ENABLED} )
 
+# build the library
+add_subdirectory( source )
+
 # build the library's tests
 add_subdirectory( test )
