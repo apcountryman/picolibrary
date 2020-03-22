@@ -12,16 +12,8 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: configuration/CMakeLists.txt.ci-build-release
-# Description: picolibrary CI release build configuration.
+# File: test/CMakeLists.txt
+# Description: picolibrary tests CMake rules.
 
-# CMake build type configuration
-set( CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE )
-mark_as_advanced(
-    CMAKE_BUILD_TYPE
-    CMAKE_INSTALL_PREFIX
-)
-
-# CMake compile commands export configuration
-set( CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE BOOL "" FORCE )
-mark_as_advanced( CMAKE_EXPORT_COMPILE_COMMANDS )
+# build the picolibrary unit tests
+add_subdirectory( unit )

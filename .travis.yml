@@ -17,17 +17,14 @@
 
 os: linux
 dist: bionic
-language: minimal
 
 jobs:
     include:
-        - stage: "Static Analysis"
-          name: "shellcheck"
+        - name: "analyze (static) - shellcheck"
           language: bash
-          script: ./ci/static-analysis-shellcheck
+          script: ./ci/analyze --analyzer shellcheck
 
-        - stage: "(Release) Build"
-          name: "clang"
+        - name: "build (release) - clang"
           language: cpp
           compiler: clang
           addons:
@@ -35,10 +32,9 @@ jobs:
                   packages:
                       - doxygen
                       - graphviz
-          script: ./ci/build-release
+          script: ./ci/build --configuration release
 
-        -
-          name: "gcc"
+        - name: "build (release) - gcc"
           language: cpp
           compiler: gcc
           addons:
@@ -46,4 +42,24 @@ jobs:
                   packages:
                       - doxygen
                       - graphviz
-          script: ./ci/build-release
+          script: ./ci/build --configuration release
+
+        - name: "build (testing-unit) and (unit) test - clang"
+          language: cpp
+          compiler: clang
+          addons:
+              apt:
+                  packages:
+                      - doxygen
+                      - graphviz
+          script: ./ci/build --configuration testing-unit && ./ci/test
+
+        - name: "build (testing-unit) and (unit) test - gcc"
+          language: cpp
+          compiler: gcc
+          addons:
+              apt:
+                  packages:
+                      - doxygen
+                      - graphviz
+          script: ./ci/build --configuration testing-unit && ./ci/test

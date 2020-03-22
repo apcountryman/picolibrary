@@ -12,16 +12,5 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: configuration/CMakeLists.txt.pre-commit-build-release
-# Description: picolibrary Git pre-commit hook release build configuration.
-
-# CMake build type configuration
-set( CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE )
-mark_as_advanced(
-    CMAKE_BUILD_TYPE
-    CMAKE_INSTALL_PREFIX
-)
-
-# CMake compile commands export configuration
-set( CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE BOOL "" FORCE )
-mark_as_advanced( CMAKE_EXPORT_COMPILE_COMMANDS )
+# File: test/unit/picolibrary/CMakeLists.txt
+# Description: picolibrary unit tests CMake rules.

@@ -14,8 +14,8 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: ci/build-release
-# Description: picolibrary repository CI (release) build stage release build job.
+# File: ci/test
+# Description: picolibrary repository CI unit test script.
 
 function error()
 {
@@ -38,8 +38,7 @@ function abort()
 function display_help_text()
 {
     echo "NAME"
-    echo "    $mnemonic - Execute the picolibrary repository CI (release) build stage"
-    echo "        (release) build job."
+    echo "    $mnemonic - Execute the picolibrary unit tests."
     echo "SYNOPSIS"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
@@ -60,25 +59,12 @@ function display_version()
     echo "$mnemonic, version $version"
 }
 
-function build_release()
+function ensure_no_unit_test_errors_are_present()
 {
-    local -r build_directory="$repository/build/release"
-    local -r build_configuration="$repository/configuration/CMakeLists.txt.ci-build-release"
+    local -r build_directory="$repository/build/testing-unit"
 
-    if ! mkdir -p "$build_directory"; then
-        abort "build directory creation error(s)"
-    fi
-
-    if ! cd "$build_directory"; then
-        abort "working directory change error(s)"
-    fi
-
-    if ! cmake -C "$build_configuration" "$repository"; then
-        abort "CMake initialization error(s)"
-    fi
-
-    if ! cmake --build "$build_directory" -j "$(( $( nproc ) - 1 ))"; then
-        abort "CMake build error(s)"
+    if ! cmake --build "$build_directory" --target test -- CTEST_OUTPUT_ON_FAILURE=1; then
+        abort "unit test error(s)"
     fi
 }
 
@@ -112,7 +98,7 @@ function main()
         esac
     done
 
-    build_release
+    ensure_no_unit_test_errors_are_present
 }
 
 main "$@"
