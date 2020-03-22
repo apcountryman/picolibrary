@@ -43,3 +43,23 @@ jobs:
                       - doxygen
                       - graphviz
           script: ./ci/build --configuration release
+
+        - name: "build (testing-unit) and (unit) test - clang"
+          language: cpp
+          compiler: clang
+          addons:
+              apt:
+                  packages:
+                      - doxygen
+                      - graphviz
+          script: ./ci/build --configuration testing-unit && ./ci/test
+
+        - name: "build (testing-unit) and (unit) test - gcc"
+          language: cpp
+          compiler: gcc
+          addons:
+              apt:
+                  packages:
+                      - doxygen
+                      - graphviz
+          script: ./ci/build --configuration testing-unit && ./ci/test

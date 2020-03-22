@@ -21,18 +21,86 @@ project(
     LANGUAGES CXX
 )
 
+# project configuration
+option( PICOLIBRARY_TESTING_UNIT_ENABLED           "picolibrary: enable unit testing"              OFF )
+option( PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS "picolibrary: use parent project's build flags" ON  )
+option( PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST "picolibrary: use parent project's Google Test" ON  )
+
 # load additional CMake modules
 list(
     APPEND CMAKE_MODULE_PATH
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/apcountryman-cmake-utilities"
 )
-include( git-utilities )
+
+# configure compilation and linking
+if( NOT ${PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS} )
+    set(
+        CMAKE_CXX_FLAGS
+        "${CMAKE_CXX_FLAGS} \
+        -std=c++17 \
+        -Werror -Wall -Wextra \
+        -Wcast-align=strict \
+        -Wcast-qual \
+        -Wduplicated-cond \
+        -Wextra-semi \
+        -Wfloat-equal \
+        -Wimplicit-fallthrough=5 \
+        -Wlogical-op \
+        -Wmissing-include-dirs \
+        -Wold-style-cast \
+        -Wplacement-new=2 \
+        -Wpointer-arith \
+        -Wshadow \
+        -Wunsafe-loop-optimizations \
+        -Wmissing-field-initializers \
+        "
+    )
+
+    if( ${PICOLIBRARY_TESTING_UNIT_ENABLED} )
+        set(
+            CMAKE_CXX_FLAGS
+            "${CMAKE_CXX_FLAGS} \
+            -fsanitize=address \
+            -fno-sanitize-recover=all \
+            "
+        )
+    endif( ${PICOLIBRARY_TESTING_UNIT_ENABLED} )
+endif( NOT ${PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS} )
 
 # capture project version information
+include( git-utilities )
 execute_git_command(
     PICOLIBRARY_VERSION
     COMMAND describe --always --dirty --broken
 )
+
+# configure Google Test
+if( ${PICOLIBRARY_TESTING_UNIT_ENABLED} AND NOT ${PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST} )
+    set( BUILD_GMOCK   ON  CACHE BOOL "" FORCE )
+    set( INSTALL_GTEST OFF CACHE BOOL "" FORCE )
+    mark_as_advanced(
+        BUILD_GMOCK
+        INSTALL_GTEST
+    )
+
+    set( gtest_build_samples         OFF CACHE BOOL "" FORCE )
+    set( gtest_build_tests           OFF CACHE BOOL "" FORCE )
+    set( gtest_disable_pthreads      OFF CACHE BOOL "" FORCE )
+    set( gtest_force_shared_crt      OFF CACHE BOOL "" FORCE )
+    set( gtest_hide_internal_symbols OFF CACHE BOOL "" FORCE )
+    mark_as_advanced(
+        gtest_build_samples
+        gtest_build_tests
+        gtest_disable_pthreads
+        gtest_force_shared_crt
+        gtest_hide_internal_symbols
+    )
+
+    set( gmock_build_tests OFF CACHE BOOL "" FORCE )
+    mark_as_advanced( gmock_build_tests )
+
+    add_subdirectory( googletest )
+endif( ${PICOLIBRARY_TESTING_UNIT_ENABLED} AND NOT ${PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST} )
 
 # configure Doxygen
 find_package( Doxygen )
@@ -44,6 +112,7 @@ if( ${DOXYGEN_FOUND} )
         */README.md \
         */build/* \
         */cmake/modules/* \
+        */googletest/* \
         "
     )
 
@@ -60,3 +129,11 @@ if( ${DOXYGEN_FOUND} )
         WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/documentation"
     )
 endif( ${DOXYGEN_FOUND} )
+
+# enable unit testing
+if( ${PICOLIBRARY_TESTING_UNIT_ENABLED} )
+    enable_testing()
+endif( ${PICOLIBRARY_TESTING_UNIT_ENABLED} )
+
+# build the library's tests
+add_subdirectory( test )

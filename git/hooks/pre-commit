@@ -107,7 +107,7 @@ function ensure_no_script_errors_are_present()
 {
     message "checking for script errors ........................ "
 
-    local scripts; mapfile -t scripts < <( git -C "$repository" ls-files ':!:cmake/modules/' | xargs -r -d '\n' -I '{}' find "$repository/{}" -executable ); readonly scripts
+    local scripts; mapfile -t scripts < <( git -C "$repository" ls-files ':!:cmake/modules/' ':!:googletest/' | xargs -r -d '\n' -I '{}' find "$repository/{}" -executable ); readonly scripts
 
     if ! shellcheck "${scripts[@]}" > "/dev/null" 2>&1; then
         errors_found
@@ -162,6 +162,30 @@ function ensure_no_release_build_errors_are_present()
     local -r ellipsis="..............."
 
     ensure_no_build_errors_are_present "$build_type" "$ellipsis"
+}
+
+function ensure_no_unit_testing_build_errors_are_present()
+{
+    local -r build_type="testing-unit"
+    local -r ellipsis=".........."
+
+    ensure_no_build_errors_are_present "$build_type" "$ellipsis"
+}
+
+function ensure_no_unit_test_errors_are_present()
+{
+    message "checking for unit test errors ..................... "
+
+    local -r build_directory="$repository/build/testing-unit"
+
+    if ! cmake --build "$build_directory" --target test > "/dev/null" 2>&1; then
+        errors_found
+        error "aborting commit due to unit test error(s), listed below"
+        cmake --build "$build_directory" --target test -- CTEST_OUTPUT_ON_FAILURE=1
+        abort
+    fi
+
+    echo "none"
 }
 
 function main()
@@ -220,6 +244,8 @@ function main()
     ensure_no_whitespace_errors_are_present
     ensure_no_script_errors_are_present
     ensure_no_release_build_errors_are_present
+    ensure_no_unit_testing_build_errors_are_present
+    ensure_no_unit_test_errors_are_present
 }
 
 main "$@"

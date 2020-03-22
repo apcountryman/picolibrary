@@ -12,15 +12,8 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: .gitmodules
-# Description: Git submodules of the picolibrary repository.
+# File: test/unit/CMakeLists.txt
+# Description: picolibrary unit tests CMake rules.
 
-# CMake modules
-[submodule "cmake/modules/apcountryman-cmake-utilities"]
-	path = cmake/modules/apcountryman-cmake-utilities
-	url = ../cmake-utilities
-
-# Google Test
-[submodule "googletest"]
-	path = googletest
-	url = ../google-googletest
+# build the picolibrary unit tests
+add_subdirectory( picolibrary )

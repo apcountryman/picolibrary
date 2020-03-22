@@ -48,6 +48,7 @@ function display_help_text()
     echo "        Specify the configuration to build. The following configurations are"
     echo "        supported:"
     echo "            release"
+    echo "            testing-unit"
     echo "    --help"
     echo "        Display this help text."
     echo "    --version"
@@ -56,6 +57,7 @@ function display_help_text()
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
     echo "    $mnemonic --configuration release"
+    echo "    $mnemonic --configuration testing-unit"
 }
 
 function display_version()
@@ -63,7 +65,7 @@ function display_version()
     echo "$mnemonic, version $version"
 }
 
-function build()
+function ensure_no_build_errors_are_present()
 {
     local -r build_directory="$repository/build/$configuration"
     local -r build_configuration="$repository/configuration/CMakeLists.txt.$configuration"
@@ -115,7 +117,7 @@ function main()
 
                 local -r configuration="$1"; shift
 
-                if [[ "$configuration" != "release" ]]; then
+                if [[ "$configuration" != "release" && "$configuration" != "testing-unit" ]]; then
                     abort "'$configuration' is not a supported build configuration"
                 fi
                 ;;
@@ -134,7 +136,7 @@ function main()
         abort "'--configuration' must be specified"
     fi
 
-    build
+    ensure_no_build_errors_are_present
 }
 
 main "$@"
