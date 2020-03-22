@@ -12,16 +12,16 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: configuration/CMakeLists.txt.testing-unit
-# Description: picolibrary unit testing configuration.
+# File: configuration/CMakeLists.txt.testing-interactive
+# Description: picolibrary interactive testing configuration.
 
 # install prefix is not applicable
 mark_as_advanced( CMAKE_INSTALL_PREFIX )
 
 # build configuration
-set( CMAKE_BUILD_TYPE                           "Debug" CACHE STRING "" FORCE )
-set( CMAKE_EXPORT_COMPILE_COMMANDS              ON      CACHE BOOL   "" FORCE )
-set( PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS OFF     CACHE BOOL   "" FORCE )
+set( CMAKE_BUILD_TYPE                           "Release" CACHE STRING "" FORCE )
+set( CMAKE_EXPORT_COMPILE_COMMANDS              ON        CACHE BOOL   "" FORCE )
+set( PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS OFF       CACHE BOOL   "" FORCE )
 mark_as_advanced(
     CMAKE_BUILD_TYPE
     CMAKE_EXPORT_COMPILE_COMMANDS
@@ -29,7 +29,7 @@ mark_as_advanced(
 )
 
 # unit testing configuration
-set( PICOLIBRARY_TESTING_UNIT_ENABLED           ON  CACHE BOOL "" FORCE )
+set( PICOLIBRARY_TESTING_UNIT_ENABLED           OFF CACHE BOOL "" FORCE )
 set( PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST OFF CACHE BOOL "" FORCE )
 mark_as_advanced(
     PICOLIBRARY_TESTING_UNIT_ENABLED
@@ -37,5 +37,5 @@ mark_as_advanced(
 )
 
 # interactive testing configuration
-set( PICOLIBRARY_TESTING_INTERACTIVE_ENABLED OFF CACHE BOOL "" FORCE )
+set( PICOLIBRARY_TESTING_INTERACTIVE_ENABLED ON CACHE BOOL "" FORCE )
 mark_as_advanced( PICOLIBRARY_TESTING_INTERACTIVE_ENABLED )

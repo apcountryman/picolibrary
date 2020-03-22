@@ -172,6 +172,14 @@ function ensure_no_unit_testing_build_errors_are_present()
     ensure_no_build_errors_are_present "$build_type" "$ellipsis"
 }
 
+function ensure_no_interactive_testing_build_errors_are_present()
+{
+    local -r build_type="testing-interactive"
+    local -r ellipsis="..."
+
+    ensure_no_build_errors_are_present "$build_type" "$ellipsis"
+}
+
 function ensure_no_unit_test_errors_are_present()
 {
     message "checking for unit test errors ..................... "
@@ -244,6 +252,7 @@ function main()
     ensure_no_whitespace_errors_are_present
     ensure_no_script_errors_are_present
     ensure_no_release_build_errors_are_present
+    ensure_no_interactive_testing_build_errors_are_present
     ensure_no_unit_testing_build_errors_are_present
     ensure_no_unit_test_errors_are_present
 }

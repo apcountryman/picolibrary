@@ -44,6 +44,26 @@ jobs:
                       - graphviz
           script: ./ci/build --configuration release
 
+        - name: "build (testing-interactive) - clang"
+          language: cpp
+          compiler: clang
+          addons:
+              apt:
+                  packages:
+                      - doxygen
+                      - graphviz
+          script: ./ci/build --configuration testing-interactive
+
+        - name: "build (testing-interactive) - gcc"
+          language: cpp
+          compiler: gcc
+          addons:
+              apt:
+                  packages:
+                      - doxygen
+                      - graphviz
+          script: ./ci/build --configuration testing-interactive
+
         - name: "build (testing-unit) and (unit) test - clang"
           language: cpp
           compiler: clang
