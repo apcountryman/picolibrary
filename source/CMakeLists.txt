@@ -15,9 +15,16 @@
 # File: source/CMakeLists.txt
 # Description: picolibrary CMake rules.
 
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/picolibrary/version.cc.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/picolibrary/version.cc"
+    @ONLY
+)
+
 set(
     PICOLIBRARY_SOURCE_FILES
-    picolibrary.cc
+    "${CMAKE_CURRENT_BINARY_DIR}/picolibrary/version.cc"
+    "picolibrary.cc"
 )
 set( PICOLIBRARY_LINK_LIBRARIES )
 
