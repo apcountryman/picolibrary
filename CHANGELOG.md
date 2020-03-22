@@ -15,3 +15,4 @@ UTC is used when determining release dates.
 - [Travis CI configuration](https://github.com/apcountryman/picolibrary/issues/1).
 - [Project build system infrastructure](https://github.com/apcountryman/picolibrary/issues/8).
 - [Project documentation infrastructure](https://github.com/apcountryman/picolibrary/issues/10).
+- [Project unit testing infrastructure](https://github.com/apcountryman/picolibrary/issues/11).
