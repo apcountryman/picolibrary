@@ -26,6 +26,10 @@ jobs:
 
         - name: "analyze (static) - cppcheck"
           language: cpp
+          addons:
+              apt:
+                  packages:
+                      - cppcheck
           script: ./ci/analyze --analyzer cppcheck
 
         - name: "build (release) - clang"
