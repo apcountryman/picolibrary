@@ -47,6 +47,7 @@ function display_help_text()
     echo "    --analyzer <analyzer>"
     echo "        Specify the analyzer to run against picolibrary. The following"
     echo "        analyzers are supported:"
+    echo "            cppcheck"
     echo "            shellcheck"
     echo "    --help"
     echo "        Display this help text."
@@ -55,6 +56,7 @@ function display_help_text()
     echo "EXAMPLES"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
+    echo "    $mnemonic --analyzer cppcheck"
     echo "    $mnemonic --analyzer shellcheck"
 }
 
@@ -63,12 +65,45 @@ function display_version()
     echo "$mnemonic, version $version"
 }
 
+function generate_compilation_database()
+{
+    local -r build_directory="$repository/build/analysis"
+    local -r build_configuration="$repository/configuration/CMakeLists.txt.analysis"
+
+    if ! mkdir -p "$build_directory"; then
+        abort
+    fi
+
+    if ! cd "$build_directory"; then
+        abort
+    fi
+
+    if ! cmake -C "$build_configuration" "$repository"; then
+        abort
+    fi
+}
+
 function run_shellcheck()
 {
     local scripts; mapfile -t scripts < <( git -C "$repository" ls-files ':!:cmake/modules/' ':!:googletest/' | xargs -r -d '\n' -I '{}' find "$repository/{}" -executable ); readonly scripts
 
     if ! shellcheck "${scripts[@]}"; then
-        abort "script error(s)"
+        abort
+    fi
+}
+
+function run_cppcheck()
+{
+    generate_compilation_database
+
+    local -r cppcheck_options=(
+        "--template=gcc"
+        "--project=$repository/build/analysis/compile_commands.json"
+        "-i$repository/googletest"
+    )
+
+    if ! cppcheck "${cppcheck_options[@]}"; then
+        abort
     fi
 }
 
@@ -107,7 +142,7 @@ function main()
 
                 local -r analyzer="$1"; shift
 
-                if [[ "$analyzer" != "shellcheck" ]]; then
+                if [[ "$analyzer" != "cppcheck" && "$analyzer" != "shellcheck" ]]; then
                     abort "'$analyzer' is not a supported analyzer"
                 fi
                 ;;
