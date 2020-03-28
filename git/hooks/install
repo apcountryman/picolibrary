@@ -98,7 +98,7 @@ function install_hooks()
     for hook in "${selected_hooks[@]}"; do
         rm -f "$repository/.git/hooks/$hook"
 
-        if ! ln -s "$hooks/$hook" "$repository/.git/hooks/$hook" > "/dev/null" 2>&1; then
+        if ! ln -s "$hooks/$hook" "$repository/.git/hooks/$hook" > "/dev/null"; then
             abort "'$hook' installation failure"
         fi
     done
