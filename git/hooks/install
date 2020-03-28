@@ -137,9 +137,6 @@ function main()
             -*)
                 abort "'$argument' is not a supported option"
                 ;;
-            "$mnemonic")
-                abort "'$argument' is not a hook"
-                ;;
             *)
                 selected_hooks+=( "$argument" )
                 ;;
