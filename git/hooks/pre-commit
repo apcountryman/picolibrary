@@ -50,8 +50,13 @@ function abort()
 function display_help_text()
 {
     echo "NAME"
-    echo "    $mnemonic - Ensure filenames are portable, no whitespace errors are"
-    echo "        present, and no script errors are present."
+    echo "    $mnemonic - Ensure:"
+    echo "        - Filenames are portable"
+    echo "        - No whitespace errors are present"
+    echo "        - No script errors are present"
+    echo "        - No release, interactive testing, or unit testing build errors are"
+    echo "            present"
+    echo "        - No unit test errors are present"
     echo "SYNOPSIS"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
