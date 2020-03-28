@@ -47,6 +47,7 @@ function display_help_text()
     echo "    --analyzer <analyzer>"
     echo "        Specify the analyzer to run against picolibrary. The following"
     echo "        analyzers are supported:"
+    echo "            clang-tidy"
     echo "            cppcheck"
     echo "            shellcheck"
     echo "    --help"
@@ -56,6 +57,7 @@ function display_help_text()
     echo "EXAMPLES"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
+    echo "    $mnemonic --analyzer clang-tidy"
     echo "    $mnemonic --analyzer cppcheck"
     echo "    $mnemonic --analyzer shellcheck"
 }
@@ -67,7 +69,6 @@ function display_version()
 
 function generate_compilation_database()
 {
-    local -r build_directory="$repository/build/analysis"
     local -r build_configuration="$repository/configuration/CMakeLists.txt.analysis"
 
     if ! mkdir -p "$build_directory"; then
@@ -107,6 +108,15 @@ function run_cppcheck()
     fi
 }
 
+function run_clang-tidy()
+{
+    generate_compilation_database
+
+    if ! run-clang-tidy -p "$build_directory"; then
+        abort
+    fi
+}
+
 function ensure_no_static_analysis_errors_are_present()
 {
     "run_$analyzer"
@@ -118,6 +128,7 @@ function main()
     local -r mnemonic=$( basename "$script" )
     local -r repository=$( readlink -f "$( dirname "$script" )/.." )
     local -r version=$( git -C "$repository" describe --always --dirty --broken )
+    local -r build_directory="$repository/build/analysis"
 
     while [[ "$#" -gt 0 ]]; do
         local argument="$1"; shift
@@ -142,7 +153,7 @@ function main()
 
                 local -r analyzer="$1"; shift
 
-                if [[ "$analyzer" != "cppcheck" && "$analyzer" != "shellcheck" ]]; then
+                if [[ "$analyzer" != "clang-tidy" && "$analyzer" != "cppcheck" && "$analyzer" != "shellcheck" ]]; then
                     abort "'$analyzer' is not a supported analyzer"
                 fi
                 ;;
