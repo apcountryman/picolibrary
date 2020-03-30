@@ -24,3 +24,8 @@
 [submodule "googletest"]
 	path = googletest
 	url = ../google-googletest
+
+# lizard
+[submodule "lizard"]
+	path = lizard
+	url = ../terryyin-lizard

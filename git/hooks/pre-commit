@@ -50,8 +50,13 @@ function abort()
 function display_help_text()
 {
     echo "NAME"
-    echo "    $mnemonic - Ensure filenames are portable, no whitespace errors are"
-    echo "        present, and no script errors are present."
+    echo "    $mnemonic - Ensure:"
+    echo "        - Filenames are portable"
+    echo "        - No whitespace errors are present"
+    echo "        - No script errors are present"
+    echo "        - No release, interactive testing, or unit testing build errors are"
+    echo "            present"
+    echo "        - No unit test errors are present"
     echo "SYNOPSIS"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
@@ -93,7 +98,7 @@ function ensure_no_whitespace_errors_are_present()
 {
     message "checking for whitespace errors .................... "
 
-    if ! git -C "$repository" diff-index --check --cached "$against" -- > "/dev/null"; then
+    if ! git -C "$repository" diff-index --check --cached "$against" -- > "/dev/null" 2>&1; then
         errors_found
         error "aborting commit due to whitespace error(s), listed below"
         git -C "$repository" diff-index --check --cached "$against" --
@@ -107,7 +112,7 @@ function ensure_no_script_errors_are_present()
 {
     message "checking for script errors ........................ "
 
-    local scripts; mapfile -t scripts < <( git -C "$repository" ls-files ':!:cmake/modules/' ':!:googletest/' | xargs -r -d '\n' -I '{}' find "$repository/{}" -executable ); readonly scripts
+    local scripts; mapfile -t scripts < <( git -C "$repository" ls-files ':!:cmake/modules/' ':!:googletest/' ':!:lizard/' | xargs -r -d '\n' -I '{}' find "$repository/{}" -executable ); readonly scripts
 
     if ! shellcheck "${scripts[@]}" > "/dev/null" 2>&1; then
         errors_found
