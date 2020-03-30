@@ -40,6 +40,10 @@ jobs:
                       - clang-tidy
           script: ./ci/analyze --analyzer clang-tidy
 
+        - name: "analyze (static) - lizard"
+          language: python
+          script: ./ci/analyze --analyzer lizard
+
         - name: "build (release) - clang"
           language: cpp
           compiler: clang

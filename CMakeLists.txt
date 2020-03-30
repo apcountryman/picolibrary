@@ -107,6 +107,7 @@ if( ${DOXYGEN_FOUND} )
         */build/* \
         */cmake/modules/* \
         */googletest/* \
+        */lizard/* \
         "
     )
 
