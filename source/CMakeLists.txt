@@ -25,6 +25,7 @@ set(
     PICOLIBRARY_SOURCE_FILES
     "${CMAKE_CURRENT_BINARY_DIR}/picolibrary/version.cc"
     "picolibrary.cc"
+    "picolibrary/error.cc"
     "picolibrary/utility.cc"
 )
 set( PICOLIBRARY_LINK_LIBRARIES )
