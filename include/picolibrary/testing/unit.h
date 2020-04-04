@@ -26,6 +26,6 @@
  * \brief Unit testing facilities.
  */
 namespace picolibrary::Testing::Unit {
-} // picolibrary::Testing::Unit
+} // namespace picolibrary::Testing::Unit
 
 #endif // PICOLIBRARY_TESTING_UNIT_H

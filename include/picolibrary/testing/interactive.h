@@ -26,6 +26,6 @@
  * \brief Interactive testing facilities.
  */
 namespace picolibrary::Testing::Interactive {
-} // picolibrary::Testing::Interactive
+} // namespace picolibrary::Testing::Interactive
 
 #endif // PICOLIBRARY_TESTING_INTERACTIVE_H
