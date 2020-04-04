@@ -13,7 +13,7 @@
 # permissions and limitations under the License.
 
 # File: .clang-format
-# Description: CLang format style configuration for the picolibrary repository.
+# Description: clang-format style configuration for the picolibrary repository.
 
 Language: Cpp
 Standard: Cpp11
