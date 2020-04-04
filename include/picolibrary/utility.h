@@ -22,10 +22,14 @@
 #ifndef PICOLIBRARY_UTILITY_H
 #define PICOLIBRARY_UTILITY_H
 
+namespace picolibrary {
+
 /**
  * \brief Replacement for void in contexts that require construction.
  */
 struct Void {
 };
+
+} // namespace picolibrary
 
 #endif // PICOLIBRARY_UTILITY_H
