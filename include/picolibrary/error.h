@@ -85,6 +85,15 @@ public:
      */
     virtual auto name() const noexcept -> char const * = 0;
 
+    /**
+     * \brief Get an error ID's description.
+     *
+     * \param[in] id The error ID whose description is to be got.
+     *
+     * \return The error ID's description.
+     */
+    virtual auto error_description( Error_ID id ) const noexcept -> char const * = 0;
+
 protected:
     /**
      * \brief Constructor.
