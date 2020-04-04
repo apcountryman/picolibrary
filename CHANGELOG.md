@@ -20,3 +20,4 @@ UTC is used when determining release dates.
 - [Library skeleton](https://github.com/apcountryman/picolibrary/issues/18).
 - [`cppcheck` static analysis CI job](https://github.com/apcountryman/picolibrary/issues/20).
 - [`clang-tidy` static analysis CI job](https://github.com/apcountryman/picolibrary/issues/21).
+- [`clang-format` formatting CI job](https://github.com/apcountryman/picolibrary/issues/23).

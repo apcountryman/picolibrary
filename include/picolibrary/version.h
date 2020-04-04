@@ -29,6 +29,6 @@ namespace picolibrary {
  */
 extern char const * const VERSION;
 
-} // picolibrary
+} // namespace picolibrary
 
 #endif // PICOLIBRARY_VERSION_H

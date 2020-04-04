@@ -26,6 +26,6 @@
  * \brief Testing facilities.
  */
 namespace picolibrary::Testing {
-} // picolibrary::Testing
+} // namespace picolibrary::Testing
 
 #endif // PICOLIBRARY_TESTING_H

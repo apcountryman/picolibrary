@@ -26,6 +26,6 @@
  * \brief picolibrary
  */
 namespace picolibrary {
-} // picolibrary
+} // namespace picolibrary
 
 #endif // PICOLIBRARY_H
