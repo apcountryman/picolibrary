@@ -49,6 +49,47 @@ struct is_error_code_enum : std::false_type {
 template<typename Enum>
 constexpr auto is_error_code_enum_v = is_error_code_enum<Enum>::value;
 
+/**
+ * \brief Error category.
+ */
+class Error_Category {
+public:
+    /**
+     * \todo #29
+     */
+    Error_Category( Error_Category && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    Error_Category( Error_Category const & ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Error_Category && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Error_Category const & ) = delete;
+
+protected:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Error_Category() noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Error_Category() noexcept = default;
+};
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_ERROR_H
