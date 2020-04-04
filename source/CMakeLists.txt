@@ -49,6 +49,7 @@ if( ${PICOLIBRARY_TESTING_UNIT_ENABLED} )
         APPEND PICOLIBRARY_SOURCE_FILES
         "picolibrary/testing/unit.cc"
         "picolibrary/testing/unit/error.cc"
+        "picolibrary/testing/unit/random.cc"
     )
     list(
         APPEND PICOLIBRARY_LINK_LIBRARIES

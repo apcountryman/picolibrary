@@ -26,6 +26,7 @@
 
 #include "gmock/gmock.h"
 #include "picolibrary/error.h"
+#include "picolibrary/testing/unit/random.h"
 
 namespace picolibrary::Testing::Unit {
 
@@ -33,6 +34,17 @@ namespace picolibrary::Testing::Unit {
  * \brief Mock errors.
  */
 enum class Mock_Error : Error_ID {};
+
+/**
+ * \brief Generate a pseudo-random picolibrary::Testing::Unit::Mock_Error.
+ *
+ * \return A pseudo-randomly generated picolibrary::Testing::Unit::Mock_Error.
+ */
+template<>
+inline auto random<Mock_Error>()
+{
+    return static_cast<Mock_Error>( random<Error_ID>() );
+}
 
 } // namespace picolibrary::Testing::Unit
 
