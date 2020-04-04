@@ -78,6 +78,13 @@ public:
      */
     auto operator=( Error_Category const & ) = delete;
 
+    /**
+     * \brief Get the name of the error category.
+     *
+     * \return The name of the error category.
+     */
+    virtual auto name() const noexcept -> char const * = 0;
+
 protected:
     /**
      * \brief Constructor.
