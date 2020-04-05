@@ -22,6 +22,22 @@
 #include "gmock/gmock.h"
 #include "picolibrary/error.h"
 
+namespace {
+
+using ::picolibrary::Error_Code;
+
+} // namespace
+
+/**
+ * \brief Verify picolibrary::Error_Code::Error_Code() works properly.
+ */
+TEST( constructorDefault, worksProperly )
+{
+    auto const error = Error_Code{};
+
+    EXPECT_FALSE( error );
+}
+
 /**
  * \brief Execute the picolibrary::Error_Code unit tests.
  *

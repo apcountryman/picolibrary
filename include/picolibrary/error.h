@@ -152,6 +152,18 @@ class Error_Code {
      * \return The assigned to object.
      */
     constexpr auto operator=( Error_Code const & expression ) noexcept -> Error_Code & = default;
+
+    /**
+     * \brief Check if the picolibrary::Error_Code identifies as an error (i.e. was not
+     *        default constructed, and was not constructed from picolibrary::Void).
+     *
+     * \return true if the picolibrary::Error_Code identifies as an error.
+     * \return false if the picolibrary::Error_Code does not identify as an error.
+     */
+    explicit operator bool() const noexcept
+    {
+        return false;
+    }
 };
 
 } // namespace picolibrary
