@@ -21,10 +21,12 @@
 
 #include "gmock/gmock.h"
 #include "picolibrary/error.h"
+#include "picolibrary/utility.h"
 
 namespace {
 
 using ::picolibrary::Error_Code;
+using ::picolibrary::Void;
 
 } // namespace
 
@@ -34,6 +36,20 @@ using ::picolibrary::Error_Code;
 TEST( constructorDefault, worksProperly )
 {
     auto const error = Error_Code{};
+
+    EXPECT_FALSE( error );
+    EXPECT_NE( &error.category(), nullptr );
+    EXPECT_STREQ( error.category().name(), "::picolibrary::Default_Error" );
+    EXPECT_EQ( error.id(), 0 );
+    EXPECT_STREQ( error.description(), "NONE" );
+}
+
+/**
+ * \brief Verify picolibrary::Error_Code::Error_Code( picolibrary::Void ) works properly.
+ */
+TEST( constructorVoid, worksProperly )
+{
+    auto const error = Error_Code{Void{}};
 
     EXPECT_FALSE( error );
     EXPECT_NE( &error.category(), nullptr );

@@ -25,6 +25,8 @@
 #include <cstdint>
 #include <type_traits>
 
+#include "picolibrary/utility.h"
+
 namespace picolibrary {
 
 /**
@@ -115,6 +117,13 @@ class Error_Code {
      * \brief Constructor.
      */
     constexpr Error_Code() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Error_Code( Void ) noexcept
+    {
+    }
 
     /**
      * \brief Constructor.
