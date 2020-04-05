@@ -68,7 +68,7 @@ SpaceAfterTemplateKeyword: false
 SpacesInAngles: false
 
 # classes/structs
-AccessModifierOffset: -4
+AccessModifierOffset: -2
 BreakBeforeInheritanceComma: true
 BreakConstructorInitializers: AfterColon
 ConstructorInitializerAllOnOneLineOrOnePerLine: true

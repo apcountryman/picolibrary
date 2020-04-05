@@ -65,7 +65,7 @@ namespace picolibrary::Testing::Unit {
  * \brief Mock error category.
  */
 class Mock_Error_Category : public Error_Category {
-public:
+  public:
     /**
      * \brief Constructor.
      */

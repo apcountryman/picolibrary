@@ -53,7 +53,7 @@ constexpr auto is_error_code_enum_v = is_error_code_enum<Enum>::value;
  * \brief Error category.
  */
 class Error_Category {
-public:
+  public:
     /**
      * \todo #29
      */
@@ -94,7 +94,7 @@ public:
      */
     virtual auto error_description( Error_ID id ) const noexcept -> char const * = 0;
 
-protected:
+  protected:
     /**
      * \brief Constructor.
      */
@@ -110,7 +110,7 @@ protected:
  * \brief Error code.
  */
 class Error_Code {
-public:
+  public:
     /**
      * \brief Constructor.
      */
