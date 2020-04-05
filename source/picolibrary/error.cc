@@ -20,3 +20,9 @@
  */
 
 #include "picolibrary/error.h"
+
+namespace picolibrary {
+
+Error_Code::Default_Error_Category const Error_Code::Default_Error_Category::INSTANCE{};
+
+} // namespace picolibrary

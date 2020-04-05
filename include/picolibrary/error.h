@@ -164,6 +164,91 @@ class Error_Code {
     {
         return false;
     }
+
+    /**
+     * \brief Get the error's category.
+     *
+     * \return The error's category.
+     */
+    auto const & category() const noexcept
+    {
+        return Default_Error_Category::instance();
+    }
+
+  private:
+    /**
+     * \brief Default error category.
+     */
+    class Default_Error_Category : public Error_Category {
+      public:
+        /**
+         * \brief Get a reference to the default error category instance.
+         *
+         * \return A reference to the default error category instance.
+         */
+        static auto instance() noexcept -> Default_Error_Category const &
+        {
+            return INSTANCE;
+        }
+
+        /**
+         * \todo #29
+         */
+        Default_Error_Category( Default_Error_Category && ) = delete;
+
+        /**
+         * \todo #29
+         */
+        Default_Error_Category( Default_Error_Category const & ) = delete;
+
+        /**
+         * \todo #29
+         *
+         * \return
+         */
+        auto operator=( Default_Error_Category && ) = delete;
+
+        /**
+         * \todo #29
+         *
+         * \return
+         */
+        auto operator=( Default_Error_Category const & ) = delete;
+
+        /**
+         * \copydoc picolibrary::Error_Category::name()
+         */
+        virtual auto name() const noexcept -> char const * override final
+        {
+            return "::picolibrary::Default_Error";
+        }
+
+        /**
+         * \copydoc picolibrary::Error_Category::error_description()
+         */
+        virtual auto error_description( Error_ID id ) const noexcept -> char const * override final
+        {
+            static_cast<void>( id );
+
+            return nullptr;
+        }
+
+      private:
+        /**
+         * \brief The default error category instance.
+         */
+        static Default_Error_Category const INSTANCE;
+
+        /**
+         * \brief Constructor.
+         */
+        constexpr Default_Error_Category() noexcept = default;
+
+        /**
+         * \brief Destructor.
+         */
+        ~Default_Error_Category() noexcept = default;
+    };
 };
 
 } // namespace picolibrary
