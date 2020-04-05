@@ -175,6 +175,16 @@ class Error_Code {
         return Default_Error_Category::instance();
     }
 
+    /**
+     * \brief Get the error's ID.
+     *
+     * \return The error's ID.
+     */
+    auto id() const noexcept
+    {
+        return Error_ID{};
+    }
+
   private:
     /**
      * \brief Default error category.

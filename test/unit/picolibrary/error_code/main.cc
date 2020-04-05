@@ -38,6 +38,7 @@ TEST( constructorDefault, worksProperly )
     EXPECT_FALSE( error );
     EXPECT_NE( &error.category(), nullptr );
     EXPECT_STREQ( error.category().name(), "::picolibrary::Default_Error" );
+    EXPECT_EQ( error.id(), 0 );
 }
 
 /**
