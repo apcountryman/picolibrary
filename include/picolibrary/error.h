@@ -106,6 +106,54 @@ protected:
     ~Error_Category() noexcept = default;
 };
 
+/**
+ * \brief Error code.
+ */
+class Error_Code {
+public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Error_Code() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Error_Code( Error_Code && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Error_Code( Error_Code const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Error_Code() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Error_Code && expression ) noexcept -> Error_Code & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Error_Code const & expression ) noexcept -> Error_Code & = default;
+};
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_ERROR_H
