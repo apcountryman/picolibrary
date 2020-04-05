@@ -185,6 +185,16 @@ class Error_Code {
         return Error_ID{};
     }
 
+    /**
+     * \brief Get the error's description.
+     *
+     * \return The error's description.
+     */
+    auto description() const noexcept
+    {
+        return Default_Error_Category::instance().error_description( {} );
+    }
+
   private:
     /**
      * \brief Default error category.
@@ -240,7 +250,7 @@ class Error_Code {
         {
             static_cast<void>( id );
 
-            return nullptr;
+            return "NONE";
         }
 
       private:
