@@ -26,6 +26,7 @@
 #include <cstddef>
 #include <limits>
 #include <random>
+#include <string>
 
 namespace picolibrary::Testing::Unit {
 
@@ -116,6 +117,23 @@ auto random_container( std::size_t size = random<std::uint_fast8_t>() )
     } );
 
     return container;
+}
+
+/**
+ * \brief Generate a pseudo-random std::string of the specified length.
+ *
+ * \param[in] length The length of the generated std::string.
+ *
+ * \return A pseudo-random std::string of the specified length.
+ */
+template<>
+auto random_container<std::string>( std::size_t length )
+{
+    auto string = std::string( length, ' ' );
+
+    std::generate( string.begin(), string.end(), []() { return random<char>(); } );
+
+    return string;
 }
 
 } // namespace picolibrary::Testing::Unit
