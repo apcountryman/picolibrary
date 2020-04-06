@@ -128,6 +128,18 @@ class Error_Code {
     /**
      * \brief Constructor.
      *
+     * \param[in] category The error's category.
+     * \param[in] id The error's ID.
+     */
+    constexpr Error_Code( Error_Category const & category, Error_ID id ) noexcept :
+        m_category{&category},
+        m_id{id}
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
      * \param[in] source The source of the move.
      */
     constexpr Error_Code( Error_Code && source ) noexcept = default;
@@ -169,9 +181,9 @@ class Error_Code {
      * \return true if the picolibrary::Error_Code identifies as an error.
      * \return false if the picolibrary::Error_Code does not identify as an error.
      */
-    explicit operator bool() const noexcept
+    constexpr explicit operator bool() const noexcept
     {
-        return false;
+        return m_category != &Default_Error_Category::instance();
     }
 
     /**
@@ -179,9 +191,9 @@ class Error_Code {
      *
      * \return The error's category.
      */
-    auto const & category() const noexcept
+    constexpr auto const & category() const noexcept
     {
-        return Default_Error_Category::instance();
+        return *m_category;
     }
 
     /**
@@ -189,9 +201,9 @@ class Error_Code {
      *
      * \return The error's ID.
      */
-    auto id() const noexcept
+    constexpr auto id() const noexcept
     {
-        return Error_ID{};
+        return m_id;
     }
 
     /**
@@ -201,7 +213,7 @@ class Error_Code {
      */
     auto description() const noexcept
     {
-        return Default_Error_Category::instance().error_description( {} );
+        return category().error_description( id() );
     }
 
   private:
@@ -215,7 +227,7 @@ class Error_Code {
          *
          * \return A reference to the default error category instance.
          */
-        static auto instance() noexcept -> Default_Error_Category const &
+        static constexpr auto instance() noexcept -> Default_Error_Category const &
         {
             return INSTANCE;
         }
@@ -278,6 +290,16 @@ class Error_Code {
          */
         ~Default_Error_Category() noexcept = default;
     };
+
+    /**
+     * \brief The error's category.
+     */
+    Error_Category const * m_category{&Default_Error_Category::instance()};
+
+    /**
+     * \brief The error's ID.
+     */
+    Error_ID m_id{};
 };
 
 } // namespace picolibrary

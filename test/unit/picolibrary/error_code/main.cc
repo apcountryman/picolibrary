@@ -19,14 +19,24 @@
  * \brief picolibrary::Error_Code unit test program.
  */
 
+#include <string>
+
 #include "gmock/gmock.h"
+#include "gtest/gtest.h"
 #include "picolibrary/error.h"
+#include "picolibrary/testing/unit/error.h"
+#include "picolibrary/testing/unit/random.h"
 #include "picolibrary/utility.h"
 
 namespace {
 
 using ::picolibrary::Error_Code;
+using ::picolibrary::Error_ID;
 using ::picolibrary::Void;
+using ::picolibrary::Testing::Unit::Mock_Error_Category;
+using ::picolibrary::Testing::Unit::random;
+using ::picolibrary::Testing::Unit::random_container;
+using ::testing::Return;
 
 } // namespace
 
@@ -56,6 +66,27 @@ TEST( constructorVoid, worksProperly )
     EXPECT_STREQ( error.category().name(), "::picolibrary::Default_Error" );
     EXPECT_EQ( error.id(), 0 );
     EXPECT_STREQ( error.description(), "NONE" );
+}
+
+/**
+ * \brief Verify picolibrary::Error_Code::Error_Code( picolibrary::Error_Category const &,
+ *        picolibrary::Error_ID ) works properly.
+ */
+TEST( constuctorCategoryID, worksProperly )
+{
+    auto const category = Mock_Error_Category{};
+    auto const id       = random<Error_ID>();
+
+    auto const error = Error_Code{category, id};
+
+    auto const description = random_container<std::string>();
+
+    EXPECT_CALL( category, error_description( id ) ).WillOnce( Return( description.c_str() ) );
+
+    EXPECT_TRUE( error );
+    EXPECT_EQ( &error.category(), &category );
+    EXPECT_EQ( error.id(), id );
+    EXPECT_STREQ( error.description(), description.c_str() );
 }
 
 /**
