@@ -22,6 +22,8 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_RANDOM_H
 #define PICOLIBRARY_TESTING_UNIT_RANDOM_H
 
+#include <algorithm>
+#include <cstddef>
 #include <limits>
 #include <random>
 
@@ -82,6 +84,27 @@ template<typename T>
 auto random()
 {
     return random<T>( std::numeric_limits<T>::min(), std::numeric_limits<T>::max() );
+}
+
+/**
+ * \brief Generate a pseudo-random standard container of the specified size.
+ *
+ * \tparam Container The type of standard container to generate.
+ *
+ * \param[in] size The size of the generated standard container.
+ *
+ * \return A pseudo-random standard container of the specified size.
+ */
+template<typename Container>
+auto random_container( std::size_t size = random<std::uint_fast8_t>() )
+{
+    auto container = Container( size );
+
+    std::generate( container.begin(), container.end(), []() {
+        return random<typename Container::value_type>();
+    } );
+
+    return container;
 }
 
 } // namespace picolibrary::Testing::Unit
