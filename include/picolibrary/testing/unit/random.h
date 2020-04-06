@@ -87,6 +87,17 @@ auto random()
 }
 
 /**
+ * \brief Generate a pseudo-random char in the range [' ','~'].
+ *
+ * \return A pseudo-random char in the range [' ','~'].
+ */
+template<>
+inline auto random<char>()
+{
+    return random<char>( ' ', '~' );
+}
+
+/**
  * \brief Generate a pseudo-random standard container of the specified size.
  *
  * \tparam Container The type of standard container to generate.
