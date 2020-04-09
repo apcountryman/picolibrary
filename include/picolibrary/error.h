@@ -140,6 +140,31 @@ class Error_Code {
     /**
      * \brief Constructor.
      *
+     * \tparam Error_Code_Enum The type of error code enum to construct from.
+     *
+     * \attention Error_Code_Enum must have been registered as an error code enum by
+     *            specializing picolibrary::is_error_code_enum for this constructor to be
+     *            considered during overload resolution.
+     * \attention Error_Code_Enum's underlying integer type must be picolibrary::Error_ID.
+     * \attention An error code builder with the following name and signature must be
+     *            provided:
+     * \code
+     * picolibrary::Error_Code make_error_code( Error_Code_Enum );
+     * \endcode
+     *
+     * \param[in] error The error.
+     */
+    template<typename Error_Code_Enum, typename = std::enable_if_t<is_error_code_enum_v<Error_Code_Enum>>>
+    Error_Code( Error_Code_Enum error ) noexcept
+    {
+        static_assert( std::is_same_v<std::underlying_type_t<Error_Code_Enum>, Error_ID> );
+
+        *this = make_error_code( error );
+    }
+
+    /**
+     * \brief Constructor.
+     *
      * \param[in] source The source of the move.
      */
     constexpr Error_Code( Error_Code && source ) noexcept = default;

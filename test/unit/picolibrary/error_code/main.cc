@@ -33,6 +33,7 @@ namespace {
 using ::picolibrary::Error_Code;
 using ::picolibrary::Error_ID;
 using ::picolibrary::Void;
+using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::Mock_Error_Category;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::random_container;
@@ -85,6 +86,26 @@ TEST( constuctorCategoryID, worksProperly )
 
     EXPECT_TRUE( error );
     EXPECT_EQ( &error.category(), &category );
+    EXPECT_EQ( error.id(), id );
+    EXPECT_STREQ( error.description(), description.c_str() );
+}
+
+/**
+ * \brief Verify picolibrary::Error_Code::Error_Code( Error_Code_Enum ) works properly.
+ */
+TEST( constructorErrorCodeEnum, worksProperly )
+{
+    auto const id = random<Error_ID>();
+
+    auto const error = Error_Code{static_cast<Mock_Error>( id )};
+
+    auto const description = random_container<std::string>();
+
+    EXPECT_CALL( Mock_Error_Category::instance(), error_description( id ) )
+        .WillOnce( Return( description.c_str() ) );
+
+    EXPECT_TRUE( error );
+    EXPECT_EQ( &error.category(), &Mock_Error_Category::instance() );
     EXPECT_EQ( error.id(), id );
     EXPECT_STREQ( error.description(), description.c_str() );
 }

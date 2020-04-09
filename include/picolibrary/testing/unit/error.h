@@ -46,26 +46,23 @@ inline auto random<Mock_Error>()
     return static_cast<Mock_Error>( random<Error_ID>() );
 }
 
-} // namespace picolibrary::Testing::Unit
-
-namespace picolibrary {
-
-/**
- * \brief picolibrary::Testing::Unit::Mock_Error error code enum registration.
- */
-template<>
-struct is_error_code_enum<Testing::Unit::Mock_Error> : std::true_type {
-};
-
-} // namespace picolibrary
-
-namespace picolibrary::Testing::Unit {
-
 /**
  * \brief Mock error category.
  */
 class Mock_Error_Category : public Error_Category {
   public:
+    /**
+     * \brief Get a reference to the mock error category instance.
+     *
+     * \return A reference to the mock error category instance.
+     */
+    static auto const & instance()
+    {
+        static auto category = Mock_Error_Category{};
+
+        return category;
+    }
+
     /**
      * \brief Constructor.
      */
@@ -105,6 +102,29 @@ class Mock_Error_Category : public Error_Category {
     MOCK_METHOD( char const *, error_description, ( Error_ID ), ( const, noexcept, override, final ) );
 };
 
+/**
+ * \brief Build an error code from a mock error.
+ *
+ * \param[in] error The mock error to build the error code from.
+ *
+ * \return The built error code.
+ */
+inline auto make_error_code( Mock_Error error ) noexcept
+{
+    return Error_Code{Mock_Error_Category::instance(), static_cast<Error_ID>( error )};
+}
+
 } // namespace picolibrary::Testing::Unit
+
+namespace picolibrary {
+
+/**
+ * \brief picolibrary::Testing::Unit::Mock_Error error code enum registration.
+ */
+template<>
+struct is_error_code_enum<Testing::Unit::Mock_Error> : std::true_type {
+};
+
+} // namespace picolibrary
 
 #endif // PICOLIBRARY_TESTING_UNIT_ERROR_H
