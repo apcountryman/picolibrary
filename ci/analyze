@@ -112,7 +112,7 @@ function run_clang-tidy()
 
 function run_lizard()
 {
-    local source_files; mapfile -t source_files < <( git -C "$repository" ls-files '*.h' '*.cc' '*.cc.in' | xargs -r -d '\n' -I '{}' echo "$repository/{}" ); readonly source_files
+    local source_files; mapfile -t source_files < <( git -C "$repository" ls-files '*.h' '*.cc' '*.cc.in' ':!:test/' | xargs -r -d '\n' -I '{}' echo "$repository/{}" ); readonly source_files
 
     local -r lizard_options=(
         "--languages" "cpp"
