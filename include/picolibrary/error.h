@@ -327,6 +327,22 @@ class Error_Code {
     Error_ID m_id{};
 };
 
+/**
+ * \brief Equality operator.
+ *
+ * \relatedalso picolibrary::Error_Code
+ *
+ * \param[in] lhs The left hand side of the comparison.
+ * \param[in] rhs The right hand side of the comparison.
+ *
+ * \return true if lhs is equal to rhs.
+ * \return false if lhs is not equal to rhs.
+ */
+constexpr auto operator==( Error_Code const & lhs, Error_Code const & rhs ) noexcept
+{
+    return &lhs.category() == &rhs.category() and lhs.id() == rhs.id();
+}
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_ERROR_H
