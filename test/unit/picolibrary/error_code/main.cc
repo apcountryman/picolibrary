@@ -20,6 +20,7 @@
  */
 
 #include <string>
+#include <utility>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -38,6 +39,19 @@ using ::picolibrary::Testing::Unit::Mock_Error_Category;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::random_container;
 using ::testing::Return;
+
+/**
+ * \brief Generate a pair of pseudo-random, unique error IDs.
+ *
+ * \return A pair of pseudo-random, unique error IDs.
+ */
+auto random_unique_id_pair()
+{
+    auto const a = random<Error_ID>();
+    auto const b = random<Error_ID>();
+
+    return std::pair<Error_ID, Error_ID>{ a, b != a ? b : b ^ random<Error_ID>( 1 ) };
+}
 
 } // namespace
 
@@ -124,9 +138,8 @@ TEST( equalityOperator, worksProperly )
     }
 
     {
-        auto const category = Mock_Error_Category{};
-        auto const lhs_id   = random<Error_ID>();
-        auto const rhs_id   = random<Error_ID>();
+        auto const category           = Mock_Error_Category{};
+        auto const [ lhs_id, rhs_id ] = random_unique_id_pair();
 
         EXPECT_FALSE( ( Error_Code{ category, lhs_id } ) == ( Error_Code{ category, rhs_id } ) );
     }
@@ -140,10 +153,9 @@ TEST( equalityOperator, worksProperly )
     }
 
     {
-        auto const lhs_category = Mock_Error_Category{};
-        auto const rhs_category = Mock_Error_Category{};
-        auto const lhs_id       = random<Error_ID>();
-        auto const rhs_id       = random<Error_ID>();
+        auto const lhs_category       = Mock_Error_Category{};
+        auto const rhs_category       = Mock_Error_Category{};
+        auto const [ lhs_id, rhs_id ] = random_unique_id_pair();
 
         EXPECT_FALSE( ( Error_Code{ lhs_category, lhs_id } ) == ( Error_Code{ rhs_category, rhs_id } ) );
     }
@@ -163,9 +175,8 @@ TEST( inequalityOperator, worksProperly )
     }
 
     {
-        auto const category = Mock_Error_Category{};
-        auto const lhs_id   = random<Error_ID>();
-        auto const rhs_id   = random<Error_ID>();
+        auto const category           = Mock_Error_Category{};
+        auto const [ lhs_id, rhs_id ] = random_unique_id_pair();
 
         EXPECT_TRUE( ( Error_Code{ category, lhs_id } ) != ( Error_Code{ category, rhs_id } ) );
     }
@@ -179,10 +190,9 @@ TEST( inequalityOperator, worksProperly )
     }
 
     {
-        auto const lhs_category = Mock_Error_Category{};
-        auto const rhs_category = Mock_Error_Category{};
-        auto const lhs_id       = random<Error_ID>();
-        auto const rhs_id       = random<Error_ID>();
+        auto const lhs_category       = Mock_Error_Category{};
+        auto const rhs_category       = Mock_Error_Category{};
+        auto const [ lhs_id, rhs_id ] = random_unique_id_pair();
 
         EXPECT_TRUE( ( Error_Code{ lhs_category, lhs_id } ) != ( Error_Code{ rhs_category, rhs_id } ) );
     }
