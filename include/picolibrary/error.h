@@ -132,8 +132,8 @@ class Error_Code {
      * \param[in] id The error's ID.
      */
     constexpr Error_Code( Error_Category const & category, Error_ID id ) noexcept :
-        m_category{&category},
-        m_id{id}
+        m_category{ &category },
+        m_id{ id }
     {
     }
 
@@ -319,7 +319,7 @@ class Error_Code {
     /**
      * \brief The error's category.
      */
-    Error_Category const * m_category{&Default_Error_Category::instance()};
+    Error_Category const * m_category{ &Default_Error_Category::instance() };
 
     /**
      * \brief The error's ID.

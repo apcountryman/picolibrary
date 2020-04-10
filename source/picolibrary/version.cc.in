@@ -23,6 +23,6 @@
 
 namespace picolibrary {
 
-char const * const VERSION{"@PICOLIBRARY_VERSION@"};
+char const * const VERSION{ "@PICOLIBRARY_VERSION@" };
 
 } // namespace picolibrary

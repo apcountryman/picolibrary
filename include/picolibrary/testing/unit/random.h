@@ -37,7 +37,7 @@ namespace picolibrary::Testing::Unit {
  */
 auto & pseudo_random_number_generator()
 {
-    static auto generator = std::mt19937{std::random_device{}()};
+    static auto generator = std::mt19937{ std::random_device{}() };
 
     return generator;
 }
@@ -55,7 +55,7 @@ auto & pseudo_random_number_generator()
 template<typename T>
 auto random( T min, T max )
 {
-    return std::uniform_int_distribution<T>{min, max}( pseudo_random_number_generator() );
+    return std::uniform_int_distribution<T>{ min, max }( pseudo_random_number_generator() );
 }
 
 /**

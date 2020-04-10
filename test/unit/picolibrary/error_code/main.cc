@@ -60,7 +60,7 @@ TEST( constructorDefault, worksProperly )
  */
 TEST( constructorVoid, worksProperly )
 {
-    auto const error = Error_Code{Void{}};
+    auto const error = Error_Code{ Void{} };
 
     EXPECT_FALSE( error );
     EXPECT_NE( &error.category(), nullptr );
@@ -78,7 +78,7 @@ TEST( constuctorCategoryID, worksProperly )
     auto const category = Mock_Error_Category{};
     auto const id       = random<Error_ID>();
 
-    auto const error = Error_Code{category, id};
+    auto const error = Error_Code{ category, id };
 
     auto const description = random_container<std::string>();
 
@@ -97,7 +97,7 @@ TEST( constructorErrorCodeEnum, worksProperly )
 {
     auto const id = random<Error_ID>();
 
-    auto const error = Error_Code{static_cast<Mock_Error>( id )};
+    auto const error = Error_Code{ static_cast<Mock_Error>( id ) };
 
     auto const description = random_container<std::string>();
 
@@ -120,7 +120,7 @@ TEST( equalityOperator, worksProperly )
         auto const category = Mock_Error_Category{};
         auto const id       = random<Error_ID>();
 
-        EXPECT_TRUE( ( Error_Code{category, id} ) == ( Error_Code{category, id} ) );
+        EXPECT_TRUE( ( Error_Code{ category, id } ) == ( Error_Code{ category, id } ) );
     }
 
     {
@@ -128,7 +128,7 @@ TEST( equalityOperator, worksProperly )
         auto const lhs_id   = random<Error_ID>();
         auto const rhs_id   = random<Error_ID>();
 
-        EXPECT_FALSE( ( Error_Code{category, lhs_id} ) == ( Error_Code{category, rhs_id} ) );
+        EXPECT_FALSE( ( Error_Code{ category, lhs_id } ) == ( Error_Code{ category, rhs_id } ) );
     }
 
     {
@@ -136,7 +136,7 @@ TEST( equalityOperator, worksProperly )
         auto const rhs_category = Mock_Error_Category{};
         auto const id           = random<Error_ID>();
 
-        EXPECT_FALSE( ( Error_Code{lhs_category, id} ) == ( Error_Code{rhs_category, id} ) );
+        EXPECT_FALSE( ( Error_Code{ lhs_category, id } ) == ( Error_Code{ rhs_category, id } ) );
     }
 
     {
@@ -145,7 +145,7 @@ TEST( equalityOperator, worksProperly )
         auto const lhs_id       = random<Error_ID>();
         auto const rhs_id       = random<Error_ID>();
 
-        EXPECT_FALSE( ( Error_Code{lhs_category, lhs_id} ) == ( Error_Code{rhs_category, rhs_id} ) );
+        EXPECT_FALSE( ( Error_Code{ lhs_category, lhs_id } ) == ( Error_Code{ rhs_category, rhs_id } ) );
     }
 }
 
