@@ -343,6 +343,22 @@ constexpr auto operator==( Error_Code const & lhs, Error_Code const & rhs ) noex
     return &lhs.category() == &rhs.category() and lhs.id() == rhs.id();
 }
 
+/**
+ * \brief Inequality operator.
+ *
+ * \relatedalso picolibrary::Error_Code
+ *
+ * \param[in] lhs The left hand side of the comparison.
+ * \param[in] rhs The right hand side of the comparison.
+ *
+ * \return true if lhs is not equal to rhs.
+ * \return false if lhs is equal to rhs.
+ */
+constexpr auto operator!=( Error_Code const & lhs, Error_Code const & rhs ) noexcept
+{
+    return not ( lhs == rhs );
+}
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_ERROR_H

@@ -150,6 +150,45 @@ TEST( equalityOperator, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::operator!=( picolibrary::Error_Code const &,
+ *        picolibrary::Error_Code const & ) works properly.
+ */
+TEST( inequalityOperator, worksProperly )
+{
+    {
+        auto const category = Mock_Error_Category{};
+        auto const id       = random<Error_ID>();
+
+        EXPECT_FALSE( ( Error_Code{ category, id } ) != ( Error_Code{ category, id } ) );
+    }
+
+    {
+        auto const category = Mock_Error_Category{};
+        auto const lhs_id   = random<Error_ID>();
+        auto const rhs_id   = random<Error_ID>();
+
+        EXPECT_TRUE( ( Error_Code{ category, lhs_id } ) != ( Error_Code{ category, rhs_id } ) );
+    }
+
+    {
+        auto const lhs_category = Mock_Error_Category{};
+        auto const rhs_category = Mock_Error_Category{};
+        auto const id           = random<Error_ID>();
+
+        EXPECT_TRUE( ( Error_Code{ lhs_category, id } ) != ( Error_Code{ rhs_category, id } ) );
+    }
+
+    {
+        auto const lhs_category = Mock_Error_Category{};
+        auto const rhs_category = Mock_Error_Category{};
+        auto const lhs_id       = random<Error_ID>();
+        auto const rhs_id       = random<Error_ID>();
+
+        EXPECT_TRUE( ( Error_Code{ lhs_category, lhs_id } ) != ( Error_Code{ rhs_category, rhs_id } ) );
+    }
+}
+
+/**
  * \brief Execute the picolibrary::Error_Code unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
