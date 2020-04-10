@@ -356,7 +356,7 @@ constexpr auto operator==( Error_Code const & lhs, Error_Code const & rhs ) noex
  */
 constexpr auto operator!=( Error_Code const & lhs, Error_Code const & rhs ) noexcept
 {
-    return not ( lhs == rhs );
+    return not( lhs == rhs );
 }
 
 } // namespace picolibrary
