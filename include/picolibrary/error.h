@@ -368,6 +368,80 @@ enum class Generic_Error : Error_ID {
     OPERATION_TIMEOUT,     ///< Operation timeout
 };
 
+/**
+ * \brief Generic error category.
+ */
+class Generic_Error_Category : public Error_Category {
+  public:
+    /**
+     * \brief Get a reference to the generic error category instance.
+     *
+     * \return A reference to the generic error category instance.
+     */
+    static constexpr auto const & instance() noexcept
+    {
+        return INSTANCE;
+    }
+
+    /**
+     * \todo #29
+     */
+    Generic_Error_Category( Generic_Error_Category && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    Generic_Error_Category( Generic_Error_Category const & ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Generic_Error_Category && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Generic_Error_Category const & ) = delete;
+
+    /**
+     * \copydoc picolibrary::Error_Category::name()
+     */
+    virtual auto name() const noexcept -> char const * override final
+    {
+        return nullptr;
+    }
+
+    /**
+     * \copydoc picolibrary::Error_Category::error_description()
+     */
+    virtual auto error_description( Error_ID id ) const noexcept -> char const * override final
+    {
+        static_cast<void>( id );
+
+        return nullptr;
+    }
+
+  private:
+    /**
+     * \brief The default error category instance.
+     */
+    static Generic_Error_Category const INSTANCE;
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Generic_Error_Category() noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Generic_Error_Category() noexcept = default;
+};
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_ERROR_H

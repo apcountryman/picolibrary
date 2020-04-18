@@ -25,4 +25,6 @@ namespace picolibrary {
 
 Error_Code::Default_Error_Category const Error_Code::Default_Error_Category::INSTANCE{};
 
+Generic_Error_Category const Generic_Error_Category::INSTANCE{};
+
 } // namespace picolibrary
