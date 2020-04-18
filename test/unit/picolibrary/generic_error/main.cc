@@ -22,6 +22,31 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/error.h"
+#include "picolibrary/testing/unit/random.h"
+
+namespace {
+
+using ::picolibrary::Error_Code;
+using ::picolibrary::Error_ID;
+using ::picolibrary::Generic_Error;
+using ::picolibrary::Generic_Error_Category;
+using ::picolibrary::Testing::Unit::random;
+
+} // namespace
+
+/**
+ * \brief Verify picolibrary::make_error_code( picolibrary::Generic_Error ) works
+ *        properly.
+ */
+TEST( makeErrorCode, worksProperly )
+{
+    auto const id = random<Error_ID>();
+
+    auto const error = Error_Code{ static_cast<Generic_Error>( id ) };
+
+    EXPECT_EQ( &error.category(), &Generic_Error_Category::instance() );
+    EXPECT_EQ( error.id(), id );
+}
 
 /**
  * \brief Execute the picolibrary::Generic_Error unit tests.

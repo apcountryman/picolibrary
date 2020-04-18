@@ -361,6 +361,8 @@ constexpr auto operator!=( Error_Code const & lhs, Error_Code const & rhs ) noex
 
 /**
  * \brief Generic errors.
+ *
+ * \relatedalso picolibrary::Generic_Error_Category
  */
 enum class Generic_Error : Error_ID {
     INVALID_ARGUMENT,      ///< Invalid argument
@@ -444,6 +446,29 @@ class Generic_Error_Category : public Error_Category {
      * \brief Destructor.
      */
     ~Generic_Error_Category() noexcept = default;
+};
+
+/**
+ * \brief Build an error code from a generic error.
+ *
+ * \relatedalso picolibrary::Generic_Error_Category
+ *
+ * \param[in] error The generic error to build the error code from.
+ *
+ * \return The built error code.
+ */
+inline auto make_error_code( Generic_Error error ) noexcept
+{
+    return Error_Code{ Generic_Error_Category::instance(), static_cast<Error_ID>( error ) };
+}
+
+/**
+ * \brief picolibrary::Generic_Error error code enum registration.
+ *
+ * \relatedalso picolibrary::Generic_Error_Category
+ */
+template<>
+struct is_error_code_enum<Generic_Error> : std::true_type {
 };
 
 } // namespace picolibrary
