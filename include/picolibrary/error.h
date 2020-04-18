@@ -359,6 +359,15 @@ constexpr auto operator!=( Error_Code const & lhs, Error_Code const & rhs ) noex
     return not( lhs == rhs );
 }
 
+/**
+ * \brief Generic errors.
+ */
+enum class Generic_Error : Error_ID {
+    INVALID_ARGUMENT,      ///< Invalid argument
+    UNSUPPORTED_OPERATION, ///< Unsupported operation
+    OPERATION_TIMEOUT,     ///< Operation timeout
+};
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_ERROR_H
