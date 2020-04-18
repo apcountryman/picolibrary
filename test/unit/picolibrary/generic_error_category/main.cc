@@ -25,9 +25,11 @@
 
 namespace {
 
+using ::picolibrary::Error_ID;
+using ::picolibrary::Generic_Error;
 using ::picolibrary::Generic_Error_Category;
 
-}
+} // namespace
 
 /**
  * \brief Verify picolibrary::Generic_Error_Category::name() works properly.
@@ -36,6 +38,33 @@ TEST( name, worksProperly )
 {
     EXPECT_STREQ(
         Generic_Error_Category::instance().name(), "::picolibrary::Generic_Error" );
+}
+
+/**
+ * \brief Verify picolibrary::Generic_Error_Category::error_description() works properly.
+ */
+TEST( errorDescription, worksProperly )
+{
+    struct {
+        Generic_Error id;
+        char const *  description;
+    } const test_cases[]{
+        { Generic_Error::INVALID_ARGUMENT, "INVALID_ARGUMENT" },
+        { Generic_Error::UNSUPPORTED_OPERATION, "UNSUPPORTED_OPERATION" },
+        { Generic_Error::OPERATION_TIMEOUT, "OPERATION_TIMEOUT" },
+    };
+
+    for ( auto const test_case : test_cases ) {
+        EXPECT_STREQ(
+            Generic_Error_Category::instance().error_description(
+                static_cast<Error_ID>( test_case.id ) ),
+            test_case.description );
+    } // for
+
+    EXPECT_STREQ(
+        Generic_Error_Category::instance().error_description(
+            static_cast<Error_ID>( Generic_Error::OPERATION_TIMEOUT ) + 1 ),
+        "UNKNOWN" );
 }
 
 /**

@@ -420,9 +420,13 @@ class Generic_Error_Category : public Error_Category {
      */
     virtual auto error_description( Error_ID id ) const noexcept -> char const * override final
     {
-        static_cast<void>( id );
+        switch ( static_cast<Generic_Error>( id ) ) {
+            case Generic_Error::INVALID_ARGUMENT: return "INVALID_ARGUMENT";
+            case Generic_Error::UNSUPPORTED_OPERATION: return "UNSUPPORTED_OPERATION";
+            case Generic_Error::OPERATION_TIMEOUT: return "OPERATION_TIMEOUT";
+        } // switch
 
-        return nullptr;
+        return "UNKNOWN";
     }
 
   private:
