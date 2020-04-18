@@ -412,7 +412,7 @@ class Generic_Error_Category : public Error_Category {
      */
     virtual auto name() const noexcept -> char const * override final
     {
-        return nullptr;
+        return "::picolibrary::Generic_Error";
     }
 
     /**

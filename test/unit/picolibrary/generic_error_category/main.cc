@@ -23,6 +23,21 @@
 #include "gtest/gtest.h"
 #include "picolibrary/error.h"
 
+namespace {
+
+using ::picolibrary::Generic_Error_Category;
+
+}
+
+/**
+ * \brief Verify picolibrary::Generic_Error_Category::name() works properly.
+ */
+TEST( name, worksProperly )
+{
+    EXPECT_STREQ(
+        Generic_Error_Category::instance().name(), "::picolibrary::Generic_Error" );
+}
+
 /**
  * \brief Execute the picolibrary::Generic_Error_Category unit tests.
  *
