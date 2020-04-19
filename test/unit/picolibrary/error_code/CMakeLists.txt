@@ -16,7 +16,7 @@
 # Description: picolibrary::Error_Code unit tests CMake rules.
 
 # build the picolibrary::Error_Code unit tests
-if( ${PICOLIBRARY_TESTING_UNIT_ENABLED} )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     add_executable(
         test-unit-picolibrary-error_code
         main.cc
@@ -29,4 +29,4 @@ if( ${PICOLIBRARY_TESTING_UNIT_ENABLED} )
         NAME    test-unit-picolibrary-error_code
         COMMAND test-unit-picolibrary-error_code --gtest_color=yes
     )
-endif( ${PICOLIBRARY_TESTING_UNIT_ENABLED} )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )

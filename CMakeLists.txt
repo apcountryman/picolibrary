@@ -23,14 +23,14 @@ project(
 
 # project configuration
 option( PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION "picolibrary: suppress human readable error information" OFF )
-option( PICOLIBRARY_TESTING_INTERACTIVE_ENABLED               "picolibrary: enable interactive testing"                OFF )
-option( PICOLIBRARY_TESTING_UNIT_ENABLED                      "picolibrary: enable unit testing"                       OFF )
+option( PICOLIBRARY_ENABLE_INTERACTIVE_TESTING                "picolibrary: enable interactive testing"                OFF )
+option( PICOLIBRARY_ENABLE_UNIT_TESTING                       "picolibrary: enable unit testing"                       OFF )
 option( PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS            "picolibrary: use parent project's build flags"          ON  )
 option( PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST            "picolibrary: use parent project's Google Test"          ON  )
 
-if( ${PICOLIBRARY_TESTING_UNIT_ENABLED} AND ${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION} )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} AND ${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION} )
     message( FATAL_ERROR "picolibrary unit tests require human readable error information" )
-endif( ${PICOLIBRARY_TESTING_UNIT_ENABLED} AND ${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION} )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} AND ${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION} )
 
 # load additional CMake modules
 list(
@@ -55,7 +55,7 @@ if( NOT ${PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS} )
         "
     )
 
-    if( ${PICOLIBRARY_TESTING_UNIT_ENABLED} )
+    if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
         set(
             CMAKE_CXX_FLAGS
             "${CMAKE_CXX_FLAGS} \
@@ -63,7 +63,7 @@ if( NOT ${PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS} )
             -fno-sanitize-recover=all \
             "
         )
-    endif( ${PICOLIBRARY_TESTING_UNIT_ENABLED} )
+    endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
 endif( NOT ${PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS} )
 
 # capture project version information
@@ -74,7 +74,7 @@ execute_git_command(
 )
 
 # configure Google Test
-if( ${PICOLIBRARY_TESTING_UNIT_ENABLED} AND NOT ${PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST} )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} AND NOT ${PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST} )
     set( BUILD_GMOCK   ON  CACHE BOOL "" FORCE )
     set( INSTALL_GTEST OFF CACHE BOOL "" FORCE )
     mark_as_advanced(
@@ -99,7 +99,7 @@ if( ${PICOLIBRARY_TESTING_UNIT_ENABLED} AND NOT ${PICOLIBRARY_USE_PARENT_PROJECT
     mark_as_advanced( gmock_build_tests )
 
     add_subdirectory( googletest )
-endif( ${PICOLIBRARY_TESTING_UNIT_ENABLED} AND NOT ${PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST} )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} AND NOT ${PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST} )
 
 # configure Doxygen
 find_package( Doxygen )
@@ -131,9 +131,9 @@ if( ${DOXYGEN_FOUND} )
 endif( ${DOXYGEN_FOUND} )
 
 # enable unit testing
-if( ${PICOLIBRARY_TESTING_UNIT_ENABLED} )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     enable_testing()
-endif( ${PICOLIBRARY_TESTING_UNIT_ENABLED} )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
 
 # build the library
 add_subdirectory( source )

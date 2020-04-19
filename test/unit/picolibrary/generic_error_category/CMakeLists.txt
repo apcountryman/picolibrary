@@ -16,7 +16,7 @@
 # Description: picolibrary::Generic_Error_Category unit tests CMake rules.
 
 # build the picolibrary::Generic_Error_Category unit tests
-if( ${PICOLIBRARY_TESTING_UNIT_ENABLED} )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     add_executable(
         test-unit-picolibrary-generic_error_category
         main.cc
@@ -29,4 +29,4 @@ if( ${PICOLIBRARY_TESTING_UNIT_ENABLED} )
         NAME    test-unit-picolibrary-generic_error_category
         COMMAND test-unit-picolibrary-generic_error_category --gtest_color=yes
     )
-endif( ${PICOLIBRARY_TESTING_UNIT_ENABLED} )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
