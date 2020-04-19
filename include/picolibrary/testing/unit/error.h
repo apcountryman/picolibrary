@@ -32,11 +32,15 @@ namespace picolibrary::Testing::Unit {
 
 /**
  * \brief Mock errors.
+ *
+ * \relatedalso picolibrary::Testing::Unit::Mock_Error_Category
  */
 enum class Mock_Error : Error_ID {};
 
 /**
  * \brief Generate a pseudo-random picolibrary::Testing::Unit::Mock_Error.
+ *
+ * \relatedalso picolibrary::Testing::Unit::Mock_Error_Category
  *
  * \return A pseudo-randomly generated picolibrary::Testing::Unit::Mock_Error.
  */
@@ -99,11 +103,13 @@ class Mock_Error_Category : public Error_Category {
 
     MOCK_METHOD( char const *, name, (), ( const, noexcept, override ) );
 
-    MOCK_METHOD( char const *, error_description, ( Error_ID ), ( const, noexcept, override, final ) );
+    MOCK_METHOD( char const *, error_description, ( Error_ID ), ( const, noexcept, override ) );
 };
 
 /**
  * \brief Build an error code from a mock error.
+ *
+ * \relatedalso picolibrary::Testing::Unit::Mock_Error_Category
  *
  * \param[in] error The mock error to build the error code from.
  *
@@ -120,6 +126,8 @@ namespace picolibrary {
 
 /**
  * \brief picolibrary::Testing::Unit::Mock_Error error code enum registration.
+ *
+ * \relatedalso picolibrary::Testing::Unit::Mock_Error_Category
  */
 template<>
 struct is_error_code_enum<Testing::Unit::Mock_Error> : std::true_type {

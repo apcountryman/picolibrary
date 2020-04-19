@@ -80,7 +80,6 @@ class Error_Category {
      */
     auto operator=( Error_Category const & ) = delete;
 
-#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
     /**
      * \brief Get the name of the error category.
      *
@@ -89,6 +88,7 @@ class Error_Category {
      * \return An empty string if PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION is
      *         defined.
      */
+#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
     virtual auto name() const noexcept -> char const * = 0;
 #else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
     auto const * name() const noexcept
@@ -97,7 +97,6 @@ class Error_Category {
     }
 #endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
 
-#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
     /**
      * \brief Get an error ID's description.
      *
@@ -108,6 +107,7 @@ class Error_Category {
      * \return An empty string if PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION is
      *         defined.
      */
+#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
     virtual auto error_description( Error_ID id ) const noexcept -> char const * = 0;
 #else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
     auto const * error_description( Error_ID id ) const noexcept
@@ -463,7 +463,7 @@ class Generic_Error_Category final : public Error_Category {
 
   private:
     /**
-     * \brief The default error category instance.
+     * \brief The generic error category instance.
      */
     static Generic_Error_Category const INSTANCE;
 
