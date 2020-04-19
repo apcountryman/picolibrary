@@ -267,7 +267,7 @@ class Error_Code {
     /**
      * \brief Default error category.
      */
-    class Default_Error_Category : public Error_Category {
+    class Default_Error_Category final : public Error_Category {
       public:
         /**
          * \brief Get a reference to the default error category instance.
@@ -399,7 +399,7 @@ enum class Generic_Error : Error_ID {
 /**
  * \brief Generic error category.
  */
-class Generic_Error_Category : public Error_Category {
+class Generic_Error_Category final : public Error_Category {
   public:
     /**
      * \brief Get a reference to the generic error category instance.
