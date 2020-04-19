@@ -66,6 +66,10 @@ target_include_directories(
     picolibrary
     PUBLIC "${PROJECT_SOURCE_DIR}/include"
 )
+target_compile_definitions(
+    picolibrary
+    PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION}>,PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION,>"
+)
 target_link_libraries(
     picolibrary
     ${PICOLIBRARY_LINK_LIBRARIES}

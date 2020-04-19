@@ -80,21 +80,43 @@ class Error_Category {
      */
     auto operator=( Error_Category const & ) = delete;
 
+#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
     /**
      * \brief Get the name of the error category.
      *
-     * \return The name of the error category.
+     * \return The name of the error category if
+     *         PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION is not defined.
+     * \return An empty string if PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION is
+     *         defined.
      */
     virtual auto name() const noexcept -> char const * = 0;
+#else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
+    auto const * name() const noexcept
+    {
+        return "";
+    }
+#endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
 
+#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
     /**
      * \brief Get an error ID's description.
      *
      * \param[in] id The error ID whose description is to be got.
      *
-     * \return The error ID's description.
+     * \return The error ID's description if
+     *         PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION is not defined.
+     * \return An empty string if PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION is
+     *         defined.
      */
     virtual auto error_description( Error_ID id ) const noexcept -> char const * = 0;
+#else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
+    auto const * error_description( Error_ID id ) const noexcept
+    {
+        static_cast<void>( id );
+
+        return "";
+    }
+#endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
 
   protected:
     /**
@@ -281,6 +303,7 @@ class Error_Code {
          */
         auto operator=( Default_Error_Category const & ) = delete;
 
+#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
         /**
          * \copydoc picolibrary::Error_Category::name()
          */
@@ -288,7 +311,9 @@ class Error_Code {
         {
             return "::picolibrary::Default_Error";
         }
+#endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
 
+#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
         /**
          * \copydoc picolibrary::Error_Category::error_description()
          */
@@ -298,6 +323,7 @@ class Error_Code {
 
             return "NONE";
         }
+#endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
 
       private:
         /**
@@ -409,6 +435,7 @@ class Generic_Error_Category : public Error_Category {
      */
     auto operator=( Generic_Error_Category const & ) = delete;
 
+#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
     /**
      * \copydoc picolibrary::Error_Category::name()
      */
@@ -416,7 +443,9 @@ class Generic_Error_Category : public Error_Category {
     {
         return "::picolibrary::Generic_Error";
     }
+#endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
 
+#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
     /**
      * \copydoc picolibrary::Error_Category::error_description()
      */
@@ -430,6 +459,7 @@ class Generic_Error_Category : public Error_Category {
 
         return "UNKNOWN";
     }
+#endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
 
   private:
     /**
