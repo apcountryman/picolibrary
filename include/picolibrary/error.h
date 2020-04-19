@@ -133,7 +133,7 @@ class Error_Category {
 /**
  * \brief Error code.
  */
-class Error_Code {
+class Error_Code final {
   public:
     /**
      * \brief Constructor.
