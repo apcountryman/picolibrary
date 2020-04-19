@@ -12,14 +12,21 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/CMakeLists.txt
-# Description: picolibrary unit tests CMake rules.
+# File: test/unit/picolibrary/error_code/CMakeLists.txt
+# Description: picolibrary::Error_Code unit tests CMake rules.
 
 # build the picolibrary::Error_Code unit tests
-add_subdirectory( error_code )
-
-# build the picolibrary::Generic_Error unit tests
-add_subdirectory( generic_error )
-
-# build the picolibrary::Generic_Error_Category unit tests
-add_subdirectory( generic_error_category )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+    add_executable(
+        test-unit-picolibrary-error_code
+        main.cc
+    )
+    target_link_libraries(
+        test-unit-picolibrary-error_code
+        picolibrary
+    )
+    add_test(
+        NAME    test-unit-picolibrary-error_code
+        COMMAND test-unit-picolibrary-error_code --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )

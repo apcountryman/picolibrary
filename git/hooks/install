@@ -112,7 +112,7 @@ function main()
     local -r repository=$( readlink -f "$hooks/../.." )
     local -r version=$( git -C "$repository" describe --always --dirty --broken )
 
-    local supported_hooks; mapfile -t supported_hooks < <( git -C "$repository" ls-files 'git/hooks/' ':!:git/hooks/install' | xargs -r -d '\n' -I '{}' find "$repository/{}" -executable ); readonly supported_hooks
+    local supported_hooks; mapfile -t supported_hooks < <( git -C "$repository" ls-files 'git/hooks/' ':!:git/hooks/install' | xargs -r -d '\n' -I '{}' find "$repository/{}" -executable -printf '%f\n' ); readonly supported_hooks
 
     local selected_hooks=()
 

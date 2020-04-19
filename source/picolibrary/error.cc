@@ -16,13 +16,15 @@
 
 /**
  * \file
- * \brief picolibrary::VERSION implementation.
+ * \brief picolibrary::Error implementation.
  */
 
-#include "picolibrary/version.h"
+#include "picolibrary/error.h"
 
 namespace picolibrary {
 
-char const * const VERSION{ "@PICOLIBRARY_VERSION@" };
+Error_Code::Default_Error_Category const Error_Code::Default_Error_Category::INSTANCE{};
+
+Generic_Error_Category const Generic_Error_Category::INSTANCE{};
 
 } // namespace picolibrary

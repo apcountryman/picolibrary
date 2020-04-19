@@ -16,13 +16,20 @@
 
 /**
  * \file
- * \brief picolibrary::VERSION implementation.
+ * \brief picolibrary::Utility interface.
  */
 
-#include "picolibrary/version.h"
+#ifndef PICOLIBRARY_UTILITY_H
+#define PICOLIBRARY_UTILITY_H
 
 namespace picolibrary {
 
-char const * const VERSION{ "@PICOLIBRARY_VERSION@" };
+/**
+ * \brief Replacement for void in contexts that require construction.
+ */
+struct Void {
+};
 
 } // namespace picolibrary
+
+#endif // PICOLIBRARY_UTILITY_H

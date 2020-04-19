@@ -25,34 +25,38 @@ set(
     PICOLIBRARY_SOURCE_FILES
     "${CMAKE_CURRENT_BINARY_DIR}/picolibrary/version.cc"
     "picolibrary.cc"
+    "picolibrary/error.cc"
+    "picolibrary/utility.cc"
 )
 set( PICOLIBRARY_LINK_LIBRARIES )
 
-if( ${PICOLIBRARY_TESTING_INTERACTIVE_ENABLED} OR ${PICOLIBRARY_TESTING_UNIT_ENABLED} )
+if( ${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING} OR ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     list(
         APPEND PICOLIBRARY_SOURCE_FILES
         "picolibrary/testing.cc"
     )
-endif( ${PICOLIBRARY_TESTING_INTERACTIVE_ENABLED} OR ${PICOLIBRARY_TESTING_UNIT_ENABLED} )
+endif( ${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING} OR ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
 
-if( ${PICOLIBRARY_TESTING_INTERACTIVE_ENABLED} )
+if( ${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING} )
     list(
         APPEND PICOLIBRARY_SOURCE_FILES
         "picolibrary/testing/interactive.cc"
     )
-endif( ${PICOLIBRARY_TESTING_INTERACTIVE_ENABLED} )
+endif( ${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING} )
 
-if( ${PICOLIBRARY_TESTING_UNIT_ENABLED} )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     list(
         APPEND PICOLIBRARY_SOURCE_FILES
         "picolibrary/testing/unit.cc"
+        "picolibrary/testing/unit/error.cc"
+        "picolibrary/testing/unit/random.cc"
     )
     list(
         APPEND PICOLIBRARY_LINK_LIBRARIES
         gmock
         gtest
     )
-endif( ${PICOLIBRARY_TESTING_UNIT_ENABLED} )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
 
 add_library(
     picolibrary STATIC
@@ -61,6 +65,10 @@ add_library(
 target_include_directories(
     picolibrary
     PUBLIC "${PROJECT_SOURCE_DIR}/include"
+)
+target_compile_definitions(
+    picolibrary
+    PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION}>,PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION,>"
 )
 target_link_libraries(
     picolibrary

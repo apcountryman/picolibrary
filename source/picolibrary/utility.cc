@@ -16,13 +16,15 @@
 
 /**
  * \file
- * \brief picolibrary::VERSION implementation.
+ * \brief picolibrary::Utility implementation.
  */
 
-#include "picolibrary/version.h"
+#include "picolibrary/utility.h"
+
+#include <type_traits>
 
 namespace picolibrary {
 
-char const * const VERSION{ "@PICOLIBRARY_VERSION@" };
+static_assert( std::is_trivially_destructible_v<Void> );
 
 } // namespace picolibrary

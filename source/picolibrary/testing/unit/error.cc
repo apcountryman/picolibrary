@@ -16,13 +16,7 @@
 
 /**
  * \file
- * \brief picolibrary::VERSION implementation.
+ * \brief picolibrary::Testing::Unit::Error implementation.
  */
 
-#include "picolibrary/version.h"
-
-namespace picolibrary {
-
-char const * const VERSION{ "@PICOLIBRARY_VERSION@" };
-
-} // namespace picolibrary
+#include "picolibrary/testing/unit/error.h"

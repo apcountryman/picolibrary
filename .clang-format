@@ -68,7 +68,7 @@ SpaceAfterTemplateKeyword: false
 SpacesInAngles: false
 
 # classes/structs
-AccessModifierOffset: -4
+AccessModifierOffset: -2
 BreakBeforeInheritanceComma: true
 BreakConstructorInitializers: AfterColon
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
@@ -97,7 +97,7 @@ AlwaysBreakBeforeMultilineStrings: true
 BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeTernaryOperators: true
 BreakStringLiterals: true
-Cpp11BracedListStyle: true
+Cpp11BracedListStyle: false
 DerivePointerAlignment: false
 IndentCaseLabels: true
 KeepEmptyLinesAtTheStartOfBlocks: false
@@ -116,7 +116,7 @@ SpacesBeforeTrailingComments: 1
 
 # penalties
 PenaltyBreakAssignment: 99
-PenaltyBreakBeforeFirstCallParameter: 99
+PenaltyBreakBeforeFirstCallParameter: 0
 PenaltyBreakComment: 0
 PenaltyBreakFirstLessLess: 99
 PenaltyBreakString: 0
