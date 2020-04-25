@@ -21,9 +21,13 @@
 
 #include "picolibrary/error.h"
 
+#include <type_traits>
+
 namespace picolibrary {
 
 Error_Code::Default_Error_Category const Error_Code::Default_Error_Category::INSTANCE{};
+
+static_assert( std::is_trivially_destructible_v<Error_Code> );
 
 Generic_Error_Category const Generic_Error_Category::INSTANCE{};
 
