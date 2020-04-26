@@ -411,8 +411,8 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
 };
 
 /**
- * \brief Operation result wrapper specialized for cases where information is generated,
- *        and the operation cannot fail.
+ * \brief Operation result wrapper specialized for cases where trivially
+ *        destructible information is generated, and the operation cannot fail.
  */
 template<typename Value_Type>
 class [[nodiscard]] Result<Value_Type, Void, true> final
@@ -489,6 +489,225 @@ class [[nodiscard]] Result<Value_Type, Void, true> final
      * \brief Destructor.
      */
     ~Result() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto & operator=( Result && expression ) noexcept
+    {
+        m_value = std::move( expression.m_value );
+
+        return *this;
+    }
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto & operator=( Result const & expression ) noexcept
+    {
+        m_value = expression.m_value;
+
+        return *this;
+    }
+
+    /**
+     * \brief Check if the operation result is a value (operation succeeded).
+     *
+     * \return true (operation succeeded).
+     */
+    [[nodiscard]] constexpr auto is_value() const noexcept
+    {
+        return true;
+    }
+
+    /**
+     * \brief Check if the operation result is an error (operation failed).
+     *
+     * \return false (operation succeeded).
+     */
+    [[nodiscard]] constexpr auto is_error() const noexcept
+    {
+        return not is_value();
+    }
+
+    /**
+     * \brief Access the result of a successful operation.
+     *
+     * \return The generated information.
+     */
+    [[nodiscard]] constexpr auto value() && noexcept
+    {
+        return static_cast<Value &&>( m_value );
+    }
+
+    /**
+     * \brief Access the result of a successful operation.
+     *
+     * \return The generated information.
+     */
+    [[nodiscard]] constexpr auto value() const && noexcept
+    {
+        return static_cast<Value const &&>( m_value );
+    }
+
+    /**
+     * \brief Access the result of a successful operation.
+     *
+     * \return The generated information.
+     */
+    [[nodiscard]] constexpr auto value() & noexcept
+    {
+        return static_cast<Value &>( m_value );
+    }
+
+    /**
+     * \brief Access the result of a successful operation.
+     *
+     * \return The generated information.
+     */
+    [[nodiscard]] constexpr auto value() const & noexcept
+    {
+        return static_cast<Value const &>( m_value );
+    }
+
+    /**
+     * \brief Access the result of a failed operation.
+     *
+     * \attention This function is only provided for interface consistency.
+     *
+     * \return picolibrary::Void.
+     */
+    [[nodiscard]] constexpr auto error() const noexcept
+    {
+        return Error{};
+    }
+
+  private:
+    /**
+     * \cond ANONYMOUS_MEMBER
+     *
+     * \todo #33
+     */
+    union {
+        /**
+         * \todo #33
+         *
+         * \endcond
+         */
+
+        /**
+         * \brief Operation succeeded result.
+         */
+        Value m_value;
+
+        /**
+         * \brief Operation failed result.
+         */
+        Error m_error{};
+
+        /**
+         * \cond ANONYMOUS_MEMBER
+         *
+         * \todo #33
+         */
+    };
+    /**
+     * \todo #33
+     *
+     * \endcond
+     */
+};
+
+/**
+ * \brief Operation result wrapper specialized for cases where non-trivially
+ *        destructible information is generated, and the operation cannot fail.
+ */
+template<typename Value_Type>
+class [[nodiscard]] Result<Value_Type, Void, false> final
+{
+  public:
+    static_assert( not std::is_trivially_destructible_v<Value_Type> );
+
+    /**
+     * \brief Operation succeeded result type.
+     */
+    using Value = Value_Type;
+
+    /**
+     * \brief Operation failed result type.
+     */
+    using Error = Void;
+
+    /**
+     * \brief Constructor.
+     *
+     * \tparam V A tyoe implicitly convertible to Value and not implicitly convertible to
+     *           Error.
+     *
+     * \param[in] value The object to construct from.
+     */
+    template<typename V, typename = typename std::enable_if_t<not std::is_same_v<std::decay_t<V>, Result> and std::is_convertible_v<V, Value> and not std::is_convertible_v<V, Error>>>
+    constexpr Result( V && value, Value_Tag = {} ) noexcept :
+        m_value{ std::forward<V>( value ) }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \tparam Arguments Value constructor argument types.
+     *
+     * \param[in] arguments Value constructor arguments.
+     */
+    template<typename... Arguments>
+    constexpr Result( Value_Tag, Arguments && ... arguments ) noexcept :
+        m_value{ std::forward<Arguments>( arguments )... }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \warning This constructor only exists to provide a consistent interface when
+     *          writing generic code. It should never actually be called.
+     */
+    constexpr Result( Void ) noexcept
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Result( Result && source ) noexcept : m_value{ std::move( source.m_value ) }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Result( Result const & original ) noexcept : m_value{ original.m_value }
+    {
+    }
+
+    /**
+     * \brief Destructor.
+     */
+    ~Result() noexcept
+    {
+        m_value.~Value();
+    }
 
     /**
      * \brief Assignment operator.
