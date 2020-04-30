@@ -411,8 +411,8 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
 };
 
 /**
- * \brief Operation result wrapper specialized for cases where trivially
- *        destructible information is generated, and the operation cannot fail.
+ * \brief Operation result wrapper specialized for cases where trivially destructible
+ *        information is generated, and the operation cannot fail.
  */
 template<typename Value_Type>
 class [[nodiscard]] Result<Value_Type, Void, true> final
@@ -627,8 +627,8 @@ class [[nodiscard]] Result<Value_Type, Void, true> final
 };
 
 /**
- * \brief Operation result wrapper specialized for cases where non-trivially
- *        destructible information is generated, and the operation cannot fail.
+ * \brief Operation result wrapper specialized for cases where non-trivially destructible
+ *        information is generated, and the operation cannot fail.
  */
 template<typename Value_Type>
 class [[nodiscard]] Result<Value_Type, Void, false> final
