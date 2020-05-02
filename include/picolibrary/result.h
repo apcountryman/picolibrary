@@ -87,6 +87,9 @@ class [[nodiscard]] Result<Void, Void, true> final
 
     /**
      * \brief Constructor.
+     *
+     * \warning This constructor only exists to provide a consistent interface when
+     *          writing generic code. It should never actually be called.
      */
     constexpr Result( Void ) noexcept
     {
@@ -413,6 +416,8 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
 /**
  * \brief Operation result wrapper specialized for cases where trivially destructible
  *        information is generated, and the operation cannot fail.
+ *
+ * \tparam Value_Type Operation succeeded result type.
  */
 template<typename Value_Type>
 class [[nodiscard]] Result<Value_Type, Void, true> final
@@ -433,7 +438,7 @@ class [[nodiscard]] Result<Value_Type, Void, true> final
     /**
      * \brief Constructor.
      *
-     * \tparam V A tyoe implicitly convertible to Value and not implicitly convertible to
+     * \tparam V A type implicitly convertible to Value and not implicitly convertible to
      *           Error.
      *
      * \param[in] value The object to construct from.
@@ -629,6 +634,8 @@ class [[nodiscard]] Result<Value_Type, Void, true> final
 /**
  * \brief Operation result wrapper specialized for cases where non-trivially destructible
  *        information is generated, and the operation cannot fail.
+ *
+ * \tparam Value_Type Operation succeeded result type.
  */
 template<typename Value_Type>
 class [[nodiscard]] Result<Value_Type, Void, false> final
@@ -649,7 +656,7 @@ class [[nodiscard]] Result<Value_Type, Void, false> final
     /**
      * \brief Constructor.
      *
-     * \tparam V A tyoe implicitly convertible to Value and not implicitly convertible to
+     * \tparam V A type implicitly convertible to Value and not implicitly convertible to
      *           Error.
      *
      * \param[in] value The object to construct from.
@@ -848,6 +855,8 @@ class [[nodiscard]] Result<Value_Type, Void, false> final
 /**
  * \brief Operation result wrapper specialized for cases where trivially destructible
  *        information is generated, and the operation can fail.
+ *
+ * \tparam Value_Type Operation succeeded result type.
  */
 template<typename Value_Type>
 class [[nodiscard]] Result<Value_Type, Error_Code, true> final
@@ -1199,6 +1208,8 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
 /**
  * \brief Operation result wrapper specialized for cases where non-trivially destructible
  *        information is generated, and the operation can fail.
+ *
+ * \tparam Value_Type Operation succeeded result type.
  */
 template<typename Value_Type>
 class [[nodiscard]] Result<Value_Type, Error_Code, false> final
