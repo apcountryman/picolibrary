@@ -22,3 +22,4 @@ UTC is used when determining release dates.
 - [`clang-tidy` static analysis CI job](https://github.com/apcountryman/picolibrary/issues/21).
 - [`clang-format` formatting CI job](https://github.com/apcountryman/picolibrary/issues/23).
 - [User extensible error code](https://github.com/apcountryman/picolibrary/issues/28).
+- [Operation result wrapper](https://github.com/apcountryman/picolibrary/issues/32).
