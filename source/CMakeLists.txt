@@ -26,6 +26,7 @@ set(
     "${CMAKE_CURRENT_BINARY_DIR}/picolibrary/version.cc"
     "picolibrary.cc"
     "picolibrary/error.cc"
+    "picolibrary/result.cc"
     "picolibrary/utility.cc"
 )
 set( PICOLIBRARY_LINK_LIBRARIES )
