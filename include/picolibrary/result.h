@@ -227,9 +227,7 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
      */
     constexpr Result( Result && source ) noexcept : m_is_value{ source.m_is_value }
     {
-        if ( not m_is_value ) {
-            new ( &m_error ) Error{ std::move( source.m_error ) };
-        } // if
+        if ( is_error() ) { new ( &m_error ) Error{ std::move( source.m_error ) }; } // if
     }
 
     /**
@@ -240,7 +238,7 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
     constexpr Result( Result const & original ) noexcept :
         m_is_value{ original.m_is_value }
     {
-        if ( not m_is_value ) { new ( &m_error ) Error{ original.m_error }; } // if
+        if ( is_error() ) { new ( &m_error ) Error{ original.m_error }; } // if
     }
 
     /**
@@ -257,10 +255,10 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
      */
     constexpr auto & operator=( Result && expression ) noexcept
     {
-        if ( m_is_value == expression.m_is_value ) {
-            if ( not m_is_value ) { m_error = std::move( expression.m_error ); } // if
+        if ( is_value() == expression.is_value() ) {
+            if ( is_error() ) { m_error = std::move( expression.m_error ); } // if
         } else {
-            if ( m_is_value ) {
+            if ( is_value() ) {
                 new ( &m_error ) Error{ std::move( expression.m_error ) };
             } // if
 
@@ -279,10 +277,10 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
      */
     constexpr auto & operator=( Result const & expression ) noexcept
     {
-        if ( m_is_value == expression.m_is_value ) {
-            if ( not m_is_value ) { m_error = expression.m_error; } // if
+        if ( is_value() == expression.is_value() ) {
+            if ( is_error() ) { m_error = expression.m_error; } // if
         } else {
-            if ( m_is_value ) { new ( &m_error ) Error{ expression.m_error }; } // if
+            if ( is_value() ) { new ( &m_error ) Error{ expression.m_error }; } // if
 
             m_is_value = expression.m_is_value;
         } // else
@@ -296,7 +294,7 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
      * \return true if the operation result is a value (operation succeeded).
      * \return false if the operation result is not a value (operation failed).
      */
-    [[nodiscard]] constexpr auto is_value() const noexcept
+    [[nodiscard]] constexpr auto is_value() const noexcept->bool
     {
         return m_is_value;
     }
@@ -307,7 +305,7 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
      * \return true if the operation result is an error (operation failed).
      * \return false if the operation result is not an error (operation succeeded).
      */
-    [[nodiscard]] constexpr auto is_error() const noexcept
+    [[nodiscard]] constexpr auto is_error() const noexcept->bool
     {
         return not is_value();
     }
@@ -939,7 +937,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      */
     constexpr Result( Result && source ) noexcept : m_is_value{ source.m_is_value }
     {
-        if ( m_is_value ) {
+        if ( is_value() ) {
             new ( &m_value ) Value{ std::move( source.m_value ) };
         } else {
             new ( &m_error ) Error{ std::move( source.m_error ) };
@@ -954,7 +952,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
     constexpr Result( Result const & original ) noexcept :
         m_is_value{ original.m_is_value }
     {
-        if ( m_is_value ) {
+        if ( is_value() ) {
             new ( &m_value ) Value{ original.m_value };
         } else {
             new ( &m_error ) Error{ original.m_error };
@@ -975,14 +973,14 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      */
     constexpr auto & operator=( Result && expression ) noexcept
     {
-        if ( m_is_value == expression.m_is_value ) {
-            if ( m_is_value ) {
+        if ( is_value() == expression.is_value() ) {
+            if ( is_value() ) {
                 m_value = std::move( expression.m_value );
             } else {
                 m_error = std::move( expression.m_error );
             } // else
         } else {
-            if ( m_is_value ) {
+            if ( is_value() ) {
                 new ( &m_error ) Error{ std::move( expression.m_error ) };
             } else {
                 new ( &m_value ) Error{ std::move( expression.m_value ) };
@@ -1003,14 +1001,14 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      */
     constexpr auto & operator=( Result const & expression ) noexcept
     {
-        if ( m_is_value == expression.m_is_value ) {
-            if ( m_is_value ) {
+        if ( is_value() == expression.is_value() ) {
+            if ( is_value() ) {
                 m_value = expression.m_value;
             } else {
                 m_error = expression.m_error;
             } // else
         } else {
-            if ( m_is_value ) {
+            if ( is_value() ) {
                 new ( &m_error ) Error{ expression.m_error };
             } else {
                 new ( &m_value ) Error{ expression.m_value };
@@ -1292,7 +1290,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      */
     constexpr Result( Result && source ) noexcept : m_is_value{ source.m_is_value }
     {
-        if ( m_is_value ) {
+        if ( is_value() ) {
             new ( &m_value ) Value{ std::move( source.m_value ) };
         } else {
             new ( &m_error ) Error{ std::move( source.m_error ) };
@@ -1307,7 +1305,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
     constexpr Result( Result const & original ) noexcept :
         m_is_value{ original.m_is_value }
     {
-        if ( m_is_value ) {
+        if ( is_value() ) {
             new ( &m_value ) Value{ original.m_value };
         } else {
             new ( &m_error ) Error{ original.m_error };
@@ -1319,7 +1317,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      */
     ~Result() noexcept
     {
-        if ( m_is_value ) { m_value.~Value(); } // if
+        if ( is_value() ) { m_value.~Value(); } // if
     }
 
     /**
@@ -1331,14 +1329,14 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      */
     constexpr auto & operator=( Result && expression ) noexcept
     {
-        if ( m_is_value == expression.m_is_value ) {
-            if ( m_is_value ) {
+        if ( is_value() == expression.is_value() ) {
+            if ( is_value() ) {
                 m_value = std::move( expression.m_value );
             } else {
                 m_error = std::move( expression.m_error );
             } // else
         } else {
-            if ( m_is_value ) {
+            if ( is_value() ) {
                 m_value.~Value();
                 new ( &m_error ) Error{ std::move( expression.m_error ) };
             } else {
@@ -1360,14 +1358,14 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      */
     constexpr auto & operator=( Result const & expression ) noexcept
     {
-        if ( m_is_value == expression.m_is_value ) {
-            if ( m_is_value ) {
+        if ( is_value() == expression.is_value() ) {
+            if ( is_value() ) {
                 m_value = expression.m_value;
             } else {
                 m_error = expression.m_error;
             } // else
         } else {
-            if ( m_is_value ) {
+            if ( is_value() ) {
                 m_value.~Value();
                 new ( &m_error ) Error{ expression.m_error };
             } else {
