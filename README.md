@@ -1,4 +1,6 @@
 # picolibrary
+[![Build Status](https://travis-ci.com/apcountryman/picolibrary.svg?branch=master)](https://travis-ci.com/apcountryman/picolibrary)
+
 A C++ microcontroller driver/utility library targeted for use with resource
 constrained microcontrollers.
 
@@ -11,6 +13,30 @@ SSH:
 ```shell
 git clone --recurse-submodules git@github.com:apcountryman/picolibrary.git
 ```
+
+## Usage (Dependency)
+To use this library as a dependency, simply add the subdirectory containing this
+repository to a CMake build, and link with the `picolibrary` static library.
+```cmake
+add_subdirectory( picolibrary )
+```
+```cmake
+target_link_libraries(
+    foo
+    picolibrary
+)
+```
+
+## Usage (Development)
+This repository's Git `pre-commit` hook script is the simplest way to configure, build,
+and test this project during development.
+See the `pre-commit` script's help text for usage details.
+```shell
+./git/hooks/pre-commit --help
+```
+
+Additional checks, such as static analysis, are performed by this project's Travis CI
+jobs.
 
 ## Git Hooks
 To install this repository's Git hooks, execute the `install` script located in the

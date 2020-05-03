@@ -12,8 +12,14 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: .gitignore
-# Description: Git ignore rules for the picolibrary repository.
+# File: test/unit/picolibrary/CMakeLists.txt
+# Description: picolibrary unit tests CMake rules.
 
-# ignore the build directory
-build/
+# build the picolibrary::Error_Code unit tests
+add_subdirectory( error_code )
+
+# build the picolibrary::Generic_Error unit tests
+add_subdirectory( generic_error )
+
+# build the picolibrary::Generic_Error_Category unit tests
+add_subdirectory( generic_error_category )
