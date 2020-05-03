@@ -27,6 +27,17 @@ target_link_libraries(
 )
 ```
 
+## Usage (Development)
+This repository's Git `pre-commit` hook script is the simplest way to configure, build,
+and test this project during development.
+See the `pre-commit` script's help text for usage details.
+```shell
+./git/hooks/pre-commit --help
+```
+
+Additional checks, such as static analysis, are performed by this project's Travis CI
+jobs.
+
 ## Git Hooks
 To install this repository's Git hooks, execute the `install` script located in the
 `git/hooks` directory.
