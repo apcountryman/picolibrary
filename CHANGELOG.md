@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 UTC is used when determining release dates.
 
 ## [Unreleased](https://github.com/apcountryman/picolibrary/compare/master...develop)
+
+## [0.1.0](https://github.com/apcountryman/picolibrary/compare/0.0.0...0.1.0) - 2020-05-03
 ### Added
 - Repository Git ignore rules.
 - Repository Git hooks install script.
@@ -20,6 +22,7 @@ UTC is used when determining release dates.
 - [Library skeleton](https://github.com/apcountryman/picolibrary/issues/18).
 - [`cppcheck` static analysis CI job](https://github.com/apcountryman/picolibrary/issues/20).
 - [`clang-tidy` static analysis CI job](https://github.com/apcountryman/picolibrary/issues/21).
+- [`lizard` static analysis CI job](https://github.com/apcountryman/picolibrary/issues/22).
 - [`clang-format` formatting CI job](https://github.com/apcountryman/picolibrary/issues/23).
 - [User extensible error code](https://github.com/apcountryman/picolibrary/issues/28).
 - [Operation result wrapper](https://github.com/apcountryman/picolibrary/issues/32).
