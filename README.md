@@ -14,6 +14,19 @@ SSH:
 git clone --recurse-submodules git@github.com:apcountryman/picolibrary.git
 ```
 
+## Usage (Dependency)
+To use this library as a dependency, simply add the subdirectory containing this
+repository to a CMake build, and link with the `picolibrary` static library.
+```cmake
+add_subdirectory( picolibrary )
+```
+```cmake
+target_link_libraries(
+    foo
+    picolibrary
+)
+```
+
 ## Git Hooks
 To install this repository's Git hooks, execute the `install` script located in the
 `git/hooks` directory.
