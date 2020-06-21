@@ -70,7 +70,7 @@ endif( NOT ${PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS} )
 include( git-utilities )
 execute_git_command(
     PICOLIBRARY_VERSION
-    COMMAND describe --always --dirty --broken
+    COMMAND describe --match=none --always --dirty --broken
 )
 
 # configure Google Test
