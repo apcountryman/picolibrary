@@ -26,6 +26,26 @@
  * \brief Asynchronous serial interactive testing facilities.
  */
 namespace picolibrary::Testing::Interactive::Asynchronous_Serial {
+
+/**
+ * \brief Initialize an asynchronous serial transmitter, and transmit "Hello, world!\n".
+ *
+ * \tparam Transmitter The type of transmitter to use.
+ *
+ * \param[in] transmitter The transmitter to use.
+ */
+template<typename Transmitter>
+void hello_world( Transmitter transmitter ) noexcept
+{
+    if ( transmitter.initialize().is_error() ) { return; }
+
+    auto const * string = "Hello, world!\n";
+
+    while ( auto const character = *string++ ) {
+        transmitter.transmit( character );
+    } // while
+}
+
 } // namespace picolibrary::Testing::Interactive::Asynchronous_Serial
 
 #endif // PICOLIBRARY_TESTING_INTERACTIVE_ASYNCHRONOUS_SERIAL_H
