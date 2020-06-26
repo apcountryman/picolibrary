@@ -22,10 +22,77 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_ASYNCHRONOUS_SERIAL_H
 #define PICOLIBRARY_TESTING_UNIT_ASYNCHRONOUS_SERIAL_H
 
+#include "gmock/gmock.h"
+#include "picolibrary/error.h"
+#include "picolibrary/result.h"
+
 /**
  * \brief Asynchronous serial unit testing facilities.
  */
 namespace picolibrary::Testing::Unit::Asynchronous_Serial {
+
+/**
+ * \brief Mock asynchronous serial transmitter.
+ *
+ * \tparam The integral type used to hold the data to be transmitted.
+ */
+template<typename Data_Type>
+class Mock_Transmitter {
+  public:
+    /**
+     * \copydoc picolibrary::Asynchronous_Serial::Transmitter_Concept::Data
+     */
+    using Data = Data_Type;
+
+    /**
+     * \brief Constructor.
+     */
+    Mock_Transmitter() = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Mock_Transmitter( Mock_Transmitter && source ) = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    Mock_Transmitter( Mock_Transmitter const & original ) = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Mock_Transmitter() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Mock_Transmitter && expression ) -> Mock_Transmitter &;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Mock_Transmitter const & expression ) -> Mock_Transmitter &;
+
+    MOCK_METHOD( (Result<Void, Error_Code>), initialize, () );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), transmit, ( Data ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), transmit, (Data const *, Data const *));
+};
+
 } // namespace picolibrary::Testing::Unit::Asynchronous_Serial
 
 #endif // PICOLIBRARY_TESTING_UNIT_ASYNCHRONOUS_SERIAL_H
