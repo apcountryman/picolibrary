@@ -42,8 +42,8 @@ void hello_world( Transmitter transmitter ) noexcept
     auto const * string = "Hello, world!\n";
 
     while ( auto const character = *string++ ) {
-        transmitter.transmit( character );
-    } // while
+        if ( transmitter.transmit( character ).is_error() ) { return; } // if
+    }                                                                   // while
 }
 
 } // namespace picolibrary::Testing::Interactive::Asynchronous_Serial
