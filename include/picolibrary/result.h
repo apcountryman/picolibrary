@@ -1054,7 +1054,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      */
     [[nodiscard]] constexpr auto value() && noexcept
     {
-        return static_cast<Error &&>( m_value );
+        return static_cast<Value &&>( m_value );
     }
 
     /**
@@ -1069,7 +1069,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      */
     [[nodiscard]] constexpr auto value() const && noexcept
     {
-        return static_cast<Error const &&>( m_value );
+        return static_cast<Value const &&>( m_value );
     }
 
     /**
@@ -1084,7 +1084,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      */
     [[nodiscard]] constexpr auto value() & noexcept
     {
-        return static_cast<Error &>( m_value );
+        return static_cast<Value &>( m_value );
     }
 
     /**
@@ -1099,7 +1099,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      */
     [[nodiscard]] constexpr auto value() const & noexcept
     {
-        return static_cast<Error const &>( m_value );
+        return static_cast<Value const &>( m_value );
     }
 
     /**
@@ -1412,7 +1412,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      */
     [[nodiscard]] constexpr auto value() && noexcept
     {
-        return static_cast<Error &&>( m_value );
+        return static_cast<Value &&>( m_value );
     }
 
     /**
@@ -1427,7 +1427,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      */
     [[nodiscard]] constexpr auto value() const && noexcept
     {
-        return static_cast<Error const &&>( m_value );
+        return static_cast<Value const &&>( m_value );
     }
 
     /**
@@ -1442,7 +1442,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      */
     [[nodiscard]] constexpr auto value() & noexcept
     {
-        return static_cast<Error &>( m_value );
+        return static_cast<Value &>( m_value );
     }
 
     /**
@@ -1457,7 +1457,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      */
     [[nodiscard]] constexpr auto value() const & noexcept
     {
-        return static_cast<Error const &>( m_value );
+        return static_cast<Value const &>( m_value );
     }
 
     /**
