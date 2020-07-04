@@ -73,7 +73,7 @@ TEST( forEach, functorError )
  */
 TEST( forEach, worksProperly )
 {
-    auto in_sequence = InSequence{};
+    auto const in_sequence = InSequence{};
 
     auto const functor = Mock_Functor<Result<Void, Error_Code>, std::uint_fast8_t const &>{};
 
