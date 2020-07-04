@@ -40,10 +40,16 @@ namespace picolibrary {
  *         and the error is returned. Illustrative signatures:
  * \code
  * auto functor( auto value ) noexcept
- *     -> picolibrary::Result<picolibrary::Void, picolibrary::Error_Code>
+ *     -> picolibrary::Result<picolibrary::Void, picolibrary::Error_Code>;
+ *
+ * auto functor( auto const & value ) noexcept
+ *     -> picolibrary::Result<picolibrary::Void, picolibrary::Error_Code>;
  *
  * auto functor( auto value ) noexcept
- * -> picolibrary::Result<picolibrary::Void, picolibrary::Void>
+ *     -> picolibrary::Result<picolibrary::Void, picolibrary::Void>;
+ *
+ * auto functor( auto const & value ) noexcept
+ *     -> picolibrary::Result<picolibrary::Void, picolibrary::Void>;
  * \endcode
  *
  * \param[in] begin The beginning of the range to apply the functor to.
