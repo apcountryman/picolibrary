@@ -20,6 +20,7 @@
  */
 
 #include <cstdint>
+#include <type_traits>
 #include <vector>
 
 #include "gmock/gmock.h"
@@ -34,8 +35,10 @@
 
 namespace {
 
+using ::picolibrary::Discard_Functor;
 using ::picolibrary::Error_Code;
 using ::picolibrary::Result;
+using ::picolibrary::Return_Functor;
 using ::picolibrary::Void;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::Mock_Functor;
@@ -53,19 +56,39 @@ using ::testing::Return;
  */
 TEST( forEach, functorError )
 {
-    auto const functor = Mock_Functor<Result<Void, Error_Code>, std::uint_fast8_t const &>{};
+    {
+        auto const functor = Mock_Functor<Result<Void, Error_Code>, std::uint_fast8_t const &>{};
 
-    auto const error = random<Mock_Error>();
+        auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( functor, call( _ ) ).WillOnce( Return( error ) );
+        EXPECT_CALL( functor, call( _ ) ).WillOnce( Return( error ) );
 
-    auto const values = random_container<std::vector<std::uint_fast8_t>>(
-        random<std::uint_fast8_t>( 1 ) );
+        auto const values = random_container<std::vector<std::uint_fast8_t>>(
+            random<std::uint_fast8_t>( 1 ) );
 
-    auto const result = ::picolibrary::for_each( values.begin(), values.end(), functor.handle() );
+        auto const result = ::picolibrary::for_each<Return_Functor>(
+            values.begin(), values.end(), functor.handle() );
 
-    EXPECT_TRUE( result.is_error() );
-    EXPECT_EQ( result.error(), error );
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), error );
+    }
+
+    {
+        auto const functor = Mock_Functor<Result<Void, Error_Code>, std::uint_fast8_t const &>{};
+
+        auto const error = random<Mock_Error>();
+
+        EXPECT_CALL( functor, call( _ ) ).WillOnce( Return( error ) );
+
+        auto const values = random_container<std::vector<std::uint_fast8_t>>(
+            random<std::uint_fast8_t>( 1 ) );
+
+        auto const result = ::picolibrary::for_each<Discard_Functor>(
+            values.begin(), values.end(), functor.handle() );
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), error );
+    }
 }
 
 /**
@@ -73,20 +96,44 @@ TEST( forEach, functorError )
  */
 TEST( forEach, worksProperly )
 {
-    auto const in_sequence = InSequence{};
+    {
+        auto const in_sequence = InSequence{};
 
-    auto const functor = Mock_Functor<Result<Void, Error_Code>, std::uint_fast8_t const &>{};
+        auto const functor = Mock_Functor<Result<Void, Error_Code>, std::uint_fast8_t const &>{};
 
-    auto const values = random_container<std::vector<std::uint_fast8_t>>();
+        auto const values = random_container<std::vector<std::uint_fast8_t>>();
 
-    for ( auto const & value : values ) {
-        EXPECT_CALL( functor, call( Ref( value ) ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    } // for
+        for ( auto const & value : values ) {
+            EXPECT_CALL( functor, call( Ref( value ) ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        } // for
 
-    auto const result = ::picolibrary::for_each( values.begin(), values.end(), functor.handle() );
+        auto const result = ::picolibrary::for_each<Return_Functor>(
+            values.begin(), values.end(), functor.handle() );
 
-    EXPECT_TRUE( result.is_value() );
-    EXPECT_EQ( &result.value().mock(), &functor );
+        static_assert( std::is_same_v<decltype( result )::Value, decltype( functor.handle() )> );
+
+        EXPECT_TRUE( result.is_value() );
+        EXPECT_EQ( &result.value().mock(), &functor );
+    }
+
+    {
+        auto const in_sequence = InSequence{};
+
+        auto const functor = Mock_Functor<Result<Void, Error_Code>, std::uint_fast8_t const &>{};
+
+        auto const values = random_container<std::vector<std::uint_fast8_t>>();
+
+        for ( auto const & value : values ) {
+            EXPECT_CALL( functor, call( Ref( value ) ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        } // for
+
+        auto const result = ::picolibrary::for_each<Discard_Functor>(
+            values.begin(), values.end(), functor.handle() );
+
+        static_assert( std::is_same_v<decltype( result )::Value, Void> );
+
+        EXPECT_FALSE( result.is_error() );
+    }
 }
 
 /**

@@ -26,8 +26,21 @@
 #include <utility>
 
 #include "picolibrary/result.h"
+#include "picolibrary/utility.h"
 
 namespace picolibrary {
+
+/**
+ * \brief Return functor algorithm policy.
+ */
+struct Return_Functor {
+};
+
+/**
+ * \brief Discard functor algorithm policy.
+ */
+struct Discard_Functor {
+};
 
 /**
  * \brief Apply a functor to a range.
@@ -60,7 +73,7 @@ namespace picolibrary {
  * \return An error code if application of the functor to the range failed.
  */
 template<typename Iterator, typename Functor>
-constexpr auto for_each( Iterator begin, Iterator end, Functor functor ) noexcept
+constexpr auto for_each( Iterator begin, Iterator end, Functor functor, Return_Functor ) noexcept
     -> Result<Functor, typename std::invoke_result_t<Functor, decltype( *std::declval<Iterator>() )>::Error>
 {
     for ( ; begin != end; ++begin ) {
@@ -69,6 +82,89 @@ constexpr auto for_each( Iterator begin, Iterator end, Functor functor ) noexcep
     }                                                       // for
 
     return functor;
+}
+
+/**
+ * \brief Apply a functor to a range.
+ *
+ * \tparam Iterator Range iterator.
+ * \tparam Functor A unary functor that takes the iterated over type by value or const
+ *         reference, and returns either picolibrary::Result<picolibrary::Void,
+ *         picolibrary::Error_Code> or picolibrary::Result<picolibrary::Void,
+ *         picolibrary::Void>. If an error is returned by the functor, iteration halts,
+ *         and the error is returned. Illustrative signatures:
+ * \code
+ * auto functor( auto value ) noexcept
+ *     -> picolibrary::Result<picolibrary::Void, picolibrary::Error_Code>;
+ *
+ * auto functor( auto const & value ) noexcept
+ *     -> picolibrary::Result<picolibrary::Void, picolibrary::Error_Code>;
+ *
+ * auto functor( auto value ) noexcept
+ *     -> picolibrary::Result<picolibrary::Void, picolibrary::Void>;
+ *
+ * auto functor( auto const & value ) noexcept
+ *     -> picolibrary::Result<picolibrary::Void, picolibrary::Void>;
+ * \endcode
+ *
+ * \param[in] begin The beginning of the range to apply the functor to.
+ * \param[in] end The end of the range to apply the functor to.
+ * \param[in] functor The functor to apply to the range.
+ *
+ * \return Nothing if application of the functor to the range succeeded.
+ * \return An error code if application of the functor to the range failed.
+ */
+template<typename Iterator, typename Functor>
+constexpr auto for_each( Iterator begin, Iterator end, Functor functor, Discard_Functor ) noexcept
+    -> Result<Void, typename std::invoke_result_t<Functor, decltype( *std::declval<Iterator>() )>::Error>
+{
+    for ( ; begin != end; ++begin ) {
+        auto result = functor( *begin );
+        if ( result.is_error() ) { return result.error(); } // if
+    }                                                       // for
+
+    return {};
+}
+
+/**
+ * \brief Apply a functor to a range.
+ *
+ * \tparam Functor_Policy The functor policy (either picolibrary::Return_Functor, or
+ *         picolibrary::Discard_Functor) to use.
+ * \tparam Iterator Range iterator.
+ * \tparam Functor A unary functor that takes the iterated over type by value or const
+ *         reference, and returns either picolibrary::Result<picolibrary::Void,
+ *         picolibrary::Error_Code> or picolibrary::Result<picolibrary::Void,
+ *         picolibrary::Void>. If an error is returned by the functor, iteration halts,
+ *         and the error is returned. Illustrative signatures:
+ * \code
+ * auto functor( auto value ) noexcept
+ *     -> picolibrary::Result<picolibrary::Void, picolibrary::Error_Code>;
+ *
+ * auto functor( auto const & value ) noexcept
+ *     -> picolibrary::Result<picolibrary::Void, picolibrary::Error_Code>;
+ *
+ * auto functor( auto value ) noexcept
+ *     -> picolibrary::Result<picolibrary::Void, picolibrary::Void>;
+ *
+ * auto functor( auto const & value ) noexcept
+ *     -> picolibrary::Result<picolibrary::Void, picolibrary::Void>;
+ * \endcode
+ *
+ * \param[in] begin The beginning of the range to apply the functor to.
+ * \param[in] end The end of the range to apply the functor to.
+ * \param[in] functor The functor to apply to the range.
+ *
+ * \return The functor if Functor_Policy is picolibrary::Return_Functor and application of
+ *         the functor to the range succeeded.
+ * \return Nothing if Functor_Policy is picolibrary::Return_Functor and application of the
+ *         functor to the range succeeded.
+ * \return An error code if application of the functor to the range failed.
+ */
+template<typename Functor_Policy, typename Iterator, typename Functor>
+constexpr auto for_each( Iterator begin, Iterator end, Functor functor ) noexcept
+{
+    return for_each( begin, end, std::move( functor ), Functor_Policy{} );
 }
 
 } // namespace picolibrary
