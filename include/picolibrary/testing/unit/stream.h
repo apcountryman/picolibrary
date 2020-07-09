@@ -22,7 +22,50 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_STREAM_H
 #define PICOLIBRARY_TESTING_UNIT_STREAM_H
 
+#include "picolibrary/stream.h"
+
 namespace picolibrary::Testing::Unit {
+
+/**
+ * \brief Mock I/O stream device access buffer.
+ */
+class Mock_Stream_Buffer : public Stream_Buffer {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    Mock_Stream_Buffer() = default;
+
+    /**
+     * \todo #29
+     */
+    Mock_Stream_Buffer( Mock_Stream_Buffer && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    Mock_Stream_Buffer( Mock_Stream_Buffer const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Mock_Stream_Buffer() noexcept = default;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Mock_Stream_Buffer && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Mock_Stream_Buffer const & ) = delete;
+};
+
 } // namespace picolibrary::Testing::Unit
 
 #endif // PICOLIBRARY_TESTING_UNIT_STREAM_H
