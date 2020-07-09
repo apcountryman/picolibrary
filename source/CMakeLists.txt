@@ -57,6 +57,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
         "picolibrary/testing/unit/error.cc"
         "picolibrary/testing/unit/functor.cc"
         "picolibrary/testing/unit/random.cc"
+        "picolibrary/testing/unit/stream.cc"
     )
     list(
         APPEND PICOLIBRARY_LINK_LIBRARIES
