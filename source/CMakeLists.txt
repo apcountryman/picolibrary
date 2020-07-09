@@ -29,6 +29,7 @@ set(
     "picolibrary/asynchronous_serial.cc"
     "picolibrary/error.cc"
     "picolibrary/result.cc"
+    "picolibrary/stream.cc"
     "picolibrary/utility.cc"
 )
 set( PICOLIBRARY_LINK_LIBRARIES )
