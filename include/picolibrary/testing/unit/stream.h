@@ -22,7 +22,11 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_STREAM_H
 #define PICOLIBRARY_TESTING_UNIT_STREAM_H
 
+#include "gmock/gmock.h"
+#include "picolibrary/error.h"
+#include "picolibrary/result.h"
 #include "picolibrary/stream.h"
+#include "picolibrary/utility.h"
 
 namespace picolibrary::Testing::Unit {
 
@@ -64,6 +68,8 @@ class Mock_Stream_Buffer : public Stream_Buffer {
      * \return
      */
     auto operator=( Mock_Stream_Buffer const & ) = delete;
+
+    MOCK_METHOD( (Result<Void, Error_Code>), put, (char), ( noexcept, override ) );
 };
 
 } // namespace picolibrary::Testing::Unit

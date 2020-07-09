@@ -22,6 +22,10 @@
 #ifndef PICOLIBRARY_STREAM_H
 #define PICOLIBRARY_STREAM_H
 
+#include "picolibrary/error.h"
+#include "picolibrary/result.h"
+#include "picolibrary/utility.h"
+
 namespace picolibrary {
 
 /**
@@ -33,6 +37,16 @@ class Stream_Buffer {
      * \brief Destructor.
      */
     ~Stream_Buffer() noexcept = default;
+
+    /**
+     * \brief Write a character to the put area of the buffer.
+     *
+     * \param[in] character The character to write to the put area of the buffer.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    virtual auto put( char character ) noexcept -> Result<Void, Error_Code> = 0;
 
   protected:
     /**
