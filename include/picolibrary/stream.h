@@ -23,6 +23,56 @@
 #define PICOLIBRARY_STREAM_H
 
 namespace picolibrary {
+
+/**
+ * \brief I/O stream device access buffer.
+ */
+class Stream_Buffer {
+  public:
+    /**
+     * \brief Destructor.
+     */
+    ~Stream_Buffer() noexcept = default;
+
+  protected:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Stream_Buffer() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Stream_Buffer( Stream_Buffer && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Stream_Buffer( Stream_Buffer const & original ) noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Stream_Buffer && expression ) noexcept -> Stream_Buffer & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Stream_Buffer const & expression ) noexcept -> Stream_Buffer & = default;
+};
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_STREAM_H
