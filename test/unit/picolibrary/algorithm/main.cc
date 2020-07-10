@@ -65,7 +65,6 @@ TEST( forEach, functorError )
 
         auto const values = random_container<std::vector<std::uint_fast8_t>>(
             random<std::uint_fast8_t>( 1 ) );
-
         auto const result = ::picolibrary::for_each<Return_Functor>(
             values.begin(), values.end(), functor.handle() );
 
@@ -82,7 +81,6 @@ TEST( forEach, functorError )
 
         auto const values = random_container<std::vector<std::uint_fast8_t>>(
             random<std::uint_fast8_t>( 1 ) );
-
         auto const result = ::picolibrary::for_each<Discard_Functor>(
             values.begin(), values.end(), functor.handle() );
 

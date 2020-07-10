@@ -22,6 +22,8 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_STREAM_H
 #define PICOLIBRARY_TESTING_UNIT_STREAM_H
 
+#include <string>
+
 #include "gmock/gmock.h"
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
@@ -70,6 +72,16 @@ class Mock_Stream_Buffer : public Stream_Buffer {
     auto operator=( Mock_Stream_Buffer const & ) = delete;
 
     MOCK_METHOD( (Result<Void, Error_Code>), put, (char), ( noexcept, override ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), put, ( std::string ) );
+
+    /**
+     * \copydoc picolibrary::Stream_Buffer::put( char const *, char const * )
+     */
+    virtual auto put( char const * begin, char const * end ) noexcept -> Result<Void, Error_Code> override
+    {
+        return put( std::string{ begin, end } );
+    }
 };
 
 } // namespace picolibrary::Testing::Unit

@@ -19,9 +19,74 @@
  * \brief picolibrary::Stream_Buffer unit test program.
  */
 
+#include <cstdint>
+#include <string>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "picolibrary/error.h"
+#include "picolibrary/result.h"
 #include "picolibrary/stream.h"
+#include "picolibrary/testing/unit/error.h"
+#include "picolibrary/testing/unit/random.h"
+#include "picolibrary/testing/unit/stream.h"
+#include "picolibrary/utility.h"
+
+namespace {
+
+using ::picolibrary::Error_Code;
+using ::picolibrary::Result;
+using ::picolibrary::Void;
+using ::picolibrary::Testing::Unit::Mock_Error;
+using ::picolibrary::Testing::Unit::Mock_Stream_Buffer;
+using ::picolibrary::Testing::Unit::random;
+using ::picolibrary::Testing::Unit::random_container;
+using ::testing::A;
+using ::testing::Eq;
+using ::testing::InSequence;
+using ::testing::Return;
+using ::testing::SafeMatcherCast;
+
+} // namespace
+
+/**
+ * \brief Verify picolibrary::Stream_Buffer::put( char const *, char const * ) properly
+ *        handles a put error.
+ */
+TEST( putCharBlock, putError )
+{
+    auto buffer = Mock_Stream_Buffer{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( buffer, put( A<char>() ) ).WillOnce( Return( error ) );
+
+    auto const string = random_container<std::string>( random<std::uint_fast8_t>( 1 ) );
+    auto const result = buffer.Stream_Buffer::put( &*string.begin(), &*string.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::Stream_Buffer::put( char const *, char const * ) works
+ *        properly.
+ */
+TEST( putCharBlock, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto buffer = Mock_Stream_Buffer{};
+
+    auto const string = random_container<std::string>();
+
+    for ( auto const character : string ) {
+        EXPECT_CALL( buffer, put( SafeMatcherCast<char>( Eq( character ) ) ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+    } // for
+
+    EXPECT_FALSE( buffer.Stream_Buffer::put( &*string.begin(), &*string.end() ).is_error() );
+}
 
 /**
  * \brief Execute the picolibrary::Stream_Buffer unit tests.

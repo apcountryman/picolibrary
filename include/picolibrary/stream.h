@@ -22,6 +22,7 @@
 #ifndef PICOLIBRARY_STREAM_H
 #define PICOLIBRARY_STREAM_H
 
+#include "picolibrary/algorithm.h"
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/utility.h"
@@ -47,6 +48,23 @@ class Stream_Buffer {
      * \return An error code if the write failed.
      */
     virtual auto put( char character ) noexcept -> Result<Void, Error_Code> = 0;
+
+    /**
+     * \brief Write a block of characters to the put area of the buffer.
+     *
+     * \param[in] begin The beginning of the block of characters to write to the put area
+     *            of the buffer.
+     * \param[in] end The end of the block of characters to write to the put area of the
+     *            buffer.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    virtual auto put( char const * begin, char const * end ) noexcept -> Result<Void, Error_Code>
+    {
+        return for_each<Discard_Functor>(
+            begin, end, [this]( auto character ) noexcept { return put( character ); } );
+    }
 
   protected:
     /**
