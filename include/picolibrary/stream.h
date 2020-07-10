@@ -66,6 +66,25 @@ class Stream_Buffer {
             begin, end, [this]( auto character ) noexcept { return put( character ); } );
     }
 
+    /**
+     * \brief Write a null-terminated string to the put area of the buffer.
+     *
+     * \param[in] string The null-terminated string to write to the put area of the
+     *            buffer.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    virtual auto put( char const * string ) noexcept -> Result<Void, Error_Code>
+    {
+        while ( auto const character = *string++ ) {
+            auto result = put( character );
+            if ( result.is_error() ) { return result; } // if
+        }                                               // while
+
+        return {};
+    }
+
   protected:
     /**
      * \brief Constructor.

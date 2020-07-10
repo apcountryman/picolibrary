@@ -82,6 +82,14 @@ class Mock_Stream_Buffer : public Stream_Buffer {
     {
         return put( std::string{ begin, end } );
     }
+
+    /**
+     * \copydoc picolibrary::Stream_Buffer::put( char const * )
+     */
+    virtual auto put( char const * string ) noexcept -> Result<Void, Error_Code> override
+    {
+        return put( std::string{ string } );
+    }
 };
 
 } // namespace picolibrary::Testing::Unit

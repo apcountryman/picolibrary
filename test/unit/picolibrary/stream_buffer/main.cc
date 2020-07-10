@@ -89,6 +89,44 @@ TEST( putCharBlock, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::Stream_Buffer::put( char const * ) properly handles a put
+ *        error.
+ */
+TEST( putNullTerminatedString, putError )
+{
+    auto buffer = Mock_Stream_Buffer{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( buffer, put( A<char>() ) ).WillOnce( Return( error ) );
+
+    auto const result = buffer.Stream_Buffer::put(
+        random_container<std::string>( random<std::uint_fast8_t>( 1 ) ).c_str() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::Stream_Buffer::put( char const * ) works properly.
+ */
+TEST( putNullTerminatedString, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto buffer = Mock_Stream_Buffer{};
+
+    auto const string = random_container<std::string>();
+
+    for ( auto const character : string ) {
+        EXPECT_CALL( buffer, put( SafeMatcherCast<char>( Eq( character ) ) ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+    } // for
+
+    EXPECT_FALSE( buffer.Stream_Buffer::put( string.c_str() ).is_error() );
+}
+
+/**
  * \brief Execute the picolibrary::Stream_Buffer unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
