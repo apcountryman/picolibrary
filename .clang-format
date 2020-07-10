@@ -117,7 +117,7 @@ SpacesBeforeTrailingComments: 1
 # penalties
 PenaltyBreakAssignment: 99
 PenaltyBreakBeforeFirstCallParameter: 0
-PenaltyBreakComment: 0
+PenaltyBreakComment: 99
 PenaltyBreakFirstLessLess: 99
 PenaltyBreakString: 0
 PenaltyExcessCharacter: 1

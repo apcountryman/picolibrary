@@ -21,6 +21,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -124,6 +125,45 @@ TEST( putNullTerminatedString, worksProperly )
     } // for
 
     EXPECT_FALSE( buffer.Stream_Buffer::put( string.c_str() ).is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::Stream_Buffer::put( std::uint8_t const *, std::uint8_t const
+ *        * ) properly handles a put error.
+ */
+TEST( putUnsignedByteBlock, putError )
+{
+    auto buffer = Mock_Stream_Buffer{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( buffer, put( A<std::uint8_t>() ) ).WillOnce( Return( error ) );
+
+    auto const values = random_container<std::vector<std::uint8_t>>( random<std::uint_fast8_t>( 1 ) );
+    auto const result = buffer.Stream_Buffer::put( &*values.begin(), &*values.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::Stream_Buffer::put( std::uint8_t const *, std::uint8_t const
+ *        * ) works properly.
+ */
+TEST( putUnsignedByteBlock, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto buffer = Mock_Stream_Buffer{};
+
+    auto const values = random_container<std::vector<std::uint8_t>>();
+
+    for ( auto const value : values ) {
+        EXPECT_CALL( buffer, put( SafeMatcherCast<std::uint8_t>( Eq( value ) ) ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+    } // for
+
+    EXPECT_FALSE( buffer.Stream_Buffer::put( &*values.begin(), &*values.end() ).is_error() );
 }
 
 /**

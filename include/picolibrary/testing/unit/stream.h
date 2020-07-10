@@ -24,6 +24,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 #include "gmock/gmock.h"
 #include "picolibrary/error.h"
@@ -93,6 +94,17 @@ class Mock_Stream_Buffer : public Stream_Buffer {
     }
 
     MOCK_METHOD( (Result<Void, Error_Code>), put, ( std::uint8_t ), ( noexcept, override ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), put, (std::vector<std::uint8_t>));
+
+    /**
+     * \copydoc picolibrary::Stream_Buffer::put( std::uint8_t const *, std::uint8_t const * )
+     */
+    virtual auto put( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+        -> Result<Void, Error_Code> override
+    {
+        return put( std::vector<std::uint8_t>{ begin, end } );
+    }
 };
 
 } // namespace picolibrary::Testing::Unit

@@ -97,6 +97,24 @@ class Stream_Buffer {
      */
     virtual auto put( std::uint8_t value ) noexcept -> Result<Void, Error_Code> = 0;
 
+    /**
+     * \brief Write a block of unsigned bytes to the put area of the buffer.
+     *
+     * \param[in] begin The beginning of the block of unsigned bytes to write to the put
+     *            area of the buffer.
+     * \param[in] end The end of the block of unsigned bytes to write to the put area of
+     *            the buffer.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    virtual auto put( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+        -> Result<Void, Error_Code>
+    {
+        return for_each<Discard_Functor>(
+            begin, end, [this]( auto value ) noexcept { return put( value ); } );
+    }
+
   protected:
     /**
      * \brief Constructor.
