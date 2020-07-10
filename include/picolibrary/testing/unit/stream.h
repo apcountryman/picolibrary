@@ -22,6 +22,7 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_STREAM_H
 #define PICOLIBRARY_TESTING_UNIT_STREAM_H
 
+#include <cstdint>
 #include <string>
 
 #include "gmock/gmock.h"
@@ -90,6 +91,8 @@ class Mock_Stream_Buffer : public Stream_Buffer {
     {
         return put( std::string{ string } );
     }
+
+    MOCK_METHOD( (Result<Void, Error_Code>), put, ( std::uint8_t ), ( noexcept, override ) );
 };
 
 } // namespace picolibrary::Testing::Unit

@@ -22,6 +22,8 @@
 #ifndef PICOLIBRARY_STREAM_H
 #define PICOLIBRARY_STREAM_H
 
+#include <cstdint>
+
 #include "picolibrary/algorithm.h"
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
@@ -84,6 +86,16 @@ class Stream_Buffer {
 
         return {};
     }
+
+    /**
+     * \brief Write an unsigned byte to the put area of the buffer.
+     *
+     * \param[in] value The unsigned byte to write to the put area of the buffer.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    virtual auto put( std::uint8_t value ) noexcept -> Result<Void, Error_Code> = 0;
 
   protected:
     /**
