@@ -167,6 +167,45 @@ TEST( putUnsignedByteBlock, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::Stream_Buffer::put( std::int8_t const *, std::int8_t const *
+ *        ) properly handles a put error.
+ */
+TEST( putSignedByteBlock, putError )
+{
+    auto buffer = Mock_Stream_Buffer{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( buffer, put( A<std::int8_t>() ) ).WillOnce( Return( error ) );
+
+    auto const values = random_container<std::vector<std::int8_t>>( random<std::uint_fast8_t>( 1 ) );
+    auto const result = buffer.Stream_Buffer::put( &*values.begin(), &*values.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::Stream_Buffer::put( std::int8_t const *, std::int8_t const *
+ *        ) works properly.
+ */
+TEST( putSignedByteBlock, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto buffer = Mock_Stream_Buffer{};
+
+    auto const values = random_container<std::vector<std::int8_t>>();
+
+    for ( auto const value : values ) {
+        EXPECT_CALL( buffer, put( SafeMatcherCast<std::int8_t>( Eq( value ) ) ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+    } // for
+
+    EXPECT_FALSE( buffer.Stream_Buffer::put( &*values.begin(), &*values.end() ).is_error() );
+}
+
+/**
  * \brief Execute the picolibrary::Stream_Buffer unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
