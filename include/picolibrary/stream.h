@@ -143,6 +143,14 @@ class Stream_Buffer {
             begin, end, [this]( auto value ) noexcept { return put( value ); } );
     }
 
+    /**
+     * \brief Write the contents of the put area of the buffer to the device.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    virtual auto flush() noexcept -> Result<Void, Error_Code> = 0;
+
   protected:
     /**
      * \brief Constructor.
