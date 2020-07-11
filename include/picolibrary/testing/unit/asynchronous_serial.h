@@ -50,18 +50,14 @@ class Mock_Transmitter {
     Mock_Transmitter() = default;
 
     /**
-     * \brief Constructor.
-     *
-     * \param[in] source The source of the move.
+     * \todo #29
      */
-    Mock_Transmitter( Mock_Transmitter && source ) = default;
+    Mock_Transmitter( Mock_Transmitter && ) = delete;
 
     /**
-     * \brief Constructor.
-     *
-     * \param[in] original The original to copy.
+     * \todo #29
      */
-    Mock_Transmitter( Mock_Transmitter const & original ) = default;
+    Mock_Transmitter( Mock_Transmitter const & ) = delete;
 
     /**
      * \brief Destructor.
@@ -69,22 +65,18 @@ class Mock_Transmitter {
     ~Mock_Transmitter() noexcept = default;
 
     /**
-     * \brief Assignment operator.
+     * \todo #29
      *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
+     * \return
      */
-    auto operator=( Mock_Transmitter && expression ) -> Mock_Transmitter &;
+    auto operator=( Mock_Transmitter && ) = delete;
 
     /**
-     * \brief Assignment operator.
+     * \todo #29
      *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
+     * \return
      */
-    auto operator=( Mock_Transmitter const & expression ) -> Mock_Transmitter &;
+    auto operator=( Mock_Transmitter const & ) = delete;
 
     MOCK_METHOD( (Result<Void, Error_Code>), initialize, () );
 

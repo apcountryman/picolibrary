@@ -132,12 +132,12 @@ class Mock_Functor {
     Mock_Functor() = default;
 
     /**
-     * \todo #29.
+     * \todo #29
      */
     Mock_Functor( Mock_Functor && ) = delete;
 
     /**
-     * \todo #29.
+     * \todo #29
      */
     Mock_Functor( Mock_Functor const & ) = delete;
 
@@ -147,14 +147,14 @@ class Mock_Functor {
     ~Mock_Functor() noexcept = default;
 
     /**
-     * \todo #29.
+     * \todo #29
      *
      * \return
      */
     auto operator=( Mock_Functor && ) = delete;
 
     /**
-     * \todo #29.
+     * \todo #29
      *
      * \return
      */
