@@ -105,6 +105,8 @@ class Mock_Stream_Buffer : public Stream_Buffer {
     {
         return put( std::vector<std::uint8_t>{ begin, end } );
     }
+
+    MOCK_METHOD( (Result<Void, Error_Code>), put, ( std::int8_t ), ( noexcept, override ) );
 };
 
 } // namespace picolibrary::Testing::Unit

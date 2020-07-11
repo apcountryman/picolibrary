@@ -115,6 +115,16 @@ class Stream_Buffer {
             begin, end, [this]( auto value ) noexcept { return put( value ); } );
     }
 
+    /**
+     * \brief Write a signed byte to the put area of the buffer.
+     *
+     * \param[in] value The signed byte to write to the put area of the buffer.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    virtual auto put( std::int8_t value ) noexcept -> Result<Void, Error_Code> = 0;
+
   protected:
     /**
      * \brief Constructor.
