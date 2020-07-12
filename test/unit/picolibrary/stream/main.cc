@@ -35,6 +35,8 @@ using ::picolibrary::Stream;
 TEST( constructorDefault, worksProperly )
 {
     auto const stream = Stream{};
+
+    EXPECT_TRUE( stream.is_nominal() );
 }
 
 /**

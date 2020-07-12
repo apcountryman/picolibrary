@@ -205,6 +205,18 @@ class Stream {
      */
     ~Stream() noexcept = default;
 
+    /**
+     * \brief Check if the stream is nominal (no errors present and end-of-file has not
+     *        been reached.
+     *
+     * \return true if the stream is nominal.
+     * \return false if the stream is not nominal.
+     */
+    auto is_nominal() const noexcept
+    {
+        return true;
+    }
+
   protected:
     /**
      * \brief Constructor.
