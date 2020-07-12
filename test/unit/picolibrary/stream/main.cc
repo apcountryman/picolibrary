@@ -60,6 +60,7 @@ TEST( constructorDefault, worksProperly )
     EXPECT_FALSE( stream.end_of_file_reached() );
     EXPECT_FALSE( stream.io_error_present() );
     EXPECT_FALSE( stream.fatal_error_present() );
+    EXPECT_FALSE( stream.buffer_is_set() );
     EXPECT_EQ( stream.buffer(), nullptr );
 }
 

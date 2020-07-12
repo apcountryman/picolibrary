@@ -296,6 +296,20 @@ class Stream {
         return m_state & Mask::FATAL_ERROR_PRESENT;
     }
 
+    /**
+     * \brief Check if the I/O stream is associated with an I/O stream device access
+     *        buffer.
+     *
+     * \return true if the I/O stream is associated with an I/O stream device access
+     *         buffer.
+     * \return false if the I/O stream is not associated with an I/O stream device access
+     *         buffer.
+     */
+    constexpr auto buffer_is_set() const noexcept
+    {
+        return false;
+    }
+
   protected:
     /**
      * \brief Constructor.
@@ -403,7 +417,7 @@ class Stream {
     };
 
     /**
-     * \brief The stream's state flags.
+     * \brief The I/O stream's state flags.
      */
     State m_state{};
 };
