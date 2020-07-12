@@ -327,6 +327,14 @@ class Stream {
     }
 
     /**
+     * \brief Clear end-of-file reached report.
+     */
+    constexpr void clear_end_of_file_reached_report() noexcept
+    {
+        m_state &= ~Mask::END_OF_FILE_REACHED;
+    }
+
+    /**
      * \brief Get the I/O stream device access buffer associated with the I/O stream.
      *
      * \return The I/O stream device access buffer associated with the I/O stream.
