@@ -25,7 +25,22 @@
 
 namespace {
 
-using ::picolibrary::Stream;
+class Stream : public ::picolibrary::Stream {
+  public:
+    constexpr Stream() noexcept = default;
+
+    constexpr Stream( Stream && source ) noexcept = default;
+
+    constexpr Stream( Stream const & original ) noexcept = default;
+
+    ~Stream() noexcept = default;
+
+    constexpr auto operator=( Stream && expression ) noexcept -> Stream & = default;
+
+    constexpr auto operator=( Stream const & expression ) noexcept -> Stream & = default;
+
+    using ::picolibrary::Stream::buffer;
+};
 
 } // namespace
 
@@ -34,7 +49,7 @@ using ::picolibrary::Stream;
  */
 TEST( constructorDefault, worksProperly )
 {
-    auto const stream = Stream{};
+    auto stream = Stream{};
 
     EXPECT_TRUE( stream.is_nominal() );
     EXPECT_FALSE( stream.error_present() );
@@ -43,6 +58,7 @@ TEST( constructorDefault, worksProperly )
     EXPECT_FALSE( stream.end_of_file_reached() );
     EXPECT_FALSE( stream.io_error_present() );
     EXPECT_FALSE( stream.fatal_error_present() );
+    EXPECT_EQ( stream.buffer(), nullptr );
 }
 
 /**

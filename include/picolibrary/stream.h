@@ -317,6 +317,16 @@ class Stream {
      * \return The assigned to object.
      */
     constexpr auto operator=( Stream const & expression ) noexcept -> Stream & = default;
+
+    /**
+     * \brief Get the I/O stream device access buffer associated with the I/O stream.
+     *
+     * \return The I/O stream device access buffer associated with the I/O stream.
+     */
+    auto buffer() noexcept -> Stream_Buffer *
+    {
+        return nullptr;
+    }
 };
 
 } // namespace picolibrary
