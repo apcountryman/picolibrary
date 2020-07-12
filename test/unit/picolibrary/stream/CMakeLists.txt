@@ -12,23 +12,21 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/CMakeLists.txt
-# Description: picolibrary unit tests CMake rules.
-
-# build the picolibrary::Algorithm unit tests
-add_subdirectory( algorithm )
-
-# build the picolibrary::Error_Code unit tests
-add_subdirectory( error_code )
-
-# build the picolibrary::Generic_Error unit tests
-add_subdirectory( generic_error )
-
-# build the picolibrary::Generic_Error_Category unit tests
-add_subdirectory( generic_error_category )
+# File: test/unit/picolibrary/stream/CMakeLists.txt
+# Description: picolibrary::Stream unit tests CMake rules.
 
 # build the picolibrary::Stream unit tests
-add_subdirectory( stream )
-
-# build the picolibrary::Stream_Buffer unit tests
-add_subdirectory( stream_buffer )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+    add_executable(
+        test-unit-picolibrary-stream
+        main.cc
+    )
+    target_link_libraries(
+        test-unit-picolibrary-stream
+        picolibrary
+    )
+    add_test(
+        NAME    test-unit-picolibrary-stream
+        COMMAND test-unit-picolibrary-stream --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
