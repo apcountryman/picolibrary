@@ -212,7 +212,7 @@ class Stream {
      * \return true if the stream is nominal.
      * \return false if the stream is not nominal.
      */
-    auto is_nominal() const noexcept
+    constexpr auto is_nominal() const noexcept
     {
         return true;
     }
@@ -223,7 +223,7 @@ class Stream {
      * \return true if an error is present.
      * \return false if an error is not present.
      */
-    auto error_present() const noexcept
+    constexpr auto error_present() const noexcept
     {
         return false;
     }
@@ -234,7 +234,7 @@ class Stream {
      * \return true if an error is not present.
      * \return false if an error is present.
      */
-    explicit operator bool() const noexcept
+    constexpr explicit operator bool() const noexcept
     {
         return not error_present();
     }
@@ -242,7 +242,7 @@ class Stream {
     /**
      * \copydoc picolibrary::Stream::error_present()
      */
-    auto operator!() const noexcept
+    constexpr auto operator!() const noexcept
     {
         return error_present();
     }
@@ -253,7 +253,7 @@ class Stream {
      * \return true if end-of-file has been reached.
      * \return false if end-of-file has not been reached.
      */
-    auto end_of_file_reached() const noexcept
+    constexpr auto end_of_file_reached() const noexcept
     {
         return false;
     }
@@ -264,7 +264,7 @@ class Stream {
      * \return true if an I/O error is present.
      * \return false if an I/O error is not present.
      */
-    auto io_error_present() const noexcept
+    constexpr auto io_error_present() const noexcept
     {
         return false;
     }
@@ -275,7 +275,7 @@ class Stream {
      * \return true if a fatal error is present.
      * \return false if a fatal error is not present.
      */
-    auto fatal_error_present() const noexcept
+    constexpr auto fatal_error_present() const noexcept
     {
         return false;
     }
@@ -323,7 +323,7 @@ class Stream {
      *
      * \return The I/O stream device access buffer associated with the I/O stream.
      */
-    auto buffer() noexcept -> Stream_Buffer *
+    constexpr auto buffer() noexcept -> Stream_Buffer *
     {
         return nullptr;
     }
