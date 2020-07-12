@@ -247,6 +247,17 @@ class Stream {
         return error_present();
     }
 
+    /**
+     * \brief Check if end-of-file has been reached.
+     *
+     * \return true if end-of-file has been reached.
+     * \return false if end-of-file has not been reached.
+     */
+    auto end_of_file_reached() const noexcept
+    {
+        return false;
+    }
+
   protected:
     /**
      * \brief Constructor.

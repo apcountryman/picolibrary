@@ -40,6 +40,7 @@ TEST( constructorDefault, worksProperly )
     EXPECT_FALSE( stream.error_present() );
     EXPECT_TRUE( stream );
     EXPECT_FALSE( not stream );
+    EXPECT_FALSE( stream.end_of_file_reached() );
 }
 
 /**
