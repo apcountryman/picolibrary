@@ -269,6 +269,17 @@ class Stream {
         return false;
     }
 
+    /**
+     * \brief Check if a fatal error is present.
+     *
+     * \return true if a fatal error is present.
+     * \return false if a fatal error is not present.
+     */
+    auto fatal_error_present() const noexcept
+    {
+        return false;
+    }
+
   protected:
     /**
      * \brief Constructor.
