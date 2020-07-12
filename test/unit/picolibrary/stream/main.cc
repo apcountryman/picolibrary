@@ -22,6 +22,7 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/stream.h"
+#include "picolibrary/testing/unit/stream.h"
 
 namespace {
 
@@ -42,7 +43,10 @@ class Stream : public ::picolibrary::Stream {
     using ::picolibrary::Stream::report_fatal_error;
 
     using ::picolibrary::Stream::buffer;
+    using ::picolibrary::Stream::set_buffer;
 };
+
+using ::picolibrary::Testing::Unit::Mock_Stream_Buffer;
 
 } // namespace
 
@@ -188,6 +192,22 @@ TEST( fatalError, worksProperly )
     EXPECT_TRUE( stream );
     EXPECT_FALSE( not stream );
     EXPECT_FALSE( stream.fatal_error_present() );
+}
+
+/**
+ * \brief Verify picolibrary::Stream::buffer(), picolibrary::Stream::buffer_is_set(), and
+ *        picolibrary::Stream::set_buffer() work properly.
+ */
+TEST( buffer, worksProperly )
+{
+    auto stream = Stream{};
+
+    auto buffer = Mock_Stream_Buffer{};
+
+    stream.set_buffer( &buffer );
+
+    EXPECT_TRUE( stream.buffer_is_set() );
+    EXPECT_EQ( stream.buffer(), &buffer );
 }
 
 /**

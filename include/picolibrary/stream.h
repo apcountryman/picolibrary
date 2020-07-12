@@ -305,9 +305,9 @@ class Stream {
      * \return false if the I/O stream is not associated with an I/O stream device access
      *         buffer.
      */
-    constexpr auto buffer_is_set() const noexcept
+    constexpr auto buffer_is_set() const noexcept -> bool
     {
-        return false;
+        return m_buffer;
     }
 
   protected:
@@ -385,9 +385,20 @@ class Stream {
      *
      * \return The I/O stream device access buffer associated with the I/O stream.
      */
-    constexpr auto buffer() noexcept -> Stream_Buffer *
+    constexpr auto buffer() noexcept
     {
-        return nullptr;
+        return m_buffer;
+    }
+
+    /**
+     * \brief Associate the I/O stream with an I/O stream device access buffer.
+     *
+     * \param[in] buffer The I/O stream device access buffer to associate the I/O stream
+     *            with.
+     */
+    constexpr void set_buffer( Stream_Buffer * buffer ) noexcept
+    {
+        m_buffer = buffer;
     }
 
   private:
@@ -420,6 +431,11 @@ class Stream {
      * \brief The I/O stream's state flags.
      */
     State m_state{};
+
+    /**
+     * \brief The I/O stream device access buffer associated with the I/O stream.
+     */
+    Stream_Buffer * m_buffer{};
 };
 
 } // namespace picolibrary
