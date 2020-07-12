@@ -217,6 +217,17 @@ class Stream {
         return true;
     }
 
+    /**
+     * \brief Check if errors are present (I/O error and/or fatal error present).
+     *
+     * \return true if an error is present.
+     * \return false if an error is not present.
+     */
+    auto error_present() const noexcept
+    {
+        return false;
+    }
+
   protected:
     /**
      * \brief Constructor.
