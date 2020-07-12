@@ -103,6 +103,31 @@ TEST( endOfFileReached, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::Stream::io_error_present(), and
+ *        picolibrary::Stream::report_io_error() work properly.
+ */
+TEST( ioError, worksProperly )
+{
+    auto stream = Stream{};
+
+    stream.report_io_error();
+
+    EXPECT_FALSE( stream.is_nominal() );
+    EXPECT_TRUE( stream.error_present() );
+    EXPECT_FALSE( stream );
+    EXPECT_TRUE( not stream );
+    EXPECT_TRUE( stream.io_error_present() );
+
+    stream.report_io_error();
+
+    EXPECT_FALSE( stream.is_nominal() );
+    EXPECT_TRUE( stream.error_present() );
+    EXPECT_FALSE( stream );
+    EXPECT_TRUE( not stream );
+    EXPECT_TRUE( stream.io_error_present() );
+}
+
+/**
  * \brief Execute the picolibrary::Stream unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().

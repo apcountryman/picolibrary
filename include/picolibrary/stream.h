@@ -223,9 +223,9 @@ class Stream {
      * \return true if an error is present.
      * \return false if an error is not present.
      */
-    constexpr auto error_present() const noexcept
+    constexpr auto error_present() const noexcept -> bool
     {
-        return false;
+        return m_state & Mask::ERROR_PRESENT;
     }
 
     /**
@@ -253,9 +253,9 @@ class Stream {
      * \return true if end-of-file has been reached.
      * \return false if end-of-file has not been reached.
      */
-    constexpr auto end_of_file_reached() const noexcept
+    constexpr auto end_of_file_reached() const noexcept -> bool
     {
-        return m_state;
+        return m_state & Mask::END_OF_FILE_REACHED;
     }
 
     /**
@@ -264,9 +264,17 @@ class Stream {
      * \return true if an I/O error is present.
      * \return false if an I/O error is not present.
      */
-    constexpr auto io_error_present() const noexcept
+    constexpr auto io_error_present() const noexcept -> bool
     {
-        return false;
+        return m_state & Mask::IO_ERROR_PRESENT;
+    }
+
+    /**
+     * \brief Report an I/O error.
+     */
+    constexpr void report_io_error() noexcept
+    {
+        m_state |= Mask::IO_ERROR_PRESENT;
     }
 
     /**
@@ -355,6 +363,7 @@ class Stream {
      */
     enum Bit : std::uint_fast8_t {
         END_OF_FILE_REACHED, ///< End-of-file reached.
+        IO_ERROR_PRESENT,    ///< I/O error present.
     };
 
     /**
@@ -362,6 +371,9 @@ class Stream {
      */
     struct Mask {
         static constexpr auto END_OF_FILE_REACHED = State{ 0b1 << Bit::END_OF_FILE_REACHED }; ///< End-of-file reached.
+        static constexpr auto IO_ERROR_PRESENT = State{ 0b1 << Bit::IO_ERROR_PRESENT }; ///< I/O error present.
+
+        static constexpr auto ERROR_PRESENT = State{ IO_ERROR_PRESENT }; ///< Error present.
     };
 
     /**
