@@ -359,6 +359,14 @@ class Stream {
     }
 
     /**
+     * \brief Clear a fatal error.
+     */
+    constexpr void clear_fatal_error() noexcept
+    {
+        m_state &= ~Mask::FATAL_ERROR_PRESENT;
+    }
+
+    /**
      * \brief Get the I/O stream device access buffer associated with the I/O stream.
      *
      * \return The I/O stream device access buffer associated with the I/O stream.

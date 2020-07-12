@@ -38,6 +38,7 @@ class Stream : public ::picolibrary::Stream {
     using ::picolibrary::Stream::clear_end_of_file_reached_report;
     using ::picolibrary::Stream::report_end_of_file_reached;
 
+    using ::picolibrary::Stream::clear_fatal_error;
     using ::picolibrary::Stream::report_fatal_error;
 
     using ::picolibrary::Stream::buffer;
@@ -147,13 +148,22 @@ TEST( ioError, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::fatal_error_present(), and
- *        picolibrary::Stream::report_fatal_error() work properly.
+ * \brief Verify picolibrary::fatal_error_present(),
+ *        picolibrary::Stream::report_fatal_error(), and
+ *        picolibrary::Stream::clear_fatal_error() work properly.
  */
 TEST( fatalError, worksProperly )
 {
     auto stream = Stream{};
 
+    stream.clear_fatal_error();
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_FALSE( stream.error_present() );
+    EXPECT_TRUE( stream );
+    EXPECT_FALSE( not stream );
+    EXPECT_FALSE( stream.fatal_error_present() );
+
     stream.report_fatal_error();
 
     EXPECT_FALSE( stream.is_nominal() );
@@ -169,6 +179,14 @@ TEST( fatalError, worksProperly )
     EXPECT_FALSE( stream );
     EXPECT_TRUE( not stream );
     EXPECT_TRUE( stream.fatal_error_present() );
+
+    stream.clear_fatal_error();
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_FALSE( stream.error_present() );
+    EXPECT_TRUE( stream );
+    EXPECT_FALSE( not stream );
+    EXPECT_FALSE( stream.fatal_error_present() );
 }
 
 /**
