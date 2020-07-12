@@ -291,9 +291,9 @@ class Stream {
      * \return true if a fatal error is present.
      * \return false if a fatal error is not present.
      */
-    constexpr auto fatal_error_present() const noexcept
+    constexpr auto fatal_error_present() const noexcept -> bool
     {
-        return false;
+        return m_state & Mask::FATAL_ERROR_PRESENT;
     }
 
   protected:
@@ -351,6 +351,14 @@ class Stream {
     }
 
     /**
+     * \brief Report a fatal error.
+     */
+    constexpr void report_fatal_error() noexcept
+    {
+        m_state |= Mask::FATAL_ERROR_PRESENT;
+    }
+
+    /**
      * \brief Get the I/O stream device access buffer associated with the I/O stream.
      *
      * \return The I/O stream device access buffer associated with the I/O stream.
@@ -372,6 +380,7 @@ class Stream {
     enum Bit : std::uint_fast8_t {
         END_OF_FILE_REACHED, ///< End-of-file reached.
         IO_ERROR_PRESENT,    ///< I/O error present.
+        FATAL_ERROR_PRESENT, ///< Fatal error present.
     };
 
     /**
@@ -380,8 +389,9 @@ class Stream {
     struct Mask {
         static constexpr auto END_OF_FILE_REACHED = State{ 0b1 << Bit::END_OF_FILE_REACHED }; ///< End-of-file reached.
         static constexpr auto IO_ERROR_PRESENT = State{ 0b1 << Bit::IO_ERROR_PRESENT }; ///< I/O error present.
+        static constexpr auto FATAL_ERROR_PRESENT = State{ 0b1 << Bit::FATAL_ERROR_PRESENT }; ///< Fatal error present.
 
-        static constexpr auto ERROR_PRESENT = State{ IO_ERROR_PRESENT }; ///< Error present.
+        static constexpr auto ERROR_PRESENT = State{ IO_ERROR_PRESENT | FATAL_ERROR_PRESENT }; ///< Error present.
     };
 
     /**
