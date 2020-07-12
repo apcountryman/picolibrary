@@ -23,6 +23,20 @@
 #include "gtest/gtest.h"
 #include "picolibrary/stream.h"
 
+namespace {
+
+using ::picolibrary::Stream;
+
+} // namespace
+
+/**
+ * \brief Verify picolibrary::Stream::Stream() works properly.
+ */
+TEST( constructorDefault, worksProperly )
+{
+    auto const stream = Stream{};
+}
+
 /**
  * \brief Execute the picolibrary::Stream unit tests.
  *
