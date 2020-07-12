@@ -41,6 +41,7 @@ TEST( constructorDefault, worksProperly )
     EXPECT_TRUE( stream );
     EXPECT_FALSE( not stream );
     EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_FALSE( stream.io_error_present() );
 }
 
 /**
