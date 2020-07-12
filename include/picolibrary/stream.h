@@ -214,7 +214,7 @@ class Stream {
      */
     constexpr auto is_nominal() const noexcept
     {
-        return true;
+        return not m_state;
     }
 
     /**
@@ -255,7 +255,7 @@ class Stream {
      */
     constexpr auto end_of_file_reached() const noexcept
     {
-        return false;
+        return m_state;
     }
 
     /**
@@ -319,6 +319,14 @@ class Stream {
     constexpr auto operator=( Stream const & expression ) noexcept -> Stream & = default;
 
     /**
+     * \brief Report that end-of-file has been reached.
+     */
+    constexpr void report_end_of_file_reached() noexcept
+    {
+        m_state |= Mask::END_OF_FILE_REACHED;
+    }
+
+    /**
      * \brief Get the I/O stream device access buffer associated with the I/O stream.
      *
      * \return The I/O stream device access buffer associated with the I/O stream.
@@ -327,6 +335,31 @@ class Stream {
     {
         return nullptr;
     }
+
+  private:
+    /**
+     * \brief State flags.
+     */
+    using State = std::uint_fast8_t;
+
+    /**
+     * \brief State flag bit positions.
+     */
+    enum Bit : std::uint_fast8_t {
+        END_OF_FILE_REACHED, ///< End-of-file reached.
+    };
+
+    /**
+     * \brief State flag bit masks.
+     */
+    struct Mask {
+        static constexpr auto END_OF_FILE_REACHED = State{ 0b1 << Bit::END_OF_FILE_REACHED }; ///< End-of-file reached.
+    };
+
+    /**
+     * \brief The stream's state flags.
+     */
+    State m_state{};
 };
 
 } // namespace picolibrary

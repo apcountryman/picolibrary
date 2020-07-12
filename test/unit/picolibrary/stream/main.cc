@@ -27,17 +27,15 @@ namespace {
 
 class Stream : public ::picolibrary::Stream {
   public:
-    constexpr Stream() noexcept = default;
-
-    constexpr Stream( Stream && source ) noexcept = default;
-
-    constexpr Stream( Stream const & original ) noexcept = default;
+    using ::picolibrary::Stream::Stream;
 
     ~Stream() noexcept = default;
 
     constexpr auto operator=( Stream && expression ) noexcept -> Stream & = default;
 
     constexpr auto operator=( Stream const & expression ) noexcept -> Stream & = default;
+
+    using ::picolibrary::Stream::report_end_of_file_reached;
 
     using ::picolibrary::Stream::buffer;
 };
@@ -59,6 +57,31 @@ TEST( constructorDefault, worksProperly )
     EXPECT_FALSE( stream.io_error_present() );
     EXPECT_FALSE( stream.fatal_error_present() );
     EXPECT_EQ( stream.buffer(), nullptr );
+}
+
+/**
+ * \brief Verify picolibrary::Stream::end_of_file_reached(), and
+ *        picolibrary::Stream::report_end_of_file_reached() work properly.
+ */
+TEST( endOfFileReached, worksProperly )
+{
+    auto stream = Stream{};
+
+    stream.report_end_of_file_reached();
+
+    EXPECT_FALSE( stream.is_nominal() );
+    EXPECT_FALSE( stream.error_present() );
+    EXPECT_TRUE( stream );
+    EXPECT_FALSE( not stream );
+    EXPECT_TRUE( stream.end_of_file_reached() );
+
+    stream.report_end_of_file_reached();
+
+    EXPECT_FALSE( stream.is_nominal() );
+    EXPECT_FALSE( stream.error_present() );
+    EXPECT_TRUE( stream );
+    EXPECT_FALSE( not stream );
+    EXPECT_TRUE( stream.end_of_file_reached() );
 }
 
 /**
