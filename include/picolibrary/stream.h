@@ -190,6 +190,60 @@ class Stream_Buffer {
     constexpr auto operator=( Stream_Buffer const & expression ) noexcept -> Stream_Buffer & = default;
 };
 
+/**
+ * \brief I/O stream core (base class)
+ *
+ * This class handles the following for an I/O stream:
+ * - Stores the I/O stream's state information (end-of-file reached, I/O error present,
+ *   fatal error present)
+ * - Associates the I/O stream with an I/O stream device access buffer
+ */
+class Stream {
+  public:
+    /**
+     * \brief Destructor.
+     */
+    ~Stream() noexcept = default;
+
+  protected:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Stream() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Stream( Stream && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Stream( Stream const & original ) noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Stream && expression ) noexcept -> Stream & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Stream const & expression ) noexcept -> Stream & = default;
+};
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_STREAM_H
