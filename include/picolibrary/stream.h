@@ -220,8 +220,8 @@ class Stream {
     /**
      * \brief Check if errors are present (I/O error and/or fatal error present).
      *
-     * \return true if an error is present.
-     * \return false if an error is not present.
+     * \return true if errors are present.
+     * \return false if no errors are present.
      */
     constexpr auto error_present() const noexcept -> bool
     {
@@ -229,10 +229,10 @@ class Stream {
     }
 
     /**
-     * \brief Check if errors are not present (I/O error and fatal error not present).
+     * \brief Check if no errors are present (I/O error and fatal error not present).
      *
-     * \return true if an error is not present.
-     * \return false if an error is present.
+     * \return true if no errors are present.
+     * \return false if errors are present.
      */
     constexpr explicit operator bool() const noexcept
     {
