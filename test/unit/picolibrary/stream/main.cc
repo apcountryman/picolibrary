@@ -39,6 +39,7 @@ TEST( constructorDefault, worksProperly )
     EXPECT_TRUE( stream.is_nominal() );
     EXPECT_FALSE( stream.error_present() );
     EXPECT_TRUE( stream );
+    EXPECT_FALSE( not stream );
 }
 
 /**

@@ -239,6 +239,14 @@ class Stream {
         return not error_present();
     }
 
+    /**
+     * \copydoc picolibrary::Stream::error_present()
+     */
+    auto operator!() const noexcept
+    {
+        return error_present();
+    }
+
   protected:
     /**
      * \brief Constructor.
