@@ -278,6 +278,14 @@ class Stream {
     }
 
     /**
+     * \brief Clear an I/O error.
+     */
+    constexpr void clear_io_error() noexcept
+    {
+        m_state &= ~Mask::IO_ERROR_PRESENT;
+    }
+
+    /**
      * \brief Check if a fatal error is present.
      *
      * \return true if a fatal error is present.

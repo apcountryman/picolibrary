@@ -103,13 +103,22 @@ TEST( endOfFileReached, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Stream::io_error_present(), and
- *        picolibrary::Stream::report_io_error() work properly.
+ * \brief Verify picolibrary::Stream::io_error_present(),
+ *        picolibrary::Stream::report_io_error(), and
+ *        picolibrary::Stream::clear_io_error_report() work properly.
  */
 TEST( ioError, worksProperly )
 {
     auto stream = Stream{};
 
+    stream.clear_io_error();
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_FALSE( stream.error_present() );
+    EXPECT_TRUE( stream );
+    EXPECT_FALSE( not stream );
+    EXPECT_FALSE( stream.io_error_present() );
+
     stream.report_io_error();
 
     EXPECT_FALSE( stream.is_nominal() );
@@ -125,6 +134,14 @@ TEST( ioError, worksProperly )
     EXPECT_FALSE( stream );
     EXPECT_TRUE( not stream );
     EXPECT_TRUE( stream.io_error_present() );
+
+    stream.clear_io_error();
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_FALSE( stream.error_present() );
+    EXPECT_TRUE( stream );
+    EXPECT_FALSE( not stream );
+    EXPECT_FALSE( stream.io_error_present() );
 }
 
 /**
