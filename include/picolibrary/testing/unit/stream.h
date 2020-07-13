@@ -122,6 +122,65 @@ class Mock_Stream_Buffer : public Stream_Buffer {
     MOCK_METHOD( (Result<Void, Error_Code>), flush, (), ( noexcept, override ) );
 };
 
+/**
+ * \brief Mock output stream.
+ */
+class Mock_Output_Stream : public Output_Stream {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    Mock_Output_Stream()
+    {
+        set_buffer( &m_buffer );
+    }
+
+    /**
+     * \todo #29
+     */
+    Mock_Output_Stream( Mock_Output_Stream && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    Mock_Output_Stream( Mock_Output_Stream const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Mock_Output_Stream() noexcept = default;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Mock_Output_Stream && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Mock_Output_Stream const & ) = delete;
+
+    /**
+     * \brief Get the output stream's I/O stream device access buffer.
+     *
+     * \return The output stream's I/O stream device access buffer.
+     */
+    auto & buffer() noexcept
+    {
+        return m_buffer;
+    }
+
+  private:
+    /**
+     * \brief The output stream's I/O stream device access buffer.
+     */
+    Mock_Stream_Buffer m_buffer{};
+};
+
 } // namespace picolibrary::Testing::Unit
 
 #endif // PICOLIBRARY_TESTING_UNIT_STREAM_H
