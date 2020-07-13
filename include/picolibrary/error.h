@@ -391,9 +391,10 @@ constexpr auto operator!=( Error_Code const & lhs, Error_Code const & rhs ) noex
  * \relatedalso picolibrary::Generic_Error_Category
  */
 enum class Generic_Error : Error_ID {
-    INVALID_ARGUMENT,      ///< Invalid argument
-    UNSUPPORTED_OPERATION, ///< Unsupported operation
-    OPERATION_TIMEOUT,     ///< Operation timeout
+    INVALID_ARGUMENT,      ///< Invalid argument.
+    UNSUPPORTED_OPERATION, ///< Unsupported operation.
+    OPERATION_TIMEOUT,     ///< Operation timeout.
+    IO_STREAM_DEGRADED,    ///< I/O stream degraded.
 };
 
 /**
@@ -455,6 +456,7 @@ class Generic_Error_Category final : public Error_Category {
             case Generic_Error::INVALID_ARGUMENT: return "INVALID_ARGUMENT";
             case Generic_Error::UNSUPPORTED_OPERATION: return "UNSUPPORTED_OPERATION";
             case Generic_Error::OPERATION_TIMEOUT: return "OPERATION_TIMEOUT";
+            case Generic_Error::IO_STREAM_DEGRADED: return "IO_STREAM_DEGRADED";
         } // switch
 
         return "UNKNOWN";
