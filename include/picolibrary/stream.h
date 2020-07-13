@@ -438,6 +438,55 @@ class Stream {
     Stream_Buffer * m_buffer{};
 };
 
+/**
+ * \brief Output stream.
+ */
+class Output_Stream : public Stream {
+  public:
+    /**
+     * \brief Destructor.
+     */
+    ~Output_Stream() noexcept = default;
+
+  protected:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Output_Stream() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Output_Stream( Output_Stream && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Output_Stream( Output_Stream const & original ) noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Output_Stream && expression ) noexcept -> Output_Stream & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Output_Stream const & expression ) noexcept -> Output_Stream & = default;
+};
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_STREAM_H
