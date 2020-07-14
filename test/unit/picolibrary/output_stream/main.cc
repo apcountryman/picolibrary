@@ -19,7 +19,9 @@
  * \brief picolibrary::Output_Stream unit test program.
  */
 
+#include <cstdint>
 #include <string>
+#include <vector>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -250,6 +252,59 @@ TEST( putUnsignedByte, worksProperly )
         .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( stream.put( value ).is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Stream::put( std::uint8_t const *, std::uint8_t const
+ *        * ) properly handles the presence of an I/O error and/or a fatal error.
+ */
+TEST( putUnsignedByteBlock, errorPresent )
+{
+    auto stream = Mock_Output_Stream{};
+
+    stream.report_random_error();
+
+    EXPECT_CALL( stream.buffer(), put( A<std::vector<std::uint8_t>>() ) ).Times( 0 );
+
+    auto const values = random_container<std::vector<std::uint8_t>>();
+    auto const result = stream.put( &*values.begin(), &*values.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), Generic_Error::IO_STREAM_DEGRADED );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Stream::put( std::uint8_t const *, std::uint8_t const
+ *        * ) properly handles a put error.
+ */
+TEST( putUnsignedByteBlock, putError )
+{
+    auto stream = Mock_Output_Stream{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( stream.buffer(), put( A<std::vector<std::uint8_t>>() ) ).WillOnce( Return( error ) );
+
+    auto const values = random_container<std::vector<std::uint8_t>>();
+    auto const result = stream.put( &*values.begin(), &*values.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Stream::put( std::uint8_t const *, std::uint8_t const
+ *        * ) works properly.
+ */
+TEST( putUnsignedByteBlock, worksProperly )
+{
+    auto stream = Mock_Output_Stream{};
+
+    auto const values = random_container<std::vector<std::uint8_t>>();
+
+    EXPECT_CALL( stream.buffer(), put( values ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( stream.put( &*values.begin(), &*values.end() ).is_error() );
 }
 
 /**

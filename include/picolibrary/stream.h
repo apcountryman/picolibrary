@@ -525,6 +525,27 @@ class Output_Stream : public Stream {
         return buffer()->put( value );
     }
 
+    /**
+     * \brief Write a block of unsigned bytes to the stream.
+     *
+     * \pre Neither an I/O error nor a fatal error is present. If either an I/O error or a
+     *      fatal error is present, picolibrary::Generic_Error::IO_STREAM_DEGRADED will be
+     *      returned.
+     *
+     * \param[in] begin The beginning of the block of unsigned bytes to write to the
+     *            stream.
+     * \param[in] end The end of the block of unsigned bytes to write to the stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto put( std::uint8_t const * begin, std::uint8_t const * end ) -> Result<Void, Error_Code>
+    {
+        if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
+
+        return buffer()->put( begin, end );
+    }
+
   protected:
     /**
      * \brief Constructor.
