@@ -448,6 +448,25 @@ class Output_Stream : public Stream {
      */
     ~Output_Stream() noexcept = default;
 
+    /**
+     * \brief Write a character to the stream.
+     *
+     * \pre Neither an I/O error nor a fatal error is present. If either an I/O error or a
+     *      fatal error is present, picolibrary::Generic_Error::IO_STREAM_DEGRADED will be
+     *      returned.
+     *
+     * \param[in] character The character to write to the stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto put( char character ) noexcept -> Result<Void, Error_Code>
+    {
+        if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
+
+        return buffer()->put( character );
+    }
+
   protected:
     /**
      * \brief Constructor.

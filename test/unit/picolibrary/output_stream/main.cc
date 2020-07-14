@@ -21,7 +21,79 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "picolibrary/error.h"
+#include "picolibrary/result.h"
 #include "picolibrary/stream.h"
+#include "picolibrary/testing/unit/error.h"
+#include "picolibrary/testing/unit/random.h"
+#include "picolibrary/testing/unit/stream.h"
+#include "picolibrary/utility.h"
+
+namespace {
+
+using ::picolibrary::Error_Code;
+using ::picolibrary::Generic_Error;
+using ::picolibrary::Result;
+using ::picolibrary::Void;
+using ::picolibrary::Testing::Unit::Mock_Error;
+using ::picolibrary::Testing::Unit::Mock_Output_Stream;
+using ::picolibrary::Testing::Unit::random;
+using ::testing::A;
+using ::testing::Eq;
+using ::testing::Return;
+using ::testing::SafeMatcherCast;
+
+} // namespace
+
+/**
+ * \brief Verify picolibrary::Output_Stream::put( char ) properly handles the presence of
+ *        an I/O error and/or a fatal error.
+ */
+TEST( putChar, errorPresent )
+{
+    auto stream = Mock_Output_Stream{};
+
+    stream.report_random_error();
+
+    EXPECT_CALL( stream.buffer(), put( A<char>() ) ).Times( 0 );
+
+    auto const result = stream.put( random<char>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), Generic_Error::IO_STREAM_DEGRADED );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Stream::put( char ) properly handles a put error.
+ */
+TEST( putChar, putError )
+{
+    auto stream = Mock_Output_Stream{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( stream.buffer(), put( A<char>() ) ).WillOnce( Return( error ) );
+
+    auto const result = stream.put( random<char>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Stream::put( char ) works properly.
+ */
+TEST( putChar, worksProperly )
+{
+    auto stream = Mock_Output_Stream{};
+
+    auto const character = random<char>();
+
+    EXPECT_CALL( stream.buffer(), put( SafeMatcherCast<char>( Eq( character ) ) ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( stream.put( character ).is_error() );
+}
 
 /**
  * \brief Execute the picolibrary::Output_Stream unit tests.

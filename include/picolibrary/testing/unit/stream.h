@@ -30,6 +30,7 @@
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
+#include "picolibrary/testing/unit/random.h"
 #include "picolibrary/utility.h"
 
 namespace picolibrary::Testing::Unit {
@@ -172,6 +173,18 @@ class Mock_Output_Stream : public Output_Stream {
     auto & buffer() noexcept
     {
         return m_buffer;
+    }
+
+    /**
+     * \brief Report an I/O error and/or a fatal error.
+     */
+    void report_random_error()
+    {
+        auto const flags = random<std::uint_fast8_t>( 0b01, 0b11 );
+
+        if ( flags & 0b01 ) { report_io_error(); } // if
+
+        if ( flags & 0b10 ) { report_fatal_error(); } // if
     }
 
   private:
