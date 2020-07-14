@@ -19,6 +19,8 @@
  * \brief picolibrary::Output_Stream unit test program.
  */
 
+#include <string>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/error.h"
@@ -38,6 +40,7 @@ using ::picolibrary::Void;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::Mock_Output_Stream;
 using ::picolibrary::Testing::Unit::random;
+using ::picolibrary::Testing::Unit::random_container;
 using ::testing::A;
 using ::testing::Eq;
 using ::testing::Return;
@@ -93,6 +96,59 @@ TEST( putChar, worksProperly )
         .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( stream.put( character ).is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Stream::put( char const *, char const * ) properly
+ *        handles the presence of an I/O error and/or a fatal error.
+ */
+TEST( putCharBlock, errorPresent )
+{
+    auto stream = Mock_Output_Stream{};
+
+    stream.report_random_error();
+
+    EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).Times( 0 );
+
+    auto const string = random_container<std::string>();
+    auto const result = stream.put( &*string.begin(), &*string.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), Generic_Error::IO_STREAM_DEGRADED );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Stream::put( char const *, char const * ) properly
+ *        handles a put error.
+ */
+TEST( putCharBlock, putError )
+{
+    auto stream = Mock_Output_Stream{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
+
+    auto const string = random_container<std::string>();
+    auto const result = stream.put( &*string.begin(), &*string.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Stream::put( char const *, char const * ) works
+ *        properly.
+ */
+TEST( putCharBlock, worksProperly )
+{
+    auto stream = Mock_Output_Stream{};
+
+    auto const string = random_container<std::string>();
+
+    EXPECT_CALL( stream.buffer(), put( string ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( stream.put( &*string.begin(), &*string.end() ).is_error() );
 }
 
 /**
