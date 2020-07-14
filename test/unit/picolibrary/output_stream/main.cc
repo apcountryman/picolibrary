@@ -152,6 +152,56 @@ TEST( putCharBlock, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::Output_Stream::put( char const * ) properly handles the
+ *        presence of an I/O error and/or a fatal error.
+ */
+TEST( putNullTerminatedString, errorPresent )
+{
+    auto stream = Mock_Output_Stream{};
+
+    stream.report_random_error();
+
+    EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).Times( 0 );
+
+    auto const result = stream.put( random_container<std::string>().c_str() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), Generic_Error::IO_STREAM_DEGRADED );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Stream::put( char const * ) properly handles a put
+ *        error.
+ */
+TEST( putNullTerminatedString, putError )
+{
+    auto stream = Mock_Output_Stream{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
+
+    auto const result = stream.put( random_container<std::string>().c_str() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Stream::put( char const * ) works properly.
+ */
+TEST( putNullTerminatedString, worksProperly )
+{
+    auto stream = Mock_Output_Stream{};
+
+    auto const string = random_container<std::string>();
+
+    EXPECT_CALL( stream.buffer(), put( string ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( stream.put( string.c_str() ).is_error() );
+}
+
+/**
  * \brief Execute the picolibrary::Output_Stream unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
