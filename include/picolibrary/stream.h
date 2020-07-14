@@ -144,7 +144,7 @@ class Stream_Buffer {
     }
 
     /**
-     * \brief Write the contents of the put area of the buffer to the device.
+     * \brief Write any data that is buffered in the put area of the buffer to the device.
      *
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
@@ -583,6 +583,18 @@ class Output_Stream : public Stream {
         if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
 
         return buffer()->put( begin, end );
+    }
+
+    /**
+     * \brief Write any output that has been buffered to the device associated with the
+     *        stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto flush() noexcept
+    {
+        return buffer()->flush();
     }
 
   protected:

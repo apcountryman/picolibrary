@@ -412,6 +412,35 @@ TEST( putSignedByteBlock, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::Output_Stream::flush() properly handles a flush error.
+ */
+TEST( flush, flushError )
+{
+    auto stream = Mock_Output_Stream{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( stream.buffer(), flush() ).WillOnce( Return( error ) );
+
+    auto const result = stream.flush();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Stream::flush() works properly.
+ */
+TEST( flush, worksProperly )
+{
+    auto stream = Mock_Output_Stream{};
+
+    EXPECT_CALL( stream.buffer(), flush() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( stream.flush().is_error() );
+}
+
+/**
  * \brief Execute the picolibrary::Output_Stream unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
