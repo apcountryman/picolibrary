@@ -359,6 +359,59 @@ TEST( putSignedByte, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::Output_Stream::put( std::int8_t const *, std::int8_t const *
+ *        ) properly handles the presence of an I/O error and/or a fatal error.
+ */
+TEST( putSignedByteBlock, errorPresent )
+{
+    auto stream = Mock_Output_Stream{};
+
+    stream.report_random_error();
+
+    EXPECT_CALL( stream.buffer(), put( A<std::vector<std::int8_t>>() ) ).Times( 0 );
+
+    auto const values = random_container<std::vector<std::int8_t>>();
+    auto const result = stream.put( &*values.begin(), &*values.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), Generic_Error::IO_STREAM_DEGRADED );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Stream::put( std::int8_t const *, std::int8_t const *
+ *        ) properly handles a put error.
+ */
+TEST( putSignedByteBlock, putError )
+{
+    auto stream = Mock_Output_Stream{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( stream.buffer(), put( A<std::vector<std::int8_t>>() ) ).WillOnce( Return( error ) );
+
+    auto const values = random_container<std::vector<std::int8_t>>();
+    auto const result = stream.put( &*values.begin(), &*values.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Stream::put( std::int8_t const *, std::int8_t const *
+ *        ) works properly.
+ */
+TEST( putSignedByteBlock, worksProperly )
+{
+    auto stream = Mock_Output_Stream{};
+
+    auto const values = random_container<std::vector<std::int8_t>>();
+
+    EXPECT_CALL( stream.buffer(), put( values ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( stream.put( &*values.begin(), &*values.end() ).is_error() );
+}
+
+/**
  * \brief Execute the picolibrary::Output_Stream unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
