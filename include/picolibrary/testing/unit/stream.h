@@ -30,6 +30,7 @@
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
+#include "picolibrary/testing/unit/random.h"
 #include "picolibrary/utility.h"
 
 namespace picolibrary::Testing::Unit {
@@ -120,6 +121,77 @@ class Mock_Stream_Buffer : public Stream_Buffer {
     }
 
     MOCK_METHOD( (Result<Void, Error_Code>), flush, (), ( noexcept, override ) );
+};
+
+/**
+ * \brief Mock output stream.
+ */
+class Mock_Output_Stream : public Output_Stream {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    Mock_Output_Stream()
+    {
+        set_buffer( &m_buffer );
+    }
+
+    /**
+     * \todo #29
+     */
+    Mock_Output_Stream( Mock_Output_Stream && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    Mock_Output_Stream( Mock_Output_Stream const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Mock_Output_Stream() noexcept = default;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Mock_Output_Stream && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Mock_Output_Stream const & ) = delete;
+
+    /**
+     * \brief Get the output stream's I/O stream device access buffer.
+     *
+     * \return The output stream's I/O stream device access buffer.
+     */
+    auto & buffer() noexcept
+    {
+        return m_buffer;
+    }
+
+    /**
+     * \brief Report an I/O error and/or a fatal error.
+     */
+    void report_random_error()
+    {
+        auto const flags = random<std::uint_fast8_t>( 0b01, 0b11 );
+
+        if ( flags & 0b01 ) { report_io_error(); } // if
+
+        if ( flags & 0b10 ) { report_fatal_error(); } // if
+    }
+
+  private:
+    /**
+     * \brief The output stream's I/O stream device access buffer.
+     */
+    Mock_Stream_Buffer m_buffer{};
 };
 
 } // namespace picolibrary::Testing::Unit

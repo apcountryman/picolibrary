@@ -144,7 +144,7 @@ class Stream_Buffer {
     }
 
     /**
-     * \brief Write the contents of the put area of the buffer to the device.
+     * \brief Write any data that is buffered in the put area of the buffer to the device.
      *
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
@@ -436,6 +436,204 @@ class Stream {
      * \brief The I/O stream device access buffer associated with the I/O stream.
      */
     Stream_Buffer * m_buffer{};
+};
+
+/**
+ * \brief Output stream.
+ */
+class Output_Stream : public Stream {
+  public:
+    /**
+     * \brief Destructor.
+     */
+    ~Output_Stream() noexcept = default;
+
+    /**
+     * \brief Write a character to the stream.
+     *
+     * \pre Neither an I/O error nor a fatal error is present. If either an I/O error or a
+     *      fatal error is present, picolibrary::Generic_Error::IO_STREAM_DEGRADED will be
+     *      returned.
+     *
+     * \param[in] character The character to write to the stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto put( char character ) noexcept -> Result<Void, Error_Code>
+    {
+        if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
+
+        return buffer()->put( character );
+    }
+
+    /**
+     * \brief Write a block of characters to the stream.
+     *
+     * \pre Neither an I/O error nor a fatal error is present. If either an I/O error or a
+     *      fatal error is present, picolibrary::Generic_Error::IO_STREAM_DEGRADED will be
+     *      returned.
+     *
+     * \param[in] begin The beginning of the block of characters to write to the stream.
+     * \param[in] end The end of the block of characters to write to the stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto put( char const * begin, char const * end ) -> Result<Void, Error_Code>
+    {
+        if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
+
+        return buffer()->put( begin, end );
+    }
+
+    /**
+     * \brief Write a null-terminated string to the stream.
+     *
+     * \pre Neither an I/O error nor a fatal error is present. If either an I/O error or a
+     *      fatal error is present, picolibrary::Generic_Error::IO_STREAM_DEGRADED will be
+     *      returned.
+     *
+     * \param[in] string The null-terminated string to write to the stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto put( char const * string ) noexcept -> Result<Void, Error_Code>
+    {
+        if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
+
+        return buffer()->put( string );
+    }
+
+    /**
+     * \brief Write an unsigned byte to the stream.
+     *
+     * \pre Neither an I/O error nor a fatal error is present. If either an I/O error or a
+     *      fatal error is present, picolibrary::Generic_Error::IO_STREAM_DEGRADED will be
+     *      returned.
+     *
+     * \param[in] value The unsigned byte to write to the stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto put( std::uint8_t value ) noexcept -> Result<Void, Error_Code>
+    {
+        if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
+
+        return buffer()->put( value );
+    }
+
+    /**
+     * \brief Write a block of unsigned bytes to the stream.
+     *
+     * \pre Neither an I/O error nor a fatal error is present. If either an I/O error or a
+     *      fatal error is present, picolibrary::Generic_Error::IO_STREAM_DEGRADED will be
+     *      returned.
+     *
+     * \param[in] begin The beginning of the block of unsigned bytes to write to the
+     *            stream.
+     * \param[in] end The end of the block of unsigned bytes to write to the stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto put( std::uint8_t const * begin, std::uint8_t const * end ) -> Result<Void, Error_Code>
+    {
+        if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
+
+        return buffer()->put( begin, end );
+    }
+
+    /**
+     * \brief Write a signed byte to the stream.
+     *
+     * \pre Neither an I/O error nor a fatal error is present. If either an I/O error or a
+     *      fatal error is present, picolibrary::Generic_Error::IO_STREAM_DEGRADED will be
+     *      returned.
+     *
+     * \param[in] value The signed byte to write to the stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto put( std::int8_t value ) noexcept -> Result<Void, Error_Code>
+    {
+        if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
+
+        return buffer()->put( value );
+    }
+
+    /**
+     * \brief Write a block of signed bytes to the stream.
+     *
+     * \pre Neither an I/O error nor a fatal error is present. If either an I/O error or a
+     *      fatal error is present, picolibrary::Generic_Error::IO_STREAM_DEGRADED will be
+     *      returned.
+     *
+     * \param[in] begin The beginning of the block of signed bytes to write to the stream.
+     * \param[in] end The end of the block of signed bytes to write to the stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto put( std::int8_t const * begin, std::int8_t const * end ) -> Result<Void, Error_Code>
+    {
+        if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
+
+        return buffer()->put( begin, end );
+    }
+
+    /**
+     * \brief Write any output that has been buffered to the device associated with the
+     *        stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto flush() noexcept
+    {
+        return buffer()->flush();
+    }
+
+  protected:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Output_Stream() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Output_Stream( Output_Stream && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Output_Stream( Output_Stream const & original ) noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Output_Stream && expression ) noexcept -> Output_Stream & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Output_Stream const & expression ) noexcept -> Output_Stream & = default;
 };
 
 } // namespace picolibrary
