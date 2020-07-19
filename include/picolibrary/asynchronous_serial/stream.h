@@ -60,7 +60,11 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
      *
      * \param[in] source The source of the move.
      */
-    constexpr Unbuffered_Output_Stream_Buffer( Unbuffered_Output_Stream_Buffer && source ) noexcept = default;
+    constexpr Unbuffered_Output_Stream_Buffer( Unbuffered_Output_Stream_Buffer && source ) noexcept :
+        m_transmitter{ source.m_transmitter }
+    {
+        source.m_transmitter = nullptr;
+    }
 
     /**
      * \todo #29
