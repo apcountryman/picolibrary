@@ -887,6 +887,28 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
     /**
      * \brief Constructor.
      *
+     * \param[in] result The operation result to construct from.
+     */
+    constexpr explicit Result( Result<Value, Void> && result ) noexcept :
+        m_is_value{ true },
+        m_value{ result.value() }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] result The operation result to construct from.
+     */
+    constexpr explicit Result( Result<Value, Void> const & result ) noexcept :
+        m_is_value{ true },
+        m_value{ result.value() }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
      * \tparam V A type implicitly convertible to Value and not implicitly convertible to
      *           Error.
      *
@@ -1236,6 +1258,28 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      * \brief Operation failed result type.
      */
     using Error = Error_Code;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] result The operation result to construct from.
+     */
+    constexpr explicit Result( Result<Value, Void> && result ) noexcept :
+        m_is_value{ true },
+        m_value{ result.value() }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] result The operation result to construct from.
+     */
+    constexpr explicit Result( Result<Value, Void> const & result ) noexcept :
+        m_is_value{ true },
+        m_value{ result.value() }
+    {
+    }
 
     /**
      * \brief Constructor.
