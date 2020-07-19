@@ -20,9 +20,33 @@
  *        program.
  */
 
+#include <cstdint>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/asynchronous_serial/stream.h"
+#include "picolibrary/testing/unit/asynchronous_serial.h"
+
+namespace {
+
+using Mock_Transmitter = ::picolibrary::Testing::Unit::Asynchronous_Serial::Mock_Transmitter<std::uint8_t>;
+
+using Unbuffered_Output_Stream_Buffer =
+    ::picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer<Mock_Transmitter>;
+
+} // namespace
+
+/**
+ * \brief Verify
+ *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::Unbuffered_Output_Stream_Buffer()
+ *        works properly.
+ */
+TEST( constructorDefault, worksProperly )
+{
+    auto const buffer = Unbuffered_Output_Stream_Buffer{};
+
+    EXPECT_EQ( buffer.transmitter(), nullptr );
+}
 
 /**
  * \brief Execute the picolibrary::Asynchronous_Serial::Unuffered_Output_Stream_Buffer

@@ -80,6 +80,16 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
     auto operator=( Unbuffered_Output_Stream_Buffer const & ) = delete;
 
     /**
+     * \brief Get the transmitter associated with the device access buffer.
+     *
+     * \return The transmitter associated with the device access buffer.
+     */
+    constexpr auto transmitter() const noexcept -> Transmitter const *
+    {
+        return nullptr;
+    }
+
+    /**
      * \copydoc picolibrary::Stream_Buffer::put( char )
      */
     virtual auto put( char character ) noexcept -> Result<Void, Error_Code> override final
