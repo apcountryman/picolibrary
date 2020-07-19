@@ -49,6 +49,20 @@ TEST( constructorDefault, worksProperly )
 }
 
 /**
+ * \brief Verify
+ *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::Unbuffered_Output_Stream_Buffer(
+ *        Transmitter & ) works properly.
+ */
+TEST( constructorTransmitter, worksProperly )
+{
+    auto transmitter = Mock_Transmitter{};
+
+    auto const buffer = Unbuffered_Output_Stream_Buffer{ transmitter };
+
+    EXPECT_EQ( buffer.transmitter(), &transmitter );
+}
+
+/**
  * \brief Execute the picolibrary::Asynchronous_Serial::Unuffered_Output_Stream_Buffer
  *        unit tests.
  *

@@ -48,6 +48,16 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
     /**
      * \brief Constructor.
      *
+     * \param[in] transmitter The transmitter to associate with the device access buffer.
+     */
+    constexpr Unbuffered_Output_Stream_Buffer( Transmitter & transmitter ) noexcept :
+        m_transmitter{ &transmitter }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
      * \param[in] source The source of the move.
      */
     constexpr Unbuffered_Output_Stream_Buffer( Unbuffered_Output_Stream_Buffer && source ) noexcept = default;
@@ -86,7 +96,7 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
      */
     constexpr auto transmitter() const noexcept -> Transmitter const *
     {
-        return nullptr;
+        return m_transmitter;
     }
 
     /**
@@ -126,6 +136,12 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
     {
         return {};
     }
+
+  private:
+    /**
+     * \brief The transmitter associated with the device access buffer.
+     */
+    Transmitter * m_transmitter{};
 };
 
 } // namespace picolibrary::Asynchronous_Serial
