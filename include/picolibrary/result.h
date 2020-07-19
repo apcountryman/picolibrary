@@ -195,6 +195,18 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
     /**
      * \brief Constructor.
      *
+     * \param[in] result The operation result to constructor from.
+     */
+    constexpr explicit Result( Result<Void, Void> result ) noexcept :
+        m_is_value{ true },
+        m_value{}
+    {
+        static_cast<void>( result );
+    }
+
+    /**
+     * \brief Constructor.
+     *
      * \tparam E A type implicitly convertible to Error.
      *
      * \param[in] error The object to construct from.
