@@ -83,8 +83,14 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Unbuffered_Output_Stream_Buffer && expression ) noexcept
-        -> Unbuffered_Output_Stream_Buffer & = default;
+    constexpr auto & operator=( Unbuffered_Output_Stream_Buffer && expression ) noexcept
+    {
+        m_transmitter = expression.m_transmitter;
+
+        expression.m_transmitter = nullptr;
+
+        return *this;
+    }
 
     /**
      * \todo #29
