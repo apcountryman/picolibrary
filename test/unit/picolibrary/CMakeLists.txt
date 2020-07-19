@@ -18,6 +18,9 @@
 # build the picolibrary::Algorithm unit tests
 add_subdirectory( algorithm )
 
+# build the picolibrary::Asynchronous_Serial unit tests
+add_subdirectory( asynchronous_serial )
+
 # build the picolibrary::Error_Code unit tests
 add_subdirectory( error_code )
 
