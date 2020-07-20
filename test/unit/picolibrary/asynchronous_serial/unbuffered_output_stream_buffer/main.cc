@@ -26,9 +26,22 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/asynchronous_serial/stream.h"
+#include "picolibrary/error.h"
+#include "picolibrary/result.h"
 #include "picolibrary/testing/unit/asynchronous_serial.h"
+#include "picolibrary/testing/unit/error.h"
+#include "picolibrary/testing/unit/random.h"
+#include "picolibrary/utility.h"
 
 namespace {
+
+using ::picolibrary::Error_Code;
+using ::picolibrary::Result;
+using ::picolibrary::Void;
+using ::picolibrary::Testing::Unit::Mock_Error;
+using ::picolibrary::Testing::Unit::random;
+using ::testing::_;
+using ::testing::Return;
 
 using Mock_Transmitter = ::picolibrary::Testing::Unit::Asynchronous_Serial::Mock_Transmitter<std::uint8_t>;
 
@@ -98,6 +111,43 @@ TEST( assignmentOperatorMove, worksProperly )
 
     EXPECT_EQ( a.transmitter(), nullptr );
     EXPECT_EQ( b.transmitter(), &transmitter );
+}
+
+/**
+ * \brief Verify picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::put(
+ *        char ) properly handles a put error.
+ */
+TEST( putChar, putError )
+{
+    auto transmitter = Mock_Transmitter{};
+
+    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( transmitter, transmit( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = buffer.put( random<char>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::put(
+ *        char ) works properly.
+ */
+TEST( putChar, worksProperly )
+{
+    auto transmitter = Mock_Transmitter{};
+
+    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter };
+
+    auto const character = random<char>();
+
+    EXPECT_CALL( transmitter, transmit( character ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( buffer.put( character ).is_error() );
 }
 
 /**

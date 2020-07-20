@@ -114,9 +114,7 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
      */
     virtual auto put( char character ) noexcept -> Result<Void, Error_Code> override final
     {
-        static_cast<void>( character );
-
-        return {};
+        return m_transmitter->transmit( character );
     }
 
     /**
