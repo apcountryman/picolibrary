@@ -40,7 +40,7 @@ using ::picolibrary::Result;
 using ::picolibrary::Void;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
-using ::testing::_;
+using ::testing::A;
 using ::testing::Return;
 
 using Mock_Transmitter = ::picolibrary::Testing::Unit::Asynchronous_Serial::Mock_Transmitter<std::uint8_t>;
@@ -125,7 +125,7 @@ TEST( putChar, putError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( transmitter, transmit( _ ) ).WillOnce( Return( error ) );
+    EXPECT_CALL( transmitter, transmit( A<std::uint8_t>() ) ).WillOnce( Return( error ) );
 
     auto const result = buffer.put( random<char>() );
 

@@ -22,6 +22,8 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_ASYNCHRONOUS_SERIAL_H
 #define PICOLIBRARY_TESTING_UNIT_ASYNCHRONOUS_SERIAL_H
 
+#include <vector>
+
 #include "gmock/gmock.h"
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
@@ -82,7 +84,21 @@ class Mock_Transmitter {
 
     MOCK_METHOD( (Result<Void, Error_Code>), transmit, ( Data ) );
 
-    MOCK_METHOD( (Result<Void, Error_Code>), transmit, (Data const *, Data const *));
+    MOCK_METHOD( (Result<Void, Error_Code>), transmit, (std::vector<Data>));
+
+    /**
+     * \brief Transmit a block of data.
+     *
+     * \param[in] begin The beginning of the block of data to transmit.
+     * \param[in] end The end of the block of data to transmit.
+     *
+     * \return Nothing if data transmission succeeded.
+     * \return An error code if data transmission failed.
+     */
+    auto transmit( Data const * begin, Data const * end ) noexcept
+    {
+        return transmit( std::vector<Data>{ begin, end } );
+    }
 };
 
 } // namespace picolibrary::Testing::Unit::Asynchronous_Serial
