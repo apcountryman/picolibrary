@@ -151,6 +151,43 @@ TEST( putChar, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::put(
+ *        std::uint8_t ) properly handles a put error.
+ */
+TEST( putUnsignedByte, putError )
+{
+    auto transmitter = Mock_Transmitter{};
+
+    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( transmitter, transmit( A<std::uint8_t>() ) ).WillOnce( Return( error ) );
+
+    auto const result = buffer.put( random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::put(
+ *        std::uint8_t ) works properly.
+ */
+TEST( putUnsignedByte, worksProperly )
+{
+    auto transmitter = Mock_Transmitter{};
+
+    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter };
+
+    auto const value = random<std::uint8_t>();
+
+    EXPECT_CALL( transmitter, transmit( value ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( buffer.put( value ).is_error() );
+}
+
+/**
  * \brief Execute the picolibrary::Asynchronous_Serial::Unuffered_Output_Stream_Buffer
  *        unit tests.
  *

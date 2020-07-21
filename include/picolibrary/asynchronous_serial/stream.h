@@ -122,9 +122,7 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
      */
     virtual auto put( std::uint8_t value ) noexcept -> Result<Void, Error_Code> override final
     {
-        static_cast<void>( value );
-
-        return {};
+        return m_transmitter->transmit( value );
     }
 
     /**
