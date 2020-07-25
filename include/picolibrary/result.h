@@ -195,7 +195,7 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
     /**
      * \brief Constructor.
      *
-     * \param[in] result The operation result to constructor from.
+     * \param[in] result The operation result to construct from.
      */
     constexpr explicit Result( Result<Void, Void> result ) noexcept :
         m_is_value{ true },
