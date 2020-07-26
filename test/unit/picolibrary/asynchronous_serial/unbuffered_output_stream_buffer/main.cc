@@ -51,25 +51,6 @@ using Unbuffered_Output_Stream_Buffer =
 } // namespace
 
 /**
- * \brief Verify
- *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::operator=(
- *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::Unbuffered_Output_Stream_Buffer
- *        && ) works properly.
- */
-TEST( assignmentOperatorMove, worksProperly )
-{
-    auto transmitter = Mock_Transmitter{};
-
-    auto a = Unbuffered_Output_Stream_Buffer{ transmitter };
-    auto b = Unbuffered_Output_Stream_Buffer{};
-
-    b = std::move( a );
-
-    EXPECT_EQ( a.transmitter(), nullptr );
-    EXPECT_EQ( b.transmitter(), &transmitter );
-}
-
-/**
  * \brief Verify picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::put(
  *        char ) properly handles a put error.
  */
