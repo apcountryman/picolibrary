@@ -49,6 +49,43 @@ using Mock_Transmitter = ::picolibrary::Testing::Unit::Asynchronous_Serial::Mock
 } // namespace
 
 /**
+ * \brief Verify
+ *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::initialize()
+ *        properly handles a transmitter initialization error.
+ */
+TEST( initialize, transmitterInitializationError )
+{
+    auto transmitter = Mock_Transmitter{};
+
+    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( transmitter, initialize() ).WillOnce( Return( error ) );
+
+    auto const result = buffer.initialize();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::initialize()
+ *        works properly.
+ */
+TEST( initialize, worksProperly )
+{
+    auto transmitter = Mock_Transmitter{};
+
+    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
+
+    EXPECT_CALL( transmitter, initialize() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( buffer.initialize().is_error() );
+}
+
+/**
  * \brief Verify picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::put(
  *        char ) properly handles a put error.
  */

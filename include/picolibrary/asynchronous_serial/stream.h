@@ -91,6 +91,17 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
     auto operator=( Unbuffered_Output_Stream_Buffer const & ) = delete;
 
     /**
+     * \brief Initialize the transmitter's hardware.
+     *
+     * \return Nothing if initializing the transmitter's hardware succeeded.
+     * \return An error code if initializing the transmitter's hardware failed.
+     */
+    auto initialize() noexcept
+    {
+        return m_transmitter.initialize();
+    }
+
+    /**
      * \copydoc picolibrary::Stream_Buffer::put( char )
      */
     virtual auto put( char character ) noexcept -> Result<Void, Error_Code> override final
