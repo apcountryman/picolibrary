@@ -52,50 +52,6 @@ using Unbuffered_Output_Stream_Buffer =
 
 /**
  * \brief Verify
- *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::Unbuffered_Output_Stream_Buffer()
- *        works properly.
- */
-TEST( constructorDefault, worksProperly )
-{
-    auto const buffer = Unbuffered_Output_Stream_Buffer{};
-
-    EXPECT_EQ( buffer.transmitter(), nullptr );
-}
-
-/**
- * \brief Verify
- *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::Unbuffered_Output_Stream_Buffer(
- *        Transmitter & ) works properly.
- */
-TEST( constructorTransmitter, worksProperly )
-{
-    auto transmitter = Mock_Transmitter{};
-
-    auto const buffer = Unbuffered_Output_Stream_Buffer{ transmitter };
-
-    EXPECT_EQ( buffer.transmitter(), &transmitter );
-}
-
-/**
- * \brief Verify
- *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::Unbuffered_Output_Stream_Buffer(
- *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::Unbuffered_Output_Stream_Buffer
- *        && ) works properly.
- */
-TEST( constructorMove, worksProperly )
-{
-    auto transmitter = Mock_Transmitter{};
-
-    auto source = Unbuffered_Output_Stream_Buffer{ transmitter };
-
-    auto const buffer = Unbuffered_Output_Stream_Buffer{ std::move( source ) };
-
-    EXPECT_EQ( source.transmitter(), nullptr );
-    EXPECT_EQ( buffer.transmitter(), &transmitter );
-}
-
-/**
- * \brief Verify
  *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::operator=(
  *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::Unbuffered_Output_Stream_Buffer
  *        && ) works properly.
