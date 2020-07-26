@@ -38,15 +38,13 @@ namespace {
 using ::picolibrary::Error_Code;
 using ::picolibrary::Result;
 using ::picolibrary::Void;
+using ::picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
 using ::testing::A;
 using ::testing::Return;
 
 using Mock_Transmitter = ::picolibrary::Testing::Unit::Asynchronous_Serial::Mock_Transmitter<std::uint8_t>;
-
-using Unbuffered_Output_Stream_Buffer =
-    ::picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer<Mock_Transmitter>;
 
 } // namespace
 
@@ -58,7 +56,7 @@ TEST( putChar, putError )
 {
     auto transmitter = Mock_Transmitter{};
 
-    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter };
+    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
 
     auto const error = random<Mock_Error>();
 
@@ -78,7 +76,7 @@ TEST( putChar, worksProperly )
 {
     auto transmitter = Mock_Transmitter{};
 
-    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter };
+    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
 
     auto const character = random<char>();
 
@@ -95,7 +93,7 @@ TEST( putUnsignedByte, putError )
 {
     auto transmitter = Mock_Transmitter{};
 
-    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter };
+    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
 
     auto const error = random<Mock_Error>();
 
@@ -115,7 +113,7 @@ TEST( putUnsignedByte, worksProperly )
 {
     auto transmitter = Mock_Transmitter{};
 
-    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter };
+    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
 
     auto const value = random<std::uint8_t>();
 
@@ -132,7 +130,7 @@ TEST( putSignedByte, putError )
 {
     auto transmitter = Mock_Transmitter{};
 
-    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter };
+    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
 
     auto const error = random<Mock_Error>();
 
@@ -152,7 +150,7 @@ TEST( putSignedByte, worksProperly )
 {
     auto transmitter = Mock_Transmitter{};
 
-    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter };
+    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
 
     auto const value = random<std::int8_t>();
 
@@ -170,7 +168,7 @@ TEST( flush, worksProperly )
 {
     auto transmitter = Mock_Transmitter{};
 
-    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter };
+    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
 
     EXPECT_FALSE( buffer.flush().is_error() );
 }
