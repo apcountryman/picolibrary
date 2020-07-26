@@ -38,6 +38,7 @@ namespace {
 using ::picolibrary::Error_Code;
 using ::picolibrary::Result;
 using ::picolibrary::Void;
+using ::picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
 using ::testing::A;
@@ -45,72 +46,43 @@ using ::testing::Return;
 
 using Mock_Transmitter = ::picolibrary::Testing::Unit::Asynchronous_Serial::Mock_Transmitter<std::uint8_t>;
 
-using Unbuffered_Output_Stream_Buffer =
-    ::picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer<Mock_Transmitter>;
-
 } // namespace
 
 /**
  * \brief Verify
- *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::Unbuffered_Output_Stream_Buffer()
+ *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::initialize()
+ *        properly handles a transmitter initialization error.
+ */
+TEST( initialize, transmitterInitializationError )
+{
+    auto transmitter = Mock_Transmitter{};
+
+    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( transmitter, initialize() ).WillOnce( Return( error ) );
+
+    auto const result = buffer.initialize();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::initialize()
  *        works properly.
  */
-TEST( constructorDefault, worksProperly )
-{
-    auto const buffer = Unbuffered_Output_Stream_Buffer{};
-
-    EXPECT_EQ( buffer.transmitter(), nullptr );
-}
-
-/**
- * \brief Verify
- *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::Unbuffered_Output_Stream_Buffer(
- *        Transmitter & ) works properly.
- */
-TEST( constructorTransmitter, worksProperly )
+TEST( initialize, worksProperly )
 {
     auto transmitter = Mock_Transmitter{};
 
-    auto const buffer = Unbuffered_Output_Stream_Buffer{ transmitter };
+    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
 
-    EXPECT_EQ( buffer.transmitter(), &transmitter );
-}
+    EXPECT_CALL( transmitter, initialize() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
-/**
- * \brief Verify
- *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::Unbuffered_Output_Stream_Buffer(
- *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::Unbuffered_Output_Stream_Buffer
- *        && ) works properly.
- */
-TEST( constructorMove, worksProperly )
-{
-    auto transmitter = Mock_Transmitter{};
-
-    auto source = Unbuffered_Output_Stream_Buffer{ transmitter };
-
-    auto const buffer = Unbuffered_Output_Stream_Buffer{ std::move( source ) };
-
-    EXPECT_EQ( source.transmitter(), nullptr );
-    EXPECT_EQ( buffer.transmitter(), &transmitter );
-}
-
-/**
- * \brief Verify
- *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::operator=(
- *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer::Unbuffered_Output_Stream_Buffer
- *        && ) works properly.
- */
-TEST( assignmentOperatorMove, worksProperly )
-{
-    auto transmitter = Mock_Transmitter{};
-
-    auto a = Unbuffered_Output_Stream_Buffer{ transmitter };
-    auto b = Unbuffered_Output_Stream_Buffer{};
-
-    b = std::move( a );
-
-    EXPECT_EQ( a.transmitter(), nullptr );
-    EXPECT_EQ( b.transmitter(), &transmitter );
+    EXPECT_FALSE( buffer.initialize().is_error() );
 }
 
 /**
@@ -121,7 +93,7 @@ TEST( putChar, putError )
 {
     auto transmitter = Mock_Transmitter{};
 
-    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter };
+    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
 
     auto const error = random<Mock_Error>();
 
@@ -141,7 +113,7 @@ TEST( putChar, worksProperly )
 {
     auto transmitter = Mock_Transmitter{};
 
-    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter };
+    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
 
     auto const character = random<char>();
 
@@ -158,7 +130,7 @@ TEST( putUnsignedByte, putError )
 {
     auto transmitter = Mock_Transmitter{};
 
-    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter };
+    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
 
     auto const error = random<Mock_Error>();
 
@@ -178,7 +150,7 @@ TEST( putUnsignedByte, worksProperly )
 {
     auto transmitter = Mock_Transmitter{};
 
-    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter };
+    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
 
     auto const value = random<std::uint8_t>();
 
@@ -195,7 +167,7 @@ TEST( putSignedByte, putError )
 {
     auto transmitter = Mock_Transmitter{};
 
-    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter };
+    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
 
     auto const error = random<Mock_Error>();
 
@@ -215,7 +187,7 @@ TEST( putSignedByte, worksProperly )
 {
     auto transmitter = Mock_Transmitter{};
 
-    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter };
+    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
 
     auto const value = random<std::int8_t>();
 
@@ -233,7 +205,7 @@ TEST( flush, worksProperly )
 {
     auto transmitter = Mock_Transmitter{};
 
-    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter };
+    auto buffer = Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
 
     EXPECT_FALSE( buffer.flush().is_error() );
 }

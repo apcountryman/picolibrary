@@ -23,6 +23,7 @@
 #define PICOLIBRARY_ASYNCHRONOUS_SERIAL_STREAM_H
 
 #include <cstdint>
+#include <utility>
 
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
@@ -34,8 +35,8 @@ namespace picolibrary::Asynchronous_Serial {
 /**
  * \brief Unbuffered asynchronous serial output stream device access buffer.
  *
- * \tparam Transmitter The type of asynchronous serial transmitter the device access
- *         buffer interfaces with.
+ * \tparam Transmitter The type of asynchronous serial transmitter that is abstracted by
+ *         the device access buffer.
  */
 template<typename Transmitter>
 class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
@@ -48,10 +49,10 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
     /**
      * \brief Constructor.
      *
-     * \param[in] transmitter The transmitter to associate with the device access buffer.
+     * \param[in] transmitter The transmitter to abstract with the device access buffer.
      */
-    constexpr Unbuffered_Output_Stream_Buffer( Transmitter & transmitter ) noexcept :
-        m_transmitter{ &transmitter }
+    constexpr Unbuffered_Output_Stream_Buffer( Transmitter transmitter ) noexcept :
+        m_transmitter{ std::move( transmitter ) }
     {
     }
 
@@ -60,11 +61,7 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
      *
      * \param[in] source The source of the move.
      */
-    constexpr Unbuffered_Output_Stream_Buffer( Unbuffered_Output_Stream_Buffer && source ) noexcept :
-        m_transmitter{ source.m_transmitter }
-    {
-        source.m_transmitter = nullptr;
-    }
+    constexpr Unbuffered_Output_Stream_Buffer( Unbuffered_Output_Stream_Buffer && source ) noexcept = default;
 
     /**
      * \todo #29
@@ -83,14 +80,8 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
      *
      * \return The assigned to object.
      */
-    constexpr auto & operator=( Unbuffered_Output_Stream_Buffer && expression ) noexcept
-    {
-        m_transmitter = expression.m_transmitter;
-
-        expression.m_transmitter = nullptr;
-
-        return *this;
-    }
+    constexpr auto operator=( Unbuffered_Output_Stream_Buffer && expression ) noexcept
+        -> Unbuffered_Output_Stream_Buffer & = default;
 
     /**
      * \todo #29
@@ -100,13 +91,14 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
     auto operator=( Unbuffered_Output_Stream_Buffer const & ) = delete;
 
     /**
-     * \brief Get the transmitter associated with the device access buffer.
+     * \brief Initialize the transmitter's hardware.
      *
-     * \return The transmitter associated with the device access buffer.
+     * \return Nothing if initializing the transmitter's hardware succeeded.
+     * \return An error code if initializing the transmitter's hardware failed.
      */
-    constexpr auto transmitter() const noexcept -> Transmitter const *
+    auto initialize() noexcept
     {
-        return m_transmitter;
+        return m_transmitter.initialize();
     }
 
     /**
@@ -114,7 +106,7 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
      */
     virtual auto put( char character ) noexcept -> Result<Void, Error_Code> override final
     {
-        return m_transmitter->transmit( character );
+        return m_transmitter.transmit( character );
     }
 
     /**
@@ -122,7 +114,7 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
      */
     virtual auto put( std::uint8_t value ) noexcept -> Result<Void, Error_Code> override final
     {
-        return m_transmitter->transmit( value );
+        return m_transmitter.transmit( value );
     }
 
     /**
@@ -130,9 +122,7 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
      */
     virtual auto put( std::int8_t value ) noexcept -> Result<Void, Error_Code> override final
     {
-        return m_transmitter->transmit( value );
-
-        return {};
+        return m_transmitter.transmit( value );
     }
 
     /**
@@ -145,9 +135,9 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
 
   private:
     /**
-     * \brief The transmitter associated with the device access buffer.
+     * \brief The asynchronous serial transmitter abstracted by the device access buffer.
      */
-    Transmitter * m_transmitter{};
+    Transmitter m_transmitter{};
 };
 
 } // namespace picolibrary::Asynchronous_Serial

@@ -47,6 +47,114 @@ class Mock_Transmitter {
     using Data = Data_Type;
 
     /**
+     * \brief Movable mock transmitter handle.
+     */
+    class Handle {
+      public:
+        /**
+         * \brief Constructor.
+         */
+        Handle() noexcept = default;
+
+        /**
+         * \brief Constructor.
+         *
+         * \param[in] mock_transmitter The mock transmitter.
+         */
+        Handle( Mock_Transmitter & mock_transmitter ) noexcept :
+            m_mock_transmitter{ &mock_transmitter }
+        {
+        }
+
+        /**
+         * \brief Constructor.
+         *
+         * \param[in] source The source of the move.
+         */
+        Handle( Handle && source ) noexcept = default;
+
+        /**
+         * \todo #29
+         */
+        Handle( Handle const & ) = delete;
+
+        /**
+         * \brief Destructor.
+         */
+        ~Handle() noexcept = default;
+
+        /**
+         * \brief Assignment operator.
+         *
+         * \param[in] expression The expression to be assigned.
+         *
+         * \return The assigned to object.
+         */
+        auto operator=( Handle && expression ) noexcept -> Handle & = default;
+
+        /**
+         * \todo #29
+         *
+         * \return
+         */
+        auto operator=( Handle const & ) = delete;
+
+        /**
+         * \brief Get the mock transmitter.
+         *
+         * \return The mock transmitter.
+         */
+        auto & mock() noexcept
+        {
+            return *m_mock_transmitter;
+        }
+
+        /**
+         * \brief Initialize the transmitter's hardware.
+         *
+         * \return Nothing if initializing the transmitter's hardware succeeded.
+         * \return An error code if initializing the transmitter's hardware failed.
+         */
+        auto initialize()
+        {
+            return m_mock_transmitter->initialize();
+        }
+
+        /**
+         * \brief Transmit data.
+         *
+         * \param[in] data The data to transmit.
+         *
+         * \return Nothing if data transmission succeeded.
+         * \return An error code if data transmission failed.
+         */
+        auto transmit( Data data )
+        {
+            return m_mock_transmitter->transmit( data );
+        }
+
+        /**
+         * \brief Transmit a block of data.
+         *
+         * \param[in] begin The beginning of the block of data to transmit.
+         * \param[in] end The end of the block of data to transmit.
+         *
+         * \return Nothing if data transmission succeeded.
+         * \return An error code if data transmission failed.
+         */
+        auto transmit( Data const * begin, Data const * end )
+        {
+            return m_mock_transmitter->transmit( begin, end );
+        }
+
+      private:
+        /**
+         * \brief The mock transmitter.
+         */
+        Mock_Transmitter * m_mock_transmitter;
+    };
+
+    /**
      * \brief Constructor.
      */
     Mock_Transmitter() = default;
@@ -79,6 +187,16 @@ class Mock_Transmitter {
      * \return
      */
     auto operator=( Mock_Transmitter const & ) = delete;
+
+    /**
+     * \brief Get a movable handle to the mock transmitter.
+     *
+     * \return A movable handle to the mock transmitter.
+     */
+    auto handle() noexcept
+    {
+        return Handle{ *this };
+    }
 
     MOCK_METHOD( (Result<Void, Error_Code>), initialize, () );
 
