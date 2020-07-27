@@ -140,6 +140,55 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
     Transmitter m_transmitter{};
 };
 
+/**
+ * \brief Unbuffered asynchronous serial output stream.
+ *
+ * \tparam Transmitter The type of asynchronous serial transmitter that is abstracted by
+ *         the stream.
+ */
+template<typename Transmitter>
+class Unbuffered_Output_Stream : public Output_Stream {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Unbuffered_Output_Stream() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Unbuffered_Output_Stream( Unbuffered_Output_Stream && source ) noexcept = default;
+
+    /**
+     * \todo #29
+     */
+    Unbuffered_Output_Stream( Unbuffered_Output_Stream const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Unbuffered_Output_Stream() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator           =( Unbuffered_Output_Stream && expression ) noexcept
+        -> Unbuffered_Output_Stream & = default;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Unbuffered_Output_Stream const & ) = delete;
+};
+
 } // namespace picolibrary::Asynchronous_Serial
 
 #endif // PICOLIBRARY_ASYNCHRONOUS_SERIAL_STREAM_H
