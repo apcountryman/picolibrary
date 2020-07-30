@@ -157,6 +157,17 @@ class Unbuffered_Output_Stream : public Output_Stream {
     /**
      * \brief Constructor.
      *
+     * \param[in] transmitter The transmitter to abstract with the stream.
+     */
+    constexpr Unbuffered_Output_Stream( Transmitter transmitter ) noexcept :
+        m_buffer{ std::move( transmitter ) }
+    {
+        set_buffer( &m_buffer );
+    }
+
+    /**
+     * \brief Constructor.
+     *
      * \param[in] source The source of the move.
      */
     constexpr Unbuffered_Output_Stream( Unbuffered_Output_Stream && source ) noexcept = default;
