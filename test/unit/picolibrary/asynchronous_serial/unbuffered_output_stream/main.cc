@@ -64,8 +64,7 @@ TEST( constructorTransmitter, worksProperly )
 /**
  * \brief Verify
  *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream::Unbuffered_Output_Stream(
- *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream::Unbuffered_Output_Stream
- *        && ) works properly.
+ *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream && ) works properly.
  */
 TEST( constructorMove, worksProperly )
 {
@@ -85,6 +84,60 @@ TEST( constructorMove, worksProperly )
 
         EXPECT_FALSE( source.buffer_is_set() );
         EXPECT_TRUE( destination.buffer_is_set() );
+    }
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream::operator=(
+ *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream && ) works properly.
+ */
+TEST( assignmentOperatorMove, worksProperly )
+{
+    {
+        auto expression = Unbuffered_Output_Stream<Mock_Transmitter::Handle>{};
+        auto object     = Unbuffered_Output_Stream<Mock_Transmitter::Handle>{};
+
+        object = std::move( expression );
+
+        EXPECT_FALSE( expression.buffer_is_set() );
+        EXPECT_FALSE( object.buffer_is_set() );
+    }
+
+    {
+        auto transmitter = Mock_Transmitter{};
+
+        auto expression = Unbuffered_Output_Stream{ transmitter.handle() };
+        auto object     = Unbuffered_Output_Stream<Mock_Transmitter::Handle>{};
+
+        object = std::move( expression );
+
+        EXPECT_FALSE( expression.buffer_is_set() );
+        EXPECT_TRUE( object.buffer_is_set() );
+    }
+
+    {
+        auto transmitter = Mock_Transmitter{};
+
+        auto expression = Unbuffered_Output_Stream<Mock_Transmitter::Handle>{};
+        auto object     = Unbuffered_Output_Stream{ transmitter.handle() };
+
+        object = std::move( expression );
+
+        EXPECT_FALSE( expression.buffer_is_set() );
+        EXPECT_FALSE( object.buffer_is_set() );
+    }
+
+    {
+        auto transmitter = Mock_Transmitter{};
+
+        auto expression = Unbuffered_Output_Stream{ transmitter.handle() };
+        auto object     = Unbuffered_Output_Stream{ transmitter.handle() };
+
+        object = std::move( expression );
+
+        EXPECT_FALSE( expression.buffer_is_set() );
+        EXPECT_TRUE( object.buffer_is_set() );
     }
 }
 

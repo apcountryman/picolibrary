@@ -197,8 +197,20 @@ class Unbuffered_Output_Stream : public Output_Stream {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator           =( Unbuffered_Output_Stream && expression ) noexcept
-        -> Unbuffered_Output_Stream & = default;
+    constexpr auto & operator=( Unbuffered_Output_Stream && expression ) noexcept
+    {
+        m_buffer = std::move( expression.m_buffer );
+
+        if ( expression.buffer_is_set() ) {
+            set_buffer( &m_buffer );
+
+            expression.set_buffer( nullptr );
+        } else {
+            set_buffer( nullptr );
+        } // else
+
+        return *this;
+    }
 
     /**
      * \todo #29
