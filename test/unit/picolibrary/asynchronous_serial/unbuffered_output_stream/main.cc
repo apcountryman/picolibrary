@@ -19,9 +19,32 @@
  * \brief picolibrary::Asynchronous_Serial::Unuffered_Output_Stream unit test program.
  */
 
+#include <cstdint>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/asynchronous_serial/stream.h"
+#include "picolibrary/testing/unit/asynchronous_serial.h"
+
+namespace {
+
+using ::picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream;
+
+using Mock_Transmitter = ::picolibrary::Testing::Unit::Asynchronous_Serial::Mock_Transmitter<std::uint8_t>;
+
+} // namespace
+
+/**
+ * \brief Verify
+ *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream::Unbuffered_Output_Stream()
+ *        works properly.
+ */
+TEST( constructorDefault, worksProperly )
+{
+    auto const stream = Unbuffered_Output_Stream<Mock_Transmitter::Handle>{};
+
+    EXPECT_FALSE( stream.buffer_is_set() );
+}
 
 /**
  * \brief Execute the picolibrary::Asynchronous_Serial::Unuffered_Output_Stream unit

@@ -187,6 +187,12 @@ class Unbuffered_Output_Stream : public Output_Stream {
      * \return
      */
     auto operator=( Unbuffered_Output_Stream const & ) = delete;
+
+  private:
+    /**
+     * \brief The stream's device access buffer.
+     */
+    Unbuffered_Output_Stream_Buffer<Transmitter> m_buffer{};
 };
 
 } // namespace picolibrary::Asynchronous_Serial
