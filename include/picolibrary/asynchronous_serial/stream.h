@@ -219,6 +219,17 @@ class Unbuffered_Output_Stream : public Output_Stream {
      */
     auto operator=( Unbuffered_Output_Stream const & ) = delete;
 
+    /**
+     * \brief Initialize the transmitter's hardware.
+     *
+     * \return Nothing if initializing the transmitter's hardware succeeded.
+     * \return An error code if initializing the transmitter's hardware failed.
+     */
+    auto initialize() noexcept
+    {
+        return m_buffer.initialize();
+    }
+
   private:
     /**
      * \brief The stream's device access buffer.

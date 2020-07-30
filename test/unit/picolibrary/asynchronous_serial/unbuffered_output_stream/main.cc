@@ -25,11 +25,22 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/asynchronous_serial/stream.h"
+#include "picolibrary/error.h"
+#include "picolibrary/result.h"
 #include "picolibrary/testing/unit/asynchronous_serial.h"
+#include "picolibrary/testing/unit/error.h"
+#include "picolibrary/testing/unit/random.h"
+#include "picolibrary/utility.h"
 
 namespace {
 
+using ::picolibrary::Error_Code;
+using ::picolibrary::Result;
+using ::picolibrary::Void;
 using ::picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream;
+using ::picolibrary::Testing::Unit::Mock_Error;
+using ::picolibrary::Testing::Unit::random;
+using ::testing::Return;
 
 using Mock_Transmitter = ::picolibrary::Testing::Unit::Asynchronous_Serial::Mock_Transmitter<std::uint8_t>;
 
@@ -139,6 +150,41 @@ TEST( assignmentOperatorMove, worksProperly )
         EXPECT_FALSE( expression.buffer_is_set() );
         EXPECT_TRUE( object.buffer_is_set() );
     }
+}
+
+/**
+ * \brief Verify picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream::initialize()
+ *        properly handles a transmitter initialization error.
+ */
+TEST( initialize, transmitterInitializationError )
+{
+    auto transmitter = Mock_Transmitter{};
+
+    auto stream = Unbuffered_Output_Stream{ transmitter.handle() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( transmitter, initialize() ).WillOnce( Return( error ) );
+
+    auto const result = stream.initialize();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream::initialize()
+ *        works properly.
+ */
+TEST( initialize, worksProperly )
+{
+    auto transmitter = Mock_Transmitter{};
+
+    auto stream = Unbuffered_Output_Stream{ transmitter.handle() };
+
+    EXPECT_CALL( transmitter, initialize() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( stream.initialize().is_error() );
 }
 
 /**
