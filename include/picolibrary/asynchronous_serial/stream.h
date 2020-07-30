@@ -170,7 +170,15 @@ class Unbuffered_Output_Stream : public Output_Stream {
      *
      * \param[in] source The source of the move.
      */
-    constexpr Unbuffered_Output_Stream( Unbuffered_Output_Stream && source ) noexcept = default;
+    constexpr Unbuffered_Output_Stream( Unbuffered_Output_Stream && source ) noexcept :
+        m_buffer{ std::move( source.m_buffer ) }
+    {
+        if ( source.buffer_is_set() ) {
+            set_buffer( &m_buffer );
+
+            source.set_buffer( nullptr );
+        } // if
+    }
 
     /**
      * \todo #29

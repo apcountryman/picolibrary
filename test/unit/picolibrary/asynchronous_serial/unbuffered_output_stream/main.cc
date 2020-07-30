@@ -20,6 +20,7 @@
  */
 
 #include <cstdint>
+#include <utility>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -58,6 +59,33 @@ TEST( constructorTransmitter, worksProperly )
     auto const stream = Unbuffered_Output_Stream{ transmitter.handle() };
 
     EXPECT_TRUE( stream.buffer_is_set() );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream::Unbuffered_Output_Stream(
+ *        picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream::Unbuffered_Output_Stream
+ *        && ) works properly.
+ */
+TEST( constructorMove, worksProperly )
+{
+    {
+        auto       source      = Unbuffered_Output_Stream<Mock_Transmitter::Handle>{};
+        auto const destination = Unbuffered_Output_Stream{ std::move( source ) };
+
+        EXPECT_FALSE( source.buffer_is_set() );
+        EXPECT_FALSE( destination.buffer_is_set() );
+    }
+
+    {
+        auto transmitter = Mock_Transmitter{};
+
+        auto       source      = Unbuffered_Output_Stream{ transmitter.handle() };
+        auto const destination = Unbuffered_Output_Stream{ std::move( source ) };
+
+        EXPECT_FALSE( source.buffer_is_set() );
+        EXPECT_TRUE( destination.buffer_is_set() );
+    }
 }
 
 /**
