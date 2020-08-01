@@ -140,6 +140,103 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
     Transmitter m_transmitter{};
 };
 
+/**
+ * \brief Unbuffered asynchronous serial output stream.
+ *
+ * \tparam Transmitter The type of asynchronous serial transmitter that is abstracted by
+ *         the stream.
+ */
+template<typename Transmitter>
+class Unbuffered_Output_Stream : public Output_Stream {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Unbuffered_Output_Stream() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] transmitter The transmitter to abstract with the stream.
+     */
+    constexpr Unbuffered_Output_Stream( Transmitter transmitter ) noexcept :
+        m_buffer{ std::move( transmitter ) }
+    {
+        set_buffer( &m_buffer );
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Unbuffered_Output_Stream( Unbuffered_Output_Stream && source ) noexcept :
+        m_buffer{ std::move( source.m_buffer ) }
+    {
+        if ( source.buffer_is_set() ) {
+            set_buffer( &m_buffer );
+
+            source.set_buffer( nullptr );
+        } // if
+    }
+
+    /**
+     * \todo #29
+     */
+    Unbuffered_Output_Stream( Unbuffered_Output_Stream const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Unbuffered_Output_Stream() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto & operator=( Unbuffered_Output_Stream && expression ) noexcept
+    {
+        m_buffer = std::move( expression.m_buffer );
+
+        if ( expression.buffer_is_set() ) {
+            set_buffer( &m_buffer );
+
+            expression.set_buffer( nullptr );
+        } else {
+            set_buffer( nullptr );
+        } // else
+
+        return *this;
+    }
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Unbuffered_Output_Stream const & ) = delete;
+
+    /**
+     * \brief Initialize the transmitter's hardware.
+     *
+     * \return Nothing if initializing the transmitter's hardware succeeded.
+     * \return An error code if initializing the transmitter's hardware failed.
+     */
+    auto initialize() noexcept
+    {
+        return m_buffer.initialize();
+    }
+
+  private:
+    /**
+     * \brief The stream's device access buffer.
+     */
+    Unbuffered_Output_Stream_Buffer<Transmitter> m_buffer{};
+};
+
 } // namespace picolibrary::Asynchronous_Serial
 
 #endif // PICOLIBRARY_ASYNCHRONOUS_SERIAL_STREAM_H

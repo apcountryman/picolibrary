@@ -15,5 +15,8 @@
 # File: test/unit/picolibrary/asynchronous_serial/CMakeLists.txt
 # Description: picolibrary::Asynchronous_Serial unit tests CMake rules.
 
+# build the picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream unit tests
+add_subdirectory( unbuffered_output_stream )
+
 # build the picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer unit tests
 add_subdirectory( unbuffered_output_stream_buffer )
