@@ -22,10 +22,32 @@
 #ifndef PICOLIBRARY_TESTING_INTERACTIVE_ASYNCHRONOUS_SERIAL_STREAM_H
 #define PICOLIBRARY_TESTING_INTERACTIVE_ASYNCHRONOUS_SERIAL_STREAM_H
 
+#include <utility>
+
 /**
  * \brief Asynchronous serial stream interactive testing facilities.
  */
 namespace picolibrary::Testing::Interactive::Asynchronous_Serial::Stream {
+
+/**
+ * \brief Construct an asynchronous serial output stream, initialize the asynchronous
+ *        serial transmitter abstracted by the stream, and output "Hello, world!\n".
+ *
+ * \tparam Output_Stream The type of output stream to use.
+ * \tparam Transmitter The type of transmitter to use.
+ *
+ * \param[in] transmitter The transmitter to use.
+ */
+template<template<typename> typename Output_Stream, typename Transmitter>
+void hello_world( Transmitter transmitter ) noexcept
+{
+    auto stream = Output_Stream{ std::move( transmitter ) };
+
+    if ( stream.initialize().is_error() ) { return; } // if
+
+    static_cast<void>( stream.put( "Hello, world!\n" ) );
+}
+
 } // namespace picolibrary::Testing::Interactive::Asynchronous_Serial::Stream
 
 #endif // PICOLIBRARY_TESTING_INTERACTIVE_ASYNCHRONOUS_SERIAL_STREAM_H
