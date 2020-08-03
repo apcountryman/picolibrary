@@ -37,7 +37,7 @@ namespace picolibrary::Testing::Interactive::Asynchronous_Serial {
 template<typename Transmitter>
 void hello_world( Transmitter transmitter ) noexcept
 {
-    if ( transmitter.initialize().is_error() ) { return; }
+    if ( transmitter.initialize().is_error() ) { return; } // if
 
     auto const * string = "Hello, world!\n";
 
