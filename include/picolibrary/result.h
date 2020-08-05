@@ -197,9 +197,7 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
      *
      * \param[in] result The operation result to construct from.
      */
-    constexpr explicit Result( Result<Void, Void> result ) noexcept :
-        m_is_value{ true },
-        m_value{}
+    constexpr Result( Result<Void, Void> result ) noexcept : m_is_value{ true }, m_value{}
     {
         static_cast<void>( result );
     }
@@ -889,7 +887,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      *
      * \param[in] result The operation result to construct from.
      */
-    constexpr explicit Result( Result<Value, Void> && result ) noexcept :
+    constexpr Result( Result<Value, Void> && result ) noexcept :
         m_is_value{ true },
         m_value{ result.value() }
     {
@@ -900,7 +898,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      *
      * \param[in] result The operation result to construct from.
      */
-    constexpr explicit Result( Result<Value, Void> const & result ) noexcept :
+    constexpr Result( Result<Value, Void> const & result ) noexcept :
         m_is_value{ true },
         m_value{ result.value() }
     {
@@ -1264,7 +1262,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      *
      * \param[in] result The operation result to construct from.
      */
-    constexpr explicit Result( Result<Value, Void> && result ) noexcept :
+    constexpr Result( Result<Value, Void> && result ) noexcept :
         m_is_value{ true },
         m_value{ result.value() }
     {
@@ -1275,7 +1273,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      *
      * \param[in] result The operation result to construct from.
      */
-    constexpr explicit Result( Result<Value, Void> const & result ) noexcept :
+    constexpr Result( Result<Value, Void> const & result ) noexcept :
         m_is_value{ true },
         m_value{ result.value() }
     {
