@@ -29,6 +29,7 @@ set(
     "picolibrary/asynchronous_serial.cc"
     "picolibrary/asynchronous_serial/stream.cc"
     "picolibrary/bit_manipulation.cc"
+    "picolibrary/crc.cc"
     "picolibrary/error.cc"
     "picolibrary/result.cc"
     "picolibrary/stream.cc"
