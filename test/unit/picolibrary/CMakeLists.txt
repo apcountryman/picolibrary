@@ -21,6 +21,9 @@ add_subdirectory( algorithm )
 # build the picolibrary::Asynchronous_Serial unit tests
 add_subdirectory( asynchronous_serial )
 
+# build the picolibrary::Bit_Manupulation unit tests
+add_subdirectory( bit_manipulation )
+
 # build the picolibrary::Error_Code unit tests
 add_subdirectory( error_code )
 
