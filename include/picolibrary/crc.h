@@ -26,6 +26,45 @@
  * \brief Cyclic Redundancy Check (CRC) facilities.
  */
 namespace picolibrary::CRC {
+
+/**
+ * \brief Calculation parameters.
+ *
+ * \tparam Register_Type Calculation register type.
+ */
+template<typename Register_Type>
+struct Parameters {
+    /**
+     * \brief Calculation register type.
+     */
+    using Register = Register_Type;
+
+    /**
+     * \brief Calculation polynomial.
+     */
+    Register polynomial;
+
+    /**
+     * \brief Calculation initial remainder.
+     */
+    Register initial_remainder;
+
+    /**
+     * \brief Calculation input is reflected.
+     */
+    bool input_is_reflected;
+
+    /**
+     * \brief Calculation output is reflected.
+     */
+    bool output_is_reflected;
+
+    /**
+     * \brief Calculation XOR output value.
+     */
+    Register xor_output;
+};
+
 } // namespace picolibrary::CRC
 
 #endif // PICOLIBRARY_CRC_H
