@@ -88,6 +88,11 @@ using Input_Processor = auto ( * )( std::uint8_t byte ) -> std::uint8_t;
 template<typename Register>
 using Output_Processor = auto ( * )( Register remainder ) -> Register;
 
+/**
+ * \brief Calculator implementation selector.
+ */
+enum class Implementation : std::uint_fast8_t {};
+
 } // namespace picolibrary::CRC
 
 #endif // PICOLIBRARY_CRC_H
