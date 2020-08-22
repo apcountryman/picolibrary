@@ -93,6 +93,15 @@ using Output_Processor = auto ( * )( Register remainder ) -> Register;
  */
 enum class Implementation : std::uint_fast8_t {};
 
+/**
+ * \brief Calculator.
+ *
+ * \tparam IMPLEMENTATION The calculator implementation to use.
+ * \tparam Register_Type Calculator register type.
+ */
+template<Implementation IMPLEMENTATION, typename Register_Type>
+class Calculator;
+
 } // namespace picolibrary::CRC
 
 #endif // PICOLIBRARY_CRC_H
