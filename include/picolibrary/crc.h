@@ -22,6 +22,8 @@
 #ifndef PICOLIBRARY_CRC_H
 #define PICOLIBRARY_CRC_H
 
+#include <cstdint>
+
 /**
  * \brief Cyclic Redundancy Check (CRC) facilities.
  */
@@ -64,6 +66,15 @@ struct Parameters {
      */
     Register xor_output;
 };
+
+/**
+ * \brief Calculation input processor.
+ *
+ * \param[in] byte A calculation input byte.
+ *
+ * \return The input byte or its reflection.
+ */
+using Input_Processor = auto ( * )( std::uint8_t byte ) -> std::uint8_t;
 
 } // namespace picolibrary::CRC
 
