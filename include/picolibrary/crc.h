@@ -76,6 +76,18 @@ struct Parameters {
  */
 using Input_Processor = auto ( * )( std::uint8_t byte ) -> std::uint8_t;
 
+/**
+ * \brief Calculation output processor.
+ *
+ * \tparam Register Calculation register type.
+ *
+ * \param[in] remainder The remainder of the calculation.
+ *
+ * \return The remainder of the calculation or its reflection.
+ */
+template<typename Register>
+using Output_Processor = auto ( * )( Register remainder ) -> Register;
+
 } // namespace picolibrary::CRC
 
 #endif // PICOLIBRARY_CRC_H
