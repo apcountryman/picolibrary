@@ -16,7 +16,7 @@
 # Description: Travis CI build configuration for the picolibrary repository.
 
 os: linux
-dist: bionic
+dist: focal
 
 jobs:
     include:
