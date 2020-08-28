@@ -89,18 +89,81 @@ template<typename Register>
 using Output_Processor = auto ( * )( Register remainder ) -> Register;
 
 /**
- * \brief Calculator implementation selector.
- */
-enum class Implementation : std::uint_fast8_t {};
-
-/**
- * \brief Calculator.
+ * \brief Calculator concept.
  *
- * \tparam IMPLEMENTATION The calculator implementation to use.
- * \tparam Register_Type Calculator register type.
+ * \tparam Register_Type Calculation register type.
  */
-template<Implementation IMPLEMENTATION, typename Register_Type>
-class Calculator;
+template<typename Register_Type>
+class Calculator_Concept {
+  public:
+    /**
+     * \brief Calculation register type.
+     */
+    using Register = Register_Type;
+
+    /**
+     * \brief Constructor.
+     */
+    Calculator_Concept() noexcept = delete;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] parameters The calculation parameters.
+     */
+    explicit Calculator_Concept( Parameters<Register> const & parameters ) noexcept = delete;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Calculator_Concept( Calculator_Concept && source ) noexcept = delete;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    Calculator_Concept( Calculator_Concept const & original ) noexcept = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Calculator_Concept() noexcept = delete;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Calculator_Concept && expression ) noexcept -> Calculator_Concept = delete;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Calculator_Concept const & expression ) noexcept -> Calculator_Concept = delete;
+
+    /**
+     * \brief Calculate the CRC remainder for a message.
+     *
+     * \tparam Iterator Message iterator. The iterated over type must be convertible to a
+     *         std::uint8_t, and the conversion must not be a narrowing conversion.
+     *
+     * \param[in] begin The beginning of the message to perform the calculation on.
+     * \param[in] end The end of the message to perform the calculation on.
+     *
+     * \return The CRC remainder for the message.
+     */
+    template<typename Iterator>
+    auto calculate( Iterator begin, Iterator end ) noexcept -> Register;
+};
 
 } // namespace picolibrary::CRC
 
