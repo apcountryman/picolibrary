@@ -141,6 +141,99 @@ TYPED_TEST_P( uint8RegisterCalculator, worksProperly )
  */
 REGISTER_TYPED_TEST_SUITE_P( uint8RegisterCalculator, worksProperly );
 
+/**
+ * \brief std::uint16_t register calculator unit test fixture.
+ *
+ * \tparam Calculator_Adapter A picolibrary::Testing::Unit::CRC::Calculator_Adapter
+ *         containing the type of calculator to be tested.
+ */
+template<typename Calculator_Adapter>
+class uint16RegisterCalculator : public ::testing::Test {
+};
+
+/**
+ * \brief std::uint16_t register calculator unit test fixture.
+ */
+TYPED_TEST_SUITE_P( uint16RegisterCalculator );
+
+/**
+ * \brief Verify the std::uint16_t register calculator works properly.
+ */
+TYPED_TEST_P( uint16RegisterCalculator, worksProperly )
+{
+    // #lizard forgives the length
+
+    using Register   = std::uint16_t;
+    using Calculator = typename TypeParam::Calculator;
+
+    struct {
+        ::picolibrary::CRC::Parameters<Register> parameters;
+        Register                                 result;
+    } const test_cases[]{
+        { .parameters = { .polynomial          = 0x1021,
+                          .initial_remainder   = 0x0000,
+                          .input_is_reflected  = false,
+                          .output_is_reflected = false,
+                          .xor_output          = 0x0000 },
+          .result     = 0x31C3 },
+        { .parameters = { .polynomial          = 0x1021,
+                          .initial_remainder   = 0xFFFF,
+                          .input_is_reflected  = false,
+                          .output_is_reflected = false,
+                          .xor_output          = 0x0000 },
+          .result     = 0xE5CC },
+        { .parameters = { .polynomial          = 0x1021,
+                          .initial_remainder   = 0x0000,
+                          .input_is_reflected  = true,
+                          .output_is_reflected = true,
+                          .xor_output          = 0x0000 },
+          .result     = 0x2189 },
+        { .parameters = { .polynomial          = 0x1021,
+                          .initial_remainder   = 0xFFFF,
+                          .input_is_reflected  = true,
+                          .output_is_reflected = true,
+                          .xor_output          = 0x0000 },
+          .result     = 0xD1A2 },
+        { .parameters = { .polynomial          = 0x1021,
+                          .initial_remainder   = 0x0000,
+                          .input_is_reflected  = false,
+                          .output_is_reflected = false,
+                          .xor_output          = 0xFFFF },
+          .result     = 0xCE3C },
+        { .parameters = { .polynomial          = 0x1021,
+                          .initial_remainder   = 0xFFFF,
+                          .input_is_reflected  = false,
+                          .output_is_reflected = false,
+                          .xor_output          = 0xFFFF },
+          .result     = 0x1A33 },
+        { .parameters = { .polynomial          = 0x1021,
+                          .initial_remainder   = 0x0000,
+                          .input_is_reflected  = true,
+                          .output_is_reflected = true,
+                          .xor_output          = 0xFFFF },
+          .result     = 0xDE76 },
+        { .parameters = { .polynomial          = 0x1021,
+                          .initial_remainder   = 0xFFFF,
+                          .input_is_reflected  = true,
+                          .output_is_reflected = true,
+                          .xor_output          = 0xFFFF },
+          .result     = 0x2E5D },
+    };
+
+    for ( auto const & test_case : test_cases ) {
+        auto const calculator = Calculator{ test_case.parameters };
+
+        auto const message = std::string_view{ "123456789" };
+
+        EXPECT_EQ( calculator.calculate( message.begin(), message.end() ), test_case.result );
+    } // for
+}
+
+/**
+ * \brief std::uint16_t register calculator unit test fixture test registration.
+ */
+REGISTER_TYPED_TEST_SUITE_P( uint16RegisterCalculator, worksProperly );
+
 } // namespace picolibrary::Testing::Unit::CRC
 
 #endif // PICOLIBRARY_TESTING_UNIT_CRC_H
