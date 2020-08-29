@@ -30,6 +30,7 @@ set(
     "picolibrary/asynchronous_serial/stream.cc"
     "picolibrary/bit_manipulation.cc"
     "picolibrary/crc.cc"
+    "picolibrary/crc.cc"
     "picolibrary/error.cc"
     "picolibrary/result.cc"
     "picolibrary/stream.cc"
@@ -58,6 +59,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
         APPEND PICOLIBRARY_SOURCE_FILES
         "picolibrary/testing/unit.cc"
         "picolibrary/testing/unit/asynchronous_serial.cc"
+        "picolibrary/testing/unit/crc.cc"
         "picolibrary/testing/unit/error.cc"
         "picolibrary/testing/unit/functor.cc"
         "picolibrary/testing/unit/random.cc"
