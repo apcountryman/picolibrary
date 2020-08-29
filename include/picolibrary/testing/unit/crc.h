@@ -234,6 +234,99 @@ TYPED_TEST_P( uint16RegisterCalculator, worksProperly )
  */
 REGISTER_TYPED_TEST_SUITE_P( uint16RegisterCalculator, worksProperly );
 
+/**
+ * \brief std::uint32_t register calculator unit test fixture.
+ *
+ * \tparam Calculator_Adapter A picolibrary::Testing::Unit::CRC::Calculator_Adapter
+ *         containing the type of calculator to be tested.
+ */
+template<typename Calculator_Adapter>
+class uint32RegisterCalculator : public ::testing::Test {
+};
+
+/**
+ * \brief std::uint32_t register calculator unit test fixture.
+ */
+TYPED_TEST_SUITE_P( uint32RegisterCalculator );
+
+/**
+ * \brief Verify the std::uint32_t register calculator works properly.
+ */
+TYPED_TEST_P( uint32RegisterCalculator, worksProperly )
+{
+    // #lizard forgives the length
+
+    using Register   = std::uint32_t;
+    using Calculator = typename TypeParam::Calculator;
+
+    struct {
+        ::picolibrary::CRC::Parameters<Register> parameters;
+        Register                                 result;
+    } const test_cases[]{
+        { .parameters = { .polynomial          = 0x04C11DB7,
+                          .initial_remainder   = 0x00000000,
+                          .input_is_reflected  = false,
+                          .output_is_reflected = false,
+                          .xor_output          = 0x00000000 },
+          .result     = 0x89A1897F },
+        { .parameters = { .polynomial          = 0x04C11DB7,
+                          .initial_remainder   = 0xFFFFFFFF,
+                          .input_is_reflected  = false,
+                          .output_is_reflected = false,
+                          .xor_output          = 0x00000000 },
+          .result     = 0x373C5870 },
+        { .parameters = { .polynomial          = 0x04C11DB7,
+                          .initial_remainder   = 0x00000000,
+                          .input_is_reflected  = true,
+                          .output_is_reflected = true,
+                          .xor_output          = 0x00000000 },
+          .result     = 0x2DFD2D88 },
+        { .parameters = { .polynomial          = 0x04C11DB7,
+                          .initial_remainder   = 0xFFFFFFFF,
+                          .input_is_reflected  = true,
+                          .output_is_reflected = true,
+                          .xor_output          = 0x00000000 },
+          .result     = 0xDD7694F5 },
+        { .parameters = { .polynomial          = 0x04C11DB7,
+                          .initial_remainder   = 0x00000000,
+                          .input_is_reflected  = false,
+                          .output_is_reflected = false,
+                          .xor_output          = 0xFFFFFFFF },
+          .result     = 0x765E7680 },
+        { .parameters = { .polynomial          = 0x04C11DB7,
+                          .initial_remainder   = 0xFFFFFFFF,
+                          .input_is_reflected  = false,
+                          .output_is_reflected = false,
+                          .xor_output          = 0xFFFFFFFF },
+          .result     = 0xC8C3A78F },
+        { .parameters = { .polynomial          = 0x04C11DB7,
+                          .initial_remainder   = 0x00000000,
+                          .input_is_reflected  = true,
+                          .output_is_reflected = true,
+                          .xor_output          = 0xFFFFFFFF },
+          .result     = 0xD202D277 },
+        { .parameters = { .polynomial          = 0x04C11DB7,
+                          .initial_remainder   = 0xFFFFFFFF,
+                          .input_is_reflected  = true,
+                          .output_is_reflected = true,
+                          .xor_output          = 0xFFFFFFFF },
+          .result     = 0x22896B0A },
+    };
+
+    for ( auto const & test_case : test_cases ) {
+        auto const calculator = Calculator{ test_case.parameters };
+
+        auto const message = std::string_view{ "123456789" };
+
+        EXPECT_EQ( calculator.calculate( message.begin(), message.end() ), test_case.result );
+    } // for
+}
+
+/**
+ * \brief std::uint32_t register calculator unit test fixture test registration.
+ */
+REGISTER_TYPED_TEST_SUITE_P( uint32RegisterCalculator, worksProperly );
+
 } // namespace picolibrary::Testing::Unit::CRC
 
 #endif // PICOLIBRARY_TESTING_UNIT_CRC_H
