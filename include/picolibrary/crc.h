@@ -165,6 +165,74 @@ class Calculator_Concept {
     auto calculate( Iterator begin, Iterator end ) noexcept -> Register;
 };
 
+/**
+ * \brief Bitwise calculator.
+ *
+ * \tparam Register_Type Calculation register type.
+ */
+template<typename Register_Type>
+class Bitwise_Calculator {
+  public:
+    /**
+     * \brief Calculation register type.
+     */
+    using Register = Register_Type;
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Bitwise_Calculator() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] parameters The calculation parameters.
+     */
+    constexpr explicit Bitwise_Calculator( Parameters<Register> const & parameters ) noexcept
+    {
+        static_cast<void>( parameters );
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Bitwise_Calculator( Bitwise_Calculator && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Bitwise_Calculator( Bitwise_Calculator const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Bitwise_Calculator() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator     =( Bitwise_Calculator && expression ) noexcept
+        -> Bitwise_Calculator & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator     =( Bitwise_Calculator const & expression ) noexcept
+        -> Bitwise_Calculator & = default;
+};
+
 } // namespace picolibrary::CRC
 
 #endif // PICOLIBRARY_CRC_H
