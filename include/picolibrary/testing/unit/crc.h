@@ -24,6 +24,7 @@
 
 #include <cstdint>
 #include <string_view>
+#include <type_traits>
 
 #include "gtest/gtest.h"
 #include "picolibrary/crc.h"
@@ -32,21 +33,7 @@
  * \brief Cyclic Redundancy Check (CRC) unit testing facilities.
  */
 namespace picolibrary::Testing::Unit::CRC {
-
-/**
- * \brief Adapter that allows a calculator to be passed to type-parameterized unit tests
- *        without instantiating the template.
- *
- * \tparam Calculator_Type The type of calculator to be tested.
- */
-template<template<typename> typename Calculator_Type>
-struct Calculator_Adapter {
-    /**
-     * \brief The type of calculator to be tested.
-     */
-    template<typename Register>
-    using Calculator = Calculator_Type<Register>;
-};
+} // namespace picolibrary::Testing::Unit::CRC
 
 /**
  * \brief std::uint8_t register calculator unit test fixture.
@@ -55,23 +42,25 @@ struct Calculator_Adapter {
  *         containing the type of calculator to be tested.
  */
 template<typename Calculator_Adapter>
-class uint8RegisterCalculator : public ::testing::Test {
+class CalculatorUint8Register : public ::testing::Test {
 };
 
 /**
  * \brief std::uint8_t register calculator unit test fixture.
  */
-TYPED_TEST_SUITE_P( uint8RegisterCalculator );
+TYPED_TEST_SUITE_P( CalculatorUint8Register );
 
 /**
  * \brief Verify the std::uint8_t register calculator works properly.
  */
-TYPED_TEST_P( uint8RegisterCalculator, worksProperly )
+TYPED_TEST_P( CalculatorUint8Register, worksProperly )
 {
     // #lizard forgives the length
 
     using Register   = std::uint8_t;
-    using Calculator = typename TypeParam::Calculator;
+    using Calculator = TypeParam;
+
+    static_assert( std::is_same_v<typename Calculator::Register, Register> );
 
     struct {
         ::picolibrary::CRC::Parameters<Register> parameters;
@@ -139,7 +128,7 @@ TYPED_TEST_P( uint8RegisterCalculator, worksProperly )
 /**
  * \brief std::uint8_t register calculator unit test fixture test registration.
  */
-REGISTER_TYPED_TEST_SUITE_P( uint8RegisterCalculator, worksProperly );
+REGISTER_TYPED_TEST_SUITE_P( CalculatorUint8Register, worksProperly );
 
 /**
  * \brief std::uint16_t register calculator unit test fixture.
@@ -148,23 +137,25 @@ REGISTER_TYPED_TEST_SUITE_P( uint8RegisterCalculator, worksProperly );
  *         containing the type of calculator to be tested.
  */
 template<typename Calculator_Adapter>
-class uint16RegisterCalculator : public ::testing::Test {
+class CalculatorUint16Register : public ::testing::Test {
 };
 
 /**
  * \brief std::uint16_t register calculator unit test fixture.
  */
-TYPED_TEST_SUITE_P( uint16RegisterCalculator );
+TYPED_TEST_SUITE_P( CalculatorUint16Register );
 
 /**
  * \brief Verify the std::uint16_t register calculator works properly.
  */
-TYPED_TEST_P( uint16RegisterCalculator, worksProperly )
+TYPED_TEST_P( CalculatorUint16Register, worksProperly )
 {
     // #lizard forgives the length
 
     using Register   = std::uint16_t;
-    using Calculator = typename TypeParam::Calculator;
+    using Calculator = TypeParam;
+
+    static_assert( std::is_same_v<typename Calculator::Register, Register> );
 
     struct {
         ::picolibrary::CRC::Parameters<Register> parameters;
@@ -232,7 +223,7 @@ TYPED_TEST_P( uint16RegisterCalculator, worksProperly )
 /**
  * \brief std::uint16_t register calculator unit test fixture test registration.
  */
-REGISTER_TYPED_TEST_SUITE_P( uint16RegisterCalculator, worksProperly );
+REGISTER_TYPED_TEST_SUITE_P( CalculatorUint16Register, worksProperly );
 
 /**
  * \brief std::uint32_t register calculator unit test fixture.
@@ -241,23 +232,25 @@ REGISTER_TYPED_TEST_SUITE_P( uint16RegisterCalculator, worksProperly );
  *         containing the type of calculator to be tested.
  */
 template<typename Calculator_Adapter>
-class uint32RegisterCalculator : public ::testing::Test {
+class CalculatorUint32Register : public ::testing::Test {
 };
 
 /**
  * \brief std::uint32_t register calculator unit test fixture.
  */
-TYPED_TEST_SUITE_P( uint32RegisterCalculator );
+TYPED_TEST_SUITE_P( CalculatorUint32Register );
 
 /**
  * \brief Verify the std::uint32_t register calculator works properly.
  */
-TYPED_TEST_P( uint32RegisterCalculator, worksProperly )
+TYPED_TEST_P( CalculatorUint32Register, worksProperly )
 {
     // #lizard forgives the length
 
     using Register   = std::uint32_t;
-    using Calculator = typename TypeParam::Calculator;
+    using Calculator = TypeParam;
+
+    static_assert( std::is_same_v<typename Calculator::Register, Register> );
 
     struct {
         ::picolibrary::CRC::Parameters<Register> parameters;
@@ -325,8 +318,6 @@ TYPED_TEST_P( uint32RegisterCalculator, worksProperly )
 /**
  * \brief std::uint32_t register calculator unit test fixture test registration.
  */
-REGISTER_TYPED_TEST_SUITE_P( uint32RegisterCalculator, worksProperly );
-
-} // namespace picolibrary::Testing::Unit::CRC
+REGISTER_TYPED_TEST_SUITE_P( CalculatorUint32Register, worksProperly );
 
 #endif // PICOLIBRARY_TESTING_UNIT_CRC_H
