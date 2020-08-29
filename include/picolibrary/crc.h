@@ -139,7 +139,7 @@ class Calculator_Concept {
      *
      * \return The assigned to object.
      */
-    auto operator=( Calculator_Concept && expression ) noexcept -> Calculator_Concept = delete;
+    auto operator=( Calculator_Concept && expression ) noexcept -> Calculator_Concept & = delete;
 
     /**
      * \brief Assignment operator.
@@ -148,7 +148,7 @@ class Calculator_Concept {
      *
      * \return The assigned to object.
      */
-    auto operator=( Calculator_Concept const & expression ) noexcept -> Calculator_Concept = delete;
+    auto operator=( Calculator_Concept const & expression ) noexcept -> Calculator_Concept & = delete;
 
     /**
      * \brief Calculate the CRC remainder for a message.
