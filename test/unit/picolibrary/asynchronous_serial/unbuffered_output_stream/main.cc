@@ -16,7 +16,7 @@
 
 /**
  * \file
- * \brief picolibrary::Asynchronous_Serial::Unuffered_Output_Stream unit test program.
+ * \brief picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream unit test program.
  */
 
 #include <cstdint>
@@ -188,7 +188,7 @@ TEST( initialize, worksProperly )
 }
 
 /**
- * \brief Execute the picolibrary::Asynchronous_Serial::Unuffered_Output_Stream unit
+ * \brief Execute the picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream unit
  *        tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().

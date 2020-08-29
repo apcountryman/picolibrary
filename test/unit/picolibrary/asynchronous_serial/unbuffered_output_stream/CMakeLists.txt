@@ -13,10 +13,10 @@
 # permissions and limitations under the License.
 
 # File: test/unit/picolibrary/asynchronous_serial/unbuffered_output_stream/CMakeLists.txt
-# Description: picolibrary::Asynchronous_Serial::Unuffered_Output_Stream unit tests CMake
+# Description: picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream unit tests CMake
 #       rules.
 
-# build the picolibrary::Asynchronous_Serial::Unuffered_Output_Stream unit tests
+# build the picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream unit tests
 if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     add_executable(
         test-unit-picolibrary-asynchronous_serial-unbuffered_output_stream
