@@ -162,7 +162,7 @@ class Calculator_Concept {
      * \return The CRC remainder for the message.
      */
     template<typename Iterator>
-    auto calculate( Iterator begin, Iterator end ) noexcept -> Register;
+    auto calculate( Iterator begin, Iterator end ) const noexcept -> Register;
 };
 
 /**
