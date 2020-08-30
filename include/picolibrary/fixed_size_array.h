@@ -41,6 +41,11 @@ class Fixed_Size_Array {
     using Value = T;
 
     /**
+     * \brief The number of elements in the array.
+     */
+    using Size = std::size_t;
+
+    /**
      * \brief An array element position.
      */
     using Position = std::size_t;
@@ -178,6 +183,16 @@ class Fixed_Size_Array {
         } else {
             return nullptr;
         } // else
+    }
+
+    /**
+     * \brief Get the number of elements in the array.
+     *
+     * \return The number of elements in the array.
+     */
+    constexpr auto size() const noexcept -> Size
+    {
+        return N;
     }
 };
 
