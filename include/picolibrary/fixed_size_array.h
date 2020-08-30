@@ -56,6 +56,16 @@ class Fixed_Size_Array {
     using Const_Reference = Value const &;
 
     /**
+     * \brief A pointer to an array element.
+     */
+    using Pointer = Value *;
+
+    /**
+     * \brief A pointer to a const array element.
+     */
+    using Const_Pointer = Value const *;
+
+    /**
      * \brief The underlying array.
      */
     Value m_array[ N ];
@@ -138,6 +148,36 @@ class Fixed_Size_Array {
     constexpr auto back() const noexcept -> Const_Reference
     {
         return m_array[ N - 1 ];
+    }
+
+    /**
+     * \brief Access the underlying array.
+     *
+     * \return A null pointer if the array is empty.
+     * \return The underlying array if the array is not empty.
+     */
+    constexpr auto data() noexcept -> Pointer
+    {
+        if constexpr ( N ) {
+            return &m_array[ 0 ];
+        } else {
+            return nullptr;
+        } // else
+    }
+
+    /**
+     * \brief Access the underlying array.
+     *
+     * \return A null pointer if the array is empty.
+     * \return The underlying array if the array is not empty.
+     */
+    constexpr auto data() const noexcept -> Const_Pointer
+    {
+        if constexpr ( N ) {
+            return &m_array[ 0 ];
+        } else {
+            return nullptr;
+        } // else
     }
 };
 
