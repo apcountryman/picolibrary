@@ -91,6 +91,30 @@ class Fixed_Size_Array {
     {
         return m_array[ position ];
     }
+
+    /**
+     * \brief Access the first element of the array.
+     *
+     * \warning Calling this function on an empty array results in undefined behavior.
+     *
+     * \return The first element of the array.
+     */
+    constexpr auto front() noexcept -> Reference
+    {
+        return m_array[ 0 ];
+    }
+
+    /**
+     * \brief Access the first element of the array.
+     *
+     * \warning Calling this function on an empty array results in undefined behavior.
+     *
+     * \return The first element of the array.
+     */
+    constexpr auto front() const noexcept -> Const_Reference
+    {
+        return m_array[ 0 ];
+    }
 };
 
 } // namespace picolibrary
