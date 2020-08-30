@@ -88,8 +88,8 @@ class [[nodiscard]] Result<Void, Void, true> final
     /**
      * \brief Constructor.
      *
-     * \warning This constructor only exists to provide a consistent interface when
-     *          writing generic code. It should never actually be called.
+     * \attention This constructor only exists to provide a consistent interface when
+     *            writing generic code. It should never actually be called.
      */
     constexpr Result( Void ) noexcept
     {
@@ -473,8 +473,8 @@ class [[nodiscard]] Result<Value_Type, Void, true> final
     /**
      * \brief Constructor.
      *
-     * \warning This constructor only exists to provide a consistent interface when
-     *          writing generic code. It should never actually be called.
+     * \attention This constructor only exists to provide a consistent interface when
+     *            writing generic code. It should never actually be called.
      */
     constexpr Result( Void ) noexcept
     {
@@ -691,8 +691,8 @@ class [[nodiscard]] Result<Value_Type, Void, false> final
     /**
      * \brief Constructor.
      *
-     * \warning This constructor only exists to provide a consistent interface when
-     *          writing generic code. It should never actually be called.
+     * \attention This constructor only exists to provide a consistent interface when
+     *            writing generic code. It should never actually be called.
      */
     constexpr Result( Void ) noexcept
     {
