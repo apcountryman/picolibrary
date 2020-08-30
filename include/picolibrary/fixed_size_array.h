@@ -41,9 +41,56 @@ class Fixed_Size_Array {
     using Value = T;
 
     /**
+     * \brief An array element position.
+     */
+    using Position = std::size_t;
+
+    /**
+     * \brief A reference to an array element.
+     */
+    using Reference = Value &;
+
+    /**
+     * \brief A reference to a const array element.
+     */
+    using Const_Reference = Value const &;
+
+    /**
      * \brief The underlying array.
      */
     Value m_array[ N ];
+
+    /**
+     * \brief Access the element at the specified position in the array.
+     *
+     * \param[in] position The position of the array element to access.
+     *
+     * \warning Bounds checking is not performed.
+     *
+     * \warning Calling this function on an empty array results in undefined behavior.
+     *
+     * \return The element at the specified position in the array.
+     */
+    constexpr auto operator[]( Position position ) noexcept -> Reference
+    {
+        return m_array[ position ];
+    }
+
+    /**
+     * \brief Access the element at the specified position in the array.
+     *
+     * \param[in] position The position of the array element to access.
+     *
+     * \warning Bounds checking is not performed.
+     *
+     * \warning Calling this function on an empty array results in undefined behavior.
+     *
+     * \return The element at the specified position in the array.
+     */
+    constexpr auto operator[]( Position position ) const noexcept -> Const_Reference
+    {
+        return m_array[ position ];
+    }
 };
 
 } // namespace picolibrary
