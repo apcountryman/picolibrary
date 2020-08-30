@@ -98,7 +98,11 @@ class Fixed_Size_Array {
      */
     constexpr auto operator[]( Position position ) noexcept -> Reference
     {
-        return m_array[ position ];
+        if constexpr ( empty() ) {
+            return data()[ 0 ];
+        } else {
+            return data()[ position ];
+        } // else
     }
 
     /**
@@ -114,7 +118,11 @@ class Fixed_Size_Array {
      */
     constexpr auto operator[]( Position position ) const noexcept -> Const_Reference
     {
-        return m_array[ position ];
+        if constexpr ( empty() ) {
+            return data()[ 0 ];
+        } else {
+            return data()[ position ];
+        } // else
     }
 
     /**
@@ -126,7 +134,7 @@ class Fixed_Size_Array {
      */
     constexpr auto front() noexcept -> Reference
     {
-        return m_array[ 0 ];
+        return *begin();
     }
 
     /**
@@ -138,7 +146,7 @@ class Fixed_Size_Array {
      */
     constexpr auto front() const noexcept -> Const_Reference
     {
-        return m_array[ 0 ];
+        return *begin();
     }
 
     /**
@@ -150,7 +158,11 @@ class Fixed_Size_Array {
      */
     constexpr auto back() noexcept -> Reference
     {
-        return m_array[ N - 1 ];
+        if constexpr ( empty() ) {
+            return *end();
+        } else {
+            return *( end() - 1 );
+        } // else
     }
 
     /**
@@ -162,7 +174,11 @@ class Fixed_Size_Array {
      */
     constexpr auto back() const noexcept -> Const_Reference
     {
-        return m_array[ N - 1 ];
+        if constexpr ( empty() ) {
+            return *end();
+        } else {
+            return *( end() - 1 );
+        } // else
     }
 
     /**
@@ -173,10 +189,10 @@ class Fixed_Size_Array {
      */
     constexpr auto data() noexcept -> Pointer
     {
-        if constexpr ( N ) {
-            return &m_array[ 0 ];
-        } else {
+        if constexpr ( empty() ) {
             return nullptr;
+        } else {
+            return &m_array[ 0 ];
         } // else
     }
 
@@ -188,10 +204,10 @@ class Fixed_Size_Array {
      */
     constexpr auto data() const noexcept -> Const_Pointer
     {
-        if constexpr ( N ) {
-            return &m_array[ 0 ];
-        } else {
+        if constexpr ( empty() ) {
             return nullptr;
+        } else {
+            return &m_array[ 0 ];
         } // else
     }
 
