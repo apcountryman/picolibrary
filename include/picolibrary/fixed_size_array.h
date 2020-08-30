@@ -115,6 +115,30 @@ class Fixed_Size_Array {
     {
         return m_array[ 0 ];
     }
+
+    /**
+     * \brief Access the last element of the array.
+     *
+     * \warning Calling this function on an empty array results in undefined behavior.
+     *
+     * \return The last element of the array.
+     */
+    constexpr auto back() noexcept -> Reference
+    {
+        return m_array[ N - 1 ];
+    }
+
+    /**
+     * \brief Access the last element of the array.
+     *
+     * \warning Calling this function on an empty array results in undefined behavior.
+     *
+     * \return The last element of the array.
+     */
+    constexpr auto back() const noexcept -> Const_Reference
+    {
+        return m_array[ N - 1 ];
+    }
 };
 
 } // namespace picolibrary
