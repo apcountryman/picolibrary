@@ -71,6 +71,16 @@ class Fixed_Size_Array {
     using Const_Pointer = Value const *;
 
     /**
+     * \brief An array iterator.
+     */
+    using Iterator = Pointer;
+
+    /**
+     * \brief A const array iterator.
+     */
+    using Const_Iterator = Const_Pointer;
+
+    /**
      * \brief The underlying array.
      */
     Value m_array[ N ];
@@ -183,6 +193,36 @@ class Fixed_Size_Array {
         } else {
             return nullptr;
         } // else
+    }
+
+    /**
+     * \brief Get an iterator to the first element of the array.
+     *
+     * \return An iterator to the first element of the array.
+     */
+    constexpr auto begin() noexcept
+    {
+        return data();
+    }
+
+    /**
+     * \brief Get an iterator to the first element of the array.
+     *
+     * \return An iterator to the first element of the array.
+     */
+    constexpr auto begin() const noexcept
+    {
+        return data();
+    }
+
+    /**
+     * \brief Get an iterator to the first element of the array.
+     *
+     * \return An iterator to the first element of the array.
+     */
+    constexpr auto cbegin() const noexcept
+    {
+        return data();
     }
 
     /**
