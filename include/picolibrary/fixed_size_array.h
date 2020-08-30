@@ -286,7 +286,7 @@ class Fixed_Size_Array {
      * \return true if the array is empty.
      * \return false if the array is not empty.
      */
-    constexpr auto empty() const noexcept
+    [[nodiscard]] constexpr auto empty() const noexcept
     {
         return not size();
     }
