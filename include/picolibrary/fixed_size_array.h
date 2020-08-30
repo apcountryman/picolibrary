@@ -186,6 +186,17 @@ class Fixed_Size_Array {
     }
 
     /**
+     * \brief Check if the array is empty.
+     *
+     * \return true if the array is empty.
+     * \return false if the array is not empty.
+     */
+    constexpr auto empty() const noexcept
+    {
+        return not size();
+    }
+
+    /**
      * \brief Get the number of elements in the array.
      *
      * \return The number of elements in the array.
