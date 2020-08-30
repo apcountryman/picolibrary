@@ -31,6 +31,7 @@ set(
     "picolibrary/bit_manipulation.cc"
     "picolibrary/crc.cc"
     "picolibrary/error.cc"
+    "picolibrary/fixed_size_array.cc"
     "picolibrary/result.cc"
     "picolibrary/stream.cc"
     "picolibrary/utility.cc"
