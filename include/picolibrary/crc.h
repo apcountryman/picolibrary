@@ -23,6 +23,10 @@
 #define PICOLIBRARY_CRC_H
 
 #include <cstdint>
+#include <limits>
+
+#include "picolibrary/bit_manipulation.h"
+#include "picolibrary/fixed_size_array.h"
 
 /**
  * \brief Cyclic Redundancy Check (CRC) facilities.
@@ -154,7 +158,7 @@ class Calculator_Concept {
      * \brief Calculate the CRC remainder for a message.
      *
      * \tparam Iterator Message iterator. The iterated over type must be convertible to a
-     *         std::uint8_t, and the conversion must not be a narrowing conversion.
+     *         std::uint8_t.
      *
      * \param[in] begin The beginning of the message to perform the calculation on.
      * \param[in] end The end of the message to perform the calculation on.
@@ -188,9 +192,13 @@ class Bitwise_Calculator {
      *
      * \param[in] parameters The calculation parameters.
      */
-    constexpr explicit Bitwise_Calculator( Parameters<Register> const & parameters ) noexcept
+    constexpr explicit Bitwise_Calculator( Parameters<Register> const & parameters ) noexcept :
+        m_polynomial{ parameters.polynomial },
+        m_initial_remainder{ parameters.initial_remainder },
+        m_process_input{ input_processor( parameters ) },
+        m_process_output{ output_processor( parameters ) },
+        m_xor_output{ parameters.xor_output }
     {
-        static_cast<void>( parameters );
     }
 
     /**
@@ -231,6 +239,117 @@ class Bitwise_Calculator {
      */
     constexpr auto operator     =( Bitwise_Calculator const & expression ) noexcept
         -> Bitwise_Calculator & = default;
+
+    /**
+     * \brief Calculate the CRC remainder for a message.
+     *
+     * \tparam Iterator Message iterator. The iterated over type must be convertible to a
+     *         std::uint8_t.
+     *
+     * \param[in] begin The beginning of the message to perform the calculation on.
+     * \param[in] end The end of the message to perform the calculation on.
+     *
+     * \return The CRC remainder for the message.
+     */
+    template<typename Iterator>
+    auto calculate( Iterator begin, Iterator end ) const noexcept -> Register
+    {
+        auto const augment =
+            Fixed_Size_Array<std::uint8_t, std::numeric_limits<Register>::digits / std::numeric_limits<std::uint8_t>::digits>{};
+
+        return ( *m_process_output )( feed(
+                   feed( m_initial_remainder, begin, end ), augment.begin(), augment.end() ) )
+               ^ m_xor_output;
+    }
+
+  private:
+    /**
+     * \brief Calculation polynomial.
+     */
+    Register m_polynomial{};
+
+    /**
+     * \brief Calculation initial remainder.
+     */
+    Register m_initial_remainder{};
+
+    /**
+     * \brief Calculation input processor.
+     */
+    Input_Processor m_process_input{};
+
+    /**
+     * \brief Calculation output processor.
+     */
+    Output_Processor<Register> m_process_output{};
+
+    /**
+     * \brief Calculation XOR output value.
+     */
+    Register m_xor_output{};
+
+    /**
+     * \brief Get the calculation's input processor.
+     *
+     * \param[in] parameters The calculation parameters.
+     *
+     * \return The calculation's input processor.
+     */
+    static constexpr auto input_processor( Parameters<Register> const & parameters ) noexcept
+    {
+        return parameters.input_is_reflected ? static_cast<Input_Processor>( reflect )
+                                             : []( std::uint8_t value ) noexcept
+        {
+            return value;
+        };
+    }
+
+    /**
+     * \brief Get the calculation's output processor.
+     *
+     * \param[in] parameters The calculation parameters.
+     *
+     * \return The calculation's output processor.
+     */
+    static constexpr auto output_processor( Parameters<Register> const & parameters ) noexcept
+    {
+        return parameters.output_is_reflected ? static_cast<Output_Processor<Register>>( reflect )
+                                              : []( Register value ) noexcept
+        {
+            return value;
+        };
+    }
+
+    /**
+     * \brief Feed data into the CRC calculation.
+     *
+     * \tparam Iterator Message/augment iterator. The iterated over type must be
+     *         convertible to a std::uint8_t.
+     *
+     * \param[in] remainder The current CRC calculation remainder.
+     * \param[in] begin The beginning of the message/augment to feed into the calculation.
+     * \param[in] end The end of the message/augment to feed into the calculation.
+     *
+     * \return The resulting CRC calculation remainder.
+     */
+    template<typename Iterator>
+    auto feed( Register remainder, Iterator begin, Iterator end ) const noexcept
+    {
+        for ( ; begin != end; ++begin ) {
+            auto const processed_input = ( *m_process_input )( *begin );
+
+            for ( auto bit = std::numeric_limits<std::uint8_t>::digits - 1; bit >= 0; --bit ) {
+                auto const xor_polynomial = static_cast<bool>(
+                    remainder & ~( std::numeric_limits<Register>::max() >> 1 ) );
+
+                remainder = ( remainder << 1 ) | ( ( processed_input >> bit ) & 0b1 );
+
+                if ( xor_polynomial ) { remainder ^= m_polynomial; } // if
+            }                                                        // for
+        }                                                            // for
+
+        return remainder;
+    }
 };
 
 } // namespace picolibrary::CRC
