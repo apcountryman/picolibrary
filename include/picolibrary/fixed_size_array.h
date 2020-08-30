@@ -88,11 +88,10 @@ class Fixed_Size_Array {
     /**
      * \brief Access the element at the specified position in the array.
      *
-     * \param[in] position The position of the array element to access.
-     *
      * \warning Bounds checking is not performed.
-     *
      * \warning Calling this function on an empty array results in undefined behavior.
+     *
+     * \param[in] position The position of the array element to access.
      *
      * \return The element at the specified position in the array.
      */
@@ -108,11 +107,10 @@ class Fixed_Size_Array {
     /**
      * \brief Access the element at the specified position in the array.
      *
-     * \param[in] position The position of the array element to access.
-     *
      * \warning Bounds checking is not performed.
-     *
      * \warning Calling this function on an empty array results in undefined behavior.
+     *
+     * \param[in] position The position of the array element to access.
      *
      * \return The element at the specified position in the array.
      */
