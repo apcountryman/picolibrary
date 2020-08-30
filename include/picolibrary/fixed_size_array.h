@@ -226,6 +226,45 @@ class Fixed_Size_Array {
     }
 
     /**
+     * \brief Get an iterator to the element following the last element of the array.
+     *
+     * \warning Attempting to access the element following the last element of an array
+     *          results in undefined behavior.
+     *
+     * \return An iterator to the element following the last element of the array.
+     */
+    constexpr auto end() noexcept
+    {
+        return begin() + size();
+    }
+
+    /**
+     * \brief Get an iterator to the element following the last element of the array.
+     *
+     * \warning Attempting to access the element following the last element of an array
+     *          results in undefined behavior.
+     *
+     * \return An iterator to the element following the last element of the array.
+     */
+    constexpr auto end() const noexcept
+    {
+        return begin() + size();
+    }
+
+    /**
+     * \brief Get an iterator to the element following the last element of the array.
+     *
+     * \warning Attempting to access the element following the last element of an array
+     *          results in undefined behavior.
+     *
+     * \return An iterator to the element following the last element of the array.
+     */
+    constexpr auto cend() const noexcept
+    {
+        return begin() + size();
+    }
+
+    /**
      * \brief Check if the array is empty.
      *
      * \return true if the array is empty.
