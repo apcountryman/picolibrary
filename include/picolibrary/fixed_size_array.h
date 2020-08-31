@@ -97,10 +97,10 @@ class Fixed_Size_Array {
      */
     constexpr auto operator[]( Position position ) noexcept -> Reference
     {
-        if constexpr ( empty() ) {
-            return data()[ 0 ];
-        } else {
+        if constexpr ( N ) {
             return data()[ position ];
+        } else {
+            return data()[ 0 ];
         } // else
     }
 
@@ -116,10 +116,10 @@ class Fixed_Size_Array {
      */
     constexpr auto operator[]( Position position ) const noexcept -> Const_Reference
     {
-        if constexpr ( empty() ) {
-            return data()[ 0 ];
-        } else {
+        if constexpr ( N ) {
             return data()[ position ];
+        } else {
+            return data()[ 0 ];
         } // else
     }
 
@@ -156,10 +156,10 @@ class Fixed_Size_Array {
      */
     constexpr auto back() noexcept -> Reference
     {
-        if constexpr ( empty() ) {
-            return *end();
-        } else {
+        if constexpr ( N ) {
             return *( end() - 1 );
+        } else {
+            return *end();
         } // else
     }
 
@@ -172,10 +172,10 @@ class Fixed_Size_Array {
      */
     constexpr auto back() const noexcept -> Const_Reference
     {
-        if constexpr ( empty() ) {
-            return *end();
-        } else {
+        if constexpr ( N ) {
             return *( end() - 1 );
+        } else {
+            return *end();
         } // else
     }
 
@@ -187,10 +187,10 @@ class Fixed_Size_Array {
      */
     constexpr auto data() noexcept -> Pointer
     {
-        if constexpr ( empty() ) {
-            return nullptr;
-        } else {
+        if constexpr ( N ) {
             return &m_array[ 0 ];
+        } else {
+            return nullptr;
         } // else
     }
 
@@ -202,10 +202,10 @@ class Fixed_Size_Array {
      */
     constexpr auto data() const noexcept -> Const_Pointer
     {
-        if constexpr ( empty() ) {
-            return nullptr;
-        } else {
+        if constexpr ( N ) {
             return &m_array[ 0 ];
+        } else {
+            return nullptr;
         } // else
     }
 

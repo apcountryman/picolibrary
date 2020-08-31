@@ -12,22 +12,21 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/asynchronous_serial/unbuffered_output_stream/CMakeLists.txt
-# Description: picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream unit tests CMake
-#       rules.
+# File: test/unit/picolibrary/crc/bitwise_calculator/CMakeLists.txt
+# Description: picolibrary::CRC::Bitwise_Calculator unit tests CMake rules.
 
-# build the picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream unit tests
+# build the picolibrary::CRC::Bitwise_Calculator unit tests
 if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     add_executable(
-        test-unit-picolibrary-asynchronous_serial-unbuffered_output_stream
+        test-unit-picolibrary-crc-bitwise_calculator
         main.cc
     )
     target_link_libraries(
-        test-unit-picolibrary-asynchronous_serial-unbuffered_output_stream
+        test-unit-picolibrary-crc-bitwise_calculator
         picolibrary
     )
     add_test(
-        NAME    test-unit-picolibrary-asynchronous_serial-unbuffered_output_stream
-        COMMAND test-unit-picolibrary-asynchronous_serial-unbuffered_output_stream --gtest_color=yes
+        NAME    test-unit-picolibrary-crc-bitwise_calculator
+        COMMAND test-unit-picolibrary-crc-bitwise_calculator --gtest_color=yes
     )
 endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )

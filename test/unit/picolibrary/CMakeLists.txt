@@ -24,6 +24,9 @@ add_subdirectory( asynchronous_serial )
 # build the picolibrary::Bit_Manupulation unit tests
 add_subdirectory( bit_manipulation )
 
+# build the picolibrary::CRC unit tests
+add_subdirectory( crc )
+
 # build the picolibrary::Error_Code unit tests
 add_subdirectory( error_code )
 
