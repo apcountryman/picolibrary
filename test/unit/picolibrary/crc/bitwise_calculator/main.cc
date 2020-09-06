@@ -33,17 +33,20 @@ using ::picolibrary::CRC::Bitwise_Calculator;
 } // namespace
 
 /**
- * \brief Verify picolibrary::CRC::Bitwise_Calculator<std::uint8_t>::calculate() works properly.
+ * \brief Verify picolibrary::CRC::Bitwise_Calculator<std::uint8_t>::calculate() works
+ *        properly.
  */
 INSTANTIATE_TYPED_TEST_SUITE_P( bitwise, CalculatorUint8Register, Bitwise_Calculator<std::uint8_t> );
 
 /**
- * \brief Verify picolibrary::CRC::Bitwise_Calculator<std::uint16_t>::calculate() works properly.
+ * \brief Verify picolibrary::CRC::Bitwise_Calculator<std::uint16_t>::calculate() works
+ *        properly.
  */
 INSTANTIATE_TYPED_TEST_SUITE_P( bitwise, CalculatorUint16Register, Bitwise_Calculator<std::uint16_t> );
 
 /**
- * \brief Verify picolibrary::CRC::Bitwise_Calculator<std::uint32_t>::calculate() works properly.
+ * \brief Verify picolibrary::CRC::Bitwise_Calculator<std::uint32_t>::calculate() works
+ *        properly.
  */
 INSTANTIATE_TYPED_TEST_SUITE_P( bitwise, CalculatorUint32Register, Bitwise_Calculator<std::uint32_t> );
 
