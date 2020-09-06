@@ -127,6 +127,16 @@ constexpr auto output_processor( bool output_is_reflected ) noexcept
 }
 
 /**
+ * \brief Message augment required by bitwise and augmented lookup table calculator
+ *        implementations.
+ *
+ * \tparam Register Calculation register type.
+ */
+template<typename Register>
+using Augment =
+    Fixed_Size_Array<std::uint8_t, std::numeric_limits<Register>::digits / std::numeric_limits<std::uint8_t>::digits>;
+
+/**
  * \brief Calculator concept.
  *
  * \tparam Register_Type Calculation register type.
@@ -280,8 +290,7 @@ class Bitwise_Calculator {
     template<typename Iterator>
     auto calculate( Iterator begin, Iterator end ) const noexcept -> Register
     {
-        auto const augment =
-            Fixed_Size_Array<std::uint8_t, std::numeric_limits<Register>::digits / std::numeric_limits<std::uint8_t>::digits>{};
+        auto const augment = Augment<Register>{};
 
         return ( *m_process_output )( feed(
                    feed( m_initial_remainder, begin, end ), augment.begin(), augment.end() ) )
