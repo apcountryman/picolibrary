@@ -352,6 +352,75 @@ class Bitwise_Calculator {
     }
 };
 
+/**
+ * \brief Augmented byte lookup table calculator.
+ *
+ * \tparam Register_Type Calculation register type.
+ */
+template<typename Register_Type>
+class Augmented_Byte_Lookup_Table_Calculator {
+  public:
+    /**
+     * \brief Calculation register type.
+     */
+    using Register = Register_Type;
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Augmented_Byte_Lookup_Table_Calculator() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] parameters The calculation parameters.
+     */
+    constexpr explicit Augmented_Byte_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept
+    {
+        static_cast<void>( parameters );
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Augmented_Byte_Lookup_Table_Calculator( Augmented_Byte_Lookup_Table_Calculator && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Augmented_Byte_Lookup_Table_Calculator(
+        Augmented_Byte_Lookup_Table_Calculator const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Augmented_Byte_Lookup_Table_Calculator() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Augmented_Byte_Lookup_Table_Calculator && expression ) noexcept
+        -> Augmented_Byte_Lookup_Table_Calculator & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Augmented_Byte_Lookup_Table_Calculator const & expression ) noexcept
+        -> Augmented_Byte_Lookup_Table_Calculator & = default;
+};
+
 } // namespace picolibrary::CRC
 
 #endif // PICOLIBRARY_CRC_H
