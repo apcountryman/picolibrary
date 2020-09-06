@@ -108,6 +108,25 @@ template<typename Register>
 using Output_Processor = auto ( * )( Register remainder ) -> Register;
 
 /**
+ * \brief Get a calculation's output processor.
+ *
+ * \tparam Register Calculation register type.
+ *
+ * \param[in] output_is_reflected Calculation output is reflected.
+ *
+ * \return The calculation's output processor.
+ */
+template<typename Register>
+constexpr auto output_processor( bool output_is_reflected ) noexcept
+{
+    return output_is_reflected ? static_cast<Output_Processor<Register>>( reflect )
+                               : []( Register value ) noexcept
+    {
+        return value;
+    };
+}
+
+/**
  * \brief Calculator concept.
  *
  * \tparam Register_Type Calculation register type.
@@ -211,7 +230,7 @@ class Bitwise_Calculator {
         m_polynomial{ parameters.polynomial },
         m_initial_remainder{ parameters.initial_remainder },
         m_process_input{ input_processor( parameters.input_is_reflected ) },
-        m_process_output{ output_processor( parameters ) },
+        m_process_output{ output_processor<Register>( parameters.output_is_reflected ) },
         m_xor_output{ parameters.xor_output }
     {
     }
@@ -302,22 +321,6 @@ class Bitwise_Calculator {
      * \brief Calculation XOR output value.
      */
     Register m_xor_output{};
-
-    /**
-     * \brief Get the calculation's output processor.
-     *
-     * \param[in] parameters The calculation parameters.
-     *
-     * \return The calculation's output processor.
-     */
-    static constexpr auto output_processor( Parameters<Register> const & parameters ) noexcept
-    {
-        return parameters.output_is_reflected ? static_cast<Output_Processor<Register>>( reflect )
-                                              : []( Register value ) noexcept
-        {
-            return value;
-        };
-    }
 
     /**
      * \brief Feed data into the CRC calculation.
