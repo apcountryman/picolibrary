@@ -81,6 +81,21 @@ struct Parameters {
 using Input_Processor = auto ( * )( std::uint8_t byte ) -> std::uint8_t;
 
 /**
+ * \brief Get a calculation's input processor.
+ *
+ * \param[in] input_is_reflected Calculation input is reflected.
+ *
+ * \return The calculation's input processor.
+ */
+constexpr auto input_processor( bool input_is_reflected ) noexcept
+{
+    return input_is_reflected ? static_cast<Input_Processor>( reflect ) : []( std::uint8_t value ) noexcept
+    {
+        return value;
+    };
+}
+
+/**
  * \brief Calculation output processor.
  *
  * \tparam Register Calculation register type.
@@ -195,7 +210,7 @@ class Bitwise_Calculator {
     constexpr explicit Bitwise_Calculator( Parameters<Register> const & parameters ) noexcept :
         m_polynomial{ parameters.polynomial },
         m_initial_remainder{ parameters.initial_remainder },
-        m_process_input{ input_processor( parameters ) },
+        m_process_input{ input_processor( parameters.input_is_reflected ) },
         m_process_output{ output_processor( parameters ) },
         m_xor_output{ parameters.xor_output }
     {
@@ -287,22 +302,6 @@ class Bitwise_Calculator {
      * \brief Calculation XOR output value.
      */
     Register m_xor_output{};
-
-    /**
-     * \brief Get the calculation's input processor.
-     *
-     * \param[in] parameters The calculation parameters.
-     *
-     * \return The calculation's input processor.
-     */
-    static constexpr auto input_processor( Parameters<Register> const & parameters ) noexcept
-    {
-        return parameters.input_is_reflected ? static_cast<Input_Processor>( reflect )
-                                             : []( std::uint8_t value ) noexcept
-        {
-            return value;
-        };
-    }
 
     /**
      * \brief Get the calculation's output processor.
