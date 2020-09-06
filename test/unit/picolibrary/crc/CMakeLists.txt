@@ -15,5 +15,8 @@
 # File: test/unit/picolibrary/crc/CMakeLists.txt
 # Description: picolibrary::CRC unit tests CMake rules.
 
+# build the picolibrary::CRC::Augmented_Byte_Lookup_Table_Calculator unit tests
+add_subdirectory( augmented_byte_lookup_table_calculator )
+
 # build the picolibrary::CRC::Bitwise_Calculator unit tests
 add_subdirectory( bitwise_calculator )
