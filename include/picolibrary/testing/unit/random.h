@@ -88,6 +88,17 @@ auto random()
 }
 
 /**
+ * \brief Generate a pseudo-random bool.
+ *
+ * \return A pseudo random bool.
+ */
+template<>
+inline auto random<bool>()
+{
+    return static_cast<bool>( random<std::uint_fast8_t>( 0, 1 ) );
+}
+
+/**
  * \brief Generate a pseudo-random char in the range [' ','~'].
  *
  * \return A pseudo-random char in the range [' ','~'].
