@@ -20,3 +20,19 @@ add_subdirectory( augmented_byte_lookup_table_calculator )
 
 # build the picolibrary::CRC::Bitwise_Calculator unit tests
 add_subdirectory( bitwise_calculator )
+
+# build the picolibrary::CRC unit tests
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+    add_executable(
+        test-unit-picolibrary-crc
+        main.cc
+    )
+    target_link_libraries(
+        test-unit-picolibrary-crc
+        picolibrary
+    )
+    add_test(
+        NAME    test-unit-picolibrary-crc
+        COMMAND test-unit-picolibrary-crc --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
