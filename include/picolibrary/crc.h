@@ -81,6 +81,21 @@ struct Parameters {
 using Input_Processor = auto ( * )( std::uint8_t byte ) -> std::uint8_t;
 
 /**
+ * \brief Get a calculation's input processor.
+ *
+ * \param[in] input_is_reflected Calculation input is reflected.
+ *
+ * \return The calculation's input processor.
+ */
+constexpr auto input_processor( bool input_is_reflected ) noexcept
+{
+    return input_is_reflected ? static_cast<Input_Processor>( reflect ) : []( std::uint8_t value ) noexcept
+    {
+        return value;
+    };
+}
+
+/**
  * \brief Calculation output processor.
  *
  * \tparam Register Calculation register type.
@@ -91,6 +106,35 @@ using Input_Processor = auto ( * )( std::uint8_t byte ) -> std::uint8_t;
  */
 template<typename Register>
 using Output_Processor = auto ( * )( Register remainder ) -> Register;
+
+/**
+ * \brief Get a calculation's output processor.
+ *
+ * \tparam Register Calculation register type.
+ *
+ * \param[in] output_is_reflected Calculation output is reflected.
+ *
+ * \return The calculation's output processor.
+ */
+template<typename Register>
+constexpr auto output_processor( bool output_is_reflected ) noexcept
+{
+    return output_is_reflected ? static_cast<Output_Processor<Register>>( reflect )
+                               : []( Register value ) noexcept
+    {
+        return value;
+    };
+}
+
+/**
+ * \brief Message augment required by bitwise and augmented lookup table calculator
+ *        implementations.
+ *
+ * \tparam Register Calculation register type.
+ */
+template<typename Register>
+using Augment =
+    Fixed_Size_Array<std::uint8_t, std::numeric_limits<Register>::digits / std::numeric_limits<std::uint8_t>::digits>;
 
 /**
  * \brief Calculator concept.
@@ -195,8 +239,8 @@ class Bitwise_Calculator {
     constexpr explicit Bitwise_Calculator( Parameters<Register> const & parameters ) noexcept :
         m_polynomial{ parameters.polynomial },
         m_initial_remainder{ parameters.initial_remainder },
-        m_process_input{ input_processor( parameters ) },
-        m_process_output{ output_processor( parameters ) },
+        m_process_input{ input_processor( parameters.input_is_reflected ) },
+        m_process_output{ output_processor<Register>( parameters.output_is_reflected ) },
         m_xor_output{ parameters.xor_output }
     {
     }
@@ -241,21 +285,12 @@ class Bitwise_Calculator {
         -> Bitwise_Calculator & = default;
 
     /**
-     * \brief Calculate the CRC remainder for a message.
-     *
-     * \tparam Iterator Message iterator. The iterated over type must be convertible to a
-     *         std::uint8_t.
-     *
-     * \param[in] begin The beginning of the message to perform the calculation on.
-     * \param[in] end The end of the message to perform the calculation on.
-     *
-     * \return The CRC remainder for the message.
+     * \copydoc picolibrary::CRC::Calculator_Concept::calculate()
      */
     template<typename Iterator>
     auto calculate( Iterator begin, Iterator end ) const noexcept -> Register
     {
-        auto const augment =
-            Fixed_Size_Array<std::uint8_t, std::numeric_limits<Register>::digits / std::numeric_limits<std::uint8_t>::digits>{};
+        auto const augment = Augment<Register>{};
 
         return ( *m_process_output )( feed(
                    feed( m_initial_remainder, begin, end ), augment.begin(), augment.end() ) )
@@ -289,38 +324,6 @@ class Bitwise_Calculator {
     Register m_xor_output{};
 
     /**
-     * \brief Get the calculation's input processor.
-     *
-     * \param[in] parameters The calculation parameters.
-     *
-     * \return The calculation's input processor.
-     */
-    static constexpr auto input_processor( Parameters<Register> const & parameters ) noexcept
-    {
-        return parameters.input_is_reflected ? static_cast<Input_Processor>( reflect )
-                                             : []( std::uint8_t value ) noexcept
-        {
-            return value;
-        };
-    }
-
-    /**
-     * \brief Get the calculation's output processor.
-     *
-     * \param[in] parameters The calculation parameters.
-     *
-     * \return The calculation's output processor.
-     */
-    static constexpr auto output_processor( Parameters<Register> const & parameters ) noexcept
-    {
-        return parameters.output_is_reflected ? static_cast<Output_Processor<Register>>( reflect )
-                                              : []( Register value ) noexcept
-        {
-            return value;
-        };
-    }
-
-    /**
      * \brief Feed data into the CRC calculation.
      *
      * \tparam Iterator Message/augment iterator. The iterated over type must be
@@ -347,6 +350,182 @@ class Bitwise_Calculator {
                 if ( xor_polynomial ) { remainder ^= m_polynomial; } // if
             }                                                        // for
         }                                                            // for
+
+        return remainder;
+    }
+};
+
+/**
+ * \brief Augmented byte lookup table calculator.
+ *
+ * \tparam Register_Type Calculation register type.
+ */
+template<typename Register_Type>
+class Augmented_Byte_Lookup_Table_Calculator {
+  public:
+    /**
+     * \brief Calculation register type.
+     */
+    using Register = Register_Type;
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Augmented_Byte_Lookup_Table_Calculator() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] parameters The calculation parameters.
+     */
+    constexpr explicit Augmented_Byte_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept :
+        m_lookup_table{ lookup_table( parameters.polynomial ) },
+        m_initial_remainder{ parameters.initial_remainder },
+        m_process_input{ input_processor( parameters.input_is_reflected ) },
+        m_process_output{ output_processor<Register>( parameters.output_is_reflected ) },
+        m_xor_output{ parameters.xor_output }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Augmented_Byte_Lookup_Table_Calculator( Augmented_Byte_Lookup_Table_Calculator && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Augmented_Byte_Lookup_Table_Calculator(
+        Augmented_Byte_Lookup_Table_Calculator const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Augmented_Byte_Lookup_Table_Calculator() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Augmented_Byte_Lookup_Table_Calculator && expression ) noexcept
+        -> Augmented_Byte_Lookup_Table_Calculator & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Augmented_Byte_Lookup_Table_Calculator const & expression ) noexcept
+        -> Augmented_Byte_Lookup_Table_Calculator & = default;
+
+    /**
+     * \copydoc picolibrary::CRC::Calculator_Concept::calculate()
+     */
+    template<typename Iterator>
+    auto calculate( Iterator begin, Iterator end ) const noexcept -> Register
+    {
+        auto const augment = Augment<Register>{};
+
+        return ( *m_process_output )( feed(
+                   feed( m_initial_remainder, begin, end ), augment.begin(), augment.end() ) )
+               ^ m_xor_output;
+    }
+
+  private:
+    /**
+     * \brief Calculation lookup table.
+     */
+    using Lookup_Table = Fixed_Size_Array<Register, std::numeric_limits<std::uint8_t>::max() + 1>;
+
+    /**
+     * \brief Calculation lookup table.
+     */
+    Lookup_Table m_lookup_table{};
+
+    /**
+     * \brief Calculation initial remainder.
+     */
+    Register m_initial_remainder{};
+
+    /**
+     * \brief Calculation input processor.
+     */
+    Input_Processor m_process_input{};
+
+    /**
+     * \brief Calculation output processor.
+     */
+    Output_Processor<Register> m_process_output{};
+
+    /**
+     * \brief Calculation XOR output value.
+     */
+    Register m_xor_output{};
+
+    /**
+     * \brief Build the calculation lookup table.
+     *
+     * \param[in] polynomial The calculation polynomial.
+     *
+     * \return The calculation lookup table.
+     */
+    static constexpr auto lookup_table( Register polynomial ) noexcept
+    {
+        Lookup_Table table;
+
+        for ( auto i = 0U; i < table.size(); ++i ) {
+            auto remainder = static_cast<Register>(
+                i << ( std::numeric_limits<Register>::digits - std::numeric_limits<std::uint8_t>::digits ) );
+
+            for ( auto bit = std::numeric_limits<std::uint8_t>::digits - 1; bit >= 0; --bit ) {
+                auto const xor_polynomial = static_cast<bool>(
+                    remainder & ~( std::numeric_limits<Register>::max() >> 1 ) );
+
+                remainder <<= 1;
+
+                if ( xor_polynomial ) { remainder ^= polynomial; } // if
+            }                                                      // for
+
+            table[ i ] = remainder;
+        } // for
+
+        return table;
+    }
+
+    /**
+     * \brief Feed data into the CRC calculation.
+     *
+     * \tparam Iterator Message/augment iterator. The iterated over type must be
+     *         convertible to a std::uint8_t.
+     *
+     * \param[in] remainder The current CRC calculation remainder.
+     * \param[in] begin The beginning of the message/augment to feed into the calculation.
+     * \param[in] end The end of the message/augment to feed into the calculation.
+     *
+     * \return The resulting CRC calculation remainder.
+     */
+    template<typename Iterator>
+    auto feed( Register remainder, Iterator begin, Iterator end ) const noexcept
+    {
+        for ( ; begin != end; ++begin ) {
+            auto const processed_input = ( *m_process_input )( *begin );
+
+            auto const i = static_cast<std::uint8_t>(
+                remainder >> ( std::numeric_limits<Register>::digits
+                               - std::numeric_limits<std::uint8_t>::digits ) );
+
+            remainder = ( ( remainder << std::numeric_limits<std::uint8_t>::digits ) | processed_input )
+                        ^ m_lookup_table[ i ];
+        } // for
 
         return remainder;
     }

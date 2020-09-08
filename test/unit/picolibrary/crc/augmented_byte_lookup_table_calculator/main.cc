@@ -16,7 +16,7 @@
 
 /**
  * \file
- * \brief picolibrary::CRC::Bitwise_Calculator unit test program.
+ * \brief picolibrary::CRC::Augmented_Byte_Lookup_Table_Calculator unit test program.
  */
 
 #include <cstdint>
@@ -28,30 +28,42 @@
 
 namespace {
 
-using ::picolibrary::CRC::Bitwise_Calculator;
+using ::picolibrary::CRC::Augmented_Byte_Lookup_Table_Calculator;
 
 } // namespace
 
 /**
- * \brief Verify picolibrary::CRC::Bitwise_Calculator<std::uint8_t>::calculate() works
- *        properly.
+ * \brief Verify
+ *        picolibrary::CRC::Augmented_Byte_Lookup_Table_Calculator<std::uint8_t>::calculate()
+ *        works properly.
  */
-INSTANTIATE_TYPED_TEST_SUITE_P( bitwise, CalculatorUint8Register, Bitwise_Calculator<std::uint8_t> );
+INSTANTIATE_TYPED_TEST_SUITE_P(
+    augmentedByteLookupTable,
+    CalculatorUint8Register,
+    Augmented_Byte_Lookup_Table_Calculator<std::uint8_t> );
 
 /**
- * \brief Verify picolibrary::CRC::Bitwise_Calculator<std::uint16_t>::calculate() works
- *        properly.
+ * \brief Verify
+ *        picolibrary::CRC::Augmented_Byte_Lookup_Table_Calculator<std::uint16_t>::calculate()
+ *        works properly.
  */
-INSTANTIATE_TYPED_TEST_SUITE_P( bitwise, CalculatorUint16Register, Bitwise_Calculator<std::uint16_t> );
+INSTANTIATE_TYPED_TEST_SUITE_P(
+    augmentedByteLookupTable,
+    CalculatorUint16Register,
+    Augmented_Byte_Lookup_Table_Calculator<std::uint16_t> );
 
 /**
- * \brief Verify picolibrary::CRC::Bitwise_Calculator<std::uint32_t>::calculate() works
- *        properly.
+ * \brief Verify
+ *        picolibrary::CRC::Augmented_Byte_Lookup_Table_Calculator<std::uint32_t>::calculate()
+ *        works properly.
  */
-INSTANTIATE_TYPED_TEST_SUITE_P( bitwise, CalculatorUint32Register, Bitwise_Calculator<std::uint32_t> );
+INSTANTIATE_TYPED_TEST_SUITE_P(
+    augmentedByteLookupTable,
+    CalculatorUint32Register,
+    Augmented_Byte_Lookup_Table_Calculator<std::uint32_t> );
 
 /**
- * \brief Execute the picolibrary::CRC::Bitwise_Calculator unit tests.
+ * \brief Execute the picolibrary::CRC::Augmented_Byte_Lookup_Table_Calculator unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
  * \param[in] argv The array  of arguments to pass to testing::InitGoogleMock().
