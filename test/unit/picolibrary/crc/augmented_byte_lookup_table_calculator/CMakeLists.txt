@@ -13,8 +13,8 @@
 # permissions and limitations under the License.
 
 # File: test/unit/picolibrary/crc/augmented_byte_lookup_table_calculator/CMakeLists.txt
-# Description: picolibrary::CRC::Augmented_Byte_Lookup_Table_Calculator unit
-#       tests CMake rules.
+# Description: picolibrary::CRC::Augmented_Byte_Lookup_Table_Calculator unit tests CMake
+#       rules.
 
 # build the picolibrary::CRC::Augmented_Byte_Lookup_Table_Calculator unit tests
 if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
