@@ -562,7 +562,7 @@ class Direct_Byte_Lookup_Table_Calculator {
      */
     constexpr explicit Direct_Byte_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept :
         m_lookup_table{ generate_byte_lookup_table( parameters.polynomial ) },
-        m_initial_remainder{ initial_remainder( parameters.initial_remainder, m_lookup_table ) },
+        m_initial_remainder{ preprocess_initial_remainder( parameters.initial_remainder, m_lookup_table ) },
         m_process_input{ input_processor( parameters.input_is_reflected ) },
         m_process_output{ output_processor<Register>( parameters.output_is_reflected ) },
         m_xor_output{ parameters.xor_output }
@@ -639,7 +639,7 @@ class Direct_Byte_Lookup_Table_Calculator {
     Byte_Lookup_Table<Register> m_lookup_table{};
 
     /**
-     * \brief Calculation pre-processed initial remainder.
+     * \brief Calculation preprocessed initial remainder.
      */
     Register m_initial_remainder{};
 
@@ -659,14 +659,16 @@ class Direct_Byte_Lookup_Table_Calculator {
     Register m_xor_output{};
 
     /**
-     * \brief Pre-process the calculation initial remainder.
+     * \brief Preprocess the calculation initial remainder.
      *
      * \param[in] initial_remainder The calculation initial remainder.
      * \param[in] lookup_table The calculation lookup table.
      *
-     * \return The pre-processed calculation initial remainder.
+     * \return The preprocessed calculation initial remainder.
      */
-    static constexpr auto initial_remainder( Register initial_remainder, Byte_Lookup_Table<Register> const & lookup_table ) noexcept
+    static constexpr auto preprocess_initial_remainder(
+        Register                            initial_remainder,
+        Byte_Lookup_Table<Register> const & lookup_table ) noexcept
     {
         auto remainder = initial_remainder;
 
