@@ -137,6 +137,14 @@ using Augment =
     Fixed_Size_Array<std::uint8_t, std::numeric_limits<Register>::digits / std::numeric_limits<std::uint8_t>::digits>;
 
 /**
+ * \brief Calculation byte indexed lookup table.
+ *
+ * \tparam Register Calculation register type.
+ */
+template<typename Register>
+using Byte_Lookup_Table = Fixed_Size_Array<Register, std::numeric_limits<std::uint8_t>::max() + 1>;
+
+/**
  * \brief Calculator concept.
  *
  * \tparam Register_Type Calculation register type.
@@ -444,12 +452,7 @@ class Augmented_Byte_Lookup_Table_Calculator {
     /**
      * \brief Calculation lookup table.
      */
-    using Lookup_Table = Fixed_Size_Array<Register, std::numeric_limits<std::uint8_t>::max() + 1>;
-
-    /**
-     * \brief Calculation lookup table.
-     */
-    Lookup_Table m_lookup_table{};
+    Byte_Lookup_Table<Register> m_lookup_table{};
 
     /**
      * \brief Calculation initial remainder.
@@ -480,7 +483,7 @@ class Augmented_Byte_Lookup_Table_Calculator {
      */
     static constexpr auto lookup_table( Register polynomial ) noexcept
     {
-        Lookup_Table table;
+        Byte_Lookup_Table<Register> table;
 
         for ( auto i = 0U; i < table.size(); ++i ) {
             auto remainder = static_cast<Register>(
@@ -630,12 +633,7 @@ class Direct_Byte_Lookup_Table_Calculator {
     /**
      * \brief Calculation lookup table.
      */
-    using Lookup_Table = Fixed_Size_Array<Register, std::numeric_limits<std::uint8_t>::max() + 1>;
-
-    /**
-     * \brief Calculation lookup table.
-     */
-    Lookup_Table m_lookup_table{};
+    Byte_Lookup_Table<Register> m_lookup_table{};
 
     /**
      * \brief Calculation pre-processed initial remainder.
@@ -666,7 +664,7 @@ class Direct_Byte_Lookup_Table_Calculator {
      */
     static constexpr auto lookup_table( Register polynomial ) noexcept
     {
-        Lookup_Table table;
+        Byte_Lookup_Table<Register> table;
 
         for ( auto i = 0U; i < table.size(); ++i ) {
             auto remainder = static_cast<Register>(
@@ -695,7 +693,7 @@ class Direct_Byte_Lookup_Table_Calculator {
      *
      * \return The pre-processed calculation initial remainder.
      */
-    static constexpr auto initial_remainder( Register initial_remainder, Lookup_Table const & lookup_table ) noexcept
+    static constexpr auto initial_remainder( Register initial_remainder, Byte_Lookup_Table<Register> const & lookup_table ) noexcept
     {
         auto remainder = initial_remainder;
 
