@@ -562,7 +562,9 @@ class Direct_Byte_Lookup_Table_Calculator {
      */
     constexpr explicit Direct_Byte_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept :
         m_lookup_table{ generate_byte_lookup_table( parameters.polynomial ) },
-        m_initial_remainder{ preprocess_initial_remainder( parameters.initial_remainder, m_lookup_table ) },
+        m_preprocessed_initial_remainder{
+            preprocess_initial_remainder( parameters.initial_remainder, m_lookup_table )
+        },
         m_process_input{ input_processor( parameters.input_is_reflected ) },
         m_process_output{ output_processor<Register>( parameters.output_is_reflected ) },
         m_xor_output{ parameters.xor_output }
@@ -614,7 +616,7 @@ class Direct_Byte_Lookup_Table_Calculator {
     template<typename Iterator>
     auto calculate( Iterator begin, Iterator end ) const noexcept -> Register
     {
-        auto remainder = m_initial_remainder;
+        auto remainder = m_preprocessed_initial_remainder;
 
         for ( ; begin != end; ++begin ) {
             auto const processed_input = ( *m_process_input )( *begin );
@@ -641,7 +643,7 @@ class Direct_Byte_Lookup_Table_Calculator {
     /**
      * \brief Calculation preprocessed initial remainder.
      */
-    Register m_initial_remainder{};
+    Register m_preprocessed_initial_remainder{};
 
     /**
      * \brief Calculation input processor.
@@ -670,21 +672,21 @@ class Direct_Byte_Lookup_Table_Calculator {
         Register                            initial_remainder,
         Byte_Lookup_Table<Register> const & lookup_table ) noexcept
     {
-        auto remainder = initial_remainder;
+        auto preprocessed_initial_remainder = initial_remainder;
 
         for ( auto byte = 0; byte < std::numeric_limits<Register>::digits
                                         / std::numeric_limits<std::uint8_t>::digits;
               ++byte ) {
             auto const i = static_cast<std::uint8_t>(
-                remainder >> ( std::numeric_limits<Register>::digits
-                               - std::numeric_limits<std::uint8_t>::digits ) );
+                preprocessed_initial_remainder >> ( std::numeric_limits<Register>::digits
+                                                    - std::numeric_limits<std::uint8_t>::digits ) );
 
-            remainder <<= std::numeric_limits<std::uint8_t>::digits;
+            preprocessed_initial_remainder <<= std::numeric_limits<std::uint8_t>::digits;
 
-            remainder ^= lookup_table[ i ];
+            preprocessed_initial_remainder ^= lookup_table[ i ];
         } // for
 
-        return remainder;
+        return preprocessed_initial_remainder;
     }
 };
 
