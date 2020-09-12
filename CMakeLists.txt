@@ -40,10 +40,11 @@ list(
 
 # configure compilation and linking
 if( NOT ${PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS} )
+    set( CMAKE_CXX_STANDARD 17 )
+
     set(
         CMAKE_CXX_FLAGS
         "${CMAKE_CXX_FLAGS} \
-        -std=c++17 \
         -Werror -Wall -Wextra \
         -Wcast-qual \
         -Wfloat-equal \
