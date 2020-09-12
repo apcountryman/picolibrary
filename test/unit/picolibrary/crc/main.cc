@@ -31,6 +31,7 @@ namespace {
 
 using ::picolibrary::CRC::Augmented_Byte_Lookup_Table_Calculator;
 using ::picolibrary::CRC::Bitwise_Calculator;
+using ::picolibrary::CRC::Direct_Byte_Lookup_Table_Calculator;
 using ::picolibrary::CRC::Parameters;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::random_container;
@@ -78,6 +79,10 @@ TYPED_TEST( calculators, areEquivalent )
 
     EXPECT_EQ(
         Augmented_Byte_Lookup_Table_Calculator{ parameters }.calculate(
+            message.begin(), message.end() ),
+        expected_remainder );
+    EXPECT_EQ(
+        Direct_Byte_Lookup_Table_Calculator{ parameters }.calculate(
             message.begin(), message.end() ),
         expected_remainder );
 }

@@ -137,6 +137,47 @@ using Augment =
     Fixed_Size_Array<std::uint8_t, std::numeric_limits<Register>::digits / std::numeric_limits<std::uint8_t>::digits>;
 
 /**
+ * \brief Calculation byte indexed lookup table.
+ *
+ * \tparam Register Calculation register type.
+ */
+template<typename Register>
+using Byte_Lookup_Table = Fixed_Size_Array<Register, std::numeric_limits<std::uint8_t>::max() + 1>;
+
+/**
+ * \brief Generate a calculation byte indexed lookup table.
+ *
+ * \tparam Register Calculation register type.
+ *
+ * \param[in] polynomial The calculation polynomial.
+ *
+ * \return The generated calculation byte indexed lookup table.
+ */
+template<typename Register>
+static constexpr auto generate_byte_lookup_table( Register polynomial ) noexcept
+{
+    Byte_Lookup_Table<Register> lookup_table;
+
+    for ( auto i = 0U; i < lookup_table.size(); ++i ) {
+        auto remainder = static_cast<Register>(
+            i << ( std::numeric_limits<Register>::digits - std::numeric_limits<std::uint8_t>::digits ) );
+
+        for ( auto bit = std::numeric_limits<std::uint8_t>::digits - 1; bit >= 0; --bit ) {
+            auto const xor_polynomial = static_cast<bool>(
+                remainder & ~( std::numeric_limits<Register>::max() >> 1 ) );
+
+            remainder <<= 1;
+
+            if ( xor_polynomial ) { remainder ^= polynomial; } // if
+        }                                                      // for
+
+        lookup_table[ i ] = remainder;
+    } // for
+
+    return lookup_table;
+}
+
+/**
  * \brief Calculator concept.
  *
  * \tparam Register_Type Calculation register type.
@@ -379,7 +420,7 @@ class Augmented_Byte_Lookup_Table_Calculator {
      * \param[in] parameters The calculation parameters.
      */
     constexpr explicit Augmented_Byte_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept :
-        m_lookup_table{ lookup_table( parameters.polynomial ) },
+        m_lookup_table{ generate_byte_lookup_table( parameters.polynomial ) },
         m_initial_remainder{ parameters.initial_remainder },
         m_process_input{ input_processor( parameters.input_is_reflected ) },
         m_process_output{ output_processor<Register>( parameters.output_is_reflected ) },
@@ -444,12 +485,7 @@ class Augmented_Byte_Lookup_Table_Calculator {
     /**
      * \brief Calculation lookup table.
      */
-    using Lookup_Table = Fixed_Size_Array<Register, std::numeric_limits<std::uint8_t>::max() + 1>;
-
-    /**
-     * \brief Calculation lookup table.
-     */
-    Lookup_Table m_lookup_table{};
+    Byte_Lookup_Table<Register> m_lookup_table{};
 
     /**
      * \brief Calculation initial remainder.
@@ -470,36 +506,6 @@ class Augmented_Byte_Lookup_Table_Calculator {
      * \brief Calculation XOR output value.
      */
     Register m_xor_output{};
-
-    /**
-     * \brief Build the calculation lookup table.
-     *
-     * \param[in] polynomial The calculation polynomial.
-     *
-     * \return The calculation lookup table.
-     */
-    static constexpr auto lookup_table( Register polynomial ) noexcept
-    {
-        Lookup_Table table;
-
-        for ( auto i = 0U; i < table.size(); ++i ) {
-            auto remainder = static_cast<Register>(
-                i << ( std::numeric_limits<Register>::digits - std::numeric_limits<std::uint8_t>::digits ) );
-
-            for ( auto bit = std::numeric_limits<std::uint8_t>::digits - 1; bit >= 0; --bit ) {
-                auto const xor_polynomial = static_cast<bool>(
-                    remainder & ~( std::numeric_limits<Register>::max() >> 1 ) );
-
-                remainder <<= 1;
-
-                if ( xor_polynomial ) { remainder ^= polynomial; } // if
-            }                                                      // for
-
-            table[ i ] = remainder;
-        } // for
-
-        return table;
-    }
 
     /**
      * \brief Feed data into the CRC calculation.
@@ -528,6 +534,159 @@ class Augmented_Byte_Lookup_Table_Calculator {
         } // for
 
         return remainder;
+    }
+};
+
+/**
+ * \brief Direct byte lookup table calculator.
+ *
+ * \tparam Register_Type Calculation register type.
+ */
+template<typename Register_Type>
+class Direct_Byte_Lookup_Table_Calculator {
+  public:
+    /**
+     * \brief Calculation register type.
+     */
+    using Register = Register_Type;
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Direct_Byte_Lookup_Table_Calculator() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] parameters The calculation parameters.
+     */
+    constexpr explicit Direct_Byte_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept :
+        m_lookup_table{ generate_byte_lookup_table( parameters.polynomial ) },
+        m_preprocessed_initial_remainder{
+            preprocess_initial_remainder( parameters.initial_remainder, m_lookup_table )
+        },
+        m_process_input{ input_processor( parameters.input_is_reflected ) },
+        m_process_output{ output_processor<Register>( parameters.output_is_reflected ) },
+        m_xor_output{ parameters.xor_output }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Direct_Byte_Lookup_Table_Calculator( Direct_Byte_Lookup_Table_Calculator && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Direct_Byte_Lookup_Table_Calculator( Direct_Byte_Lookup_Table_Calculator const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Direct_Byte_Lookup_Table_Calculator() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Direct_Byte_Lookup_Table_Calculator && expression ) noexcept
+        -> Direct_Byte_Lookup_Table_Calculator & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Direct_Byte_Lookup_Table_Calculator const & expression ) noexcept
+        -> Direct_Byte_Lookup_Table_Calculator & = default;
+
+    /**
+     * \copydoc picolibrary::CRC::Calculator_Concept::calculate()
+     */
+    template<typename Iterator>
+    auto calculate( Iterator begin, Iterator end ) const noexcept -> Register
+    {
+        auto remainder = m_preprocessed_initial_remainder;
+
+        for ( ; begin != end; ++begin ) {
+            auto const processed_input = ( *m_process_input )( *begin );
+
+            auto const i = static_cast<std::uint8_t>(
+                               remainder >> ( std::numeric_limits<Register>::digits
+                                              - std::numeric_limits<std::uint8_t>::digits ) )
+                           ^ processed_input;
+
+            remainder <<= std::numeric_limits<std::uint8_t>::digits;
+
+            remainder ^= m_lookup_table[ i ];
+        } // for
+
+        return ( *m_process_output )( remainder ) ^ m_xor_output;
+    }
+
+  private:
+    /**
+     * \brief Calculation lookup table.
+     */
+    Byte_Lookup_Table<Register> m_lookup_table{};
+
+    /**
+     * \brief Calculation preprocessed initial remainder.
+     */
+    Register m_preprocessed_initial_remainder{};
+
+    /**
+     * \brief Calculation input processor.
+     */
+    Input_Processor m_process_input{};
+
+    /**
+     * \brief Calculation output processor.
+     */
+    Output_Processor<Register> m_process_output{};
+
+    /**
+     * \brief Calculation XOR output value.
+     */
+    Register m_xor_output{};
+
+    /**
+     * \brief Preprocess the calculation initial remainder.
+     *
+     * \param[in] initial_remainder The calculation initial remainder.
+     * \param[in] lookup_table The calculation lookup table.
+     *
+     * \return The preprocessed calculation initial remainder.
+     */
+    static constexpr auto preprocess_initial_remainder(
+        Register                            initial_remainder,
+        Byte_Lookup_Table<Register> const & lookup_table ) noexcept
+    {
+        auto preprocessed_initial_remainder = initial_remainder;
+
+        for ( auto byte = 0; byte < std::numeric_limits<Register>::digits
+                                        / std::numeric_limits<std::uint8_t>::digits;
+              ++byte ) {
+            auto const i = static_cast<std::uint8_t>(
+                preprocessed_initial_remainder >> ( std::numeric_limits<Register>::digits
+                                                    - std::numeric_limits<std::uint8_t>::digits ) );
+
+            preprocessed_initial_remainder <<= std::numeric_limits<std::uint8_t>::digits;
+
+            preprocessed_initial_remainder ^= lookup_table[ i ];
+        } // for
+
+        return preprocessed_initial_remainder;
     }
 };
 
