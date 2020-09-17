@@ -137,6 +137,48 @@ using Augment =
     Fixed_Size_Array<std::uint8_t, std::numeric_limits<Register>::digits / std::numeric_limits<std::uint8_t>::digits>;
 
 /**
+ * \brief Calculation nibble indexed lookup table.
+ *
+ * \tparam Register Calculation register type.
+ */
+template<typename Register>
+using Nibble_Lookup_Table =
+    Fixed_Size_Array<Register, ( ( std::numeric_limits<std::uint8_t>::max() + 1 ) >> ( std::numeric_limits<std::uint8_t>::digits / 2 ) )>;
+
+/**
+ * \brief Generate a calculation nibble indexed lookup table.
+ *
+ * \tparam Register Calculation register type.
+ *
+ * \param[in] polynomial The calculation polynomial.
+ *
+ * \return The generated calculation nibble indexed lookup table.
+ */
+template<typename Register>
+static constexpr auto generate_nibble_lookup_table( Register polynomial ) noexcept
+{
+    Nibble_Lookup_Table<Register> lookup_table;
+
+    for ( auto i = 0U; i < lookup_table.size(); ++i ) {
+        auto remainder = static_cast<Register>(
+            i << ( std::numeric_limits<Register>::digits - ( std::numeric_limits<std::uint8_t>::digits / 2 ) ) );
+
+        for ( auto bit = ( std::numeric_limits<std::uint8_t>::digits / 2 ) - 1; bit >= 0; --bit ) {
+            auto const xor_polynomial = static_cast<bool>(
+                remainder & ~( std::numeric_limits<Register>::max() >> 1 ) );
+
+            remainder <<= 1;
+
+            if ( xor_polynomial ) { remainder ^= polynomial; } // if
+        }                                                      // for
+
+        lookup_table[ i ] = remainder;
+    } // for
+
+    return lookup_table;
+}
+
+/**
  * \brief Calculation byte indexed lookup table.
  *
  * \tparam Register Calculation register type.
@@ -419,9 +461,13 @@ class Augmented_Nibble_Lookup_Table_Calculator {
      *
      * \param[in] parameters The calculation parameters.
      */
-    constexpr explicit Augmented_Nibble_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept
+    constexpr explicit Augmented_Nibble_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept :
+        m_lookup_table{ generate_nibble_lookup_table( parameters.polynomial ) },
+        m_initial_remainder{ parameters.initial_remainder },
+        m_process_input{ input_processor( parameters.input_is_reflected ) },
+        m_process_output{ output_processor<Register>( parameters.output_is_reflected ) },
+        m_xor_output{ parameters.xor_output }
     {
-        static_cast<void>( parameters );
     }
 
     /**
@@ -464,6 +510,82 @@ class Augmented_Nibble_Lookup_Table_Calculator {
      */
     constexpr auto operator=( Augmented_Nibble_Lookup_Table_Calculator const & expression ) noexcept
         -> Augmented_Nibble_Lookup_Table_Calculator & = default;
+
+    /**
+     * \copydoc picolibrary::CRC::Calculator_Concept::calculate()
+     */
+    template<typename Iterator>
+    auto calculate( Iterator begin, Iterator end ) const noexcept -> Register
+    {
+        auto const augment = Augment<Register>{};
+
+        return ( *m_process_output )( feed(
+                   feed( m_initial_remainder, begin, end ), augment.begin(), augment.end() ) )
+               ^ m_xor_output;
+    }
+
+  private:
+    /**
+     * \brief Calculation lookup table.
+     */
+    Nibble_Lookup_Table<Register> m_lookup_table{};
+
+    /**
+     * \brief Calculation initial remainder.
+     */
+    Register m_initial_remainder{};
+
+    /**
+     * \brief Calculation input processor.
+     */
+    Input_Processor m_process_input{};
+
+    /**
+     * \brief Calculation output processor.
+     */
+    Output_Processor<Register> m_process_output{};
+
+    /**
+     * \brief Calculation XOR output value.
+     */
+    Register m_xor_output{};
+
+    /**
+     * \brief Feed data into the CRC calculation.
+     *
+     * \tparam Iterator Message/augment iterator. The iterated over type must be
+     *         convertible to a std::uint8_t.
+     *
+     * \param[in] remainder The current CRC calculation remainder.
+     * \param[in] begin The beginning of the message/augment to feed into the calculation.
+     * \param[in] end The end of the message/augment to feed into the calculation.
+     *
+     * \return The resulting CRC calculation remainder.
+     */
+    template<typename Iterator>
+    auto feed( Register remainder, Iterator begin, Iterator end ) const noexcept
+    {
+        constexpr auto nibble_digits = std::numeric_limits<std::uint8_t>::digits / 2;
+
+        for ( ; begin != end; ++begin ) {
+            auto const processed_input = ( *m_process_input )( *begin );
+
+            auto const nibbles = Fixed_Size_Array<std::uint_fast8_t, 2>{
+                static_cast<std::uint_fast8_t>( processed_input >> nibble_digits ),
+                static_cast<std::uint_fast8_t>(
+                    processed_input & ( std::numeric_limits<std::uint8_t>::max() >> nibble_digits ) ),
+            };
+
+            for ( auto const nibble : nibbles ) {
+                auto const i = static_cast<std::uint8_t>(
+                    remainder >> ( std::numeric_limits<Register>::digits - nibble_digits ) );
+
+                remainder = ( ( remainder << nibble_digits ) | nibble ) ^ m_lookup_table[ i ];
+            } // for
+        }     // for
+
+        return remainder;
+    }
 };
 
 /**
