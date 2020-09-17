@@ -202,7 +202,7 @@ class Fixed_Size_Array {
      */
     constexpr auto data() const noexcept -> Const_Pointer
     {
-        if constexpr ( N ) {
+        if constexpr ( static_cast<bool>( N ) ) {
             return &m_array[ 0 ];
         } else {
             return nullptr;
