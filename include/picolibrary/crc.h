@@ -157,13 +157,15 @@ using Nibble_Lookup_Table =
 template<typename Register>
 static constexpr auto generate_nibble_lookup_table( Register polynomial ) noexcept
 {
+    constexpr auto nibble_digits = std::numeric_limits<std::uint8_t>::digits / 2;
+
     Nibble_Lookup_Table<Register> lookup_table;
 
     for ( auto i = 0U; i < lookup_table.size(); ++i ) {
         auto remainder = static_cast<Register>(
-            i << ( std::numeric_limits<Register>::digits - ( std::numeric_limits<std::uint8_t>::digits / 2 ) ) );
+            i << ( std::numeric_limits<Register>::digits - nibble_digits ) );
 
-        for ( auto bit = ( std::numeric_limits<std::uint8_t>::digits / 2 ) - 1; bit >= 0; --bit ) {
+        for ( auto bit = nibble_digits - 1; bit >= 0; --bit ) {
             auto const xor_polynomial = static_cast<bool>(
                 remainder & ~( std::numeric_limits<Register>::max() >> 1 ) );
 
