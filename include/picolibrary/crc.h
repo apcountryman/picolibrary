@@ -591,6 +591,75 @@ class Augmented_Nibble_Lookup_Table_Calculator {
 };
 
 /**
+ * \brief Direct nibble lookup table calculator.
+ *
+ * \tparam Register_Type Calculation register type.
+ */
+template<typename Register_Type>
+class Direct_Nibble_Lookup_Table_Calculator {
+  public:
+    /**
+     * \brief Calculation register type.
+     */
+    using Register = Register_Type;
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Direct_Nibble_Lookup_Table_Calculator() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] parameters The calculation parameters.
+     */
+    constexpr explicit Direct_Nibble_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept
+    {
+        static_cast<void>( parameters );
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Direct_Nibble_Lookup_Table_Calculator( Direct_Nibble_Lookup_Table_Calculator && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Direct_Nibble_Lookup_Table_Calculator(
+        Direct_Nibble_Lookup_Table_Calculator const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Direct_Nibble_Lookup_Table_Calculator() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Direct_Nibble_Lookup_Table_Calculator && expression ) noexcept
+        -> Direct_Nibble_Lookup_Table_Calculator & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Direct_Nibble_Lookup_Table_Calculator const & expression ) noexcept
+        -> Direct_Nibble_Lookup_Table_Calculator & = default;
+};
+
+/**
  * \brief Augmented byte lookup table calculator.
  *
  * \tparam Register_Type Calculation register type.
