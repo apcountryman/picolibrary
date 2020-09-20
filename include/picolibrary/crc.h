@@ -579,7 +579,7 @@ class Augmented_Nibble_Lookup_Table_Calculator {
             };
 
             for ( auto const nibble : nibbles ) {
-                auto const i = static_cast<std::uint8_t>(
+                auto const i = static_cast<std::uint_fast8_t>(
                     remainder >> ( std::numeric_limits<Register>::digits - nibble_digits ) );
 
                 remainder = ( ( remainder << nibble_digits ) | nibble ) ^ m_lookup_table[ i ];
