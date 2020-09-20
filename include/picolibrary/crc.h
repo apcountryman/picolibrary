@@ -127,6 +127,37 @@ constexpr auto output_processor( bool output_is_reflected ) noexcept
 }
 
 /**
+ * \brief Integer type used to hold a nibble.
+ */
+using Nibble = std::uint_fast8_t;
+
+/**
+ * \brief The number of bits in a nibble.
+ */
+constexpr auto NIBBLE_DIGITS = std::numeric_limits<std::uint8_t>::digits / 2;
+
+/**
+ * \brief The pair of nibbles that make up a byte (most significant nibble first).
+ */
+using Nibbles = Fixed_Size_Array<Nibble, std::numeric_limits<std::uint8_t>::digits / NIBBLE_DIGITS>;
+
+/**
+ * \brief Convert a byte to a pair of nibbles (most significant nibble first).
+ *
+ * \param[in] byte The byte to convert to a pair of nibbles (most significant nubble
+ *            first).
+ *
+ * \return The pair of nibbles (most significant nibble first) that make up the byte.
+ */
+constexpr auto convert_byte_to_nibbles( std::uint8_t byte ) noexcept
+{
+    return Nibbles{
+        static_cast<Nibble>( byte >> NIBBLE_DIGITS ),
+        static_cast<Nibble>( byte & ( std::numeric_limits<std::uint8_t>::max() >> NIBBLE_DIGITS ) ),
+    };
+}
+
+/**
  * \brief Message augment required by bitwise and augmented lookup table calculator
  *        implementations.
  *
@@ -143,7 +174,7 @@ using Augment =
  */
 template<typename Register>
 using Nibble_Lookup_Table =
-    Fixed_Size_Array<Register, ( ( std::numeric_limits<std::uint8_t>::max() + 1 ) >> ( std::numeric_limits<std::uint8_t>::digits / 2 ) )>;
+    Fixed_Size_Array<Register, ( ( std::numeric_limits<std::uint8_t>::max() + 1 ) >> NIBBLE_DIGITS )>;
 
 /**
  * \brief Generate a calculation nibble indexed lookup table.
@@ -157,15 +188,13 @@ using Nibble_Lookup_Table =
 template<typename Register>
 static constexpr auto generate_nibble_lookup_table( Register polynomial ) noexcept
 {
-    constexpr auto nibble_digits = std::numeric_limits<std::uint8_t>::digits / 2;
-
     Nibble_Lookup_Table<Register> lookup_table;
 
     for ( auto i = 0U; i < lookup_table.size(); ++i ) {
         auto remainder = static_cast<Register>(
-            i << ( std::numeric_limits<Register>::digits - nibble_digits ) );
+            i << ( std::numeric_limits<Register>::digits - NIBBLE_DIGITS ) );
 
-        for ( auto bit = nibble_digits - 1; bit >= 0; --bit ) {
+        for ( auto bit = NIBBLE_DIGITS - 1; bit >= 0; --bit ) {
             auto const xor_polynomial = static_cast<bool>(
                 remainder & ~( std::numeric_limits<Register>::max() >> 1 ) );
 
@@ -567,26 +596,171 @@ class Augmented_Nibble_Lookup_Table_Calculator {
     template<typename Iterator>
     auto feed( Register remainder, Iterator begin, Iterator end ) const noexcept
     {
-        constexpr auto nibble_digits = std::numeric_limits<std::uint8_t>::digits / 2;
-
         for ( ; begin != end; ++begin ) {
-            auto const processed_input = ( *m_process_input )( *begin );
-
-            auto const nibbles = Fixed_Size_Array<std::uint_fast8_t, 2>{
-                static_cast<std::uint_fast8_t>( processed_input >> nibble_digits ),
-                static_cast<std::uint_fast8_t>(
-                    processed_input & ( std::numeric_limits<std::uint8_t>::max() >> nibble_digits ) ),
-            };
+            auto const nibbles = convert_byte_to_nibbles( ( *m_process_input )( *begin ) );
 
             for ( auto const nibble : nibbles ) {
-                auto const i = static_cast<std::uint8_t>(
-                    remainder >> ( std::numeric_limits<Register>::digits - nibble_digits ) );
+                auto const i = static_cast<Nibble>(
+                    remainder >> ( std::numeric_limits<Register>::digits - NIBBLE_DIGITS ) );
 
-                remainder = ( ( remainder << nibble_digits ) | nibble ) ^ m_lookup_table[ i ];
+                remainder = ( ( remainder << NIBBLE_DIGITS ) | nibble ) ^ m_lookup_table[ i ];
             } // for
         }     // for
 
         return remainder;
+    }
+};
+
+/**
+ * \brief Direct nibble lookup table calculator.
+ *
+ * \tparam Register_Type Calculation register type.
+ */
+template<typename Register_Type>
+class Direct_Nibble_Lookup_Table_Calculator {
+  public:
+    /**
+     * \brief Calculation register type.
+     */
+    using Register = Register_Type;
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Direct_Nibble_Lookup_Table_Calculator() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] parameters The calculation parameters.
+     */
+    constexpr explicit Direct_Nibble_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept :
+        m_lookup_table{ generate_nibble_lookup_table( parameters.polynomial ) },
+        m_preprocessed_initial_remainder{
+            preprocess_initial_remainder( parameters.initial_remainder, m_lookup_table )
+        },
+        m_process_input{ input_processor( parameters.input_is_reflected ) },
+        m_process_output{ output_processor<Register>( parameters.output_is_reflected ) },
+        m_xor_output{ parameters.xor_output }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Direct_Nibble_Lookup_Table_Calculator( Direct_Nibble_Lookup_Table_Calculator && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Direct_Nibble_Lookup_Table_Calculator(
+        Direct_Nibble_Lookup_Table_Calculator const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Direct_Nibble_Lookup_Table_Calculator() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Direct_Nibble_Lookup_Table_Calculator && expression ) noexcept
+        -> Direct_Nibble_Lookup_Table_Calculator & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Direct_Nibble_Lookup_Table_Calculator const & expression ) noexcept
+        -> Direct_Nibble_Lookup_Table_Calculator & = default;
+
+    /**
+     * \copydoc picolibrary::CRC::Calculator_Concept::calculate()
+     */
+    template<typename Iterator>
+    auto calculate( Iterator begin, Iterator end ) const noexcept -> Register
+    {
+        auto remainder = m_preprocessed_initial_remainder;
+
+        for ( ; begin != end; ++begin ) {
+            auto const nibbles = convert_byte_to_nibbles( ( *m_process_input )( *begin ) );
+
+            for ( auto const nibble : nibbles ) {
+                auto const i = static_cast<Nibble>(
+                                   remainder >> ( std::numeric_limits<Register>::digits - NIBBLE_DIGITS ) )
+                               ^ nibble;
+
+                remainder <<= NIBBLE_DIGITS;
+
+                remainder ^= m_lookup_table[ i ];
+            } // for
+        }     // for
+
+        return ( *m_process_output )( remainder ) ^ m_xor_output;
+    }
+
+  private:
+    /**
+     * \brief Calculation lookup table.
+     */
+    Nibble_Lookup_Table<Register> m_lookup_table{};
+
+    /**
+     * \brief Calculation preprocessed initial remainder.
+     */
+    Register m_preprocessed_initial_remainder{};
+
+    /**
+     * \brief Calculation input processor.
+     */
+    Input_Processor m_process_input{};
+
+    /**
+     * \brief Calculation output processor.
+     */
+    Output_Processor<Register> m_process_output{};
+
+    /**
+     * \brief Calculation XOR output value.
+     */
+    Register m_xor_output{};
+
+    /**
+     * \brief Preprocess the calculation initial remainder.
+     *
+     * \param[in] initial_remainder The calculation initial remainder.
+     * \param[in] lookup_table The calculation lookup table.
+     *
+     * \return The preprocessed calculation initial remainder.
+     */
+    static constexpr auto preprocess_initial_remainder(
+        Register                              initial_remainder,
+        Nibble_Lookup_Table<Register> const & lookup_table ) noexcept
+    {
+        auto preprocessed_initial_remainder = initial_remainder;
+
+        for ( auto nibble = 0; nibble < std::numeric_limits<Register>::digits / NIBBLE_DIGITS; ++nibble ) {
+            auto const i = static_cast<Nibble>(
+                preprocessed_initial_remainder
+                >> ( std::numeric_limits<Register>::digits - NIBBLE_DIGITS ) );
+
+            preprocessed_initial_remainder <<= NIBBLE_DIGITS;
+
+            preprocessed_initial_remainder ^= lookup_table[ i ];
+        } // for
+
+        return preprocessed_initial_remainder;
     }
 };
 
