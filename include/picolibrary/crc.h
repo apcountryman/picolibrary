@@ -613,9 +613,15 @@ class Direct_Nibble_Lookup_Table_Calculator {
      *
      * \param[in] parameters The calculation parameters.
      */
-    constexpr explicit Direct_Nibble_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept
+    constexpr explicit Direct_Nibble_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept :
+        m_lookup_table{ generate_nibble_lookup_table( parameters.polynomial ) },
+        m_preprocessed_initial_remainder{
+            preprocess_initial_remainder( parameters.initial_remainder, m_lookup_table )
+        },
+        m_process_input{ input_processor( parameters.input_is_reflected ) },
+        m_process_output{ output_processor<Register>( parameters.output_is_reflected ) },
+        m_xor_output{ parameters.xor_output }
     {
-        static_cast<void>( parameters );
     }
 
     /**
@@ -657,6 +663,96 @@ class Direct_Nibble_Lookup_Table_Calculator {
      */
     constexpr auto operator=( Direct_Nibble_Lookup_Table_Calculator const & expression ) noexcept
         -> Direct_Nibble_Lookup_Table_Calculator & = default;
+
+    /**
+     * \copydoc picolibrary::CRC::Calculator_Concept::calculate()
+     */
+    template<typename Iterator>
+    auto calculate( Iterator begin, Iterator end ) const noexcept -> Register
+    {
+        // #lizard forgives the length
+
+        constexpr auto nibble_digits = std::numeric_limits<std::uint8_t>::digits / 2;
+
+        auto remainder = m_preprocessed_initial_remainder;
+
+        for ( ; begin != end; ++begin ) {
+            auto const processed_input = ( *m_process_input )( *begin );
+
+            auto const nibbles = Fixed_Size_Array<std::uint_fast8_t, 2>{
+                static_cast<std::uint_fast8_t>( processed_input >> nibble_digits ),
+                static_cast<std::uint_fast8_t>(
+                    processed_input & ( std::numeric_limits<std::uint8_t>::max() >> nibble_digits ) ),
+            };
+
+            for ( auto const nibble : nibbles ) {
+                auto const i = static_cast<std::uint_fast8_t>(
+                                   remainder >> ( std::numeric_limits<Register>::digits - nibble_digits ) )
+                               ^ nibble;
+
+                remainder <<= nibble_digits;
+
+                remainder ^= m_lookup_table[ i ];
+            } // for
+        }     // for
+
+        return ( *m_process_output )( remainder ) ^ m_xor_output;
+    }
+
+  private:
+    /**
+     * \brief Calculation lookup table.
+     */
+    Nibble_Lookup_Table<Register> m_lookup_table{};
+
+    /**
+     * \brief Calculation preprocessed initial remainder.
+     */
+    Register m_preprocessed_initial_remainder{};
+
+    /**
+     * \brief Calculation input processor.
+     */
+    Input_Processor m_process_input{};
+
+    /**
+     * \brief Calculation output processor.
+     */
+    Output_Processor<Register> m_process_output{};
+
+    /**
+     * \brief Calculation XOR output value.
+     */
+    Register m_xor_output{};
+
+    /**
+     * \brief Preprocess the calculation initial remainder.
+     *
+     * \param[in] initial_remainder The calculation initial remainder.
+     * \param[in] lookup_table The calculation lookup table.
+     *
+     * \return The preprocessed calculation initial remainder.
+     */
+    static constexpr auto preprocess_initial_remainder(
+        Register                              initial_remainder,
+        Nibble_Lookup_Table<Register> const & lookup_table ) noexcept
+    {
+        constexpr auto nibble_digits = std::numeric_limits<std::uint8_t>::digits / 2;
+
+        auto preprocessed_initial_remainder = initial_remainder;
+
+        for ( auto nibble = 0; nibble < std::numeric_limits<Register>::digits / nibble_digits; ++nibble ) {
+            auto const i = static_cast<std::uint_fast8_t>(
+                preprocessed_initial_remainder
+                >> ( std::numeric_limits<Register>::digits - nibble_digits ) );
+
+            preprocessed_initial_remainder <<= nibble_digits;
+
+            preprocessed_initial_remainder ^= lookup_table[ i ];
+        } // for
+
+        return preprocessed_initial_remainder;
+    }
 };
 
 /**
