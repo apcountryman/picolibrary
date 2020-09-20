@@ -127,6 +127,37 @@ constexpr auto output_processor( bool output_is_reflected ) noexcept
 }
 
 /**
+ * \brief Integer type used to hold a nibble.
+ */
+using Nibble = std::uint_fast8_t;
+
+/**
+ * \brief The number of bits in a nibble.
+ */
+constexpr auto NIBBLE_DIGITS = std::numeric_limits<std::uint8_t>::digits / 2;
+
+/**
+ * \brief The pair of nibbles that make up a byte (most significant nibble first).
+ */
+using Nibbles = Fixed_Size_Array<Nibble, std::numeric_limits<std::uint8_t>::digits / NIBBLE_DIGITS>;
+
+/**
+ * \brief Convert a byte to a pair of nibbles (most significant nibble first).
+ *
+ * \param[in] byte The byte to convert to a pair of nibbles (most significant nubble
+ *            first).
+ *
+ * \return The pair of nibbles (most significant nibble first) that make up the byte.
+ */
+constexpr auto convert_byte_to_nibbles( std::uint8_t byte ) noexcept
+{
+    return Nibbles{
+        static_cast<Nibble>( byte >> NIBBLE_DIGITS ),
+        static_cast<Nibble>( byte & ( std::numeric_limits<std::uint8_t>::max() >> NIBBLE_DIGITS ) ),
+    };
+}
+
+/**
  * \brief Message augment required by bitwise and augmented lookup table calculator
  *        implementations.
  *
@@ -143,7 +174,7 @@ using Augment =
  */
 template<typename Register>
 using Nibble_Lookup_Table =
-    Fixed_Size_Array<Register, ( ( std::numeric_limits<std::uint8_t>::max() + 1 ) >> ( std::numeric_limits<std::uint8_t>::digits / 2 ) )>;
+    Fixed_Size_Array<Register, ( ( std::numeric_limits<std::uint8_t>::max() + 1 ) >> NIBBLE_DIGITS )>;
 
 /**
  * \brief Generate a calculation nibble indexed lookup table.
@@ -157,15 +188,13 @@ using Nibble_Lookup_Table =
 template<typename Register>
 static constexpr auto generate_nibble_lookup_table( Register polynomial ) noexcept
 {
-    constexpr auto nibble_digits = std::numeric_limits<std::uint8_t>::digits / 2;
-
     Nibble_Lookup_Table<Register> lookup_table;
 
     for ( auto i = 0U; i < lookup_table.size(); ++i ) {
         auto remainder = static_cast<Register>(
-            i << ( std::numeric_limits<Register>::digits - nibble_digits ) );
+            i << ( std::numeric_limits<Register>::digits - NIBBLE_DIGITS ) );
 
-        for ( auto bit = nibble_digits - 1; bit >= 0; --bit ) {
+        for ( auto bit = NIBBLE_DIGITS - 1; bit >= 0; --bit ) {
             auto const xor_polynomial = static_cast<bool>(
                 remainder & ~( std::numeric_limits<Register>::max() >> 1 ) );
 
@@ -567,22 +596,14 @@ class Augmented_Nibble_Lookup_Table_Calculator {
     template<typename Iterator>
     auto feed( Register remainder, Iterator begin, Iterator end ) const noexcept
     {
-        constexpr auto nibble_digits = std::numeric_limits<std::uint8_t>::digits / 2;
-
         for ( ; begin != end; ++begin ) {
-            auto const processed_input = ( *m_process_input )( *begin );
-
-            auto const nibbles = Fixed_Size_Array<std::uint_fast8_t, 2>{
-                static_cast<std::uint_fast8_t>( processed_input >> nibble_digits ),
-                static_cast<std::uint_fast8_t>(
-                    processed_input & ( std::numeric_limits<std::uint8_t>::max() >> nibble_digits ) ),
-            };
+            auto const nibbles = convert_byte_to_nibbles( ( *m_process_input )( *begin ) );
 
             for ( auto const nibble : nibbles ) {
-                auto const i = static_cast<std::uint_fast8_t>(
-                    remainder >> ( std::numeric_limits<Register>::digits - nibble_digits ) );
+                auto const i = static_cast<Nibble>(
+                    remainder >> ( std::numeric_limits<Register>::digits - NIBBLE_DIGITS ) );
 
-                remainder = ( ( remainder << nibble_digits ) | nibble ) ^ m_lookup_table[ i ];
+                remainder = ( ( remainder << NIBBLE_DIGITS ) | nibble ) ^ m_lookup_table[ i ];
             } // for
         }     // for
 
@@ -670,27 +691,17 @@ class Direct_Nibble_Lookup_Table_Calculator {
     template<typename Iterator>
     auto calculate( Iterator begin, Iterator end ) const noexcept -> Register
     {
-        // #lizard forgives the length
-
-        constexpr auto nibble_digits = std::numeric_limits<std::uint8_t>::digits / 2;
-
         auto remainder = m_preprocessed_initial_remainder;
 
         for ( ; begin != end; ++begin ) {
-            auto const processed_input = ( *m_process_input )( *begin );
-
-            auto const nibbles = Fixed_Size_Array<std::uint_fast8_t, 2>{
-                static_cast<std::uint_fast8_t>( processed_input >> nibble_digits ),
-                static_cast<std::uint_fast8_t>(
-                    processed_input & ( std::numeric_limits<std::uint8_t>::max() >> nibble_digits ) ),
-            };
+            auto const nibbles = convert_byte_to_nibbles( ( *m_process_input )( *begin ) );
 
             for ( auto const nibble : nibbles ) {
-                auto const i = static_cast<std::uint_fast8_t>(
-                                   remainder >> ( std::numeric_limits<Register>::digits - nibble_digits ) )
+                auto const i = static_cast<Nibble>(
+                                   remainder >> ( std::numeric_limits<Register>::digits - NIBBLE_DIGITS ) )
                                ^ nibble;
 
-                remainder <<= nibble_digits;
+                remainder <<= NIBBLE_DIGITS;
 
                 remainder ^= m_lookup_table[ i ];
             } // for
@@ -737,16 +748,14 @@ class Direct_Nibble_Lookup_Table_Calculator {
         Register                              initial_remainder,
         Nibble_Lookup_Table<Register> const & lookup_table ) noexcept
     {
-        constexpr auto nibble_digits = std::numeric_limits<std::uint8_t>::digits / 2;
-
         auto preprocessed_initial_remainder = initial_remainder;
 
-        for ( auto nibble = 0; nibble < std::numeric_limits<Register>::digits / nibble_digits; ++nibble ) {
-            auto const i = static_cast<std::uint_fast8_t>(
+        for ( auto nibble = 0; nibble < std::numeric_limits<Register>::digits / NIBBLE_DIGITS; ++nibble ) {
+            auto const i = static_cast<Nibble>(
                 preprocessed_initial_remainder
-                >> ( std::numeric_limits<Register>::digits - nibble_digits ) );
+                >> ( std::numeric_limits<Register>::digits - NIBBLE_DIGITS ) );
 
-            preprocessed_initial_remainder <<= nibble_digits;
+            preprocessed_initial_remainder <<= NIBBLE_DIGITS;
 
             preprocessed_initial_remainder ^= lookup_table[ i ];
         } // for
