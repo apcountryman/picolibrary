@@ -12,22 +12,22 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/crc/augmented_byte_lookup_table_calculator/CMakeLists.txt
-# Description: picolibrary::CRC::Augmented_Byte_Lookup_Table_Calculator unit tests CMake
-#       rules.
+# File: test/unit/picolibrary/crc/augmented_nibble_indexed_lookup_table_calculator/CMakeLists.txt
+# Description: picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator unit
+#       tests CMake rules.
 
-# build the picolibrary::CRC::Augmented_Byte_Lookup_Table_Calculator unit tests
+# build the picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator unit tests
 if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     add_executable(
-        test-unit-picolibrary-crc-augmented_byte_lookup_table_calculator
+        test-unit-picolibrary-crc-augmented_nibble_indexed_lookup_table_calculator
         main.cc
     )
     target_link_libraries(
-        test-unit-picolibrary-crc-augmented_byte_lookup_table_calculator
+        test-unit-picolibrary-crc-augmented_nibble_indexed_lookup_table_calculator
         picolibrary
     )
     add_test(
-        NAME    test-unit-picolibrary-crc-augmented_byte_lookup_table_calculator
-        COMMAND test-unit-picolibrary-crc-augmented_byte_lookup_table_calculator --gtest_color=yes
+        NAME    test-unit-picolibrary-crc-augmented_nibble_indexed_lookup_table_calculator
+        COMMAND test-unit-picolibrary-crc-augmented_nibble_indexed_lookup_table_calculator --gtest_color=yes
     )
 endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )

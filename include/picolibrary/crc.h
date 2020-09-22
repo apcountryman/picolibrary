@@ -173,7 +173,7 @@ using Augment =
  * \tparam Register Calculation register type.
  */
 template<typename Register>
-using Nibble_Lookup_Table =
+using Nibble_Indexed_Lookup_Table =
     Fixed_Size_Array<Register, ( ( std::numeric_limits<std::uint8_t>::max() + 1 ) >> NIBBLE_DIGITS )>;
 
 /**
@@ -186,9 +186,9 @@ using Nibble_Lookup_Table =
  * \return The generated calculation nibble indexed lookup table.
  */
 template<typename Register>
-static constexpr auto generate_nibble_lookup_table( Register polynomial ) noexcept
+static constexpr auto generate_nibble_indexed_lookup_table( Register polynomial ) noexcept
 {
-    Nibble_Lookup_Table<Register> lookup_table;
+    Nibble_Indexed_Lookup_Table<Register> lookup_table;
 
     for ( auto i = 0U; i < lookup_table.size(); ++i ) {
         auto remainder = static_cast<Register>(
@@ -215,7 +215,7 @@ static constexpr auto generate_nibble_lookup_table( Register polynomial ) noexce
  * \tparam Register Calculation register type.
  */
 template<typename Register>
-using Byte_Lookup_Table = Fixed_Size_Array<Register, std::numeric_limits<std::uint8_t>::max() + 1>;
+using Byte_Indexed_Lookup_Table = Fixed_Size_Array<Register, std::numeric_limits<std::uint8_t>::max() + 1>;
 
 /**
  * \brief Generate a calculation byte indexed lookup table.
@@ -227,9 +227,9 @@ using Byte_Lookup_Table = Fixed_Size_Array<Register, std::numeric_limits<std::ui
  * \return The generated calculation byte indexed lookup table.
  */
 template<typename Register>
-static constexpr auto generate_byte_lookup_table( Register polynomial ) noexcept
+static constexpr auto generate_byte_indexed_lookup_table( Register polynomial ) noexcept
 {
-    Byte_Lookup_Table<Register> lookup_table;
+    Byte_Indexed_Lookup_Table<Register> lookup_table;
 
     for ( auto i = 0U; i < lookup_table.size(); ++i ) {
         auto remainder = static_cast<Register>(
@@ -470,12 +470,12 @@ class Bitwise_Calculator {
 };
 
 /**
- * \brief Augmented nibble lookup table calculator.
+ * \brief Augmented nibble indexed lookup table calculator.
  *
  * \tparam Register_Type Calculation register type.
  */
 template<typename Register_Type>
-class Augmented_Nibble_Lookup_Table_Calculator {
+class Augmented_Nibble_Indexed_Lookup_Table_Calculator {
   public:
     /**
      * \brief Calculation register type.
@@ -485,15 +485,15 @@ class Augmented_Nibble_Lookup_Table_Calculator {
     /**
      * \brief Constructor.
      */
-    constexpr Augmented_Nibble_Lookup_Table_Calculator() noexcept = default;
+    constexpr Augmented_Nibble_Indexed_Lookup_Table_Calculator() noexcept = default;
 
     /**
      * \brief Constructor.
      *
      * \param[in] parameters The calculation parameters.
      */
-    constexpr explicit Augmented_Nibble_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept :
-        m_lookup_table{ generate_nibble_lookup_table( parameters.polynomial ) },
+    constexpr explicit Augmented_Nibble_Indexed_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept :
+        m_lookup_table{ generate_nibble_indexed_lookup_table( parameters.polynomial ) },
         m_initial_remainder{ parameters.initial_remainder },
         m_process_input{ input_processor( parameters.input_is_reflected ) },
         m_process_output{ output_processor<Register>( parameters.output_is_reflected ) },
@@ -506,21 +506,21 @@ class Augmented_Nibble_Lookup_Table_Calculator {
      *
      * \param[in] source The source of the move.
      */
-    constexpr Augmented_Nibble_Lookup_Table_Calculator(
-        Augmented_Nibble_Lookup_Table_Calculator && source ) noexcept = default;
+    constexpr Augmented_Nibble_Indexed_Lookup_Table_Calculator(
+        Augmented_Nibble_Indexed_Lookup_Table_Calculator && source ) noexcept = default;
 
     /**
      * \brief Constructor.
      *
      * \param[in] original The original to copy.
      */
-    constexpr Augmented_Nibble_Lookup_Table_Calculator(
-        Augmented_Nibble_Lookup_Table_Calculator const & original ) noexcept = default;
+    constexpr Augmented_Nibble_Indexed_Lookup_Table_Calculator(
+        Augmented_Nibble_Indexed_Lookup_Table_Calculator const & original ) noexcept = default;
 
     /**
      * \brief Destructor.
      */
-    ~Augmented_Nibble_Lookup_Table_Calculator() noexcept = default;
+    ~Augmented_Nibble_Indexed_Lookup_Table_Calculator() noexcept = default;
 
     /**
      * \brief Assignment operator.
@@ -529,8 +529,8 @@ class Augmented_Nibble_Lookup_Table_Calculator {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Augmented_Nibble_Lookup_Table_Calculator && expression ) noexcept
-        -> Augmented_Nibble_Lookup_Table_Calculator & = default;
+    constexpr auto operator=( Augmented_Nibble_Indexed_Lookup_Table_Calculator && expression ) noexcept
+        -> Augmented_Nibble_Indexed_Lookup_Table_Calculator & = default;
 
     /**
      * \brief Assignment operator.
@@ -539,8 +539,8 @@ class Augmented_Nibble_Lookup_Table_Calculator {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Augmented_Nibble_Lookup_Table_Calculator const & expression ) noexcept
-        -> Augmented_Nibble_Lookup_Table_Calculator & = default;
+    constexpr auto operator=( Augmented_Nibble_Indexed_Lookup_Table_Calculator const & expression ) noexcept
+        -> Augmented_Nibble_Indexed_Lookup_Table_Calculator & = default;
 
     /**
      * \copydoc picolibrary::CRC::Calculator_Concept::calculate()
@@ -559,7 +559,7 @@ class Augmented_Nibble_Lookup_Table_Calculator {
     /**
      * \brief Calculation lookup table.
      */
-    Nibble_Lookup_Table<Register> m_lookup_table{};
+    Nibble_Indexed_Lookup_Table<Register> m_lookup_table{};
 
     /**
      * \brief Calculation initial remainder.
@@ -612,12 +612,12 @@ class Augmented_Nibble_Lookup_Table_Calculator {
 };
 
 /**
- * \brief Direct nibble lookup table calculator.
+ * \brief Direct nibble indexed lookup table calculator.
  *
  * \tparam Register_Type Calculation register type.
  */
 template<typename Register_Type>
-class Direct_Nibble_Lookup_Table_Calculator {
+class Direct_Nibble_Indexed_Lookup_Table_Calculator {
   public:
     /**
      * \brief Calculation register type.
@@ -627,15 +627,15 @@ class Direct_Nibble_Lookup_Table_Calculator {
     /**
      * \brief Constructor.
      */
-    constexpr Direct_Nibble_Lookup_Table_Calculator() noexcept = default;
+    constexpr Direct_Nibble_Indexed_Lookup_Table_Calculator() noexcept = default;
 
     /**
      * \brief Constructor.
      *
      * \param[in] parameters The calculation parameters.
      */
-    constexpr explicit Direct_Nibble_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept :
-        m_lookup_table{ generate_nibble_lookup_table( parameters.polynomial ) },
+    constexpr explicit Direct_Nibble_Indexed_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept :
+        m_lookup_table{ generate_nibble_indexed_lookup_table( parameters.polynomial ) },
         m_preprocessed_initial_remainder{
             preprocess_initial_remainder( parameters.initial_remainder, m_lookup_table )
         },
@@ -650,20 +650,21 @@ class Direct_Nibble_Lookup_Table_Calculator {
      *
      * \param[in] source The source of the move.
      */
-    constexpr Direct_Nibble_Lookup_Table_Calculator( Direct_Nibble_Lookup_Table_Calculator && source ) noexcept = default;
+    constexpr Direct_Nibble_Indexed_Lookup_Table_Calculator(
+        Direct_Nibble_Indexed_Lookup_Table_Calculator && source ) noexcept = default;
 
     /**
      * \brief Constructor.
      *
      * \param[in] original The original to copy.
      */
-    constexpr Direct_Nibble_Lookup_Table_Calculator(
-        Direct_Nibble_Lookup_Table_Calculator const & original ) noexcept = default;
+    constexpr Direct_Nibble_Indexed_Lookup_Table_Calculator(
+        Direct_Nibble_Indexed_Lookup_Table_Calculator const & original ) noexcept = default;
 
     /**
      * \brief Destructor.
      */
-    ~Direct_Nibble_Lookup_Table_Calculator() noexcept = default;
+    ~Direct_Nibble_Indexed_Lookup_Table_Calculator() noexcept = default;
 
     /**
      * \brief Assignment operator.
@@ -672,8 +673,8 @@ class Direct_Nibble_Lookup_Table_Calculator {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Direct_Nibble_Lookup_Table_Calculator && expression ) noexcept
-        -> Direct_Nibble_Lookup_Table_Calculator & = default;
+    constexpr auto operator=( Direct_Nibble_Indexed_Lookup_Table_Calculator && expression ) noexcept
+        -> Direct_Nibble_Indexed_Lookup_Table_Calculator & = default;
 
     /**
      * \brief Assignment operator.
@@ -682,8 +683,8 @@ class Direct_Nibble_Lookup_Table_Calculator {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Direct_Nibble_Lookup_Table_Calculator const & expression ) noexcept
-        -> Direct_Nibble_Lookup_Table_Calculator & = default;
+    constexpr auto operator=( Direct_Nibble_Indexed_Lookup_Table_Calculator const & expression ) noexcept
+        -> Direct_Nibble_Indexed_Lookup_Table_Calculator & = default;
 
     /**
      * \copydoc picolibrary::CRC::Calculator_Concept::calculate()
@@ -714,7 +715,7 @@ class Direct_Nibble_Lookup_Table_Calculator {
     /**
      * \brief Calculation lookup table.
      */
-    Nibble_Lookup_Table<Register> m_lookup_table{};
+    Nibble_Indexed_Lookup_Table<Register> m_lookup_table{};
 
     /**
      * \brief Calculation preprocessed initial remainder.
@@ -745,8 +746,8 @@ class Direct_Nibble_Lookup_Table_Calculator {
      * \return The preprocessed calculation initial remainder.
      */
     static constexpr auto preprocess_initial_remainder(
-        Register                              initial_remainder,
-        Nibble_Lookup_Table<Register> const & lookup_table ) noexcept
+        Register                                      initial_remainder,
+        Nibble_Indexed_Lookup_Table<Register> const & lookup_table ) noexcept
     {
         auto preprocessed_initial_remainder = initial_remainder;
 
@@ -765,12 +766,12 @@ class Direct_Nibble_Lookup_Table_Calculator {
 };
 
 /**
- * \brief Augmented byte lookup table calculator.
+ * \brief Augmented byte indexed lookup table calculator.
  *
  * \tparam Register_Type Calculation register type.
  */
 template<typename Register_Type>
-class Augmented_Byte_Lookup_Table_Calculator {
+class Augmented_Byte_Indexed_Lookup_Table_Calculator {
   public:
     /**
      * \brief Calculation register type.
@@ -780,15 +781,15 @@ class Augmented_Byte_Lookup_Table_Calculator {
     /**
      * \brief Constructor.
      */
-    constexpr Augmented_Byte_Lookup_Table_Calculator() noexcept = default;
+    constexpr Augmented_Byte_Indexed_Lookup_Table_Calculator() noexcept = default;
 
     /**
      * \brief Constructor.
      *
      * \param[in] parameters The calculation parameters.
      */
-    constexpr explicit Augmented_Byte_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept :
-        m_lookup_table{ generate_byte_lookup_table( parameters.polynomial ) },
+    constexpr explicit Augmented_Byte_Indexed_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept :
+        m_lookup_table{ generate_byte_indexed_lookup_table( parameters.polynomial ) },
         m_initial_remainder{ parameters.initial_remainder },
         m_process_input{ input_processor( parameters.input_is_reflected ) },
         m_process_output{ output_processor<Register>( parameters.output_is_reflected ) },
@@ -801,20 +802,21 @@ class Augmented_Byte_Lookup_Table_Calculator {
      *
      * \param[in] source The source of the move.
      */
-    constexpr Augmented_Byte_Lookup_Table_Calculator( Augmented_Byte_Lookup_Table_Calculator && source ) noexcept = default;
+    constexpr Augmented_Byte_Indexed_Lookup_Table_Calculator(
+        Augmented_Byte_Indexed_Lookup_Table_Calculator && source ) noexcept = default;
 
     /**
      * \brief Constructor.
      *
      * \param[in] original The original to copy.
      */
-    constexpr Augmented_Byte_Lookup_Table_Calculator(
-        Augmented_Byte_Lookup_Table_Calculator const & original ) noexcept = default;
+    constexpr Augmented_Byte_Indexed_Lookup_Table_Calculator(
+        Augmented_Byte_Indexed_Lookup_Table_Calculator const & original ) noexcept = default;
 
     /**
      * \brief Destructor.
      */
-    ~Augmented_Byte_Lookup_Table_Calculator() noexcept = default;
+    ~Augmented_Byte_Indexed_Lookup_Table_Calculator() noexcept = default;
 
     /**
      * \brief Assignment operator.
@@ -823,8 +825,8 @@ class Augmented_Byte_Lookup_Table_Calculator {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Augmented_Byte_Lookup_Table_Calculator && expression ) noexcept
-        -> Augmented_Byte_Lookup_Table_Calculator & = default;
+    constexpr auto operator=( Augmented_Byte_Indexed_Lookup_Table_Calculator && expression ) noexcept
+        -> Augmented_Byte_Indexed_Lookup_Table_Calculator & = default;
 
     /**
      * \brief Assignment operator.
@@ -833,8 +835,8 @@ class Augmented_Byte_Lookup_Table_Calculator {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Augmented_Byte_Lookup_Table_Calculator const & expression ) noexcept
-        -> Augmented_Byte_Lookup_Table_Calculator & = default;
+    constexpr auto operator=( Augmented_Byte_Indexed_Lookup_Table_Calculator const & expression ) noexcept
+        -> Augmented_Byte_Indexed_Lookup_Table_Calculator & = default;
 
     /**
      * \copydoc picolibrary::CRC::Calculator_Concept::calculate()
@@ -853,7 +855,7 @@ class Augmented_Byte_Lookup_Table_Calculator {
     /**
      * \brief Calculation lookup table.
      */
-    Byte_Lookup_Table<Register> m_lookup_table{};
+    Byte_Indexed_Lookup_Table<Register> m_lookup_table{};
 
     /**
      * \brief Calculation initial remainder.
@@ -906,12 +908,12 @@ class Augmented_Byte_Lookup_Table_Calculator {
 };
 
 /**
- * \brief Direct byte lookup table calculator.
+ * \brief Direct byte indexed lookup table calculator.
  *
  * \tparam Register_Type Calculation register type.
  */
 template<typename Register_Type>
-class Direct_Byte_Lookup_Table_Calculator {
+class Direct_Byte_Indexed_Lookup_Table_Calculator {
   public:
     /**
      * \brief Calculation register type.
@@ -921,15 +923,15 @@ class Direct_Byte_Lookup_Table_Calculator {
     /**
      * \brief Constructor.
      */
-    constexpr Direct_Byte_Lookup_Table_Calculator() noexcept = default;
+    constexpr Direct_Byte_Indexed_Lookup_Table_Calculator() noexcept = default;
 
     /**
      * \brief Constructor.
      *
      * \param[in] parameters The calculation parameters.
      */
-    constexpr explicit Direct_Byte_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept :
-        m_lookup_table{ generate_byte_lookup_table( parameters.polynomial ) },
+    constexpr explicit Direct_Byte_Indexed_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept :
+        m_lookup_table{ generate_byte_indexed_lookup_table( parameters.polynomial ) },
         m_preprocessed_initial_remainder{
             preprocess_initial_remainder( parameters.initial_remainder, m_lookup_table )
         },
@@ -944,19 +946,21 @@ class Direct_Byte_Lookup_Table_Calculator {
      *
      * \param[in] source The source of the move.
      */
-    constexpr Direct_Byte_Lookup_Table_Calculator( Direct_Byte_Lookup_Table_Calculator && source ) noexcept = default;
+    constexpr Direct_Byte_Indexed_Lookup_Table_Calculator(
+        Direct_Byte_Indexed_Lookup_Table_Calculator && source ) noexcept = default;
 
     /**
      * \brief Constructor.
      *
      * \param[in] original The original to copy.
      */
-    constexpr Direct_Byte_Lookup_Table_Calculator( Direct_Byte_Lookup_Table_Calculator const & original ) noexcept = default;
+    constexpr Direct_Byte_Indexed_Lookup_Table_Calculator(
+        Direct_Byte_Indexed_Lookup_Table_Calculator const & original ) noexcept = default;
 
     /**
      * \brief Destructor.
      */
-    ~Direct_Byte_Lookup_Table_Calculator() noexcept = default;
+    ~Direct_Byte_Indexed_Lookup_Table_Calculator() noexcept = default;
 
     /**
      * \brief Assignment operator.
@@ -965,8 +969,8 @@ class Direct_Byte_Lookup_Table_Calculator {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Direct_Byte_Lookup_Table_Calculator && expression ) noexcept
-        -> Direct_Byte_Lookup_Table_Calculator & = default;
+    constexpr auto operator=( Direct_Byte_Indexed_Lookup_Table_Calculator && expression ) noexcept
+        -> Direct_Byte_Indexed_Lookup_Table_Calculator & = default;
 
     /**
      * \brief Assignment operator.
@@ -975,8 +979,8 @@ class Direct_Byte_Lookup_Table_Calculator {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Direct_Byte_Lookup_Table_Calculator const & expression ) noexcept
-        -> Direct_Byte_Lookup_Table_Calculator & = default;
+    constexpr auto operator=( Direct_Byte_Indexed_Lookup_Table_Calculator const & expression ) noexcept
+        -> Direct_Byte_Indexed_Lookup_Table_Calculator & = default;
 
     /**
      * \copydoc picolibrary::CRC::Calculator_Concept::calculate()
@@ -1006,7 +1010,7 @@ class Direct_Byte_Lookup_Table_Calculator {
     /**
      * \brief Calculation lookup table.
      */
-    Byte_Lookup_Table<Register> m_lookup_table{};
+    Byte_Indexed_Lookup_Table<Register> m_lookup_table{};
 
     /**
      * \brief Calculation preprocessed initial remainder.
@@ -1037,8 +1041,8 @@ class Direct_Byte_Lookup_Table_Calculator {
      * \return The preprocessed calculation initial remainder.
      */
     static constexpr auto preprocess_initial_remainder(
-        Register                            initial_remainder,
-        Byte_Lookup_Table<Register> const & lookup_table ) noexcept
+        Register                                    initial_remainder,
+        Byte_Indexed_Lookup_Table<Register> const & lookup_table ) noexcept
     {
         auto preprocessed_initial_remainder = initial_remainder;
 

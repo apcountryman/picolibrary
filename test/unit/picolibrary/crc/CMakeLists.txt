@@ -15,20 +15,20 @@
 # File: test/unit/picolibrary/crc/CMakeLists.txt
 # Description: picolibrary::CRC unit tests CMake rules.
 
-# build the picolibrary::CRC::Augmented_Byte_Lookup_Table_Calculator unit tests
-add_subdirectory( augmented_byte_lookup_table_calculator )
+# build the picolibrary::CRC::Augmented_Byte_Indexed_Lookup_Table_Calculator unit tests
+add_subdirectory( augmented_byte_indexed_lookup_table_calculator )
 
-# build the picolibrary::CRC::Augmented_Nibble_Lookup_Table_Calculator unit tests
-add_subdirectory( augmented_nibble_lookup_table_calculator )
+# build the picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator unit tests
+add_subdirectory( augmented_nibble_indexed_lookup_table_calculator )
 
 # build the picolibrary::CRC::Bitwise_Calculator unit tests
 add_subdirectory( bitwise_calculator )
 
-# build the picolibrary::CRC::Direct_Byte_Lookup_Table_Calculator unit tests
-add_subdirectory( direct_byte_lookup_table_calculator )
+# build the picolibrary::CRC::Direct_Byte_Indexed_Lookup_Table_Calculator unit tests
+add_subdirectory( direct_byte_indexed_lookup_table_calculator )
 
-# build the picolibrary::CRC::Direct_Nibble_Lookup_Table_Calculator unit tests
-add_subdirectory( direct_nibble_lookup_table_calculator )
+# build the picolibrary::CRC::Direct_Nibble_Indexed_Lookup_Table_Calculator unit tests
+add_subdirectory( direct_nibble_indexed_lookup_table_calculator )
 
 # build the picolibrary::CRC unit tests
 if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )

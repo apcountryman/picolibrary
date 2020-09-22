@@ -29,11 +29,11 @@
 
 namespace {
 
-using ::picolibrary::CRC::Augmented_Byte_Lookup_Table_Calculator;
-using ::picolibrary::CRC::Augmented_Nibble_Lookup_Table_Calculator;
+using ::picolibrary::CRC::Augmented_Byte_Indexed_Lookup_Table_Calculator;
+using ::picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator;
 using ::picolibrary::CRC::Bitwise_Calculator;
-using ::picolibrary::CRC::Direct_Byte_Lookup_Table_Calculator;
-using ::picolibrary::CRC::Direct_Nibble_Lookup_Table_Calculator;
+using ::picolibrary::CRC::Direct_Byte_Indexed_Lookup_Table_Calculator;
+using ::picolibrary::CRC::Direct_Nibble_Indexed_Lookup_Table_Calculator;
 using ::picolibrary::CRC::Parameters;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::random_container;
@@ -62,7 +62,7 @@ TYPED_TEST_SUITE( calculators, Registers );
 
 /**
  * \brief Verify picolibrary::CRC::Bitwise_Calculator, and
- *        picolibrary::CRC::Augmented_Byte_Lookup_Table_Calculator are equivalent.
+ *        picolibrary::CRC::Augmented_Byte_Indexed_Lookup_Table_Calculator are equivalent.
  */
 TYPED_TEST( calculators, areEquivalent )
 {
@@ -80,19 +80,19 @@ TYPED_TEST( calculators, areEquivalent )
         message.begin(), message.end() );
 
     EXPECT_EQ(
-        Augmented_Nibble_Lookup_Table_Calculator{ parameters }.calculate(
+        Augmented_Nibble_Indexed_Lookup_Table_Calculator{ parameters }.calculate(
             message.begin(), message.end() ),
         expected_remainder );
     EXPECT_EQ(
-        Direct_Nibble_Lookup_Table_Calculator{ parameters }.calculate(
+        Direct_Nibble_Indexed_Lookup_Table_Calculator{ parameters }.calculate(
             message.begin(), message.end() ),
         expected_remainder );
     EXPECT_EQ(
-        Augmented_Byte_Lookup_Table_Calculator{ parameters }.calculate(
+        Augmented_Byte_Indexed_Lookup_Table_Calculator{ parameters }.calculate(
             message.begin(), message.end() ),
         expected_remainder );
     EXPECT_EQ(
-        Direct_Byte_Lookup_Table_Calculator{ parameters }.calculate(
+        Direct_Byte_Indexed_Lookup_Table_Calculator{ parameters }.calculate(
             message.begin(), message.end() ),
         expected_remainder );
 }
