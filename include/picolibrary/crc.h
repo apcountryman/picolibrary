@@ -330,6 +330,11 @@ class Calculator_Concept {
 /**
  * \brief Bitwise calculator.
  *
+ * This calculator implementation processes messages a single bit at a time, and requires
+ * a message augment to push the entirety of the message through the calculation. While
+ * this results in lower performance than table driven implementations, memory use is
+ * lower due to the lack of a lookup table.
+ *
  * \tparam Register_Type Calculation register type.
  */
 template<typename Register_Type>
@@ -472,6 +477,16 @@ class Bitwise_Calculator {
 /**
  * \brief Augmented nibble indexed lookup table calculator.
  *
+ * \attention picolibrary::CRC::Direct_Nibble_Indexed_Lookup_Table Calculator is strictly
+ *            superior to this calculator implementation since it does not have to process
+ *            a message augment in addition to the message itself.
+ *
+ * This calculator implementation processes message one nibble at a time, and requires a
+ * message augment to push the entirety of the message through the calculation. This
+ * achieves a balance between implementations that are optimized for performance (table
+ * driven implementations that processes message one or more bytes at a time), and those
+ * that are optimized for memory use (bitwise implementations).
+ *
  * \tparam Register_Type Calculation register type.
  */
 template<typename Register_Type>
@@ -613,6 +628,12 @@ class Augmented_Nibble_Indexed_Lookup_Table_Calculator {
 
 /**
  * \brief Direct nibble indexed lookup table calculator.
+ *
+ * This calculator implementation processes message one nibble at a time, and requires a
+ * message augment to push the entirety of the message through the calculation. This
+ * achieves a balance between implementations that are optimized for performance (table
+ * driven implementations that processes message one or more bytes at a time), and those
+ * that are optimized for memory use (bitwise implementations).
  *
  * \tparam Register_Type Calculation register type.
  */
@@ -768,6 +789,16 @@ class Direct_Nibble_Indexed_Lookup_Table_Calculator {
 /**
  * \brief Augmented byte indexed lookup table calculator.
  *
+ * \attention picolibrary::CRC::Direct_Byte_Indexed_Lookup_Table_Calculator is strictly
+ *            superior to this calculator implementation since it does not have to process
+ *            a message augment in addition to the message itself.
+ *
+ * This calculator implementation processes messages one byte at a time, and requires a
+ * message augment to push the entirety of the message through the calculation. While this
+ * results in higher memory use than a bitwise implementation or a table driven
+ * implementation that processes messages one nibble at a time, performance is higher due
+ * to the message processing loop requiring fewer iterations to complete.
+ *
  * \tparam Register_Type Calculation register type.
  */
 template<typename Register_Type>
@@ -909,6 +940,12 @@ class Augmented_Byte_Indexed_Lookup_Table_Calculator {
 
 /**
  * \brief Direct byte indexed lookup table calculator.
+ *
+ * This calculator implementation processes messages one byte at a time, and does not
+ * require a message augment to push the entirety of the message through the calculation.
+ * While this results in higher memory use than a bitwise implementation or a table driven
+ * implementation that processes messages one nibble at a time, performance is higher due
+ * to the message processing loop requiring fewer iterations to complete.
  *
  * \tparam Register_Type Calculation register type.
  */
