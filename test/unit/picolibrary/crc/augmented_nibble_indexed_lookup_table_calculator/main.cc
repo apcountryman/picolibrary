@@ -16,7 +16,8 @@
 
 /**
  * \file
- * \brief picolibrary::CRC::Direct_Nibble_Lookup_Table_Calculator unit test program.
+ * \brief picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator unit test
+ *        program.
  */
 
 #include <cstdint>
@@ -28,42 +29,43 @@
 
 namespace {
 
-using ::picolibrary::CRC::Direct_Nibble_Lookup_Table_Calculator;
+using ::picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator;
 
 } // namespace
 
 /**
  * \brief Verify
- *        picolibrary::CRC::Direct_Nibble_Lookup_Table_Calculator<std::uint8_t>::calculate()
+ *        picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator<std::uint8_t>::calculate()
  *        works properly.
  */
 INSTANTIATE_TYPED_TEST_SUITE_P(
-    directNibbleLookupTable,
+    augmentedNibbleLookupTable,
     CalculatorUint8Register,
-    Direct_Nibble_Lookup_Table_Calculator<std::uint8_t> );
+    Augmented_Nibble_Indexed_Lookup_Table_Calculator<std::uint8_t> );
 
 /**
  * \brief Verify
- *        picolibrary::CRC::Direct_Nibble_Lookup_Table_Calculator<std::uint16_t>::calculate()
+ *        picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator<std::uint16_t>::calculate()
  *        works properly.
  */
 INSTANTIATE_TYPED_TEST_SUITE_P(
-    directNibbleLookupTable,
+    augmentedNibbleLookupTable,
     CalculatorUint16Register,
-    Direct_Nibble_Lookup_Table_Calculator<std::uint16_t> );
+    Augmented_Nibble_Indexed_Lookup_Table_Calculator<std::uint16_t> );
 
 /**
  * \brief Verify
- *        picolibrary::CRC::Direct_Nibble_Lookup_Table_Calculator<std::uint32_t>::calculate()
+ *        picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator<std::uint32_t>::calculate()
  *        works properly.
  */
 INSTANTIATE_TYPED_TEST_SUITE_P(
-    directNibbleLookupTable,
+    augmentedNibbleLookupTable,
     CalculatorUint32Register,
-    Direct_Nibble_Lookup_Table_Calculator<std::uint32_t> );
+    Augmented_Nibble_Indexed_Lookup_Table_Calculator<std::uint32_t> );
 
 /**
- * \brief Execute the picolibrary::CRC::Direct_Nibble_Lookup_Table_Calculator unit tests.
+ * \brief Execute the picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator
+ *        unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
  * \param[in] argv The array  of arguments to pass to testing::InitGoogleMock().
