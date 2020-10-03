@@ -61,8 +61,11 @@ using Registers = ::testing::Types<std::uint8_t, std::uint16_t, std::uint32_t>;
 TYPED_TEST_SUITE( calculators, Registers );
 
 /**
- * \brief Verify picolibrary::CRC::Bitwise_Calculator, and
- *        picolibrary::CRC::Augmented_Byte_Indexed_Lookup_Table_Calculator are equivalent.
+ * \brief Verify picolibrary::CRC::Bitwise_Calculator,
+ *        picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator,
+ *        picolibrary::CRC::Direct_Nibble_Indexed_Lookup_Table_Calculator,
+ *        picolibrary::CRC::Augmented_Byte_Indexed_Lookup_Table_Calculator, and
+ *        picolibrary::CRC::Direct_Byte_Indexed_Lookup_Table_Calculator are equivalent.
  */
 TYPED_TEST( calculators, areEquivalent )
 {
