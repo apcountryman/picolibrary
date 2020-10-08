@@ -32,6 +32,7 @@ set(
     "picolibrary/crc.cc"
     "picolibrary/error.cc"
     "picolibrary/fixed_size_array.cc"
+    "picolibrary/gpio.cc"
     "picolibrary/result.cc"
     "picolibrary/stream.cc"
     "picolibrary/utility.cc"
