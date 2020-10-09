@@ -37,6 +37,15 @@ class Pin_State {
     /**
      * \brief Constructor.
      *
+     * \param[in] is_high The pin state.
+     */
+    constexpr explicit Pin_State( bool is_high ) noexcept : m_is_high{ is_high }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
      * \param[in] source The source of the move.
      */
     constexpr Pin_State( Pin_State && source ) noexcept = default;
@@ -70,6 +79,34 @@ class Pin_State {
      * \return The assigned to object.
      */
     constexpr auto operator=( Pin_State const & expression ) noexcept -> Pin_State & = default;
+
+    /**
+     * \brief Check if the pin is high.
+     *
+     * \return true if the pin is high.
+     * \return false if the pin is low.
+     */
+    constexpr auto is_high() const noexcept
+    {
+        return m_is_high;
+    }
+
+    /**
+     * \brief Check if the pin is low.
+     *
+     * \return true if the pin is low.
+     * \return false if the pin is high.
+     */
+    constexpr auto is_low() const noexcept
+    {
+        return not m_is_high;
+    }
+
+  private:
+    /**
+     * \brief The pin state.
+     */
+    bool m_is_high;
 };
 
 } // namespace picolibrary::GPIO

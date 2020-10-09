@@ -23,6 +23,32 @@
 #include "gtest/gtest.h"
 #include "picolibrary/gpio.h"
 
+namespace {
+
+using ::picolibrary::GPIO::Pin_State;
+
+} // namespace
+
+/**
+ * \brief Verify picolibrary::GPIO::Pin_State::Pin_State() works properly.
+ */
+TEST( constructor, worksProperly )
+{
+    struct {
+        bool is_high;
+    } const test_cases[]{
+        { true },
+        { false },
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto const pin_state = Pin_State{ test_case.is_high };
+
+        EXPECT_EQ( pin_state.is_high(), test_case.is_high );
+        EXPECT_EQ( pin_state.is_low(), not test_case.is_high );
+    } // for
+}
+
 /**
  * \brief Execute the picolibrary::GPIO::Pin_State unit tests.
  *
