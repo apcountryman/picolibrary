@@ -151,7 +151,7 @@ class Mock_Transmitter {
         /**
          * \brief The mock transmitter.
          */
-        Mock_Transmitter * m_mock_transmitter;
+        Mock_Transmitter * m_mock_transmitter{};
     };
 
     /**
