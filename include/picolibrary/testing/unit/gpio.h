@@ -107,7 +107,7 @@ class Mock_Input_Pin {
          *
          * \return High if the pin is high.
          * \return Low if the pin is low.
-         * \return An error code if initializing the pin's hardware failed.
+         * \return An error code if getting the state of the pin failed.
          */
         auto state() const
         {
