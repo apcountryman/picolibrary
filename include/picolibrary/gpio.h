@@ -22,6 +22,10 @@
 #ifndef PICOLIBRARY_GPIO_H
 #define PICOLIBRARY_GPIO_H
 
+#include "picolibrary/error.h"
+#include "picolibrary/result.h"
+#include "picolibrary/utility.h"
+
 /**
  * \brief General Purpose Input/Output (GPIO) facilities.
  */
@@ -107,6 +111,61 @@ class Pin_State {
      * \brief The pin state.
      */
     bool m_is_high;
+};
+
+/**
+ * \brief Input pin concept.
+ */
+class Input_Pin_Concept {
+  public:
+    Input_Pin_Concept() = delete;
+
+    /**
+     * \todo #29
+     */
+    Input_Pin_Concept( Input_Pin_Concept && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    Input_Pin_Concept( Input_Pin_Concept const & ) = delete;
+
+    ~Input_Pin_Concept() = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Input_Pin_Concept && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Input_Pin_Concept const & ) = delete;
+
+    /**
+     * \brief Initialize the pin's hardware.
+     *
+     * \return Nothing if initializing the pin's hardware succeeded.
+     * \return An error code if initializing the pin's hardware failed. In initializing
+     *         the pin's hardware cannot fail, return
+     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     */
+    auto initialize() noexcept -> Result<Void, Error_Code>;
+
+    /**
+     * \brief Get the state of the pin.
+     *
+     * \return High if the pin is high.
+     * \return Low if the pin is low.
+     * \return An error code if getting the state of the pin failed. If getting the state
+     *         of the pin cannot fail, return picolibrary::Result<picolibrary::Pin_State,
+     *         picolibrary::Void>.
+     */
+    auto state() const noexcept -> Result<Pin_State, Error_Code>;
 };
 
 } // namespace picolibrary::GPIO
