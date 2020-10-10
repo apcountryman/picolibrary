@@ -63,6 +63,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
         "picolibrary/testing/unit/crc.cc"
         "picolibrary/testing/unit/error.cc"
         "picolibrary/testing/unit/functor.cc"
+        "picolibrary/testing/unit/gpio.cc"
         "picolibrary/testing/unit/random.cc"
         "picolibrary/testing/unit/stream.cc"
     )
