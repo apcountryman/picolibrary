@@ -265,6 +265,83 @@ class Internally_Pulled_Up_Input_Pin_Concept {
     auto state() const noexcept -> Result<Pin_State, Error_Code>;
 };
 
+/**
+ * \brief Output pin concept.
+ */
+class Output_Pin_Concept {
+  public:
+    Output_Pin_Concept() = delete;
+
+    /**
+     * \todo #29
+     */
+    Output_Pin_Concept( Output_Pin_Concept && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    Output_Pin_Concept( Output_Pin_Concept const & ) = delete;
+
+    ~Output_Pin_Concept() = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Output_Pin_Concept && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Output_Pin_Concept const & ) = delete;
+
+    /**
+     * \brief Initialize the pin's hardware.
+     *
+     * \param[in] initial_pin_state The initial state of the pin.
+     *
+     * \return Nothing if initializing the pin's hardware succeeded.
+     * \return An error code if initializing the pin's hardware failed. If initializing
+     *         the pin's hardware cannot fail, return
+     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     */
+    auto initialize( Initial_Pin_State initial_pin_state = Initial_Pin_State::LOW ) noexcept
+        -> Result<Void, Error_Code>;
+
+    /**
+     * \brief Transition the pin to the high state.
+     *
+     * \return Nothing if transitioning the pin to the high state succeeded.
+     * \return An error code if transitioning the pin to the high state failed. If
+     *         transitioning the pin to the high state cannot fail, return
+     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     */
+    auto set_high() noexcept -> Result<Void, Error_Code>;
+
+    /**
+     * \brief Transition the pin to the low state.
+     *
+     * \return Nothing if transitioning the pin to the low state succeeded.
+     * \return An error code if transitioning the pin to the low state failed. If
+     *         transitioning the pin to the low state cannot fail, return
+     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     */
+    auto set_low() noexcept -> Result<Void, Error_Code>;
+
+    /**
+     * \brief Toggle the pin state.
+     *
+     * \return Nothing if toggling the pin state succeeded.
+     * \return An error code if toggling the pin state failed. If toggling the pin state
+     *         cannot fail, return picolibrary::Result<picolibrary::Void,
+     *         picolibrary::Void>.
+     */
+    auto toggle() noexcept -> Result<Void, Error_Code>;
+};
+
 } // namespace picolibrary::GPIO
 
 #endif // PICOLIBRARY_GPIO_H
