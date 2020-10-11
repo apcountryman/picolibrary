@@ -22,6 +22,8 @@
 #ifndef PICOLIBRARY_GPIO_H
 #define PICOLIBRARY_GPIO_H
 
+#include <cstdint>
+
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/utility.h"
@@ -30,6 +32,14 @@
  * \brief General Purpose Input/Output (GPIO) facilities.
  */
 namespace picolibrary::GPIO {
+
+/**
+ * \brief Initial internal pull-up resistor state.
+ */
+enum class Initial_Pull_Up_State : std::uint_fast8_t {
+    ENABLED,  ///< Enabled.
+    DISABLED, ///< Disabled.
+};
 
 /**
  * \brief Pin state.
@@ -150,7 +160,7 @@ class Input_Pin_Concept {
      * \brief Initialize the pin's hardware.
      *
      * \return Nothing if initializing the pin's hardware succeeded.
-     * \return An error code if initializing the pin's hardware failed. In initializing
+     * \return An error code if initializing the pin's hardware failed. If initializing
      *         the pin's hardware cannot fail, return
      *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
      */
@@ -162,8 +172,87 @@ class Input_Pin_Concept {
      * \return High if the pin is high.
      * \return Low if the pin is low.
      * \return An error code if getting the state of the pin failed. If getting the state
-     *         of the pin cannot fail, return picolibrary::Result<picolibrary::Pin_State,
-     *         picolibrary::Void>.
+     *         of the pin cannot fail, return
+     *         picolibrary::Result<picolibrary::GPIO::Pin_State, picolibrary::Void>.
+     */
+    auto state() const noexcept -> Result<Pin_State, Error_Code>;
+};
+
+/**
+ * \brief Internally pulled-up input pin concept.
+ */
+class Internally_Pulled_Up_Input_Pin_Concept {
+  public:
+    Internally_Pulled_Up_Input_Pin_Concept() = delete;
+
+    /**
+     * \todo #29
+     */
+    Internally_Pulled_Up_Input_Pin_Concept( Input_Pin_Concept && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    Internally_Pulled_Up_Input_Pin_Concept( Input_Pin_Concept const & ) = delete;
+
+    ~Internally_Pulled_Up_Input_Pin_Concept() = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Internally_Pulled_Up_Input_Pin_Concept && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Internally_Pulled_Up_Input_Pin_Concept const & ) = delete;
+
+    /**
+     * \brief Initialize the pin's hardware.
+     *
+     * \param[in] initial_pull_up_state The initial state of the pin's internal pull-up
+     *            resistor.
+     *
+     * \return Nothing if initializing the pin's hardware succeeded.
+     * \return An error code if initializing the pin's hardware failed. If initializing
+     *         the pin's hardware cannot fail, return
+     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     */
+    auto initialize( Initial_Pull_Up_State initial_pull_up_state = Initial_Pull_Up_State::DISABLED ) noexcept
+        -> Result<Void, Error_Code>;
+
+    /**
+     * \brief Enable the pin's internal pull-up resistor.
+     *
+     * \return Nothing if enabling the pin's internal pull-up resistor succeeded.
+     * \return An error code if enabling the pin's internal pull-up resistor failed. If
+     *         enabling the pin's internal pull-up resistor cannot fail, return
+     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     */
+    auto enable_pull_up() noexcept -> Result<Void, Error_Code>;
+
+    /**
+     * \brief Disable the pin's internal pull-up resistor.
+     *
+     * \return Nothing if disabling the pin's internal pull-up resistor succeeded.
+     * \return An error code if disabling the pin's internal pull-up resistor failed. If
+     *         disabling the pin's internal pull-up resistor cannot fail, return
+     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     */
+    auto disable_pull_up() noexcept -> Result<Void, Error_Code>;
+
+    /**
+     * \brief Get the state of the pin.
+     *
+     * \return High if the pin is high.
+     * \return Low if the pin is low.
+     * \return An error code if getting the state of the pin failed. If getting the state
+     *         of the pin cannot fail, return
+     *         picolibrary::Result<picolibrary::GPIO::Pin_State, picolibrary::Void>.
      */
     auto state() const noexcept -> Result<Pin_State, Error_Code>;
 };
