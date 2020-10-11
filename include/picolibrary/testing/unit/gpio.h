@@ -227,12 +227,15 @@ class Mock_Internally_Pulled_Up_Input_Pin {
         /**
          * \brief Initialize the pin's hardware.
          *
+         * \param[in] initial_pull_up_state The initial state of the pin's internal
+         *            pull-up resistor.
+         *
          * \return Nothing if initializing the pin's hardware succeeded.
          * \return An error code if initializing the pin's hardware failed.
          */
-        auto initialize()
+        auto initialize( ::picolibrary::GPIO::Initial_Pull_Up_State initial_pull_up_state = ::picolibrary::GPIO::Initial_Pull_Up_State::DISABLED )
         {
-            return m_mock_internally_pulled_up_input_pin->initialize();
+            return m_mock_internally_pulled_up_input_pin->initialize( initial_pull_up_state );
         }
 
         /**
