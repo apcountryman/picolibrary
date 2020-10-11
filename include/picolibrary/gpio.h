@@ -42,6 +42,14 @@ enum class Initial_Pull_Up_State : std::uint_fast8_t {
 };
 
 /**
+ * \brief Initial pin state.
+ */
+enum class Initial_Pin_State : std::uint_fast8_t {
+    HIGH, ///< High.
+    LOW,  ///< Low.
+};
+
+/**
  * \brief Pin state.
  */
 class Pin_State {
