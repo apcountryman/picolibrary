@@ -160,7 +160,7 @@ class Input_Pin_Concept {
      * \brief Initialize the pin's hardware.
      *
      * \return Nothing if initializing the pin's hardware succeeded.
-     * \return An error code if initializing the pin's hardware failed. In initializing
+     * \return An error code if initializing the pin's hardware failed. If initializing
      *         the pin's hardware cannot fail, return
      *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
      */
@@ -172,8 +172,8 @@ class Input_Pin_Concept {
      * \return High if the pin is high.
      * \return Low if the pin is low.
      * \return An error code if getting the state of the pin failed. If getting the state
-     *         of the pin cannot fail, return picolibrary::Result<picolibrary::Pin_State,
-     *         picolibrary::Void>.
+     *         of the pin cannot fail, return
+     *         picolibrary::Result<picolibrary::GPIO::Pin_State, picolibrary::Void>.
      */
     auto state() const noexcept -> Result<Pin_State, Error_Code>;
 };
