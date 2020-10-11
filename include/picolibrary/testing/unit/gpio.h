@@ -250,6 +250,17 @@ class Mock_Internally_Pulled_Up_Input_Pin {
         }
 
         /**
+         * \brief Disable the pin's internal pull-up resistor.
+         *
+         * \return Nothing if enabling the pin's internal pull-up resistor succeeded.
+         * \return An error code if enabling the pin's internal pull-up resistor failed.
+         */
+        auto disable_pull_up()
+        {
+            return m_mock_internally_pulled_up_input_pin->disable_pull_up();
+        }
+
+        /**
          * \brief Get the state of the pin.
          *
          * \return High if the pin is high.
