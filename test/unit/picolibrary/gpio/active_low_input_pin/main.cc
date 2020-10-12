@@ -22,6 +22,62 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/gpio.h"
+#include "picolibrary/testing/unit/error.h"
+#include "picolibrary/testing/unit/gpio.h"
+#include "picolibrary/testing/unit/random.h"
+
+namespace {
+
+using ::picolibrary::Testing::Unit::Mock_Error;
+using ::picolibrary::Testing::Unit::random;
+using ::testing::Return;
+
+using Pin = ::picolibrary::GPIO::Active_Low_Input_Pin<::picolibrary::Testing::Unit::GPIO::Mock_Input_Pin>;
+
+} // namespace
+
+/**
+ * \brief Verify picolibrary::GPIO::Active_Low_Input_Pin::state() works properly when
+ *        getting the state of the underlying pin succeeds.
+ */
+TEST( state, success )
+{
+    struct {
+        bool is_high;
+    } const test_cases[]{
+        { true },
+        { false },
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto const pin = Pin{};
+
+        EXPECT_CALL( pin, state() ).WillOnce( Return( test_case.is_high ) );
+
+        auto const result = pin.state();
+
+        EXPECT_FALSE( result.is_error() );
+        EXPECT_EQ( result.value().is_high(), not test_case.is_high );
+    } // for
+}
+
+/**
+ * \brief Verify picolibrary::GPIO::Active_Low_Input_Pin::state() works properly when
+ *        getting the state of the underlying pin fails.
+ */
+TEST( state, error )
+{
+    auto const pin = Pin{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( pin, state() ).WillOnce( Return( error ) );
+
+    auto const result = pin.state();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
 
 /**
  * \brief Execute the picolibrary::GPIO::Active_Low_Input_Pin unit tests.
