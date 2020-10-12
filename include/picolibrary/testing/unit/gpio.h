@@ -406,9 +406,9 @@ class Mock_Output_Pin {
          * \return Nothing if transitioning the pin to the high state succeeded.
          * \return An error code if transitioning the pin to the high state failed.
          */
-        auto set_high()
+        auto transition_to_high()
         {
-            return m_mock_output_pin->set_high();
+            return m_mock_output_pin->transition_to_high();
         }
 
         /**
@@ -417,9 +417,9 @@ class Mock_Output_Pin {
          * \return Nothing if transitioning the pin to the low state succeeded.
          * \return An error code if transitioning the pin to the low state failed.
          */
-        auto set_low()
+        auto transition_to_low()
         {
-            return m_mock_output_pin->set_low();
+            return m_mock_output_pin->transition_to_low();
         }
 
         /**
@@ -483,9 +483,9 @@ class Mock_Output_Pin {
 
     MOCK_METHOD( (Result<Void, Error_Code>), initialize, ( ::picolibrary::GPIO::Initial_Pin_State ) );
 
-    MOCK_METHOD( (Result<Void, Error_Code>), set_high, () );
+    MOCK_METHOD( (Result<Void, Error_Code>), transition_to_high, () );
 
-    MOCK_METHOD( (Result<Void, Error_Code>), set_low, () );
+    MOCK_METHOD( (Result<Void, Error_Code>), transition_to_low, () );
 
     MOCK_METHOD( (Result<Void, Error_Code>), toggle, () );
 };
@@ -578,9 +578,9 @@ class Mock_IO_Pin {
          * \return Nothing if transitioning the pin to the high state succeeded.
          * \return An error code if transitioning the pin to the high state failed.
          */
-        auto set_high()
+        auto transition_to_high()
         {
-            return m_mock_io_pin->set_high();
+            return m_mock_io_pin->transition_to_high();
         }
 
         /**
@@ -589,9 +589,9 @@ class Mock_IO_Pin {
          * \return Nothing if transitioning the pin to the low state succeeded.
          * \return An error code if transitioning the pin to the low state failed.
          */
-        auto set_low()
+        auto transition_to_low()
         {
-            return m_mock_io_pin->set_low();
+            return m_mock_io_pin->transition_to_low();
         }
 
         /**
@@ -657,9 +657,9 @@ class Mock_IO_Pin {
 
     MOCK_METHOD( (Result<::picolibrary::GPIO::Pin_State, Error_Code>), state, (), ( const ) );
 
-    MOCK_METHOD( (Result<Void, Error_Code>), set_high, () );
+    MOCK_METHOD( (Result<Void, Error_Code>), transition_to_high, () );
 
-    MOCK_METHOD( (Result<Void, Error_Code>), set_low, () );
+    MOCK_METHOD( (Result<Void, Error_Code>), transition_to_low, () );
 
     MOCK_METHOD( (Result<Void, Error_Code>), toggle, () );
 };
