@@ -319,7 +319,7 @@ class Output_Pin_Concept {
      *         transitioning the pin to the high state cannot fail, return
      *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
      */
-    auto set_high() noexcept -> Result<Void, Error_Code>;
+    auto transition_to_high() noexcept -> Result<Void, Error_Code>;
 
     /**
      * \brief Transition the pin to the low state.
@@ -329,7 +329,7 @@ class Output_Pin_Concept {
      *         transitioning the pin to the low state cannot fail, return
      *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
      */
-    auto set_low() noexcept -> Result<Void, Error_Code>;
+    auto transition_to_low() noexcept -> Result<Void, Error_Code>;
 
     /**
      * \brief Toggle the pin state.
@@ -407,7 +407,7 @@ class IO_Pin_Concept {
      *         transitioning the pin to the high state cannot fail, return
      *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
      */
-    auto set_high() noexcept -> Result<Void, Error_Code>;
+    auto transition_to_high() noexcept -> Result<Void, Error_Code>;
 
     /**
      * \brief Transition the pin to the low state.
@@ -417,7 +417,7 @@ class IO_Pin_Concept {
      *         transitioning the pin to the low state cannot fail, return
      *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
      */
-    auto set_low() noexcept -> Result<Void, Error_Code>;
+    auto transition_to_low() noexcept -> Result<Void, Error_Code>;
 
     /**
      * \brief Toggle the pin state.
