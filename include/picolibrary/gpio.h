@@ -61,7 +61,7 @@ class Pin_State {
      *
      * \param[in] is_high The pin state.
      */
-    constexpr explicit Pin_State( bool is_high ) noexcept : m_is_high{ is_high }
+    constexpr Pin_State( bool is_high ) noexcept : m_is_high{ is_high }
     {
     }
 
@@ -428,6 +428,34 @@ class IO_Pin_Concept {
      *         picolibrary::Void>.
      */
     auto toggle() noexcept -> Result<Void, Error_Code>;
+};
+
+/**
+ * \brief Active low input pin adapter.
+ *
+ * \tparam Input_Pin The type of input pin being adapted.
+ */
+template<typename Input_Pin>
+class Active_Low_Input_Pin : public Input_Pin {
+  public:
+    using Input_Pin::Input_Pin;
+
+    /**
+     * \brief Get the state of the pin.
+     *
+     * \return Low if the pin is high.
+     * \return High if the pin is low.
+     * \return The error reported by the underlying pin if getting the state of the
+     *         underlying pin failed.
+     */
+    auto state() const noexcept -> decltype( Input_Pin::state() )
+    {
+        auto result = Input_Pin::state();
+
+        if ( result.is_error() ) { return result; } // if
+
+        return not result.value().is_high();
+    }
 };
 
 } // namespace picolibrary::GPIO
