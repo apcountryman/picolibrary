@@ -61,7 +61,7 @@ class Pin_State {
      *
      * \param[in] is_high The pin state.
      */
-    constexpr explicit Pin_State( bool is_high ) noexcept : m_is_high{ is_high }
+    constexpr Pin_State( bool is_high ) noexcept : m_is_high{ is_high }
     {
     }
 
