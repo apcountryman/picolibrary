@@ -439,6 +439,23 @@ template<typename Input_Pin>
 class Active_Low_Input_Pin : public Input_Pin {
   public:
     using Input_Pin::Input_Pin;
+
+    /**
+     * \brief Get the state of the pin.
+     *
+     * \return Low if the pin is high.
+     * \return High if the pin is low.
+     * \return The error reported by the underlying pin if getting the state of the
+     *         underlying pin failed.
+     */
+    auto state() const noexcept -> decltype( Input_Pin::state() )
+    {
+        auto result = Input_Pin::state();
+
+        if ( result.is_error() ) { return result; } // if
+
+        return not result.value().is_high();
+    }
 };
 
 } // namespace picolibrary::GPIO
