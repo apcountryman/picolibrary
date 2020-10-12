@@ -117,6 +117,37 @@ TEST( transitionToHigh, failure )
 }
 
 /**
+ * \brief Verify picolibrary::GPIO::Active_Low_Output_Pin::transition_to_low() works
+ *        properly when the underlying pin operation succeeds.
+ */
+TEST( transitionToLow, success )
+{
+    auto pin = Pin{};
+
+    EXPECT_CALL( pin, transition_to_high() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( pin.transition_to_low().is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::GPIO::Active_Low_Output_Pin::transition_to_low() works
+ *        properly when the underlying pin operation fails.
+ */
+TEST( transitionToLow, failure )
+{
+    auto pin = Pin{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( pin, transition_to_high() ).WillOnce( Return( error ) );
+
+    auto const result = pin.transition_to_low();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
  * \brief Execute the picolibrary::GPIO::Active_Low_Output_Pin unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
