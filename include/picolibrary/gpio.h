@@ -495,6 +495,18 @@ class Active_Low_Output_Pin : public Output_Pin {
     {
         return Output_Pin::transition_to_low();
     }
+
+    /**
+     * \brief Transition the pin to the high state.
+     *
+     * \return Nothing if transitioning the pin to the high state succeeded.
+     * \return The error reported by the underlying pin if transitioning the pin to the
+     *         high state failed.
+     */
+    auto transition_to_low() noexcept
+    {
+        return Output_Pin::transition_to_high();
+    }
 };
 
 } // namespace picolibrary::GPIO
