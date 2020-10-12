@@ -21,7 +21,69 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "picolibrary/error.h"
 #include "picolibrary/gpio.h"
+#include "picolibrary/result.h"
+#include "picolibrary/testing/unit/error.h"
+#include "picolibrary/testing/unit/gpio.h"
+#include "picolibrary/testing/unit/random.h"
+#include "picolibrary/utility.h"
+
+namespace {
+
+using ::picolibrary::Error_Code;
+using ::picolibrary::Result;
+using ::picolibrary::Void;
+using ::picolibrary::GPIO::Initial_Pin_State;
+using ::picolibrary::Testing::Unit::Mock_Error;
+using ::picolibrary::Testing::Unit::random;
+using ::testing::_;
+using ::testing::Return;
+
+using Pin = ::picolibrary::GPIO::Active_Low_Output_Pin<::picolibrary::Testing::Unit::GPIO::Mock_Output_Pin>;
+
+} // namespace
+
+/**
+ * \brief Verify picolibrary::GPIO::Active_Low_Output_Pin::initialize() works properly
+ *        when the underlying pin operation succeeds.
+ */
+TEST( initialize, success )
+{
+    struct {
+        Initial_Pin_State requested_state;
+        Initial_Pin_State actual_state;
+    } const test_cases[]{
+        { Initial_Pin_State::HIGH, Initial_Pin_State::LOW },
+        { Initial_Pin_State::LOW, Initial_Pin_State::HIGH },
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto pin = Pin{};
+
+        EXPECT_CALL( pin, initialize( test_case.actual_state ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+        EXPECT_FALSE( pin.initialize( test_case.requested_state ).is_error() );
+    } // for
+}
+
+/**
+ * \brief Verify picolibrary::GPIO::Active_Low_Output_Pin::initialize() works properly
+ *        when the underlying pin operation fails.
+ */
+TEST( initialize, error )
+{
+    auto pin = Pin{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( pin, initialize( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = pin.initialize( random<Initial_Pin_State>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
 
 /**
  * \brief Execute the picolibrary::GPIO::Active_Low_Output_Pin unit tests.
