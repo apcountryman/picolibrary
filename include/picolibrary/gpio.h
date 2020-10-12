@@ -458,6 +458,17 @@ class Active_Low_Input_Pin : public Input_Pin {
     }
 };
 
+/**
+ * \brief Active low output pin adapter.
+ *
+ * \tparam Output_Pin The type of output pin being adapted.
+ */
+template<typename Output_Pin>
+class Active_Low_Output_Pin : public Output_Pin {
+  public:
+    using Output_Pin::Output_Pin;
+};
+
 } // namespace picolibrary::GPIO
 
 #endif // PICOLIBRARY_GPIO_H
