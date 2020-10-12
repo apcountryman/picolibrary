@@ -430,6 +430,17 @@ class IO_Pin_Concept {
     auto toggle() noexcept -> Result<Void, Error_Code>;
 };
 
+/**
+ * \brief Active low input pin adapter.
+ *
+ * \tparam Input_Pin The type of input pin being adapted.
+ */
+template<typename Input_Pin>
+class Active_Low_Input_Pin : public Input_Pin {
+  public:
+    using Input_Pin::Input_Pin;
+};
+
 } // namespace picolibrary::GPIO
 
 #endif // PICOLIBRARY_GPIO_H
