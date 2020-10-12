@@ -490,6 +490,180 @@ class Mock_Output_Pin {
     MOCK_METHOD( (Result<Void, Error_Code>), toggle, () );
 };
 
+/**
+ * \brief Mock Input/Output (I/O) pin.
+ */
+class Mock_IO_Pin {
+  public:
+    /**
+     * \brief Movable mock I/O pin handle.
+     */
+    class Handle {
+      public:
+        /**
+         * \brief Constructor.
+         */
+        Handle() noexcept = default;
+
+        /**
+         * \brief Constructor.
+         *
+         * \param[in] mock_io_pin The mock I/O pin.
+         */
+        Handle( Mock_IO_Pin & mock_io_pin ) noexcept : m_mock_io_pin{ &mock_io_pin }
+        {
+        }
+
+        /**
+         * \brief Constructor.
+         *
+         * \param[in] source The source of the move.
+         */
+        Handle( Handle && source ) noexcept = default;
+
+        /**
+         * \todo #29
+         */
+        Handle( Handle const & ) = delete;
+
+        /**
+         * \brief Destructor.
+         */
+        ~Handle() noexcept = default;
+
+        /**
+         * \brief Assignment operator.
+         *
+         * \param[in] expression The expression to be assigned.
+         *
+         * \return The assigned to object.
+         */
+        auto operator=( Handle && expression ) noexcept -> Handle & = default;
+
+        /**
+         * \todo #29
+         *
+         * \return
+         */
+        auto operator=( Handle const & ) = delete;
+
+        /**
+         * \brief Initialize the pin's hardware.
+         *
+         * \param[in] initial_pin_state The initial state of the pin.
+         *
+         * \return Nothing if initializing the pin's hardware succeeded.
+         * \return An error code if initializing the pin's hardware failed.
+         */
+        auto initialize( ::picolibrary::GPIO::Initial_Pin_State initial_pin_state = ::picolibrary::GPIO::Initial_Pin_State::LOW )
+        {
+            return m_mock_io_pin->initialize( initial_pin_state );
+        }
+
+        /**
+         * \brief Get the state of the pin.
+         *
+         * \return High if the pin is high.
+         * \return Low if the pin is low.
+         * \return An error code if getting the state of the pin failed.
+         */
+        auto state() const
+        {
+            return m_mock_io_pin->state();
+        }
+
+        /**
+         * \brief Transition the pin to the high state.
+         *
+         * \return Nothing if transitioning the pin to the high state succeeded.
+         * \return An error code if transitioning the pin to the high state failed.
+         */
+        auto set_high()
+        {
+            return m_mock_io_pin->set_high();
+        }
+
+        /**
+         * \brief Transition the pin to the low state.
+         *
+         * \return Nothing if transitioning the pin to the low state succeeded.
+         * \return An error code if transitioning the pin to the low state failed.
+         */
+        auto set_low()
+        {
+            return m_mock_io_pin->set_low();
+        }
+
+        /**
+         * \brief Toggle the pin state.
+         *
+         * \return Nothing if toggling the pin state succeeded.
+         * \return An error code if toggling the pin state failed.
+         */
+        auto toggle()
+        {
+            return m_mock_io_pin->toggle();
+        }
+
+      private:
+        /**
+         * \brief The mock I/O pin.
+         */
+        Mock_IO_Pin * m_mock_io_pin{};
+    };
+
+    /**
+     * \brief Constructor.
+     */
+    Mock_IO_Pin() = default;
+
+    /**
+     * \todo #29
+     */
+    Mock_IO_Pin( Mock_IO_Pin && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    Mock_IO_Pin( Mock_IO_Pin const & ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Mock_IO_Pin && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Mock_IO_Pin const & ) = delete;
+
+    /**
+     * \brief Get a movable handle to the mock I/O pin.
+     *
+     * \return A movable handle to the mock I/O pin.
+     */
+    auto handle() noexcept
+    {
+        return Handle{ *this };
+    }
+
+    MOCK_METHOD( (Result<Void, Error_Code>), initialize, () );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), initialize, ( ::picolibrary::GPIO::Initial_Pin_State ) );
+
+    MOCK_METHOD( (Result<::picolibrary::GPIO::Pin_State, Error_Code>), state, (), ( const ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), set_high, () );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), set_low, () );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), toggle, () );
+};
+
 } // namespace picolibrary::Testing::Unit::GPIO
 
 #endif // PICOLIBRARY_TESTING_UNIT_GPIO_H
