@@ -71,7 +71,7 @@ TEST( initialize, success )
  * \brief Verify picolibrary::GPIO::Active_Low_Output_Pin::initialize() works properly
  *        when the underlying pin operation fails.
  */
-TEST( initialize, error )
+TEST( initialize, failure )
 {
     auto pin = Pin{};
 
