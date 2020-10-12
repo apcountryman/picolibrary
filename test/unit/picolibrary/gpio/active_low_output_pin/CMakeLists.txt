@@ -12,14 +12,21 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/gpio/CMakeLists.txt
-# Description: picolibrary::GPIO unit tests CMake rules.
-
-# build the picolibrary::GPIO::Active_Low_Input_Pin unit tests
-add_subdirectory( active_low_input_pin )
+# File: test/unit/picolibrary/gpio/active_low_output_pin/CMakeLists.txt
+# Description: picolibrary::GPIO::Active_Low_Output_Pin unit tests CMake rules.
 
 # build the picolibrary::GPIO::Active_Low_Output_Pin unit tests
-add_subdirectory( active_low_output_pin )
-
-# build the picolibrary::GPIO::Pin_State unit tests
-add_subdirectory( pin_state )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+    add_executable(
+        test-unit-picolibrary-gpio-active_low_output_pin
+        main.cc
+    )
+    target_link_libraries(
+        test-unit-picolibrary-gpio-active_low_output_pin
+        picolibrary
+    )
+    add_test(
+        NAME    test-unit-picolibrary-gpio-active_low_output_pin
+        COMMAND test-unit-picolibrary-gpio-active_low_output_pin --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
