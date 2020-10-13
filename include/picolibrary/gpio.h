@@ -509,6 +509,17 @@ class Active_Low_Output_Pin : public Output_Pin {
     }
 };
 
+/**
+ * \brief Active low I/O pin adapter.
+ *
+ * \tparam IO_Pin The type of I/O pin being adapted.
+ */
+template<typename IO_Pin>
+class Active_Low_IO_Pin : public Active_Low_Output_Pin<Active_Low_Input_Pin<IO_Pin>> {
+  public:
+    using Active_Low_Output_Pin<Active_Low_Input_Pin<IO_Pin>>::Active_Low_Output_Pin;
+};
+
 } // namespace picolibrary::GPIO
 
 #endif // PICOLIBRARY_GPIO_H
