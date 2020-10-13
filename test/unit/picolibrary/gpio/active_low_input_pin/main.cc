@@ -65,7 +65,7 @@ TEST( state, success )
  * \brief Verify picolibrary::GPIO::Active_Low_Input_Pin::state() works properly when
  *        getting the state of the underlying pin fails.
  */
-TEST( state, error )
+TEST( state, failure )
 {
     auto const pin = Pin{};
 

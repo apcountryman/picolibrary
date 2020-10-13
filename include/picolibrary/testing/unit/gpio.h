@@ -26,7 +26,23 @@
 #include "picolibrary/error.h"
 #include "picolibrary/gpio.h"
 #include "picolibrary/result.h"
+#include "picolibrary/testing/unit/random.h"
 #include "picolibrary/utility.h"
+
+namespace picolibrary::Testing::Unit {
+
+/**
+ * \brief Generate a pseudo-random picolibrary::GPIO::Initial_Pin_State.
+ *
+ * \return A pseudo-randomly generated picolibrary::GPIO::Initial_Pin_State.
+ */
+template<>
+inline auto random<GPIO::Initial_Pin_State>()
+{
+    return random<bool>() ? GPIO::Initial_Pin_State::HIGH : GPIO::Initial_Pin_State::LOW;
+}
+
+} // namespace picolibrary::Testing::Unit
 
 /**
  * \brief General Purpose Input/Output (GPIO) unit testing facilities.

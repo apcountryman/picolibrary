@@ -458,6 +458,57 @@ class Active_Low_Input_Pin : public Input_Pin {
     }
 };
 
+/**
+ * \brief Active low output pin adapter.
+ *
+ * \tparam Output_Pin The type of output pin being adapted.
+ */
+template<typename Output_Pin>
+class Active_Low_Output_Pin : public Output_Pin {
+  public:
+    using Output_Pin::Output_Pin;
+
+    /**
+     * \brief Initialize the pin's hardware.
+     *
+     * \param[in] initial_pin_state The initial state of the pin.
+     *
+     * \return Nothing if initializing the pin's hardware succeeded.
+     * \return The error reported by the underlying pin if initializing the pin's hardware
+     *         failed.
+     */
+    auto initialize( Initial_Pin_State initial_pin_state = Initial_Pin_State::LOW ) noexcept
+    {
+        return Output_Pin::initialize(
+            initial_pin_state == Initial_Pin_State::HIGH ? Initial_Pin_State::LOW
+                                                         : Initial_Pin_State::HIGH );
+    }
+
+    /**
+     * \brief Transition the pin to the low state.
+     *
+     * \return Nothing if transitioning the pin to the low state succeeded.
+     * \return The error reported by the underlying pin if transitioning the pin to the
+     *         low state failed.
+     */
+    auto transition_to_high() noexcept
+    {
+        return Output_Pin::transition_to_low();
+    }
+
+    /**
+     * \brief Transition the pin to the high state.
+     *
+     * \return Nothing if transitioning the pin to the high state succeeded.
+     * \return The error reported by the underlying pin if transitioning the pin to the
+     *         high state failed.
+     */
+    auto transition_to_low() noexcept
+    {
+        return Output_Pin::transition_to_high();
+    }
+};
+
 } // namespace picolibrary::GPIO
 
 #endif // PICOLIBRARY_GPIO_H
