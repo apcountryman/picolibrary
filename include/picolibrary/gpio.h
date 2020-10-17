@@ -133,6 +133,12 @@ class Pin_State {
 
 /**
  * \brief Input pin concept.
+ *
+ * \attention picolibrary assumes that the high pin/signal state is the active pin/signal
+ *            state. All input pin implementations should use this assumption. If the high
+ *            pin/signal state is not the active pin/signal state,
+ *            picolibrary::GPIO::Active_Low_Input_Pin can be used to invert an input pin
+ *            implementation's behavior.
  */
 class Input_Pin_Concept {
   public:
@@ -188,6 +194,12 @@ class Input_Pin_Concept {
 
 /**
  * \brief Internally pulled-up input pin concept.
+ *
+ * \attention picolibrary assumes that the high pin/signal state is the active pin/signal
+ *            state. All input pin implementations should use this assumption. If the high
+ *            pin/signal state is not the active pin/signal state,
+ *            picolibrary::GPIO::Active_Low_Input_Pin can be used to invert an input pin
+ *            implementation's behavior.
  */
 class Internally_Pulled_Up_Input_Pin_Concept {
   public:
@@ -267,6 +279,12 @@ class Internally_Pulled_Up_Input_Pin_Concept {
 
 /**
  * \brief Output pin concept.
+ *
+ * \attention picolibrary assumes that the high pin/signal state is the active pin/signal
+ *            state. All output pin implementations should use this assumption. If the
+ *            high pin/signal state is not the active pin/signal state,
+ *            picolibrary::GPIO::Active_Low_Output_Pin can be used to invert an output pin
+ *            implementation's behavior.
  */
 class Output_Pin_Concept {
   public:
@@ -344,6 +362,12 @@ class Output_Pin_Concept {
 
 /**
  * \brief Input/Output (I/O) pin concept.
+ *
+ * \attention picolibrary assumes that the high pin/signal state is the active pin/signal
+ *            state. All I/O pin implementations should use this assumption. If the high
+ *            pin/signal state is not the active pin/signal state,
+ *            picolibrary::GPIO::Active_Low_IO_Pin can be used to invert an I/O pin
+ *            implementation's behavior.
  */
 class IO_Pin_Concept {
   public:
@@ -433,6 +457,11 @@ class IO_Pin_Concept {
 /**
  * \brief Active low input pin adapter.
  *
+ * \attention picolibrary assumes that the high pin/signal state is the active pin/signal
+ *            state. All input pin implementations should use this assumption. If the high
+ *            pin/signal state is not the active pin/signal state, this class can be used
+ *            to invert an input pin implementation's behavior.
+ *
  * \tparam Input_Pin The type of input pin being adapted.
  */
 template<typename Input_Pin>
@@ -460,6 +489,11 @@ class Active_Low_Input_Pin : public Input_Pin {
 
 /**
  * \brief Active low output pin adapter.
+ *
+ * \attention picolibrary assumes that the high pin/signal state is the active pin/signal
+ *            state. All output pin implementations should use this assumption. If the
+ *            high pin/signal state is not the active pin/signal state, this class can be
+ *            used to invert an output pin implementation's behavior.
  *
  * \tparam Output_Pin The type of output pin being adapted.
  */
@@ -511,6 +545,11 @@ class Active_Low_Output_Pin : public Output_Pin {
 
 /**
  * \brief Active low I/O pin adapter.
+ *
+ * \attention picolibrary assumes that the high pin/signal state is the active pin/signal
+ *            state. All I/O pin implementations should use this assumption. If the high
+ *            pin/signal state is not the active pin/signal state, this class can be used
+ *            to invert an I/O pin implementation's behavior.
  *
  * \tparam IO_Pin The type of I/O pin being adapted.
  */
