@@ -20,34 +20,6 @@ dist: focal
 
 jobs:
     include:
-        - name: "format"
-          language: minimal
-          script: ./ci/format
-
-        - name: "analyze (static) - shellcheck"
-          language: bash
-          script: ./ci/analyze --analyzer shellcheck
-
-        - name: "analyze (static) - cppcheck"
-          language: cpp
-          addons:
-              apt:
-                  packages:
-                      - cppcheck
-          script: ./ci/analyze --analyzer cppcheck
-
-        - name: "analyze (static) - clang-tidy"
-          language: cpp
-          addons:
-              apt:
-                  packages:
-                      - clang-tidy
-          script: ./ci/analyze --analyzer clang-tidy
-
-        - name: "analyze (static) - lizard"
-          language: python
-          script: ./ci/analyze --analyzer lizard
-
         - name: "build (release) - gcc"
           language: cpp
           compiler: gcc
@@ -77,3 +49,31 @@ jobs:
                       - doxygen
                       - graphviz
           script: ./ci/build --configuration testing-unit && ./ci/test
+
+        - name: "analyze (static) - cppcheck"
+          language: cpp
+          addons:
+              apt:
+                  packages:
+                      - cppcheck
+          script: ./ci/analyze --analyzer cppcheck
+
+        - name: "analyze (static) - clang-tidy"
+          language: cpp
+          addons:
+              apt:
+                  packages:
+                      - clang-tidy
+          script: ./ci/analyze --analyzer clang-tidy
+
+        - name: "analyze (static) - lizard"
+          language: python
+          script: ./ci/analyze --analyzer lizard
+
+        - name: "analyze (static) - shellcheck"
+          language: bash
+          script: ./ci/analyze --analyzer shellcheck
+
+        - name: "format"
+          language: minimal
+          script: ./ci/format
