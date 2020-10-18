@@ -26,6 +26,30 @@
  * \brief General Purpose Input/Output (GPIO) interactive testing facilities.
  */
 namespace picolibrary::Testing::Interactive::GPIO {
+
+/**
+ * \brief Initialize an output pin and toggle it indefinitely.
+ *
+ * \tparam Output_Pin The type of output pin to toggle.
+ * \tparam Delayer A nullary functor called to introduce a delay each time the pin is
+ *         toggled.
+ *
+ * \param[in] pin The pin to toggle.
+ * \param[in] delay The nullary functor called to introduce a delay each time the pin is
+ *            toggled.
+ */
+template<typename Output_Pin, typename Delayer>
+void toggle( Output_Pin pin, Delayer delay ) noexcept
+{
+    if ( pin.initialize().is_error() ) { return; } // if
+
+    for ( ;; ) {
+        delay();
+
+        if ( pin.toggle().is_error() ) { return; } // if
+    }                                              // for
+}
+
 } // namespace picolibrary::Testing::Interactive::GPIO
 
 #endif // PICOLIBRARY_TESTING_INTERACTIVE_GPIO_H
