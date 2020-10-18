@@ -52,6 +52,7 @@ if( ${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING} )
         "picolibrary/testing/interactive.cc"
         "picolibrary/testing/interactive/asynchronous_serial.cc"
         "picolibrary/testing/interactive/asynchronous_serial/stream.cc"
+        "picolibrary/testing/interactive/gpio.cc"
     )
 endif( ${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING} )
 
