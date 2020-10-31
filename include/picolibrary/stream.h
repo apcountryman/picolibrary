@@ -464,7 +464,9 @@ class Output_Stream : public Stream {
     {
         if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
 
-        return buffer()->put( character );
+        auto result = buffer()->put( character );
+        if ( result.is_error() ) { report_fatal_error(); } // if
+        return result;
     }
 
     /**
@@ -480,11 +482,13 @@ class Output_Stream : public Stream {
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto put( char const * begin, char const * end ) -> Result<Void, Error_Code>
+    auto put( char const * begin, char const * end ) noexcept -> Result<Void, Error_Code>
     {
         if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
 
-        return buffer()->put( begin, end );
+        auto result = buffer()->put( begin, end );
+        if ( result.is_error() ) { report_fatal_error(); } // if
+        return result;
     }
 
     /**
@@ -503,7 +507,9 @@ class Output_Stream : public Stream {
     {
         if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
 
-        return buffer()->put( string );
+        auto result = buffer()->put( string );
+        if ( result.is_error() ) { report_fatal_error(); } // if
+        return result;
     }
 
     /**
@@ -522,7 +528,9 @@ class Output_Stream : public Stream {
     {
         if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
 
-        return buffer()->put( value );
+        auto result = buffer()->put( value );
+        if ( result.is_error() ) { report_fatal_error(); } // if
+        return result;
     }
 
     /**
@@ -539,11 +547,13 @@ class Output_Stream : public Stream {
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto put( std::uint8_t const * begin, std::uint8_t const * end ) -> Result<Void, Error_Code>
+    auto put( std::uint8_t const * begin, std::uint8_t const * end ) noexcept -> Result<Void, Error_Code>
     {
         if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
 
-        return buffer()->put( begin, end );
+        auto result = buffer()->put( begin, end );
+        if ( result.is_error() ) { report_fatal_error(); } // if
+        return result;
     }
 
     /**
@@ -562,7 +572,9 @@ class Output_Stream : public Stream {
     {
         if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
 
-        return buffer()->put( value );
+        auto result = buffer()->put( value );
+        if ( result.is_error() ) { report_fatal_error(); } // if
+        return result;
     }
 
     /**
@@ -578,11 +590,13 @@ class Output_Stream : public Stream {
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto put( std::int8_t const * begin, std::int8_t const * end ) -> Result<Void, Error_Code>
+    auto put( std::int8_t const * begin, std::int8_t const * end ) noexcept -> Result<Void, Error_Code>
     {
         if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
 
-        return buffer()->put( begin, end );
+        auto result = buffer()->put( begin, end );
+        if ( result.is_error() ) { report_fatal_error(); } // if
+        return result;
     }
 
     /**
@@ -594,7 +608,9 @@ class Output_Stream : public Stream {
      */
     auto flush() noexcept
     {
-        return buffer()->flush();
+        auto result = buffer()->flush();
+        if ( result.is_error() ) { report_fatal_error(); } // if
+        return result;
     }
 
   protected:

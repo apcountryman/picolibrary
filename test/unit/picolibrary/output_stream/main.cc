@@ -60,12 +60,19 @@ TEST( putChar, errorPresent )
 
     stream.report_random_error();
 
+    auto const io_error_present    = stream.io_error_present();
+    auto const fatal_error_present = stream.fatal_error_present();
+
     EXPECT_CALL( stream.buffer(), put( A<char>() ) ).Times( 0 );
 
     auto const result = stream.put( random<char>() );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::IO_STREAM_DEGRADED );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_EQ( stream.io_error_present(), io_error_present );
+    EXPECT_EQ( stream.fatal_error_present(), fatal_error_present );
 }
 
 /**
@@ -83,6 +90,10 @@ TEST( putChar, putError )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_FALSE( stream.io_error_present() );
+    EXPECT_TRUE( stream.fatal_error_present() );
 }
 
 /**
@@ -98,6 +109,8 @@ TEST( putChar, worksProperly )
         .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( stream.put( character ).is_error() );
+
+    EXPECT_TRUE( stream.is_nominal() );
 }
 
 /**
@@ -110,6 +123,9 @@ TEST( putCharBlock, errorPresent )
 
     stream.report_random_error();
 
+    auto const io_error_present    = stream.io_error_present();
+    auto const fatal_error_present = stream.fatal_error_present();
+
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).Times( 0 );
 
     auto const string = random_container<std::string>();
@@ -117,6 +133,10 @@ TEST( putCharBlock, errorPresent )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::IO_STREAM_DEGRADED );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_EQ( stream.io_error_present(), io_error_present );
+    EXPECT_EQ( stream.fatal_error_present(), fatal_error_present );
 }
 
 /**
@@ -136,6 +156,10 @@ TEST( putCharBlock, putError )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_FALSE( stream.io_error_present() );
+    EXPECT_TRUE( stream.fatal_error_present() );
 }
 
 /**
@@ -151,6 +175,8 @@ TEST( putCharBlock, worksProperly )
     EXPECT_CALL( stream.buffer(), put( string ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( stream.put( &*string.begin(), &*string.end() ).is_error() );
+
+    EXPECT_TRUE( stream.is_nominal() );
 }
 
 /**
@@ -163,12 +189,19 @@ TEST( putNullTerminatedString, errorPresent )
 
     stream.report_random_error();
 
+    auto const io_error_present    = stream.io_error_present();
+    auto const fatal_error_present = stream.fatal_error_present();
+
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).Times( 0 );
 
     auto const result = stream.put( random_container<std::string>().c_str() );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::IO_STREAM_DEGRADED );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_EQ( stream.io_error_present(), io_error_present );
+    EXPECT_EQ( stream.fatal_error_present(), fatal_error_present );
 }
 
 /**
@@ -187,6 +220,10 @@ TEST( putNullTerminatedString, putError )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_FALSE( stream.io_error_present() );
+    EXPECT_TRUE( stream.fatal_error_present() );
 }
 
 /**
@@ -201,6 +238,8 @@ TEST( putNullTerminatedString, worksProperly )
     EXPECT_CALL( stream.buffer(), put( string ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( stream.put( string.c_str() ).is_error() );
+
+    EXPECT_TRUE( stream.is_nominal() );
 }
 
 /**
@@ -213,12 +252,19 @@ TEST( putUnsignedByte, errorPresent )
 
     stream.report_random_error();
 
+    auto const io_error_present    = stream.io_error_present();
+    auto const fatal_error_present = stream.fatal_error_present();
+
     EXPECT_CALL( stream.buffer(), put( A<std::uint8_t>() ) ).Times( 0 );
 
     auto const result = stream.put( random<std::uint8_t>() );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::IO_STREAM_DEGRADED );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_EQ( stream.io_error_present(), io_error_present );
+    EXPECT_EQ( stream.fatal_error_present(), fatal_error_present );
 }
 
 /**
@@ -237,6 +283,10 @@ TEST( putUnsignedByte, putError )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_FALSE( stream.io_error_present() );
+    EXPECT_TRUE( stream.fatal_error_present() );
 }
 
 /**
@@ -252,6 +302,8 @@ TEST( putUnsignedByte, worksProperly )
         .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( stream.put( value ).is_error() );
+
+    EXPECT_TRUE( stream.is_nominal() );
 }
 
 /**
@@ -264,6 +316,9 @@ TEST( putUnsignedByteBlock, errorPresent )
 
     stream.report_random_error();
 
+    auto const io_error_present    = stream.io_error_present();
+    auto const fatal_error_present = stream.fatal_error_present();
+
     EXPECT_CALL( stream.buffer(), put( A<std::vector<std::uint8_t>>() ) ).Times( 0 );
 
     auto const values = random_container<std::vector<std::uint8_t>>();
@@ -271,6 +326,10 @@ TEST( putUnsignedByteBlock, errorPresent )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::IO_STREAM_DEGRADED );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_EQ( stream.io_error_present(), io_error_present );
+    EXPECT_EQ( stream.fatal_error_present(), fatal_error_present );
 }
 
 /**
@@ -290,6 +349,10 @@ TEST( putUnsignedByteBlock, putError )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_FALSE( stream.io_error_present() );
+    EXPECT_TRUE( stream.fatal_error_present() );
 }
 
 /**
@@ -305,6 +368,8 @@ TEST( putUnsignedByteBlock, worksProperly )
     EXPECT_CALL( stream.buffer(), put( values ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( stream.put( &*values.begin(), &*values.end() ).is_error() );
+
+    EXPECT_TRUE( stream.is_nominal() );
 }
 
 /**
@@ -317,12 +382,19 @@ TEST( putSignedByte, errorPresent )
 
     stream.report_random_error();
 
+    auto const io_error_present    = stream.io_error_present();
+    auto const fatal_error_present = stream.fatal_error_present();
+
     EXPECT_CALL( stream.buffer(), put( A<std::int8_t>() ) ).Times( 0 );
 
     auto const result = stream.put( random<std::int8_t>() );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::IO_STREAM_DEGRADED );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_EQ( stream.io_error_present(), io_error_present );
+    EXPECT_EQ( stream.fatal_error_present(), fatal_error_present );
 }
 
 /**
@@ -341,6 +413,10 @@ TEST( putSignedByte, putError )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_FALSE( stream.io_error_present() );
+    EXPECT_TRUE( stream.fatal_error_present() );
 }
 
 /**
@@ -356,6 +432,8 @@ TEST( putSignedByte, worksProperly )
         .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( stream.put( value ).is_error() );
+
+    EXPECT_TRUE( stream.is_nominal() );
 }
 
 /**
@@ -368,6 +446,9 @@ TEST( putSignedByteBlock, errorPresent )
 
     stream.report_random_error();
 
+    auto const io_error_present    = stream.io_error_present();
+    auto const fatal_error_present = stream.fatal_error_present();
+
     EXPECT_CALL( stream.buffer(), put( A<std::vector<std::int8_t>>() ) ).Times( 0 );
 
     auto const values = random_container<std::vector<std::int8_t>>();
@@ -375,6 +456,10 @@ TEST( putSignedByteBlock, errorPresent )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::IO_STREAM_DEGRADED );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_EQ( stream.io_error_present(), io_error_present );
+    EXPECT_EQ( stream.fatal_error_present(), fatal_error_present );
 }
 
 /**
@@ -394,6 +479,10 @@ TEST( putSignedByteBlock, putError )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_FALSE( stream.io_error_present() );
+    EXPECT_TRUE( stream.fatal_error_present() );
 }
 
 /**
@@ -409,6 +498,8 @@ TEST( putSignedByteBlock, worksProperly )
     EXPECT_CALL( stream.buffer(), put( values ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( stream.put( &*values.begin(), &*values.end() ).is_error() );
+
+    EXPECT_TRUE( stream.is_nominal() );
 }
 
 /**
@@ -426,6 +517,10 @@ TEST( flush, flushError )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_FALSE( stream.io_error_present() );
+    EXPECT_TRUE( stream.fatal_error_present() );
 }
 
 /**
@@ -438,6 +533,8 @@ TEST( flush, worksProperly )
     EXPECT_CALL( stream.buffer(), flush() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( stream.flush().is_error() );
+
+    EXPECT_TRUE( stream.is_nominal() );
 }
 
 /**
