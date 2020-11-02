@@ -22,10 +22,89 @@
 #ifndef PICOLIBRARY_ADC_H
 #define PICOLIBRARY_ADC_H
 
+#include <cstdint>
+
+#include "picolibrary/error.h"
+#include "picolibrary/result.h"
+#include "picolibrary/utility.h"
+
 /**
  * \brief Analog-to-Digital Converter (ADC) facilities.
  */
 namespace picolibrary::ADC {
+
+/**
+ * \brief Blocking, single sample ADC concept.
+ */
+class Blocking_Single_Sample_Converter_Concept {
+  public:
+    /**
+     * \brief The integral type used to hold a sample.
+     */
+    using Sample = std::uint16_t;
+
+    Blocking_Single_Sample_Converter_Concept() = delete;
+
+    /**
+     * \todo #29
+     */
+    Blocking_Single_Sample_Converter_Concept( Blocking_Single_Sample_Converter_Concept && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    Blocking_Single_Sample_Converter_Concept( Blocking_Single_Sample_Converter_Concept const & ) = delete;
+
+    ~Blocking_Single_Sample_Converter_Concept() = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Blocking_Single_Sample_Converter_Concept && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Blocking_Single_Sample_Converter_Concept const & ) = delete;
+
+    /**
+     * \brief Initialize the ADC's hardware.
+     *
+     * \return Nothing if initializing the ADC's hardware succeeded.
+     * \return An error code if initializing the ADC's hardware failed. If initializing
+     *         the ADC's hardware cannot fail, return
+     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     */
+    auto initialize() noexcept -> Result<Void, Error_Code>;
+
+    /**
+     * \brief Get the minimum sample value.
+     *
+     * \return The minimum sample value.
+     */
+    auto min() const noexcept -> Sample;
+
+    /**
+     * \brief Get the maximum sample value.
+     *
+     * \return The maximum sample value.
+     */
+    auto max() const noexcept -> Sample;
+
+    /**
+     * \brief Get a sample.
+     *
+     * \return A sample if getting the sample succeeded.
+     * \return An error code if getting the sample failed. If getting the sample cannot
+     *         fail, return picolibrary::Result<Sample, picolibrary::Void>.
+     */
+    auto sample() noexcept -> Result<Sample, Error_Code>;
+};
+
 } // namespace picolibrary::ADC
 
 #endif // PICOLIBRARY_ADC_H
