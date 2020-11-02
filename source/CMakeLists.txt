@@ -25,6 +25,7 @@ set(
     PICOLIBRARY_SOURCE_FILES
     "${CMAKE_CURRENT_BINARY_DIR}/picolibrary/version.cc"
     "picolibrary.cc"
+    "picolibrary/adc.cc"
     "picolibrary/algorithm.cc"
     "picolibrary/asynchronous_serial.cc"
     "picolibrary/asynchronous_serial/stream.cc"
