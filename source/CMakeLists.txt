@@ -25,6 +25,7 @@ set(
     PICOLIBRARY_SOURCE_FILES
     "${CMAKE_CURRENT_BINARY_DIR}/picolibrary/version.cc"
     "picolibrary.cc"
+    "picolibrary/adc.cc"
     "picolibrary/algorithm.cc"
     "picolibrary/asynchronous_serial.cc"
     "picolibrary/asynchronous_serial/stream.cc"
@@ -60,6 +61,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     list(
         APPEND PICOLIBRARY_SOURCE_FILES
         "picolibrary/testing/unit.cc"
+        "picolibrary/testing/unit/adc.cc"
         "picolibrary/testing/unit/asynchronous_serial.cc"
         "picolibrary/testing/unit/crc.cc"
         "picolibrary/testing/unit/error.cc"
