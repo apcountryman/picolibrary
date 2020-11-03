@@ -132,7 +132,10 @@ class Mock_Blocking_Single_Sample_Converter {
         }
 
         /**
-         * \copydoc picolibrary::ADC::Blocking_Single_Sample_Converter_Concept::sample()
+         * \brief Get a sample.
+         *
+         * \return A sample if getting the sample succeeded.
+         * \return An error code if getting the sample failed.
          */
         auto sample() noexcept
         {
