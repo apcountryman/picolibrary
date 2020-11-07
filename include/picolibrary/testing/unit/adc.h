@@ -202,6 +202,203 @@ class Mock_Blocking_Single_Sample_Converter {
     MOCK_METHOD( (Result<Sample, Error_Code>), sample, () );
 };
 
+/**
+ * \brief Mock non-blocking, single sample ADC.
+ *
+ * \tparam Sample_Type The integral type used to hold a sample.
+ */
+template<typename Sample_Type>
+class Mock_Non_Blocking_Single_Sample_Converter {
+  public:
+    /**
+     * \copydoc picolibrary::ADC::Non_Blocking_Single_Sample_Converter_Concept::Sample
+     */
+    using Sample = Sample_Type;
+
+    /**
+     * \brief Movable mock non-blocking, single sample ADC handle.
+     */
+    class Handle {
+      public:
+        /**
+         * \copydoc picolibrary::ADC::Non_Blocking_Single_Sample_Converter_Concept::Sample
+         */
+        using Sample = Sample_Type;
+
+        /**
+         * \brief Constructor.
+         */
+        Handle() noexcept = default;
+
+        /**
+         * \brief Constructor.
+         *
+         * \param[in] mock_non_blocking_single_sample_converter The mock non-blocking,
+         *            single sample ADC.
+         */
+        Handle( Mock_Non_Blocking_Single_Sample_Converter & mock_non_blocking_single_sample_converter ) noexcept :
+            m_mock_non_blocking_single_sample_converter{ &mock_non_blocking_single_sample_converter }
+        {
+        }
+
+        /**
+         * \brief Constructor.
+         *
+         * \param[in] source The source of the move.
+         */
+        Handle( Handle && source ) noexcept = default;
+
+        /**
+         * \todo #29
+         */
+        Handle( Handle const & ) = delete;
+
+        /**
+         * \brief Destructor.
+         */
+        ~Handle() noexcept = default;
+
+        /**
+         * \brief Assignment operator.
+         *
+         * \param[in] expression The expression to be assigned.
+         *
+         * \return The assigned to object.
+         */
+        auto operator=( Handle && expression ) noexcept -> Handle & = default;
+
+        /**
+         * \todo #29
+         *
+         * \return
+         */
+        auto operator=( Handle const & ) = delete;
+
+        /**
+         * \brief Initialize the ADC's hardware.
+         *
+         * \return Nothing if initializing the ADC's hardware succeeded.
+         * \return An error code if initializing the ADC's hardware failed.
+         */
+        auto initialize()
+        {
+            return m_mock_non_blocking_single_sample_converter->initialize();
+        }
+
+        /**
+         * \copydoc picolibrary::ADC::Non_Blocking_Single_Sample_Converter_Concept::min()
+         */
+        auto min() const noexcept
+        {
+            return m_mock_non_blocking_single_sample_converter->min();
+        }
+
+        /**
+         * \copydoc picolibrary::ADC::Non_Blocking_Single_Sample_Converter_Concept::max()
+         */
+        auto max() const noexcept
+        {
+            return m_mock_non_blocking_single_sample_converter->max();
+        }
+
+        /**
+         * \brief Initiate a conversion.
+         *
+         * \return Nothing if initiation of the conversion succeeded.
+         * \return An error code if initiation of the conversion failed.
+         */
+        auto initiate_conversion() noexcept
+        {
+            return m_mock_non_blocking_single_sample_converter->initiate_conversion();
+        }
+
+        /**
+         * \brief Check if a sample is available.
+         *
+         * \return true if a sample is available.
+         * \return false if a sample is not available.
+         * \return An error code if the check failed.
+         */
+        auto sample_available() const noexcept
+        {
+            return m_mock_non_blocking_single_sample_converter->sample_available();
+        }
+
+        /**
+         * \brief Get a sample.
+         *
+         * \return A sample if getting the sample succeeded.
+         * \return An error code if getting the sample failed.
+         */
+        auto sample() noexcept
+        {
+            return m_mock_non_blocking_single_sample_converter->sample();
+        }
+
+      private:
+        /**
+         * \brief The mock non-blocking, single sample ADC.
+         */
+        Mock_Non_Blocking_Single_Sample_Converter * m_mock_non_blocking_single_sample_converter{};
+    };
+
+    /**
+     * \brief Constructor.
+     */
+    Mock_Non_Blocking_Single_Sample_Converter() = default;
+
+    /**
+     * \todo #29
+     */
+    Mock_Non_Blocking_Single_Sample_Converter( Mock_Non_Blocking_Single_Sample_Converter && ) = default;
+
+    /**
+     * \todo #29
+     */
+    Mock_Non_Blocking_Single_Sample_Converter( Mock_Non_Blocking_Single_Sample_Converter const & ) = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Mock_Non_Blocking_Single_Sample_Converter() = default;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Mock_Non_Blocking_Single_Sample_Converter && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Mock_Non_Blocking_Single_Sample_Converter const & ) = delete;
+
+    /**
+     * \brief Get a movable handle to the mock non-blocking, single sample ADC.
+     *
+     * \return A movable handle to the mock non-blocking, single sample ADC.
+     */
+    auto handle() noexcept
+    {
+        return Handle{ *this };
+    }
+
+    MOCK_METHOD( (Result<Void, Error_Code>), initialize, () );
+
+    MOCK_METHOD( Sample, min, (), ( const ) );
+
+    MOCK_METHOD( Sample, max, (), ( const ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), initiate_conversion, () );
+
+    MOCK_METHOD( (Result<bool, Error_Code>), sample_available, (), ( const ) );
+
+    MOCK_METHOD( (Result<Sample, Error_Code>), sample, () );
+};
+
 } // namespace picolibrary::Testing::Unit::ADC
 
 #endif // PICOLIBRARY_TESTING_UNIT_ADC_H

@@ -105,6 +105,98 @@ class Blocking_Single_Sample_Converter_Concept {
     auto sample() noexcept -> Result<Sample, Error_Code>;
 };
 
+/**
+ * \brief Non-blocking, single sample ADC concept.
+ */
+class Non_Blocking_Single_Sample_Converter_Concept {
+  public:
+    /**
+     * \brief The integral type used to hold a sample.
+     */
+    using Sample = std::uint16_t;
+
+    Non_Blocking_Single_Sample_Converter_Concept() = delete;
+
+    /**
+     * \todo #29
+     */
+    Non_Blocking_Single_Sample_Converter_Concept( Non_Blocking_Single_Sample_Converter_Concept && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    Non_Blocking_Single_Sample_Converter_Concept( Non_Blocking_Single_Sample_Converter_Concept const & ) = delete;
+
+    ~Non_Blocking_Single_Sample_Converter_Concept() = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Non_Blocking_Single_Sample_Converter_Concept && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Non_Blocking_Single_Sample_Converter_Concept const & ) = delete;
+
+    /**
+     * \brief Initialize the ADC's hardware.
+     *
+     * \return Nothing if initializing the ADC's hardware succeeded.
+     * \return An error code if initializing the ADC's hardware failed. If initializing
+     *         the ADC's hardware cannot fail, return
+     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     */
+    auto initialize() noexcept -> Result<Void, Error_Code>;
+
+    /**
+     * \brief Get the minimum sample value.
+     *
+     * \return The minimum sample value.
+     */
+    auto min() const noexcept -> Sample;
+
+    /**
+     * \brief Get the maximum sample value.
+     *
+     * \return The maximum sample value.
+     */
+    auto max() const noexcept -> Sample;
+
+    /**
+     * \brief Initiate a conversion.
+     *
+     * \return Nothing if initiation of the conversion succeeded.
+     * \return An error code if initiation of the conversion failed. If initiation of the
+     *         conversion cannot fail, return picolibrary::Result<picolibrary::Void,
+     *         picolibrary::Void>.
+     */
+    auto initiate_conversion() noexcept -> Result<Void, Error_Code>;
+
+    /**
+     * \brief Check if a sample is available.
+     *
+     * \return true if a sample is available.
+     * \return false if a sample is not available.
+     * \return An error code if the check failed. If the check cannot fail, return
+     *         picolibrary::Result<bool, picolibrary::Void>.
+     */
+    auto sample_available() const noexcept -> Result<bool, Error_Code>;
+
+    /**
+     * \brief Get a sample.
+     *
+     * \return A sample if getting the sample succeeded.
+     * \return An error code if getting the sample failed. If getting the sample cannot
+     *         fail, return picolibrary::Result<Sample, picolibrary::Void>.
+     */
+    auto sample() noexcept -> Result<Sample, Error_Code>;
+};
+
 } // namespace picolibrary::ADC
 
 #endif // PICOLIBRARY_ADC_H
