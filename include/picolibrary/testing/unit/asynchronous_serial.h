@@ -100,9 +100,9 @@ class Mock_Basic_Transmitter {
         auto operator=( Handle const & ) = delete;
 
         /**
-         * \brief Get the mock transmitter.
+         * \brief Get the mock basic transmitter.
          *
-         * \return The mock transmitter.
+         * \return The mock basic transmitter.
          */
         auto & mock() noexcept
         {
