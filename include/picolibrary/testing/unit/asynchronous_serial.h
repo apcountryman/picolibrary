@@ -34,6 +34,162 @@
 namespace picolibrary::Testing::Unit::Asynchronous_Serial {
 
 /**
+ * \brief Mock asynchronous serial basic transmitter.
+ *
+ * \tparam The integral type used to hold the data to be transmitted.
+ */
+template<typename Data_Type>
+class Mock_Basic_Transmitter {
+  public:
+    /**
+     * \copydoc picolibrary::Asynchronous_Serial::Basic_Transmitter_Concept::Data
+     */
+    using Data = Data_Type;
+
+    /**
+     * \brief Movable mock basic transmitter handle.
+     */
+    class Handle {
+      public:
+        /**
+         * \brief Constructor.
+         */
+        Handle() noexcept = default;
+
+        /**
+         * \brief Constructor.
+         *
+         * \param[in] mock_basic_transmitter The mock basic transmitter.
+         */
+        Handle( Mock_Basic_Transmitter & mock_basic_transmitter ) noexcept :
+            m_mock_basic_transmitter{ &mock_basic_transmitter }
+        {
+        }
+
+        /**
+         * \brief Constructor.
+         *
+         * \param[in] source The source of the move.
+         */
+        Handle( Handle && source ) noexcept = default;
+
+        /**
+         * \todo #29
+         */
+        Handle( Handle const & ) = delete;
+
+        /**
+         * \brief Destructor.
+         */
+        ~Handle() noexcept = default;
+
+        /**
+         * \brief Assignment operator.
+         *
+         * \param[in] expression The expression to be assigned.
+         *
+         * \return The assigned to object.
+         */
+        auto operator=( Handle && expression ) noexcept -> Handle & = default;
+
+        /**
+         * \todo #29
+         *
+         * \return
+         */
+        auto operator=( Handle const & ) = delete;
+
+        /**
+         * \brief Get the mock basic transmitter.
+         *
+         * \return The mock basic transmitter.
+         */
+        auto & mock() noexcept
+        {
+            return *m_mock_basic_transmitter;
+        }
+
+        /**
+         * \brief Initialize the transmitter's hardware.
+         *
+         * \return Nothing if initializing the transmitter's hardware succeeded.
+         * \return An error code if initializing the transmitter's hardware failed.
+         */
+        auto initialize()
+        {
+            return m_mock_basic_transmitter->initialize();
+        }
+
+        /**
+         * \brief Transmit data.
+         *
+         * \param[in] data The data to transmit.
+         *
+         * \return Nothing if data transmission succeeded.
+         * \return An error code if data transmission failed.
+         */
+        auto transmit( Data data )
+        {
+            return m_mock_basic_transmitter->transmit( data );
+        }
+
+      private:
+        /**
+         * \brief The mock basic transmitter.
+         */
+        Mock_Basic_Transmitter * m_mock_basic_transmitter{};
+    };
+
+    /**
+     * \brief Constructor.
+     */
+    Mock_Basic_Transmitter() = default;
+
+    /**
+     * \todo #29
+     */
+    Mock_Basic_Transmitter( Mock_Basic_Transmitter && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    Mock_Basic_Transmitter( Mock_Basic_Transmitter const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Mock_Basic_Transmitter() noexcept = default;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Mock_Basic_Transmitter && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Mock_Basic_Transmitter const & ) = delete;
+
+    /**
+     * \brief Get a movable handle to the mock basic transmitter.
+     *
+     * \return A movable handle to the mock basic transmitter.
+     */
+    auto handle() noexcept
+    {
+        return Handle{ *this };
+    }
+
+    MOCK_METHOD( (Result<Void, Error_Code>), initialize, () );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), transmit, ( Data ) );
+};
+
+/**
  * \brief Mock asynchronous serial transmitter.
  *
  * \tparam The integral type used to hold the data to be transmitted.
