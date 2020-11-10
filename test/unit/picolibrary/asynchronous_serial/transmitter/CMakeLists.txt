@@ -12,14 +12,21 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/asynchronous_serial/CMakeLists.txt
-# Description: picolibrary::Asynchronous_Serial unit tests CMake rules.
+# File: test/unit/picolibrary/asynchronous_serial/transmitter/CMakeLists.txt
+# Description: picolibrary::Asynchronous_Serial::Transmitter unit tests CMake rules.
 
 # build the picolibrary::Asynchronous_Serial::Transmitter unit tests
-add_subdirectory( transmitter )
-
-# build the picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream unit tests
-add_subdirectory( unbuffered_output_stream )
-
-# build the picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer unit tests
-add_subdirectory( unbuffered_output_stream_buffer )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+    add_executable(
+        test-unit-picolibrary-asynchronous_serial-transmitter
+        main.cc
+    )
+    target_link_libraries(
+        test-unit-picolibrary-asynchronous_serial-transmitter
+        picolibrary
+    )
+    add_test(
+        NAME    test-unit-picolibrary-asynchronous_serial-transmitter
+        COMMAND test-unit-picolibrary-asynchronous_serial-transmitter --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
