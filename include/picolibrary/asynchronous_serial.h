@@ -33,6 +33,66 @@
 namespace picolibrary::Asynchronous_Serial {
 
 /**
+ * \brief Asynchronous serial basic transmitter concept.
+ */
+class Basic_Transmitter_Concept {
+  public:
+    /**
+     * \brief The integral type used to hold the data to be transmitted.
+     */
+    using Data = std::uint8_t;
+
+    Basic_Transmitter_Concept() = delete;
+
+    /**
+     * \todo #29
+     */
+    Basic_Transmitter_Concept( Basic_Transmitter_Concept && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    Basic_Transmitter_Concept( Basic_Transmitter_Concept const & ) = delete;
+
+    ~Basic_Transmitter_Concept() = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Basic_Transmitter_Concept && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Basic_Transmitter_Concept const & ) = delete;
+
+    /**
+     * \brief Initialize the transmitter's hardware.
+     *
+     * \return Nothing if initializing the transmitter's hardware succeeded.
+     * \return An error code if initializing the transmitter's hardware failed. If
+     *         initializing the transmitter's hardware cannot fail, return
+     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     */
+    auto initialize() noexcept -> Result<Void, Error_Code>;
+
+    /**
+     * \brief Transmit data.
+     *
+     * \param[in] data The data to transmit.
+     *
+     * \return Nothing if data transmission succeeded.
+     * \return An error code if data transmission failed. If data transmission cannot
+     *         fail, return picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     */
+    auto transmit( Data data ) noexcept -> Result<Void, Error_Code>;
+};
+
+/**
  * \brief Asynchronous serial transmitter concept.
  */
 class Transmitter_Concept {
