@@ -164,6 +164,18 @@ class Transmitter_Concept {
     auto transmit( Data const * begin, Data const * end ) noexcept -> Result<Void, Error_Code>;
 };
 
+/**
+ * \brief Asynchronous serial transmitter.
+ *
+ * \tparam Basic_Transmitter The asynchronous serial basic transmitter to add asynchronous
+ *         serial transmitter functionality to.
+ */
+template<typename Basic_Transmitter>
+class Transmitter : public Basic_Transmitter {
+  public:
+    using Basic_Transmitter::Basic_Transmitter;
+};
+
 } // namespace picolibrary::Asynchronous_Serial
 
 #endif // PICOLIBRARY_ASYNCHRONOUS_SERIAL_H
