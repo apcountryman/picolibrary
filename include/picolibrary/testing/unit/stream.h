@@ -194,6 +194,100 @@ class Mock_Output_Stream : public Output_Stream {
     Mock_Stream_Buffer m_buffer{};
 };
 
+/**
+ * \brief Unit testing string stream device access buffer.
+ */
+class String_Stream_Buffer : public Stream_Buffer {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    String_Stream_Buffer() = default;
+
+    /**
+     * \todo #29
+     */
+    String_Stream_Buffer( String_Stream_Buffer && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    String_Stream_Buffer( String_Stream_Buffer const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~String_Stream_Buffer() noexcept = default;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( String_Stream_Buffer && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( String_Stream_Buffer const & ) = delete;
+
+    /**
+     * \brief Get the string abstracted by the device access buffer.
+     *
+     * \return The string abstracted by the device access buffer.
+     */
+    auto const & string() const noexcept
+    {
+        return m_string;
+    }
+
+    /**
+     * \copydoc picolibrary::Stream_Buffer::put( char )
+     */
+    virtual auto put( char character ) noexcept -> Result<Void, Error_Code> override final
+    {
+        m_string.push_back( character );
+
+        return {};
+    }
+
+    /**
+     * \copydoc picolibrary::Stream_Buffer::put( std::uint8_t )
+     */
+    virtual auto put( std::uint8_t value ) noexcept -> Result<Void, Error_Code> override final
+    {
+        m_string.push_back( value );
+
+        return {};
+    }
+
+    /**
+     * \copydoc picolibrary::Stream_Buffer::put( std::int8_t )
+     */
+    virtual auto put( std::int8_t value ) noexcept -> Result<Void, Error_Code> override final
+    {
+        m_string.push_back( value );
+
+        return {};
+    }
+
+    /**
+     * \copydoc picolibrary::Stream_Buffer::flush()
+     */
+    virtual auto flush() noexcept -> Result<Void, Error_Code> override final
+    {
+        return {};
+    }
+
+  private:
+    /**
+     * \brief The string abstracted by the device access buffer.
+     */
+    std::string m_string{};
+};
+
 } // namespace picolibrary::Testing::Unit
 
 #endif // PICOLIBRARY_TESTING_UNIT_STREAM_H
