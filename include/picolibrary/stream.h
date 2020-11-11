@@ -438,6 +438,78 @@ class Stream {
     Stream_Buffer * m_buffer{};
 };
 
+class Output_Stream;
+
+/**
+ * \brief Output formatter.
+ *
+ * \attention This class must be fully or partially specialized for each type that will be
+ *            printed.
+ *
+ * \tparam T The type to be printed.
+ */
+template<typename T>
+class Output_Formatter {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Output_Formatter() noexcept = default;
+
+    /**
+     * \todo #29
+     */
+    Output_Formatter( Output_Formatter && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    Output_Formatter( Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Output_Formatter() noexcept = default;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Output_Formatter && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Parse the format specification for the value to be printed.
+     *
+     * \param[in] format The format specification for the value to be printed. This
+     *            will not include the opening '{'.
+     *
+     * \return A pointer to the end of the format specification ('}') if the format
+     *         specification is valid.
+     * \return picolibrary::Generic_Error::INVALID_FORMAT if the format specification
+     *         is not valid.
+     */
+    auto parse( char const * format ) noexcept -> Result<char const *, Error_Code>;
+
+    /**
+     * \brief Print the value.
+     *
+     * \param[in] stream The stream to print the value to.
+     * \param[in] value The value to print.
+     *
+     * \return Nothing if the print succeeded.
+     * \return An error code if the print failed.
+     */
+    auto print( Output_Stream & stream, T const & value ) noexcept -> Result<Void, Error_Code>;
+};
+
 /**
  * \brief Output stream.
  */
