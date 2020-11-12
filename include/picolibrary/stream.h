@@ -445,10 +445,10 @@ class Output_Stream;
 /**
  * \brief Output formatter.
  *
- * \attention This class must be fully or partially specialized for each type that will be
- *            printed.
- *
  * \tparam T The type to be printed.
+ *
+ * \attention This class must be fully or partially specialized for each type that will
+ *            support formatted output.
  */
 template<typename T, typename = void>
 class Output_Formatter {
@@ -488,10 +488,10 @@ class Output_Formatter {
     auto operator=( Output_Formatter const & ) = delete;
 
     /**
-     * \brief Parse the format specification for the value to be printed.
+     * \brief Parse the format specification for the value to be formatted.
      *
-     * \param[in] format The format specification for the value to be printed. This
-     *            will not include the opening '{'.
+     * \param[in] format The format specification for the value to be formatted. This will
+     *            not include the opening '{'.
      *
      * \return A pointer to the end of the format specification ('}') if the format
      *         specification is valid.
@@ -501,13 +501,13 @@ class Output_Formatter {
     auto parse( char const * format ) noexcept -> Result<char const *, Error_Code>;
 
     /**
-     * \brief Print the value.
+     * \brief Write the formatted value to the stream.
      *
-     * \param[in] stream The stream to print the value to.
-     * \param[in] value The value to print.
+     * \param[in] stream The stream to write the formatted value to.
+     * \param[in] value The value to format.
      *
-     * \return Nothing if the print succeeded.
-     * \return An error code if the print failed.
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
      */
     auto print( Output_Stream & stream, T const & value ) noexcept -> Result<Void, Error_Code>;
 };
