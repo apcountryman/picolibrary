@@ -23,6 +23,7 @@
 #define PICOLIBRARY_TESTING_UNIT_STREAM_H
 
 #include <cstdint>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -121,6 +122,90 @@ class Mock_Stream_Buffer : public Stream_Buffer {
     }
 
     MOCK_METHOD( (Result<Void, Error_Code>), flush, (), ( noexcept, override ) );
+};
+
+/**
+ * \brief Mock output formatter.
+ *
+ * \tparam T The type to be printed.
+ */
+template<typename T>
+class Mock_Output_Formatter {
+  public:
+    /**
+     * \brief Get a reference to the active mock output formatter.
+     *
+     * \return A reference to the active mock output formatter.
+     */
+    static auto & instance()
+    {
+        if ( not INSTANCE ) {
+            throw std::logic_error{
+                "no active ::picolibrary::Testing::Unit::Mock_Output_Formatter instance"
+            };
+        } // if
+
+        return *INSTANCE;
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \pre There are no active instances of this class.
+     */
+    Mock_Output_Formatter()
+    {
+        if ( INSTANCE ) {
+            throw std::logic_error{
+                "only one ::picolibrary::Testing::Unit::Mock_Output_Formatter instance "
+                "can be active at a time"
+            };
+        } // if
+
+        INSTANCE = this;
+    }
+
+    /**
+     * \todo #29
+     */
+    Mock_Output_Formatter( Mock_Output_Formatter && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    Mock_Output_Formatter( Mock_Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Mock_Output_Formatter() noexcept
+    {
+        INSTANCE = nullptr;
+    }
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Mock_Output_Formatter && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Mock_Output_Formatter const & ) = delete;
+
+    MOCK_METHOD( (Result<char const *, Error_Code>), parse, ( std::string ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), print, (Output_Stream &, T const &));
+
+  private:
+    /**
+     * \brief The active mock output formatter.
+     */
+    inline static auto INSTANCE = static_cast<Mock_Output_Formatter *>( nullptr );
 };
 
 /**
