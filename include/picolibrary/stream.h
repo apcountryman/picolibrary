@@ -686,7 +686,7 @@ class Output_Stream : public Stream {
      *            be written. Format string syntax is based on the Python format string
      *            syntax. Named and positional arguments are not supported. The format
      *            specification for each value to be written is delimited by '{' and '}'.
-     *            Use '{{' to write a literal '{'. Use '}}' to write a literal '}'. The
+     *            Use "{{" to write a literal '{'. Use "}}" to write a literal '}'. The
      *            format specification syntax for a particular type is defined by the
      *            specialization of picolibrary::Output_Formatter that is applicable to
      *            the type.
