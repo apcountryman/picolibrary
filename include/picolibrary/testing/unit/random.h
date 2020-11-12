@@ -99,14 +99,14 @@ inline auto random<bool>()
 }
 
 /**
- * \brief Generate a pseudo-random char in the range [' ','~'].
+ * \brief Generate a pseudo-random char in the range [' ','z'].
  *
- * \return A pseudo-random char in the range [' ','~'].
+ * \return A pseudo-random char in the range [' ','z'].
  */
 template<>
 inline auto random<char>()
 {
-    return random<char>( ' ', '~' );
+    return random<char>( ' ', 'z' );
 }
 
 /**
@@ -132,6 +132,8 @@ auto random_container( std::size_t size = random<std::uint_fast8_t>() )
 
 /**
  * \brief Generate a pseudo-random std::string of the specified length.
+ *
+ * \attention The string will contain characters in the range [' ','z'].
  *
  * \param[in] length The length of the generated std::string.
  *

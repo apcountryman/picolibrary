@@ -395,6 +395,7 @@ enum class Generic_Error : Error_ID {
     UNSUPPORTED_OPERATION, ///< Unsupported operation.
     OPERATION_TIMEOUT,     ///< Operation timeout.
     IO_STREAM_DEGRADED,    ///< I/O stream degraded.
+    INVALID_FORMAT,        ///< Invalid format string.
 };
 
 /**
@@ -457,6 +458,7 @@ class Generic_Error_Category final : public Error_Category {
             case Generic_Error::UNSUPPORTED_OPERATION: return "UNSUPPORTED_OPERATION";
             case Generic_Error::OPERATION_TIMEOUT: return "OPERATION_TIMEOUT";
             case Generic_Error::IO_STREAM_DEGRADED: return "IO_STREAM_DEGRADED";
+            case Generic_Error::INVALID_FORMAT: return "INVALID_FORMAT";
         } // switch
 
         return "UNKNOWN";

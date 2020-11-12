@@ -23,6 +23,7 @@
 #define PICOLIBRARY_TESTING_UNIT_STREAM_H
 
 #include <cstdint>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -124,6 +125,90 @@ class Mock_Stream_Buffer : public Stream_Buffer {
 };
 
 /**
+ * \brief Mock output formatter.
+ *
+ * \tparam T The type to be printed.
+ */
+template<typename T>
+class Mock_Output_Formatter {
+  public:
+    /**
+     * \brief Get a reference to the active mock output formatter.
+     *
+     * \return A reference to the active mock output formatter.
+     */
+    static auto & instance()
+    {
+        if ( not INSTANCE ) {
+            throw std::logic_error{
+                "no active ::picolibrary::Testing::Unit::Mock_Output_Formatter instance"
+            };
+        } // if
+
+        return *INSTANCE;
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \pre There are no active instances of this class.
+     */
+    Mock_Output_Formatter()
+    {
+        if ( INSTANCE ) {
+            throw std::logic_error{
+                "only one ::picolibrary::Testing::Unit::Mock_Output_Formatter instance "
+                "can be active at a time"
+            };
+        } // if
+
+        INSTANCE = this;
+    }
+
+    /**
+     * \todo #29
+     */
+    Mock_Output_Formatter( Mock_Output_Formatter && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    Mock_Output_Formatter( Mock_Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Mock_Output_Formatter() noexcept
+    {
+        INSTANCE = nullptr;
+    }
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Mock_Output_Formatter && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Mock_Output_Formatter const & ) = delete;
+
+    MOCK_METHOD( (Result<char const *, Error_Code>), parse, ( std::string ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), print, (Output_Stream &, T const &));
+
+  private:
+    /**
+     * \brief The active mock output formatter.
+     */
+    inline static auto INSTANCE = static_cast<Mock_Output_Formatter *>( nullptr );
+};
+
+/**
  * \brief Mock output stream.
  */
 class Mock_Output_Stream : public Output_Stream {
@@ -192,6 +277,159 @@ class Mock_Output_Stream : public Output_Stream {
      * \brief The output stream's I/O stream device access buffer.
      */
     Mock_Stream_Buffer m_buffer{};
+};
+
+/**
+ * \brief Unit testing string stream device access buffer.
+ */
+class String_Stream_Buffer : public Stream_Buffer {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    String_Stream_Buffer() = default;
+
+    /**
+     * \todo #29
+     */
+    String_Stream_Buffer( String_Stream_Buffer && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    String_Stream_Buffer( String_Stream_Buffer const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~String_Stream_Buffer() noexcept = default;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( String_Stream_Buffer && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( String_Stream_Buffer const & ) = delete;
+
+    /**
+     * \brief Get the string abstracted by the device access buffer.
+     *
+     * \return The string abstracted by the device access buffer.
+     */
+    auto const & string() const noexcept
+    {
+        return m_string;
+    }
+
+    /**
+     * \copydoc picolibrary::Stream_Buffer::put( char )
+     */
+    virtual auto put( char character ) noexcept -> Result<Void, Error_Code> override final
+    {
+        m_string.push_back( character );
+
+        return {};
+    }
+
+    /**
+     * \copydoc picolibrary::Stream_Buffer::put( std::uint8_t )
+     */
+    virtual auto put( std::uint8_t value ) noexcept -> Result<Void, Error_Code> override final
+    {
+        m_string.push_back( value );
+
+        return {};
+    }
+
+    /**
+     * \copydoc picolibrary::Stream_Buffer::put( std::int8_t )
+     */
+    virtual auto put( std::int8_t value ) noexcept -> Result<Void, Error_Code> override final
+    {
+        m_string.push_back( value );
+
+        return {};
+    }
+
+    /**
+     * \copydoc picolibrary::Stream_Buffer::flush()
+     */
+    virtual auto flush() noexcept -> Result<Void, Error_Code> override final
+    {
+        return {};
+    }
+
+  private:
+    /**
+     * \brief The string abstracted by the device access buffer.
+     */
+    std::string m_string{};
+};
+
+/**
+ * \brief Unit testing output string stream.
+ */
+class Output_String_Stream : public Output_Stream {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    Output_String_Stream()
+    {
+        set_buffer( &m_buffer );
+    }
+
+    /**
+     * \todo #29
+     */
+    Output_String_Stream( Output_String_Stream && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    Output_String_Stream( Output_String_Stream const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Output_String_Stream() noexcept = default;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Output_String_Stream && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Output_String_Stream const & ) = delete;
+
+    /**
+     * \brief Get the string abstracted by the stream.
+     *
+     * \return The string abstracted by the stream.
+     */
+    auto string() const noexcept
+    {
+        return m_buffer.string();
+    }
+
+  private:
+    /**
+     * \brief The stream's device access buffer.
+     */
+    String_Stream_Buffer m_buffer{};
 };
 
 } // namespace picolibrary::Testing::Unit

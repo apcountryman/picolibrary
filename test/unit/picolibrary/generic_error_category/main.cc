@@ -53,6 +53,7 @@ TEST( errorDescription, worksProperly )
         { Generic_Error::UNSUPPORTED_OPERATION, "UNSUPPORTED_OPERATION" },
         { Generic_Error::OPERATION_TIMEOUT, "OPERATION_TIMEOUT" },
         { Generic_Error::IO_STREAM_DEGRADED, "IO_STREAM_DEGRADED" },
+        { Generic_Error::INVALID_FORMAT, "INVALID_FORMAT" },
     };
 
     for ( auto const test_case : test_cases ) {
@@ -64,7 +65,7 @@ TEST( errorDescription, worksProperly )
 
     EXPECT_STREQ(
         Generic_Error_Category::instance().error_description(
-            static_cast<Error_ID>( Generic_Error::IO_STREAM_DEGRADED ) + 1 ),
+            static_cast<Error_ID>( Generic_Error::INVALID_FORMAT ) + 1 ),
         "UNKNOWN" );
 }
 
