@@ -801,8 +801,6 @@ TEST( print, outputFormatterPrintError )
 TEST( print, worksProperly )
 {
     {
-        auto const in_sequence = InSequence{};
-
         auto stream = Output_String_Stream{};
 
         auto const a = random_container<std::string>();
