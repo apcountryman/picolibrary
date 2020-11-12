@@ -642,7 +642,8 @@ TEST( print, printError )
 
         EXPECT_CALL( stream.buffer(), put( A<char>() ) ).WillOnce( Return( error ) );
 
-        auto const result = stream.print( random_container<std::string>().c_str() );
+        auto const result = stream.print(
+            random_container<std::string>( random<std::uint_fast8_t>( 1 ) ).c_str() );
 
         EXPECT_TRUE( result.is_error() );
         EXPECT_EQ( result.error(), error );
@@ -660,7 +661,9 @@ TEST( print, printError )
         EXPECT_CALL( stream.buffer(), put( A<char>() ) ).WillOnce( Return( error ) );
 
         auto const result = stream.print(
-            ( random_container<std::string>() + "{}" + random_container<std::string>() ).c_str(),
+            ( random_container<std::string>( random<std::uint_fast8_t>( 1 ) ) + "{}"
+              + random_container<std::string>() )
+                .c_str(),
             random<Foo>() );
 
         EXPECT_TRUE( result.is_error() );
