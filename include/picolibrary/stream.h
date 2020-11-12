@@ -686,7 +686,7 @@ class Output_Stream : public Stream {
      *            be written. Format string syntax is based on the Python format string
      *            syntax. Named and positional arguments are not supported. The format
      *            specification for each value to be written is delimited by '{' and '}'.
-     *            Use '{{' to write a literal '{'. Use '}}' to write a literal '}'. The
+     *            Use "{{" to write a literal '{'. Use "}}" to write a literal '}'. The
      *            format specification syntax for a particular type is defined by the
      *            specialization of picolibrary::Output_Formatter that is applicable to
      *            the type.
@@ -815,7 +815,7 @@ class Output_Stream : public Stream {
                 ++format;
 
                 if ( *format != '{' ) {
-                    auto formatter = Output_Formatter<std::remove_const_t<std::remove_reference_t<Type>>>{};
+                    auto formatter = Output_Formatter<std::decay_t<Type>>{};
 
                     {
                         auto result = formatter.parse( format );
@@ -856,6 +856,75 @@ class Output_Stream : public Stream {
 
         report_io_error();
         return Generic_Error::INVALID_FORMAT;
+    }
+};
+
+/**
+ * \brief Null-terminated string output formatter.
+ *
+ * Null-terminated strings only support the default format specification ("{}").
+ */
+template<>
+class Output_Formatter<char const *> {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Output_Formatter() noexcept = default;
+
+    /**
+     * \todo #29
+     */
+    Output_Formatter( Output_Formatter && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    Output_Formatter( Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Output_Formatter() noexcept = default;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Output_Formatter && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Parse the format specification for the string to be formatted.
+     *
+     * \param[in] format The format specification for the string to be formatted.
+     *
+     * \return format.
+     */
+    constexpr auto parse( char const * format ) noexcept -> Result<char const *, Void>
+    {
+        return format;
+    }
+
+    /**
+     * \brief Write the string to the stream.
+     *
+     * \param[in] stream The stream to write the string to.
+     * \param[in] string The string to write to the stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto print( Output_Stream & stream, char const * string ) noexcept
+    {
+        return stream.put( string );
     }
 };
 
