@@ -450,7 +450,7 @@ class Output_Stream;
  *
  * \tparam T The type to be printed.
  */
-template<typename T>
+template<typename T, typename = void>
 class Output_Formatter {
   public:
     /**
