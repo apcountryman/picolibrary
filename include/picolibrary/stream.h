@@ -23,6 +23,8 @@
 #define PICOLIBRARY_STREAM_H
 
 #include <cstdint>
+#include <type_traits>
+#include <utility>
 
 #include "picolibrary/algorithm.h"
 #include "picolibrary/error.h"
@@ -672,6 +674,38 @@ class Output_Stream : public Stream {
     }
 
     /**
+     * \brief Write formatted output to the stream.
+     *
+     * \pre Neither an I/O error nor a fatal error is present. If either an I/O error or a
+     *      fatal error is present, picolibrary::Generic_Error::IO_STREAM_DEGRADED will be
+     *      returned.
+     *
+     * \tparam Types The types to write.
+     *
+     * \param[in] format The format string specifying the format to use for each value to
+     *            be written. Format string syntax is based on the Python format string
+     *            syntax. Named and positional arguments are not supported. The format
+     *            specification for each value to be written is delimited by '{' and '}'.
+     *            Use '{{' to write a literal '{'. Use '}}' to write a literal '}'. The
+     *            format specification syntax for a particular type is defined by the
+     *            specialization of picolibrary::Output_Formatter that is applicable to
+     *            the type.
+     * \param[in] values The values to write.
+     *
+     * \return Nothing if the write succeeded.
+     * \return picolibrary::Generic_Error::INVALID_FORMAT if the format string is not
+     *         valid.
+     * \return An error code if the write failed.
+     */
+    template<typename... Types>
+    auto print( char const * format, Types &&... values ) noexcept -> Result<Void, Error_Code>
+    {
+        if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
+
+        return print_implementation( format, std::forward<Types>( values )... );
+    }
+
+    /**
      * \brief Write any output that has been buffered to the device associated with the
      *        stream.
      *
@@ -722,6 +756,107 @@ class Output_Stream : public Stream {
      * \return The assigned to object.
      */
     constexpr auto operator=( Output_Stream const & expression ) noexcept -> Output_Stream & = default;
+
+  private:
+    /**
+     * \brief Write formatted output to the stream.
+     *
+     * \param[in] format The format string specifying the format to use for each value to
+     *            be written.
+     *
+     * \return Nothing if the write succeeded.
+     * \return picolibrary::Generic_Error::INVALID_FORMAT if the format string is not
+     *         valid.
+     * \return An error code if the write failed.
+     */
+    auto print_implementation( char const * format ) noexcept -> Result<Void, Error_Code>
+    {
+        for ( ; *format != '\0'; ++format ) {
+            if ( *format == '{' or *format == '}' ) {
+                if ( *( format + 1 ) != *format ) {
+                    report_io_error();
+                    return Generic_Error::INVALID_FORMAT;
+                } // if
+
+                ++format;
+            } // if
+
+            auto result = put( *format );
+            if ( result.is_error() ) { return result; } // if
+        }                                               // for
+
+        return {};
+    }
+
+    /**
+     * \brief Write formatted output to the stream.
+     *
+     * \tparam Type The type to write.
+     * \tparam Types The types to write.
+     *
+     * \param[in] format The format string specifying the format to use for each value to
+     *            be written.
+     * \param[in] value The value to write.
+     * \param[in] values The values to write.
+     *
+     * \return Nothing if the write succeeded.
+     * \return picolibrary::Generic_Error::INVALID_FORMAT if the format string is not
+     *         valid.
+     * \return An error code if the write failed.
+     */
+    template<typename Type, typename... Types>
+    auto print_implementation( char const * format, Type && value, Types &&... values ) noexcept
+        -> Result<Void, Error_Code>
+    {
+        // #lizard forgives the length
+
+        for ( ; *format != '\0'; ++format ) {
+            if ( *format == '{' ) {
+                ++format;
+
+                if ( *format != '{' ) {
+                    auto formatter = Output_Formatter<std::remove_const_t<std::remove_reference_t<Type>>>{};
+
+                    {
+                        auto result = formatter.parse( format );
+                        if ( result.is_error() ) {
+                            report_io_error();
+                            return result.error();
+                        } // if
+
+                        format = result.value();
+
+                        if ( *format != '}' ) {
+                            report_io_error();
+                            return Generic_Error::INVALID_FORMAT;
+                        } // if
+
+                        ++format;
+                    }
+
+                    {
+                        auto result = formatter.print( *this, value );
+                        if ( result.is_error() ) { return result; } // if
+                    }
+
+                    return print_implementation( format, std::forward<Types>( values )... );
+                } // if
+            } else if ( *format == '}' ) {
+                ++format;
+
+                if ( *format != '}' ) {
+                    report_io_error();
+                    return Generic_Error::INVALID_FORMAT;
+                } // if
+            }     // else if
+
+            auto result = put( *format );
+            if ( result.is_error() ) { return result; } // if
+        }                                               // for
+
+        report_io_error();
+        return Generic_Error::INVALID_FORMAT;
+    }
 };
 
 } // namespace picolibrary
