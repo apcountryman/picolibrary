@@ -928,6 +928,87 @@ class Output_Formatter<char const *> {
     }
 };
 
+/**
+ * \brief picolibrary::Error_Code output formatter.
+ *
+ * picolibrary::Error_Code only support the default format specification ("{}").
+ */
+template<>
+class Output_Formatter<Error_Code> {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Output_Formatter() noexcept = default;
+
+    /**
+     * \todo #29
+     */
+    Output_Formatter( Output_Formatter && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    Output_Formatter( Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Output_Formatter() noexcept = default;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Output_Formatter && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Parse the format specification for the picolibrary::Error_Code to be
+     *        formatted.
+     *
+     * \param[in] format The format specification for the picolibrary::Error_Code to be
+     *            formatted.
+     *
+     * \return format.
+     */
+    constexpr auto parse( char const * format ) noexcept -> Result<char const *, Void>
+    {
+        return format;
+    }
+
+    /**
+     * \brief Write the picolibrary::Error_Code to the stream.
+     *
+     * \param[in] stream The stream to write the picolibrary::Error_Code to.
+     * \param[in] error The picolibrary::Error_Code to write to the stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto print( Output_Stream & stream, Error_Code error ) noexcept
+    {
+        return stream.print( "{}::{}", error.category().name(), error.description() );
+    }
+};
+
+/**
+ * \brief Error code enum output formatter.
+ *
+ * \tparam Enum The error code enum.
+ */
+template<typename Enum>
+class Output_Formatter<Enum, std::enable_if_t<is_error_code_enum_v<Enum>>>
+    : public Output_Formatter<Error_Code> {
+};
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_STREAM_H
