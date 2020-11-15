@@ -315,6 +315,18 @@ class Reverse_Iterator {
         return m_iterator[ -offset - 1 ];
     }
 
+    /**
+     * \brief Advance the iterator one position.
+     *
+     * \return The advanced iterator.
+     */
+    constexpr auto & operator++() noexcept
+    {
+        --m_iterator;
+
+        return *this;
+    }
+
   protected:
     /**
      * \brief The adapted iterator.
