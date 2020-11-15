@@ -339,6 +339,20 @@ class Reverse_Iterator {
         return *this;
     }
 
+    /**
+     * \brief Advance the iterator to the next element.
+     *
+     * \return A copy of the iterator that was made before the iterator was advanced.
+     */
+    constexpr auto operator++( int ) noexcept
+    {
+        auto iterator = m_iterator;
+
+        --m_iterator;
+
+        return iterator;
+    }
+
   protected:
     /**
      * \brief The adapted iterator.
