@@ -23,6 +23,7 @@
 #define PICOLIBRARY_ITERATOR_H
 
 #include <cstddef>
+#include <memory>
 #include <type_traits>
 
 namespace picolibrary {
@@ -160,6 +161,11 @@ class Reverse_Iterator {
     using Value = typename Iterator_Traits<Iterator>::Value;
 
     /**
+     * \brief Pointer to the iterated over type.
+     */
+    using Pointer = typename Iterator_Traits<Iterator>::Pointer;
+
+    /**
      * \brief Reference to the iterated over type.
      */
     using Reference = typename Iterator_Traits<Iterator>::Reference;
@@ -274,6 +280,16 @@ class Reverse_Iterator {
         auto iterator = m_iterator;
 
         return *--iterator;
+    }
+
+    /**
+     * \brief Access the element at the current iterator position.
+     *
+     * \return A pointer to the element at the current iterator position.
+     */
+    constexpr auto operator-> () const noexcept -> Pointer
+    {
+        return std::addressof( operator*() );
     }
 
   protected:
