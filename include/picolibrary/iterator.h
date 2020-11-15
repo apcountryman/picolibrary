@@ -405,6 +405,20 @@ class Reverse_Iterator {
         return *this;
     }
 
+    /**
+     * \brief Retreat the iterator n positions.
+     *
+     * \param[in] n The number of positions to retreat the iterator.
+     *
+     * \return The retreated iterator.
+     */
+    constexpr auto & operator-=( Offset n ) noexcept
+    {
+        m_iterator += n;
+
+        return *this;
+    }
+
   protected:
     /**
      * \brief The adapted iterator.
