@@ -353,6 +353,20 @@ class Reverse_Iterator {
         return iterator;
     }
 
+    /**
+     * \brief Retreat the iterator to the previous element.
+     *
+     * \return A copy of the iterator that was made before the iterator was retreated.
+     */
+    constexpr auto operator--( int ) noexcept
+    {
+        auto iterator = m_iterator;
+
+        ++m_iterator;
+
+        return iterator;
+    }
+
   protected:
     /**
      * \brief The adapted iterator.
