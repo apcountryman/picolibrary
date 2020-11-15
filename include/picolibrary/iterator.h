@@ -106,7 +106,7 @@ struct Iterator_Traits<Iterator, std::void_t<typename Iterator::Difference, type
 /**
  * \brief Pointer iterator traits.
  *
- * \tparam T The pointed to type.
+ * \tparam T The iterated over type.
  */
 template<typename T>
 struct Iterator_Traits<T *> {
