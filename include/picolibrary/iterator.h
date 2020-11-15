@@ -160,6 +160,11 @@ class Reverse_Iterator {
     using Value = typename Iterator_Traits<Iterator>::Value;
 
     /**
+     * \brief Reference to the iterated over type.
+     */
+    using Reference = typename Iterator_Traits<Iterator>::Reference;
+
+    /**
      * \brief Iterator category tag.
      */
     using Iterator_Category = typename Iterator_Traits<Iterator>::Iterator_Category;
@@ -257,6 +262,18 @@ class Reverse_Iterator {
     constexpr auto base() const noexcept
     {
         return m_iterator;
+    }
+
+    /**
+     * \brief Access the element at the current iterator position.
+     *
+     * \return The element at the current iterator position.
+     */
+    constexpr auto operator*() const noexcept -> Reference
+    {
+        auto iterator = m_iterator;
+
+        return *--iterator;
     }
 
   protected:
