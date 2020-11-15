@@ -156,6 +156,11 @@ class Reverse_Iterator {
     using Iterator = Iterator_Type;
 
     /**
+     * \brief Type that can be used to identify the distance between two iterators.
+     */
+    using Difference = typename Iterator_Traits<Iterator>::Difference;
+
+    /**
      * \brief The iterated over type.
      */
     using Value = typename Iterator_Traits<Iterator>::Value;
@@ -174,6 +179,11 @@ class Reverse_Iterator {
      * \brief Iterator category tag.
      */
     using Iterator_Category = typename Iterator_Traits<Iterator>::Iterator_Category;
+
+    /**
+     * \brief Element offset.
+     */
+    using Offset = Difference;
 
     /**
      * \brief Constructor.
@@ -290,6 +300,19 @@ class Reverse_Iterator {
     constexpr auto operator-> () const noexcept -> Pointer
     {
         return std::addressof( operator*() );
+    }
+
+    /**
+     * \brief Access the element at the specified offset from the current iterator
+     *        position..
+     *
+     * \param[in] offset The offset of the element to access.
+     *
+     * \return The element at the specified offset from the current iterator position.
+     */
+    constexpr auto operator[]( Offset offset ) const noexcept -> Reference
+    {
+        return m_iterator[ -offset - 1 ];
     }
 
   protected:
