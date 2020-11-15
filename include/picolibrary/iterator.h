@@ -76,7 +76,7 @@ struct Iterator_Traits {
  * \copydoc picolibrary::Iterator_Traits
  */
 template<typename Iterator>
-struct Iterator_Traits<Iterator, std::void_t<typename Iterator::Difference, typename Iterator::Value, typename Iterator::Pointer, typename Iterator::Reference, typename Iterator::Category>> {
+struct Iterator_Traits<Iterator, std::void_t<typename Iterator::Difference, typename Iterator::Value, typename Iterator::Pointer, typename Iterator::Reference, typename Iterator::Iterator_Category>> {
     /**
      * \brief Type that can be used to identify the distance between two iterators.
      */
