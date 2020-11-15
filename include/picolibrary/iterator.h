@@ -136,6 +136,126 @@ struct Iterator_Traits<T *> {
     using Iterator_Category = Contiguous_Iterator_Tag;
 };
 
+/**
+ * \brief Reverse iterator adapter.
+ *
+ * The following relationship with the underlying iterator is maintained:
+ * \code
+ * &*picolibrary::Reverse_Iterator{ iterator } == &*( iterator - 1 )
+ * \endcode
+ *
+ * \tparam Iterator_Type The adapted iterator type.
+ */
+template<typename Iterator_Type>
+class Reverse_Iterator {
+  public:
+    /**
+     * \brief The adapted iterator type.
+     */
+    using Iterator = Iterator_Type;
+
+    /**
+     * \brief The iterated over type.
+     */
+    using Value = typename Iterator_Traits<Iterator>::Value;
+
+    /**
+     * \brief Iterator category tag.
+     */
+    using Iterator_Category = typename Iterator_Traits<Iterator>::Iterator_Category;
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Reverse_Iterator() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] iterator The iterator to adapt.
+     */
+    explicit constexpr Reverse_Iterator( Iterator iterator ) noexcept :
+        m_iterator{ iterator }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \tparam Other_Iterator An iterator type that can be implicitly converted to
+     *         Iterator.
+     *
+     * \param[in] other The reverse iterator whose adapted iterator will be copied.
+     */
+    template<typename Other_Iterator, typename std::enable_if_t<not std::is_same_v<std::decay_t<Other_Iterator>, Iterator>>>
+    constexpr Reverse_Iterator( Reverse_Iterator<Other_Iterator> const & other ) noexcept :
+        m_iterator{ other.m_iterator }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Reverse_Iterator( Reverse_Iterator && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Reverse_Iterator( Reverse_Iterator const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Reverse_Iterator() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \tparam Other_Iterator An iterator type that can be implicitly converted to
+     *         Iterator.
+     *
+     * \param[in] other The reverse iterator whose adapted iterator will be assigned.
+     *
+     * \return The assigned to object.
+     */
+    template<typename Other_Iterator, typename std::enable_if_t<not std::is_same_v<std::decay_t<Other_Iterator>, Iterator>>>
+    constexpr auto & operator=( Reverse_Iterator<Other_Iterator> const & other ) noexcept
+    {
+        m_iterator = other.m_iterator;
+
+        return *this;
+    }
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Reverse_Iterator && expression ) noexcept -> Reverse_Iterator & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator   =( Reverse_Iterator const & expression ) noexcept
+        -> Reverse_Iterator & = default;
+
+  protected:
+    /**
+     * \brief The adapted iterator.
+     */
+    Iterator m_iterator{};
+};
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_ITERATOR_H
