@@ -426,6 +426,21 @@ class Reverse_Iterator {
     Iterator m_iterator{};
 };
 
+/**
+ * \brief Build a reverse iterator.
+ *
+ * \tparam Iterator The type of iterator to adapt.
+ *
+ * \param[in] iterator The iterator to adapt.
+ *
+ * \return The built error code.
+ */
+template<typename Iterator>
+constexpr auto make_reverse_iterator( Iterator iterator ) noexcept
+{
+    return Reverse_Iterator{ iterator };
+}
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_ITERATOR_H
