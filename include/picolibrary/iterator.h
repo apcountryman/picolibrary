@@ -573,6 +573,22 @@ constexpr auto operator>=( Reverse_Iterator<Iterator_LHS> const & lhs, Reverse_I
     return not( lhs < rhs );
 }
 
+/**
+ * Advance a copy of an iterator n positions.
+ *
+ * \tparam Iterator The adapted iterator type.
+ *
+ * \param[in] n The number of positions to advance the iterator.
+ * \param[in] iterator The iterator to advance.
+ *
+ * \return A copy of the iterator that has been advanced n positions.
+ */
+template<typename Iterator>
+constexpr auto operator+( typename Reverse_Iterator<Iterator>::Offset n, Reverse_Iterator<Iterator> const & iterator ) noexcept
+{
+    return Reverse_Iterator{ iterator.base() - n };
+}
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_ITERATOR_H
