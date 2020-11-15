@@ -316,13 +316,25 @@ class Reverse_Iterator {
     }
 
     /**
-     * \brief Advance the iterator one position.
+     * \brief Advance the iterator to the next element.
      *
      * \return The advanced iterator.
      */
     constexpr auto & operator++() noexcept
     {
         --m_iterator;
+
+        return *this;
+    }
+
+    /**
+     * \brief Retreat the iterator to the previous element.
+     *
+     * \return The retreated iterator.
+     */
+    constexpr auto & operator--() noexcept
+    {
+        ++m_iterator;
 
         return *this;
     }
