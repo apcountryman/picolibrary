@@ -485,6 +485,28 @@ constexpr auto operator!=( Reverse_Iterator<Iterator_LHS> const & lhs, Reverse_I
     return not( lhs == rhs );
 }
 
+/**
+ * \brief Less than operator.
+ *
+ * \relatedalso picolibrary::Reverse_Iterator
+ *
+ * \tparam Iterator_LHS The type of iterator adapted by the left hand side of the
+ *         comparison.
+ * \tparam Iterator_RHS The type of iterator adapted by the right hand side of the
+ *         comparison.
+ *
+ * \param[in] lhs The left hand side of the comparison.
+ * \param[in] rhs The right hand side of the comparison.
+ *
+ * \return true if lhs is less than rhs.
+ * \return false if lhs is not less than rhs.
+ */
+template<typename Iterator_LHS, typename Iterator_RHS>
+constexpr auto operator<( Reverse_Iterator<Iterator_LHS> const & lhs, Reverse_Iterator<Iterator_RHS> const & rhs ) noexcept
+{
+    return rhs.base() < lhs.base();
+}
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_ITERATOR_H
