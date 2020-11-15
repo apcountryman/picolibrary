@@ -249,6 +249,16 @@ class Reverse_Iterator {
     constexpr auto operator   =( Reverse_Iterator const & expression ) noexcept
         -> Reverse_Iterator & = default;
 
+    /**
+     * \brief Get a copy of the adapted iterator.
+     *
+     * \return A copy of the adapted iterator.
+     */
+    constexpr auto base() const noexcept
+    {
+        return m_iterator;
+    }
+
   protected:
     /**
      * \brief The adapted iterator.
