@@ -391,6 +391,20 @@ class Reverse_Iterator {
         return Reverse_Iterator{ m_iterator + n };
     }
 
+    /**
+     * \brief Advance the iterator n positions.
+     *
+     * \param[in] n The number of positions to advance the iterator.
+     *
+     * \return The advanced iterator.
+     */
+    constexpr auto & operator+=( Offset n ) noexcept
+    {
+        m_iterator -= n;
+
+        return *this;
+    }
+
   protected:
     /**
      * \brief The adapted iterator.
