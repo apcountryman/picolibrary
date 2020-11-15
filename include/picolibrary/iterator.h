@@ -589,6 +589,25 @@ constexpr auto operator+( typename Reverse_Iterator<Iterator>::Offset n, Reverse
     return Reverse_Iterator{ iterator.base() - n };
 }
 
+/**
+ * \brief Get the distance between two iterators.
+ *
+ * \tparam Iterator_LHS The type of iterator adapted by the left hand side of the
+ *         calculation.
+ * \tparam Iterator_RHS The type of iterator adapted by the right hand side of the
+ *         calculation.
+ *
+ * \param[in] lhs The left hand side of the calculation.
+ * \param[in] rhs The right hand side of the calculation.
+ *
+ * \return The distance between the two iterators.
+ */
+template<typename Iterator_LHS, typename Iterator_RHS>
+constexpr auto operator-( Reverse_Iterator<Iterator_LHS> const & lhs, Reverse_Iterator<Iterator_RHS> const & rhs ) noexcept
+{
+    return rhs.base() - lhs.base();
+}
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_ITERATOR_H
