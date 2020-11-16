@@ -24,6 +24,8 @@
 
 #include <cstddef>
 
+#include "picolibrary/iterator.h"
+
 namespace picolibrary {
 
 /**
@@ -79,6 +81,16 @@ class Fixed_Size_Array {
      * \brief A const array iterator.
      */
     using Const_Iterator = Const_Pointer;
+
+    /**
+     * \brief An array reverse iterator.
+     */
+    using Reverse_Iterator = ::picolibrary::Reverse_Iterator<Iterator>;
+
+    /**
+     * \brief An array const reverse iterator.
+     */
+    using Const_Reverse_Iterator = ::picolibrary::Reverse_Iterator<Const_Iterator>;
 
     /**
      * \brief The underlying array.
@@ -276,6 +288,81 @@ class Fixed_Size_Array {
     constexpr auto cend() const noexcept
     {
         return begin() + size();
+    }
+
+    /**
+     * \brief Get an iterator to the first element of the reversed array.
+     *
+     * \return An iterator to the first element of the reversed array.
+     */
+    constexpr auto rbegin() noexcept
+    {
+        return Reverse_Iterator{ end() };
+    }
+
+    /**
+     * \brief Get an iterator to the first element of the reversed array.
+     *
+     * \return An iterator to the first element of the reversed array.
+     */
+    constexpr auto rbegin() const noexcept
+    {
+        return Const_Reverse_Iterator{ end() };
+    }
+
+    /**
+     * \brief Get an iterator to the first element of the reversed array.
+     *
+     * \return An iterator to the first element of the reversed array.
+     */
+    constexpr auto crbegin() const noexcept
+    {
+        return Const_Reverse_Iterator{ cend() };
+    }
+
+    /**
+     * \brief Get an iterator to the element following the last element of the reversed
+     *        array.
+     *
+     * \warning Attempting to access the element following the last element of a reversed
+     *          array results in undefined behavior.
+     *
+     * \return An iterator to the element following the last element of the reversed
+     *         array.
+     */
+    constexpr auto rend() noexcept
+    {
+        return Reverse_Iterator{ begin() };
+    }
+
+    /**
+     * \brief Get an iterator to the element following the last element of the reversed
+     *        array.
+     *
+     * \warning Attempting to access the element following the last element of a reversed
+     *          array results in undefined behavior.
+     *
+     * \return An iterator to the element following the last element of the reversed
+     *         array.
+     */
+    constexpr auto rend() const noexcept
+    {
+        return Const_Reverse_Iterator{ begin() };
+    }
+
+    /**
+     * \brief Get an iterator to the element following the last element of the reversed
+     *        array.
+     *
+     * \warning Attempting to access the element following the last element of a reversed
+     *          array results in undefined behavior.
+     *
+     * \return An iterator to the element following the last element of the reversed
+     *         array.
+     */
+    constexpr auto crend() const noexcept
+    {
+        return Const_Reverse_Iterator{ cbegin() };
     }
 
     /**
