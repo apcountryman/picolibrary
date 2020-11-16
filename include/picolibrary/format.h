@@ -22,9 +22,12 @@
 #ifndef PICOLIBRARY_FORMAT_H
 #define PICOLIBRARY_FORMAT_H
 
+#include <cstring>
+#include <limits>
 #include <type_traits>
 
 #include "picolibrary/error.h"
+#include "picolibrary/fixed_size_array.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
 #include "picolibrary/utility.h"
@@ -45,6 +48,15 @@ class Binary {
     static_assert( std::is_integral_v<Integer> );
 
     Binary() = delete;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] value The integer to be printed.
+     */
+    constexpr Binary( Integer value ) noexcept : m_value{ value }
+    {
+    }
 
     /**
      * \brief Constructor.
@@ -82,6 +94,22 @@ class Binary {
      * \return The assigned to object.
      */
     constexpr auto operator=( Binary const & expression ) noexcept -> Binary & = default;
+
+    /**
+     * \brief Get the integer to be printed.
+     *
+     * \return The integer to be printed.
+     */
+    constexpr operator Integer() const noexcept
+    {
+        return m_value;
+    }
+
+  private:
+    /**
+     * \brief The integer to be printed.
+     */
+    Integer m_value{};
 };
 
 } // namespace picolibrary::Format
@@ -148,18 +176,31 @@ class Output_Formatter<Format::Binary<Integer>> {
      * \brief Write the integer to the stream.
      *
      * \param[in] stream The stream to write the integer to.
-     * \param[in] integer The integer to write to the stream.
+     * \param[in] value The integer to write to the stream.
      *
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto print( Output_Stream & stream, Format::Binary<Integer> integer ) noexcept
-        -> Result<Void, Error_Code>
+    auto print( Output_Stream & stream, Integer value ) noexcept
     {
-        static_cast<void>( stream );
-        static_cast<void>( integer );
+        std::make_unsigned_t<Integer> u;
+        static_assert( sizeof( u ) == sizeof( value ) );
+        std::memcpy( &u, &value, sizeof( value ) );
 
-        return {};
+        Fixed_Size_Array<char, 2 + std::numeric_limits<Integer>::digits> binary;
+
+        auto i = binary.rbegin();
+        for ( auto bit = 0; bit < std::numeric_limits<Integer>::digits; ++bit ) {
+            *i = u & 0b1 ? '1' : '0';
+
+            ++i;
+            u >>= 1;
+        } // for
+        *i = 'b';
+        ++i;
+        *i = '0';
+
+        return stream.put( binary.begin(), binary.end() );
     }
 };
 
