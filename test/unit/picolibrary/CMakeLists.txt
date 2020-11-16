@@ -30,6 +30,9 @@ add_subdirectory( crc )
 # build the picolibrary::Error_Code unit tests
 add_subdirectory( error_code )
 
+# build the picolibrary::Format unit tests
+add_subdirectory( format )
+
 # build the picolibrary::Generic_Error unit tests
 add_subdirectory( generic_error )
 
