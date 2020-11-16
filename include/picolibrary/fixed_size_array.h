@@ -321,6 +321,51 @@ class Fixed_Size_Array {
     }
 
     /**
+     * \brief Get an iterator to the element following the last element of the reversed
+     *        array.
+     *
+     * \warning Attempting to access the element following the last element of a reversed
+     *          array results in undefined behavior.
+     *
+     * \return An iterator to the element following the last element of the reversed
+     *         array.
+     */
+    constexpr auto rend() noexcept
+    {
+        return Reverse_Iterator{ begin() };
+    }
+
+    /**
+     * \brief Get an iterator to the element following the last element of the reversed
+     *        array.
+     *
+     * \warning Attempting to access the element following the last element of a reversed
+     *          array results in undefined behavior.
+     *
+     * \return An iterator to the element following the last element of the reversed
+     *         array.
+     */
+    constexpr auto rend() const noexcept
+    {
+        return Const_Reverse_Iterator{ begin() };
+    }
+
+    /**
+     * \brief Get an iterator to the element following the last element of the reversed
+     *        array.
+     *
+     * \warning Attempting to access the element following the last element of a reversed
+     *          array results in undefined behavior.
+     *
+     * \return An iterator to the element following the last element of the reversed
+     *         array.
+     */
+    constexpr auto crend() const noexcept
+    {
+        return Const_Reverse_Iterator{ cbegin() };
+    }
+
+    /**
      * \brief Check if the array is empty.
      *
      * \return true if the array is empty.
