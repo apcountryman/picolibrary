@@ -33,6 +33,7 @@ set(
     "picolibrary/crc.cc"
     "picolibrary/error.cc"
     "picolibrary/fixed_size_array.cc"
+    "picolibrary/format.cc"
     "picolibrary/gpio.cc"
     "picolibrary/iterator.cc"
     "picolibrary/result.cc"
