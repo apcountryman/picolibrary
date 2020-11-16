@@ -506,7 +506,7 @@ constexpr auto operator!=( Reverse_Iterator<Iterator_LHS> const & lhs, Reverse_I
 template<typename Iterator_LHS, typename Iterator_RHS>
 constexpr auto operator<( Reverse_Iterator<Iterator_LHS> const & lhs, Reverse_Iterator<Iterator_RHS> const & rhs ) noexcept
 {
-    return rhs.base() < lhs.base();
+    return lhs.base() > rhs.base();
 }
 
 /**
@@ -550,7 +550,7 @@ constexpr auto operator>( Reverse_Iterator<Iterator_LHS> const & lhs, Reverse_It
 template<typename Iterator_LHS, typename Iterator_RHS>
 constexpr auto operator<=( Reverse_Iterator<Iterator_LHS> const & lhs, Reverse_Iterator<Iterator_RHS> const & rhs ) noexcept
 {
-    return not( lhs > rhs );
+    return lhs.base() >= rhs.base();
 }
 
 /**
@@ -572,7 +572,7 @@ constexpr auto operator<=( Reverse_Iterator<Iterator_LHS> const & lhs, Reverse_I
 template<typename Iterator_LHS, typename Iterator_RHS>
 constexpr auto operator>=( Reverse_Iterator<Iterator_LHS> const & lhs, Reverse_Iterator<Iterator_RHS> const & rhs ) noexcept
 {
-    return not( lhs < rhs );
+    return lhs.base() <= rhs.base();
 }
 
 /**
