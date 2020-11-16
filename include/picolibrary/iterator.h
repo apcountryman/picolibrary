@@ -304,7 +304,7 @@ class Reverse_Iterator {
 
     /**
      * \brief Access the element at the specified offset from the current iterator
-     *        position..
+     *        position.
      *
      * \param[in] offset The offset of the element to access.
      *
@@ -428,6 +428,8 @@ class Reverse_Iterator {
 
 /**
  * \brief Build a reverse iterator.
+ *
+ * \relatedalso picolibrary::Reverse_Iterator
  *
  * \tparam Iterator The type of iterator to adapt.
  *
@@ -574,7 +576,9 @@ constexpr auto operator>=( Reverse_Iterator<Iterator_LHS> const & lhs, Reverse_I
 }
 
 /**
- * Advance a copy of an iterator n positions.
+ * \brief Advance a copy of an iterator n positions.
+ *
+ * \relatedalso picolibrary::Reverse_Iterator
  *
  * \tparam Iterator The adapted iterator type.
  *
@@ -591,6 +595,8 @@ constexpr auto operator+( typename Reverse_Iterator<Iterator>::Offset n, Reverse
 
 /**
  * \brief Get the distance between two iterators.
+ *
+ * \relatedalso picolibrary::Reverse_Iterator
  *
  * \tparam Iterator_LHS The type of iterator adapted by the left hand side of the
  *         calculation.
