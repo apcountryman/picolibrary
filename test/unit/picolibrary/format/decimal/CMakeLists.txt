@@ -12,11 +12,21 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/format/CMakeLists.txt
-# Description: picolibrary::Format unit tests CMake rules.
-
-# build the picolibrary::Format::Binary unit tests
-add_subdirectory( binary )
+# File: test/unit/picolibrary/format/decimal/CMakeLists.txt
+# Description: picolibrary::Format::Decimal unit tests CMake rules.
 
 # build the picolibrary::Format::Decimal unit tests
-add_subdirectory( decimal )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+    add_executable(
+        test-unit-picolibrary-format-decimal
+        main.cc
+    )
+    target_link_libraries(
+        test-unit-picolibrary-format-decimal
+        picolibrary
+    )
+    add_test(
+        NAME    test-unit-picolibrary-format-decimal
+        COMMAND test-unit-picolibrary-format-decimal --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
