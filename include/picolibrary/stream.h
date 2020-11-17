@@ -931,7 +931,7 @@ class Output_Formatter<char const *> {
 /**
  * \brief picolibrary::Error_Code output formatter.
  *
- * picolibrary::Error_Code only support the default format specification ("{}").
+ * picolibrary::Error_Code only supports the default format specification ("{}").
  */
 template<>
 class Output_Formatter<Error_Code> {
