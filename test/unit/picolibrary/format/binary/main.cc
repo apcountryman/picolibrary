@@ -59,8 +59,10 @@ using ::testing::Return;
 template<typename Integer>
 auto binary( Integer value )
 {
+    using U = std::make_unsigned_t<Integer>;
+
     auto const unsigned_value = [value]() {
-        auto u = std::make_unsigned_t<Integer>{};
+        U u;
         static_assert( sizeof( value ) == sizeof( u ) );
         std::memcpy( &u, &value, sizeof( value ) );
 
@@ -69,7 +71,7 @@ auto binary( Integer value )
 
     auto stream = std::ostringstream{};
 
-    stream << "0b" << std::bitset<std::numeric_limits<Integer>::digits>{ unsigned_value };
+    stream << "0b" << std::bitset<std::numeric_limits<U>::digits>{ unsigned_value };
 
     return stream.str();
 }
