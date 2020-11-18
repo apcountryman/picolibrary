@@ -267,7 +267,7 @@ class Output_Formatter<Format::Binary<Integer>> {
 
         auto i = binary.rbegin();
         for ( auto bit = 0; bit < std::numeric_limits<Integer>::digits; ++bit ) {
-            *i = u & 0b1 ? '1' : '0';
+            *i = ( u & 0b1 ) + '0';
 
             ++i;
             u >>= 1;
