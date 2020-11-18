@@ -22,6 +22,7 @@
 #ifndef PICOLIBRARY_FORMAT_H
 #define PICOLIBRARY_FORMAT_H
 
+#include <cstdlib>
 #include <cstring>
 #include <limits>
 #include <type_traits>
@@ -127,6 +128,15 @@ class Decimal {
     /**
      * \brief Constructor.
      *
+     * \param[in] value The integer to be printed.
+     */
+    constexpr Decimal( Integer value ) noexcept : m_value{ value }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
      * \param[in] source The source of the move.
      */
     constexpr Decimal( Decimal && source ) noexcept = default;
@@ -160,6 +170,22 @@ class Decimal {
      * \return The assigned to object.
      */
     constexpr auto operator=( Decimal const & expression ) noexcept -> Decimal & = default;
+
+    /**
+     * \brief Get the integer to be printed.
+     *
+     * \return The integer to be printed.
+     */
+    constexpr operator Integer() const noexcept
+    {
+        return m_value;
+    }
+
+  private:
+    /**
+     * \brief The integer to be printed.
+     */
+    Integer m_value{};
 };
 
 } // namespace picolibrary::Format
@@ -255,14 +281,14 @@ class Output_Formatter<Format::Binary<Integer>> {
 };
 
 /**
- * \brief Integer decimal output formatter.
+ * \brief Signed integer decimal output formatter.
  *
  * picolibrary::Format::Decimal only supports the default format specification ("{}").
  *
  * \tparam Integer The type of integer to be printed.
  */
 template<typename Integer>
-class Output_Formatter<Format::Decimal<Integer>> {
+class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_signed_v<Integer>>> {
   public:
     /**
      * \brief Constructor.
@@ -314,18 +340,113 @@ class Output_Formatter<Format::Decimal<Integer>> {
      * \brief Write the integer to the stream.
      *
      * \param[in] stream The stream to write the integer to.
-     * \param[in] integer The integer to write to the stream.
+     * \param[in] value The integer to write to the stream.
      *
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto print( Output_Stream & stream, Format::Decimal<Integer> integer ) noexcept
-        -> Result<Void, Error_Code>
+    auto print( Output_Stream & stream, Integer value ) noexcept -> Result<Void, Error_Code>
     {
-        static_cast<void>( stream );
-        static_cast<void>( integer );
+        Fixed_Size_Array<char, 1 + std::numeric_limits<Integer>::digits10 + 1> decimal;
 
-        return {};
+        auto is_negative = value < 0;
+
+        auto i = decimal.rbegin();
+        do {
+            *i = abs( value % 10 ) + '0';
+
+            ++i;
+            value /= 10;
+        } while ( value );
+
+        if ( is_negative ) {
+            *i = '-';
+
+            ++i;
+        } // if
+
+        return stream.put( i.base(), decimal.end() );
+    }
+};
+
+/**
+ * \brief Unsigned integer decimal output formatter.
+ *
+ * picolibrary::Format::Decimal only supports the default format specification ("{}").
+ *
+ * \tparam Integer The type of integer to be printed.
+ */
+template<typename Integer>
+class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_unsigned_v<Integer>>> {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Output_Formatter() noexcept = default;
+
+    /**
+     * \todo #29
+     */
+    Output_Formatter( Output_Formatter && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    Output_Formatter( Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Output_Formatter() noexcept = default;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Output_Formatter && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Parse the format specification for the integer to be formatted.
+     *
+     * \param[in] format The format specification for the integer to be formatted.
+     *
+     * \return format.
+     */
+    constexpr auto parse( char const * format ) noexcept -> Result<char const *, Void>
+    {
+        return format;
+    }
+
+    /**
+     * \brief Write the integer to the stream.
+     *
+     * \param[in] stream The stream to write the integer to.
+     * \param[in] value The integer to write to the stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto print( Output_Stream & stream, Integer value ) noexcept -> Result<Void, Error_Code>
+    {
+        Fixed_Size_Array<char, std::numeric_limits<Integer>::digits10 + 1> decimal;
+
+        auto i = decimal.rbegin();
+        do {
+            *i = ( value % 10 ) + '0';
+
+            ++i;
+            value /= 10;
+        } while ( value );
+
+        return stream.put( i.base(), decimal.end() );
     }
 };
 
