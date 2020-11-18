@@ -203,6 +203,15 @@ class Hexadecimal {
     /**
      * \brief Constructor.
      *
+     * \param[in] value The integer to be printed.
+     */
+    constexpr Hexadecimal( Integer value ) noexcept : m_value{ value }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
      * \param[in] source The source of the move.
      */
     constexpr Hexadecimal( Hexadecimal && source ) noexcept = default;
@@ -236,6 +245,22 @@ class Hexadecimal {
      * \return The assigned to object.
      */
     constexpr auto operator=( Hexadecimal const & expression ) noexcept -> Hexadecimal & = default;
+
+    /**
+     * \brief Get the integer to be printed.
+     *
+     * \return The integer to be printed.
+     */
+    constexpr operator Integer() const noexcept
+    {
+        return m_value;
+    }
+
+  private:
+    /**
+     * \brief The integer to be printed.
+     */
+    Integer m_value{};
 };
 
 } // namespace picolibrary::Format
@@ -565,18 +590,35 @@ class Output_Formatter<Format::Hexadecimal<Integer>> {
      * \brief Write the integer to the stream.
      *
      * \param[in] stream The stream to write the integer to.
-     * \param[in] integer The integer to write to the stream.
+     * \param[in] value The integer to write to the stream.
      *
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto print( Output_Stream & stream, Format::Hexadecimal<Integer> integer ) noexcept
-        -> Result<Void, Error_Code>
+    auto print( Output_Stream & stream, Integer value ) noexcept
     {
-        static_cast<void>( stream );
-        static_cast<void>( integer );
+        using U = std::make_unsigned_t<Integer>;
 
-        return {};
+        U u;
+        static_assert( sizeof( u ) == sizeof( value ) );
+        std::memcpy( &u, &value, sizeof( value ) );
+
+        constexpr auto nibbles = std::numeric_limits<U>::digits / 4;
+
+        Fixed_Size_Array<char, 2 + nibbles> hexadecimal;
+
+        auto i = hexadecimal.rbegin();
+        for ( auto nibble = 0; nibble < nibbles; ++nibble ) {
+            *i = ( u & 0xF ) < 0xA ? ( u & 0xF ) + '0' : ( u & 0xF ) - 0xA + 'A';
+
+            ++i;
+            u >>= 4;
+        } // for
+        *i = 'x';
+        ++i;
+        *i = '0';
+
+        return stream.put( hexadecimal.begin(), hexadecimal.end() );
     }
 };
 
