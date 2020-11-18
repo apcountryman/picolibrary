@@ -59,7 +59,7 @@ auto decimal( Integer value )
     auto stream = std::ostringstream{};
 
     stream << static_cast<
-        std::conditional_t<std::is_same_v<Integer, std::int8_t>, signed int, std::conditional_t<std::is_same_v<Integer, std::uint8_t>, unsigned int, Integer>>>(
+        std::conditional_t<std::is_same_v<Integer, std::int8_t>, std::int_fast16_t, std::conditional_t<std::is_same_v<Integer, std::uint8_t>, std::uint_fast16_t, Integer>>>(
         value );
 
     return stream.str();
