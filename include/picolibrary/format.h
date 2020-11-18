@@ -597,6 +597,8 @@ class Output_Formatter<Format::Hexadecimal<Integer>> {
      */
     auto print( Output_Stream & stream, Integer value ) noexcept
     {
+        // #lizard forgives the length
+
         using U = std::make_unsigned_t<Integer>;
 
         U u;
@@ -609,7 +611,9 @@ class Output_Formatter<Format::Hexadecimal<Integer>> {
 
         auto i = hexadecimal.rbegin();
         for ( auto nibble = 0; nibble < nibbles; ++nibble ) {
-            *i = ( u & 0xF ) < 0xA ? ( u & 0xF ) + '0' : ( u & 0xF ) - 0xA + 'A';
+            auto const n = u & 0xF;
+
+            *i = n < 0xA ? n + '0' : n - 0xA + 'A';
 
             ++i;
             u >>= 4;
