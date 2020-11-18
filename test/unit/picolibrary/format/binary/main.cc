@@ -117,6 +117,7 @@ TYPED_TEST( outputFormatterBinary, invalidFormatString )
     EXPECT_FALSE( stream.end_of_file_reached() );
     EXPECT_TRUE( stream.io_error_present() );
     EXPECT_FALSE( stream.fatal_error_present() );
+    EXPECT_TRUE( stream.string().empty() );
 }
 
 /**
