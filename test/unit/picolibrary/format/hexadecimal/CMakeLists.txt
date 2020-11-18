@@ -12,14 +12,21 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/format/CMakeLists.txt
-# Description: picolibrary::Format unit tests CMake rules.
-
-# build the picolibrary::Format::Binary unit tests
-add_subdirectory( binary )
-
-# build the picolibrary::Format::Decimal unit tests
-add_subdirectory( decimal )
+# File: test/unit/picolibrary/format/hexadecimal/CMakeLists.txt
+# Description: picolibrary::Format::Hexadecimal unit tests CMake rules.
 
 # build the picolibrary::Format::Hexadecimal unit tests
-add_subdirectory( hexadecimal )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+    add_executable(
+        test-unit-picolibrary-format-hexadecimal
+        main.cc
+    )
+    target_link_libraries(
+        test-unit-picolibrary-format-hexadecimal
+        picolibrary
+    )
+    add_test(
+        NAME    test-unit-picolibrary-format-hexadecimal
+        COMMAND test-unit-picolibrary-format-hexadecimal --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
