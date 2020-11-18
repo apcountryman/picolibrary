@@ -16,13 +16,10 @@
 
 /**
  * \file
- * \brief picolibrary::Format::Binary unit test program.
+ * \brief picolibrary::Format::Decimal unit test program.
  */
 
-#include <bitset>
 #include <cstdint>
-#include <cstring>
-#include <limits>
 #include <sstream>
 #include <string>
 #include <type_traits>
@@ -38,7 +35,7 @@
 namespace {
 
 using ::picolibrary::Generic_Error;
-using ::picolibrary::Format::Binary;
+using ::picolibrary::Format::Decimal;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::Mock_Output_Stream;
 using ::picolibrary::Testing::Unit::Output_String_Stream;
@@ -57,19 +54,13 @@ using ::testing::Return;
  * \return The formatted integer.
  */
 template<typename Integer>
-auto binary( Integer value )
+auto decimal( Integer value )
 {
-    auto const unsigned_value = [value]() {
-        auto u = std::make_unsigned_t<Integer>{};
-        static_assert( sizeof( value ) == sizeof( u ) );
-        std::memcpy( &u, &value, sizeof( value ) );
-
-        return u;
-    }();
-
     auto stream = std::ostringstream{};
 
-    stream << "0b" << std::bitset<std::numeric_limits<Integer>::digits>{ unsigned_value };
+    stream << static_cast<
+        std::conditional_t<std::is_same_v<Integer, std::int8_t>, std::int_fast16_t, std::conditional_t<std::is_same_v<Integer, std::uint8_t>, std::uint_fast16_t, Integer>>>(
+        value );
 
     return stream.str();
 }
@@ -77,30 +68,30 @@ auto binary( Integer value )
 } // namespace
 
 /**
- * \brief picolibrary::Output_Formatter<picolibrary::Binary> unit test fixture.
+ * \brief picolibrary::Output_Formatter<picolibrary::Decimal> unit test fixture.
  *
  * \tparam Integer The type of integer to be printed.
  */
 template<typename Integer>
-class outputFormatterBinary : public ::testing::Test {
+class outputFormatterDecimal : public ::testing::Test {
 };
 
 /**
- * \brief picolibrary::Output_Formatter<picolibrary::Binary> unit test integer types.
+ * \brief picolibrary::Output_Formatter<picolibrary::Decimal> unit test integer types.
  */
 using Integers =
     ::testing::Types<std::int8_t, std::uint8_t, std::int16_t, std::uint16_t, std::int32_t, std::uint32_t, std::int64_t, std::uint64_t>;
 
 /**
- * \brief picolibrary::Output_Formatter<picolibrary::Binary> unit test fixture.
+ * \brief picolibrary::Output_Formatter<picolibrary::Decimal> unit test fixture.
  */
-TYPED_TEST_SUITE( outputFormatterBinary, Integers );
+TYPED_TEST_SUITE( outputFormatterDecimal, Integers );
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Binary> properly handles an
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Decimal> properly handles an
  *        invalid format string.
  */
-TYPED_TEST( outputFormatterBinary, invalidFormatString )
+TYPED_TEST( outputFormatterDecimal, invalidFormatString )
 {
     using Integer = TypeParam;
 
@@ -109,7 +100,7 @@ TYPED_TEST( outputFormatterBinary, invalidFormatString )
     auto const result = stream.print(
         ( std::string{ '{' } + random_container<std::string>( random<std::uint_fast8_t>( 1 ) ) + '}' )
             .c_str(),
-        Binary{ random<Integer>() } );
+        Decimal{ random<Integer>() } );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::INVALID_FORMAT );
@@ -121,10 +112,10 @@ TYPED_TEST( outputFormatterBinary, invalidFormatString )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Binary> properly handles a
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Decimal> properly handles a
  *        print error.
  */
-TYPED_TEST( outputFormatterBinary, printError )
+TYPED_TEST( outputFormatterDecimal, printError )
 {
     using Integer = TypeParam;
 
@@ -134,7 +125,7 @@ TYPED_TEST( outputFormatterBinary, printError )
 
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.print( "{}", Binary{ random<Integer>() } );
+    auto const result = stream.print( "{}", Decimal{ random<Integer>() } );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -145,24 +136,81 @@ TYPED_TEST( outputFormatterBinary, printError )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Binary> works properly.
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Decimal> works properly.
  */
-TYPED_TEST( outputFormatterBinary, worksProperly )
+TYPED_TEST( outputFormatterDecimal, worksProperly )
 {
     using Integer = TypeParam;
 
-    auto stream = Output_String_Stream{};
+    {
+        auto stream = Output_String_Stream{};
 
-    auto const value = random<Integer>();
+        auto const value = std::numeric_limits<Integer>::min();
 
-    EXPECT_FALSE( stream.print( "{}", Binary{ value } ).is_error() );
+        EXPECT_FALSE( stream.print( "{}", Decimal{ value } ).is_error() );
 
-    EXPECT_TRUE( stream.is_nominal() );
-    EXPECT_EQ( stream.string(), binary( value ) );
+        EXPECT_TRUE( stream.is_nominal() );
+        EXPECT_EQ( stream.string(), decimal( value ) );
+    }
+
+    {
+        auto stream = Output_String_Stream{};
+
+        auto const value = static_cast<Integer>( -1 );
+
+        EXPECT_FALSE( stream.print( "{}", Decimal{ value } ).is_error() );
+
+        EXPECT_TRUE( stream.is_nominal() );
+        EXPECT_EQ( stream.string(), decimal( value ) );
+    }
+
+    {
+        auto stream = Output_String_Stream{};
+
+        auto const value = static_cast<Integer>( 0 );
+
+        EXPECT_FALSE( stream.print( "{}", Decimal{ value } ).is_error() );
+
+        EXPECT_TRUE( stream.is_nominal() );
+        EXPECT_EQ( stream.string(), decimal( value ) );
+    }
+
+    {
+        auto stream = Output_String_Stream{};
+
+        auto const value = static_cast<Integer>( 1 );
+
+        EXPECT_FALSE( stream.print( "{}", Decimal{ value } ).is_error() );
+
+        EXPECT_TRUE( stream.is_nominal() );
+        EXPECT_EQ( stream.string(), decimal( value ) );
+    }
+
+    {
+        auto stream = Output_String_Stream{};
+
+        auto const value = std::numeric_limits<Integer>::max();
+
+        EXPECT_FALSE( stream.print( "{}", Decimal{ value } ).is_error() );
+
+        EXPECT_TRUE( stream.is_nominal() );
+        EXPECT_EQ( stream.string(), decimal( value ) );
+    }
+
+    {
+        auto stream = Output_String_Stream{};
+
+        auto const value = random<Integer>();
+
+        EXPECT_FALSE( stream.print( "{}", Decimal{ value } ).is_error() );
+
+        EXPECT_TRUE( stream.is_nominal() );
+        EXPECT_EQ( stream.string(), decimal( value ) );
+    }
 }
 
 /**
- * \brief Execute the picolibrary::Format::Binary unit tests.
+ * \brief Execute the picolibrary::Format::Decimal unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
  * \param[in] argv The array  of arguments to pass to testing::InitGoogleMock().
