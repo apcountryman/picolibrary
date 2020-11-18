@@ -259,14 +259,18 @@ class Output_Formatter<Format::Binary<Integer>> {
      */
     auto print( Output_Stream & stream, Integer value ) noexcept
     {
-        std::make_unsigned_t<Integer> u;
+        using U = std::make_unsigned_t<Integer>;
+
+        U u;
         static_assert( sizeof( u ) == sizeof( value ) );
         std::memcpy( &u, &value, sizeof( value ) );
 
-        Fixed_Size_Array<char, 2 + std::numeric_limits<Integer>::digits> binary;
+        constexpr auto bits = std::numeric_limits<U>::digits;
+
+        Fixed_Size_Array<char, 2 + bits> binary;
 
         auto i = binary.rbegin();
-        for ( auto bit = 0; bit < std::numeric_limits<Integer>::digits; ++bit ) {
+        for ( auto bit = 0; bit < bits; ++bit ) {
             *i = ( u & 0b1 ) + '0';
 
             ++i;
