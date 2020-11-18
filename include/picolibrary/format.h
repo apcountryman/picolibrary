@@ -352,6 +352,7 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_signed
         auto is_negative = value < 0;
 
         auto i = decimal.rbegin();
+
         do {
             *i = abs( value % 10 ) + '0';
 
