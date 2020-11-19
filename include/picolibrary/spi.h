@@ -22,6 +22,8 @@
 #ifndef PICOLIBRARY_SPI_H
 #define PICOLIBRARY_SPI_H
 
+#include <cstdint>
+
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/utility.h"
