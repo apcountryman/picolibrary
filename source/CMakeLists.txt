@@ -37,6 +37,7 @@ set(
     "picolibrary/gpio.cc"
     "picolibrary/iterator.cc"
     "picolibrary/result.cc"
+    "picolibrary/spi.cc"
     "picolibrary/stream.cc"
     "picolibrary/utility.cc"
 )
