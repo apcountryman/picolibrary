@@ -37,6 +37,7 @@ set(
     "picolibrary/gpio.cc"
     "picolibrary/iterator.cc"
     "picolibrary/result.cc"
+    "picolibrary/spi.cc"
     "picolibrary/stream.cc"
     "picolibrary/utility.cc"
 )
@@ -70,6 +71,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
         "picolibrary/testing/unit/functor.cc"
         "picolibrary/testing/unit/gpio.cc"
         "picolibrary/testing/unit/random.cc"
+        "picolibrary/testing/unit/spi.cc"
         "picolibrary/testing/unit/stream.cc"
     )
     list(
