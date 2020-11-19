@@ -122,8 +122,8 @@ class Mock_Basic_Controller {
          * \brief Configure the controller's clock to meet a specific device's
          *        communication requirements.
          *
-         * \param[in] configuration The controller clock configuration that meets the
-         *            device's communication requirements.
+         * \param[in] configuration The clock configuration that meets the device's
+         *            communication requirements.
          *
          * \return Nothing if configuring the controller's clock succeeded.
          * \return An error code if configuring the controller's clock failed.
