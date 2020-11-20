@@ -391,7 +391,7 @@ class Mock_Controller {
 
       private:
         /**
-         * \brief The mock basic controller.
+         * \brief The mock controller.
          */
         Mock_Controller * m_mock_controller{};
     };

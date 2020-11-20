@@ -190,8 +190,8 @@ class Controller_Concept {
      * \param[in] rx_begin The beginning of the block of received data.
      * \param[in] rx_end The end of the block of received data.
      *
-     * \warning This function does not verify that the transmit and receive data blocks
-     *          are the same size.
+     * \warning This function may not verify that the transmit and receive data blocks are
+     *          the same size.
      *
      * \return Nothing if data exchange succeeded.
      * \return An error code if data exchange failed. If data exchange cannot fail, return
