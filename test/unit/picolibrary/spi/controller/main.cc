@@ -119,6 +119,38 @@ TEST( receiveBlock, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::SPI::Controller::transmit( std::uint8_t ) properly handles
+ *        an exchange error.
+ */
+TEST( transmit, exchangeError )
+{
+    auto controller = Controller{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( controller, exchange( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = controller.transmit( random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::SPI::Controller::transmit( std::uint8_t ) works properly.
+ */
+TEST( transmit, worksProperly )
+{
+    auto controller = Controller{};
+
+    auto const data = random<std::uint8_t>();
+
+    EXPECT_CALL( controller, exchange( data ) ).WillOnce( Return( random<std::uint8_t>() ) );
+
+    EXPECT_FALSE( controller.transmit( data ).is_error() );
+}
+
+/**
  * \brief Execute the picolibrary::SPI::Controller unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
