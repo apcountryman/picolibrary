@@ -23,6 +23,7 @@
 #define PICOLIBRARY_SPI_H
 
 #include <cstdint>
+#include <utility>
 
 #include "picolibrary/algorithm.h"
 #include "picolibrary/error.h"
@@ -283,6 +284,23 @@ class Controller : public Basic_Controller {
     auto receive( std::uint8_t * begin, std::uint8_t * end ) noexcept
     {
         return ::picolibrary::generate( begin, end, [this]() noexcept { return receive(); } );
+    }
+
+    /**
+     * \brief Transmit data to a device.
+     *
+     * \param[in] data The data to transmit.
+     *
+     * \return Nothing if data transmission succeeded.
+     * \return An error code if data transmission failed.
+     */
+    auto transmit( std::uint8_t data ) noexcept
+        -> Result<Void, typename decltype( std::declval<Basic_Controller>().exchange( std::declval<std::uint8_t>() ) )::Error>
+    {
+        auto result = exchange( data );
+        if ( result.is_error() ) { return result.error(); } // if
+
+        return {};
     }
 };
 
