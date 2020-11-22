@@ -258,6 +258,17 @@ class Controller : public Basic_Controller {
     using Basic_Controller::Basic_Controller;
 
     using Basic_Controller::exchange;
+
+    /**
+     * \brief Receive data from a device.
+     *
+     * \return The received data if data reception succeeded.
+     * \return An error code if data reception failed.
+     */
+    auto receive() noexcept
+    {
+        return exchange( 0x00 );
+    }
 };
 
 } // namespace picolibrary::SPI
