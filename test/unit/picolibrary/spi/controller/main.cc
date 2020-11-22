@@ -20,6 +20,7 @@
  */
 
 #include <cstdint>
+#include <vector>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -32,7 +33,9 @@ namespace {
 
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
+using ::picolibrary::Testing::Unit::random_container;
 using ::testing::_;
+using ::testing::InSequence;
 using ::testing::Return;
 
 using Controller = ::picolibrary::SPI::Controller<::picolibrary::Testing::Unit::SPI::Mock_Basic_Controller>;
@@ -72,6 +75,47 @@ TEST( receive, worksProperly )
 
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), data );
+}
+
+/**
+ * \brief Verify picolibrary::SPI::Controller::receive( std::uint8_t *, std::uint8_t * )
+ *        properly handles an exchange error.
+ */
+TEST( receiveBlock, exchangeError )
+{
+    auto controller = Controller{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( controller, exchange( _ ) ).WillOnce( Return( error ) );
+
+    auto       data   = std::vector<std::uint8_t>( random<std::uint_fast8_t>( 1 ) );
+    auto const result = controller.receive( &*data.begin(), &*data.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::SPI::Controller::receive( std::uint8_t *, std::uint8_t * )
+ *        works properly.
+ */
+TEST( receiveBlock, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto controller = Controller{};
+
+    auto const values = random_container<std::vector<std::uint8_t>>();
+
+    for ( auto const value : values ) {
+        EXPECT_CALL( controller, exchange( _ ) ).WillOnce( Return( value ) );
+    } // for
+
+    auto data = std::vector<std::uint8_t>( values.size() );
+    EXPECT_FALSE( controller.receive( &*data.begin(), &*data.end() ).is_error() );
+
+    EXPECT_EQ( data, values );
 }
 
 /**
