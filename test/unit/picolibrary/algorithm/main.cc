@@ -42,6 +42,7 @@ using ::picolibrary::Return_Functor;
 using ::picolibrary::Void;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::Mock_Functor;
+using ::picolibrary::Testing::Unit::Mock_Nullary_Functor;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::random_container;
 using ::testing::_;
@@ -132,6 +133,47 @@ TEST( forEach, worksProperly )
 
         EXPECT_FALSE( result.is_error() );
     }
+}
+
+/**
+ * \brief Verify picolibrary::generate() properly handles a functor error.
+ */
+TEST( generate, functorError )
+{
+    auto const functor = Mock_Nullary_Functor<Result<std::uint_fast8_t, Error_Code>>{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( functor, call() ).WillOnce( Return( error ) );
+
+    auto output = std::vector<std::uint_fast8_t>( random<std::uint_fast8_t>( 1 ) );
+    auto result = ::picolibrary::generate( output.begin(), output.end(), functor.handle() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::generate() works properly.
+ */
+TEST( generate, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto const functor = Mock_Nullary_Functor<Result<std::uint_fast8_t, Error_Code>>{};
+
+    auto const values = random_container<std::vector<std::uint_fast8_t>>();
+
+    for ( auto const value : values ) {
+        EXPECT_CALL( functor, call() ).WillOnce( Return( value ) );
+    } // for
+
+    auto output = std::vector<std::uint_fast8_t>( values.size() );
+
+    EXPECT_FALSE(
+        ::picolibrary::generate( output.begin(), output.end(), functor.handle() ).is_error() );
+
+    EXPECT_EQ( output, values );
 }
 
 /**
