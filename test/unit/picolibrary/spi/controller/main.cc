@@ -19,9 +19,60 @@
  * \brief picolibrary::SPI::Controller unit test program.
  */
 
+#include <cstdint>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/spi.h"
+#include "picolibrary/testing/unit/error.h"
+#include "picolibrary/testing/unit/random.h"
+#include "picolibrary/testing/unit/spi.h"
+
+namespace {
+
+using ::picolibrary::Testing::Unit::Mock_Error;
+using ::picolibrary::Testing::Unit::random;
+using ::testing::_;
+using ::testing::Return;
+
+using Controller = ::picolibrary::SPI::Controller<::picolibrary::Testing::Unit::SPI::Mock_Basic_Controller>;
+
+} // namespace
+
+/**
+ * \brief Verify picolibrary::SPI::Controller::receive() properly handles an exchange
+ *        error.
+ */
+TEST( receive, exchangeError )
+{
+    auto controller = Controller{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( controller, exchange( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = controller.receive();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::SPI::Controller::receive() works properly.
+ */
+TEST( receive, worksProperly )
+{
+    auto controller = Controller{};
+
+    auto const data = random<std::uint8_t>();
+
+    EXPECT_CALL( controller, exchange( _ ) ).WillOnce( Return( data ) );
+
+    auto const result = controller.receive();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), data );
+}
 
 /**
  * \brief Execute the picolibrary::SPI::Controller unit tests.
