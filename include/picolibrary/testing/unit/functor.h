@@ -29,6 +29,155 @@
 namespace picolibrary::Testing::Unit {
 
 /**
+ * \brief Mock nullary functor.
+ *
+ * \tparam Return_Type The functor's return type.
+ */
+template<typename Return_Type>
+class Mock_Nullary_Functor {
+  public:
+    /**
+     * \brief Movable, copyable mock nullary functor handle.
+     */
+    class Handle {
+      public:
+        /**
+         * \brief Constructor.
+         */
+        Handle() noexcept = default;
+
+        /**
+         * \brief Constructor.
+         *
+         * \param[in] mock_nullary_functor The mock nullary functor.
+         */
+        Handle( Mock_Nullary_Functor const & mock_nullary_functor ) noexcept :
+            m_mock_nullary_functor{ &mock_nullary_functor }
+        {
+        }
+
+        /**
+         * \brief Constructor.
+         *
+         * \param[in] source The source of the move.
+         */
+        Handle( Handle && source ) noexcept = default;
+
+        /**
+         * \brief Constructor.
+         *
+         * \param[in] original The original to copy.
+         */
+        Handle( Handle const & original ) noexcept = default;
+
+        /**
+         * \brief Destructor.
+         */
+        ~Handle() noexcept = default;
+
+        /**
+         * \brief Assignment operator.
+         *
+         * \param[in] expression The expression to be assigned.
+         *
+         * \return The assigned to object.
+         */
+        auto operator=( Handle && expression ) noexcept -> Handle & = default;
+
+        /**
+         * \brief Assignment operator.
+         *
+         * \param[in] expression The expression to be assigned.
+         *
+         * \return The assigned to object.
+         */
+        auto operator=( Handle const & expression ) noexcept -> Handle & = default;
+
+        /**
+         * \brief Get the mock nullary functor.
+         *
+         * \return The mock nullary functor.
+         */
+        auto const & mock() const noexcept
+        {
+            return *m_mock_nullary_functor;
+        }
+
+        /**
+         * \brief Call operator.
+         *
+         * \return The functor result.
+         */
+        auto operator()() const
+        {
+            return m_mock_nullary_functor->call();
+        }
+
+      private:
+        /**
+         * \brief The mock nullary functor.
+         */
+        Mock_Nullary_Functor const * m_mock_nullary_functor{};
+    };
+
+    /**
+     * \brief Constructor.
+     */
+    Mock_Nullary_Functor() = default;
+
+    /**
+     * \todo #29
+     */
+    Mock_Nullary_Functor( Mock_Nullary_Functor && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    Mock_Nullary_Functor( Mock_Nullary_Functor const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Mock_Nullary_Functor() noexcept = default;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Mock_Nullary_Functor && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Mock_Nullary_Functor const & ) = delete;
+
+    /**
+     * \brief Get a movable, copyable handle to the mock nullary functor.
+     *
+     * \return A movable, copyable handle to the mock nullary functor.
+     */
+    auto handle() const noexcept
+    {
+        return Handle{ *this };
+    }
+
+    MOCK_METHOD( Return_Type, call, (), ( const ) );
+
+    /**
+     * \brief Call operator.
+     *
+     * \return The functor result.
+     */
+    auto operator()() const
+    {
+        return call();
+    }
+};
+
+/**
  * \brief Mock functor.
  *
  * \tparam Return_Type The functor's return type.
