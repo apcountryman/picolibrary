@@ -246,6 +246,20 @@ class Controller_Concept {
         -> Result<Void, Error_Code>;
 };
 
+/**
+ * \brief SPI controller.
+ *
+ * \tparam Basic_Controller The SPI basic controller to add SPI controller functionality
+ *         to.
+ */
+template<typename Basic_Controller>
+class Controller : public Basic_Controller {
+  public:
+    using Basic_Controller::Basic_Controller;
+
+    using Basic_Controller::exchange;
+};
+
 } // namespace picolibrary::SPI
 
 #endif // PICOLIBRARY_SPI_H
