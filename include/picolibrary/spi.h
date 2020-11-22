@@ -24,6 +24,7 @@
 
 #include <cstdint>
 
+#include "picolibrary/algorithm.h"
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/utility.h"
@@ -268,6 +269,20 @@ class Controller : public Basic_Controller {
     auto receive() noexcept
     {
         return exchange( 0x00 );
+    }
+
+    /**
+     * \brief Receive a block of data from a device.
+     *
+     * \param[in] begin The beginning of the block of received data.
+     * \param[in] end The end of the block of received data.
+     *
+     * \return Nothing if data reception succeeded.
+     * \return An error code if data reception failed.
+     */
+    auto receive( std::uint8_t * begin, std::uint8_t * end ) noexcept
+    {
+        return ::picolibrary::generate( begin, end, [this]() noexcept { return receive(); } );
     }
 };
 
