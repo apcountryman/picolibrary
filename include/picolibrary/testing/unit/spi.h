@@ -203,7 +203,7 @@ class Mock_Basic_Controller {
 
     MOCK_METHOD( (Result<Void, Error_Code>), configure, ( Configuration ) );
 
-    MOCK_METHOD( (Result<Void, Error_Code>), exchange, ( std::uint8_t ) );
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), exchange, ( std::uint8_t ) );
 };
 
 /**
