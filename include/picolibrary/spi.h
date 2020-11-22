@@ -262,6 +262,28 @@ class Controller : public Basic_Controller {
     using Basic_Controller::exchange;
 
     /**
+     * \brief Exchange a block of data with a device.
+     *
+     * \param[in] tx_begin The beginning of the block of data to transmit.
+     * \param[in] tx_end The end of the block of data to transmit.
+     * \param[in] rx_begin The beginning of the block of received data.
+     * \param[in] rx_end The end of the block of received data.
+     *
+     * \warning This function does not verify that the transmit and receive data blocks
+     *          are the same size.
+     *
+     * \return Nothing if data exchange succeeded.
+     * \return An error code if data exchange failed.
+     */
+    auto exchange( std::uint8_t const * tx_begin, std::uint8_t const * tx_end, std::uint8_t * rx_begin, std::uint8_t * rx_end ) noexcept
+    {
+        static_cast<void>( tx_end );
+
+        return generate(
+            rx_begin, rx_end, [&]() noexcept { return exchange( *tx_begin++ ); } );
+    }
+
+    /**
      * \brief Receive data from a device.
      *
      * \return The received data if data reception succeeded.
