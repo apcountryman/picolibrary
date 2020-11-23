@@ -147,7 +147,7 @@ TEST( generate, functorError )
     EXPECT_CALL( functor, call() ).WillOnce( Return( error ) );
 
     auto output = std::vector<std::uint_fast8_t>( random<std::uint_fast8_t>( 1 ) );
-    auto result = ::picolibrary::generate( output.begin(), output.end(), functor.handle() );
+    auto const result = ::picolibrary::generate( output.begin(), output.end(), functor.handle() );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );

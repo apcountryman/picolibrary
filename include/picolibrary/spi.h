@@ -23,7 +23,9 @@
 #define PICOLIBRARY_SPI_H
 
 #include <cstdint>
+#include <utility>
 
+#include "picolibrary/algorithm.h"
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/utility.h"
@@ -244,6 +246,99 @@ class Controller_Concept {
      */
     auto transmit( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
         -> Result<Void, Error_Code>;
+};
+
+/**
+ * \brief SPI controller.
+ *
+ * \tparam Basic_Controller The SPI basic controller to add SPI controller functionality
+ *         to.
+ */
+template<typename Basic_Controller>
+class Controller : public Basic_Controller {
+  public:
+    using Basic_Controller::Basic_Controller;
+
+    using Basic_Controller::exchange;
+
+    /**
+     * \brief Exchange a block of data with a device.
+     *
+     * \param[in] tx_begin The beginning of the block of data to transmit.
+     * \param[in] tx_end The end of the block of data to transmit.
+     * \param[in] rx_begin The beginning of the block of received data.
+     * \param[in] rx_end The end of the block of received data.
+     *
+     * \warning This function does not verify that the transmit and receive data blocks
+     *          are the same size.
+     *
+     * \return Nothing if data exchange succeeded.
+     * \return An error code if data exchange failed.
+     */
+    auto exchange( std::uint8_t const * tx_begin, std::uint8_t const * tx_end, std::uint8_t * rx_begin, std::uint8_t * rx_end ) noexcept
+    {
+        static_cast<void>( tx_end );
+
+        return generate(
+            rx_begin, rx_end, [&]() noexcept { return exchange( *tx_begin++ ); } );
+    }
+
+    /**
+     * \brief Receive data from a device.
+     *
+     * \return The received data if data reception succeeded.
+     * \return An error code if data reception failed.
+     */
+    auto receive() noexcept
+    {
+        return exchange( 0x00 );
+    }
+
+    /**
+     * \brief Receive a block of data from a device.
+     *
+     * \param[in] begin The beginning of the block of received data.
+     * \param[in] end The end of the block of received data.
+     *
+     * \return Nothing if data reception succeeded.
+     * \return An error code if data reception failed.
+     */
+    auto receive( std::uint8_t * begin, std::uint8_t * end ) noexcept
+    {
+        return ::picolibrary::generate( begin, end, [this]() noexcept { return receive(); } );
+    }
+
+    /**
+     * \brief Transmit data to a device.
+     *
+     * \param[in] data The data to transmit.
+     *
+     * \return Nothing if data transmission succeeded.
+     * \return An error code if data transmission failed.
+     */
+    auto transmit( std::uint8_t data ) noexcept
+        -> Result<Void, typename decltype( std::declval<Basic_Controller>().exchange( std::declval<std::uint8_t>() ) )::Error>
+    {
+        auto result = exchange( data );
+        if ( result.is_error() ) { return result.error(); } // if
+
+        return {};
+    }
+
+    /**
+     * \brief Transmit a block of data to a device.
+     *
+     * \param[in] begin The beginning of the block of data to transmit.
+     * \param[in] end The end of the block of data to transmit.
+     *
+     * \return Nothing if data transmission succeeded.
+     * \return An error code if data transmission failed.
+     */
+    auto transmit( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+    {
+        return for_each<Discard_Functor>(
+            begin, end, [this]( auto data ) noexcept { return transmit( data ); } );
+    }
 };
 
 } // namespace picolibrary::SPI
