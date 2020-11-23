@@ -324,6 +324,21 @@ class Controller : public Basic_Controller {
 
         return {};
     }
+
+    /**
+     * \brief Transmit a block of data to a device.
+     *
+     * \param[in] begin The beginning of the block of data to transmit.
+     * \param[in] end The end of the block of data to transmit.
+     *
+     * \return Nothing if data transmission succeeded.
+     * \return An error code if data transmission failed.
+     */
+    auto transmit( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+    {
+        return for_each<Discard_Functor>(
+            begin, end, [this]( auto data ) noexcept { return transmit( data ); } );
+    }
 };
 
 } // namespace picolibrary::SPI
