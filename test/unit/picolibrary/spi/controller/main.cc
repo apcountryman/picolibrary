@@ -199,6 +199,44 @@ TEST( transmit, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::SPI::Controller::transmit( std::uint8_t const *,
+ *        std::uint8_t const * ) properly handles an exchange error.
+ */
+TEST( transmitBlock, exchangeError )
+{
+    auto controller = Controller{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( controller, exchange( _ ) ).WillOnce( Return( error ) );
+
+    auto const tx = random_container<std::vector<std::uint8_t>>( random<std::uint_fast8_t>( 1 ) );
+    auto const result = controller.transmit( &*tx.begin(), &*tx.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::SPI::Controller::transmit( std::uint8_t const *,
+ *        std::uint8_t const * ) works properly.
+ */
+TEST( transmitBlock, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto controller = Controller{};
+
+    auto const tx = random_container<std::vector<std::uint8_t>>();
+
+    for ( auto const byte : tx ) {
+        EXPECT_CALL( controller, exchange( byte ) ).WillOnce( Return( random<std::uint8_t>() ) );
+    } // for
+
+    EXPECT_FALSE( controller.transmit( &*tx.begin(), &*tx.end() ).is_error() );
+}
+
+/**
  * \brief Execute the picolibrary::SPI::Controller unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
