@@ -1,5 +1,5 @@
 # picolibrary
-[![Build Status](https://travis-ci.com/apcountryman/picolibrary.svg?branch=master)](https://travis-ci.com/apcountryman/picolibrary)
+![CI](https://github.com/apcountryman/picolibrary/workflows/CI/badge.svg)
 
 A C++ microcontroller driver/utility library targeted for use with resource
 constrained microcontrollers.
