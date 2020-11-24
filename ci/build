@@ -84,7 +84,7 @@ function ensure_no_build_errors_are_present()
         abort
     fi
 
-    if ! cmake --build "$build_directory" -j "$(( $( nproc ) - 1 ))"; then
+    if ! cmake --build "$build_directory" -j "$( nproc )"; then
         abort
     fi
 }
