@@ -12,14 +12,21 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/spi/CMakeLists.txt
-# Description: picolibrary::SPI unit tests CMake rules.
-
-# build the picolibrary::SPI::Controller unit tests
-add_subdirectory( controller )
+# File: test/unit/picolibrary/spi/device_selection_guard/CMakeLists.txt
+# Description: picolibrary::SPI::Device_Selection_Guard unit tests CMake rules.
 
 # build the picolibrary::SPI::Device_Selection_Guard unit tests
-add_subdirectory( device_selection_guard )
-
-# build the picolibrary::SPI::GPIO_Output_Pin_Device_Selector unit tests
-add_subdirectory( gpio_output_pin_device_selector )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+    add_executable(
+        test-unit-picolibrary-spi-device_selection_guard
+        main.cc
+    )
+    target_link_libraries(
+        test-unit-picolibrary-spi-device_selection_guard
+        picolibrary
+    )
+    add_test(
+        NAME    test-unit-picolibrary-spi-device_selection_guard
+        COMMAND test-unit-picolibrary-spi-device_selection_guard --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
