@@ -22,6 +22,24 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/spi.h"
+#include "picolibrary/testing/unit/spi.h"
+
+namespace {
+
+using ::picolibrary::Testing::Unit::SPI::Mock_Device_Selector;
+
+using Device_Selection_Guard = ::picolibrary::SPI::Device_Selection_Guard<Mock_Device_Selector>;
+
+} // namespace
+
+/**
+ * \brief Verify picolibrary::SPI::Device_Selection_Guard::Device_Selection_Guard() works
+ *        properly.
+ */
+TEST( constructorDefault, worksProperly )
+{
+    Device_Selection_Guard{};
+}
 
 /**
  * \brief Execute the picolibrary::SPI::Device_Selection_Guard unit tests.
