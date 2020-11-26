@@ -412,6 +412,17 @@ template<typename GPIO_Output_Pin>
 class GPIO_Output_Pin_Device_Selector : public GPIO_Output_Pin {
   public:
     using GPIO_Output_Pin::GPIO_Output_Pin;
+
+    /**
+     * \brief Select the device.
+     *
+     * \return Nothing if device selection succeeded.
+     * \return The error reported by the underlying pin if device selection failed.
+     */
+    auto select() noexcept
+    {
+        return GPIO_Output_Pin::transition_to_high();
+    }
 };
 
 } // namespace picolibrary::SPI
