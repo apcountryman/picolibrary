@@ -436,6 +436,55 @@ class GPIO_Output_Pin_Device_Selector : public GPIO_Output_Pin {
     }
 };
 
+/**
+ * \brief RAII SPI device selection guard.
+ *
+ * \tparam Device_Selector The type of SPI device selector used to select and deselect the
+ *         device.
+ */
+template<typename Device_Selector>
+class Device_Selection_Guard {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Device_Selection_Guard() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Device_Selection_Guard( Device_Selection_Guard && source ) noexcept = default;
+
+    /**
+     * \todo #29.
+     */
+    Device_Selection_Guard( Device_Selection_Guard const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Device_Selection_Guard() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator         =( Device_Selection_Guard && expression ) noexcept
+        -> Device_Selection_Guard & = default;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Device_Selection_Guard const & ) = delete;
+};
+
 } // namespace picolibrary::SPI
 
 #endif // PICOLIBRARY_SPI_H
