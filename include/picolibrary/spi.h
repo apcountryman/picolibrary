@@ -341,6 +341,68 @@ class Controller : public Basic_Controller {
     }
 };
 
+/**
+ * \brief SPI device selector concept.
+ */
+class Device_Selector_Concept {
+  public:
+    Device_Selector_Concept() = delete;
+
+    /**
+     * \todo #29
+     */
+    Device_Selector_Concept( Device_Selector_Concept && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    Device_Selector_Concept( Device_Selector_Concept const & ) = delete;
+
+    ~Device_Selector_Concept() = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Device_Selector_Concept && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Device_Selector_Concept const & ) = delete;
+
+    /**
+     * \brief Initialize the device selector's hardware.
+     *
+     * \return Nothing if initializing the device selector's hardware succeeded.
+     * \return An error code if initializing the device selector's hardware failed. If
+     *         initializing the device selector's hardware cannot fail, return
+     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     */
+    auto initialize() noexcept -> Result<Void, Error_Code>;
+
+    /**
+     * \brief Select the device.
+     *
+     * \return Nothing if device selection succeeded.
+     * \return An error code if device selection failed. If device selection cannot fail,
+     *         return picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     */
+    auto select() noexcept -> Result<Void, Error_Code>;
+
+    /**
+     * \brief Deselect the device.
+     *
+     * \return Nothing if device deselection succeeded.
+     * \return An error code if device deselection failed. If device deselection cannot
+     *         fail, return picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     */
+    auto deselect() noexcept -> Result<Void, Error_Code>;
+};
+
 } // namespace picolibrary::SPI
 
 #endif // PICOLIBRARY_SPI_H
