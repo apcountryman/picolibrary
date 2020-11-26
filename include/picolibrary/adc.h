@@ -74,10 +74,10 @@ class Blocking_Single_Sample_Converter_Concept {
     /**
      * \brief Initialize the ADC's hardware.
      *
-     * \return Nothing if initializing the ADC's hardware succeeded.
-     * \return An error code if initializing the ADC's hardware failed. If initializing
-     *         the ADC's hardware cannot fail, return
-     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     * \return Nothing if ADC hardware initialization succeeded.
+     * \return An error code if ADC hardware initialization failed. If ADC hardware
+     *         initialization cannot fail, return picolibrary::Result<picolibrary::Void,
+     *         picolibrary::Void>.
      */
     auto initialize() noexcept -> Result<Void, Error_Code>;
 
@@ -146,10 +146,10 @@ class Non_Blocking_Single_Sample_Converter_Concept {
     /**
      * \brief Initialize the ADC's hardware.
      *
-     * \return Nothing if initializing the ADC's hardware succeeded.
-     * \return An error code if initializing the ADC's hardware failed. If initializing
-     *         the ADC's hardware cannot fail, return
-     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     * \return Nothing if ADC hardware initialization succeeded.
+     * \return An error code if ADC hardware initialization failed. If ADC hardware
+     *         initialization cannot fail, return picolibrary::Result<picolibrary::Void,
+     *         picolibrary::Void>.
      */
     auto initialize() noexcept -> Result<Void, Error_Code>;
 

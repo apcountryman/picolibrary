@@ -112,8 +112,8 @@ class Mock_Basic_Transmitter {
         /**
          * \brief Initialize the transmitter's hardware.
          *
-         * \return Nothing if initializing the transmitter's hardware succeeded.
-         * \return An error code if initializing the transmitter's hardware failed.
+         * \return Nothing if transmitter hardware initialization succeeded.
+         * \return An error code if transmitter hardware initialization failed.
          */
         auto initialize()
         {
@@ -268,8 +268,8 @@ class Mock_Transmitter {
         /**
          * \brief Initialize the transmitter's hardware.
          *
-         * \return Nothing if initializing the transmitter's hardware succeeded.
-         * \return An error code if initializing the transmitter's hardware failed.
+         * \return Nothing if transmitter hardware initialization succeeded.
+         * \return An error code if transmitter hardware initialization failed.
          */
         auto initialize()
         {

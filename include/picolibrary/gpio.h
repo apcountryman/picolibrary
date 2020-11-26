@@ -173,10 +173,10 @@ class Input_Pin_Concept {
     /**
      * \brief Initialize the pin's hardware.
      *
-     * \return Nothing if initializing the pin's hardware succeeded.
-     * \return An error code if initializing the pin's hardware failed. If initializing
-     *         the pin's hardware cannot fail, return
-     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     * \return Nothing if pin hardware initialization succeeded.
+     * \return An error code if pin hardware initialization failed. If pin hardware
+     *         initialization cannot fail, return picolibrary::Result<picolibrary::Void,
+     *         picolibrary::Void>.
      */
     auto initialize() noexcept -> Result<Void, Error_Code>;
 
@@ -237,10 +237,10 @@ class Internally_Pulled_Up_Input_Pin_Concept {
      * \param[in] initial_pull_up_state The initial state of the pin's internal pull-up
      *            resistor.
      *
-     * \return Nothing if initializing the pin's hardware succeeded.
-     * \return An error code if initializing the pin's hardware failed. If initializing
-     *         the pin's hardware cannot fail, return
-     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     * \return Nothing if pin hardware initialization succeeded.
+     * \return An error code if pin hardware initialization failed. If pin hardware
+     *         initialization cannot fail, return picolibrary::Result<picolibrary::Void,
+     *         picolibrary::Void>.
      */
     auto initialize( Initial_Pull_Up_State initial_pull_up_state = Initial_Pull_Up_State::DISABLED ) noexcept
         -> Result<Void, Error_Code>;
@@ -321,10 +321,10 @@ class Output_Pin_Concept {
      *
      * \param[in] initial_pin_state The initial state of the pin.
      *
-     * \return Nothing if initializing the pin's hardware succeeded.
-     * \return An error code if initializing the pin's hardware failed. If initializing
-     *         the pin's hardware cannot fail, return
-     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     * \return Nothing if pin hardware initialization succeeded.
+     * \return An error code if pin hardware initialization failed. If pin hardware
+     *         initialization cannot fail, return picolibrary::Result<picolibrary::Void,
+     *         picolibrary::Void>.
      */
     auto initialize( Initial_Pin_State initial_pin_state = Initial_Pin_State::LOW ) noexcept
         -> Result<Void, Error_Code>;
@@ -404,10 +404,10 @@ class IO_Pin_Concept {
      *
      * \param[in] initial_pin_state The initial state of the pin.
      *
-     * \return Nothing if initializing the pin's hardware succeeded.
-     * \return An error code if initializing the pin's hardware failed. If initializing
-     *         the pin's hardware cannot fail, return
-     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     * \return Nothing if pin hardware initialization succeeded.
+     * \return An error code if pin hardware initialization failed. If pin hardware
+     *         initialization cannot fail, return picolibrary::Result<picolibrary::Void,
+     *         picolibrary::Void>.
      */
     auto initialize( Initial_Pin_State initial_pin_state = Initial_Pin_State::LOW ) noexcept
         -> Result<Void, Error_Code>;
@@ -507,8 +507,8 @@ class Active_Low_Output_Pin : public Output_Pin {
      *
      * \param[in] initial_pin_state The initial state of the pin.
      *
-     * \return Nothing if initializing the pin's hardware succeeded.
-     * \return The error reported by the underlying pin if initializing the pin's hardware
+     * \return Nothing if pin hardware initialization succeeded.
+     * \return The error reported by the underlying pin if pin hardware initialization
      *         failed.
      */
     auto initialize( Initial_Pin_State initial_pin_state = Initial_Pin_State::LOW ) noexcept

@@ -110,8 +110,8 @@ class Mock_Input_Pin {
         /**
          * \brief Initialize the pin's hardware.
          *
-         * \return Nothing if initializing the pin's hardware succeeded.
-         * \return An error code if initializing the pin's hardware failed.
+         * \return Nothing if pin hardware initialization succeeded.
+         * \return An error code if pin hardware initialization failed.
          */
         auto initialize()
         {
@@ -246,8 +246,8 @@ class Mock_Internally_Pulled_Up_Input_Pin {
          * \param[in] initial_pull_up_state The initial state of the pin's internal
          *            pull-up resistor.
          *
-         * \return Nothing if initializing the pin's hardware succeeded.
-         * \return An error code if initializing the pin's hardware failed.
+         * \return Nothing if pin hardware initialization succeeded.
+         * \return An error code if pin hardware initialization failed.
          */
         auto initialize( ::picolibrary::GPIO::Initial_Pull_Up_State initial_pull_up_state = ::picolibrary::GPIO::Initial_Pull_Up_State::DISABLED )
         {
@@ -408,8 +408,8 @@ class Mock_Output_Pin {
          *
          * \param[in] initial_pin_state The initial state of the pin.
          *
-         * \return Nothing if initializing the pin's hardware succeeded.
-         * \return An error code if initializing the pin's hardware failed.
+         * \return Nothing if pin hardware initialization succeeded.
+         * \return An error code if pin hardware initialization failed.
          */
         auto initialize( ::picolibrary::GPIO::Initial_Pin_State initial_pin_state = ::picolibrary::GPIO::Initial_Pin_State::LOW )
         {
@@ -568,8 +568,8 @@ class Mock_IO_Pin {
          *
          * \param[in] initial_pin_state The initial state of the pin.
          *
-         * \return Nothing if initializing the pin's hardware succeeded.
-         * \return An error code if initializing the pin's hardware failed.
+         * \return Nothing if pin hardware initialization succeeded.
+         * \return An error code if pin hardware initialization failed.
          */
         auto initialize( ::picolibrary::GPIO::Initial_Pin_State initial_pin_state = ::picolibrary::GPIO::Initial_Pin_State::LOW )
         {
