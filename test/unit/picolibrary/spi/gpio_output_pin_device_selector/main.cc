@@ -21,7 +21,58 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "picolibrary/error.h"
+#include "picolibrary/result.h"
 #include "picolibrary/spi.h"
+#include "picolibrary/testing/unit/error.h"
+#include "picolibrary/testing/unit/gpio.h"
+#include "picolibrary/testing/unit/random.h"
+#include "picolibrary/utility.h"
+
+namespace {
+
+using ::picolibrary::Error_Code;
+using ::picolibrary::Result;
+using ::picolibrary::Void;
+using ::picolibrary::Testing::Unit::Mock_Error;
+using ::picolibrary::Testing::Unit::random;
+using ::testing::Return;
+
+using Device_Selector =
+    ::picolibrary::SPI::GPIO_Output_Pin_Device_Selector<::picolibrary::Testing::Unit::GPIO::Mock_Output_Pin>;
+
+} // namespace
+
+/**
+ * \brief Verify picolibrary::SPI::GPIO_Output_Pin_Device_Selector::select() works
+ *        properly when the underlying pin operation succeeds.
+ */
+TEST( select, success )
+{
+    auto device_selector = Device_Selector{};
+
+    EXPECT_CALL( device_selector, transition_to_high() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( device_selector.select().is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::SPI::GPIO_Output_Pin_Device_Selector::deselect() works
+ *        properly when the underlying pin operation fails.
+ */
+TEST( select, failure )
+{
+    auto device_selector = Device_Selector{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( device_selector, transition_to_high() ).WillOnce( Return( error ) );
+
+    auto const result = device_selector.select();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
 
 /**
  * \brief Execute the picolibrary::SPI::GPIO_Output_Pin_Device_Selector unit tests.
