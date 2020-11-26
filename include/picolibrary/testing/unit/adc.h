@@ -107,8 +107,8 @@ class Mock_Blocking_Single_Sample_Converter {
         /**
          * \brief Initialize the ADC's hardware.
          *
-         * \return Nothing if initializing the ADC's hardware succeeded.
-         * \return An error code if initializing the ADC's hardware failed.
+         * \return Nothing if ADC hardware initialization succeeded.
+         * \return An error code if ADC hardware initialization failed.
          */
         auto initialize()
         {
@@ -277,8 +277,8 @@ class Mock_Non_Blocking_Single_Sample_Converter {
         /**
          * \brief Initialize the ADC's hardware.
          *
-         * \return Nothing if initializing the ADC's hardware succeeded.
-         * \return An error code if initializing the ADC's hardware failed.
+         * \return Nothing if ADC hardware initialization succeeded.
+         * \return An error code if ADC hardware initialization failed.
          */
         auto initialize()
         {

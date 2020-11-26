@@ -77,10 +77,10 @@ class Basic_Controller_Concept {
     /**
      * \brief Initialize the controller's hardware.
      *
-     * \return Nothing if initializing the controller's hardware succeeded.
-     * \return An error code if initializing the controller's hardware failed. If
-     *      initializing the controller's hardware cannot fail, return
-     *      picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     * \return Nothing if controller hardware initialization succeeded.
+     * \return An error code if controller hardware initialization failed. If controller
+     *         hardware initialization cannot fail, return
+     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
      */
     auto initialize() noexcept -> Result<Void, Error_Code>;
 
@@ -152,10 +152,10 @@ class Controller_Concept {
     /**
      * \brief Initialize the controller's hardware.
      *
-     * \return Nothing if initializing the controller's hardware succeeded.
-     * \return An error code if initializing the controller's hardware failed. If
-     *      initializing the controller's hardware cannot fail, return
-     *      picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     * \return Nothing if controller hardware initialization succeeded.
+     * \return An error code if controller hardware initialization failed. If controller
+     *         hardware initialization cannot fail, return
+     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
      */
     auto initialize() noexcept -> Result<Void, Error_Code>;
 
@@ -377,9 +377,9 @@ class Device_Selector_Concept {
     /**
      * \brief Initialize the device selector's hardware.
      *
-     * \return Nothing if initializing the device selector's hardware succeeded.
-     * \return An error code if initializing the device selector's hardware failed. If
-     *         initializing the device selector's hardware cannot fail, return
+     * \return Nothing if device selector hardware initialization succeeded.
+     * \return An error code if device selector hardware initialization failed. If device
+     *         selector hardware initialization cannot fail, return
      *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
      */
     auto initialize() noexcept -> Result<Void, Error_Code>;
