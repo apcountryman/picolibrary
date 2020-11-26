@@ -75,6 +75,37 @@ TEST( select, failure )
 }
 
 /**
+ * \brief Verify picolibrary::SPI::GPIO_Output_Pin_Device_Selector::deselect() works
+ *        properly when the underlying pin operation succeeds.
+ */
+TEST( deselect, success )
+{
+    auto device_selector = Device_Selector{};
+
+    EXPECT_CALL( device_selector, transition_to_low() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( device_selector.deselect().is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::SPI::GPIO_Output_Pin_Device_Selector::dedeselect() works
+ *        properly when the underlying pin operation fails.
+ */
+TEST( deselect, failure )
+{
+    auto device_selector = Device_Selector{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( device_selector, transition_to_low() ).WillOnce( Return( error ) );
+
+    auto const result = device_selector.deselect();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
  * \brief Execute the picolibrary::SPI::GPIO_Output_Pin_Device_Selector unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
