@@ -403,6 +403,17 @@ class Device_Selector_Concept {
     auto deselect() noexcept -> Result<Void, Error_Code>;
 };
 
+/**
+ * \brief GPIO output pin SPI device selector.
+ *
+ * \tparam GPIO_Output_Pin The type of GPIO output pin used to select a device.
+ */
+template<typename GPIO_Output_Pin>
+class GPIO_Output_Pin_Device_Selector : public GPIO_Output_Pin {
+  public:
+    using GPIO_Output_Pin::GPIO_Output_Pin;
+};
+
 } // namespace picolibrary::SPI
 
 #endif // PICOLIBRARY_SPI_H
