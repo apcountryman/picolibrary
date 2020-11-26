@@ -529,6 +529,165 @@ class Mock_Controller {
     }
 };
 
+/**
+ * \brief Mock SPI device selector.
+ */
+class Mock_Device_Selector {
+  public:
+    /**
+     * \brief Movable mock device selector handle.
+     */
+    class Handle {
+      public:
+        /**
+         * \brief Constructor.
+         */
+        Handle() noexcept = default;
+
+        /**
+         * \brief Constructor.
+         *
+         * \param[in] mock_device_selector The mock device selector.
+         */
+        Handle( Mock_Device_Selector & mock_device_selector ) noexcept :
+            m_mock_device_selector{ &mock_device_selector }
+        {
+        }
+
+        /**
+         * \brief Constructor.
+         *
+         * \param[in] source The source of the move.
+         */
+        Handle( Handle && source ) noexcept = default;
+
+        /**
+         * \todo #29
+         */
+        Handle( Handle const & ) = delete;
+
+        /**
+         * \brief Destructor.
+         */
+        ~Handle() noexcept = default;
+
+        /**
+         * \brief Assignment operator.
+         *
+         * \param[in] expression The expression to be assigned.
+         *
+         * \return The assigned to object.
+         */
+        auto operator=( Handle && expression ) noexcept -> Handle & = default;
+
+        /**
+         * \todo #29
+         *
+         * \return
+         */
+        auto operator=( Handle const & ) = delete;
+
+        /**
+         * \brief Get the mock device selector.
+         *
+         * \return The mock device selector.
+         */
+        auto & mock() noexcept
+        {
+            return *m_mock_device_selector;
+        }
+
+        /**
+         * \brief Initialize the device selector's hardware.
+         *
+         * \return Nothing if initializing the device selector's hardware succeeded.
+         * \return An error code if initializing the device selector's hardware failed.
+         */
+        auto initialize()
+        {
+            return m_mock_device_selector->initialize();
+        }
+
+        /**
+         * \brief Select the device.
+         *
+         * \return Nothing if device selection succeeded.
+         * \return An error code if device selection failed.
+         */
+        auto select()
+        {
+            return m_mock_device_selector->select();
+        }
+
+        /**
+         * \brief Deselect the device.
+         *
+         * \return Nothing if device deselection succeeded.
+         * \return An error code if device deselection failed.
+         */
+        auto deselect()
+        {
+            return m_mock_device_selector->deselect();
+        }
+
+      private:
+        /**
+         * \brief The mock device selector.
+         */
+        Mock_Device_Selector * m_mock_device_selector{};
+    };
+
+    /**
+     * \brief Constructor.
+     */
+    Mock_Device_Selector() = default;
+
+    /**
+     * \todo #29
+     */
+    Mock_Device_Selector( Mock_Device_Selector && ) = delete;
+
+    /**
+     * \todo #29
+     */
+    Mock_Device_Selector( Mock_Device_Selector const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Mock_Device_Selector() noexcept = default;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Mock_Device_Selector && ) = delete;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Mock_Device_Selector const & ) = delete;
+
+    /**
+     * \brief Get a movable handle to the mock device selector.
+     *
+     * \return A movable handle to the mock device selector.
+     */
+    auto handle() noexcept
+    {
+        return Handle{ *this };
+    }
+
+    MOCK_METHOD( (Result<Void, Error_Code>), initialize, () );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), select, () );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), deselect, () );
+};
+
 } // namespace picolibrary::Testing::Unit::SPI
 
 #endif // PICOLIBRARY_TESTING_UNIT_SPI_H
