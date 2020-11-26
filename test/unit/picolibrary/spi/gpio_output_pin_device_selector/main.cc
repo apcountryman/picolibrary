@@ -57,7 +57,7 @@ TEST( select, success )
 }
 
 /**
- * \brief Verify picolibrary::SPI::GPIO_Output_Pin_Device_Selector::deselect() works
+ * \brief Verify picolibrary::SPI::GPIO_Output_Pin_Device_Selector::select() works
  *        properly when the underlying pin operation fails.
  */
 TEST( select, failure )
