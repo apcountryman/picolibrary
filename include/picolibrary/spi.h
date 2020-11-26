@@ -423,6 +423,17 @@ class GPIO_Output_Pin_Device_Selector : public GPIO_Output_Pin {
     {
         return GPIO_Output_Pin::transition_to_high();
     }
+
+    /**
+     * \brief Deselect the device.
+     *
+     * \return Nothing if device deselection succeeded.
+     * \return The error reported by the underlying pin if device deselection failed.
+     */
+    auto deselect() noexcept
+    {
+        return GPIO_Output_Pin::transition_to_low();
+    }
 };
 
 } // namespace picolibrary::SPI
