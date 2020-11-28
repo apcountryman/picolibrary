@@ -133,6 +133,98 @@ TEST( destructor, deselectionError )
 }
 
 /**
+ * \brief Verify picolibrary::SPI::Device_Selection_Guard::operator=(
+ *        picolibrary::SPI::Device_Selection_Guard && ) works properly.
+ */
+TEST( assignmentOperatorMove, worksProperly )
+{
+    {
+        auto expression = Device_Selection_Guard{};
+        auto object     = Device_Selection_Guard{};
+
+        object = std::move( expression );
+    }
+
+    {
+        auto device_selector = Mock_Device_Selector{};
+
+        EXPECT_CALL( device_selector, select() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+        auto expression = make_device_selection_guard( device_selector );
+        auto object     = Device_Selection_Guard{};
+
+        EXPECT_FALSE( expression.is_error() );
+
+        EXPECT_CALL( device_selector, deselect() ).Times( 0 );
+
+        object = std::move( expression ).value();
+
+        EXPECT_CALL( device_selector, deselect() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    }
+
+    {
+        auto device_selector = Mock_Device_Selector{};
+
+        EXPECT_CALL( device_selector, select() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+        auto expression = Device_Selection_Guard{};
+        auto object     = make_device_selection_guard( device_selector );
+
+        EXPECT_FALSE( object.is_error() );
+
+        EXPECT_CALL( device_selector, deselect() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+        object.value() = std::move( expression );
+
+        EXPECT_CALL( device_selector, deselect() ).Times( 0 );
+    }
+
+    {
+        auto device_selector_expression = Mock_Device_Selector{};
+        auto device_selector_object     = Mock_Device_Selector{};
+
+        EXPECT_CALL( device_selector_expression, select() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( device_selector_object, select() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+        auto expression = make_device_selection_guard( device_selector_expression );
+        auto object     = make_device_selection_guard( device_selector_object );
+
+        EXPECT_FALSE( expression.is_error() );
+        EXPECT_FALSE( object.is_error() );
+
+        EXPECT_CALL( device_selector_expression, deselect() ).Times( 0 );
+        EXPECT_CALL( device_selector_object, deselect() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+        object.value() = std::move( expression ).value();
+
+        EXPECT_CALL( device_selector_expression, deselect() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( device_selector_object, deselect() ).Times( 0 );
+    }
+
+    {
+        auto guard = Device_Selection_Guard{};
+
+        guard = std::move( guard );
+    }
+
+    {
+        auto device_selector = Mock_Device_Selector{};
+
+        EXPECT_CALL( device_selector, select() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+        auto result = make_device_selection_guard( device_selector );
+
+        EXPECT_FALSE( result.is_error() );
+
+        EXPECT_CALL( device_selector, deselect() ).Times( 0 );
+
+        result.value() = std::move( result ).value();
+
+        EXPECT_CALL( device_selector, deselect() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    }
+}
+
+/**
  * \brief Execute the picolibrary::SPI::Device_Selection_Guard unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
