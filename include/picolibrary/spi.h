@@ -506,8 +506,20 @@ class Device_Selection_Guard {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator         =( Device_Selection_Guard && expression ) noexcept
-        -> Device_Selection_Guard & = default;
+    constexpr auto & operator=( Device_Selection_Guard && expression ) noexcept
+    {
+        if ( &expression != this ) {
+            if ( m_device_selector ) {
+                static_cast<void>( m_device_selector->deselect() );
+            } // if
+
+            m_device_selector = expression.m_device_selector;
+
+            expression.m_device_selector = nullptr;
+        } // if
+
+        return *this;
+    }
 
     /**
      * \todo #29
