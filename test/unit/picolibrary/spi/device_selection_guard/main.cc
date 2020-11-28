@@ -19,6 +19,8 @@
  * \brief picolibrary::SPI::Device_Selection_Guard unit test program.
  */
 
+#include <utility>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/error.h"
@@ -86,6 +88,31 @@ TEST( makeDeviceSelectionGuard, worksProperly )
     EXPECT_FALSE( result.is_error() );
 
     EXPECT_CALL( device_selector, deselect() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+}
+
+/**
+ * \brief Verify picolibrary::SPI::Device_Selection_Guard::Device_Selection_Guard(
+ *        picolibrary::SPI::Device_Selection_Guard && ) works properly.
+ */
+TEST( constructorMove, worksProperly )
+{
+    {
+        Device_Selection_Guard{ Device_Selection_Guard{} };
+    }
+
+    {
+        auto device_selector = Mock_Device_Selector{};
+
+        EXPECT_CALL( device_selector, select() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+        auto result = make_device_selection_guard( device_selector );
+
+        EXPECT_FALSE( result.is_error() );
+
+        auto const guard = Device_Selection_Guard{ std::move( result ).value() };
+
+        EXPECT_CALL( device_selector, deselect() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    }
 }
 
 /**
