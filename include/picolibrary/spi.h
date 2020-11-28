@@ -436,6 +436,138 @@ class GPIO_Output_Pin_Device_Selector : public GPIO_Output_Pin {
     }
 };
 
+/**
+ * \brief RAII SPI device selection guard.
+ *
+ * \tparam Device_Selector The type of SPI device selector used to select and deselect the
+ *         device.
+ *
+ * \warning Device deselection failures are ignored. A device selector wrapper class can
+ *          be used to add device selection failure error handling to the device
+ *          selector's device deselection function.
+ */
+template<typename Device_Selector>
+class Device_Selection_Guard;
+
+/**
+ * \brief Select a device and construct a picolibrary::SPI::Device_Selection_Guard.
+ *
+ * \relatedalso picolibrary::SPI::Device_Selection_Guard
+ *
+ * \tparam Device_Selector The type of device selector used to select and deselect the
+ *         device.
+ *
+ * \param[in] device_selector The device selector used to select and deselect the device.
+ *
+ * \return The constructed picolibrary::SPI::Device_Selection_Guard if device selection
+ *         succeeded.
+ * \return The error reported by the device selector if device selection failed.
+ */
+template<typename Device_Selector>
+auto make_device_selection_guard( Device_Selector & device_selector ) noexcept -> Result<
+    Device_Selection_Guard<Device_Selector>,
+    typename decltype( std::declval<Device_Selector>().select() )::Error,
+    false>;
+
+template<typename Device_Selector>
+class Device_Selection_Guard {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Device_Selection_Guard() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Device_Selection_Guard( Device_Selection_Guard && source ) noexcept :
+        m_device_selector{ source.m_device_selector }
+    {
+        source.m_device_selector = nullptr;
+    }
+
+    /**
+     * \todo #29.
+     */
+    Device_Selection_Guard( Device_Selection_Guard const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Device_Selection_Guard() noexcept
+    {
+        if ( m_device_selector ) {
+            static_cast<void>( m_device_selector->deselect() );
+        } // if
+    }
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto & operator=( Device_Selection_Guard && expression ) noexcept
+    {
+        if ( &expression != this ) {
+            if ( m_device_selector ) {
+                static_cast<void>( m_device_selector->deselect() );
+            } // if
+
+            m_device_selector = expression.m_device_selector;
+
+            expression.m_device_selector = nullptr;
+        } // if
+
+        return *this;
+    }
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Device_Selection_Guard const & ) = delete;
+
+  private:
+    /**
+     * \brief The device selector used to select and deselect the device.
+     */
+    Device_Selector * m_device_selector{};
+
+    friend auto make_device_selection_guard<Device_Selector>( Device_Selector & device_selector ) noexcept
+        -> Result<
+            Device_Selection_Guard<Device_Selector>,
+            typename decltype( std::declval<Device_Selector>().select() )::Error,
+            false>;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] device_selector The device selector used to select and deselect the
+     *            device.
+     */
+    constexpr Device_Selection_Guard( Device_Selector & device_selector ) noexcept :
+        m_device_selector{ &device_selector }
+    {
+    }
+};
+
+template<typename Device_Selector>
+auto make_device_selection_guard( Device_Selector & device_selector ) noexcept -> Result<
+    Device_Selection_Guard<Device_Selector>,
+    typename decltype( std::declval<Device_Selector>().select() )::Error,
+    false>
+{
+    auto result = device_selector.select();
+    if ( result.is_error() ) { return result.error(); } // if
+
+    return Device_Selection_Guard{ device_selector };
+}
+
 } // namespace picolibrary::SPI
 
 #endif // PICOLIBRARY_SPI_H
