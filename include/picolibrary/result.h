@@ -330,7 +330,7 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
      *
      * \return The result error.
      */
-    [[nodiscard]] constexpr auto error() && noexcept
+    [[nodiscard]] constexpr auto && error() && noexcept
     {
         return static_cast<Error &&>( m_error );
     }
@@ -345,7 +345,7 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
      *
      * \return The result error.
      */
-    [[nodiscard]] constexpr auto error() const && noexcept
+    [[nodiscard]] constexpr auto const && error() const && noexcept
     {
         return static_cast<Error const &&>( m_error );
     }
@@ -360,7 +360,7 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
      *
      * \return The result error.
      */
-    [[nodiscard]] constexpr auto error() & noexcept
+    [[nodiscard]] constexpr auto & error() & noexcept
     {
         return static_cast<Error &>( m_error );
     }
@@ -375,7 +375,7 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
      *
      * \return The result error.
      */
-    [[nodiscard]] constexpr auto error() const & noexcept
+    [[nodiscard]] constexpr auto const & error() const & noexcept
     {
         return static_cast<Error const &>( m_error );
     }
@@ -556,7 +556,7 @@ class [[nodiscard]] Result<Value_Type, Void, true> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto value() && noexcept
+    [[nodiscard]] constexpr auto && value() && noexcept
     {
         return static_cast<Value &&>( m_value );
     }
@@ -566,7 +566,7 @@ class [[nodiscard]] Result<Value_Type, Void, true> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto value() const && noexcept
+    [[nodiscard]] constexpr auto const && value() const && noexcept
     {
         return static_cast<Value const &&>( m_value );
     }
@@ -576,7 +576,7 @@ class [[nodiscard]] Result<Value_Type, Void, true> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto value() & noexcept
+    [[nodiscard]] constexpr auto & value() & noexcept
     {
         return static_cast<Value &>( m_value );
     }
@@ -586,7 +586,7 @@ class [[nodiscard]] Result<Value_Type, Void, true> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto value() const & noexcept
+    [[nodiscard]] constexpr auto const & value() const & noexcept
     {
         return static_cast<Value const &>( m_value );
     }
@@ -777,7 +777,7 @@ class [[nodiscard]] Result<Value_Type, Void, false> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto value() && noexcept
+    [[nodiscard]] constexpr auto && value() && noexcept
     {
         return static_cast<Value &&>( m_value );
     }
@@ -787,7 +787,7 @@ class [[nodiscard]] Result<Value_Type, Void, false> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto value() const && noexcept
+    [[nodiscard]] constexpr auto const && value() const && noexcept
     {
         return static_cast<Value const &&>( m_value );
     }
@@ -797,7 +797,7 @@ class [[nodiscard]] Result<Value_Type, Void, false> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto value() & noexcept
+    [[nodiscard]] constexpr auto & value() & noexcept
     {
         return static_cast<Value &>( m_value );
     }
@@ -807,7 +807,7 @@ class [[nodiscard]] Result<Value_Type, Void, false> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto value() const & noexcept
+    [[nodiscard]] constexpr auto const & value() const & noexcept
     {
         return static_cast<Value const &>( m_value );
     }
@@ -1084,7 +1084,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto value() && noexcept
+    [[nodiscard]] constexpr auto && value() && noexcept
     {
         return static_cast<Value &&>( m_value );
     }
@@ -1099,7 +1099,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto value() const && noexcept
+    [[nodiscard]] constexpr auto const && value() const && noexcept
     {
         return static_cast<Value const &&>( m_value );
     }
@@ -1114,7 +1114,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto value() & noexcept
+    [[nodiscard]] constexpr auto & value() & noexcept
     {
         return static_cast<Value &>( m_value );
     }
@@ -1129,7 +1129,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto value() const & noexcept
+    [[nodiscard]] constexpr auto const & value() const & noexcept
     {
         return static_cast<Value const &>( m_value );
     }
@@ -1144,7 +1144,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      *
      * \return The result error.
      */
-    [[nodiscard]] constexpr auto error() && noexcept
+    [[nodiscard]] constexpr auto && error() && noexcept
     {
         return static_cast<Error &&>( m_error );
     }
@@ -1159,7 +1159,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      *
      * \return The result error.
      */
-    [[nodiscard]] constexpr auto error() const && noexcept
+    [[nodiscard]] constexpr auto const && error() const && noexcept
     {
         return static_cast<Error const &&>( m_error );
     }
@@ -1174,7 +1174,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      *
      * \return The result error.
      */
-    [[nodiscard]] constexpr auto error() & noexcept
+    [[nodiscard]] constexpr auto & error() & noexcept
     {
         return static_cast<Error &>( m_error );
     }
@@ -1189,7 +1189,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      *
      * \return The result error.
      */
-    [[nodiscard]] constexpr auto error() const & noexcept
+    [[nodiscard]] constexpr auto const & error() const & noexcept
     {
         return static_cast<Error const &>( m_error );
     }
@@ -1464,7 +1464,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto value() && noexcept
+    [[nodiscard]] constexpr auto && value() && noexcept
     {
         return static_cast<Value &&>( m_value );
     }
@@ -1479,7 +1479,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto value() const && noexcept
+    [[nodiscard]] constexpr auto const && value() const && noexcept
     {
         return static_cast<Value const &&>( m_value );
     }
@@ -1494,7 +1494,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto value() & noexcept
+    [[nodiscard]] constexpr auto & value() & noexcept
     {
         return static_cast<Value &>( m_value );
     }
@@ -1509,7 +1509,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto value() const & noexcept
+    [[nodiscard]] constexpr auto const & value() const & noexcept
     {
         return static_cast<Value const &>( m_value );
     }
@@ -1524,7 +1524,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      *
      * \return The result error.
      */
-    [[nodiscard]] constexpr auto error() && noexcept
+    [[nodiscard]] constexpr auto && error() && noexcept
     {
         return static_cast<Error &&>( m_error );
     }
@@ -1539,7 +1539,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      *
      * \return The result error.
      */
-    [[nodiscard]] constexpr auto error() const && noexcept
+    [[nodiscard]] constexpr auto const && error() const && noexcept
     {
         return static_cast<Error const &&>( m_error );
     }
@@ -1554,7 +1554,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      *
      * \return The result error.
      */
-    [[nodiscard]] constexpr auto error() & noexcept
+    [[nodiscard]] constexpr auto & error() & noexcept
     {
         return static_cast<Error &>( m_error );
     }
@@ -1569,7 +1569,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      *
      * \return The result error.
      */
-    [[nodiscard]] constexpr auto error() const & noexcept
+    [[nodiscard]] constexpr auto const & error() const & noexcept
     {
         return static_cast<Error const &>( m_error );
     }
