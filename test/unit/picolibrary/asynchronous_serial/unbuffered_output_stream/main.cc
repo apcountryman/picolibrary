@@ -150,6 +150,24 @@ TEST( assignmentOperatorMove, worksProperly )
         EXPECT_FALSE( expression.buffer_is_set() );
         EXPECT_TRUE( object.buffer_is_set() );
     }
+
+    {
+        auto stream = Unbuffered_Output_Stream<Mock_Transmitter::Handle>{};
+
+        stream = std::move( stream );
+
+        EXPECT_FALSE( stream.buffer_is_set() );
+    }
+
+    {
+        auto transmitter = Mock_Transmitter{};
+
+        auto stream = Unbuffered_Output_Stream{ transmitter.handle() };
+
+        stream = std::move( stream );
+
+        EXPECT_TRUE( stream.buffer_is_set() );
+    }
 }
 
 /**
