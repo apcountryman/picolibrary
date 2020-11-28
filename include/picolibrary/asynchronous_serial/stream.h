@@ -199,15 +199,17 @@ class Unbuffered_Output_Stream : public Output_Stream {
      */
     constexpr auto & operator=( Unbuffered_Output_Stream && expression ) noexcept
     {
-        m_buffer = std::move( expression.m_buffer );
+        if ( &expression != this ) {
+            m_buffer = std::move( expression.m_buffer );
 
-        if ( expression.buffer_is_set() ) {
-            set_buffer( &m_buffer );
+            if ( expression.buffer_is_set() ) {
+                set_buffer( &m_buffer );
 
-            expression.set_buffer( nullptr );
-        } else {
-            set_buffer( nullptr );
-        } // else
+                expression.set_buffer( nullptr );
+            } else {
+                set_buffer( nullptr );
+            } // else
+        }     // if
 
         return *this;
     }
