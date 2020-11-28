@@ -441,6 +441,10 @@ class GPIO_Output_Pin_Device_Selector : public GPIO_Output_Pin {
  *
  * \tparam Device_Selector The type of SPI device selector used to select and deselect the
  *         device.
+ *
+ * \warning Device deselection failures are ignored. A device selector wrapper class can
+ *          be used to add device selection failure error handling to the device
+ *          selector's device deselection function.
  */
 template<typename Device_Selector>
 class Device_Selection_Guard;
