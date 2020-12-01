@@ -568,6 +568,82 @@ auto make_device_selection_guard( Device_Selector & device_selector ) noexcept -
     return Device_Selection_Guard{ device_selector };
 }
 
+/**
+ * \brief SPI device
+ *
+ * \tparam Device_Selector_Type The type of device selector used to select and
+ *         deselect the device.
+ * \tparam Controller_Type The type of controller used to communicate with the device.
+ */
+template<typename Device_Selector_Type, typename Controller_Type>
+class Device {
+  public:
+    /**
+     * \brief The type of device selector used to select and deselect the device.
+     */
+    using Device_Selector = Device_Selector_Type;
+
+    /**
+     * \brief The type of controller used to communicate with the device.
+     */
+    using Controller = Controller_Type;
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Device() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Device( Device && source ) noexcept = default;
+
+    /**
+     * \todo #29
+     */
+    Device( Device const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Device() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Device && expression ) noexcept -> Device & = default;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Device const & ) = delete;
+
+  protected:
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] device_selector The device selector used to select and deselect the
+     *            device.
+     * \param[in] controller The controller used to communicate with the device.
+     * \param[in] configuration The controller clock configuration that meets the device's
+     *            communication requirements.
+     */
+    constexpr Device( Device_Selector device_selector, Controller & controller, typename Controller::Configuration configuration ) noexcept
+    {
+        static_cast<void>( device_selector );
+        static_cast<void>( controller );
+        static_cast<void>( configuration );
+    }
+};
+
 } // namespace picolibrary::SPI
 
 #endif // PICOLIBRARY_SPI_H
