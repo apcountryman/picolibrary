@@ -636,12 +636,30 @@ class Device {
      * \param[in] configuration The controller clock configuration that meets the device's
      *            communication requirements.
      */
-    constexpr Device( Device_Selector device_selector, Controller & controller, typename Controller::Configuration configuration ) noexcept
+    constexpr Device( Device_Selector device_selector, Controller & controller, typename Controller::Configuration configuration ) noexcept :
+        m_device_selector{ std::move( device_selector ) }
     {
-        static_cast<void>( device_selector );
         static_cast<void>( controller );
         static_cast<void>( configuration );
     }
+
+    /**
+     * \brief Initialize the device selector's hardware.
+     *
+     * \return Nothing if device selector hardware initialization succeeded.
+     * \return The error reported by the device selector if device selector hardware
+     *         initialization failed.
+     */
+    constexpr auto initialize() noexcept
+    {
+        return m_device_selector.initialize();
+    }
+
+  private:
+    /**
+     * \brief The device selector used to select and deselect the device.
+     */
+    Device_Selector m_device_selector{};
 };
 
 } // namespace picolibrary::SPI
