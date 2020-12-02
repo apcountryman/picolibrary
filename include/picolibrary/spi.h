@@ -571,22 +571,22 @@ auto make_device_selection_guard( Device_Selector & device_selector ) noexcept -
 /**
  * \brief SPI device
  *
+ * \tparam Controller_Type The type of controller used to communicate with the device.
  * \tparam Device_Selector_Type The type of device selector used to select and
  *         deselect the device.
- * \tparam Controller_Type The type of controller used to communicate with the device.
  */
-template<typename Device_Selector_Type, typename Controller_Type>
+template<typename Controller_Type, typename Device_Selector_Type>
 class Device {
   public:
-    /**
-     * \brief The type of device selector used to select and deselect the device.
-     */
-    using Device_Selector = Device_Selector_Type;
-
     /**
      * \brief The type of controller used to communicate with the device.
      */
     using Controller = Controller_Type;
+
+    /**
+     * \brief The type of device selector used to select and deselect the device.
+     */
+    using Device_Selector = Device_Selector_Type;
 
     /**
      * \brief Constructor.
@@ -630,13 +630,13 @@ class Device {
     /**
      * \brief Constructor.
      *
-     * \param[in] device_selector The device selector used to select and deselect the
-     *            device.
      * \param[in] controller The controller used to communicate with the device.
      * \param[in] configuration The controller clock configuration that meets the device's
      *            communication requirements.
+     * \param[in] device_selector The device selector used to select and deselect the
+     *            device.
      */
-    constexpr Device( Device_Selector device_selector, Controller & controller, typename Controller::Configuration configuration ) noexcept :
+    constexpr Device( Controller & controller, typename Controller::Configuration configuration, Device_Selector device_selector ) noexcept :
         m_device_selector{ std::move( device_selector ) }
     {
         static_cast<void>( controller );

@@ -42,19 +42,19 @@ using ::picolibrary::Testing::Unit::SPI::Mock_Controller;
 using ::picolibrary::Testing::Unit::SPI::Mock_Device_Selector;
 using ::testing::Return;
 
-class Device : public ::picolibrary::SPI::Device<Mock_Device_Selector::Handle, Mock_Controller> {
+class Device : public ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Selector::Handle> {
   public:
     constexpr Device(
-        Mock_Device_Selector::Handle device_selector,
-        Mock_Controller &            controller,
-        Mock_Controller::Configuration configuration = random<Mock_Controller::Configuration>() ) noexcept :
-        ::picolibrary::SPI::Device<Mock_Device_Selector::Handle, Mock_Controller>{ std::move( device_selector ),
-                                                                                   controller,
-                                                                                   configuration }
+        Mock_Controller &              controller,
+        Mock_Controller::Configuration configuration,
+        Mock_Device_Selector::Handle   device_selector ) noexcept :
+        ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Selector::Handle>{ controller,
+                                                                                   configuration,
+                                                                                   std::move( device_selector ) }
     {
     }
 
-    using ::picolibrary::SPI::Device<Mock_Device_Selector::Handle, Mock_Controller>::initialize;
+    using ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Selector::Handle>::initialize;
 };
 
 } // namespace
@@ -65,10 +65,12 @@ class Device : public ::picolibrary::SPI::Device<Mock_Device_Selector::Handle, M
  */
 TEST( initialize, initializationError )
 {
-    auto device_selector = Mock_Device_Selector{};
     auto controller      = Mock_Controller{};
+    auto device_selector = Mock_Device_Selector{};
 
-    auto device = Device{ device_selector.handle(), controller };
+    auto device = Device{ controller,
+                          random<Mock_Controller::Configuration>(),
+                          device_selector.handle() };
 
     auto const error = random<Mock_Error>();
 
@@ -85,10 +87,12 @@ TEST( initialize, initializationError )
  */
 TEST( initialize, worksProperly )
 {
-    auto device_selector = Mock_Device_Selector{};
     auto controller      = Mock_Controller{};
+    auto device_selector = Mock_Device_Selector{};
 
-    auto device = Device{ device_selector.handle(), controller };
+    auto device = Device{ controller,
+                          random<Mock_Controller::Configuration>(),
+                          device_selector.handle() };
 
     EXPECT_CALL( device_selector, initialize() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
