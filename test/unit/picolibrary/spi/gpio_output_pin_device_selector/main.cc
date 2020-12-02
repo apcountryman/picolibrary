@@ -44,23 +44,10 @@ using Device_Selector =
 } // namespace
 
 /**
- * \brief Verify picolibrary::SPI::GPIO_Output_Pin_Device_Selector::select() works
- *        properly when the underlying pin operation succeeds.
+ * \brief Verify picolibrary::SPI::GPIO_Output_Pin_Device_Selector::select() properly
+ *        handles a selection error.
  */
-TEST( select, success )
-{
-    auto device_selector = Device_Selector{};
-
-    EXPECT_CALL( device_selector, transition_to_high() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-
-    EXPECT_FALSE( device_selector.select().is_error() );
-}
-
-/**
- * \brief Verify picolibrary::SPI::GPIO_Output_Pin_Device_Selector::select() works
- *        properly when the underlying pin operation fails.
- */
-TEST( select, failure )
+TEST( select, selectionError )
 {
     auto device_selector = Device_Selector{};
 
@@ -75,23 +62,23 @@ TEST( select, failure )
 }
 
 /**
- * \brief Verify picolibrary::SPI::GPIO_Output_Pin_Device_Selector::deselect() works
- *        properly when the underlying pin operation succeeds.
+ * \brief Verify picolibrary::SPI::GPIO_Output_Pin_Device_Selector::select() works
+ *        properly.
  */
-TEST( deselect, success )
+TEST( select, worksProperly )
 {
     auto device_selector = Device_Selector{};
 
-    EXPECT_CALL( device_selector, transition_to_low() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( device_selector, transition_to_high() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
-    EXPECT_FALSE( device_selector.deselect().is_error() );
+    EXPECT_FALSE( device_selector.select().is_error() );
 }
 
 /**
- * \brief Verify picolibrary::SPI::GPIO_Output_Pin_Device_Selector::dedeselect() works
- *        properly when the underlying pin operation fails.
+ * \brief Verify picolibrary::SPI::GPIO_Output_Pin_Device_Selector::dedeselect() properly
+ *        handles a deselection error.
  */
-TEST( deselect, failure )
+TEST( deselect, deselectionError )
 {
     auto device_selector = Device_Selector{};
 
@@ -103,6 +90,19 @@ TEST( deselect, failure )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::SPI::GPIO_Output_Pin_Device_Selector::deselect() works
+ *        properly.
+ */
+TEST( deselect, worksProperly )
+{
+    auto device_selector = Device_Selector{};
+
+    EXPECT_CALL( device_selector, transition_to_low() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( device_selector.deselect().is_error() );
 }
 
 /**

@@ -45,10 +45,27 @@ using Pin = ::picolibrary::GPIO::Active_Low_Output_Pin<::picolibrary::Testing::U
 } // namespace
 
 /**
- * \brief Verify picolibrary::GPIO::Active_Low_Output_Pin::initialize() works properly
- *        when the underlying pin operation succeeds.
+ * \brief Verify picolibrary::GPIO::Active_Low_Output_Pin::initialize() properly handles
+ *        an initialization error.
  */
-TEST( initialize, success )
+TEST( initialize, initializationError )
+{
+    auto pin = Pin{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( pin, initialize( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = pin.initialize( random<Initial_Pin_State>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::GPIO::Active_Low_Output_Pin::initialize() works properly.
+ */
+TEST( initialize, worksProperly )
 {
     struct {
         Initial_Pin_State requested_state;
@@ -68,41 +85,10 @@ TEST( initialize, success )
 }
 
 /**
- * \brief Verify picolibrary::GPIO::Active_Low_Output_Pin::initialize() works properly
- *        when the underlying pin operation fails.
+ * \brief Verify picolibrary::GPIO::Active_Low_Output_Pin::transition_to_high() properly
+ *        handles a state transition error.
  */
-TEST( initialize, failure )
-{
-    auto pin = Pin{};
-
-    auto const error = random<Mock_Error>();
-
-    EXPECT_CALL( pin, initialize( _ ) ).WillOnce( Return( error ) );
-
-    auto const result = pin.initialize( random<Initial_Pin_State>() );
-
-    EXPECT_TRUE( result.is_error() );
-    EXPECT_EQ( result.error(), error );
-}
-
-/**
- * \brief Verify picolibrary::GPIO::Active_Low_Output_Pin::transition_to_high() works
- *        properly when the underlying pin operation succeeds.
- */
-TEST( transitionToHigh, success )
-{
-    auto pin = Pin{};
-
-    EXPECT_CALL( pin, transition_to_low() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-
-    EXPECT_FALSE( pin.transition_to_high().is_error() );
-}
-
-/**
- * \brief Verify picolibrary::GPIO::Active_Low_Output_Pin::transition_to_high() works
- *        properly when the underlying pin operation fails.
- */
-TEST( transitionToHigh, failure )
+TEST( transitionToHigh, stateTransitionError )
 {
     auto pin = Pin{};
 
@@ -117,23 +103,23 @@ TEST( transitionToHigh, failure )
 }
 
 /**
- * \brief Verify picolibrary::GPIO::Active_Low_Output_Pin::transition_to_low() works
- *        properly when the underlying pin operation succeeds.
+ * \brief Verify picolibrary::GPIO::Active_Low_Output_Pin::transition_to_high() works
+ *        properly.
  */
-TEST( transitionToLow, success )
+TEST( transitionToHigh, worksProperly )
 {
     auto pin = Pin{};
 
-    EXPECT_CALL( pin, transition_to_high() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( pin, transition_to_low() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
-    EXPECT_FALSE( pin.transition_to_low().is_error() );
+    EXPECT_FALSE( pin.transition_to_high().is_error() );
 }
 
 /**
- * \brief Verify picolibrary::GPIO::Active_Low_Output_Pin::transition_to_low() works
- *        properly when the underlying pin operation fails.
+ * \brief Verify picolibrary::GPIO::Active_Low_Output_Pin::transition_to_low() properly
+ *        handles a state transition error.
  */
-TEST( transitionToLow, failure )
+TEST( transitionToLow, stateTransitionError )
 {
     auto pin = Pin{};
 
@@ -145,6 +131,19 @@ TEST( transitionToLow, failure )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::GPIO::Active_Low_Output_Pin::transition_to_low() works
+ *        properly.
+ */
+TEST( transitionToLow, worksProperly )
+{
+    auto pin = Pin{};
+
+    EXPECT_CALL( pin, transition_to_high() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( pin.transition_to_low().is_error() );
 }
 
 /**

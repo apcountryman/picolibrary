@@ -37,10 +37,27 @@ using Pin = ::picolibrary::GPIO::Active_Low_Input_Pin<::picolibrary::Testing::Un
 } // namespace
 
 /**
- * \brief Verify picolibrary::GPIO::Active_Low_Input_Pin::state() works properly when
- *        getting the state of the underlying pin succeeds.
+ * \brief Verify picolibrary::GPIO::Active_Low_Input_Pin::state() properly handles a state
+ *        retrieval error.
  */
-TEST( state, success )
+TEST( state, stateRetrievalError )
+{
+    auto const pin = Pin{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( pin, state() ).WillOnce( Return( error ) );
+
+    auto const result = pin.state();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::GPIO::Active_Low_Input_Pin::state() works properly.
+ */
+TEST( state, worksProperly )
 {
     struct {
         bool is_high;
@@ -59,24 +76,6 @@ TEST( state, success )
         EXPECT_FALSE( result.is_error() );
         EXPECT_EQ( result.value().is_high(), not test_case.is_high );
     } // for
-}
-
-/**
- * \brief Verify picolibrary::GPIO::Active_Low_Input_Pin::state() works properly when
- *        getting the state of the underlying pin fails.
- */
-TEST( state, failure )
-{
-    auto const pin = Pin{};
-
-    auto const error = random<Mock_Error>();
-
-    EXPECT_CALL( pin, state() ).WillOnce( Return( error ) );
-
-    auto const result = pin.state();
-
-    EXPECT_TRUE( result.is_error() );
-    EXPECT_EQ( result.error(), error );
 }
 
 /**
