@@ -48,15 +48,6 @@ using ::picolibrary::Testing::Unit::random_container;
 using ::testing::A;
 using ::testing::Return;
 
-/**
- * \brief Format an integer.
- *
- * \tparam Integer The type of integer to format.
- *
- * \param[in] value The value to format.
- *
- * \return The formatted integer.
- */
 template<typename Integer>
 auto hexadecimal( Integer value )
 {

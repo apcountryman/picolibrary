@@ -40,11 +40,6 @@ using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::random_container;
 using ::testing::Return;
 
-/**
- * \brief Generate a pair of pseudo-random, unique error IDs.
- *
- * \return A pair of pseudo-random, unique error IDs.
- */
 auto random_unique_id_pair()
 {
     auto const a = random<Error_ID>();
