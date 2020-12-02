@@ -19,9 +19,81 @@
  * \brief picolibrary::SPI::Device unit test program.
  */
 
+#include <utility>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "picolibrary/error.h"
+#include "picolibrary/result.h"
 #include "picolibrary/spi.h"
+#include "picolibrary/testing/unit/error.h"
+#include "picolibrary/testing/unit/random.h"
+#include "picolibrary/testing/unit/spi.h"
+#include "picolibrary/utility.h"
+
+namespace {
+
+using ::picolibrary::Error_Code;
+using ::picolibrary::Result;
+using ::picolibrary::Void;
+using ::picolibrary::Testing::Unit::Mock_Error;
+using ::picolibrary::Testing::Unit::random;
+using ::picolibrary::Testing::Unit::SPI::Mock_Controller;
+using ::picolibrary::Testing::Unit::SPI::Mock_Device_Selector;
+using ::testing::Return;
+
+class Device : public ::picolibrary::SPI::Device<Mock_Device_Selector::Handle, Mock_Controller> {
+  public:
+    constexpr Device(
+        Mock_Device_Selector::Handle device_selector,
+        Mock_Controller &            controller,
+        Mock_Controller::Configuration configuration = random<Mock_Controller::Configuration>() ) noexcept :
+        ::picolibrary::SPI::Device<Mock_Device_Selector::Handle, Mock_Controller>{ std::move( device_selector ),
+                                                                                   controller,
+                                                                                   configuration }
+    {
+    }
+
+    using ::picolibrary::SPI::Device<Mock_Device_Selector::Handle, Mock_Controller>::initialize;
+};
+
+} // namespace
+
+/**
+ * \brief Verify picolibrary::SPI::Device::initialize() properly handles an initialization
+ *        error.
+ */
+TEST( initialize, initializationError )
+{
+    auto device_selector = Mock_Device_Selector{};
+    auto controller      = Mock_Controller{};
+
+    auto device = Device{ device_selector.handle(), controller };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( device_selector, initialize() ).WillOnce( Return( error ) );
+
+    auto const result = device.initialize();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::SPI::Device::initialize() works properly.
+ */
+TEST( initialize, worksProperly )
+{
+    auto device_selector = Mock_Device_Selector{};
+    auto controller      = Mock_Controller{};
+
+    auto device = Device{ device_selector.handle(), controller };
+
+    EXPECT_CALL( device_selector, initialize() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( device.initialize().is_error() );
+}
 
 /**
  * \brief Execute the picolibrary::SPI::Device unit tests.
