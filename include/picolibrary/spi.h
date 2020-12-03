@@ -655,11 +655,21 @@ class Device {
         return m_device_selector.initialize();
     }
 
+    /**
+     * \brief Access the device's device selector.
+     *
+     * \return The device's device selector.
+     */
+    constexpr auto & device_selector() const noexcept
+    {
+        return m_device_selector;
+    }
+
   private:
     /**
      * \brief The device selector used to select and deselect the device.
      */
-    Device_Selector m_device_selector{};
+    Device_Selector mutable m_device_selector{};
 };
 
 } // namespace picolibrary::SPI
