@@ -41,6 +41,7 @@ using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::SPI::Mock_Controller;
 using ::picolibrary::Testing::Unit::SPI::Mock_Device_Selector;
+using ::testing::_;
 using ::testing::Return;
 
 class Device : public ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Selector::Handle> {
@@ -56,6 +57,7 @@ class Device : public ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Se
     }
 
     using ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Selector::Handle>::initialize;
+    using ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Selector::Handle>::configure;
     using ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Selector::Handle>::device_selector;
 };
 
@@ -99,6 +101,45 @@ TEST( initialize, worksProperly )
     EXPECT_CALL( device_selector, initialize() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( device.initialize().is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::SPI::Device::configure() properly handles a configuration
+ *        error.
+ */
+TEST( configure, configurationError )
+{
+    auto controller      = Mock_Controller{};
+    auto device_selector = Mock_Device_Selector{};
+
+    auto device = Device{ controller,
+                          random<Mock_Controller::Configuration>(),
+                          device_selector.handle() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( controller, configure( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = device.configure();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::SPI::Device::configure() works properly.
+ */
+TEST( configure, worksProperly )
+{
+    auto       controller      = Mock_Controller{};
+    auto const configuration   = random<Mock_Controller::Configuration>();
+    auto       device_selector = Mock_Device_Selector{};
+
+    auto const device = Device{ controller, configuration, device_selector.handle() };
+
+    EXPECT_CALL( controller, configure( configuration ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( device.configure().is_error() );
 }
 
 /**
