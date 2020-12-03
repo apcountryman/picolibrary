@@ -36,6 +36,7 @@ namespace {
 using ::picolibrary::Error_Code;
 using ::picolibrary::Result;
 using ::picolibrary::Void;
+using ::picolibrary::SPI::make_device_selection_guard;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::SPI::Mock_Controller;
@@ -55,6 +56,7 @@ class Device : public ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Se
     }
 
     using ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Selector::Handle>::initialize;
+    using ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Selector::Handle>::device_selector;
 };
 
 } // namespace
@@ -97,6 +99,24 @@ TEST( initialize, worksProperly )
     EXPECT_CALL( device_selector, initialize() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( device.initialize().is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::SPI::Device::device_selector() works properly.
+ */
+TEST( deviceSelector, worksProperly )
+{
+    auto controller      = Mock_Controller{};
+    auto device_selector = Mock_Device_Selector{};
+
+    auto const device = Device{ controller,
+                                random<Mock_Controller::Configuration>(),
+                                device_selector.handle() };
+
+    ON_CALL( device_selector, select() ).WillByDefault( Return( Result<Void, Error_Code>{} ) );
+    ON_CALL( device_selector, deselect() ).WillByDefault( Return( Result<Void, Error_Code>{} ) );
+
+    auto result = make_device_selection_guard( device.device_selector() );
 }
 
 /**
