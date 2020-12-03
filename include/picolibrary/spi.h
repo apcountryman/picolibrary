@@ -598,7 +598,13 @@ class Device {
      *
      * \param[in] source The source of the move.
      */
-    constexpr Device( Device && source ) noexcept = default;
+    constexpr Device( Device && source ) noexcept :
+        m_controller{ source.m_controller },
+        m_configuration{ source.m_configuration },
+        m_device_selector{ std::move( source.m_device_selector ) }
+    {
+        source.m_controller = nullptr;
+    }
 
     /**
      * \todo #29
@@ -617,7 +623,18 @@ class Device {
      *
      * \return The assigned to object.
      */
-    auto operator=( Device && expression ) noexcept -> Device & = default;
+    auto & operator=( Device && expression ) noexcept
+    {
+        if ( &expression != this ) {
+            m_controller      = expression.m_controller;
+            m_configuration   = expression.m_configuration;
+            m_device_selector = std::move( expression.m_device_selector );
+
+            expression.m_controller = nullptr;
+        } // if
+
+        return *this;
+    }
 
     /**
      * \todo #29
@@ -637,10 +654,10 @@ class Device {
      *            device.
      */
     constexpr Device( Controller & controller, typename Controller::Configuration configuration, Device_Selector device_selector ) noexcept :
+        m_controller{ &controller },
+        m_configuration{ configuration },
         m_device_selector{ std::move( device_selector ) }
     {
-        static_cast<void>( controller );
-        static_cast<void>( configuration );
     }
 
     /**
@@ -656,6 +673,19 @@ class Device {
     }
 
     /**
+     * \brief Configure the controller's clock to meet the device's communication
+     *        requirements.
+     *
+     * \return Nothing if controller clock configuration succeeded.
+     * \return The error reported by the controller if controller clock configuration
+     *         failed.
+     */
+    constexpr auto configure() const noexcept
+    {
+        return m_controller->configure( m_configuration );
+    }
+
+    /**
      * \brief Access the device's device selector.
      *
      * \return The device's device selector.
@@ -666,6 +696,17 @@ class Device {
     }
 
   private:
+    /**
+     * \brief The controller used to communicate with the device.
+     */
+    Controller * m_controller{};
+
+    /**
+     * \brief The controller clock configuration that meets the device's communication
+     *        requirements.
+     */
+    typename Controller::Configuration m_configuration{};
+
     /**
      * \brief The device selector used to select and deselect the device.
      */
