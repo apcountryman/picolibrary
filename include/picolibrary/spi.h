@@ -589,9 +589,43 @@ class Device {
     using Device_Selector = Device_Selector_Type;
 
     /**
+     * \todo #29
+     */
+    Device( Device const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Device() noexcept = default;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Device const & ) = delete;
+
+  protected:
+    /**
      * \brief Constructor.
      */
     constexpr Device() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] controller The controller used to communicate with the device.
+     * \param[in] configuration The controller clock configuration that meets the device's
+     *            communication requirements.
+     * \param[in] device_selector The device selector used to select and deselect the
+     *            device.
+     */
+    constexpr Device( Controller & controller, typename Controller::Configuration configuration, Device_Selector device_selector ) noexcept :
+        m_controller{ &controller },
+        m_configuration{ configuration },
+        m_device_selector{ std::move( device_selector ) }
+    {
+    }
 
     /**
      * \brief Constructor.
@@ -605,16 +639,6 @@ class Device {
     {
         source.m_controller = nullptr;
     }
-
-    /**
-     * \todo #29
-     */
-    Device( Device const & ) = delete;
-
-    /**
-     * \brief Destructor.
-     */
-    ~Device() noexcept = default;
 
     /**
      * \brief Assignment operator.
@@ -634,30 +658,6 @@ class Device {
         } // if
 
         return *this;
-    }
-
-    /**
-     * \todo #29
-     *
-     * \return
-     */
-    auto operator=( Device const & ) = delete;
-
-  protected:
-    /**
-     * \brief Constructor.
-     *
-     * \param[in] controller The controller used to communicate with the device.
-     * \param[in] configuration The controller clock configuration that meets the device's
-     *            communication requirements.
-     * \param[in] device_selector The device selector used to select and deselect the
-     *            device.
-     */
-    constexpr Device( Controller & controller, typename Controller::Configuration configuration, Device_Selector device_selector ) noexcept :
-        m_controller{ &controller },
-        m_configuration{ configuration },
-        m_device_selector{ std::move( device_selector ) }
-    {
     }
 
     /**
