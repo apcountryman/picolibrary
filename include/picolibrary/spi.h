@@ -91,10 +91,10 @@ class Basic_Controller_Concept {
      * \param[in] configuration The clock configuration that meets the device's
      *            communication requirements.
      *
-     * \return Nothing if configuring the controller's clock succeeded.
-     * \return An error code if configuring the controller's clock failed. If configuring
-     *         the controller's clock cannot fail, return
-     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     * \return Nothing if controller clock configuration succeeded.
+     * \return An error code if controller clock configuration failed. If controller clock
+     *         configuration cannot fail, return picolibrary::Result<picolibrary::Void,
+     *         picolibrary::Void>.
      */
     auto configure( Configuration configuration ) noexcept -> Result<Void, Error_Code>;
 
@@ -166,10 +166,10 @@ class Controller_Concept {
      * \param[in] configuration The clock configuration that meets the device's
      *            communication requirements.
      *
-     * \return Nothing if configuring the controller's clock succeeded.
-     * \return An error code if configuring the controller's clock failed. If configuring
-     *         the controller's clock cannot fail, return
-     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     * \return Nothing if controller clock configuration succeeded.
+     * \return An error code if controller clock configuration failed. If controller clock
+     *         configuration cannot fail, return picolibrary::Result<picolibrary::Void,
+     *         picolibrary::Void>.
      */
     auto configure( Configuration configuration ) noexcept -> Result<Void, Error_Code>;
 

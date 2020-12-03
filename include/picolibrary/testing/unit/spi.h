@@ -127,8 +127,8 @@ class Mock_Basic_Controller {
          * \param[in] configuration The clock configuration that meets the device's
          *            communication requirements.
          *
-         * \return Nothing if configuring the controller's clock succeeded.
-         * \return An error code if configuring the controller's clock failed.
+         * \return Nothing if controller clock configuration succeeded.
+         * \return An error code if controller clock configuration failed.
          */
         auto configure( Configuration configuration )
         {
@@ -297,8 +297,8 @@ class Mock_Controller {
          * \param[in] configuration The clock configuration that meets the device's
          *            communication requirements.
          *
-         * \return Nothing if configuring the controller's clock succeeded.
-         * \return An error code if configuring the controller's clock failed.
+         * \return Nothing if controller clock configuration succeeded.
+         * \return An error code if controller clock configuration failed.
          */
         auto configure( Configuration configuration )
         {
