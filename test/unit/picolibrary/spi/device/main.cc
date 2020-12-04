@@ -19,6 +19,7 @@
  * \brief picolibrary::SPI::Device unit test program.
  */
 
+#include <cstdint>
 #include <utility>
 
 #include "gmock/gmock.h"
@@ -42,6 +43,7 @@ using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::SPI::Mock_Controller;
 using ::picolibrary::Testing::Unit::SPI::Mock_Device_Selector;
 using ::testing::_;
+using ::testing::A;
 using ::testing::Return;
 
 class Device : public ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Selector::Handle> {
@@ -59,6 +61,7 @@ class Device : public ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Se
     using ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Selector::Handle>::initialize;
     using ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Selector::Handle>::configure;
     using ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Selector::Handle>::device_selector;
+    using ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Selector::Handle>::exchange;
 };
 
 } // namespace
@@ -158,6 +161,52 @@ TEST( deviceSelector, worksProperly )
     ON_CALL( device_selector, deselect() ).WillByDefault( Return( Result<Void, Error_Code>{} ) );
 
     auto result = make_device_selection_guard( device.device_selector() );
+}
+
+/**
+ * \brief Verify picolibrary::SPI::Device::exchange( std::uint8_t ) properly handles an
+ *        exchange error.
+ */
+TEST( exchange, exchangeError )
+{
+    auto controller      = Mock_Controller{};
+    auto device_selector = Mock_Device_Selector{};
+
+    auto const device = Device{ controller,
+                                random<Mock_Controller::Configuration>(),
+                                device_selector.handle() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( controller, exchange( A<std::uint8_t>() ) ).WillOnce( Return( error ) );
+
+    auto const result = device.exchange( random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::SPI::Device::exchange( std::uint8_t ) works properly.
+ */
+TEST( exchange, worksProperly )
+{
+    auto controller      = Mock_Controller{};
+    auto device_selector = Mock_Device_Selector{};
+
+    auto const device = Device{ controller,
+                                random<Mock_Controller::Configuration>(),
+                                device_selector.handle() };
+
+    auto const tx = random<std::uint8_t>();
+    auto const rx = random<std::uint8_t>();
+
+    EXPECT_CALL( controller, exchange( tx ) ).WillOnce( Return( rx ) );
+
+    auto const result = device.exchange( tx );
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), rx );
 }
 
 /**
