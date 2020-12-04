@@ -728,6 +728,17 @@ class Device {
         return m_controller->exchange( tx_begin, tx_end, rx_begin, rx_end );
     }
 
+    /**
+     * \brief Receive data from the device.
+     *
+     * \return The received data if data reception succeeded.
+     * \return The error reported by the controller if data reception failed.
+     */
+    auto receive() const noexcept
+    {
+        return m_controller->receive();
+    }
+
   private:
     /**
      * \brief The controller used to communicate with the device.
