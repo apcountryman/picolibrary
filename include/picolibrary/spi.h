@@ -708,6 +708,26 @@ class Device {
         return m_controller->exchange( data );
     }
 
+    /**
+     * \brief Exchange a block of data with the device.
+     *
+     * \param[in] tx_begin The beginning of the block of data to transmit.
+     * \param[in] tx_end The end of the block of data to transmit.
+     * \param[in] rx_begin The beginning of the block of received data.
+     * \param[in] rx_end The end of the block of received data.
+     *
+     * \warning This function may not verify that the transmit and receive data blocks are
+     *          the same size.
+     *
+     * \return Nothing if data exchange succeeded.
+     * \return The error reported by the controller if data exchange failed.
+     */
+    auto exchange( std::uint8_t const * tx_begin, std::uint8_t const * tx_end, std::uint8_t * rx_begin, std::uint8_t * rx_end ) const
+        noexcept
+    {
+        return m_controller->exchange( tx_begin, tx_end, rx_begin, rx_end );
+    }
+
   private:
     /**
      * \brief The controller used to communicate with the device.
