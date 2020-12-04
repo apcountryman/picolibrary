@@ -739,6 +739,20 @@ class Device {
         return m_controller->receive();
     }
 
+    /**
+     * \brief Receive a block of data from the device.
+     *
+     * \param[in] begin The beginning of the block of received data.
+     * \param[in] end The end of the block of received data.
+     *
+     * \return Nothing if data reception succeeded.
+     * \return The error reported by the controller if data reception failed.
+     */
+    auto receive( std::uint8_t * begin, std::uint8_t * end ) const noexcept
+    {
+        return m_controller->receive( begin, end );
+    }
+
   private:
     /**
      * \brief The controller used to communicate with the device.
