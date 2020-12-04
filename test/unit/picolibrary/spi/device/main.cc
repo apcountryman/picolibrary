@@ -159,8 +159,8 @@ TEST( deviceSelector, worksProperly )
                                 random<Mock_Controller::Configuration>(),
                                 device_selector.handle() };
 
-    ON_CALL( device_selector, select() ).WillByDefault( Return( Result<Void, Error_Code>{} ) );
-    ON_CALL( device_selector, deselect() ).WillByDefault( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( device_selector, select() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( device_selector, deselect() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     auto result = make_device_selection_guard( device.device_selector() );
 }
