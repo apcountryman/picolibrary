@@ -308,6 +308,54 @@ TEST( receive, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::SPI::Device::receive( std::uint8_t *, std::uint8_t * )
+ *        properly handles a reception error.
+ */
+TEST( receiveBlock, receptionError )
+{
+    auto controller      = Mock_Controller{};
+    auto device_selector = Mock_Device_Selector{};
+
+    auto const device = Device{ controller,
+                                random<Mock_Controller::Configuration>(),
+                                device_selector.handle() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( controller, receive( A<std::vector<std::uint8_t>>() ) ).WillOnce( Return( error ) );
+
+    auto       rx     = std::vector<std::uint8_t>( random<std::uint_fast8_t>() );
+    auto const result = device.receive( &*rx.begin(), &*rx.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::SPI::Device::receive( std::uint8_t *, std::uint8_t * ) works
+ *        properly.
+ */
+TEST( receiveBlock, worksProperly )
+{
+    auto controller      = Mock_Controller{};
+    auto device_selector = Mock_Device_Selector{};
+
+    auto const device = Device{ controller,
+                                random<Mock_Controller::Configuration>(),
+                                device_selector.handle() };
+
+    auto const size        = random<std::uint_fast8_t>();
+    auto const rx_expected = random_container<std::vector<std::uint8_t>>( size );
+
+    EXPECT_CALL( controller, receive( A<std::vector<std::uint8_t>>() ) ).WillOnce( Return( rx_expected ) );
+
+    auto rx = std::vector<std::uint8_t>( size );
+    EXPECT_FALSE( device.receive( &*rx.begin(), &*rx.end() ).is_error() );
+
+    EXPECT_EQ( rx, rx_expected );
+}
+
+/**
  * \brief Execute the picolibrary::SPI::Device unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
