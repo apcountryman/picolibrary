@@ -21,6 +21,7 @@
 
 #include <cstdint>
 #include <utility>
+#include <vector>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -40,6 +41,7 @@ using ::picolibrary::Void;
 using ::picolibrary::SPI::make_device_selection_guard;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
+using ::picolibrary::Testing::Unit::random_container;
 using ::picolibrary::Testing::Unit::SPI::Mock_Controller;
 using ::picolibrary::Testing::Unit::SPI::Mock_Device_Selector;
 using ::testing::_;
@@ -207,6 +209,57 @@ TEST( exchange, worksProperly )
 
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), rx );
+}
+
+/**
+ * \brief Verify picolibrary::SPI::Device::exchange( std::uint8_t const *, std::uint8_t
+ *        const *, std::uint8_t *, std::uint8_t * ) properly handles an exchange error.
+ */
+TEST( exchangeBlock, exchangeError )
+{
+    auto controller      = Mock_Controller{};
+    auto device_selector = Mock_Device_Selector{};
+
+    auto const device = Device{ controller,
+                                random<Mock_Controller::Configuration>(),
+                                device_selector.handle() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( controller, exchange( A<std::vector<std::uint8_t>>() ) ).WillOnce( Return( error ) );
+
+    auto const size = random<std::uint_fast8_t>();
+    auto const tx   = random_container<std::vector<std::uint8_t>>( size );
+    auto       rx   = std::vector<std::uint8_t>( size );
+    auto const result = device.exchange( &*tx.begin(), &*tx.end(), &*rx.begin(), &*rx.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::SPI::Device::exchange( std::uint8_t const *, std::uint8_t
+ *        const *, std::uint8_t *, std::uint8_t * ) works properly.
+ */
+TEST( exchangeBlock, worksProperly )
+{
+    auto controller      = Mock_Controller{};
+    auto device_selector = Mock_Device_Selector{};
+
+    auto const device = Device{ controller,
+                                random<Mock_Controller::Configuration>(),
+                                device_selector.handle() };
+
+    auto const size        = random<std::uint_fast8_t>();
+    auto const tx          = random_container<std::vector<std::uint8_t>>( size );
+    auto const rx_expected = random_container<std::vector<std::uint8_t>>( size );
+    auto       rx          = std::vector<std::uint8_t>( size );
+
+    EXPECT_CALL( controller, exchange( tx ) ).WillOnce( Return( rx_expected ) );
+
+    EXPECT_FALSE( device.exchange( &*tx.begin(), &*tx.end(), &*rx.begin(), &*rx.end() ).is_error() );
+
+    EXPECT_EQ( rx, rx_expected );
 }
 
 /**
