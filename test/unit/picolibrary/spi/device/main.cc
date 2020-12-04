@@ -64,6 +64,7 @@ class Device : public ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Se
     using ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Selector::Handle>::configure;
     using ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Selector::Handle>::device_selector;
     using ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Selector::Handle>::exchange;
+    using ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Selector::Handle>::receive;
 };
 
 } // namespace
@@ -260,6 +261,50 @@ TEST( exchangeBlock, worksProperly )
     EXPECT_FALSE( device.exchange( &*tx.begin(), &*tx.end(), &*rx.begin(), &*rx.end() ).is_error() );
 
     EXPECT_EQ( rx, rx_expected );
+}
+
+/**
+ * \brief Verify picolibrary::SPI::Device::receive() properly handles a reception error.
+ */
+TEST( receive, receptionError )
+{
+    auto controller      = Mock_Controller{};
+    auto device_selector = Mock_Device_Selector{};
+
+    auto const device = Device{ controller,
+                                random<Mock_Controller::Configuration>(),
+                                device_selector.handle() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( controller, receive() ).WillOnce( Return( error ) );
+
+    auto const result = device.receive();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::SPI::Device::receive() works properly.
+ */
+TEST( receive, worksProperly )
+{
+    auto controller      = Mock_Controller{};
+    auto device_selector = Mock_Device_Selector{};
+
+    auto const device = Device{ controller,
+                                random<Mock_Controller::Configuration>(),
+                                device_selector.handle() };
+
+    auto const data = random<std::uint8_t>();
+
+    EXPECT_CALL( controller, receive() ).WillOnce( Return( data ) );
+
+    auto const result = device.receive();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), data );
 }
 
 /**
