@@ -695,6 +695,19 @@ class Device {
         return m_device_selector;
     }
 
+    /**
+     * \brief Exchange data with the device.
+     *
+     * \param[in] data The data to transmit.
+     *
+     * \return The received data if data exchange succeeded.
+     * \return The error reported by the controller if data exchange failed.
+     */
+    auto exchange( std::uint8_t data ) const noexcept
+    {
+        return m_controller->exchange( data );
+    }
+
   private:
     /**
      * \brief The controller used to communicate with the device.
