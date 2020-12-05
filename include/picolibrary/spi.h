@@ -91,10 +91,10 @@ class Basic_Controller_Concept {
      * \param[in] configuration The clock configuration that meets the device's
      *            communication requirements.
      *
-     * \return Nothing if configuring the controller's clock succeeded.
-     * \return An error code if configuring the controller's clock failed. If configuring
-     *         the controller's clock cannot fail, return
-     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     * \return Nothing if controller clock configuration succeeded.
+     * \return An error code if controller clock configuration failed. If controller clock
+     *         configuration cannot fail, return picolibrary::Result<picolibrary::Void,
+     *         picolibrary::Void>.
      */
     auto configure( Configuration configuration ) noexcept -> Result<Void, Error_Code>;
 
@@ -166,10 +166,10 @@ class Controller_Concept {
      * \param[in] configuration The clock configuration that meets the device's
      *            communication requirements.
      *
-     * \return Nothing if configuring the controller's clock succeeded.
-     * \return An error code if configuring the controller's clock failed. If configuring
-     *         the controller's clock cannot fail, return
-     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     * \return Nothing if controller clock configuration succeeded.
+     * \return An error code if controller clock configuration failed. If controller clock
+     *         configuration cannot fail, return picolibrary::Result<picolibrary::Void,
+     *         picolibrary::Void>.
      */
     auto configure( Configuration configuration ) noexcept -> Result<Void, Error_Code>;
 
@@ -567,6 +567,236 @@ auto make_device_selection_guard( Device_Selector & device_selector ) noexcept -
 
     return Device_Selection_Guard{ device_selector };
 }
+
+/**
+ * \brief SPI device
+ *
+ * \tparam Controller_Type The type of controller used to communicate with the device.
+ * \tparam Device_Selector_Type The type of device selector used to select and
+ *         deselect the device.
+ */
+template<typename Controller_Type, typename Device_Selector_Type>
+class Device {
+  public:
+    /**
+     * \brief The type of controller used to communicate with the device.
+     */
+    using Controller = Controller_Type;
+
+    /**
+     * \brief The type of device selector used to select and deselect the device.
+     */
+    using Device_Selector = Device_Selector_Type;
+
+    /**
+     * \todo #29
+     */
+    Device( Device const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Device() noexcept = default;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Device const & ) = delete;
+
+  protected:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Device() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] controller The controller used to communicate with the device.
+     * \param[in] configuration The controller clock configuration that meets the device's
+     *            communication requirements.
+     * \param[in] device_selector The device selector used to select and deselect the
+     *            device.
+     */
+    constexpr Device( Controller & controller, typename Controller::Configuration configuration, Device_Selector device_selector ) noexcept :
+        m_controller{ &controller },
+        m_configuration{ configuration },
+        m_device_selector{ std::move( device_selector ) }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Device( Device && source ) noexcept :
+        m_controller{ source.m_controller },
+        m_configuration{ source.m_configuration },
+        m_device_selector{ std::move( source.m_device_selector ) }
+    {
+        source.m_controller = nullptr;
+    }
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto & operator=( Device && expression ) noexcept
+    {
+        if ( &expression != this ) {
+            m_controller      = expression.m_controller;
+            m_configuration   = expression.m_configuration;
+            m_device_selector = std::move( expression.m_device_selector );
+
+            expression.m_controller = nullptr;
+        } // if
+
+        return *this;
+    }
+
+    /**
+     * \brief Initialize the device selector's hardware.
+     *
+     * \return Nothing if device selector hardware initialization succeeded.
+     * \return The error reported by the device selector if device selector hardware
+     *         initialization failed.
+     */
+    constexpr auto initialize() noexcept
+    {
+        return m_device_selector.initialize();
+    }
+
+    /**
+     * \brief Configure the controller's clock to meet the device's communication
+     *        requirements.
+     *
+     * \return Nothing if controller clock configuration succeeded.
+     * \return The error reported by the controller if controller clock configuration
+     *         failed.
+     */
+    constexpr auto configure() const noexcept
+    {
+        return m_controller->configure( m_configuration );
+    }
+
+    /**
+     * \brief Access the device's device selector.
+     *
+     * \return The device's device selector.
+     */
+    constexpr auto & device_selector() const noexcept
+    {
+        return m_device_selector;
+    }
+
+    /**
+     * \brief Exchange data with the device.
+     *
+     * \param[in] data The data to transmit.
+     *
+     * \return The received data if data exchange succeeded.
+     * \return The error reported by the controller if data exchange failed.
+     */
+    auto exchange( std::uint8_t data ) const noexcept
+    {
+        return m_controller->exchange( data );
+    }
+
+    /**
+     * \brief Exchange a block of data with the device.
+     *
+     * \param[in] tx_begin The beginning of the block of data to transmit.
+     * \param[in] tx_end The end of the block of data to transmit.
+     * \param[in] rx_begin The beginning of the block of received data.
+     * \param[in] rx_end The end of the block of received data.
+     *
+     * \warning This function may not verify that the transmit and receive data blocks are
+     *          the same size.
+     *
+     * \return Nothing if data exchange succeeded.
+     * \return The error reported by the controller if data exchange failed.
+     */
+    auto exchange( std::uint8_t const * tx_begin, std::uint8_t const * tx_end, std::uint8_t * rx_begin, std::uint8_t * rx_end ) const
+        noexcept
+    {
+        return m_controller->exchange( tx_begin, tx_end, rx_begin, rx_end );
+    }
+
+    /**
+     * \brief Receive data from the device.
+     *
+     * \return The received data if data reception succeeded.
+     * \return The error reported by the controller if data reception failed.
+     */
+    auto receive() const noexcept
+    {
+        return m_controller->receive();
+    }
+
+    /**
+     * \brief Receive a block of data from the device.
+     *
+     * \param[in] begin The beginning of the block of received data.
+     * \param[in] end The end of the block of received data.
+     *
+     * \return Nothing if data reception succeeded.
+     * \return The error reported by the controller if data reception failed.
+     */
+    auto receive( std::uint8_t * begin, std::uint8_t * end ) const noexcept
+    {
+        return m_controller->receive( begin, end );
+    }
+
+    /**
+     * \brief Transmit data to the device.
+     *
+     * \param[in] data The data to transmit.
+     *
+     * \return Nothing if data transmission succeeded.
+     * \return The error reported by the controller if data transmission failed.
+     */
+    auto transmit( std::uint8_t data ) const noexcept
+    {
+        return m_controller->transmit( data );
+    }
+
+    /**
+     * \brief Transmit a block of data to the device.
+     *
+     * \param[in] begin The beginning of the block of data to transmit.
+     * \param[in] end The end of the block of data to transmit.
+     *
+     * \return Nothing if data transmission succeeded.
+     * \return The error reported by the controller if data transmission failed.
+     */
+    auto transmit( std::uint8_t const * begin, std::uint8_t const * end ) const noexcept
+    {
+        return m_controller->transmit( begin, end );
+    }
+
+  private:
+    /**
+     * \brief The controller used to communicate with the device.
+     */
+    Controller * m_controller{};
+
+    /**
+     * \brief The controller clock configuration that meets the device's communication
+     *        requirements.
+     */
+    typename Controller::Configuration m_configuration{};
+
+    /**
+     * \brief The device selector used to select and deselect the device.
+     */
+    Device_Selector mutable m_device_selector{};
+};
 
 } // namespace picolibrary::SPI
 

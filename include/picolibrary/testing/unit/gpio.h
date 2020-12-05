@@ -108,6 +108,16 @@ class Mock_Input_Pin {
         auto operator=( Handle const & ) = delete;
 
         /**
+         * \brief Get the mock input pin.
+         *
+         * \return The mock input pin.
+         */
+        auto & mock() noexcept
+        {
+            return *m_mock_input_pin;
+        }
+
+        /**
          * \brief Initialize the pin's hardware.
          *
          * \return Nothing if pin hardware initialization succeeded.
@@ -143,9 +153,11 @@ class Mock_Input_Pin {
     Mock_Input_Pin() = default;
 
     /**
-     * \todo #29
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
      */
-    Mock_Input_Pin( Mock_Input_Pin && ) = delete;
+    Mock_Input_Pin( Mock_Input_Pin && source ) = default;
 
     /**
      * \todo #29
@@ -153,11 +165,18 @@ class Mock_Input_Pin {
     Mock_Input_Pin( Mock_Input_Pin const & ) = delete;
 
     /**
-     * \todo #29
-     *
-     * \return
+     * \brief Destructor.
      */
-    auto operator=( Mock_Input_Pin && ) = delete;
+    ~Mock_Input_Pin() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Mock_Input_Pin && expression ) -> Mock_Input_Pin & = default;
 
     /**
      * \todo #29
@@ -241,6 +260,16 @@ class Mock_Internally_Pulled_Up_Input_Pin {
         auto operator=( Handle const & ) = delete;
 
         /**
+         * \brief Get the mock internally pulled-up input pin.
+         *
+         * \return The mock internally pulled-up input pin.
+         */
+        auto & mock() noexcept
+        {
+            return *m_mock_internally_pulled_up_input_pin;
+        }
+
+        /**
          * \brief Initialize the pin's hardware.
          *
          * \param[in] initial_pull_up_state The initial state of the pin's internal
@@ -301,21 +330,31 @@ class Mock_Internally_Pulled_Up_Input_Pin {
     Mock_Internally_Pulled_Up_Input_Pin() = default;
 
     /**
-     * \todo #29
-     */
-    Mock_Internally_Pulled_Up_Input_Pin( Mock_Input_Pin && ) = delete;
-
-    /**
-     * \todo #29
-     */
-    Mock_Internally_Pulled_Up_Input_Pin( Mock_Input_Pin const & ) = delete;
-
-    /**
-     * \todo #29
+     * \brief Constructor.
      *
-     * \return
+     * \param[in] source The source of the move.
      */
-    auto operator=( Mock_Internally_Pulled_Up_Input_Pin && ) = delete;
+    Mock_Internally_Pulled_Up_Input_Pin( Mock_Internally_Pulled_Up_Input_Pin && source ) = default;
+
+    /**
+     * \todo #29
+     */
+    Mock_Internally_Pulled_Up_Input_Pin( Mock_Internally_Pulled_Up_Input_Pin const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Mock_Internally_Pulled_Up_Input_Pin() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Mock_Internally_Pulled_Up_Input_Pin && expression )
+        -> Mock_Internally_Pulled_Up_Input_Pin & = default;
 
     /**
      * \todo #29
@@ -404,6 +443,16 @@ class Mock_Output_Pin {
         auto operator=( Handle const & ) = delete;
 
         /**
+         * \brief Get the mock output pin.
+         *
+         * \return The mock output pin.
+         */
+        auto & mock() noexcept
+        {
+            return *m_mock_output_pin;
+        }
+
+        /**
          * \brief Initialize the pin's hardware.
          *
          * \param[in] initial_pin_state The initial state of the pin.
@@ -462,9 +511,11 @@ class Mock_Output_Pin {
     Mock_Output_Pin() = default;
 
     /**
-     * \todo #29
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
      */
-    Mock_Output_Pin( Mock_Output_Pin && ) = delete;
+    Mock_Output_Pin( Mock_Output_Pin && source ) = default;
 
     /**
      * \todo #29
@@ -472,11 +523,18 @@ class Mock_Output_Pin {
     Mock_Output_Pin( Mock_Output_Pin const & ) = delete;
 
     /**
-     * \todo #29
-     *
-     * \return
+     * \brief Destructor.
      */
-    auto operator=( Mock_Output_Pin && ) = delete;
+    ~Mock_Output_Pin() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Mock_Output_Pin && expression ) -> Mock_Output_Pin & = default;
 
     /**
      * \todo #29
@@ -564,6 +622,16 @@ class Mock_IO_Pin {
         auto operator=( Handle const & ) = delete;
 
         /**
+         * \brief Get the mock I/O pin.
+         *
+         * \return The mock I/O pin.
+         */
+        auto & mock() noexcept
+        {
+            return *m_mock_io_pin;
+        }
+
+        /**
          * \brief Initialize the pin's hardware.
          *
          * \param[in] initial_pin_state The initial state of the pin.
@@ -634,9 +702,11 @@ class Mock_IO_Pin {
     Mock_IO_Pin() = default;
 
     /**
-     * \todo #29
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
      */
-    Mock_IO_Pin( Mock_IO_Pin && ) = delete;
+    Mock_IO_Pin( Mock_IO_Pin && source ) = default;
 
     /**
      * \todo #29
@@ -644,11 +714,18 @@ class Mock_IO_Pin {
     Mock_IO_Pin( Mock_IO_Pin const & ) = delete;
 
     /**
-     * \todo #29
-     *
-     * \return
+     * \brief Destructor.
      */
-    auto operator=( Mock_IO_Pin && ) = delete;
+    ~Mock_IO_Pin() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Mock_IO_Pin && expression ) -> Mock_IO_Pin & = default;
 
     /**
      * \todo #29
