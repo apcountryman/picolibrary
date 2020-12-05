@@ -753,6 +753,19 @@ class Device {
         return m_controller->receive( begin, end );
     }
 
+    /**
+     * \brief Transmit data to the device.
+     *
+     * \param[in] data The data to transmit.
+     *
+     * \return Nothing if data transmission succeeded.
+     * \return The error reported by the controller if data transmission failed.
+     */
+    auto transmit( std::uint8_t data ) const noexcept
+    {
+        return m_controller->transmit( data );
+    }
+
   private:
     /**
      * \brief The controller used to communicate with the device.
