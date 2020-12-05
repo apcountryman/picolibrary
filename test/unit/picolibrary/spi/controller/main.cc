@@ -77,12 +77,12 @@ TEST( exchangeBlock, worksProperly )
     auto const size        = random<std::uint_fast8_t>();
     auto const tx          = random_container<std::vector<std::uint8_t>>( size );
     auto const rx_expected = random_container<std::vector<std::uint8_t>>( size );
-    auto       rx          = std::vector<std::uint8_t>( size );
 
     for ( auto i = 0; i < size; ++i ) {
         EXPECT_CALL( controller, exchange( tx[ i ] ) ).WillOnce( Return( rx_expected[ i ] ) );
     } // for
 
+    auto rx = std::vector<std::uint8_t>( size );
     EXPECT_FALSE(
         controller.exchange( &*tx.begin(), &*tx.end(), &*rx.begin(), &*rx.end() ).is_error() );
 
@@ -199,6 +199,7 @@ TEST( transmit, worksProperly )
 }
 
 /**
+    auto       rx          = std::vector<std::uint8_t>( size );
  * \brief Verify picolibrary::SPI::Controller::transmit( std::uint8_t const *,
  *        std::uint8_t const * ) properly handles an exchange error.
  */

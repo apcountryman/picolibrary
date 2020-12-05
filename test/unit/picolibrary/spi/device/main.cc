@@ -254,10 +254,10 @@ TEST( exchangeBlock, worksProperly )
     auto const size        = random<std::uint_fast8_t>();
     auto const tx          = random_container<std::vector<std::uint8_t>>( size );
     auto const rx_expected = random_container<std::vector<std::uint8_t>>( size );
-    auto       rx          = std::vector<std::uint8_t>( size );
 
     EXPECT_CALL( controller, exchange( tx ) ).WillOnce( Return( rx_expected ) );
 
+    auto rx = std::vector<std::uint8_t>( size );
     EXPECT_FALSE( device.exchange( &*tx.begin(), &*tx.end(), &*rx.begin(), &*rx.end() ).is_error() );
 
     EXPECT_EQ( rx, rx_expected );
