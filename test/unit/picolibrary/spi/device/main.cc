@@ -399,6 +399,50 @@ TEST( transmit, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::SPI::Device::transmit( std::uint8_t const *, std::uint8_t
+ *        const * ) properly handles a transmission error.
+ */
+TEST( transmitBlock, transmissionError )
+{
+    auto controller      = Mock_Controller{};
+    auto device_selector = Mock_Device_Selector{};
+
+    auto const device = Device{ controller,
+                                random<Mock_Controller::Configuration>(),
+                                device_selector.handle() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( controller, transmit( A<std::vector<std::uint8_t>>() ) ).WillOnce( Return( error ) );
+
+    auto const tx     = random_container<std::vector<std::uint8_t>>();
+    auto const result = device.transmit( &*tx.begin(), &*tx.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::SPI::Device::transmit( std::uint8_t const *, std::uint8_t
+ *        const *  ) works properly.
+ */
+TEST( transmitBlock, worksProperly )
+{
+    auto controller      = Mock_Controller{};
+    auto device_selector = Mock_Device_Selector{};
+
+    auto const device = Device{ controller,
+                                random<Mock_Controller::Configuration>(),
+                                device_selector.handle() };
+
+    auto const tx = random_container<std::vector<std::uint8_t>>();
+
+    EXPECT_CALL( controller, transmit( tx ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( device.transmit( &*tx.begin(), &*tx.end() ).is_error() );
+}
+
+/**
  * \brief Execute the picolibrary::SPI::Device unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
