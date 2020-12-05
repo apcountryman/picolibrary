@@ -105,6 +105,16 @@ class Mock_Blocking_Single_Sample_Converter {
         auto operator=( Handle const & ) = delete;
 
         /**
+         * \brief Get the mock blocking single sample converter.
+         *
+         * \return The mock blocking single sample converter.
+         */
+        auto & mock() noexcept
+        {
+            return *m_mock_blocking_single_sample_converter;
+        }
+
+        /**
          * \brief Initialize the ADC's hardware.
          *
          * \return Nothing if ADC hardware initialization succeeded.
@@ -155,9 +165,11 @@ class Mock_Blocking_Single_Sample_Converter {
     Mock_Blocking_Single_Sample_Converter() = default;
 
     /**
-     * \todo #29
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
      */
-    Mock_Blocking_Single_Sample_Converter( Mock_Blocking_Single_Sample_Converter && ) = default;
+    Mock_Blocking_Single_Sample_Converter( Mock_Blocking_Single_Sample_Converter && source ) = default;
 
     /**
      * \todo #29
@@ -167,14 +179,17 @@ class Mock_Blocking_Single_Sample_Converter {
     /**
      * \brief Destructor.
      */
-    ~Mock_Blocking_Single_Sample_Converter() = default;
+    ~Mock_Blocking_Single_Sample_Converter() noexcept = default;
 
     /**
-     * \todo #29
+     * \brief Assignment operator.
      *
-     * \return
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
      */
-    auto operator=( Mock_Blocking_Single_Sample_Converter && ) = delete;
+    auto operator=( Mock_Blocking_Single_Sample_Converter && expression )
+        -> Mock_Blocking_Single_Sample_Converter & = default;
 
     /**
      * \todo #29
@@ -275,6 +290,16 @@ class Mock_Non_Blocking_Single_Sample_Converter {
         auto operator=( Handle const & ) = delete;
 
         /**
+         * \brief Get the mock non-blocking single sample converter.
+         *
+         * \return The mock non-blocking single sample converter.
+         */
+        auto & mock() noexcept
+        {
+            return *m_mock_non_blocking_single_sample_converter;
+        }
+
+        /**
          * \brief Initialize the ADC's hardware.
          *
          * \return Nothing if ADC hardware initialization succeeded.
@@ -348,9 +373,11 @@ class Mock_Non_Blocking_Single_Sample_Converter {
     Mock_Non_Blocking_Single_Sample_Converter() = default;
 
     /**
-     * \todo #29
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
      */
-    Mock_Non_Blocking_Single_Sample_Converter( Mock_Non_Blocking_Single_Sample_Converter && ) = default;
+    Mock_Non_Blocking_Single_Sample_Converter( Mock_Non_Blocking_Single_Sample_Converter && source ) = default;
 
     /**
      * \todo #29
@@ -360,14 +387,17 @@ class Mock_Non_Blocking_Single_Sample_Converter {
     /**
      * \brief Destructor.
      */
-    ~Mock_Non_Blocking_Single_Sample_Converter() = default;
+    ~Mock_Non_Blocking_Single_Sample_Converter() noexcept = default;
 
     /**
-     * \todo #29
+     * \brief Assignment operator.
      *
-     * \return
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
      */
-    auto operator=( Mock_Non_Blocking_Single_Sample_Converter && ) = delete;
+    auto operator=( Mock_Non_Blocking_Single_Sample_Converter && expression )
+        -> Mock_Non_Blocking_Single_Sample_Converter & = default;
 
     /**
      * \todo #29

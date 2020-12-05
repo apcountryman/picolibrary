@@ -52,6 +52,11 @@ class Mock_Basic_Controller {
     class Handle {
       public:
         /**
+         * \copydoc picolibrary::SPI::Basic_Controller_Concept::Configuration
+         */
+        using Configuration = std::uint_fast16_t;
+
+        /**
          * \brief Constructor.
          */
         Handle() noexcept = default;
@@ -161,9 +166,11 @@ class Mock_Basic_Controller {
     Mock_Basic_Controller() = default;
 
     /**
-     * \todo #29
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
      */
-    Mock_Basic_Controller( Mock_Basic_Controller && ) = delete;
+    Mock_Basic_Controller( Mock_Basic_Controller && source ) = default;
 
     /**
      * \todo #29
@@ -176,11 +183,13 @@ class Mock_Basic_Controller {
     ~Mock_Basic_Controller() noexcept = default;
 
     /**
-     * \todo #29
+     * \brief Assignment operator.
      *
-     * \return
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
      */
-    auto operator=( Mock_Basic_Controller && ) = delete;
+    auto operator=( Mock_Basic_Controller && expression ) -> Mock_Basic_Controller & = default;
 
     /**
      * \todo #29
@@ -221,6 +230,11 @@ class Mock_Controller {
      */
     class Handle {
       public:
+        /**
+         * \copydoc picolibrary::SPI::Controller_Concept::Configuration
+         */
+        using Configuration = std::uint_fast16_t;
+
         /**
          * \brief Constructor.
          */
@@ -402,9 +416,11 @@ class Mock_Controller {
     Mock_Controller() = default;
 
     /**
-     * \todo #29
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
      */
-    Mock_Controller( Mock_Controller && ) = delete;
+    Mock_Controller( Mock_Controller && source ) = default;
 
     /**
      * \todo #29
@@ -417,11 +433,13 @@ class Mock_Controller {
     ~Mock_Controller() noexcept = default;
 
     /**
-     * \todo #29
+     * \brief Assignment operator.
      *
-     * \return
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
      */
-    auto operator=( Mock_Controller && ) = delete;
+    auto operator=( Mock_Controller && expression ) -> Mock_Controller & = default;
 
     /**
      * \todo #29
@@ -643,9 +661,11 @@ class Mock_Device_Selector {
     Mock_Device_Selector() = default;
 
     /**
-     * \todo #29
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
      */
-    Mock_Device_Selector( Mock_Device_Selector && ) = delete;
+    Mock_Device_Selector( Mock_Device_Selector && source ) = default;
 
     /**
      * \todo #29
@@ -658,11 +678,13 @@ class Mock_Device_Selector {
     ~Mock_Device_Selector() noexcept = default;
 
     /**
-     * \todo #29
+     * \brief Assignment operator.
      *
-     * \return
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
      */
-    auto operator=( Mock_Device_Selector && ) = delete;
+    auto operator=( Mock_Device_Selector && expression ) -> Mock_Device_Selector & = default;
 
     /**
      * \todo #29

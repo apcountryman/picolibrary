@@ -126,9 +126,11 @@ class Mock_Nullary_Functor {
     Mock_Nullary_Functor() = default;
 
     /**
-     * \todo #29
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
      */
-    Mock_Nullary_Functor( Mock_Nullary_Functor && ) = delete;
+    Mock_Nullary_Functor( Mock_Nullary_Functor && source ) = default;
 
     /**
      * \todo #29
@@ -141,11 +143,13 @@ class Mock_Nullary_Functor {
     ~Mock_Nullary_Functor() noexcept = default;
 
     /**
-     * \todo #29
+     * \brief Assignment operator.
      *
-     * \return
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
      */
-    auto operator=( Mock_Nullary_Functor && ) = delete;
+    auto operator=( Mock_Nullary_Functor && expression ) -> Mock_Nullary_Functor & = default;
 
     /**
      * \todo #29
@@ -281,9 +285,11 @@ class Mock_Functor {
     Mock_Functor() = default;
 
     /**
-     * \todo #29
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
      */
-    Mock_Functor( Mock_Functor && ) = delete;
+    Mock_Functor( Mock_Functor && source ) = default;
 
     /**
      * \todo #29
@@ -296,11 +302,13 @@ class Mock_Functor {
     ~Mock_Functor() noexcept = default;
 
     /**
-     * \todo #29
+     * \brief Assignment operator.
      *
-     * \return
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
      */
-    auto operator=( Mock_Functor && ) = delete;
+    auto operator=( Mock_Functor && expression ) -> Mock_Functor & = default;
 
     /**
      * \todo #29

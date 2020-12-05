@@ -47,9 +47,11 @@ class Mock_Stream_Buffer : public Stream_Buffer {
     Mock_Stream_Buffer() = default;
 
     /**
-     * \todo #29
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
      */
-    Mock_Stream_Buffer( Mock_Stream_Buffer && ) = delete;
+    Mock_Stream_Buffer( Mock_Stream_Buffer && source ) = default;
 
     /**
      * \todo #29
@@ -62,11 +64,13 @@ class Mock_Stream_Buffer : public Stream_Buffer {
     ~Mock_Stream_Buffer() noexcept = default;
 
     /**
-     * \todo #29
+     * \brief Assignment operator.
      *
-     * \return
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
      */
-    auto operator=( Mock_Stream_Buffer && ) = delete;
+    auto operator=( Mock_Stream_Buffer && expression ) -> Mock_Stream_Buffer & = default;
 
     /**
      * \todo #29

@@ -52,6 +52,11 @@ class Mock_Basic_Transmitter {
     class Handle {
       public:
         /**
+         * \copydoc picolibrary::Asynchronous_Serial::Basic_Transmitter_Concept::Data
+         */
+        using Data = Data_Type;
+
+        /**
          * \brief Constructor.
          */
         Handle() noexcept = default;
@@ -146,9 +151,11 @@ class Mock_Basic_Transmitter {
     Mock_Basic_Transmitter() = default;
 
     /**
-     * \todo #29
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
      */
-    Mock_Basic_Transmitter( Mock_Basic_Transmitter && ) = delete;
+    Mock_Basic_Transmitter( Mock_Basic_Transmitter && source ) = default;
 
     /**
      * \todo #29
@@ -161,11 +168,13 @@ class Mock_Basic_Transmitter {
     ~Mock_Basic_Transmitter() noexcept = default;
 
     /**
-     * \todo #29
+     * \brief Assignment operator.
      *
-     * \return
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
      */
-    auto operator=( Mock_Basic_Transmitter && ) = delete;
+    auto operator=( Mock_Basic_Transmitter && expression ) -> Mock_Basic_Transmitter & = default;
 
     /**
      * \todo #29
@@ -207,6 +216,11 @@ class Mock_Transmitter {
      */
     class Handle {
       public:
+        /**
+         * \copydoc picolibrary::Asynchronous_Serial::Transmitter_Concept::Data
+         */
+        using Data = Data_Type;
+
         /**
          * \brief Constructor.
          */
@@ -316,9 +330,11 @@ class Mock_Transmitter {
     Mock_Transmitter() = default;
 
     /**
-     * \todo #29
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
      */
-    Mock_Transmitter( Mock_Transmitter && ) = delete;
+    Mock_Transmitter( Mock_Transmitter && source ) = default;
 
     /**
      * \todo #29
@@ -331,11 +347,13 @@ class Mock_Transmitter {
     ~Mock_Transmitter() noexcept = default;
 
     /**
-     * \todo #29
+     * \brief Assignment operator.
      *
-     * \return
+     * \param[in] expression The expresison to be assigned.
+     *
+     * \return The assigned to object.
      */
-    auto operator=( Mock_Transmitter && ) = delete;
+    auto operator=( Mock_Transmitter && expression ) -> Mock_Transmitter & = default;
 
     /**
      * \todo #29
