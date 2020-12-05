@@ -199,7 +199,6 @@ TEST( transmit, worksProperly )
 }
 
 /**
-    auto       rx          = std::vector<std::uint8_t>( size );
  * \brief Verify picolibrary::SPI::Controller::transmit( std::uint8_t const *,
  *        std::uint8_t const * ) properly handles an exchange error.
  */
