@@ -766,6 +766,20 @@ class Device {
         return m_controller->transmit( data );
     }
 
+    /**
+     * \brief Transmit a block of data to the device.
+     *
+     * \param[in] begin The beginning of the block of data to transmit.
+     * \param[in] end The end of the block of data to transmit.
+     *
+     * \return Nothing if data transmission succeeded.
+     * \return The error reported by the controller if data transmission failed.
+     */
+    auto transmit( std::uint8_t const * begin, std::uint8_t const * end ) const noexcept
+    {
+        return m_controller->transmit( begin, end );
+    }
+
   private:
     /**
      * \brief The controller used to communicate with the device.
