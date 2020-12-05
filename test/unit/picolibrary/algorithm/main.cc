@@ -29,7 +29,6 @@
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/testing/unit/error.h"
-#include "picolibrary/testing/unit/functor.h"
 #include "picolibrary/testing/unit/random.h"
 #include "picolibrary/utility.h"
 
@@ -41,12 +40,11 @@ using ::picolibrary::Result;
 using ::picolibrary::Return_Functor;
 using ::picolibrary::Void;
 using ::picolibrary::Testing::Unit::Mock_Error;
-using ::picolibrary::Testing::Unit::Mock_Functor;
-using ::picolibrary::Testing::Unit::Mock_Nullary_Functor;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::random_container;
 using ::testing::_;
 using ::testing::InSequence;
+using ::testing::MockFunction;
 using ::testing::Ref;
 using ::testing::Return;
 
@@ -58,32 +56,32 @@ using ::testing::Return;
 TEST( forEach, functorError )
 {
     {
-        auto const functor = Mock_Functor<Result<Void, Error_Code>, std::uint_fast8_t const &>{};
+        auto functor = MockFunction<Result<Void, Error_Code>( std::uint_fast8_t const & )>{};
 
         auto const error = random<Mock_Error>();
 
-        EXPECT_CALL( functor, call( _ ) ).WillOnce( Return( error ) );
+        EXPECT_CALL( functor, Call( _ ) ).WillOnce( Return( error ) );
 
         auto const values = random_container<std::vector<std::uint_fast8_t>>(
             random<std::uint_fast8_t>( 1 ) );
         auto const result = ::picolibrary::for_each<Return_Functor>(
-            values.begin(), values.end(), functor.handle() );
+            values.begin(), values.end(), functor.AsStdFunction() );
 
         EXPECT_TRUE( result.is_error() );
         EXPECT_EQ( result.error(), error );
     }
 
     {
-        auto const functor = Mock_Functor<Result<Void, Error_Code>, std::uint_fast8_t const &>{};
+        auto functor = MockFunction<Result<Void, Error_Code>( std::uint_fast8_t const & )>{};
 
         auto const error = random<Mock_Error>();
 
-        EXPECT_CALL( functor, call( _ ) ).WillOnce( Return( error ) );
+        EXPECT_CALL( functor, Call( _ ) ).WillOnce( Return( error ) );
 
         auto const values = random_container<std::vector<std::uint_fast8_t>>(
             random<std::uint_fast8_t>( 1 ) );
         auto const result = ::picolibrary::for_each<Discard_Functor>(
-            values.begin(), values.end(), functor.handle() );
+            values.begin(), values.end(), functor.AsStdFunction() );
 
         EXPECT_TRUE( result.is_error() );
         EXPECT_EQ( result.error(), error );
@@ -98,36 +96,39 @@ TEST( forEach, worksProperly )
     {
         auto const in_sequence = InSequence{};
 
-        auto const functor = Mock_Functor<Result<Void, Error_Code>, std::uint_fast8_t const &>{};
+        auto functor = MockFunction<Result<Void, Error_Code>( std::uint_fast8_t const & )>{};
 
         auto const values = random_container<std::vector<std::uint_fast8_t>>();
 
         for ( auto const & value : values ) {
-            EXPECT_CALL( functor, call( Ref( value ) ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( functor, Call( Ref( value ) ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
         } // for
 
         auto const result = ::picolibrary::for_each<Return_Functor>(
-            values.begin(), values.end(), functor.handle() );
+            values.begin(), values.end(), functor.AsStdFunction() );
 
-        static_assert( std::is_same_v<decltype( result )::Value, decltype( functor.handle() )> );
+        static_assert( std::is_same_v<decltype( result )::Value, decltype( functor.AsStdFunction() )> );
 
         EXPECT_TRUE( result.is_value() );
-        EXPECT_EQ( &result.value().mock(), &functor );
+
+        EXPECT_CALL( functor, Call( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+        EXPECT_FALSE( result.value()( random<std::uint_fast8_t>() ).is_error() );
     }
 
     {
         auto const in_sequence = InSequence{};
 
-        auto const functor = Mock_Functor<Result<Void, Error_Code>, std::uint_fast8_t const &>{};
+        auto functor = MockFunction<Result<Void, Error_Code>( std::uint_fast8_t const & )>{};
 
         auto const values = random_container<std::vector<std::uint_fast8_t>>();
 
         for ( auto const & value : values ) {
-            EXPECT_CALL( functor, call( Ref( value ) ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( functor, Call( Ref( value ) ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
         } // for
 
         auto const result = ::picolibrary::for_each<Discard_Functor>(
-            values.begin(), values.end(), functor.handle() );
+            values.begin(), values.end(), functor.AsStdFunction() );
 
         static_assert( std::is_same_v<decltype( result )::Value, Void> );
 
@@ -140,14 +141,15 @@ TEST( forEach, worksProperly )
  */
 TEST( generate, functorError )
 {
-    auto const functor = Mock_Nullary_Functor<Result<std::uint_fast8_t, Error_Code>>{};
+    auto functor = MockFunction<Result<std::uint_fast8_t, Error_Code>()>{};
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( functor, call() ).WillOnce( Return( error ) );
+    EXPECT_CALL( functor, Call() ).WillOnce( Return( error ) );
 
-    auto output = std::vector<std::uint_fast8_t>( random<std::uint_fast8_t>( 1 ) );
-    auto const result = ::picolibrary::generate( output.begin(), output.end(), functor.handle() );
+    auto       output = std::vector<std::uint_fast8_t>( random<std::uint_fast8_t>( 1 ) );
+    auto const result = ::picolibrary::generate(
+        output.begin(), output.end(), functor.AsStdFunction() );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -160,18 +162,18 @@ TEST( generate, worksProperly )
 {
     auto const in_sequence = InSequence{};
 
-    auto const functor = Mock_Nullary_Functor<Result<std::uint_fast8_t, Error_Code>>{};
+    auto functor = MockFunction<Result<std::uint_fast8_t, Error_Code>()>{};
 
     auto const values = random_container<std::vector<std::uint_fast8_t>>();
 
     for ( auto const value : values ) {
-        EXPECT_CALL( functor, call() ).WillOnce( Return( value ) );
+        EXPECT_CALL( functor, Call() ).WillOnce( Return( value ) );
     } // for
 
     auto output = std::vector<std::uint_fast8_t>( values.size() );
 
     EXPECT_FALSE(
-        ::picolibrary::generate( output.begin(), output.end(), functor.handle() ).is_error() );
+        ::picolibrary::generate( output.begin(), output.end(), functor.AsStdFunction() ).is_error() );
 
     EXPECT_EQ( output, values );
 }
