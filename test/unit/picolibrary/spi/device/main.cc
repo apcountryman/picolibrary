@@ -164,7 +164,7 @@ TEST( deviceSelector, worksProperly )
     EXPECT_CALL( device_selector, select() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     EXPECT_CALL( device_selector, deselect() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
-    auto result = make_device_selection_guard( device.device_selector() );
+    static_cast<void>( make_device_selection_guard( device.device_selector() ) );
 }
 
 /**
