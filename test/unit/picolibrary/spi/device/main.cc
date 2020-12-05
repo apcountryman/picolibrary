@@ -65,6 +65,7 @@ class Device : public ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Se
     using ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Selector::Handle>::device_selector;
     using ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Selector::Handle>::exchange;
     using ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Selector::Handle>::receive;
+    using ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Selector::Handle>::transmit;
 };
 
 } // namespace
@@ -353,6 +354,48 @@ TEST( receiveBlock, worksProperly )
     EXPECT_FALSE( device.receive( &*rx.begin(), &*rx.end() ).is_error() );
 
     EXPECT_EQ( rx, rx_expected );
+}
+
+/**
+ * \brief Verify picolibrary::SPI::Device::transmit( std::uint8_t ) properly handles a
+ *        transmission error.
+ */
+TEST( transmit, transmissionError )
+{
+    auto controller      = Mock_Controller{};
+    auto device_selector = Mock_Device_Selector{};
+
+    auto const device = Device{ controller,
+                                random<Mock_Controller::Configuration>(),
+                                device_selector.handle() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( controller, transmit( A<std::uint8_t>() ) ).WillOnce( Return( error ) );
+
+    auto const result = device.transmit( random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::SPI::Device::transmit( std::uint8_t ) works properly.
+ */
+TEST( transmit, worksProperly )
+{
+    auto controller      = Mock_Controller{};
+    auto device_selector = Mock_Device_Selector{};
+
+    auto const device = Device{ controller,
+                                random<Mock_Controller::Configuration>(),
+                                device_selector.handle() };
+
+    auto const data = random<std::uint8_t>();
+
+    EXPECT_CALL( controller, transmit( data ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( device.transmit( data ).is_error() );
 }
 
 /**
