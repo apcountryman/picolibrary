@@ -50,7 +50,7 @@ using ::testing::Return;
 
 class Device : public ::picolibrary::SPI::Device<Mock_Controller, Mock_Device_Selector::Handle> {
   public:
-    constexpr Device(
+    Device(
         Mock_Controller &              controller,
         Mock_Controller::Configuration configuration,
         Mock_Device_Selector::Handle   device_selector ) noexcept :

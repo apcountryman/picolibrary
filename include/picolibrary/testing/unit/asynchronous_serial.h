@@ -76,7 +76,11 @@ class Mock_Basic_Transmitter {
          *
          * \param[in] source The source of the move.
          */
-        Handle( Handle && source ) noexcept = default;
+        Handle( Handle && source ) noexcept :
+            m_mock_basic_transmitter{ source.m_mock_basic_transmitter }
+        {
+            source.m_mock_basic_transmitter = nullptr;
+        }
 
         /**
          * \todo #29
@@ -95,7 +99,16 @@ class Mock_Basic_Transmitter {
          *
          * \return The assigned to object.
          */
-        auto operator=( Handle && expression ) noexcept -> Handle & = default;
+        auto & operator=( Handle && expression ) noexcept
+        {
+            if ( &expression != this ) {
+                m_mock_basic_transmitter = expression.m_mock_basic_transmitter;
+
+                expression.m_mock_basic_transmitter = nullptr;
+            } // if
+
+            return *this;
+        }
 
         /**
          * \todo #29
@@ -241,7 +254,11 @@ class Mock_Transmitter {
          *
          * \param[in] source The source of the move.
          */
-        Handle( Handle && source ) noexcept = default;
+        Handle( Handle && source ) noexcept :
+            m_mock_transmitter{ source.m_mock_transmitter }
+        {
+            source.m_mock_transmitter = nullptr;
+        }
 
         /**
          * \todo #29
@@ -260,7 +277,16 @@ class Mock_Transmitter {
          *
          * \return The assigned to object.
          */
-        auto operator=( Handle && expression ) noexcept -> Handle & = default;
+        auto & operator=( Handle && expression ) noexcept
+        {
+            if ( &expression != this ) {
+                m_mock_transmitter = expression.m_mock_transmitter;
+
+                expression.m_mock_transmitter = nullptr;
+            } // if
+
+            return *this;
+        }
 
         /**
          * \todo #29

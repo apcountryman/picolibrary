@@ -79,7 +79,10 @@ class Mock_Input_Pin {
          *
          * \param[in] source The source of the move.
          */
-        Handle( Handle && source ) noexcept = default;
+        Handle( Handle && source ) noexcept : m_mock_input_pin{ source.m_mock_input_pin }
+        {
+            source.m_mock_input_pin = nullptr;
+        }
 
         /**
          * \todo #29
@@ -98,7 +101,16 @@ class Mock_Input_Pin {
          *
          * \return The assigned to object.
          */
-        auto operator=( Handle && expression ) noexcept -> Handle & = default;
+        auto & operator=( Handle && expression ) noexcept
+        {
+            if ( &expression != this ) {
+                m_mock_input_pin = expression.m_mock_input_pin;
+
+                expression.m_mock_input_pin = nullptr;
+            } // if
+
+            return *this;
+        }
 
         /**
          * \todo #29
@@ -231,7 +243,11 @@ class Mock_Internally_Pulled_Up_Input_Pin {
          *
          * \param[in] source The source of the move.
          */
-        Handle( Handle && source ) noexcept = default;
+        Handle( Handle && source ) noexcept :
+            m_mock_internally_pulled_up_input_pin{ source.m_mock_internally_pulled_up_input_pin }
+        {
+            source.m_mock_internally_pulled_up_input_pin = nullptr;
+        }
 
         /**
          * \todo #29
@@ -250,7 +266,16 @@ class Mock_Internally_Pulled_Up_Input_Pin {
          *
          * \return The assigned to object.
          */
-        auto operator=( Handle && expression ) noexcept -> Handle & = default;
+        auto & operator=( Handle && expression ) noexcept
+        {
+            if ( &expression != this ) {
+                m_mock_internally_pulled_up_input_pin = expression.m_mock_internally_pulled_up_input_pin;
+
+                expression.m_mock_internally_pulled_up_input_pin = nullptr;
+            } // if
+
+            return *this;
+        }
 
         /**
          * \todo #29
@@ -414,7 +439,11 @@ class Mock_Output_Pin {
          *
          * \param[in] source The source of the move.
          */
-        Handle( Handle && source ) noexcept = default;
+        Handle( Handle && source ) noexcept :
+            m_mock_output_pin{ source.m_mock_output_pin }
+        {
+            source.m_mock_output_pin = nullptr;
+        }
 
         /**
          * \todo #29
@@ -433,7 +462,16 @@ class Mock_Output_Pin {
          *
          * \return The assigned to object.
          */
-        auto operator=( Handle && expression ) noexcept -> Handle & = default;
+        auto & operator=( Handle && expression ) noexcept
+        {
+            if ( &expression != this ) {
+                m_mock_output_pin = expression.m_mock_output_pin;
+
+                expression.m_mock_output_pin = nullptr;
+            } // if
+
+            return *this;
+        }
 
         /**
          * \todo #29
@@ -593,7 +631,10 @@ class Mock_IO_Pin {
          *
          * \param[in] source The source of the move.
          */
-        Handle( Handle && source ) noexcept = default;
+        Handle( Handle && source ) noexcept : m_mock_io_pin{ source.m_mock_io_pin }
+        {
+            source.m_mock_io_pin = nullptr;
+        }
 
         /**
          * \todo #29
@@ -612,7 +653,16 @@ class Mock_IO_Pin {
          *
          * \return The assigned to object.
          */
-        auto operator=( Handle && expression ) noexcept -> Handle & = default;
+        auto & operator=( Handle && expression ) noexcept
+        {
+            if ( &expression != this ) {
+                m_mock_io_pin = expression.m_mock_io_pin;
+
+                expression.m_mock_io_pin = nullptr;
+            } // if
+
+            return *this;
+        }
 
         /**
          * \todo #29

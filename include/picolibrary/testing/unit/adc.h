@@ -76,7 +76,11 @@ class Mock_Blocking_Single_Sample_Converter {
          *
          * \param[in] source The source of the move.
          */
-        Handle( Handle && source ) noexcept = default;
+        Handle( Handle && source ) noexcept :
+            m_mock_blocking_single_sample_converter{ source.m_mock_blocking_single_sample_converter }
+        {
+            source.m_mock_blocking_single_sample_converter = nullptr;
+        }
 
         /**
          * \todo #29
@@ -95,7 +99,16 @@ class Mock_Blocking_Single_Sample_Converter {
          *
          * \return The assigned to object.
          */
-        auto operator=( Handle && expression ) noexcept -> Handle & = default;
+        auto & operator=( Handle && expression ) noexcept
+        {
+            if ( &expression != this ) {
+                m_mock_blocking_single_sample_converter = expression.m_mock_blocking_single_sample_converter;
+
+                expression.m_mock_blocking_isngle_sample_converter = nullptr;
+            } // if
+
+            return *this;
+        }
 
         /**
          * \todo #29
@@ -261,7 +274,11 @@ class Mock_Non_Blocking_Single_Sample_Converter {
          *
          * \param[in] source The source of the move.
          */
-        Handle( Handle && source ) noexcept = default;
+        Handle( Handle && source ) noexcept :
+            m_mock_non_blocking_single_sample_converter{ source.m_mock_non_blocking_single_sample_converter }
+        {
+            source.m_mock_non_blocking_single_sample_converter = nullptr;
+        }
 
         /**
          * \todo #29
@@ -280,7 +297,16 @@ class Mock_Non_Blocking_Single_Sample_Converter {
          *
          * \return The assigned to object.
          */
-        auto operator=( Handle && expression ) noexcept -> Handle & = default;
+        auto & operator=( Handle && expression ) noexcept
+        {
+            if ( &expression != this ) {
+                m_mock_non_blocking_single_sample_converter = expression.m_mock_non_blocking_single_sample_converter;
+
+                expression.m_mock_non_blocking_isngle_sample_converter = nullptr;
+            } // if
+
+            return *this;
+        }
 
         /**
          * \todo #29
