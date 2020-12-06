@@ -76,7 +76,11 @@ class Mock_Basic_Controller {
          *
          * \param[in] source The source of the move.
          */
-        Handle( Handle && source ) noexcept = default;
+        Handle( Handle && source ) noexcept :
+            m_mock_basic_controller{ source.m_mock_basic_controller }
+        {
+            source.m_mock_basic_controller = nullptr;
+        }
 
         /**
          * \todo #29
@@ -95,7 +99,16 @@ class Mock_Basic_Controller {
          *
          * \return The assigned to object.
          */
-        auto operator=( Handle && expression ) noexcept -> Handle & = default;
+        auto & operator=( Handle && expression ) noexcept
+        {
+            if ( &expression != this ) {
+                m_mock_basic_controller = expression.m_mock_basic_controller;
+
+                expression.m_mock_basic_controller = nullptr;
+            } // if
+
+            return *this;
+        }
 
         /**
          * \todo #29
@@ -255,7 +268,11 @@ class Mock_Controller {
          *
          * \param[in] source The source of the move.
          */
-        Handle( Handle && source ) noexcept = default;
+        Handle( Handle && source ) noexcept :
+            m_mock_controller{ source.m_mock_controller }
+        {
+            source.m_mock_controller = nullptr;
+        }
 
         /**
          * \todo #29
@@ -274,7 +291,16 @@ class Mock_Controller {
          *
          * \return The assigned to object.
          */
-        auto operator=( Handle && expression ) noexcept -> Handle & = default;
+        auto & operator=( Handle && expression ) noexcept
+        {
+            if ( &expression != this ) {
+                m_mock_controller = expression.m_mock_controller;
+
+                expression.m_mock_controller = nullptr;
+            } // if
+
+            return *this;
+        }
 
         /**
          * \todo #29
@@ -577,7 +603,11 @@ class Mock_Device_Selector {
          *
          * \param[in] source The source of the move.
          */
-        Handle( Handle && source ) noexcept = default;
+        Handle( Handle && source ) noexcept :
+            m_mock_device_selector{ source.m_mock_device_selector }
+        {
+            source.m_mock_device_selector = nullptr;
+        }
 
         /**
          * \todo #29
@@ -596,7 +626,16 @@ class Mock_Device_Selector {
          *
          * \return The assigned to object.
          */
-        auto operator=( Handle && expression ) noexcept -> Handle & = default;
+        auto & operator=( Handle && expression ) noexcept
+        {
+            if ( &expression != this ) {
+                m_mock_device_selector = expression.m_mock_device_selector;
+
+                expression.m_mock_device_selector = nullptr;
+            } // if
+
+            return *this;
+        }
 
         /**
          * \todo #29
