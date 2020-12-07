@@ -433,7 +433,7 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_signed
         auto i = decimal.rbegin();
 
         do {
-            *i = abs( value % 10 ) + '0';
+            *i = std::abs( value % 10 ) + '0';
 
             ++i;
             value /= 10;
