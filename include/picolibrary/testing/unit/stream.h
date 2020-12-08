@@ -79,6 +79,8 @@ class Mock_Stream_Buffer : public Stream_Buffer {
      */
     auto operator=( Mock_Stream_Buffer const & ) = delete;
 
+    MOCK_METHOD( (Result<Void, Error_Code>), initialize, (), ( noexcept, override ) );
+
     MOCK_METHOD( (Result<Void, Error_Code>), put, (char), ( noexcept, override ) );
 
     MOCK_METHOD( (Result<Void, Error_Code>), put, ( std::string ) );
@@ -330,6 +332,14 @@ class String_Stream_Buffer : public Stream_Buffer {
     auto const & string() const noexcept
     {
         return m_string;
+    }
+
+    /**
+     * \copydoc picolibrary::Stream_Buffer::initialize()
+     */
+    virtual auto initialize() noexcept -> Result<Void, Error_Code> override final
+    {
+        return {};
     }
 
     /**

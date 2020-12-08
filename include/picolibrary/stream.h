@@ -44,6 +44,14 @@ class Stream_Buffer {
     ~Stream_Buffer() noexcept = default;
 
     /**
+     * \brief Initialize the device's hardware.
+     *
+     * \return Nothing if device hardware initialization succeeded.
+     * \return An error code if device hardware initialization failed.
+     */
+    virtual auto initialize() noexcept -> Result<Void, Error_Code> = 0;
+
+    /**
      * \brief Write a character to the put area of the buffer.
      *
      * \param[in] character The character to write to the put area of the buffer.
@@ -206,6 +214,17 @@ class Stream {
      * \brief Destructor.
      */
     ~Stream() noexcept = default;
+
+    /**
+     * \brief Initialize the device's hardware.
+     *
+     * \return Nothing if device hardware initialization succeeded.
+     * \return An error code if device hardware initialization failed.
+     */
+    auto initialize() noexcept
+    {
+        return m_buffer->initialize();
+    }
 
     /**
      * \brief Check if the stream is nominal (no errors present and end-of-file has not

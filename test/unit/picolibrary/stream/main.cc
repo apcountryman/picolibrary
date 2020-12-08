@@ -21,8 +21,13 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "picolibrary/error.h"
+#include "picolibrary/result.h"
 #include "picolibrary/stream.h"
+#include "picolibrary/testing/unit/error.h"
+#include "picolibrary/testing/unit/random.h"
 #include "picolibrary/testing/unit/stream.h"
+#include "picolibrary/utility.h"
 
 namespace {
 
@@ -46,7 +51,13 @@ class Stream : public ::picolibrary::Stream {
     using ::picolibrary::Stream::set_buffer;
 };
 
+using ::picolibrary::Error_Code;
+using ::picolibrary::Result;
+using ::picolibrary::Void;
+using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::Mock_Stream_Buffer;
+using ::picolibrary::Testing::Unit::random;
+using ::testing::Return;
 
 } // namespace
 
@@ -66,6 +77,44 @@ TEST( constructorDefault, worksProperly )
     EXPECT_FALSE( stream.fatal_error_present() );
     EXPECT_FALSE( stream.buffer_is_set() );
     EXPECT_EQ( stream.buffer(), nullptr );
+}
+
+/**
+ * \brief Verify picolibrary::Stream::initialize() properly handles a device
+ *        initialization error.
+ */
+TEST( initialize, deviceInitializationError )
+{
+    auto stream = Stream{};
+
+    auto buffer = Mock_Stream_Buffer{};
+
+    stream.set_buffer( &buffer );
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( buffer, initialize() ).WillOnce( Return( error ) );
+
+    auto const result = stream.initialize();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::Stream::initialize() works properly.
+ */
+TEST( initialize, worksProperly )
+{
+    auto stream = Stream{};
+
+    auto buffer = Mock_Stream_Buffer{};
+
+    stream.set_buffer( &buffer );
+
+    EXPECT_CALL( buffer, initialize() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( stream.initialize().is_error() );
 }
 
 /**
