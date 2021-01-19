@@ -749,6 +749,158 @@ class Mock_Device_Selector {
     MOCK_METHOD( (Result<Void, Error_Code>), deselect, () );
 };
 
+/**
+ * \brief Mock SPI device.
+ */
+class Mock_Device {
+  public:
+    /**
+     * \copydoc picolibrary::SPI::Device::Controller
+     */
+    using Controller = Mock_Controller;
+
+    /**
+     * \copydoc picolibrary::SPI::Device::Device_Selector
+     */
+    using Device_Selector = Mock_Device_Selector;
+
+    /**
+     * \brief Constructor.
+     */
+    Mock_Device() = default;
+
+    /**
+     * \brief Constructor.
+     */
+    Mock_Device( Controller &, Controller::Configuration, Device_Selector )
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Mock_Device( Mock_Device && source ) = default;
+
+    /**
+     * \todo #29
+     */
+    Mock_Device( Mock_Device const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Mock_Device() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Mock_Device && expression ) -> Mock_Device & = default;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Mock_Device const & ) = delete;
+
+    MOCK_METHOD( (Result<Void, Error_Code>), initialize, () );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), configure, (), ( const ) );
+
+    MOCK_METHOD( Device_Selector &, device_selector, (), ( const ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), exchange, ( std::uint8_t ), ( const ) );
+
+    MOCK_METHOD( (Result<std::vector<std::uint8_t>, Error_Code>), exchange, (std::vector<std::uint8_t>), ( const ) );
+
+    /**
+     * \brief Exchange a block of data with the device.
+     *
+     * \param[in] tx_begin The beginning of the block of data to transmit.
+     * \param[in] tx_end The end of the block of data to transmit.
+     * \param[in] rx_begin The beginning of the block of received data.
+     * \param[in] rx_end The end of the block of received data.
+     *
+     * \warning This function does not verify that the transmit and receive data blocks
+     *          are the same size.
+     *
+     * \return Nothing if data exchange succeeded.
+     * \return An error code if data exchange failed.
+     */
+    auto exchange( std::uint8_t const * tx_begin, std::uint8_t const * tx_end, std::uint8_t * rx_begin, std::uint8_t * rx_end ) const
+        -> Result<Void, Error_Code>
+    {
+        static_cast<void>( rx_end );
+
+        auto const result = exchange( std::vector<std::uint8_t>{ tx_begin, tx_end } );
+
+        if ( result.is_error() ) { return result.error(); } // if
+
+        std::for_each( result.value().begin(), result.value().end(), [&rx_begin]( auto data ) {
+            *rx_begin = data;
+
+            ++rx_begin;
+        } );
+
+        return {};
+    }
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), receive, (), ( const ) );
+
+    MOCK_METHOD( (Result<std::vector<std::uint8_t>, Error_Code>), receive, (std::vector<std::uint8_t>), ( const ) );
+
+    /**
+     * \brief Receive a block of data from the device.
+     *
+     * \param[in] begin The beginning of the block of received data.
+     * \param[in] end The end of the block of received data.
+     *
+     * \return Nothing if data reception succeeded.
+     * \return An error code if data reception failed.
+     */
+    auto receive( std::uint8_t * begin, std::uint8_t * end ) const -> Result<Void, Error_Code>
+    {
+        static_cast<void>( end );
+
+        auto const result = receive( std::vector<std::uint8_t>{} );
+
+        if ( result.is_error() ) { return result.error(); } // if
+
+        std::for_each( result.value().begin(), result.value().end(), [&begin]( auto data ) {
+            *begin = data;
+
+            ++begin;
+        } );
+
+        return {};
+    }
+
+    MOCK_METHOD( (Result<Void, Error_Code>), transmit, ( std::uint8_t ), ( const ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), transmit, (std::vector<std::uint8_t>), ( const ) );
+
+    /**
+     * \brief Transmit a block of data to the device.
+     *
+     * \param[in] begin The beginning of the block of data to transmit.
+     * \param[in] end The end of the block of data to transmit.
+     *
+     * \return Nothing if data transmission succeeded.
+     * \return An error code if data transmission failed.
+     */
+    auto transmit( std::uint8_t const * begin, std::uint8_t const * end ) const
+        -> Result<Void, Error_Code>
+    {
+        return transmit( std::vector<std::uint8_t>{ begin, end } );
+    }
+};
+
 } // namespace picolibrary::Testing::Unit::SPI
 
 #endif // PICOLIBRARY_TESTING_UNIT_SPI_H
