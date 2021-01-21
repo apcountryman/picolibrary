@@ -182,8 +182,8 @@ constexpr auto for_each( Iterator begin, Iterator end, Functor functor ) noexcep
  * auto functor() noexcept -> picolibrary::Result<Foo, picolibrary::Void>;
  * \endcode
  *
- * \param[in] begin The beginning of the range to fill.
- * \param[in] end The end of the range to fill.
+ * \param[out] begin The beginning of the range to fill.
+ * \param[out] end The end of the range to fill.
  * \param[in] functor The functor to use to generate the values used to fill the range.
  *
  * \return Nothing if filling the range succeeded.
