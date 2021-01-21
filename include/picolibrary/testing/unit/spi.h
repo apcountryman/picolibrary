@@ -363,8 +363,8 @@ class Mock_Controller {
          *
          * \param[in] tx_begin The beginning of the block of data to transmit.
          * \param[in] tx_end The end of the block of data to transmit.
-         * \param[in] rx_begin The beginning of the block of received data.
-         * \param[in] rx_end The end of the block of received data.
+         * \param[out] rx_begin The beginning of the block of received data.
+         * \param[out] rx_end The end of the block of received data.
          *
          * \warning This function does not verify that the transmit and receive data
          *          blocks are the same size.
@@ -391,8 +391,8 @@ class Mock_Controller {
         /**
          * \brief Receive a block of data from a device.
          *
-         * \param[in] begin The beginning of the block of received data.
-         * \param[in] end The end of the block of received data.
+         * \param[out] begin The beginning of the block of received data.
+         * \param[out] end The end of the block of received data.
          *
          * \return The received data if data reception succeeded.
          * \return An error code if data reception failed.
@@ -497,8 +497,8 @@ class Mock_Controller {
      *
      * \param[in] tx_begin The beginning of the block of data to transmit.
      * \param[in] tx_end The end of the block of data to transmit.
-     * \param[in] rx_begin The beginning of the block of received data.
-     * \param[in] rx_end The end of the block of received data.
+     * \param[out] rx_begin The beginning of the block of received data.
+     * \param[out] rx_end The end of the block of received data.
      *
      * \warning This function does not verify that the transmit and receive data blocks
      *          are the same size.
@@ -531,8 +531,8 @@ class Mock_Controller {
     /**
      * \brief Receive a block of data from a device.
      *
-     * \param[in] begin The beginning of the block of received data.
-     * \param[in] end The end of the block of received data.
+     * \param[out] begin The beginning of the block of received data.
+     * \param[out] end The end of the block of received data.
      *
      * \return The received data if data reception succeeded.
      * \return An error code if data reception failed.
@@ -824,8 +824,8 @@ class Mock_Device {
      *
      * \param[in] tx_begin The beginning of the block of data to transmit.
      * \param[in] tx_end The end of the block of data to transmit.
-     * \param[in] rx_begin The beginning of the block of received data.
-     * \param[in] rx_end The end of the block of received data.
+     * \param[out] rx_begin The beginning of the block of received data.
+     * \param[out] rx_end The end of the block of received data.
      *
      * \warning This function does not verify that the transmit and receive data blocks
      *          are the same size.
@@ -858,8 +858,8 @@ class Mock_Device {
     /**
      * \brief Receive a block of data from the device.
      *
-     * \param[in] begin The beginning of the block of received data.
-     * \param[in] end The end of the block of received data.
+     * \param[out] begin The beginning of the block of received data.
+     * \param[out] end The end of the block of received data.
      *
      * \return Nothing if data reception succeeded.
      * \return An error code if data reception failed.
