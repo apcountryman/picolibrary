@@ -1,7 +1,7 @@
 /**
  * picolibrary
  *
- * Copyright 2020 Andrew Countryman <apcountryman@gmail.com>
+ * Copyright 2020, 2021 Andrew Countryman <apcountryman@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -32,6 +32,59 @@
  * \brief Analog-to-Digital Converter (ADC) facilities.
  */
 namespace picolibrary::ADC {
+
+/**
+ * \brief ADC sample.
+ *
+ * \tparam T The integral type used to hold a sample value.
+ * \tparam MIN_SAMPLE The minimum possible sample value.
+ * \tparam MAX_SAMPLE The maximum possible sample value.
+ */
+template<typename T, T MIN_SAMPLE, T MAX_SAMPLE>
+class Sample {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Sample() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Sample( Sample && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Sample( Sample const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Sample() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Sample && expression ) noexcept -> Sample & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Sample const & expression ) noexcept -> Sample & = default;
+};
 
 /**
  * \brief Blocking, single sample ADC concept.
