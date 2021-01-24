@@ -152,9 +152,9 @@ class Sample {
 class Blocking_Single_Sample_Converter_Concept {
   public:
     /**
-     * \brief The integral type used to hold a sample.
+     * \brief ADC sample.
      */
-    using Sample = std::uint16_t;
+    using Sample = ::picolibrary::ADC::Sample<std::uint_fast16_t, 0, 1024>;
 
     Blocking_Single_Sample_Converter_Concept() = delete;
 
@@ -195,20 +195,6 @@ class Blocking_Single_Sample_Converter_Concept {
     auto initialize() noexcept -> Result<Void, Error_Code>;
 
     /**
-     * \brief Get the minimum sample value.
-     *
-     * \return The minimum sample value.
-     */
-    auto min() const noexcept -> Sample;
-
-    /**
-     * \brief Get the maximum sample value.
-     *
-     * \return The maximum sample value.
-     */
-    auto max() const noexcept -> Sample;
-
-    /**
      * \brief Get a sample.
      *
      * \return A sample if getting the sample succeeded.
@@ -224,9 +210,9 @@ class Blocking_Single_Sample_Converter_Concept {
 class Non_Blocking_Single_Sample_Converter_Concept {
   public:
     /**
-     * \brief The integral type used to hold a sample.
+     * \brief ADC sample.
      */
-    using Sample = std::uint16_t;
+    using Sample = ::picolibrary::ADC::Sample<std::uint_fast16_t, 0, 1024>;
 
     Non_Blocking_Single_Sample_Converter_Concept() = delete;
 
@@ -265,20 +251,6 @@ class Non_Blocking_Single_Sample_Converter_Concept {
      *         picolibrary::Void>.
      */
     auto initialize() noexcept -> Result<Void, Error_Code>;
-
-    /**
-     * \brief Get the minimum sample value.
-     *
-     * \return The minimum sample value.
-     */
-    auto min() const noexcept -> Sample;
-
-    /**
-     * \brief Get the maximum sample value.
-     *
-     * \return The maximum sample value.
-     */
-    auto max() const noexcept -> Sample;
 
     /**
      * \brief Initiate a conversion.
