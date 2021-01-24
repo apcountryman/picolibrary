@@ -19,9 +19,52 @@
  * \brief picolibrary::ADC::Sample unit test program.
  */
 
+#include <cstdint>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/adc.h"
+#include "picolibrary/testing/unit/random.h"
+
+namespace {
+
+using ::picolibrary::Testing::Unit::random;
+
+} // namespace
+
+/**
+ * \brief Verify picolibrary::ADC::Sample works properly.
+ */
+TEST( sample, worksProperly )
+{
+    using Value = std::uint_fast16_t;
+
+    constexpr auto MIN = Value{ 0 };
+    constexpr auto MAX = Value{ 1024 };
+
+    using Sample = ::picolibrary::ADC::Sample<Value, MIN, MAX>;
+
+    EXPECT_EQ( Sample::MIN, MIN );
+    EXPECT_EQ( Sample::MAX, MAX );
+
+    {
+        auto const sample = Sample{};
+
+        EXPECT_EQ( sample.min(), MIN );
+        EXPECT_EQ( sample.max(), MAX );
+        EXPECT_EQ( static_cast<Value>( sample ), Value{} );
+    }
+
+    {
+        auto const value = random<Value>( MIN, MAX );
+
+        auto const sample = Sample{ value };
+
+        EXPECT_EQ( sample.min(), MIN );
+        EXPECT_EQ( sample.max(), MAX );
+        EXPECT_EQ( static_cast<Value>( sample ), value );
+    }
+}
 
 /**
  * \brief Execute the picolibrary::ADC::Sample unit tests.
