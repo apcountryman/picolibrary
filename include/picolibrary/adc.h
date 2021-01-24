@@ -1,7 +1,7 @@
 /**
  * picolibrary
  *
- * Copyright 2020 Andrew Countryman <apcountryman@gmail.com>
+ * Copyright 2020, 2021 Andrew Countryman <apcountryman@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -34,14 +34,127 @@
 namespace picolibrary::ADC {
 
 /**
+ * \brief ADC sample.
+ *
+ * \tparam Value_Type The integral type used to hold a sample value.
+ * \tparam MIN_SAMPLE The minimum possible sample value.
+ * \tparam MAX_SAMPLE The maximum possible sample value.
+ */
+template<typename Value_Type, Value_Type MIN_SAMPLE, Value_Type MAX_SAMPLE>
+class Sample {
+  public:
+    /**
+     * \brief The integral type used to hold a sample value;
+     */
+    using Value = Value_Type;
+
+    /**
+     * \brief The minimum possible sample value.
+     */
+    static constexpr auto MIN = MIN_SAMPLE;
+
+    /**
+     * \brief The maximum possible sample value.
+     */
+    static constexpr auto MAX = MAX_SAMPLE;
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Sample() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] value The sample value.
+     */
+    constexpr Sample( Value value ) noexcept : m_value{ value }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Sample( Sample && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Sample( Sample const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Sample() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Sample && expression ) noexcept -> Sample & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Sample const & expression ) noexcept -> Sample & = default;
+
+    /**
+     * \brief Get the minimum possible sample value.
+     *
+     * \return The minimum possible sample value.
+     */
+    constexpr auto min() const noexcept
+    {
+        return MIN;
+    }
+
+    /**
+     * \brief Get the maximum possible sample value.
+     *
+     * \return The maximum possible sample value.
+     */
+    constexpr auto max() const noexcept
+    {
+        return MAX;
+    }
+
+    /**
+     * \brief Get the sample value.
+     *
+     * \return The sample value.
+     */
+    constexpr operator Value() const noexcept
+    {
+        return m_value;
+    }
+
+  private:
+    /**
+     * \brief The sample value.
+     */
+    Value m_value{};
+};
+
+/**
  * \brief Blocking, single sample ADC concept.
  */
 class Blocking_Single_Sample_Converter_Concept {
   public:
     /**
-     * \brief The integral type used to hold a sample.
+     * \brief ADC sample.
      */
-    using Sample = std::uint16_t;
+    using Sample = ::picolibrary::ADC::Sample<std::uint_fast16_t, 0, 1024>;
 
     Blocking_Single_Sample_Converter_Concept() = delete;
 
@@ -82,20 +195,6 @@ class Blocking_Single_Sample_Converter_Concept {
     auto initialize() noexcept -> Result<Void, Error_Code>;
 
     /**
-     * \brief Get the minimum sample value.
-     *
-     * \return The minimum sample value.
-     */
-    auto min() const noexcept -> Sample;
-
-    /**
-     * \brief Get the maximum sample value.
-     *
-     * \return The maximum sample value.
-     */
-    auto max() const noexcept -> Sample;
-
-    /**
      * \brief Get a sample.
      *
      * \return A sample if getting the sample succeeded.
@@ -111,9 +210,9 @@ class Blocking_Single_Sample_Converter_Concept {
 class Non_Blocking_Single_Sample_Converter_Concept {
   public:
     /**
-     * \brief The integral type used to hold a sample.
+     * \brief ADC sample.
      */
-    using Sample = std::uint16_t;
+    using Sample = ::picolibrary::ADC::Sample<std::uint_fast16_t, 0, 1024>;
 
     Non_Blocking_Single_Sample_Converter_Concept() = delete;
 
@@ -152,20 +251,6 @@ class Non_Blocking_Single_Sample_Converter_Concept {
      *         picolibrary::Void>.
      */
     auto initialize() noexcept -> Result<Void, Error_Code>;
-
-    /**
-     * \brief Get the minimum sample value.
-     *
-     * \return The minimum sample value.
-     */
-    auto min() const noexcept -> Sample;
-
-    /**
-     * \brief Get the maximum sample value.
-     *
-     * \return The maximum sample value.
-     */
-    auto max() const noexcept -> Sample;
 
     /**
      * \brief Initiate a conversion.

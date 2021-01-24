@@ -1,6 +1,6 @@
 # picolibrary
 #
-# Copyright 2020 Andrew Countryman <apcountryman@gmail.com>
+# Copyright 2020, 2021 Andrew Countryman <apcountryman@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
 # file except in compliance with the License. You may obtain a copy of the License at
@@ -14,6 +14,9 @@
 
 # File: test/unit/picolibrary/CMakeLists.txt
 # Description: picolibrary unit tests CMake rules.
+
+# build the picolibrary::ADC unit tests
+add_subdirectory( adc )
 
 # build the picolibrary::Algorithm unit tests
 add_subdirectory( algorithm )

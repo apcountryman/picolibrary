@@ -1,7 +1,7 @@
 /**
  * picolibrary
  *
- * Copyright 2020 Andrew Countryman <apcountryman@gmail.com>
+ * Copyright 2020, 2021 Andrew Countryman <apcountryman@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -23,6 +23,7 @@
 #define PICOLIBRARY_TESTING_UNIT_ADC_H
 
 #include "gmock/gmock.h"
+#include "picolibrary/adc.h"
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/utility.h"
@@ -35,15 +36,17 @@ namespace picolibrary::Testing::Unit::ADC {
 /**
  * \brief Mock blocking, single sample ADC.
  *
- * \tparam Sample_Type The integral type used to hold a sample.
+ * \tparam Value_Type The integral type used to hold a sample value.
+ * \tparam MIN_SAMPLE The minimum possible sample value.
+ * \tparam MAX_SAMPLE The maximum possible sample value.
  */
-template<typename Sample_Type>
+template<typename Value_Type, Value_Type MIN_SAMPLE, Value_Type MAX_SAMPLE>
 class Mock_Blocking_Single_Sample_Converter {
   public:
     /**
      * \copydoc picolibrary::ADC::Blocking_Single_Sample_Converter_Concept::Sample
      */
-    using Sample = Sample_Type;
+    using Sample = ::picolibrary::ADC::Sample<Value_Type, MIN_SAMPLE, MAX_SAMPLE>;
 
     /**
      * \brief Movable mock blocking, single sample ADC handle.
@@ -53,7 +56,7 @@ class Mock_Blocking_Single_Sample_Converter {
         /**
          * \copydoc picolibrary::ADC::Blocking_Single_Sample_Converter_Concept::Sample
          */
-        using Sample = Sample_Type;
+        using Sample = ::picolibrary::ADC::Sample<Value_Type, MIN_SAMPLE, MAX_SAMPLE>;
 
         /**
          * \brief Constructor.
@@ -139,22 +142,6 @@ class Mock_Blocking_Single_Sample_Converter {
         }
 
         /**
-         * \copydoc picolibrary::ADC::Blocking_Single_Sample_Converter_Concept::min()
-         */
-        auto min() const noexcept
-        {
-            return m_mock_blocking_single_sample_converter->min();
-        }
-
-        /**
-         * \copydoc picolibrary::ADC::Blocking_Single_Sample_Converter_Concept::max()
-         */
-        auto max() const noexcept
-        {
-            return m_mock_blocking_single_sample_converter->max();
-        }
-
-        /**
          * \brief Get a sample.
          *
          * \return A sample if getting the sample succeeded.
@@ -223,25 +210,23 @@ class Mock_Blocking_Single_Sample_Converter {
 
     MOCK_METHOD( (Result<Void, Error_Code>), initialize, () );
 
-    MOCK_METHOD( Sample, min, (), ( const ) );
-
-    MOCK_METHOD( Sample, max, (), ( const ) );
-
     MOCK_METHOD( (Result<Sample, Error_Code>), sample, () );
 };
 
 /**
  * \brief Mock non-blocking, single sample ADC.
  *
- * \tparam Sample_Type The integral type used to hold a sample.
+ * \tparam Value_Type The integral type used to hold a sample value.
+ * \tparam MIN_SAMPLE The minimum possible sample value.
+ * \tparam MAX_SAMPLE The maximum possible sample value.
  */
-template<typename Sample_Type>
+template<typename Value_Type, Value_Type MIN_SAMPLE, Value_Type MAX_SAMPLE>
 class Mock_Non_Blocking_Single_Sample_Converter {
   public:
     /**
      * \copydoc picolibrary::ADC::Non_Blocking_Single_Sample_Converter_Concept::Sample
      */
-    using Sample = Sample_Type;
+    using Sample = ::picolibrary::ADC::Sample<Value_Type, MIN_SAMPLE, MAX_SAMPLE>;
 
     /**
      * \brief Movable mock non-blocking, single sample ADC handle.
@@ -251,7 +236,7 @@ class Mock_Non_Blocking_Single_Sample_Converter {
         /**
          * \copydoc picolibrary::ADC::Non_Blocking_Single_Sample_Converter_Concept::Sample
          */
-        using Sample = Sample_Type;
+        using Sample = ::picolibrary::ADC::Sample<Value_Type, MIN_SAMPLE, MAX_SAMPLE>;
 
         /**
          * \brief Constructor.
@@ -334,22 +319,6 @@ class Mock_Non_Blocking_Single_Sample_Converter {
         auto initialize()
         {
             return m_mock_non_blocking_single_sample_converter->initialize();
-        }
-
-        /**
-         * \copydoc picolibrary::ADC::Non_Blocking_Single_Sample_Converter_Concept::min()
-         */
-        auto min() const noexcept
-        {
-            return m_mock_non_blocking_single_sample_converter->min();
-        }
-
-        /**
-         * \copydoc picolibrary::ADC::Non_Blocking_Single_Sample_Converter_Concept::max()
-         */
-        auto max() const noexcept
-        {
-            return m_mock_non_blocking_single_sample_converter->max();
         }
 
         /**
@@ -443,10 +412,6 @@ class Mock_Non_Blocking_Single_Sample_Converter {
     }
 
     MOCK_METHOD( (Result<Void, Error_Code>), initialize, () );
-
-    MOCK_METHOD( Sample, min, (), ( const ) );
-
-    MOCK_METHOD( Sample, max, (), ( const ) );
 
     MOCK_METHOD( (Result<Void, Error_Code>), initiate_conversion, () );
 
