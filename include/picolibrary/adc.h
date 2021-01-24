@@ -36,17 +36,41 @@ namespace picolibrary::ADC {
 /**
  * \brief ADC sample.
  *
- * \tparam T The integral type used to hold a sample value.
+ * \tparam Value_Type The integral type used to hold a sample value.
  * \tparam MIN_SAMPLE The minimum possible sample value.
  * \tparam MAX_SAMPLE The maximum possible sample value.
  */
-template<typename T, T MIN_SAMPLE, T MAX_SAMPLE>
+template<typename Value_Type, Value_Type MIN_SAMPLE, Value_Type MAX_SAMPLE>
 class Sample {
   public:
+    /**
+     * \brief The integral type used to hold a sample value;
+     */
+    using Value = Value_Type;
+
+    /**
+     * \brief The minimum possible sample value.
+     */
+    static constexpr auto MIN = MIN_SAMPLE;
+
+    /**
+     * \brief The maximum possible sample value.
+     */
+    static constexpr auto MAX = MAX_SAMPLE;
+
     /**
      * \brief Constructor.
      */
     constexpr Sample() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] value The sample value.
+     */
+    constexpr Sample( Value value ) noexcept : m_value{ value }
+    {
+    }
 
     /**
      * \brief Constructor.
@@ -84,6 +108,42 @@ class Sample {
      * \return The assigned to object.
      */
     constexpr auto operator=( Sample const & expression ) noexcept -> Sample & = default;
+
+    /**
+     * \brief Get the minimum possible sample value.
+     *
+     * \return The minimum possible sample value.
+     */
+    constexpr auto min() const noexcept
+    {
+        return MIN;
+    }
+
+    /**
+     * \brief Get the maximum possible sample value.
+     *
+     * \return The maximum possible sample value.
+     */
+    constexpr auto max() const noexcept
+    {
+        return MAX;
+    }
+
+    /**
+     * \brief Get the sample value.
+     *
+     * \return The sample value.
+     */
+    constexpr operator Value() const noexcept
+    {
+        return m_value;
+    }
+
+  private:
+    /**
+     * \brief The sample value.
+     */
+    Value m_value{};
 };
 
 /**
