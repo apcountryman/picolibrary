@@ -154,7 +154,7 @@ class Blocking_Single_Sample_Converter_Concept {
     /**
      * \brief ADC sample.
      */
-    using Sample = ::picolibrary::ADC::Sample<std::uint_fast16_t, 0, 1024>;
+    using Sample = ::picolibrary::ADC::Sample<std::uint_fast16_t, 0, 1023>;
 
     Blocking_Single_Sample_Converter_Concept() = delete;
 
@@ -212,7 +212,7 @@ class Non_Blocking_Single_Sample_Converter_Concept {
     /**
      * \brief ADC sample.
      */
-    using Sample = ::picolibrary::ADC::Sample<std::uint_fast16_t, 0, 1024>;
+    using Sample = ::picolibrary::ADC::Sample<std::uint_fast16_t, 0, 1023>;
 
     Non_Blocking_Single_Sample_Converter_Concept() = delete;
 

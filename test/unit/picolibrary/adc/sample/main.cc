@@ -40,7 +40,7 @@ TEST( sample, worksProperly )
     using Value = std::uint_fast16_t;
 
     constexpr auto MIN = Value{ 0 };
-    constexpr auto MAX = Value{ 1024 };
+    constexpr auto MAX = Value{ 1023 };
 
     using Sample = ::picolibrary::ADC::Sample<Value, MIN, MAX>;
 
