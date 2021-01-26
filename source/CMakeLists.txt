@@ -37,6 +37,7 @@ set(
     "picolibrary/gpio.cc"
     "picolibrary/iterator.cc"
     "picolibrary/microchip.cc"
+    "picolibrary/microchip/mcp3008.cc"
     "picolibrary/result.cc"
     "picolibrary/spi.cc"
     "picolibrary/stream.cc"
