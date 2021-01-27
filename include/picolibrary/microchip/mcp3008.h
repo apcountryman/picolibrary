@@ -24,6 +24,8 @@
 
 #include <cstdint>
 
+#include "picolibrary/adc.h"
+
 /**
  * \brief Microchip MCP3008 facilities.
  */
@@ -140,6 +142,11 @@ class Input {
      */
     std::uint8_t m_control_byte{};
 };
+
+/**
+ * \brief Microchip MCP3008 sample.
+ */
+using Sample = ::picolibrary::ADC::Sample<std::uint_fast16_t, 0, 1023>;
 
 } // namespace picolibrary::Microchip::MCP3008
 
