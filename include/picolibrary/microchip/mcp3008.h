@@ -25,6 +25,7 @@
 #include <cstdint>
 
 #include "picolibrary/adc.h"
+#include "picolibrary/spi.h"
 
 /**
  * \brief Microchip MCP3008 facilities.
@@ -147,6 +148,70 @@ class Input {
  * \brief Microchip MCP3008 sample.
  */
 using Sample = ::picolibrary::ADC::Sample<std::uint_fast16_t, 0, 1023>;
+
+/**
+ * \brief Microchip MCP
+ *
+ * \tparam Controller_Type The type of controller used to communicate with the MCP3008.
+ * \tparam Device_Selector_Type The type of device selector used to select and deselect
+ *         the MCP3008.
+ * \tparam Device The type of SPI device implementation used by the driver. The default
+ *         SPI device implementation should be used unless a mock SPI device
+ *         implementation is being injected to support unit testing of this driver.
+ */
+template<typename Controller_Type, typename Device_Selector_Type, typename Device = ::picolibrary::SPI::Device<Controller_Type, Device_Selector_Type>>
+class Driver : public Device {
+  public:
+    /**
+     * \brief The type of controller used to communicate with the MCP3008.
+     */
+    using Controller = Controller_Type;
+
+    /**
+     * \brief The type of device selector used to select and deselect the MCP3008.
+     */
+    using Device_Selector = Device_Selector_Type;
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Driver() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Driver( Driver && source ) noexcept = default;
+
+    /**
+     * \todo #29
+     */
+    Driver( Driver const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Driver() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Driver && expression ) noexcept -> Driver & = default;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Driver const & ) = delete;
+
+    using Device::initialize;
+};
 
 } // namespace picolibrary::Microchip::MCP3008
 
