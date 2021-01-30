@@ -42,12 +42,12 @@ class Mock_Driver {
     /**
      * \copydoc picolibrary::Microchip::MCP3008::Driver::Controller
      */
-    using Controller = ::picolibrary::Testing::Unit::SPI::Mock_Controller;
+    using Controller = SPI::Mock_Controller;
 
     /**
      * \copydoc picolibrary::Microchip::MCP3008::Driver::Device_Selector
      */
-    using Device_Selector = ::picolibrary::Testing::Unit::SPI::Mock_Device_Selector::Handle;
+    using Device_Selector = SPI::Mock_Device_Selector::Handle;
 
     /**
      * \brief Constructor.

@@ -151,7 +151,7 @@ class Input {
 /**
  * \brief Microchip MCP3008 sample.
  */
-using Sample = ::picolibrary::ADC::Sample<std::uint_fast16_t, 0, 1023>;
+using Sample = ADC::Sample<std::uint_fast16_t, 0, 1023>;
 
 /**
  * \brief Microchip MCP
@@ -164,7 +164,7 @@ using Sample = ::picolibrary::ADC::Sample<std::uint_fast16_t, 0, 1023>;
  *         SPI device implementation should be used unless a mock SPI device
  *         implementation is being injected to support unit testing of this driver.
  */
-template<typename Controller_Type, typename Device_Selector_Type, typename Device = ::picolibrary::SPI::Device<Controller_Type, Device_Selector_Type>>
+template<typename Controller_Type, typename Device_Selector_Type, typename Device = SPI::Device<Controller_Type, Device_Selector_Type>>
 class Driver : public Device {
   public:
     /**
