@@ -165,16 +165,14 @@ class Mock_Blocking_Single_Sample_Converter {
     Mock_Blocking_Single_Sample_Converter() = default;
 
     /**
-     * \brief Constructor.
-     *
-     * \param[in] source The source of the move.
+     * \todo #29
      */
-    Mock_Blocking_Single_Sample_Converter( Mock_Blocking_Single_Sample_Converter && source ) = default;
+    Mock_Blocking_Single_Sample_Converter( Mock_Blocking_Single_Sample_Converter && ) = delete;
 
     /**
      * \todo #29
      */
-    Mock_Blocking_Single_Sample_Converter( Mock_Blocking_Single_Sample_Converter const & ) = default;
+    Mock_Blocking_Single_Sample_Converter( Mock_Blocking_Single_Sample_Converter const & ) = delete;
 
     /**
      * \brief Destructor.
@@ -182,14 +180,11 @@ class Mock_Blocking_Single_Sample_Converter {
     ~Mock_Blocking_Single_Sample_Converter() noexcept = default;
 
     /**
-     * \brief Assignment operator.
+     * \todo #29
      *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
+     * \return
      */
-    auto operator=( Mock_Blocking_Single_Sample_Converter && expression )
-        -> Mock_Blocking_Single_Sample_Converter & = default;
+    auto operator=( Mock_Blocking_Single_Sample_Converter && ) = delete;
 
     /**
      * \todo #29
@@ -368,16 +363,14 @@ class Mock_Non_Blocking_Single_Sample_Converter {
     Mock_Non_Blocking_Single_Sample_Converter() = default;
 
     /**
-     * \brief Constructor.
-     *
-     * \param[in] source The source of the move.
+     * \todo #29
      */
-    Mock_Non_Blocking_Single_Sample_Converter( Mock_Non_Blocking_Single_Sample_Converter && source ) = default;
+    Mock_Non_Blocking_Single_Sample_Converter( Mock_Non_Blocking_Single_Sample_Converter && ) = delete;
 
     /**
      * \todo #29
      */
-    Mock_Non_Blocking_Single_Sample_Converter( Mock_Non_Blocking_Single_Sample_Converter const & ) = default;
+    Mock_Non_Blocking_Single_Sample_Converter( Mock_Non_Blocking_Single_Sample_Converter const & ) = delete;
 
     /**
      * \brief Destructor.
@@ -385,14 +378,11 @@ class Mock_Non_Blocking_Single_Sample_Converter {
     ~Mock_Non_Blocking_Single_Sample_Converter() noexcept = default;
 
     /**
-     * \brief Assignment operator.
+     * \todo #29
      *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
+     * \return
      */
-    auto operator=( Mock_Non_Blocking_Single_Sample_Converter && expression )
-        -> Mock_Non_Blocking_Single_Sample_Converter & = default;
+    auto operator=( Mock_Non_Blocking_Single_Sample_Converter && ) = delete;
 
     /**
      * \todo #29

@@ -1,7 +1,7 @@
 /**
  * picolibrary
  *
- * Copyright 2020 Andrew Countryman <apcountryman@gmail.com>
+ * Copyright 2020, 2021 Andrew Countryman <apcountryman@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -164,11 +164,9 @@ class Mock_Basic_Transmitter {
     Mock_Basic_Transmitter() = default;
 
     /**
-     * \brief Constructor.
-     *
-     * \param[in] source The source of the move.
+     * \todo #29
      */
-    Mock_Basic_Transmitter( Mock_Basic_Transmitter && source ) = default;
+    Mock_Basic_Transmitter( Mock_Basic_Transmitter && ) = delete;
 
     /**
      * \todo #29
@@ -181,13 +179,11 @@ class Mock_Basic_Transmitter {
     ~Mock_Basic_Transmitter() noexcept = default;
 
     /**
-     * \brief Assignment operator.
+     * \todo #29
      *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
+     * \return
      */
-    auto operator=( Mock_Basic_Transmitter && expression ) -> Mock_Basic_Transmitter & = default;
+    auto operator=( Mock_Basic_Transmitter && ) = delete;
 
     /**
      * \todo #29
@@ -356,11 +352,9 @@ class Mock_Transmitter {
     Mock_Transmitter() = default;
 
     /**
-     * \brief Constructor.
-     *
-     * \param[in] source The source of the move.
+     * \todo #29
      */
-    Mock_Transmitter( Mock_Transmitter && source ) = default;
+    Mock_Transmitter( Mock_Transmitter && ) = delete;
 
     /**
      * \todo #29
@@ -373,13 +367,11 @@ class Mock_Transmitter {
     ~Mock_Transmitter() noexcept = default;
 
     /**
-     * \brief Assignment operator.
+     * \todo #29
      *
-     * \param[in] expression The expresison to be assigned.
-     *
-     * \return The assigned to object.
+     * \return
      */
-    auto operator=( Mock_Transmitter && expression ) -> Mock_Transmitter & = default;
+    auto operator=( Mock_Transmitter && ) = delete;
 
     /**
      * \todo #29
