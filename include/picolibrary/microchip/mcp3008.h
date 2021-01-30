@@ -23,8 +23,12 @@
 #define PICOLIBRARY_MICROCHIP_MCP3008_H
 
 #include <cstdint>
+#include <limits>
 
 #include "picolibrary/adc.h"
+#include "picolibrary/error.h"
+#include "picolibrary/fixed_size_array.h"
+#include "picolibrary/result.h"
 #include "picolibrary/spi.h"
 
 /**
@@ -152,9 +156,10 @@ using Sample = ::picolibrary::ADC::Sample<std::uint_fast16_t, 0, 1023>;
 /**
  * \brief Microchip MCP
  *
- * \tparam Controller_Type The type of controller used to communicate with the MCP3008.
- * \tparam Device_Selector_Type The type of device selector used to select and deselect
- *         the MCP3008.
+ * \tparam Controller_Type The type of SPI controller used to communicate with the
+ *         MCP3008.
+ * \tparam Device_Selector_Type The type of SPI device selector used to select and
+ *         deselect the MCP3008.
  * \tparam Device The type of SPI device implementation used by the driver. The default
  *         SPI device implementation should be used unless a mock SPI device
  *         implementation is being injected to support unit testing of this driver.
@@ -163,19 +168,40 @@ template<typename Controller_Type, typename Device_Selector_Type, typename Devic
 class Driver : public Device {
   public:
     /**
-     * \brief The type of controller used to communicate with the MCP3008.
+     * \brief The type of SPI controller used to communicate with the MCP3008.
      */
     using Controller = Controller_Type;
 
     /**
-     * \brief The type of device selector used to select and deselect the MCP3008.
+     * \brief The type of SPI device selector used to select and deselect the MCP3008.
      */
     using Device_Selector = Device_Selector_Type;
 
     /**
      * \brief Constructor.
      */
-    constexpr Driver() noexcept = default;
+    constexpr Driver() = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] controller The SPI controller used to communicate with the MCP3008.
+     * \param[in] configuration The SPI controller clock configuration that meets the
+     *            MCP3008's communication requirements.
+     * \param[in] device_selector The SPI device selector used to select and deselect the
+     *            MCP3008.
+     * \param[in] nonresponsive The error code to return when getting a sample fails due
+     *            to the MCP3008 being nonresponsive.
+     */
+    constexpr Driver(
+        Controller &                       controller,
+        typename Controller::Configuration configuration,
+        Device_Selector                    device_selector,
+        Error_Code                         nonresponsive ) noexcept :
+        Device{ controller, configuration, std::move( device_selector ) },
+        m_nonresponsive{ nonresponsive }
+    {
+    }
 
     /**
      * \brief Constructor.
@@ -211,6 +237,58 @@ class Driver : public Device {
     auto operator=( Driver const & ) = delete;
 
     using Device::initialize;
+
+    /**
+     * \brief Get a sample.
+     *
+     * \param[in] input The input to get the sample from.
+     *
+     * \return A sample if getting the sample succeeded.
+     * \return An error code if getting the sample failed.
+     */
+    auto sample( Input input ) noexcept -> Result<Sample, Error_Code>
+    {
+        // #lizard forgives the length
+
+        {
+            auto result = this->configure();
+            if ( result.is_error() ) { return result.error(); } // if
+        }
+
+        auto data = Fixed_Size_Array<std::uint8_t, 3>{
+            0x01,
+            static_cast<std::uint8_t>( input ),
+            0x00,
+        };
+
+        {
+            auto guard = SPI::Device_Selection_Guard<Device_Selector>{};
+            {
+                auto result = SPI::make_device_selection_guard( this->device_selector() );
+                if ( result.is_error() ) { return result.error(); } // if
+
+                guard = std::move( result ).value();
+            }
+
+            {
+                auto result = this->exchange( data.begin(), data.end(), data.begin(), data.end() );
+                if ( result.is_error() ) { return result.error(); } // if
+            }
+        }
+
+        if ( data[ 1 ] & 0b100 ) { return m_nonresponsive; } // if
+
+        return Sample{ ( static_cast<Sample::Value>( data[ 1 ] & 0b11 )
+                         << std::numeric_limits<std::uint8_t>::digits )
+                       | data[ 2 ] };
+    }
+
+  private:
+    /**
+     * \brief The error code to return when getting a sample fails due to the MCP3008
+     *        being nonresponsive.
+     */
+    Error_Code m_nonresponsive{};
 };
 
 } // namespace picolibrary::Microchip::MCP3008
