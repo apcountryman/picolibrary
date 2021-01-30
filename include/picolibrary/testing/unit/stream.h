@@ -1,7 +1,7 @@
 /**
  * picolibrary
  *
- * Copyright 2020 Andrew Countryman <apcountryman@gmail.com>
+ * Copyright 2020, 2021 Andrew Countryman <apcountryman@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -47,11 +47,9 @@ class Mock_Stream_Buffer : public Stream_Buffer {
     Mock_Stream_Buffer() = default;
 
     /**
-     * \brief Constructor.
-     *
-     * \param[in] source The source of the move.
+     * \todo #29
      */
-    Mock_Stream_Buffer( Mock_Stream_Buffer && source ) = default;
+    Mock_Stream_Buffer( Mock_Stream_Buffer && ) = delete;
 
     /**
      * \todo #29
@@ -64,13 +62,11 @@ class Mock_Stream_Buffer : public Stream_Buffer {
     ~Mock_Stream_Buffer() noexcept = default;
 
     /**
-     * \brief Assignment operator.
+     * \todo #29
      *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
+     * \return
      */
-    auto operator=( Mock_Stream_Buffer && expression ) -> Mock_Stream_Buffer & = default;
+    auto operator=( Mock_Stream_Buffer && ) = delete;
 
     /**
      * \todo #29

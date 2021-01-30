@@ -1,7 +1,7 @@
 /**
  * picolibrary
  *
- * Copyright 2020 Andrew Countryman <apcountryman@gmail.com>
+ * Copyright 2020, 2021 Andrew Countryman <apcountryman@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -179,11 +179,9 @@ class Mock_Basic_Controller {
     Mock_Basic_Controller() = default;
 
     /**
-     * \brief Constructor.
-     *
-     * \param[in] source The source of the move.
+     * \todo #29
      */
-    Mock_Basic_Controller( Mock_Basic_Controller && source ) = default;
+    Mock_Basic_Controller( Mock_Basic_Controller && ) = delete;
 
     /**
      * \todo #29
@@ -196,13 +194,11 @@ class Mock_Basic_Controller {
     ~Mock_Basic_Controller() noexcept = default;
 
     /**
-     * \brief Assignment operator.
+     * \todo #29
      *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
+     * \return
      */
-    auto operator=( Mock_Basic_Controller && expression ) -> Mock_Basic_Controller & = default;
+    auto operator=( Mock_Basic_Controller && ) = delete;
 
     /**
      * \todo #29
@@ -442,11 +438,9 @@ class Mock_Controller {
     Mock_Controller() = default;
 
     /**
-     * \brief Constructor.
-     *
-     * \param[in] source The source of the move.
+     * \todo #29
      */
-    Mock_Controller( Mock_Controller && source ) = default;
+    Mock_Controller( Mock_Controller && ) = delete;
 
     /**
      * \todo #29
@@ -459,13 +453,11 @@ class Mock_Controller {
     ~Mock_Controller() noexcept = default;
 
     /**
-     * \brief Assignment operator.
+     * \todo #29
      *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
+     * \return
      */
-    auto operator=( Mock_Controller && expression ) -> Mock_Controller & = default;
+    auto operator=( Mock_Controller && ) = delete;
 
     /**
      * \todo #29
@@ -700,11 +692,9 @@ class Mock_Device_Selector {
     Mock_Device_Selector() = default;
 
     /**
-     * \brief Constructor.
-     *
-     * \param[in] source The source of the move.
+     * \todo #29
      */
-    Mock_Device_Selector( Mock_Device_Selector && source ) = default;
+    Mock_Device_Selector( Mock_Device_Selector && ) = delete;
 
     /**
      * \todo #29
@@ -717,13 +707,11 @@ class Mock_Device_Selector {
     ~Mock_Device_Selector() noexcept = default;
 
     /**
-     * \brief Assignment operator.
+     * \todo #29
      *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
+     * \return
      */
-    auto operator=( Mock_Device_Selector && expression ) -> Mock_Device_Selector & = default;
+    auto operator=( Mock_Device_Selector && ) = delete;
 
     /**
      * \todo #29
@@ -762,7 +750,7 @@ class Mock_Device {
     /**
      * \copydoc picolibrary::SPI::Device::Device_Selector
      */
-    using Device_Selector = Mock_Device_Selector;
+    using Device_Selector = Mock_Device_Selector::Handle;
 
     /**
      * \brief Constructor.
@@ -777,11 +765,9 @@ class Mock_Device {
     }
 
     /**
-     * \brief Constructor.
-     *
-     * \param[in] source The source of the move.
+     * \todo #29
      */
-    Mock_Device( Mock_Device && source ) = default;
+    Mock_Device( Mock_Device && ) = delete;
 
     /**
      * \todo #29
@@ -794,13 +780,11 @@ class Mock_Device {
     ~Mock_Device() noexcept = default;
 
     /**
-     * \brief Assignment operator.
+     * \todo #29
      *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
+     * \return
      */
-    auto operator=( Mock_Device && expression ) -> Mock_Device & = default;
+    auto operator=( Mock_Device && ) = delete;
 
     /**
      * \todo #29

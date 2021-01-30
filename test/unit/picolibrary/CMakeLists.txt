@@ -45,6 +45,9 @@ add_subdirectory( generic_error_category )
 # build the picolibrary::GPIO unit tests
 add_subdirectory( gpio )
 
+# build the picolibrary::Microchip unit tests
+add_subdirectory( microchip )
+
 # build the picolibrary::Output_Stream unit tests
 add_subdirectory( output_stream )
 

@@ -1,7 +1,7 @@
 /**
  * picolibrary
  *
- * Copyright 2020 Andrew Countryman <apcountryman@gmail.com>
+ * Copyright 2020, 2021 Andrew Countryman <apcountryman@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -165,11 +165,9 @@ class Mock_Input_Pin {
     Mock_Input_Pin() = default;
 
     /**
-     * \brief Constructor.
-     *
-     * \param[in] source The source of the move.
+     * \todo #29
      */
-    Mock_Input_Pin( Mock_Input_Pin && source ) = default;
+    Mock_Input_Pin( Mock_Input_Pin && ) = delete;
 
     /**
      * \todo #29
@@ -182,13 +180,11 @@ class Mock_Input_Pin {
     ~Mock_Input_Pin() noexcept = default;
 
     /**
-     * \brief Assignment operator.
+     * \todo #29
      *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
+     * \return
      */
-    auto operator=( Mock_Input_Pin && expression ) -> Mock_Input_Pin & = default;
+    auto operator=( Mock_Input_Pin && ) = delete;
 
     /**
      * \todo #29
@@ -355,11 +351,9 @@ class Mock_Internally_Pulled_Up_Input_Pin {
     Mock_Internally_Pulled_Up_Input_Pin() = default;
 
     /**
-     * \brief Constructor.
-     *
-     * \param[in] source The source of the move.
+     * \todo #29
      */
-    Mock_Internally_Pulled_Up_Input_Pin( Mock_Internally_Pulled_Up_Input_Pin && source ) = default;
+    Mock_Internally_Pulled_Up_Input_Pin( Mock_Internally_Pulled_Up_Input_Pin && ) = delete;
 
     /**
      * \todo #29
@@ -372,14 +366,11 @@ class Mock_Internally_Pulled_Up_Input_Pin {
     ~Mock_Internally_Pulled_Up_Input_Pin() noexcept = default;
 
     /**
-     * \brief Assignment operator.
+     * \todo #29
      *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
+     * \return
      */
-    auto operator=( Mock_Internally_Pulled_Up_Input_Pin && expression )
-        -> Mock_Internally_Pulled_Up_Input_Pin & = default;
+    auto operator=( Mock_Internally_Pulled_Up_Input_Pin && ) = delete;
 
     /**
      * \todo #29
@@ -549,11 +540,9 @@ class Mock_Output_Pin {
     Mock_Output_Pin() = default;
 
     /**
-     * \brief Constructor.
-     *
-     * \param[in] source The source of the move.
+     * \todo #29
      */
-    Mock_Output_Pin( Mock_Output_Pin && source ) = default;
+    Mock_Output_Pin( Mock_Output_Pin && ) = delete;
 
     /**
      * \todo #29
@@ -566,13 +555,11 @@ class Mock_Output_Pin {
     ~Mock_Output_Pin() noexcept = default;
 
     /**
-     * \brief Assignment operator.
+     * \todo #29
      *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
+     * \return
      */
-    auto operator=( Mock_Output_Pin && expression ) -> Mock_Output_Pin & = default;
+    auto operator=( Mock_Output_Pin && ) = delete;
 
     /**
      * \todo #29
@@ -752,11 +739,9 @@ class Mock_IO_Pin {
     Mock_IO_Pin() = default;
 
     /**
-     * \brief Constructor.
-     *
-     * \param[in] source The source of the move.
+     * \todo #29
      */
-    Mock_IO_Pin( Mock_IO_Pin && source ) = default;
+    Mock_IO_Pin( Mock_IO_Pin && ) = delete;
 
     /**
      * \todo #29
@@ -769,13 +754,11 @@ class Mock_IO_Pin {
     ~Mock_IO_Pin() noexcept = default;
 
     /**
-     * \brief Assignment operator.
+     * \todo #29
      *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
+     * \return
      */
-    auto operator=( Mock_IO_Pin && expression ) -> Mock_IO_Pin & = default;
+    auto operator=( Mock_IO_Pin && ) = delete;
 
     /**
      * \todo #29

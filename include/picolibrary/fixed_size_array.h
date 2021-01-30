@@ -1,7 +1,7 @@
 /**
  * picolibrary
  *
- * Copyright 2020 Andrew Countryman <apcountryman@gmail.com>
+ * Copyright 2020, 2021 Andrew Countryman <apcountryman@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -109,7 +109,7 @@ class Fixed_Size_Array {
      */
     constexpr auto operator[]( Position position ) noexcept -> Reference
     {
-        if constexpr ( N ) {
+        if constexpr ( static_cast<bool>( N ) ) {
             return data()[ position ];
         } else {
             return data()[ 0 ];
@@ -128,7 +128,7 @@ class Fixed_Size_Array {
      */
     constexpr auto operator[]( Position position ) const noexcept -> Const_Reference
     {
-        if constexpr ( N ) {
+        if constexpr ( static_cast<bool>( N ) ) {
             return data()[ position ];
         } else {
             return data()[ 0 ];
@@ -168,7 +168,7 @@ class Fixed_Size_Array {
      */
     constexpr auto back() noexcept -> Reference
     {
-        if constexpr ( N ) {
+        if constexpr ( static_cast<bool>( N ) ) {
             return *( end() - 1 );
         } else {
             return *end();
@@ -184,7 +184,7 @@ class Fixed_Size_Array {
      */
     constexpr auto back() const noexcept -> Const_Reference
     {
-        if constexpr ( N ) {
+        if constexpr ( static_cast<bool>( N ) ) {
             return *( end() - 1 );
         } else {
             return *end();
@@ -199,7 +199,7 @@ class Fixed_Size_Array {
      */
     constexpr auto data() noexcept -> Pointer
     {
-        if constexpr ( N ) {
+        if constexpr ( static_cast<bool>( N ) ) {
             return &m_array[ 0 ];
         } else {
             return nullptr;
