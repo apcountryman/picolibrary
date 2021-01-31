@@ -1,7 +1,7 @@
 /**
  * picolibrary
  *
- * Copyright 2020 Andrew Countryman <apcountryman@gmail.com>
+ * Copyright 2020, 2021 Andrew Countryman <apcountryman@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at
@@ -40,7 +40,7 @@ using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::random_container;
 using ::testing::Return;
 
-auto random_unique_id_pair()
+auto random_unique_ids()
 {
     auto const a = random<Error_ID>();
     auto const b = random<Error_ID>();
@@ -134,7 +134,7 @@ TEST( equalityOperator, worksProperly )
 
     {
         auto const category           = Mock_Error_Category{};
-        auto const [ lhs_id, rhs_id ] = random_unique_id_pair();
+        auto const [ lhs_id, rhs_id ] = random_unique_ids();
 
         EXPECT_FALSE( ( Error_Code{ category, lhs_id } ) == ( Error_Code{ category, rhs_id } ) );
     }
@@ -150,7 +150,7 @@ TEST( equalityOperator, worksProperly )
     {
         auto const lhs_category       = Mock_Error_Category{};
         auto const rhs_category       = Mock_Error_Category{};
-        auto const [ lhs_id, rhs_id ] = random_unique_id_pair();
+        auto const [ lhs_id, rhs_id ] = random_unique_ids();
 
         EXPECT_FALSE( ( Error_Code{ lhs_category, lhs_id } ) == ( Error_Code{ rhs_category, rhs_id } ) );
     }
@@ -171,7 +171,7 @@ TEST( inequalityOperator, worksProperly )
 
     {
         auto const category           = Mock_Error_Category{};
-        auto const [ lhs_id, rhs_id ] = random_unique_id_pair();
+        auto const [ lhs_id, rhs_id ] = random_unique_ids();
 
         EXPECT_TRUE( ( Error_Code{ category, lhs_id } ) != ( Error_Code{ category, rhs_id } ) );
     }
@@ -187,7 +187,7 @@ TEST( inequalityOperator, worksProperly )
     {
         auto const lhs_category       = Mock_Error_Category{};
         auto const rhs_category       = Mock_Error_Category{};
-        auto const [ lhs_id, rhs_id ] = random_unique_id_pair();
+        auto const [ lhs_id, rhs_id ] = random_unique_ids();
 
         EXPECT_TRUE( ( Error_Code{ lhs_category, lhs_id } ) != ( Error_Code{ rhs_category, rhs_id } ) );
     }
