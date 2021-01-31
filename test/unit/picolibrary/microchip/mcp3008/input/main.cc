@@ -120,6 +120,42 @@ TEST( equalityOperator, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::Microchip::MCP3008::operator!=(
+ *        picolibrary::Microchip::MCP3008::Input, picolibrary::Microchip::MCP3008::Input )
+ *        works properly.
+ */
+TEST( inequalityOperator, worksProperly )
+{
+    {
+        auto const channel = random<Channel>();
+
+        EXPECT_FALSE( Input{ channel } != Input{ channel } );
+    }
+
+    {
+        auto const [ lhs_channel, rhs_channel ] = random_unique_channels();
+
+        EXPECT_TRUE( Input{ lhs_channel } != Input{ rhs_channel } );
+    }
+
+    {
+        auto const channel_pair = random<Channel_Pair>();
+
+        EXPECT_FALSE( Input{ channel_pair } != Input{ channel_pair } );
+    }
+
+    {
+        auto const [ lhs_channel_pair, rhs_channel_pair ] = random_unique_channel_pairs();
+
+        EXPECT_TRUE( Input{ lhs_channel_pair } != Input{ rhs_channel_pair } );
+    }
+
+    {
+        EXPECT_TRUE( Input{ random<Channel>() } != Input{ random<Channel_Pair>() } );
+    }
+}
+
+/**
  * \brief Execute the picolibrary::Microchip::MCP3008::Input unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
