@@ -20,6 +20,7 @@
  */
 
 #include <cstdint>
+#include <utility>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -33,6 +34,30 @@ using ::picolibrary::Microchip::MCP3008::Channel;
 using ::picolibrary::Microchip::MCP3008::Channel_Pair;
 using ::picolibrary::Microchip::MCP3008::Input;
 using ::picolibrary::Testing::Unit::random;
+
+auto random_unique_channels()
+{
+    auto const a = random<std::uint8_t>( 0b000, 0b111 );
+    auto const b = random<std::uint8_t>( 0b000, 0b111 );
+
+    auto const channel_a = static_cast<Channel>( ( 0b1'000 | a ) << 4 );
+    auto const channel_b = static_cast<Channel>(
+        ( 0b1'000 | ( b != a ? b : b ^ random<std::uint8_t>( 0b001, 0b111 ) ) ) << 4 );
+
+    return std::pair<Channel, Channel>{ channel_a, channel_b };
+}
+
+auto random_unique_channel_pairs()
+{
+    auto const a = random<std::uint8_t>( 0b000, 0b111 );
+    auto const b = random<std::uint8_t>( 0b000, 0b111 );
+
+    auto const channel_pair_a = static_cast<Channel_Pair>( a << 4 );
+    auto const channel_pair_b = static_cast<Channel_Pair>(
+        ( b != a ? b : b ^ random<std::uint8_t>( 0b001, 0b111 ) ) << 4 );
+
+    return std::pair<Channel_Pair, Channel_Pair>{ channel_pair_a, channel_pair_b };
+}
 
 } // namespace
 
@@ -56,6 +81,42 @@ TEST( constructorChannelPair, worksProperly )
     auto const channel_pair = random<Channel_Pair>();
 
     EXPECT_EQ( static_cast<std::uint8_t>( Input{ channel_pair } ), static_cast<std::uint8_t>( channel_pair ) );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP3008::operator==(
+ *        picolibrary::Microchip::MCP3008::Input, picolibrary::Microchip::MCP3008::Input )
+ *        works properly.
+ */
+TEST( equalityOperator, worksProperly )
+{
+    {
+        auto const channel = random<Channel>();
+
+        EXPECT_TRUE( Input{ channel } == Input{ channel } );
+    }
+
+    {
+        auto const [ lhs_channel, rhs_channel ] = random_unique_channels();
+
+        EXPECT_FALSE( Input{ lhs_channel } == Input{ rhs_channel } );
+    }
+
+    {
+        auto const channel_pair = random<Channel_Pair>();
+
+        EXPECT_TRUE( Input{ channel_pair } == Input{ channel_pair } );
+    }
+
+    {
+        auto const [ lhs_channel_pair, rhs_channel_pair ] = random_unique_channel_pairs();
+
+        EXPECT_FALSE( Input{ lhs_channel_pair } == Input{ rhs_channel_pair } );
+    }
+
+    {
+        EXPECT_FALSE( Input{ random<Channel>() } == Input{ random<Channel_Pair>() } );
+    }
 }
 
 /**
