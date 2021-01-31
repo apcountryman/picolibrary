@@ -19,9 +19,44 @@
  * \brief picolibrary::Microchip::MCP3008::Input unit test program.
  */
 
+#include <cstdint>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/microchip/mcp3008.h"
+#include "picolibrary/testing/unit/microchip/mcp3008.h"
+#include "picolibrary/testing/unit/random.h"
+
+namespace {
+
+using ::picolibrary::Microchip::MCP3008::Channel;
+using ::picolibrary::Microchip::MCP3008::Channel_Pair;
+using ::picolibrary::Microchip::MCP3008::Input;
+using ::picolibrary::Testing::Unit::random;
+
+} // namespace
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP3008::Input(
+ *        picolibrary::Microchip::MCP3008::Channel ) works properly.
+ */
+TEST( constructorChannel, worksProperly )
+{
+    auto const channel = random<Channel>();
+
+    EXPECT_EQ( static_cast<std::uint8_t>( Input{ channel } ), static_cast<std::uint8_t>( channel ) );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP3008::Input(
+ *        picolibrary::Microchip::MCP3008::Channel_Pair ) works properly.
+ */
+TEST( constructorChannelPair, worksProperly )
+{
+    auto const channel_pair = random<Channel_Pair>();
+
+    EXPECT_EQ( static_cast<std::uint8_t>( Input{ channel_pair } ), static_cast<std::uint8_t>( channel_pair ) );
+}
 
 /**
  * \brief Execute the picolibrary::Microchip::MCP3008::Input unit tests.
