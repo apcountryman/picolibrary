@@ -149,6 +149,22 @@ class Input {
 };
 
 /**
+ * \brief Equality operator.
+ *
+ * \relatedalso picolibrary::Microchip::MCP3008::Input
+ *
+ * \param[in] lhs The left hand side of the comparison.
+ * \param[in] rhs The right hand side of the comparison.
+ *
+ * \return true if lhs is equal to rhs.
+ * \return false if lhs is not equal to rhs.
+ */
+constexpr auto operator==( Input lhs, Input rhs ) noexcept
+{
+    return static_cast<std::uint8_t>( lhs ) == static_cast<std::uint8_t>( rhs );
+}
+
+/**
  * \brief Microchip MCP3008 sample.
  */
 using Sample = ADC::Sample<std::uint_fast16_t, 0, 1023>;
