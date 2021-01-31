@@ -15,5 +15,8 @@
 # File: test/unit/picolibrary/microchip/mcp3008/CMakeLists.txt
 # Description: picolibrary::Microchip::MCP3008 unit tests CMake rules.
 
+# build the picolibrary::Microchip::MCP3008::Blocking_Single_Sample_Converter unit tests
+add_subdirectory( blocking_single_sample_converter )
+
 # build the picolibrary::Microchip::MCP3008::Driver unit tests
 add_subdirectory( driver )
