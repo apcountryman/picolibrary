@@ -154,7 +154,7 @@ class Input {
 using Sample = ADC::Sample<std::uint_fast16_t, 0, 1023>;
 
 /**
- * \brief Microchip MCP
+ * \brief Microchip MCP driver.
  *
  * \tparam Controller_Type The type of SPI controller used to communicate with the
  *         MCP3008.
@@ -289,6 +289,61 @@ class Driver : public Device {
      *        being nonresponsive.
      */
     Error_Code m_nonresponsive{};
+};
+
+/**
+ * \brief Blocking, single sample Microchip MCP3008 ADC.
+ *
+ * \tparam Driver The MCP3008 driver implementation. The default MCP3008 driver
+ *         implementation should be used unless a mock MCP3008 driver is being injected to
+ *         support unit testing of this ADC.
+ */
+template<typename Driver>
+class Blocking_Single_Sample_Converter {
+  public:
+    /**
+     * \brief ADC sample.
+     */
+    using Sample = MCP3008::Sample;
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Blocking_Single_Sample_Converter() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Blocking_Single_Sample_Converter( Blocking_Single_Sample_Converter && source ) noexcept = default;
+
+    /**
+     * \todo #29
+     */
+    Blocking_Single_Sample_Converter( Blocking_Single_Sample_Converter const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Blocking_Single_Sample_Converter() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Blocking_Single_Sample_Converter && expression ) noexcept
+        -> Blocking_Single_Sample_Converter & = default;
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Blocking_Single_Sample_Converter const & ) = delete;
 };
 
 } // namespace picolibrary::Microchip::MCP3008
