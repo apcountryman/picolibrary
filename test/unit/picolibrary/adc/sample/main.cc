@@ -28,42 +28,77 @@
 
 namespace {
 
+using ::picolibrary::ADC::Sample;
 using ::picolibrary::Testing::Unit::random;
+using ::testing::Test;
+
+using Sample_Types = ::testing::Types<
+    Sample<std::uint8_t, 0, 255>,
+    Sample<std::uint_fast16_t, 0, 1023>,
+    Sample<std::uint_fast16_t, 0, 4095>,
+    Sample<std::uint_fast16_t, 0, 16383>,
+    Sample<std::uint_fast16_t, 0, 65535>>;
 
 } // namespace
 
 /**
- * \brief Verify picolibrary::ADC::Sample works properly.
+ * \brief picolibrary::ADC::Sample::Sample() unit test fixture.
+ *
+ * \tparam Sample_Type The picolibrary::ADC::Sample instantiation to be tested.
  */
-TEST( sample, worksProperly )
+template<typename Sample_Type>
+class constructorDefault : public Test {
+};
+
+/**
+ * \brief picolibrary::ADC::Sample::Sample() unit test fixture.
+ */
+TYPED_TEST_SUITE( constructorDefault, Sample_Types );
+
+/**
+ * \brief Verify picolibrary::ADC::Sample::Sample() works properly.
+ */
+TYPED_TEST( constructorDefault, worksProperly )
 {
-    using Value = std::uint_fast16_t;
+    using Sample = TypeParam;
+    using Value  = typename Sample::Value;
 
-    constexpr auto MIN = Value{ 0 };
-    constexpr auto MAX = Value{ 1023 };
+    auto const sample = Sample{};
 
-    using Sample = ::picolibrary::ADC::Sample<Value, MIN, MAX>;
+    EXPECT_EQ( sample.min(), Sample::MIN );
+    EXPECT_EQ( sample.max(), Sample::MAX );
+    EXPECT_EQ( static_cast<Value>( sample ), Value{} );
+}
 
-    EXPECT_EQ( Sample::MIN, MIN );
-    EXPECT_EQ( Sample::MAX, MAX );
+/**
+ * \brief picolibrary::ADC::Sample::Sample( Value ) unit test fixture.
+ *
+ * \tparam Sample_Type The picolibrary::ADC::Sample instantiation to be tested.
+ */
+template<typename Sample_Type>
+class constructorValue : public Test {
+};
 
-    {
-        auto const sample = Sample{};
+/**
+ * \brief picolibrary::ADC::Sample::Sample( Value ) unit test fixture.
+ */
+TYPED_TEST_SUITE( constructorValue, Sample_Types );
 
-        EXPECT_EQ( sample.min(), MIN );
-        EXPECT_EQ( sample.max(), MAX );
-        EXPECT_EQ( static_cast<Value>( sample ), Value{} );
-    }
+/**
+ * \brief Verify picolibrary::ADC::Sample::Sample( Value ) works properly.
+ */
+TYPED_TEST( constructorValue, worksProperly )
+{
+    using Sample = TypeParam;
+    using Value  = typename Sample::Value;
 
-    {
-        auto const value = random<Value>( MIN, MAX );
+    auto const value = random<Value>( Sample::MIN, Sample::MAX );
 
-        auto const sample = Sample{ value };
+    auto const sample = Sample{ value };
 
-        EXPECT_EQ( sample.min(), MIN );
-        EXPECT_EQ( sample.max(), MAX );
-        EXPECT_EQ( static_cast<Value>( sample ), value );
-    }
+    EXPECT_EQ( sample.min(), Sample::MIN );
+    EXPECT_EQ( sample.max(), Sample::MAX );
+    EXPECT_EQ( static_cast<Value>( sample ), value );
 }
 
 /**
