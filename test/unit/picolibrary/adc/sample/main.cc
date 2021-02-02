@@ -20,6 +20,7 @@
  */
 
 #include <cstdint>
+#include <utility>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -38,6 +39,17 @@ using Sample_Types = ::testing::Types<
     Sample<std::uint_fast16_t, 0, 4095>,
     Sample<std::uint_fast16_t, 0, 16383>,
     Sample<std::uint_fast16_t, 0, 65535>>;
+
+template<typename Sample>
+auto random_unique_sample_values()
+{
+    using Value = typename Sample::Value;
+
+    auto const a = random<Value>( Sample::MIN, Sample::MAX );
+    auto const b = random<Value>( Sample::MIN, Sample::MAX );
+
+    return std::pair<Value, Value>{ a, b != a ? b : b ^ random<Value>( Sample::MIN + 1, Sample::MAX ) };
+}
 
 } // namespace
 
@@ -99,6 +111,44 @@ TYPED_TEST( constructorValue, worksProperly )
     EXPECT_EQ( sample.min(), Sample::MIN );
     EXPECT_EQ( sample.max(), Sample::MAX );
     EXPECT_EQ( static_cast<Value>( sample ), value );
+}
+
+/**
+ * \brief picolibrary::ADC::operator==( picolibrary::ADC::Sample, picolibrary::ADC::Sample
+ *        ) unit test fixture.
+ *
+ * \tparam Sample_Type The picolibrary::ADC::Sample instantiation to be tested.
+ */
+template<typename Sample_Type>
+class equalityOperator : public Test {
+};
+
+/**
+ * \brief picolibrary::ADC::operator==( picolibrary::ADC::Sample, picolibrary::ADC::Sample
+ *        ) unit test fixture.
+ */
+TYPED_TEST_SUITE( equalityOperator, Sample_Types );
+
+/**
+ * \brief Verify picolibrary::ADC::operator==( picolibrary::ADC::Sample,
+ *        picolibrary::ADC::Sample ) works properly.
+ */
+TYPED_TEST( equalityOperator, worksProperly )
+{
+    using Sample = TypeParam;
+    using Value  = typename Sample::Value;
+
+    {
+        auto const value = random<Value>( Sample::MIN, Sample::MAX );
+
+        EXPECT_TRUE( Sample{ value } == Sample{ value } );
+    }
+
+    {
+        auto const [ lhs_value, rhs_value ] = random_unique_sample_values<Sample>();
+
+        EXPECT_FALSE( Sample{ lhs_value } == Sample{ rhs_value } );
+    }
 }
 
 /**
