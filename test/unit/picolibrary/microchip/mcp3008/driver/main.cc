@@ -29,6 +29,7 @@
 #include "picolibrary/microchip/mcp3008.h"
 #include "picolibrary/result.h"
 #include "picolibrary/testing/unit/error.h"
+#include "picolibrary/testing/unit/microchip/mcp3008.h"
 #include "picolibrary/testing/unit/random.h"
 #include "picolibrary/testing/unit/spi.h"
 #include "picolibrary/utility.h"
@@ -170,69 +171,42 @@ TEST( sample, nonresponsiveDevice )
  */
 TEST( sample, worksProperly )
 {
-    struct {
-        Input input;
-    } const test_cases[]{
-        // clang-format off
+    auto const in_sequence = InSequence{};
 
-        { Channel::_0 },
-        { Channel::_1 },
-        { Channel::_2 },
-        { Channel::_3 },
-        { Channel::_4 },
-        { Channel::_5 },
-        { Channel::_6 },
-        { Channel::_7 },
+    auto mcp3008 = Driver{};
 
-        { Channel_Pair::_0_1 },
-        { Channel_Pair::_1_0 },
-        { Channel_Pair::_2_3 },
-        { Channel_Pair::_3_2 },
-        { Channel_Pair::_4_5 },
-        { Channel_Pair::_5_4 },
-        { Channel_Pair::_6_7 },
-        { Channel_Pair::_7_6 },
+    auto device_selector        = Mock_Device_Selector{};
+    auto device_selector_handle = device_selector.handle();
 
-        // clang-format on
+    EXPECT_CALL( mcp3008, configure() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_CALL( mcp3008, device_selector() ).WillOnce( ReturnRef( device_selector_handle ) );
+
+    EXPECT_CALL( device_selector, select() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    auto const input  = random<Input>();
+    auto const sample = random<Sample::Value>( Sample::MIN, Sample::MAX );
+
+    auto const tx = std::vector<std::uint8_t>{
+        0x01,
+        static_cast<std::uint8_t>( input ),
+        0x00,
     };
+    auto const rx = std::vector<std::uint8_t>{
+        random<std::uint8_t>(),
+        static_cast<std::uint8_t>(
+            ( random<std::uint8_t>( 0, 0x1F ) << 3 )
+            | ( sample >> std::numeric_limits<std::uint8_t>::digits ) ),
+        static_cast<std::uint8_t>( sample ),
+    };
+    EXPECT_CALL( mcp3008, exchange( tx ) ).WillOnce( Return( rx ) );
 
-    for ( auto const test_case : test_cases ) {
-        auto const in_sequence = InSequence{};
+    EXPECT_CALL( device_selector, deselect() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
-        auto mcp3008 = Driver{};
+    auto const result = mcp3008.sample( input );
 
-        auto device_selector        = Mock_Device_Selector{};
-        auto device_selector_handle = device_selector.handle();
-
-        EXPECT_CALL( mcp3008, configure() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-
-        EXPECT_CALL( mcp3008, device_selector() ).WillOnce( ReturnRef( device_selector_handle ) );
-
-        EXPECT_CALL( device_selector, select() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-
-        auto const sample = random<Sample::Value>( Sample::MIN, Sample::MAX );
-
-        auto const tx = std::vector<std::uint8_t>{
-            0x01,
-            static_cast<std::uint8_t>( test_case.input ),
-            0x00,
-        };
-        auto const rx = std::vector<std::uint8_t>{
-            random<std::uint8_t>(),
-            static_cast<std::uint8_t>(
-                ( random<std::uint8_t>( 0, 0x1F ) << 3 )
-                | ( sample >> std::numeric_limits<std::uint8_t>::digits ) ),
-            static_cast<std::uint8_t>( sample ),
-        };
-        EXPECT_CALL( mcp3008, exchange( tx ) ).WillOnce( Return( rx ) );
-
-        EXPECT_CALL( device_selector, deselect() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-
-        auto const result = mcp3008.sample( test_case.input );
-
-        EXPECT_TRUE( result.is_value() );
-        EXPECT_EQ( static_cast<Sample::Value>( result.value() ), sample );
-    } // for
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), sample );
 }
 
 /**

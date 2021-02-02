@@ -30,6 +30,7 @@
 #include "picolibrary/fixed_size_array.h"
 #include "picolibrary/result.h"
 #include "picolibrary/spi.h"
+#include "picolibrary/utility.h"
 
 /**
  * \brief Microchip MCP3008 facilities.
@@ -149,12 +150,44 @@ class Input {
 };
 
 /**
+ * \brief Equality operator.
+ *
+ * \relatedalso picolibrary::Microchip::MCP3008::Input
+ *
+ * \param[in] lhs The left hand side of the comparison.
+ * \param[in] rhs The right hand side of the comparison.
+ *
+ * \return true if lhs is equal to rhs.
+ * \return false if lhs is not equal to rhs.
+ */
+constexpr auto operator==( Input lhs, Input rhs ) noexcept
+{
+    return static_cast<std::uint8_t>( lhs ) == static_cast<std::uint8_t>( rhs );
+}
+
+/**
+ * \brief Inequality operator.
+ *
+ * \relatedalso picolibrary::Microchip::MCP3008::Input
+ *
+ * \param[in] lhs The left hand side of the comparison.
+ * \param[in] rhs The right hand side of the comparison.
+ *
+ * \return true if lhs is not equal to rhs.
+ * \return false if lhs is equal to rhs.
+ */
+constexpr auto operator!=( Input lhs, Input rhs ) noexcept
+{
+    return not( lhs == rhs );
+}
+
+/**
  * \brief Microchip MCP3008 sample.
  */
 using Sample = ADC::Sample<std::uint_fast16_t, 0, 1023>;
 
 /**
- * \brief Microchip MCP
+ * \brief Microchip MCP driver.
  *
  * \tparam Controller_Type The type of SPI controller used to communicate with the
  *         MCP3008.
@@ -289,6 +322,119 @@ class Driver : public Device {
      *        being nonresponsive.
      */
     Error_Code m_nonresponsive{};
+};
+
+/**
+ * \brief Blocking, single sample Microchip MCP3008 ADC.
+ *
+ * \tparam Driver The MCP3008 driver implementation. The default MCP3008 driver
+ *         implementation should be used unless a mock MCP3008 driver is being injected to
+ *         support unit testing of this ADC.
+ */
+template<typename Driver>
+class Blocking_Single_Sample_Converter {
+  public:
+    /**
+     * \brief ADC sample.
+     */
+    using Sample = MCP3008::Sample;
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Blocking_Single_Sample_Converter() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] driver The MCP3008 driver used to access the MCP3008.
+     * \param[in] input The MCP3008 input mode/channel(s) to use when getting a sample.
+     */
+    constexpr Blocking_Single_Sample_Converter( Driver & driver, Input input ) noexcept :
+        m_driver{ &driver },
+        m_input{ input }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Blocking_Single_Sample_Converter( Blocking_Single_Sample_Converter && source ) noexcept :
+        m_driver{ source.m_driver },
+        m_input{ source.m_input }
+    {
+        source.m_driver = nullptr;
+    }
+
+    /**
+     * \todo #29
+     */
+    Blocking_Single_Sample_Converter( Blocking_Single_Sample_Converter const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Blocking_Single_Sample_Converter() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto & operator=( Blocking_Single_Sample_Converter && expression ) noexcept
+    {
+        if ( &expression != this ) {
+            m_driver = expression.m_driver;
+            m_input  = expression.m_input;
+
+            expression.m_driver = nullptr;
+        } // if
+
+        return *this;
+    }
+
+    /**
+     * \todo #29
+     *
+     * \return
+     */
+    auto operator=( Blocking_Single_Sample_Converter const & ) = delete;
+
+    /**
+     * \brief Initialize the ADC's hardware.
+     *
+     * \return Success.
+     */
+    auto initialize() noexcept -> Result<Void, Void>
+    {
+        return {};
+    }
+
+    /**
+     * \brief Get a sample.
+     *
+     * \return A sample if getting the sample succeeded.
+     * \return An error code if getting the sample failed.
+     */
+    auto sample() noexcept
+    {
+        return m_driver->sample( m_input );
+    }
+
+  private:
+    /**
+     * \brief The MCP3008 driver used to access the MCP3008.
+     */
+    Driver * m_driver{};
+
+    /**
+     * \brief The MCP3008 input mode/channel(s) to use when getting a sample.
+     */
+    Input m_input{};
 };
 
 } // namespace picolibrary::Microchip::MCP3008

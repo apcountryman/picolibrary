@@ -20,6 +20,7 @@
  */
 
 #include <cstdint>
+#include <utility>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -28,41 +29,163 @@
 
 namespace {
 
+using ::picolibrary::ADC::Sample;
 using ::picolibrary::Testing::Unit::random;
+using ::testing::Test;
+
+using Sample_Types = ::testing::Types<
+    Sample<std::uint8_t, 0, 255>,
+    Sample<std::uint_fast16_t, 0, 1023>,
+    Sample<std::uint_fast16_t, 0, 4095>,
+    Sample<std::uint_fast16_t, 0, 16383>,
+    Sample<std::uint_fast16_t, 0, 65535>>;
+
+template<typename Sample>
+auto random_unique_sample_values()
+{
+    using Value = typename Sample::Value;
+
+    auto const a = random<Value>( Sample::MIN, Sample::MAX );
+    auto const b = random<Value>( Sample::MIN, Sample::MAX );
+
+    return std::pair<Value, Value>{ a, b != a ? b : b ^ random<Value>( Sample::MIN + 1, Sample::MAX ) };
+}
 
 } // namespace
 
 /**
- * \brief Verify picolibrary::ADC::Sample works properly.
+ * \brief picolibrary::ADC::Sample::Sample() unit test fixture.
+ *
+ * \tparam Sample_Type The picolibrary::ADC::Sample instantiation to be tested.
  */
-TEST( sample, worksProperly )
+template<typename Sample_Type>
+class constructorDefault : public Test {
+};
+
+/**
+ * \brief picolibrary::ADC::Sample::Sample() unit test fixture.
+ */
+TYPED_TEST_SUITE( constructorDefault, Sample_Types );
+
+/**
+ * \brief Verify picolibrary::ADC::Sample::Sample() works properly.
+ */
+TYPED_TEST( constructorDefault, worksProperly )
 {
-    using Value = std::uint_fast16_t;
+    using Sample = TypeParam;
+    using Value  = typename Sample::Value;
 
-    constexpr auto MIN = Value{ 0 };
-    constexpr auto MAX = Value{ 1023 };
+    auto const sample = Sample{};
 
-    using Sample = ::picolibrary::ADC::Sample<Value, MIN, MAX>;
+    EXPECT_EQ( sample.min(), Sample::MIN );
+    EXPECT_EQ( sample.max(), Sample::MAX );
+    EXPECT_EQ( static_cast<Value>( sample ), Value{} );
+}
 
-    EXPECT_EQ( Sample::MIN, MIN );
-    EXPECT_EQ( Sample::MAX, MAX );
+/**
+ * \brief picolibrary::ADC::Sample::Sample( Value ) unit test fixture.
+ *
+ * \tparam Sample_Type The picolibrary::ADC::Sample instantiation to be tested.
+ */
+template<typename Sample_Type>
+class constructorValue : public Test {
+};
+
+/**
+ * \brief picolibrary::ADC::Sample::Sample( Value ) unit test fixture.
+ */
+TYPED_TEST_SUITE( constructorValue, Sample_Types );
+
+/**
+ * \brief Verify picolibrary::ADC::Sample::Sample( Value ) works properly.
+ */
+TYPED_TEST( constructorValue, worksProperly )
+{
+    using Sample = TypeParam;
+    using Value  = typename Sample::Value;
+
+    auto const value = random<Value>( Sample::MIN, Sample::MAX );
+
+    auto const sample = Sample{ value };
+
+    EXPECT_EQ( sample.min(), Sample::MIN );
+    EXPECT_EQ( sample.max(), Sample::MAX );
+    EXPECT_EQ( static_cast<Value>( sample ), value );
+}
+
+/**
+ * \brief picolibrary::ADC::operator==( picolibrary::ADC::Sample, picolibrary::ADC::Sample
+ *        ) unit test fixture.
+ *
+ * \tparam Sample_Type The picolibrary::ADC::Sample instantiation to be tested.
+ */
+template<typename Sample_Type>
+class equalityOperator : public Test {
+};
+
+/**
+ * \brief picolibrary::ADC::operator==( picolibrary::ADC::Sample, picolibrary::ADC::Sample
+ *        ) unit test fixture.
+ */
+TYPED_TEST_SUITE( equalityOperator, Sample_Types );
+
+/**
+ * \brief Verify picolibrary::ADC::operator==( picolibrary::ADC::Sample,
+ *        picolibrary::ADC::Sample ) works properly.
+ */
+TYPED_TEST( equalityOperator, worksProperly )
+{
+    using Sample = TypeParam;
+    using Value  = typename Sample::Value;
 
     {
-        auto const sample = Sample{};
+        auto const value = random<Value>( Sample::MIN, Sample::MAX );
 
-        EXPECT_EQ( sample.min(), MIN );
-        EXPECT_EQ( sample.max(), MAX );
-        EXPECT_EQ( static_cast<Value>( sample ), Value{} );
+        EXPECT_TRUE( Sample{ value } == Sample{ value } );
     }
 
     {
-        auto const value = random<Value>( MIN, MAX );
+        auto const [ lhs_value, rhs_value ] = random_unique_sample_values<Sample>();
 
-        auto const sample = Sample{ value };
+        EXPECT_FALSE( Sample{ lhs_value } == Sample{ rhs_value } );
+    }
+}
 
-        EXPECT_EQ( sample.min(), MIN );
-        EXPECT_EQ( sample.max(), MAX );
-        EXPECT_EQ( static_cast<Value>( sample ), value );
+/**
+ * \brief picolibrary::ADC::operator!=( picolibrary::ADC::Sample, picolibrary::ADC::Sample
+ *        ) unit test fixture.
+ *
+ * \tparam Sample_Type The picolibrary::ADC::Sample instantiation to be tested.
+ */
+template<typename Sample_Type>
+class inequalityOperator : public Test {
+};
+
+/**
+ * \brief picolibrary::ADC::operator!=( picolibrary::ADC::Sample, picolibrary::ADC::Sample
+ *        ) unit test fixture.
+ */
+TYPED_TEST_SUITE( inequalityOperator, Sample_Types );
+
+/**
+ * \brief Verify picolibrary::ADC::operator!=( picolibrary::ADC::Sample,
+ *        picolibrary::ADC::Sample ) works properly.
+ */
+TYPED_TEST( inequalityOperator, worksProperly )
+{
+    using Sample = TypeParam;
+    using Value  = typename Sample::Value;
+
+    {
+        auto const value = random<Value>( Sample::MIN, Sample::MAX );
+
+        EXPECT_FALSE( Sample{ value } != Sample{ value } );
+    }
+
+    {
+        auto const [ lhs_value, rhs_value ] = random_unique_sample_values<Sample>();
+
+        EXPECT_TRUE( Sample{ lhs_value } != Sample{ rhs_value } );
     }
 }
 
