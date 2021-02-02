@@ -147,6 +147,27 @@ class Sample {
 };
 
 /**
+ * \brief Equality operator.
+ *
+ * \relatedalso picolibrary::ADC::Sample
+ *
+ * \tparam Value The integral type used to hold a sample value.
+ * \tparam MIN The minimum possible sample value.
+ * \tparam MAX The maximum possible sample value.
+ *
+ * \param[in] lhs The left hand side of the comparison.
+ * \param[in] rhs The right hand side of the comparison.
+ *
+ * \return true if lhs is equal to rhs.
+ * \return false if lhs is not equal to rhs.
+ */
+template<typename Value, Value MIN, Value MAX>
+constexpr auto operator==( Sample<Value, MIN, MAX> lhs, Sample<Value, MIN, MAX> rhs ) noexcept
+{
+    return static_cast<Value>( lhs ) == static_cast<Value>( rhs );
+}
+
+/**
  * \brief Blocking, single sample ADC concept.
  */
 class Blocking_Single_Sample_Converter_Concept {
