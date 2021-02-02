@@ -152,6 +152,44 @@ TYPED_TEST( equalityOperator, worksProperly )
 }
 
 /**
+ * \brief picolibrary::ADC::operator!=( picolibrary::ADC::Sample, picolibrary::ADC::Sample
+ *        ) unit test fixture.
+ *
+ * \tparam Sample_Type The picolibrary::ADC::Sample instantiation to be tested.
+ */
+template<typename Sample_Type>
+class inequalityOperator : public Test {
+};
+
+/**
+ * \brief picolibrary::ADC::operator!=( picolibrary::ADC::Sample, picolibrary::ADC::Sample
+ *        ) unit test fixture.
+ */
+TYPED_TEST_SUITE( inequalityOperator, Sample_Types );
+
+/**
+ * \brief Verify picolibrary::ADC::operator!=( picolibrary::ADC::Sample,
+ *        picolibrary::ADC::Sample ) works properly.
+ */
+TYPED_TEST( inequalityOperator, worksProperly )
+{
+    using Sample = TypeParam;
+    using Value  = typename Sample::Value;
+
+    {
+        auto const value = random<Value>( Sample::MIN, Sample::MAX );
+
+        EXPECT_FALSE( Sample{ value } != Sample{ value } );
+    }
+
+    {
+        auto const [ lhs_value, rhs_value ] = random_unique_sample_values<Sample>();
+
+        EXPECT_TRUE( Sample{ lhs_value } != Sample{ rhs_value } );
+    }
+}
+
+/**
  * \brief Execute the picolibrary::ADC::Sample unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
