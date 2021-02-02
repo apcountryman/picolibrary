@@ -206,7 +206,7 @@ TEST( sample, worksProperly )
     auto const result = mcp3008.sample( input );
 
     EXPECT_TRUE( result.is_value() );
-    EXPECT_EQ( static_cast<Sample::Value>( result.value() ), sample );
+    EXPECT_EQ( result.value(), sample );
 }
 
 /**
