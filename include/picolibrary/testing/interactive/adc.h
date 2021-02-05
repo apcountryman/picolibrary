@@ -34,14 +34,17 @@ namespace picolibrary::Testing::Interactive::ADC {
 /**
  * \brief Blocking, single sample ADC sample interactive test helper.
  *
- * \tparam Output_Stream The type of asynchronous serial output stream to use.
- * \tparam Transmitter The type of asynchronous serial transmitter to use.
+ * \tparam Output_Stream The type of asynchronous serial output stream to use to output
+ *         information to the user.
+ * \tparam Transmitter The type of asynchronous serial transmitter to use to transmit
+ *         information to the user.
  * \tparam Blocking_Single_Sample_Converter The type of blocking, single sample ADC to
  *         test.
  * \tparam Delayer A nullary functor called to introduce a delay each time an ADC sample
  *         is gotten.
  *
- * \param[in] transmitter The transmitter to use.
+ * \param[in] transmitter The asynchronous serial transmitter to use to transmit
+ *            information to the user.
  * \param[in] adc The blocking, single sample ADC to test.
  * \param[in] delay The nullary functor called to introduce a delay each time an ADC
  *            sample is gotten.
