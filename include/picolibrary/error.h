@@ -396,6 +396,7 @@ enum class Generic_Error : Error_ID {
     OPERATION_TIMEOUT,     ///< Operation timeout.
     IO_STREAM_DEGRADED,    ///< I/O stream degraded.
     INVALID_FORMAT,        ///< Invalid format string.
+    NONRESPONSIVE_DEVICE,  ///< Nonresponsive device.
 };
 
 /**
@@ -459,6 +460,7 @@ class Generic_Error_Category final : public Error_Category {
             case Generic_Error::OPERATION_TIMEOUT: return "OPERATION_TIMEOUT";
             case Generic_Error::IO_STREAM_DEGRADED: return "IO_STREAM_DEGRADED";
             case Generic_Error::INVALID_FORMAT: return "INVALID_FORMAT";
+            case Generic_Error::NONRESPONSIVE_DEVICE: return "NONRESPONSIVE_DEVICE";
         } // switch
 
         return "UNKNOWN";
