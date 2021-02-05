@@ -67,6 +67,8 @@ void sample(
     ::picolibrary::Microchip::MCP3008::Input input,
     Delayer                                  delay ) noexcept
 {
+    // #lizard forgives the PARAM
+
     if ( controller.initialize().is_error() ) { return; } // if
 
     auto mcp3008 = ::picolibrary::Microchip::MCP3008::Driver{
