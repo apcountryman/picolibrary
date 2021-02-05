@@ -49,6 +49,8 @@ namespace picolibrary::Testing::Interactive::ADC {
 template<template<typename> typename Output_Stream, typename Transmitter, typename Blocking_Single_Sample_Converter, typename Delayer>
 void sample_blocking_single_sample_converter( Transmitter transmitter, Blocking_Single_Sample_Converter adc, Delayer delay ) noexcept
 {
+    // #lizard forgives the length
+
     auto stream = Output_Stream{ std::move( transmitter ) };
 
     if ( stream.initialize().is_error() ) { return; } // if
