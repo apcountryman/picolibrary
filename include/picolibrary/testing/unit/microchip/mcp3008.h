@@ -105,14 +105,8 @@ class Mock_Driver {
     {
     }
 
-    /**
-     * \todo #29
-     */
     Mock_Driver( Mock_Driver && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Mock_Driver( Mock_Driver const & ) = delete;
 
     /**
@@ -120,18 +114,8 @@ class Mock_Driver {
      */
     ~Mock_Driver() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Driver && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Driver const & ) = delete;
 
     MOCK_METHOD( (Result<Void, Error_Code>), initialize, () );

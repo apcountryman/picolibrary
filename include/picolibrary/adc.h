@@ -201,30 +201,14 @@ class Blocking_Single_Sample_Converter_Concept {
 
     Blocking_Single_Sample_Converter_Concept() = delete;
 
-    /**
-     * \todo #29
-     */
     Blocking_Single_Sample_Converter_Concept( Blocking_Single_Sample_Converter_Concept && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Blocking_Single_Sample_Converter_Concept( Blocking_Single_Sample_Converter_Concept const & ) = delete;
 
     ~Blocking_Single_Sample_Converter_Concept() = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Blocking_Single_Sample_Converter_Concept && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Blocking_Single_Sample_Converter_Concept const & ) = delete;
 
     /**
@@ -259,30 +243,14 @@ class Non_Blocking_Single_Sample_Converter_Concept {
 
     Non_Blocking_Single_Sample_Converter_Concept() = delete;
 
-    /**
-     * \todo #29
-     */
     Non_Blocking_Single_Sample_Converter_Concept( Non_Blocking_Single_Sample_Converter_Concept && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Non_Blocking_Single_Sample_Converter_Concept( Non_Blocking_Single_Sample_Converter_Concept const & ) = delete;
 
     ~Non_Blocking_Single_Sample_Converter_Concept() = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Non_Blocking_Single_Sample_Converter_Concept && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Non_Blocking_Single_Sample_Converter_Concept const & ) = delete;
 
     /**

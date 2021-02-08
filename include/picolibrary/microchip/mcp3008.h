@@ -244,9 +244,6 @@ class Driver : public Device {
      */
     constexpr Driver( Driver && source ) noexcept = default;
 
-    /**
-     * \todo #29
-     */
     Driver( Driver const & ) = delete;
 
     /**
@@ -263,11 +260,6 @@ class Driver : public Device {
      */
     auto operator=( Driver && expression ) noexcept -> Driver & = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Driver const & ) = delete;
 
     using Device::initialize;
@@ -369,9 +361,6 @@ class Blocking_Single_Sample_Converter {
         source.m_driver = nullptr;
     }
 
-    /**
-     * \todo #29
-     */
     Blocking_Single_Sample_Converter( Blocking_Single_Sample_Converter const & ) = delete;
 
     /**
@@ -398,11 +387,6 @@ class Blocking_Single_Sample_Converter {
         return *this;
     }
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Blocking_Single_Sample_Converter const & ) = delete;
 
     /**

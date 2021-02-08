@@ -47,14 +47,8 @@ class Mock_Stream_Buffer : public Stream_Buffer {
      */
     Mock_Stream_Buffer() = default;
 
-    /**
-     * \todo #29
-     */
     Mock_Stream_Buffer( Mock_Stream_Buffer && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Mock_Stream_Buffer( Mock_Stream_Buffer const & ) = delete;
 
     /**
@@ -62,18 +56,8 @@ class Mock_Stream_Buffer : public Stream_Buffer {
      */
     ~Mock_Stream_Buffer() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Stream_Buffer && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Stream_Buffer const & ) = delete;
 
     MOCK_METHOD( (Result<Void, Error_Code>), initialize, (), ( noexcept, override ) );
@@ -168,14 +152,8 @@ class Mock_Output_Formatter {
         INSTANCE = this;
     }
 
-    /**
-     * \todo #29
-     */
     Mock_Output_Formatter( Mock_Output_Formatter && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Mock_Output_Formatter( Mock_Output_Formatter const & ) = delete;
 
     /**
@@ -186,18 +164,8 @@ class Mock_Output_Formatter {
         INSTANCE = nullptr;
     }
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Output_Formatter && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Output_Formatter const & ) = delete;
 
     MOCK_METHOD( (Result<char const *, Error_Code>), parse, ( std::string ) );
@@ -224,14 +192,8 @@ class Mock_Output_Stream : public Output_Stream {
         set_buffer( &m_buffer );
     }
 
-    /**
-     * \todo #29
-     */
     Mock_Output_Stream( Mock_Output_Stream && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Mock_Output_Stream( Mock_Output_Stream const & ) = delete;
 
     /**
@@ -239,18 +201,8 @@ class Mock_Output_Stream : public Output_Stream {
      */
     ~Mock_Output_Stream() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Output_Stream && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Output_Stream const & ) = delete;
 
     /**
@@ -292,14 +244,8 @@ class String_Stream_Buffer : public Stream_Buffer {
      */
     String_Stream_Buffer() = default;
 
-    /**
-     * \todo #29
-     */
     String_Stream_Buffer( String_Stream_Buffer && ) = delete;
 
-    /**
-     * \todo #29
-     */
     String_Stream_Buffer( String_Stream_Buffer const & ) = delete;
 
     /**
@@ -307,18 +253,8 @@ class String_Stream_Buffer : public Stream_Buffer {
      */
     ~String_Stream_Buffer() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( String_Stream_Buffer && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( String_Stream_Buffer const & ) = delete;
 
     /**
@@ -397,14 +333,8 @@ class Output_String_Stream : public Output_Stream {
         set_buffer( &m_buffer );
     }
 
-    /**
-     * \todo #29
-     */
     Output_String_Stream( Output_String_Stream && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Output_String_Stream( Output_String_Stream const & ) = delete;
 
     /**
@@ -412,18 +342,8 @@ class Output_String_Stream : public Output_Stream {
      */
     ~Output_String_Stream() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Output_String_Stream && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Output_String_Stream const & ) = delete;
 
     /**

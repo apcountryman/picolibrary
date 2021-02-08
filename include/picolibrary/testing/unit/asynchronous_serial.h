@@ -83,9 +83,6 @@ class Mock_Basic_Transmitter {
             source.m_mock_basic_transmitter = nullptr;
         }
 
-        /**
-         * \todo #29
-         */
         Handle( Handle const & ) = delete;
 
         /**
@@ -111,11 +108,6 @@ class Mock_Basic_Transmitter {
             return *this;
         }
 
-        /**
-         * \todo #29
-         *
-         * \return
-         */
         auto operator=( Handle const & ) = delete;
 
         /**
@@ -164,14 +156,8 @@ class Mock_Basic_Transmitter {
      */
     Mock_Basic_Transmitter() = default;
 
-    /**
-     * \todo #29
-     */
     Mock_Basic_Transmitter( Mock_Basic_Transmitter && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Mock_Basic_Transmitter( Mock_Basic_Transmitter const & ) = delete;
 
     /**
@@ -179,18 +165,8 @@ class Mock_Basic_Transmitter {
      */
     ~Mock_Basic_Transmitter() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Basic_Transmitter && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Basic_Transmitter const & ) = delete;
 
     /**
@@ -257,9 +233,6 @@ class Mock_Transmitter {
             source.m_mock_transmitter = nullptr;
         }
 
-        /**
-         * \todo #29
-         */
         Handle( Handle const & ) = delete;
 
         /**
@@ -285,11 +258,6 @@ class Mock_Transmitter {
             return *this;
         }
 
-        /**
-         * \todo #29
-         *
-         * \return
-         */
         auto operator=( Handle const & ) = delete;
 
         /**
@@ -352,14 +320,8 @@ class Mock_Transmitter {
      */
     Mock_Transmitter() = default;
 
-    /**
-     * \todo #29
-     */
     Mock_Transmitter( Mock_Transmitter && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Mock_Transmitter( Mock_Transmitter const & ) = delete;
 
     /**
@@ -367,18 +329,8 @@ class Mock_Transmitter {
      */
     ~Mock_Transmitter() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Transmitter && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Transmitter const & ) = delete;
 
     /**

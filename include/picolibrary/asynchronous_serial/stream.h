@@ -64,9 +64,6 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
      */
     constexpr Unbuffered_Output_Stream_Buffer( Unbuffered_Output_Stream_Buffer && source ) noexcept = default;
 
-    /**
-     * \todo #29
-     */
     Unbuffered_Output_Stream_Buffer( Unbuffered_Output_Stream_Buffer const & ) = delete;
 
     /**
@@ -84,11 +81,6 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
     constexpr auto operator=( Unbuffered_Output_Stream_Buffer && expression ) noexcept
         -> Unbuffered_Output_Stream_Buffer & = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Unbuffered_Output_Stream_Buffer const & ) = delete;
 
     /**
@@ -178,9 +170,6 @@ class Unbuffered_Output_Stream : public Output_Stream {
         } // if
     }
 
-    /**
-     * \todo #29
-     */
     Unbuffered_Output_Stream( Unbuffered_Output_Stream const & ) = delete;
 
     /**
@@ -212,11 +201,6 @@ class Unbuffered_Output_Stream : public Output_Stream {
         return *this;
     }
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Unbuffered_Output_Stream const & ) = delete;
 
   private:

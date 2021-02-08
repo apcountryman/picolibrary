@@ -145,30 +145,14 @@ class Input_Pin_Concept {
   public:
     Input_Pin_Concept() = delete;
 
-    /**
-     * \todo #29
-     */
     Input_Pin_Concept( Input_Pin_Concept && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Input_Pin_Concept( Input_Pin_Concept const & ) = delete;
 
     ~Input_Pin_Concept() = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Input_Pin_Concept && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Input_Pin_Concept const & ) = delete;
 
     /**
@@ -206,30 +190,14 @@ class Internally_Pulled_Up_Input_Pin_Concept {
   public:
     Internally_Pulled_Up_Input_Pin_Concept() = delete;
 
-    /**
-     * \todo #29
-     */
     Internally_Pulled_Up_Input_Pin_Concept( Input_Pin_Concept && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Internally_Pulled_Up_Input_Pin_Concept( Input_Pin_Concept const & ) = delete;
 
     ~Internally_Pulled_Up_Input_Pin_Concept() = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Internally_Pulled_Up_Input_Pin_Concept && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Internally_Pulled_Up_Input_Pin_Concept const & ) = delete;
 
     /**
@@ -291,30 +259,14 @@ class Output_Pin_Concept {
   public:
     Output_Pin_Concept() = delete;
 
-    /**
-     * \todo #29
-     */
     Output_Pin_Concept( Output_Pin_Concept && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Output_Pin_Concept( Output_Pin_Concept const & ) = delete;
 
     ~Output_Pin_Concept() = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Output_Pin_Concept && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Output_Pin_Concept const & ) = delete;
 
     /**
@@ -374,30 +326,14 @@ class IO_Pin_Concept {
   public:
     IO_Pin_Concept() = delete;
 
-    /**
-     * \todo #29
-     */
     IO_Pin_Concept( IO_Pin_Concept && ) = delete;
 
-    /**
-     * \todo #29
-     */
     IO_Pin_Concept( IO_Pin_Concept const & ) = delete;
 
     ~IO_Pin_Concept() = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( IO_Pin_Concept && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( IO_Pin_Concept const & ) = delete;
 
     /**

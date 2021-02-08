@@ -46,30 +46,14 @@ class Basic_Transmitter_Concept {
 
     Basic_Transmitter_Concept() = delete;
 
-    /**
-     * \todo #29
-     */
     Basic_Transmitter_Concept( Basic_Transmitter_Concept && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Basic_Transmitter_Concept( Basic_Transmitter_Concept const & ) = delete;
 
     ~Basic_Transmitter_Concept() = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Basic_Transmitter_Concept && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Basic_Transmitter_Concept const & ) = delete;
 
     /**
@@ -106,30 +90,14 @@ class Transmitter_Concept {
 
     Transmitter_Concept() = delete;
 
-    /**
-     * \todo #29
-     */
     Transmitter_Concept( Transmitter_Concept && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Transmitter_Concept( Transmitter_Concept const & ) = delete;
 
     ~Transmitter_Concept() = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Transmitter_Concept && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Transmitter_Concept const & ) = delete;
 
     /**

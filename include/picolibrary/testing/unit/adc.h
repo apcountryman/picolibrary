@@ -86,9 +86,6 @@ class Mock_Blocking_Single_Sample_Converter {
             source.m_mock_blocking_single_sample_converter = nullptr;
         }
 
-        /**
-         * \todo #29
-         */
         Handle( Handle const & ) = delete;
 
         /**
@@ -114,11 +111,6 @@ class Mock_Blocking_Single_Sample_Converter {
             return *this;
         }
 
-        /**
-         * \todo #29
-         *
-         * \return
-         */
         auto operator=( Handle const & ) = delete;
 
         /**
@@ -165,14 +157,8 @@ class Mock_Blocking_Single_Sample_Converter {
      */
     Mock_Blocking_Single_Sample_Converter() = default;
 
-    /**
-     * \todo #29
-     */
     Mock_Blocking_Single_Sample_Converter( Mock_Blocking_Single_Sample_Converter && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Mock_Blocking_Single_Sample_Converter( Mock_Blocking_Single_Sample_Converter const & ) = delete;
 
     /**
@@ -180,18 +166,8 @@ class Mock_Blocking_Single_Sample_Converter {
      */
     ~Mock_Blocking_Single_Sample_Converter() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Blocking_Single_Sample_Converter && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Blocking_Single_Sample_Converter const & ) = delete;
 
     /**
@@ -261,9 +237,6 @@ class Mock_Non_Blocking_Single_Sample_Converter {
             source.m_mock_non_blocking_single_sample_converter = nullptr;
         }
 
-        /**
-         * \todo #29
-         */
         Handle( Handle const & ) = delete;
 
         /**
@@ -289,11 +262,6 @@ class Mock_Non_Blocking_Single_Sample_Converter {
             return *this;
         }
 
-        /**
-         * \todo #29
-         *
-         * \return
-         */
         auto operator=( Handle const & ) = delete;
 
         /**
@@ -363,14 +331,8 @@ class Mock_Non_Blocking_Single_Sample_Converter {
      */
     Mock_Non_Blocking_Single_Sample_Converter() = default;
 
-    /**
-     * \todo #29
-     */
     Mock_Non_Blocking_Single_Sample_Converter( Mock_Non_Blocking_Single_Sample_Converter && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Mock_Non_Blocking_Single_Sample_Converter( Mock_Non_Blocking_Single_Sample_Converter const & ) = delete;
 
     /**
@@ -378,18 +340,8 @@ class Mock_Non_Blocking_Single_Sample_Converter {
      */
     ~Mock_Non_Blocking_Single_Sample_Converter() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Non_Blocking_Single_Sample_Converter && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Non_Blocking_Single_Sample_Converter const & ) = delete;
 
     /**
