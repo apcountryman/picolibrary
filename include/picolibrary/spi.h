@@ -49,30 +49,14 @@ class Basic_Controller_Concept {
 
     Basic_Controller_Concept() = delete;
 
-    /**
-     * \todo #29
-     */
     Basic_Controller_Concept( Basic_Controller_Concept && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Basic_Controller_Concept( Basic_Controller_Concept const & ) = delete;
 
     ~Basic_Controller_Concept() = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Basic_Controller_Concept && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Basic_Controller_Concept const & ) = delete;
 
     /**
@@ -124,30 +108,14 @@ class Controller_Concept {
 
     Controller_Concept() = delete;
 
-    /**
-     * \todo #29
-     */
     Controller_Concept( Controller_Concept && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Controller_Concept( Controller_Concept const & ) = delete;
 
     ~Controller_Concept() = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Controller_Concept && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Controller_Concept const & ) = delete;
 
     /**
@@ -349,30 +317,14 @@ class Device_Selector_Concept {
   public:
     Device_Selector_Concept() = delete;
 
-    /**
-     * \todo #29
-     */
     Device_Selector_Concept( Device_Selector_Concept && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Device_Selector_Concept( Device_Selector_Concept const & ) = delete;
 
     ~Device_Selector_Concept() = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Device_Selector_Concept && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Device_Selector_Concept const & ) = delete;
 
     /**
@@ -489,9 +441,6 @@ class Device_Selection_Guard {
         source.m_device_selector = nullptr;
     }
 
-    /**
-     * \todo #29.
-     */
     Device_Selection_Guard( Device_Selection_Guard const & ) = delete;
 
     /**
@@ -526,11 +475,6 @@ class Device_Selection_Guard {
         return *this;
     }
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Device_Selection_Guard const & ) = delete;
 
   private:
@@ -589,9 +533,6 @@ class Device {
      */
     using Device_Selector = Device_Selector_Type;
 
-    /**
-     * \todo #29
-     */
     Device( Device const & ) = delete;
 
     /**
@@ -599,11 +540,6 @@ class Device {
      */
     ~Device() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Device const & ) = delete;
 
   protected:

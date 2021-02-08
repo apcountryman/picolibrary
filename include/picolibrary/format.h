@@ -283,14 +283,8 @@ class Output_Formatter<Format::Binary<Integer>> {
      */
     constexpr Output_Formatter() noexcept = default;
 
-    /**
-     * \todo #29
-     */
     Output_Formatter( Output_Formatter && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Output_Formatter( Output_Formatter const & ) = delete;
 
     /**
@@ -298,18 +292,8 @@ class Output_Formatter<Format::Binary<Integer>> {
      */
     ~Output_Formatter() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Output_Formatter && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Output_Formatter const & ) = delete;
 
     /**
@@ -375,14 +359,8 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_signed
      */
     constexpr Output_Formatter() noexcept = default;
 
-    /**
-     * \todo #29
-     */
     Output_Formatter( Output_Formatter && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Output_Formatter( Output_Formatter const & ) = delete;
 
     /**
@@ -390,18 +368,8 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_signed
      */
     ~Output_Formatter() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Output_Formatter && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Output_Formatter const & ) = delete;
 
     /**
@@ -465,14 +433,8 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_unsign
      */
     constexpr Output_Formatter() noexcept = default;
 
-    /**
-     * \todo #29
-     */
     Output_Formatter( Output_Formatter && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Output_Formatter( Output_Formatter const & ) = delete;
 
     /**
@@ -480,18 +442,8 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_unsign
      */
     ~Output_Formatter() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Output_Formatter && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Output_Formatter const & ) = delete;
 
     /**
@@ -546,14 +498,8 @@ class Output_Formatter<Format::Hexadecimal<Integer>> {
      */
     constexpr Output_Formatter() noexcept = default;
 
-    /**
-     * \todo #29
-     */
     Output_Formatter( Output_Formatter && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Output_Formatter( Output_Formatter const & ) = delete;
 
     /**
@@ -561,18 +507,8 @@ class Output_Formatter<Format::Hexadecimal<Integer>> {
      */
     ~Output_Formatter() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Output_Formatter && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Output_Formatter const & ) = delete;
 
     /**

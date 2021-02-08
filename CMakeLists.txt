@@ -103,35 +103,6 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} AND NOT ${PICOLIBRARY_USE_PARENT_PROJECT_
     add_subdirectory( googletest )
 endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} AND NOT ${PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST} )
 
-# configure Doxygen
-find_package( Doxygen )
-if( ${DOXYGEN_FOUND} )
-    set(
-        PICOLIBRARY_DOCUMENTATION_EXCLUDE_PATTERNS
-        " \
-        */.git/* \
-        */README.md \
-        */build/* \
-        */cmake/modules/* \
-        */googletest/* \
-        */lizard/* \
-        "
-    )
-
-    set( DOXYFILE "${CMAKE_CURRENT_BINARY_DIR}/documentation/Doxyfile" )
-    configure_file(
-        "${CMAKE_CURRENT_SOURCE_DIR}/documentation/Doxyfile.in"
-        "${DOXYFILE}"
-        @ONLY
-    )
-    add_custom_target(
-        picolibrary-documentation
-        ALL
-        COMMAND           "${DOXYGEN_EXECUTABLE}" "${DOXYFILE}"
-        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/documentation"
-    )
-endif( ${DOXYGEN_FOUND} )
-
 # enable unit testing
 if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     enable_testing()

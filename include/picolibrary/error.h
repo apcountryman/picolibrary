@@ -57,28 +57,12 @@ constexpr auto is_error_code_enum_v = is_error_code_enum<Enum>::value;
  */
 class Error_Category {
   public:
-    /**
-     * \todo #29
-     */
     Error_Category( Error_Category && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Error_Category( Error_Category const & ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Error_Category && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Error_Category const & ) = delete;
 
     /**
@@ -280,28 +264,12 @@ class Error_Code final {
             return INSTANCE;
         }
 
-        /**
-         * \todo #29
-         */
         Default_Error_Category( Default_Error_Category && ) = delete;
 
-        /**
-         * \todo #29
-         */
         Default_Error_Category( Default_Error_Category const & ) = delete;
 
-        /**
-         * \todo #29
-         *
-         * \return
-         */
         auto operator=( Default_Error_Category && ) = delete;
 
-        /**
-         * \todo #29
-         *
-         * \return
-         */
         auto operator=( Default_Error_Category const & ) = delete;
 
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
@@ -415,28 +383,12 @@ class Generic_Error_Category final : public Error_Category {
         return INSTANCE;
     }
 
-    /**
-     * \todo #29
-     */
     Generic_Error_Category( Generic_Error_Category && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Generic_Error_Category( Generic_Error_Category const & ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Generic_Error_Category && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Generic_Error_Category const & ) = delete;
 
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION

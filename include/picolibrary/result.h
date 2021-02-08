@@ -387,18 +387,7 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
      */
     bool m_is_value{ true };
 
-    /**
-     * \cond ANONYMOUS_MEMBER
-     *
-     * \todo #33
-     */
     union {
-        /**
-         * \todo #33
-         *
-         * \endcond
-         */
-
         /**
          * \brief Operation succeeded result.
          */
@@ -408,18 +397,7 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
          * \brief Operation failed result.
          */
         Error m_error;
-
-        /**
-         * \cond ANONYMOUS_MEMBER
-         *
-         * \todo #33
-         */
     };
-    /**
-     * \todo #33
-     *
-     * \endcond
-     */
 };
 
 /**
@@ -605,18 +583,7 @@ class [[nodiscard]] Result<Value_Type, Void, true> final
     }
 
   private:
-    /**
-     * \cond ANONYMOUS_MEMBER
-     *
-     * \todo #33
-     */
     union {
-        /**
-         * \todo #33
-         *
-         * \endcond
-         */
-
         /**
          * \brief Operation succeeded result.
          */
@@ -626,18 +593,7 @@ class [[nodiscard]] Result<Value_Type, Void, true> final
          * \brief Operation failed result.
          */
         Error m_error{};
-
-        /**
-         * \cond ANONYMOUS_MEMBER
-         *
-         * \todo #33
-         */
     };
-    /**
-     * \todo #33
-     *
-     * \endcond
-     */
 };
 
 /**
@@ -826,18 +782,7 @@ class [[nodiscard]] Result<Value_Type, Void, false> final
     }
 
   private:
-    /**
-     * \cond ANONYMOUS_MEMBER
-     *
-     * \todo #33
-     */
     union {
-        /**
-         * \todo #33
-         *
-         * \endcond
-         */
-
         /**
          * \brief Operation succeeded result.
          */
@@ -847,18 +792,7 @@ class [[nodiscard]] Result<Value_Type, Void, false> final
          * \brief Operation failed result.
          */
         Error m_error{};
-
-        /**
-         * \cond ANONYMOUS_MEMBER
-         *
-         * \todo #33
-         */
     };
-    /**
-     * \todo #33
-     *
-     * \endcond
-     */
 };
 
 /**
@@ -1201,18 +1135,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      */
     bool m_is_value;
 
-    /**
-     * \cond ANONYMOUS_MEMBER
-     *
-     * \todo #33
-     */
     union {
-        /**
-         * \todo #33
-         *
-         * \endcond
-         */
-
         /**
          * \brief Operation succeeded result.
          */
@@ -1222,18 +1145,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
          * \brief Operation failed result.
          */
         Error m_error;
-
-        /**
-         * \cond ANONYMOUS_MEMBER
-         *
-         * \todo #33
-         */
     };
-    /**
-     * \todo #33
-     *
-     * \endcond
-     */
 };
 
 /**
@@ -1581,18 +1493,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      */
     bool m_is_value;
 
-    /**
-     * \cond ANONYMOUS_MEMBER
-     *
-     * \todo #33
-     */
     union {
-        /**
-         * \todo #33
-         *
-         * \endcond
-         */
-
         /**
          * \brief Operation succeeded result.
          */
@@ -1602,18 +1503,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
          * \brief Operation failed result.
          */
         Error m_error;
-
-        /**
-         * \cond ANONYMOUS_MEMBER
-         *
-         * \todo #33
-         */
     };
-    /**
-     * \todo #33
-     *
-     * \endcond
-     */
 };
 
 } // namespace picolibrary

@@ -75,14 +75,8 @@ class picolibrary::Output_Formatter<::Foo> {
      */
     Output_Formatter() noexcept = default;
 
-    /**
-     * \todo #29
-     */
     Output_Formatter( Output_Formatter && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Output_Formatter( Output_Formatter const & ) = delete;
 
     /**
@@ -90,18 +84,8 @@ class picolibrary::Output_Formatter<::Foo> {
      */
     ~Output_Formatter() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Output_Formatter && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Output_Formatter const & ) = delete;
 
     /**

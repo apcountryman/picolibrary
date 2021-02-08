@@ -478,14 +478,8 @@ class Output_Formatter {
      */
     constexpr Output_Formatter() noexcept = default;
 
-    /**
-     * \todo #29
-     */
     Output_Formatter( Output_Formatter && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Output_Formatter( Output_Formatter const & ) = delete;
 
     /**
@@ -493,18 +487,8 @@ class Output_Formatter {
      */
     ~Output_Formatter() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Output_Formatter && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Output_Formatter const & ) = delete;
 
     /**
@@ -892,14 +876,8 @@ class Output_Formatter<char const *> {
      */
     constexpr Output_Formatter() noexcept = default;
 
-    /**
-     * \todo #29
-     */
     Output_Formatter( Output_Formatter && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Output_Formatter( Output_Formatter const & ) = delete;
 
     /**
@@ -907,18 +885,8 @@ class Output_Formatter<char const *> {
      */
     ~Output_Formatter() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Output_Formatter && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Output_Formatter const & ) = delete;
 
     /**
@@ -961,14 +929,8 @@ class Output_Formatter<Error_Code> {
      */
     constexpr Output_Formatter() noexcept = default;
 
-    /**
-     * \todo #29
-     */
     Output_Formatter( Output_Formatter && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Output_Formatter( Output_Formatter const & ) = delete;
 
     /**
@@ -976,18 +938,8 @@ class Output_Formatter<Error_Code> {
      */
     ~Output_Formatter() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Output_Formatter && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Output_Formatter const & ) = delete;
 
     /**

@@ -85,9 +85,6 @@ class Mock_Input_Pin {
             source.m_mock_input_pin = nullptr;
         }
 
-        /**
-         * \todo #29
-         */
         Handle( Handle const & ) = delete;
 
         /**
@@ -113,11 +110,6 @@ class Mock_Input_Pin {
             return *this;
         }
 
-        /**
-         * \todo #29
-         *
-         * \return
-         */
         auto operator=( Handle const & ) = delete;
 
         /**
@@ -165,14 +157,8 @@ class Mock_Input_Pin {
      */
     Mock_Input_Pin() = default;
 
-    /**
-     * \todo #29
-     */
     Mock_Input_Pin( Mock_Input_Pin && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Mock_Input_Pin( Mock_Input_Pin const & ) = delete;
 
     /**
@@ -180,18 +166,8 @@ class Mock_Input_Pin {
      */
     ~Mock_Input_Pin() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Input_Pin && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Input_Pin const & ) = delete;
 
     /**
@@ -246,9 +222,6 @@ class Mock_Internally_Pulled_Up_Input_Pin {
             source.m_mock_internally_pulled_up_input_pin = nullptr;
         }
 
-        /**
-         * \todo #29
-         */
         Handle( Handle const & ) = delete;
 
         /**
@@ -274,11 +247,6 @@ class Mock_Internally_Pulled_Up_Input_Pin {
             return *this;
         }
 
-        /**
-         * \todo #29
-         *
-         * \return
-         */
         auto operator=( Handle const & ) = delete;
 
         /**
@@ -351,14 +319,8 @@ class Mock_Internally_Pulled_Up_Input_Pin {
      */
     Mock_Internally_Pulled_Up_Input_Pin() = default;
 
-    /**
-     * \todo #29
-     */
     Mock_Internally_Pulled_Up_Input_Pin( Mock_Internally_Pulled_Up_Input_Pin && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Mock_Internally_Pulled_Up_Input_Pin( Mock_Internally_Pulled_Up_Input_Pin const & ) = delete;
 
     /**
@@ -366,18 +328,8 @@ class Mock_Internally_Pulled_Up_Input_Pin {
      */
     ~Mock_Internally_Pulled_Up_Input_Pin() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Internally_Pulled_Up_Input_Pin && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Internally_Pulled_Up_Input_Pin const & ) = delete;
 
     /**
@@ -437,9 +389,6 @@ class Mock_Output_Pin {
             source.m_mock_output_pin = nullptr;
         }
 
-        /**
-         * \todo #29
-         */
         Handle( Handle const & ) = delete;
 
         /**
@@ -465,11 +414,6 @@ class Mock_Output_Pin {
             return *this;
         }
 
-        /**
-         * \todo #29
-         *
-         * \return
-         */
         auto operator=( Handle const & ) = delete;
 
         /**
@@ -540,14 +484,8 @@ class Mock_Output_Pin {
      */
     Mock_Output_Pin() = default;
 
-    /**
-     * \todo #29
-     */
     Mock_Output_Pin( Mock_Output_Pin && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Mock_Output_Pin( Mock_Output_Pin const & ) = delete;
 
     /**
@@ -555,18 +493,8 @@ class Mock_Output_Pin {
      */
     ~Mock_Output_Pin() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Output_Pin && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Output_Pin const & ) = delete;
 
     /**
@@ -624,9 +552,6 @@ class Mock_IO_Pin {
             source.m_mock_io_pin = nullptr;
         }
 
-        /**
-         * \todo #29
-         */
         Handle( Handle const & ) = delete;
 
         /**
@@ -652,11 +577,6 @@ class Mock_IO_Pin {
             return *this;
         }
 
-        /**
-         * \todo #29
-         *
-         * \return
-         */
         auto operator=( Handle const & ) = delete;
 
         /**
@@ -739,14 +659,8 @@ class Mock_IO_Pin {
      */
     Mock_IO_Pin() = default;
 
-    /**
-     * \todo #29
-     */
     Mock_IO_Pin( Mock_IO_Pin && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Mock_IO_Pin( Mock_IO_Pin const & ) = delete;
 
     /**
@@ -754,18 +668,8 @@ class Mock_IO_Pin {
      */
     ~Mock_IO_Pin() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_IO_Pin && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_IO_Pin const & ) = delete;
 
     /**

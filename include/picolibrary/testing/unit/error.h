@@ -73,14 +73,8 @@ class Mock_Error_Category : public Error_Category {
      */
     Mock_Error_Category() = default;
 
-    /**
-     * \todo #29
-     */
     Mock_Error_Category( Mock_Error_Category && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Mock_Error_Category( Mock_Error_Category const & ) = delete;
 
     /**
@@ -88,18 +82,8 @@ class Mock_Error_Category : public Error_Category {
      */
     ~Mock_Error_Category() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Error_Category && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Error_Category const & ) = delete;
 
     MOCK_METHOD( char const *, name, (), ( const, noexcept, override ) );

@@ -83,9 +83,6 @@ class Mock_Basic_Controller {
             source.m_mock_basic_controller = nullptr;
         }
 
-        /**
-         * \todo #29
-         */
         Handle( Handle const & ) = delete;
 
         /**
@@ -111,11 +108,6 @@ class Mock_Basic_Controller {
             return *this;
         }
 
-        /**
-         * \todo #29
-         *
-         * \return
-         */
         auto operator=( Handle const & ) = delete;
 
         /**
@@ -179,14 +171,8 @@ class Mock_Basic_Controller {
      */
     Mock_Basic_Controller() = default;
 
-    /**
-     * \todo #29
-     */
     Mock_Basic_Controller( Mock_Basic_Controller && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Mock_Basic_Controller( Mock_Basic_Controller const & ) = delete;
 
     /**
@@ -194,18 +180,8 @@ class Mock_Basic_Controller {
      */
     ~Mock_Basic_Controller() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Basic_Controller && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Basic_Controller const & ) = delete;
 
     /**
@@ -271,9 +247,6 @@ class Mock_Controller {
             source.m_mock_controller = nullptr;
         }
 
-        /**
-         * \todo #29
-         */
         Handle( Handle const & ) = delete;
 
         /**
@@ -299,11 +272,6 @@ class Mock_Controller {
             return *this;
         }
 
-        /**
-         * \todo #29
-         *
-         * \return
-         */
         auto operator=( Handle const & ) = delete;
 
         /**
@@ -438,14 +406,8 @@ class Mock_Controller {
      */
     Mock_Controller() = default;
 
-    /**
-     * \todo #29
-     */
     Mock_Controller( Mock_Controller && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Mock_Controller( Mock_Controller const & ) = delete;
 
     /**
@@ -453,18 +415,8 @@ class Mock_Controller {
      */
     ~Mock_Controller() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Controller && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Controller const & ) = delete;
 
     /**
@@ -602,9 +554,6 @@ class Mock_Device_Selector {
             source.m_mock_device_selector = nullptr;
         }
 
-        /**
-         * \todo #29
-         */
         Handle( Handle const & ) = delete;
 
         /**
@@ -630,11 +579,6 @@ class Mock_Device_Selector {
             return *this;
         }
 
-        /**
-         * \todo #29
-         *
-         * \return
-         */
         auto operator=( Handle const & ) = delete;
 
         /**
@@ -692,14 +636,8 @@ class Mock_Device_Selector {
      */
     Mock_Device_Selector() = default;
 
-    /**
-     * \todo #29
-     */
     Mock_Device_Selector( Mock_Device_Selector && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Mock_Device_Selector( Mock_Device_Selector const & ) = delete;
 
     /**
@@ -707,18 +645,8 @@ class Mock_Device_Selector {
      */
     ~Mock_Device_Selector() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Device_Selector && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Device_Selector const & ) = delete;
 
     /**
@@ -765,14 +693,8 @@ class Mock_Device {
     {
     }
 
-    /**
-     * \todo #29
-     */
     Mock_Device( Mock_Device && ) = delete;
 
-    /**
-     * \todo #29
-     */
     Mock_Device( Mock_Device const & ) = delete;
 
     /**
@@ -780,18 +702,8 @@ class Mock_Device {
      */
     ~Mock_Device() noexcept = default;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Device && ) = delete;
 
-    /**
-     * \todo #29
-     *
-     * \return
-     */
     auto operator=( Mock_Device const & ) = delete;
 
     MOCK_METHOD( (Result<Void, Error_Code>), initialize, () );
