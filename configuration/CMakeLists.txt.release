@@ -20,13 +20,15 @@
 mark_as_advanced( CMAKE_INSTALL_PREFIX )
 
 # build configuration
-set( CMAKE_BUILD_TYPE                           "Release" CACHE STRING "" FORCE )
-set( CMAKE_EXPORT_COMPILE_COMMANDS              ON        CACHE BOOL   "" FORCE )
-set( PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS OFF       CACHE BOOL   "" FORCE )
+set( CMAKE_BUILD_TYPE                            "Release" CACHE STRING "" FORCE )
+set( CMAKE_EXPORT_COMPILE_COMMANDS               ON        CACHE BOOL   "" FORCE )
+set( PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS  OFF       CACHE BOOL   "" FORCE )
+set( PICOLIBRARY_USE_STATIC_ANALYSIS_BUILD_FLAGS OFF       CACHE BOOL   "" FORCE )
 mark_as_advanced(
     CMAKE_BUILD_TYPE
     CMAKE_EXPORT_COMPILE_COMMANDS
     PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS
+    PICOLIBRARY_USE_STATIC_ANALYSIS_BUILD_FLAGS
 )
 
 # human readable error information configuration
