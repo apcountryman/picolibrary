@@ -278,7 +278,9 @@ class Driver : public Device {
 
         {
             auto result = this->configure();
-            if ( result.is_error() ) { return result.error(); } // if
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
         }
 
         auto data = Fixed_Size_Array<std::uint8_t, 3>{
@@ -291,18 +293,24 @@ class Driver : public Device {
             auto guard = SPI::Device_Selection_Guard<Device_Selector>{};
             {
                 auto result = SPI::make_device_selection_guard( this->device_selector() );
-                if ( result.is_error() ) { return result.error(); } // if
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
 
                 guard = std::move( result ).value();
             }
 
             {
                 auto result = this->exchange( data.begin(), data.end(), data.begin(), data.end() );
-                if ( result.is_error() ) { return result.error(); } // if
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
             }
         }
 
-        if ( data[ 1 ] & 0b100 ) { return m_nonresponsive; } // if
+        if ( data[ 1 ] & 0b100 ) {
+            return m_nonresponsive;
+        } // if
 
         return Sample{ ( static_cast<Sample::Value>( data[ 1 ] & 0b11 )
                          << std::numeric_limits<std::uint8_t>::digits )

@@ -164,7 +164,7 @@ class Transmitter : public Basic_Transmitter {
     auto transmit( Data const * begin, Data const * end ) noexcept
     {
         return for_each<Discard_Functor>(
-            begin, end, [this]( auto data ) noexcept { return transmit( data ); } );
+            begin, end, [ this ]( auto data ) noexcept { return transmit( data ); } );
     }
 };
 

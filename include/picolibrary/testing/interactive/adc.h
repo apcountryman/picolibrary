@@ -57,7 +57,9 @@ void sample_blocking_single_sample_converter( Transmitter transmitter, Blocking_
 
     auto stream = Output_Stream{ std::move( transmitter ) };
 
-    if ( stream.initialize().is_error() ) { return; } // if
+    if ( stream.initialize().is_error() ) {
+        return;
+    } // if
 
     {
         auto const result = adc.initialize();

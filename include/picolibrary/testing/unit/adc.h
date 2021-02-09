@@ -221,7 +221,8 @@ class Mock_Non_Blocking_Single_Sample_Converter {
          * \param[in] mock_non_blocking_single_sample_converter The mock non-blocking,
          *            single sample ADC.
          */
-        Handle( Mock_Non_Blocking_Single_Sample_Converter & mock_non_blocking_single_sample_converter ) noexcept :
+        Handle( Mock_Non_Blocking_Single_Sample_Converter & mock_non_blocking_single_sample_converter ) noexcept
+            :
             m_mock_non_blocking_single_sample_converter{ &mock_non_blocking_single_sample_converter }
         {
         }

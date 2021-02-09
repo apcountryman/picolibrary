@@ -76,7 +76,7 @@ class Stream_Buffer {
     virtual auto put( char const * begin, char const * end ) noexcept -> Result<Void, Error_Code>
     {
         return for_each<Discard_Functor>(
-            begin, end, [this]( auto character ) noexcept { return put( character ); } );
+            begin, end, [ this ]( auto character ) noexcept { return put( character ); } );
     }
 
     /**
@@ -92,8 +92,10 @@ class Stream_Buffer {
     {
         while ( auto const character = *string++ ) {
             auto result = put( character );
-            if ( result.is_error() ) { return result; } // if
-        }                                               // while
+            if ( result.is_error() ) {
+                return result;
+            } // if
+        }     // while
 
         return {};
     }
@@ -123,7 +125,7 @@ class Stream_Buffer {
         -> Result<Void, Error_Code>
     {
         return for_each<Discard_Functor>(
-            begin, end, [this]( auto value ) noexcept { return put( value ); } );
+            begin, end, [ this ]( auto value ) noexcept { return put( value ); } );
     }
 
     /**
@@ -151,7 +153,7 @@ class Stream_Buffer {
         -> Result<Void, Error_Code>
     {
         return for_each<Discard_Functor>(
-            begin, end, [this]( auto value ) noexcept { return put( value ); } );
+            begin, end, [ this ]( auto value ) noexcept { return put( value ); } );
     }
 
     /**
@@ -540,10 +542,14 @@ class Output_Stream : public Stream {
      */
     auto put( char character ) noexcept -> Result<Void, Error_Code>
     {
-        if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
+        if ( error_present() ) {
+            return Generic_Error::IO_STREAM_DEGRADED;
+        } // if
 
         auto result = buffer()->put( character );
-        if ( result.is_error() ) { report_fatal_error(); } // if
+        if ( result.is_error() ) {
+            report_fatal_error();
+        } // if
         return result;
     }
 
@@ -562,10 +568,14 @@ class Output_Stream : public Stream {
      */
     auto put( char const * begin, char const * end ) noexcept -> Result<Void, Error_Code>
     {
-        if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
+        if ( error_present() ) {
+            return Generic_Error::IO_STREAM_DEGRADED;
+        } // if
 
         auto result = buffer()->put( begin, end );
-        if ( result.is_error() ) { report_fatal_error(); } // if
+        if ( result.is_error() ) {
+            report_fatal_error();
+        } // if
         return result;
     }
 
@@ -583,10 +593,14 @@ class Output_Stream : public Stream {
      */
     auto put( char const * string ) noexcept -> Result<Void, Error_Code>
     {
-        if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
+        if ( error_present() ) {
+            return Generic_Error::IO_STREAM_DEGRADED;
+        } // if
 
         auto result = buffer()->put( string );
-        if ( result.is_error() ) { report_fatal_error(); } // if
+        if ( result.is_error() ) {
+            report_fatal_error();
+        } // if
         return result;
     }
 
@@ -604,10 +618,14 @@ class Output_Stream : public Stream {
      */
     auto put( std::uint8_t value ) noexcept -> Result<Void, Error_Code>
     {
-        if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
+        if ( error_present() ) {
+            return Generic_Error::IO_STREAM_DEGRADED;
+        } // if
 
         auto result = buffer()->put( value );
-        if ( result.is_error() ) { report_fatal_error(); } // if
+        if ( result.is_error() ) {
+            report_fatal_error();
+        } // if
         return result;
     }
 
@@ -627,10 +645,14 @@ class Output_Stream : public Stream {
      */
     auto put( std::uint8_t const * begin, std::uint8_t const * end ) noexcept -> Result<Void, Error_Code>
     {
-        if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
+        if ( error_present() ) {
+            return Generic_Error::IO_STREAM_DEGRADED;
+        } // if
 
         auto result = buffer()->put( begin, end );
-        if ( result.is_error() ) { report_fatal_error(); } // if
+        if ( result.is_error() ) {
+            report_fatal_error();
+        } // if
         return result;
     }
 
@@ -648,10 +670,14 @@ class Output_Stream : public Stream {
      */
     auto put( std::int8_t value ) noexcept -> Result<Void, Error_Code>
     {
-        if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
+        if ( error_present() ) {
+            return Generic_Error::IO_STREAM_DEGRADED;
+        } // if
 
         auto result = buffer()->put( value );
-        if ( result.is_error() ) { report_fatal_error(); } // if
+        if ( result.is_error() ) {
+            report_fatal_error();
+        } // if
         return result;
     }
 
@@ -670,10 +696,14 @@ class Output_Stream : public Stream {
      */
     auto put( std::int8_t const * begin, std::int8_t const * end ) noexcept -> Result<Void, Error_Code>
     {
-        if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
+        if ( error_present() ) {
+            return Generic_Error::IO_STREAM_DEGRADED;
+        } // if
 
         auto result = buffer()->put( begin, end );
-        if ( result.is_error() ) { report_fatal_error(); } // if
+        if ( result.is_error() ) {
+            report_fatal_error();
+        } // if
         return result;
     }
 
@@ -704,7 +734,9 @@ class Output_Stream : public Stream {
     template<typename... Types>
     auto print( char const * format, Types &&... values ) noexcept -> Result<Void, Error_Code>
     {
-        if ( error_present() ) { return Generic_Error::IO_STREAM_DEGRADED; } // if
+        if ( error_present() ) {
+            return Generic_Error::IO_STREAM_DEGRADED;
+        } // if
 
         return print_implementation( format, std::forward<Types>( values )... );
     }
@@ -719,7 +751,9 @@ class Output_Stream : public Stream {
     auto flush() noexcept
     {
         auto result = buffer()->flush();
-        if ( result.is_error() ) { report_fatal_error(); } // if
+        if ( result.is_error() ) {
+            report_fatal_error();
+        } // if
         return result;
     }
 
@@ -786,8 +820,10 @@ class Output_Stream : public Stream {
             } // if
 
             auto result = put( *format );
-            if ( result.is_error() ) { return result; } // if
-        }                                               // for
+            if ( result.is_error() ) {
+                return result;
+            } // if
+        }     // for
 
         return {};
     }
@@ -840,7 +876,9 @@ class Output_Stream : public Stream {
 
                     {
                         auto result = formatter.print( *this, value );
-                        if ( result.is_error() ) { return result; } // if
+                        if ( result.is_error() ) {
+                            return result;
+                        } // if
                     }
 
                     return print_implementation( format, std::forward<Types>( values )... );
@@ -855,8 +893,10 @@ class Output_Stream : public Stream {
             }     // else if
 
             auto result = put( *format );
-            if ( result.is_error() ) { return result; } // if
-        }                                               // for
+            if ( result.is_error() ) {
+                return result;
+            } // if
+        }     // for
 
         report_io_error();
         return Generic_Error::INVALID_FORMAT;
@@ -977,8 +1017,8 @@ class Output_Formatter<Error_Code> {
  * \tparam Enum The error code enum.
  */
 template<typename Enum>
-class Output_Formatter<Enum, std::enable_if_t<is_error_code_enum_v<Enum>>>
-    : public Output_Formatter<Error_Code> {
+class Output_Formatter<Enum, std::enable_if_t<is_error_code_enum_v<Enum>>> :
+    public Output_Formatter<Error_Code> {
 };
 
 } // namespace picolibrary

@@ -418,7 +418,9 @@ class Active_Low_Input_Pin : public Input_Pin {
     {
         auto result = Input_Pin::state();
 
-        if ( result.is_error() ) { return result; } // if
+        if ( result.is_error() ) {
+            return result;
+        } // if
 
         return not result.value().is_high();
     }

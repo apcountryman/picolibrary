@@ -79,8 +79,10 @@ constexpr auto for_each( Iterator begin, Iterator end, Functor functor, Return_F
 {
     for ( ; begin != end; ++begin ) {
         auto result = functor( *begin );
-        if ( result.is_error() ) { return result.error(); } // if
-    }                                                       // for
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+    }     // for
 
     return functor;
 }
@@ -121,8 +123,10 @@ constexpr auto for_each( Iterator begin, Iterator end, Functor functor, Discard_
 {
     for ( ; begin != end; ++begin ) {
         auto result = functor( *begin );
-        if ( result.is_error() ) { return result.error(); } // if
-    }                                                       // for
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+    }     // for
 
     return {};
 }
@@ -196,7 +200,9 @@ constexpr auto generate( Iterator begin, Iterator end, Functor functor ) noexcep
 {
     while ( begin != end ) {
         auto result = functor();
-        if ( result.is_error() ) { return result.error(); } // if
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
 
         *begin++ = result.value();
     } // for

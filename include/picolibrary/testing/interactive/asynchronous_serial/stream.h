@@ -44,7 +44,9 @@ void hello_world( Transmitter transmitter ) noexcept
 {
     auto stream = Output_Stream{ std::move( transmitter ) };
 
-    if ( stream.initialize().is_error() ) { return; } // if
+    if ( stream.initialize().is_error() ) {
+        return;
+    } // if
 
     static_cast<void>( stream.put( "Hello, world!\n" ) );
 }

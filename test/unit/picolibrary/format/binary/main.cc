@@ -53,7 +53,7 @@ auto binary( Integer value )
 {
     using U = std::make_unsigned_t<Integer>;
 
-    auto const unsigned_value = [value]() {
+    auto const unsigned_value = [ value ]() {
         U u;
         static_assert( sizeof( value ) == sizeof( u ) );
         std::memcpy( &u, &value, sizeof( value ) );

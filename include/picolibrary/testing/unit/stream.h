@@ -222,9 +222,13 @@ class Mock_Output_Stream : public Output_Stream {
     {
         auto const flags = random<std::uint_fast8_t>( 0b01, 0b11 );
 
-        if ( flags & 0b01 ) { report_io_error(); } // if
+        if ( flags & 0b01 ) {
+            report_io_error();
+        } // if
 
-        if ( flags & 0b10 ) { report_fatal_error(); } // if
+        if ( flags & 0b10 ) {
+            report_fatal_error();
+        } // if
     }
 
   private:

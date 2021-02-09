@@ -38,13 +38,17 @@ namespace picolibrary::Testing::Interactive::Asynchronous_Serial {
 template<typename Transmitter>
 void hello_world( Transmitter transmitter ) noexcept
 {
-    if ( transmitter.initialize().is_error() ) { return; } // if
+    if ( transmitter.initialize().is_error() ) {
+        return;
+    } // if
 
     auto const * string = "Hello, world!\n";
 
     while ( auto const character = *string++ ) {
-        if ( transmitter.transmit( character ).is_error() ) { return; } // if
-    }                                                                   // while
+        if ( transmitter.transmit( character ).is_error() ) {
+            return;
+        } // if
+    }     // while
 }
 
 } // namespace picolibrary::Testing::Interactive::Asynchronous_Serial
