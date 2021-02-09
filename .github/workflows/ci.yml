@@ -106,3 +106,12 @@ jobs:
             - name: Test
               shell: bash
               run: ./ci/test
+
+    format:
+        name: Format
+        runs-on: ubuntu-20.04
+        steps:
+            - uses: actions/checkout@v2
+            - name: Format
+              shell: bash
+              run: ./ci/format
