@@ -90,10 +90,8 @@ using Input_Processor = auto ( * )( std::uint8_t byte ) -> std::uint8_t;
  */
 constexpr auto input_processor( bool input_is_reflected ) noexcept
 {
-    return input_is_reflected ? static_cast<Input_Processor>( reflect ) : []( std::uint8_t value ) noexcept
-    {
-        return value;
-    };
+    return input_is_reflected ? static_cast<Input_Processor>( reflect )
+                              : []( std::uint8_t value ) noexcept { return value; };
 }
 
 /**
@@ -121,10 +119,7 @@ template<typename Register>
 constexpr auto output_processor( bool output_is_reflected ) noexcept
 {
     return output_is_reflected ? static_cast<Output_Processor<Register>>( reflect )
-                               : []( Register value ) noexcept
-    {
-        return value;
-    };
+                               : []( Register value ) noexcept { return value; };
 }
 
 /**
@@ -201,8 +196,10 @@ static constexpr auto generate_nibble_indexed_lookup_table( Register polynomial 
 
             remainder <<= 1;
 
-            if ( xor_polynomial ) { remainder ^= polynomial; } // if
-        }                                                      // for
+            if ( xor_polynomial ) {
+                remainder ^= polynomial;
+            } // if
+        }     // for
 
         lookup_table[ i ] = remainder;
     } // for
@@ -242,8 +239,10 @@ static constexpr auto generate_byte_indexed_lookup_table( Register polynomial ) 
 
             remainder <<= 1;
 
-            if ( xor_polynomial ) { remainder ^= polynomial; } // if
-        }                                                      // for
+            if ( xor_polynomial ) {
+                remainder ^= polynomial;
+            } // if
+        }     // for
 
         lookup_table[ i ] = remainder;
     } // for
@@ -467,9 +466,11 @@ class Bitwise_Calculator {
 
                 remainder = ( remainder << 1 ) | ( ( processed_input >> bit ) & 0b1 );
 
-                if ( xor_polynomial ) { remainder ^= m_polynomial; } // if
-            }                                                        // for
-        }                                                            // for
+                if ( xor_polynomial ) {
+                    remainder ^= m_polynomial;
+                } // if
+            }     // for
+        }         // for
 
         return remainder;
     }
@@ -508,7 +509,8 @@ class Augmented_Nibble_Indexed_Lookup_Table_Calculator {
      *
      * \param[in] parameters The calculation parameters.
      */
-    constexpr explicit Augmented_Nibble_Indexed_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept :
+    constexpr explicit Augmented_Nibble_Indexed_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept
+        :
         m_lookup_table{ generate_nibble_indexed_lookup_table( parameters.polynomial ) },
         m_initial_remainder{ parameters.initial_remainder },
         m_process_input{ input_processor( parameters.input_is_reflected ) },
@@ -656,7 +658,8 @@ class Direct_Nibble_Indexed_Lookup_Table_Calculator {
      *
      * \param[in] parameters The calculation parameters.
      */
-    constexpr explicit Direct_Nibble_Indexed_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept :
+    constexpr explicit Direct_Nibble_Indexed_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept
+        :
         m_lookup_table{ generate_nibble_indexed_lookup_table( parameters.polynomial ) },
         m_preprocessed_initial_remainder{
             preprocess_initial_remainder( parameters.initial_remainder, m_lookup_table )
@@ -820,7 +823,8 @@ class Augmented_Byte_Indexed_Lookup_Table_Calculator {
      *
      * \param[in] parameters The calculation parameters.
      */
-    constexpr explicit Augmented_Byte_Indexed_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept :
+    constexpr explicit Augmented_Byte_Indexed_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept
+        :
         m_lookup_table{ generate_byte_indexed_lookup_table( parameters.polynomial ) },
         m_initial_remainder{ parameters.initial_remainder },
         m_process_input{ input_processor( parameters.input_is_reflected ) },
@@ -928,8 +932,8 @@ class Augmented_Byte_Indexed_Lookup_Table_Calculator {
             auto const processed_input = ( *m_process_input )( *begin );
 
             auto const i = static_cast<std::uint8_t>(
-                remainder >> ( std::numeric_limits<Register>::digits
-                               - std::numeric_limits<std::uint8_t>::digits ) );
+                remainder
+                >> ( std::numeric_limits<Register>::digits - std::numeric_limits<std::uint8_t>::digits ) );
 
             remainder = ( ( remainder << std::numeric_limits<std::uint8_t>::digits ) | processed_input )
                         ^ m_lookup_table[ i ];
@@ -968,7 +972,8 @@ class Direct_Byte_Indexed_Lookup_Table_Calculator {
      *
      * \param[in] parameters The calculation parameters.
      */
-    constexpr explicit Direct_Byte_Indexed_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept :
+    constexpr explicit Direct_Byte_Indexed_Lookup_Table_Calculator( Parameters<Register> const & parameters ) noexcept
+        :
         m_lookup_table{ generate_byte_indexed_lookup_table( parameters.polynomial ) },
         m_preprocessed_initial_remainder{
             preprocess_initial_remainder( parameters.initial_remainder, m_lookup_table )
@@ -1032,8 +1037,9 @@ class Direct_Byte_Indexed_Lookup_Table_Calculator {
             auto const processed_input = ( *m_process_input )( *begin );
 
             auto const i = static_cast<std::uint8_t>(
-                               remainder >> ( std::numeric_limits<Register>::digits
-                                              - std::numeric_limits<std::uint8_t>::digits ) )
+                               remainder
+                               >> ( std::numeric_limits<Register>::digits
+                                    - std::numeric_limits<std::uint8_t>::digits ) )
                            ^ processed_input;
 
             remainder <<= std::numeric_limits<std::uint8_t>::digits;
@@ -1088,8 +1094,8 @@ class Direct_Byte_Indexed_Lookup_Table_Calculator {
                                         / std::numeric_limits<std::uint8_t>::digits;
               ++byte ) {
             auto const i = static_cast<std::uint8_t>(
-                preprocessed_initial_remainder >> ( std::numeric_limits<Register>::digits
-                                                    - std::numeric_limits<std::uint8_t>::digits ) );
+                preprocessed_initial_remainder
+                >> ( std::numeric_limits<Register>::digits - std::numeric_limits<std::uint8_t>::digits ) );
 
             preprocessed_initial_remainder <<= std::numeric_limits<std::uint8_t>::digits;
 

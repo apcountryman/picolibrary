@@ -298,7 +298,7 @@ class Reverse_Iterator {
      *
      * \return A pointer to the element at the current iterator position.
      */
-    constexpr auto operator-> () const noexcept -> Pointer
+    constexpr auto operator->() const noexcept -> Pointer
     {
         return std::addressof( operator*() );
     }

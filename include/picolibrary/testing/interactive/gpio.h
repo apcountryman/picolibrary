@@ -42,13 +42,17 @@ namespace picolibrary::Testing::Interactive::GPIO {
 template<typename Output_Pin, typename Delayer>
 void toggle( Output_Pin pin, Delayer delay ) noexcept
 {
-    if ( pin.initialize().is_error() ) { return; } // if
+    if ( pin.initialize().is_error() ) {
+        return;
+    } // if
 
     for ( ;; ) {
         delay();
 
-        if ( pin.toggle().is_error() ) { return; } // if
-    }                                              // for
+        if ( pin.toggle().is_error() ) {
+            return;
+        } // if
+    }     // for
 }
 
 } // namespace picolibrary::Testing::Interactive::GPIO

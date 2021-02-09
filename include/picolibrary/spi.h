@@ -249,7 +249,7 @@ class Controller : public Basic_Controller {
         static_cast<void>( tx_end );
 
         return generate(
-            rx_begin, rx_end, [&]() noexcept { return exchange( *tx_begin++ ); } );
+            rx_begin, rx_end, [ & ]() noexcept { return exchange( *tx_begin++ ); } );
     }
 
     /**
@@ -274,7 +274,8 @@ class Controller : public Basic_Controller {
      */
     auto receive( std::uint8_t * begin, std::uint8_t * end ) noexcept
     {
-        return ::picolibrary::generate( begin, end, [this]() noexcept { return receive(); } );
+        return ::picolibrary::generate(
+            begin, end, [ this ]() noexcept { return receive(); } );
     }
 
     /**
@@ -289,7 +290,9 @@ class Controller : public Basic_Controller {
         -> Result<Void, typename decltype( std::declval<Basic_Controller>().exchange( std::declval<std::uint8_t>() ) )::Error>
     {
         auto result = exchange( data );
-        if ( result.is_error() ) { return result.error(); } // if
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
 
         return {};
     }
@@ -306,7 +309,7 @@ class Controller : public Basic_Controller {
     auto transmit( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
     {
         return for_each<Discard_Functor>(
-            begin, end, [this]( auto data ) noexcept { return transmit( data ); } );
+            begin, end, [ this ]( auto data ) noexcept { return transmit( data ); } );
     }
 };
 
@@ -508,7 +511,9 @@ auto make_device_selection_guard( Device_Selector & device_selector ) noexcept -
     false>
 {
     auto result = device_selector.select();
-    if ( result.is_error() ) { return result.error(); } // if
+    if ( result.is_error() ) {
+        return result.error();
+    } // if
 
     return Device_Selection_Guard{ device_selector };
 }
@@ -557,7 +562,8 @@ class Device {
      * \param[in] device_selector The device selector used to select and deselect the
      *            device.
      */
-    constexpr Device( Controller & controller, typename Controller::Configuration configuration, Device_Selector device_selector ) noexcept :
+    constexpr Device( Controller & controller, typename Controller::Configuration configuration, Device_Selector device_selector ) noexcept
+        :
         m_controller{ &controller },
         m_configuration{ configuration },
         m_device_selector{ std::move( device_selector ) }
@@ -659,8 +665,7 @@ class Device {
      * \return Nothing if data exchange succeeded.
      * \return The error reported by the controller if data exchange failed.
      */
-    auto exchange( std::uint8_t const * tx_begin, std::uint8_t const * tx_end, std::uint8_t * rx_begin, std::uint8_t * rx_end ) const
-        noexcept
+    auto exchange( std::uint8_t const * tx_begin, std::uint8_t const * tx_end, std::uint8_t * rx_begin, std::uint8_t * rx_end ) const noexcept
     {
         return m_controller->exchange( tx_begin, tx_end, rx_begin, rx_end );
     }

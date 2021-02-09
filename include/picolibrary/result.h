@@ -236,7 +236,9 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
      */
     constexpr Result( Result && source ) noexcept : m_is_value{ source.m_is_value }
     {
-        if ( is_error() ) { new ( &m_error ) Error{ std::move( source.m_error ) }; } // if
+        if ( is_error() ) {
+            new ( &m_error ) Error{ std::move( source.m_error ) };
+        } // if
     }
 
     /**
@@ -247,7 +249,9 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
     constexpr Result( Result const & original ) noexcept :
         m_is_value{ original.m_is_value }
     {
-        if ( is_error() ) { new ( &m_error ) Error{ original.m_error }; } // if
+        if ( is_error() ) {
+            new ( &m_error ) Error{ original.m_error };
+        } // if
     }
 
     /**
@@ -265,7 +269,9 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
     constexpr auto & operator=( Result && expression ) noexcept
     {
         if ( is_value() == expression.is_value() ) {
-            if ( is_error() ) { m_error = std::move( expression.m_error ); } // if
+            if ( is_error() ) {
+                m_error = std::move( expression.m_error );
+            } // if
         } else {
             if ( is_value() ) {
                 new ( &m_error ) Error{ std::move( expression.m_error ) };
@@ -287,9 +293,13 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
     constexpr auto & operator=( Result const & expression ) noexcept
     {
         if ( is_value() == expression.is_value() ) {
-            if ( is_error() ) { m_error = expression.m_error; } // if
+            if ( is_error() ) {
+                m_error = expression.m_error;
+            } // if
         } else {
-            if ( is_value() ) { new ( &m_error ) Error{ expression.m_error }; } // if
+            if ( is_value() ) {
+                new ( &m_error ) Error{ expression.m_error };
+            } // if
 
             m_is_value = expression.m_is_value;
         } // else
@@ -1282,7 +1292,9 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      */
     ~Result() noexcept
     {
-        if ( is_value() ) { m_value.~Value(); } // if
+        if ( is_value() ) {
+            m_value.~Value();
+        } // if
     }
 
     /**

@@ -70,13 +70,17 @@ void sample(
 {
     // #lizard forgives the PARAM
 
-    if ( controller.initialize().is_error() ) { return; } // if
+    if ( controller.initialize().is_error() ) {
+        return;
+    } // if
 
     auto mcp3008 = ::picolibrary::Microchip::MCP3008::Driver{
         controller, configuration, std::move( device_selector ), Generic_Error::NONRESPONSIVE_DEVICE
     };
 
-    if ( mcp3008.initialize().is_error() ) { return; } // if
+    if ( mcp3008.initialize().is_error() ) {
+        return;
+    } // if
 
     ADC::sample_blocking_single_sample_converter<Output_Stream>(
         std::move( transmitter ),

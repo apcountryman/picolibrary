@@ -458,9 +458,11 @@ class Mock_Controller {
 
         auto const result = exchange( std::vector<std::uint8_t>{ tx_begin, tx_end } );
 
-        if ( result.is_error() ) { return result.error(); } // if
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
 
-        std::for_each( result.value().begin(), result.value().end(), [&rx_begin]( auto data ) {
+        std::for_each( result.value().begin(), result.value().end(), [ &rx_begin ]( auto data ) {
             *rx_begin = data;
 
             ++rx_begin;
@@ -488,9 +490,11 @@ class Mock_Controller {
 
         auto const result = receive( std::vector<std::uint8_t>{} );
 
-        if ( result.is_error() ) { return result.error(); } // if
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
 
-        std::for_each( result.value().begin(), result.value().end(), [&begin]( auto data ) {
+        std::for_each( result.value().begin(), result.value().end(), [ &begin ]( auto data ) {
             *begin = data;
 
             ++begin;
@@ -737,9 +741,11 @@ class Mock_Device {
 
         auto const result = exchange( std::vector<std::uint8_t>{ tx_begin, tx_end } );
 
-        if ( result.is_error() ) { return result.error(); } // if
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
 
-        std::for_each( result.value().begin(), result.value().end(), [&rx_begin]( auto data ) {
+        std::for_each( result.value().begin(), result.value().end(), [ &rx_begin ]( auto data ) {
             *rx_begin = data;
 
             ++rx_begin;
@@ -767,9 +773,11 @@ class Mock_Device {
 
         auto const result = receive( std::vector<std::uint8_t>{} );
 
-        if ( result.is_error() ) { return result.error(); } // if
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
 
-        std::for_each( result.value().begin(), result.value().end(), [&begin]( auto data ) {
+        std::for_each( result.value().begin(), result.value().end(), [ &begin ]( auto data ) {
             *begin = data;
 
             ++begin;
