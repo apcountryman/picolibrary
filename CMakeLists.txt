@@ -47,22 +47,31 @@ if( NOT ${PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS} )
         CMAKE_CXX_FLAGS
         "${CMAKE_CXX_FLAGS} \
         -Werror -Wall -Wextra \
-        -Wcast-align=strict \
         -Wcast-qual \
-        -Wduplicated-cond \
-        -Wextra-semi \
         -Wfloat-equal \
-        -Wimplicit-fallthrough=5 \
-        -Wlogical-op \
         -Wmissing-field-initializers \
         -Wmissing-include-dirs \
         -Wold-style-cast \
-        -Wplacement-new=2 \
         -Wpointer-arith \
         -Wshadow \
-        -Wunsafe-loop-optimizations \
         "
     )
+
+    option( PICOLIBRARY_USE_STATIC_ANALYSIS_BUILD_FLAGS "picolibrary: use static analysis build flags" OFF )
+    if( NOT ${PICOLIBRARY_USE_STATIC_ANALYSIS_BUILD_FLAGS} )
+        set(
+            CMAKE_CXX_FLAGS
+            "${CMAKE_CXX_FLAGS} \
+            -Wcast-align=strict \
+            -Wduplicated-cond \
+            -Wextra-semi \
+            -Wimplicit-fallthrough=5 \
+            -Wlogical-op \
+            -Wplacement-new=2 \
+            -Wunsafe-loop-optimizations \
+            "
+        )
+    endif( NOT ${PICOLIBRARY_USE_STATIC_ANALYSIS_BUILD_FLAGS} )
 
     if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
         set(
