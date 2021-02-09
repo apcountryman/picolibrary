@@ -186,8 +186,6 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
 
     /**
      * \brief Constructor.
-     *
-     * \todo #34
      */
     constexpr Result() noexcept : m_is_value{ true }, m_value{}
     {
