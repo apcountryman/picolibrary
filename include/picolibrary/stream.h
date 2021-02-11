@@ -957,6 +957,57 @@ class Output_Formatter<char const *> {
 };
 
 /**
+ * \brief picolibrary::Void output formatter.
+ *
+ * picolibrary::Void only supports the default format specification ("{}").
+ */
+template<>
+class Output_Formatter<Void> {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Output_Formatter() noexcept = default;
+
+    Output_Formatter( Output_Formatter && ) = delete;
+
+    Output_Formatter( Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Output_Formatter() noexcept = default;
+
+    auto operator=( Output_Formatter && ) = delete;
+
+    auto operator=( Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Parse the format specification for the picolibrary::Void to be
+     *        formatted.
+     *
+     * \param[in] format The format specification for the picolibrary::Void to be
+     *            formatted.
+     *
+     * \return format.
+     */
+    constexpr auto parse( char const * format ) noexcept -> Result<char const *, Void>
+    {
+        return format;
+    }
+
+    /**
+     * \brief Write nothing to the stream.
+     *
+     * \return Success.
+     */
+    constexpr auto print( Output_Stream &, Void ) noexcept -> Result<Void, Void>
+    {
+        return {};
+    }
+};
+
+/**
  * \brief picolibrary::Error_Code output formatter.
  *
  * picolibrary::Error_Code only supports the default format specification ("{}").

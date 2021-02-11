@@ -926,6 +926,40 @@ TEST( outputFormatterNullTerminatedString, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Void> properly handles an
+ *        invalid format string.
+ */
+TEST( outputFormatterVoid, invalidFormatString )
+{
+    auto stream = Output_String_Stream{};
+
+    auto const result = stream.print(
+        ( std::string{ '{' } + random_container<std::string>( random<std::uint_fast8_t>( 1 ) ) + '}' )
+            .c_str(),
+        Void{} );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), Generic_Error::INVALID_FORMAT );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_TRUE( stream.io_error_present() );
+    EXPECT_FALSE( stream.fatal_error_present() );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Void> works properly.
+ */
+TEST( outputFormatterVoid, worksProperly )
+{
+    auto stream = Output_String_Stream{};
+
+    EXPECT_FALSE( stream.print( "{}", Void{} ).is_error() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), "" );
+}
+
+/**
  * \brief Verify picolibrary::Output_Formatter<picolibrary::Error_Code> properly handles
  *        an invalid format string.
  */
