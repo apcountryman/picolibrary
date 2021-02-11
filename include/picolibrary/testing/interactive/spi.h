@@ -24,7 +24,6 @@
 #define PICOLIBRARY_TESTING_INTERACTIVE_SPI_H
 
 #include <cstdint>
-#include <limits>
 #include <utility>
 
 #include "picolibrary/format.h"
@@ -83,34 +82,31 @@ void echo( Transmitter transmitter, Controller controller, typename Controller::
         } // if
     }
 
-    for ( ;; ) {
-        auto value = std::numeric_limits<std::uint8_t>::min();
-        do {
-            delay();
+    for ( auto value = std::uint8_t{};; ++value ) {
+        delay();
 
-            auto const result = controller.exchange( value );
-            if ( result.is_error() ) {
-                static_cast<void>( stream.print( "data exchange error: {}\n", result.error() ) );
+        auto const result = controller.exchange( value );
+        if ( result.is_error() ) {
+            static_cast<void>( stream.print( "data exchange error: {}\n", result.error() ) );
 
-                return;
-            } // if
+            return;
+        } // if
 
-            if ( stream
-                     .print(
-                         "exchange( {} ) -> {}\n",
-                         Format::Hexadecimal{ value },
-                         Format::Hexadecimal{ result.value() } )
-                     .is_error() ) {
-                return;
-            } // if
+        if ( stream
+                 .print(
+                     "exchange( {} ) -> {}\n",
+                     Format::Hexadecimal{ value },
+                     Format::Hexadecimal{ result.value() } )
+                 .is_error() ) {
+            return;
+        } // if
 
-            if ( result.value() != value ) {
-                static_cast<void>( stream.put( "echo error\n" ) );
+        if ( result.value() != value ) {
+            static_cast<void>( stream.put( "echo error\n" ) );
 
-                return;
-            } // if
-        } while ( value < std::numeric_limits<std::uint8_t>::max() );
-    } // for
+            return;
+        } // if
+    }     // for
 }
 
 } // namespace picolibrary::Testing::Interactive::SPI
