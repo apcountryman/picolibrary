@@ -55,6 +55,8 @@ namespace picolibrary::Testing::Interactive::SPI {
 template<template<typename> typename Output_Stream, typename Transmitter, typename Controller, typename Delayer>
 void echo( Transmitter transmitter, Controller controller, typename Controller::Configuration configuration, Delayer delay ) noexcept
 {
+    // #lizard forgives the length
+
     auto stream = Output_Stream{ std::move( transmitter ) };
 
     if ( stream.initialize().is_error() ) {
