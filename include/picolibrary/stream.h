@@ -983,8 +983,7 @@ class Output_Formatter<Void> {
     auto operator=( Output_Formatter const & ) = delete;
 
     /**
-     * \brief Parse the format specification for the picolibrary::Void to be
-     *        formatted.
+     * \brief Parse the format specification for the picolibrary::Void to be formatted.
      *
      * \param[in] format The format specification for the picolibrary::Void to be
      *            formatted.
