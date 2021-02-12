@@ -220,8 +220,8 @@ class Driver : public Device {
      * \brief Constructor.
      *
      * \param[in] controller The SPI controller used to communicate with the MCP3008.
-     * \param[in] configuration The SPI controller clock configuration that meets the
-     *            MCP3008's communication requirements.
+     * \param[in] configuration The SPI controller clock, and data exchange bit order
+     *            configuration that meets the MCP3008's communication requirements.
      * \param[in] device_selector The SPI device selector used to select and deselect the
      *            MCP3008.
      * \param[in] nonresponsive The error code to return when getting a sample fails due

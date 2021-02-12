@@ -51,8 +51,8 @@ namespace picolibrary::Testing::Interactive::Microchip::MCP3008 {
  *            information to the user.
  * \param[in] controller The SPI controller to use to communicate with the Microchip
  *            MCP3008.
- * \param[in] configuration The SPI controller configuration to use to communicate with
- *            the Microchip MCP3008.
+ * \param[in] configuration The SPI controller clock, and data exchange bit order
+ *            configuration to use to communicate with the Microchip MCP3008.
  * \param[in] device_selector The device selector to use to select the Microchip MCP3008.
  * \param[in] input The Microchip MCP3008 input mode/channel(s) to use when getting a
  *            sample.
