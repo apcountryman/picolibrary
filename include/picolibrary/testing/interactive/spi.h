@@ -47,7 +47,8 @@ namespace picolibrary::Testing::Interactive::SPI {
  * \param[in] transmitter The asynchronous serial transmitter to use to transmit
  *            information to the user.
  * \param[in] controller The SPI controller to test.
- * \param[in] configuration The SPI controller clock configuration to use for the test.
+ * \param[in] configuration The SPI controller clock, and data exchange bit order
+ *            configuration to use for the test.
  * \param[in] delay The nullary functor called to introduce a delay each time data is
  *            exchanged.
  */

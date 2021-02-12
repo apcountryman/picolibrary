@@ -42,7 +42,8 @@ namespace picolibrary::SPI {
 class Basic_Controller_Concept {
   public:
     /**
-     * \brief Clock configuration (frequency, polarity, and phase).
+     * \brief Clock (frequency, polarity, and phase), and data exchange bit order
+     *        configuration.
      */
     struct Configuration {
     };
@@ -70,11 +71,11 @@ class Basic_Controller_Concept {
     auto initialize() noexcept -> Result<Void, Error_Code>;
 
     /**
-     * \brief Configure the controller's clock to meet a specific device's communication
-     *        requirements.
+     * \brief Configure the controller's clock, and data exchange bit order to meet a
+     *        specific device's communication requirements.
      *
-     * \param[in] configuration The clock configuration that meets the device's
-     *            communication requirements.
+     * \param[in] configuration The clock, and data exchange bit order configuration that
+     *            meets the device's communication requirements.
      *
      * \return Nothing if controller clock configuration succeeded.
      * \return An error code if controller clock configuration failed. If controller clock
@@ -101,7 +102,8 @@ class Basic_Controller_Concept {
 class Controller_Concept {
   public:
     /**
-     * \brief Clock configuration (frequency, polarity, and phase).
+     * \brief Clock (frequency, polarity, and phase), and data exchange bit order
+     *        configuration.
      */
     struct Configuration {
     };
@@ -129,11 +131,11 @@ class Controller_Concept {
     auto initialize() noexcept -> Result<Void, Error_Code>;
 
     /**
-     * \brief Configure the controller's clock to meet a specific device's communication
-     *        requirements.
+     * \brief Configure the controller's clock, and data exchange bit order to meet a
+     *        specific device's communication requirements.
      *
-     * \param[in] configuration The clock configuration that meets the device's
-     *            communication requirements.
+     * \param[in] configuration The clock, and data exchange bit order configuration that
+     *            meets the device's communication requirements.
      *
      * \return Nothing if controller clock configuration succeeded.
      * \return An error code if controller clock configuration failed. If controller clock
@@ -557,8 +559,8 @@ class Device {
      * \brief Constructor.
      *
      * \param[in] controller The controller used to communicate with the device.
-     * \param[in] configuration The controller clock configuration that meets the device's
-     *            communication requirements.
+     * \param[in] configuration The controller clock, and data exchange bit order
+     *            configuration that meets the device's communication requirements.
      * \param[in] device_selector The device selector used to select and deselect the
      *            device.
      */
@@ -616,8 +618,8 @@ class Device {
     }
 
     /**
-     * \brief Configure the controller's clock to meet the device's communication
-     *        requirements.
+     * \brief Configure the controller's clock, and data exchange bit order to meet the
+     *        device's communication requirements.
      *
      * \return Nothing if controller clock configuration succeeded.
      * \return The error reported by the controller if controller clock configuration
@@ -729,8 +731,8 @@ class Device {
     Controller * m_controller{};
 
     /**
-     * \brief The controller clock configuration that meets the device's communication
-     *        requirements.
+     * \brief The controller clock, and data exchange bit order configuration that meets
+     *        the device's communication requirements.
      */
     typename Controller::Configuration m_configuration{};
 
