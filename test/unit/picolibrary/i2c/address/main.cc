@@ -70,7 +70,7 @@ TEST( constructorNumeric, worksProperly )
 TEST( constructorTransmitted, worksProperly )
 {
     auto const transmitted_address = static_cast<std::uint8_t>(
-        random<std::uint8_t>( Address::Transmitted::MIN, Address::Transmitted::MAX ) & 0b1111'1110 );
+        random<std::uint_fast8_t>( Address::Numeric::MIN, Address::Numeric::MAX ) << 1 );
 
     auto const address = Address{ Address::TRANSMITTED, transmitted_address };
 
