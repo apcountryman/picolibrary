@@ -23,6 +23,8 @@
 #ifndef PICOLIBRARY_I2C_H
 #define PICOLIBRARY_I2C_H
 
+#include <cstdint>
+
 /**
  * \brief Inter-Integrated Circuit (I2C) facilities.
  */
@@ -74,6 +76,26 @@ class Address {
      * \return The assigned to object.
      */
     constexpr auto operator=( Address const & expression ) noexcept -> Address & = default;
+
+    /**
+     * \brief Get the device address in numeric form.
+     *
+     * \return The device address in numeric form.
+     */
+    constexpr auto numeric() const noexcept -> std::uint_fast8_t
+    {
+        return {};
+    }
+
+    /**
+     * \brief Get the device address in transmitted form.
+     *
+     * \return The device address in transmitted form.
+     */
+    constexpr auto transmitted() const noexcept -> std::uint8_t
+    {
+        return {};
+    }
 };
 
 } // namespace picolibrary::I2C
