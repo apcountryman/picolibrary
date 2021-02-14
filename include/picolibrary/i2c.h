@@ -100,7 +100,9 @@ class Address {
     /**
      * \brief Constructor.
      *
-     * \warning This constructor does not validate its arguments.
+     * \warning This constructor does not validate its arguments. Use
+     *          picolibrary::I2C::make_address( picolibrary::I2C::Address::Transmitted,
+     *          std::uint8_t ) if argument validation is desired.
      *
      * \param[in] address The device address in transmitted form.
      */
@@ -192,6 +194,27 @@ inline auto make_address( Address::Numeric, std::uint_fast8_t address ) noexcept
     } // if
 
     return Address{ Address::NUMERIC, address };
+}
+
+/**
+ * \brief Construct a picolibrary::I2C::Address.
+ *
+ * \relatedalso picolibrary::I2C::Address
+ *
+ * \param[in] address The device address in transmitted form.
+ *
+ * \return The device address if the least significant bit of address is not set.
+ * \return picolibrary::Generic_Error::INVALID_ARGUMENT if the least significant bit of
+ *         address is set.
+ */
+inline auto make_address( Address::Transmitted, std::uint8_t address ) noexcept
+    -> Result<Address, Error_Code>
+{
+    if ( address & 0x01 ) {
+        return Generic_Error::INVALID_ARGUMENT;
+    } // if
+
+    return Address{ Address::TRANSMITTED, address };
 }
 
 } // namespace picolibrary::I2C

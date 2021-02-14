@@ -107,6 +107,35 @@ TEST( makeAddressNumeric, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::I2C::make_address( picolibrary::I2C::Address::Transmitted,
+ *        std::uint8_t ) properly handles an invalid address.
+ */
+TEST( makeAddressTransmitted, invalidAddress )
+{
+    auto const result = make_address(
+        Address::TRANSMITTED,
+        ( random<std::uint_fast8_t>( Address::Numeric::MIN, Address::Numeric::MAX ) << 1 ) | 0x01 );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), Generic_Error::INVALID_ARGUMENT );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::make_address( picolibrary::I2C::Address::Transmitted,
+ *        std::uint8_t ) works properly.
+ */
+TEST( makeAddressTransmitted, worksProperly )
+{
+    auto const transmitted_address = static_cast<std::uint8_t>(
+        random<std::uint_fast8_t>( Address::Numeric::MIN, Address::Numeric::MAX ) << 1 );
+
+    auto const result = make_address( Address::TRANSMITTED, transmitted_address );
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value().transmitted(), transmitted_address );
+}
+
+/**
  * \brief Execute the picolibrary::I2C::Address unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
