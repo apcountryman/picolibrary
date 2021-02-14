@@ -186,7 +186,7 @@ class Address {
  * \return picolibrary::Generic_Error::INVALID_ARGUMENT if address is greater than
  *         picolibrary::I2C::Address::Numeric::MAX.
  */
-inline auto make_address( Address::Numeric, std::uint_fast8_t address ) noexcept
+constexpr auto make_address( Address::Numeric, std::uint_fast8_t address ) noexcept
     -> Result<Address, Error_Code>
 {
     if ( address > Address::Numeric::MAX ) {
@@ -207,7 +207,7 @@ inline auto make_address( Address::Numeric, std::uint_fast8_t address ) noexcept
  * \return picolibrary::Generic_Error::INVALID_ARGUMENT if the least significant bit of
  *         address is set.
  */
-inline auto make_address( Address::Transmitted, std::uint8_t address ) noexcept
+constexpr auto make_address( Address::Transmitted, std::uint8_t address ) noexcept
     -> Result<Address, Error_Code>
 {
     if ( address & 0x01 ) {
