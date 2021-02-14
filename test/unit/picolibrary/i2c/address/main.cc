@@ -20,9 +20,28 @@
  * \brief picolibrary::I2C::Address unit test program.
  */
 
+#include <cstdint>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/i2c.h"
+
+namespace {
+
+using ::picolibrary::I2C::Address;
+
+} // namespace
+
+/**
+ * \brief Verify picolibrary::I2C::Address::Address() works properly.
+ */
+TEST( constructorDefault, worksProperly )
+{
+    auto const address = Address{};
+
+    EXPECT_EQ( address.numeric(), 0 );
+    EXPECT_EQ( address.transmitted(), 0 );
+}
 
 /**
  * \brief Execute the picolibrary::I2C::Address unit tests.
