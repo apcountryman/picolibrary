@@ -61,6 +61,21 @@ TEST( constructorNumeric, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::I2C::Address::Address(
+ *        picolibrary::I2C::Address::Transmitted, std::uint_fast8_t ) works properly.
+ */
+TEST( constructorTransmitted, worksProperly )
+{
+    auto const transmitted_address = static_cast<std::uint8_t>(
+        random<std::uint8_t>( Address::Transmitted::MIN, Address::Transmitted::MAX ) & 0b1111'1110 );
+
+    auto const address = Address{ Address::TRANSMITTED, transmitted_address };
+
+    EXPECT_EQ( address.numeric(), transmitted_address >> 1 );
+    EXPECT_EQ( address.transmitted(), transmitted_address );
+}
+
+/**
  * \brief Execute the picolibrary::I2C::Address unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().

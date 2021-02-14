@@ -51,9 +51,29 @@ class Address {
     };
 
     /**
+     * \brief Device address transmitted form tag.
+     */
+    struct Transmitted {
+        /**
+         * \brief The minimum supported device address in transmitted form.
+         */
+        static constexpr auto MIN = std::uint_fast8_t{ Numeric::MIN << 1 };
+
+        /**
+         * \brief The maximum supported device address in transmitted form.
+         */
+        static constexpr auto MAX = std::uint_fast8_t{ Numeric::MAX << 1 };
+    };
+
+    /**
      * \brief Device address numeric form tag.
      */
     static constexpr auto NUMERIC = Numeric{};
+
+    /**
+     * \brief Device address transmitted form tag.
+     */
+    static constexpr auto TRANSMITTED = Transmitted{};
 
     /**
      * \brief Constructor.
@@ -69,6 +89,17 @@ class Address {
      */
     constexpr Address( Numeric, std::uint_fast8_t address ) noexcept :
         m_address{ static_cast<std::uint8_t>( address << 1 ) }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \warning This constructor does not validate its arguments.
+     *
+     * \param[in] address The device address in transmitted form.
+     */
+    constexpr Address( Transmitted, std::uint8_t address ) noexcept : m_address{ address }
     {
     }
 
