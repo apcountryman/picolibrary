@@ -36,6 +36,7 @@ set(
     "picolibrary/fixed_size_array.cc"
     "picolibrary/format.cc"
     "picolibrary/gpio.cc"
+    "picolibrary/i2c.cc"
     "picolibrary/iterator.cc"
     "picolibrary/microchip.cc"
     "picolibrary/microchip/mcp3008.cc"
