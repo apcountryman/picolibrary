@@ -24,12 +24,15 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "picolibrary/error.h"
 #include "picolibrary/i2c.h"
 #include "picolibrary/testing/unit/random.h"
 
 namespace {
 
+using ::picolibrary::Generic_Error;
 using ::picolibrary::I2C::Address;
+using ::picolibrary::I2C::make_address;
 using ::picolibrary::Testing::Unit::random;
 
 } // namespace
@@ -73,6 +76,34 @@ TEST( constructorTransmitted, worksProperly )
 
     EXPECT_EQ( address.numeric(), transmitted_address >> 1 );
     EXPECT_EQ( address.transmitted(), transmitted_address );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::make_address( picolibrary::I2C::Address::Numeric,
+ *        std::uint_fast8_t ) properly handles an invalid address.
+ */
+TEST( makeAddressNumeric, invalidAddress )
+{
+    auto const result = make_address(
+        Address::NUMERIC, random<std::uint_fast8_t>( Address::Numeric::MAX + 1 ) );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), Generic_Error::INVALID_ARGUMENT );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::make_address( picolibrary::I2C::Address::Numeric,
+ *        std::uint_fast8_t ) works properly.
+ */
+TEST( makeAddressNumeric, worksProperly )
+{
+    auto const numeric_address = random<std::uint_fast8_t>(
+        Address::Numeric::MIN, Address::Numeric::MAX );
+
+    auto const result = make_address( Address::NUMERIC, numeric_address );
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value().numeric(), numeric_address );
 }
 
 /**

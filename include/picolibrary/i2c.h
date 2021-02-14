@@ -25,6 +25,9 @@
 
 #include <cstdint>
 
+#include "picolibrary/error.h"
+#include "picolibrary/result.h"
+
 /**
  * \brief Inter-Integrated Circuit (I2C) facilities.
  */
@@ -83,7 +86,9 @@ class Address {
     /**
      * \brief Constructor.
      *
-     * \warning This constructor does not validate its arguments.
+     * \warning This constructor does not validate its arguments. Use
+     *          picolibrary::I2C::make_address( picolibrary::I2C::Address::Numeric,
+     *          std::uint_fast8_t ) if argument validation is desired.
      *
      * \param[in] address The device address in numeric form.
      */
@@ -166,6 +171,28 @@ class Address {
      */
     std::uint8_t m_address{};
 };
+
+/**
+ * \brief Construct a picolibrary::I2C::Address.
+ *
+ * \relatedalso picolibrary::I2C::Address
+ *
+ * \param[in] address The device address in numeric form.
+ *
+ * \return The device address if address is less than or equal to
+ *         picolibrary::I2C::Address::Numeric::MAX.
+ * \return picolibrary::Generic_Error::INVALID_ARGUMENT if address is greater than
+ *         picolibrary::I2C::Address::Numeric::MAX.
+ */
+inline auto make_address( Address::Numeric, std::uint_fast8_t address ) noexcept
+    -> Result<Address, Error_Code>
+{
+    if ( address > Address::Numeric::MAX ) {
+        return Generic_Error::INVALID_ARGUMENT;
+    } // if
+
+    return Address{ Address::NUMERIC, address };
+}
 
 } // namespace picolibrary::I2C
 
