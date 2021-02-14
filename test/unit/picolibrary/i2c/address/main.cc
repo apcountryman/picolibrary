@@ -25,10 +25,12 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/i2c.h"
+#include "picolibrary/testing/unit/random.h"
 
 namespace {
 
 using ::picolibrary::I2C::Address;
+using ::picolibrary::Testing::Unit::random;
 
 } // namespace
 
@@ -41,6 +43,21 @@ TEST( constructorDefault, worksProperly )
 
     EXPECT_EQ( address.numeric(), 0 );
     EXPECT_EQ( address.transmitted(), 0 );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::Address::Address( picolibrary::I2C::Address::Numeric,
+ *        std::uint_fast8_t ) works properly.
+ */
+TEST( constructorNumeric, worksProperly )
+{
+    auto const numeric_address = random<std::uint_fast8_t>(
+        Address::Numeric::MIN, Address::Numeric::MAX );
+
+    auto const address = Address{ Address::NUMERIC, numeric_address };
+
+    EXPECT_EQ( address.numeric(), numeric_address );
+    EXPECT_EQ( address.transmitted(), numeric_address << 1 );
 }
 
 /**

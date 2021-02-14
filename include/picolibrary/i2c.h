@@ -36,9 +36,41 @@ namespace picolibrary::I2C {
 class Address {
   public:
     /**
+     * \brief Device address numeric form tag.
+     */
+    struct Numeric {
+        /**
+         * \brief The minimum supported device address in numeric form.
+         */
+        static constexpr auto MIN = std::uint_fast8_t{ 0b000'0000 };
+
+        /**
+         * \brief The maximum supported device address in numeric form.
+         */
+        static constexpr auto MAX = std::uint_fast8_t{ 0b111'1111 };
+    };
+
+    /**
+     * \brief Device address numeric form tag.
+     */
+    static constexpr auto NUMERIC = Numeric{};
+
+    /**
      * \brief Constructor.
      */
     constexpr Address() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \warning This constructor does not validate its arguments.
+     *
+     * \param[in] address The device address in numeric form.
+     */
+    constexpr Address( Numeric, std::uint_fast8_t address ) noexcept :
+        m_address{ static_cast<std::uint8_t>( address << 1 ) }
+    {
+    }
 
     /**
      * \brief Constructor.
@@ -84,7 +116,7 @@ class Address {
      */
     constexpr auto numeric() const noexcept -> std::uint_fast8_t
     {
-        return {};
+        return m_address >> 1;
     }
 
     /**
@@ -92,10 +124,16 @@ class Address {
      *
      * \return The device address in transmitted form.
      */
-    constexpr auto transmitted() const noexcept -> std::uint8_t
+    constexpr auto transmitted() const noexcept
     {
-        return {};
+        return m_address;
     }
+
+  private:
+    /**
+     * \brief The device address in transmitted form.
+     */
+    std::uint8_t m_address{};
 };
 
 } // namespace picolibrary::I2C
