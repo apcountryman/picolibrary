@@ -27,6 +27,55 @@
  * \brief Inter-Integrated Circuit (I2C) facilities.
  */
 namespace picolibrary::I2C {
+
+/**
+ * \brief Device address.
+ */
+class Address {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Address() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Address( Address && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Address( Address const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Address() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Address && expression ) noexcept -> Address & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Address const & expression ) noexcept -> Address & = default;
+};
+
 } // namespace picolibrary::I2C
 
 #endif // PICOLIBRARY_I2C_H
