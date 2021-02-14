@@ -65,7 +65,7 @@ TEST( constructorNumeric, worksProperly )
 
 /**
  * \brief Verify picolibrary::I2C::Address::Address(
- *        picolibrary::I2C::Address::Transmitted, std::uint_fast8_t ) works properly.
+ *        picolibrary::I2C::Address::Transmitted, std::uint8_t ) works properly.
  */
 TEST( constructorTransmitted, worksProperly )
 {
