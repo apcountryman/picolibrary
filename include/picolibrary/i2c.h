@@ -341,6 +341,14 @@ enum class Operation : std::uint8_t {
     WRITE = 0b0000'0000, ///< Write.
 };
 
+/**
+ * \brief Response.
+ */
+enum class Response : std::uint_fast8_t {
+    ACK  = 0b0, ///< ACK.
+    NACK = 0b1, ///< NACK.
+};
+
 } // namespace picolibrary::I2C
 
 #endif // PICOLIBRARY_I2C_H
