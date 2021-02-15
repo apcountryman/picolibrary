@@ -46,7 +46,9 @@ auto random_unique_numeric_addresses()
     auto const a = random_numeric_address();
     auto const b = random_numeric_address();
 
-    return std::pair<std::uint_fast8_t, std::uint_fast8_t>{ a, b != a ? b : b ^ random_numeric_address( 1 ) };
+    return std::pair<std::uint_fast8_t, std::uint_fast8_t>{
+        a, b != a ? b : b ^ random_numeric_address( Address::Numeric::MIN + 1 )
+    };
 }
 
 } // namespace
