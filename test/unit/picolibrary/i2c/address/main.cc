@@ -150,19 +150,16 @@ TEST( makeAddressTransmitted, worksProperly )
 TEST( equalityOperator, worksProperly )
 {
     {
-        auto const numeric_address = random_numeric_address();
+        auto const lhs = random_numeric_address();
+        auto const rhs = lhs;
 
-        EXPECT_TRUE(
-            ( Address{ Address::NUMERIC, numeric_address } )
-            == ( Address{ Address::NUMERIC, numeric_address } ) );
+        EXPECT_TRUE( ( Address{ Address::NUMERIC, lhs } ) == ( Address{ Address::NUMERIC, rhs } ) );
     }
 
     {
-        auto const [ lhs_numeric_address, rhs_numeric_address ] = random_unique_numeric_addresses();
+        auto const [ lhs, rhs ] = random_unique_numeric_addresses();
 
-        EXPECT_FALSE(
-            ( Address{ Address::NUMERIC, lhs_numeric_address } )
-            == ( Address{ Address::NUMERIC, rhs_numeric_address } ) );
+        EXPECT_FALSE( ( Address{ Address::NUMERIC, lhs } ) == ( Address{ Address::NUMERIC, rhs } ) );
     }
 }
 
@@ -173,19 +170,16 @@ TEST( equalityOperator, worksProperly )
 TEST( inqualityOperator, worksProperly )
 {
     {
-        auto const numeric_address = random_numeric_address();
+        auto const lhs = random_numeric_address();
+        auto const rhs = lhs;
 
-        EXPECT_FALSE(
-            ( Address{ Address::NUMERIC, numeric_address } )
-            != ( Address{ Address::NUMERIC, numeric_address } ) );
+        EXPECT_FALSE( ( Address{ Address::NUMERIC, lhs } ) != ( Address{ Address::NUMERIC, rhs } ) );
     }
 
     {
-        auto const [ lhs_numeric_address, rhs_numeric_address ] = random_unique_numeric_addresses();
+        auto const [ lhs, rhs ] = random_unique_numeric_addresses();
 
-        EXPECT_TRUE(
-            ( Address{ Address::NUMERIC, lhs_numeric_address } )
-            != ( Address{ Address::NUMERIC, rhs_numeric_address } ) );
+        EXPECT_TRUE( ( Address{ Address::NUMERIC, lhs } ) != ( Address{ Address::NUMERIC, rhs } ) );
     }
 }
 
