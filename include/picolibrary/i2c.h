@@ -249,6 +249,22 @@ constexpr auto operator!=( Address lhs, Address rhs ) noexcept
     return not( lhs == rhs );
 }
 
+/**
+ * \brief Less than operator.
+ *
+ * \relatedalso picolibrary::I2C::Address
+ *
+ * \param[in] lhs The left hand side of the comparison.
+ * \param[in] rhs The right hand side of the comparison.
+ *
+ * \return true if lhs is less than rhs.
+ * \return false if lhs is not less than rhs.
+ */
+constexpr auto operator<( Address lhs, Address rhs ) noexcept
+{
+    return lhs.transmitted() < rhs.transmitted();
+}
+
 } // namespace picolibrary::I2C
 
 #endif // PICOLIBRARY_I2C_H

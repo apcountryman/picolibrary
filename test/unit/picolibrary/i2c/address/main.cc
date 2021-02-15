@@ -36,9 +36,9 @@ using ::picolibrary::I2C::Address;
 using ::picolibrary::I2C::make_address;
 using ::picolibrary::Testing::Unit::random;
 
-auto random_numeric_address( std::uint_fast8_t min = Address::Numeric::MIN )
+auto random_numeric_address( std::uint_fast8_t min = Address::Numeric::MIN, std::uint_fast8_t max = Address::Numeric::MAX )
 {
-    return random<std::uint_fast8_t>( min, Address::Numeric::MAX );
+    return random<std::uint_fast8_t>( min, max );
 }
 
 auto random_unique_numeric_addresses()
@@ -180,6 +180,27 @@ TEST( inqualityOperator, worksProperly )
         auto const [ lhs, rhs ] = random_unique_numeric_addresses();
 
         EXPECT_TRUE( ( Address{ Address::NUMERIC, lhs } ) != ( Address{ Address::NUMERIC, rhs } ) );
+    }
+}
+
+/**
+ * \brief Verify picolibrary::I2C::operator<( picolibrary::I2C::Address,
+ *        picolibrary::I2C::Address ) works properly.
+ */
+TEST( lessThanOperator, worksProperly )
+{
+    {
+        auto const rhs = random_numeric_address( Address::Numeric::MIN + 1 );
+        auto const lhs = random_numeric_address( Address::Numeric::MIN, rhs - 1 );
+
+        EXPECT_TRUE( ( Address{ Address::NUMERIC, lhs } ) < ( Address{ Address::NUMERIC, rhs } ) );
+    }
+
+    {
+        auto const rhs = random_numeric_address();
+        auto const lhs = random_numeric_address( rhs );
+
+        EXPECT_FALSE( ( Address{ Address::NUMERIC, lhs } ) < ( Address{ Address::NUMERIC, rhs } ) );
     }
 }
 
