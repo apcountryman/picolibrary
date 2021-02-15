@@ -25,5 +25,6 @@
 namespace picolibrary::I2C {
 
 static_assert( Address::min().numeric() == Address::Numeric::MIN );
+static_assert( Address::max().numeric() == Address::Numeric::MAX );
 
 } // namespace picolibrary::I2C
