@@ -35,6 +35,11 @@ using ::picolibrary::I2C::Address;
 using ::picolibrary::I2C::make_address;
 using ::picolibrary::Testing::Unit::random;
 
+auto random_numeric_address()
+{
+    return random<std::uint_fast8_t>( Address::Numeric::MIN, Address::Numeric::MAX );
+}
+
 } // namespace
 
 /**
@@ -54,8 +59,7 @@ TEST( constructorDefault, worksProperly )
  */
 TEST( constructorNumeric, worksProperly )
 {
-    auto const numeric_address = random<std::uint_fast8_t>(
-        Address::Numeric::MIN, Address::Numeric::MAX );
+    auto const numeric_address = random_numeric_address();
 
     auto const address = Address{ Address::NUMERIC, numeric_address };
 
@@ -69,8 +73,7 @@ TEST( constructorNumeric, worksProperly )
  */
 TEST( constructorTransmitted, worksProperly )
 {
-    auto const transmitted_address = static_cast<std::uint8_t>(
-        random<std::uint_fast8_t>( Address::Numeric::MIN, Address::Numeric::MAX ) << 1 );
+    auto const transmitted_address = static_cast<std::uint8_t>( random_numeric_address() << 1 );
 
     auto const address = Address{ Address::TRANSMITTED, transmitted_address };
 
@@ -97,8 +100,7 @@ TEST( makeAddressNumeric, invalidAddress )
  */
 TEST( makeAddressNumeric, worksProperly )
 {
-    auto const numeric_address = random<std::uint_fast8_t>(
-        Address::Numeric::MIN, Address::Numeric::MAX );
+    auto const numeric_address = random_numeric_address();
 
     auto const result = make_address( Address::NUMERIC, numeric_address );
 
@@ -112,9 +114,7 @@ TEST( makeAddressNumeric, worksProperly )
  */
 TEST( makeAddressTransmitted, invalidAddress )
 {
-    auto const result = make_address(
-        Address::TRANSMITTED,
-        ( random<std::uint_fast8_t>( Address::Numeric::MIN, Address::Numeric::MAX ) << 1 ) | 0x01 );
+    auto const result = make_address( Address::TRANSMITTED, ( random_numeric_address() << 1 ) | 0x01 );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::INVALID_ARGUMENT );
@@ -126,8 +126,7 @@ TEST( makeAddressTransmitted, invalidAddress )
  */
 TEST( makeAddressTransmitted, worksProperly )
 {
-    auto const transmitted_address = static_cast<std::uint8_t>(
-        random<std::uint_fast8_t>( Address::Numeric::MIN, Address::Numeric::MAX ) << 1 );
+    auto const transmitted_address = static_cast<std::uint8_t>( random_numeric_address() << 1 );
 
     auto const result = make_address( Address::TRANSMITTED, transmitted_address );
 
