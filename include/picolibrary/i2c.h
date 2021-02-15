@@ -89,6 +89,16 @@ class Address {
     }
 
     /**
+     * \brief Get the maximum supported device address.
+     *
+     * \return The maximum supported device address.
+     */
+    static constexpr auto max() noexcept
+    {
+        return Address{ NUMERIC, Numeric::MAX };
+    }
+
+    /**
      * \brief Constructor.
      */
     constexpr Address() noexcept = default;
