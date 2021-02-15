@@ -79,6 +79,16 @@ class Address {
     static constexpr auto TRANSMITTED = Transmitted{};
 
     /**
+     * \brief Get the minimum supported device address.
+     *
+     * \return The minimum supported device address.
+     */
+    static constexpr auto min() noexcept
+    {
+        return Address{ NUMERIC, Numeric::MIN };
+    }
+
+    /**
      * \brief Constructor.
      */
     constexpr Address() noexcept = default;

@@ -21,3 +21,9 @@
  */
 
 #include "picolibrary/i2c.h"
+
+namespace picolibrary::I2C {
+
+static_assert( Address::min().numeric() == Address::Numeric::MIN );
+
+} // namespace picolibrary::I2C
