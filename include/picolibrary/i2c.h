@@ -297,6 +297,22 @@ constexpr auto operator<=( Address lhs, Address rhs ) noexcept
     return not( lhs > rhs );
 }
 
+/**
+ * \brief Greater than or equal to operator.
+ *
+ * \relatedalso picolibrary::I2C::Address
+ *
+ * \param[in] lhs The left hand side of the comparison.
+ * \param[in] rhs The right hand side of the comparison.
+ *
+ * \return true if lhs is greater than or equal to rhs.
+ * \return false if lhs is not greater than or equal to rhs.
+ */
+constexpr auto operator>=( Address lhs, Address rhs ) noexcept
+{
+    return not( lhs < rhs );
+}
+
 } // namespace picolibrary::I2C
 
 #endif // PICOLIBRARY_I2C_H

@@ -247,6 +247,27 @@ TEST( lessThanOrEqualToOperator, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::I2C::operator>=( picolibrary::I2C::Address,
+ *        picolibrary::I2C::Address ) works properly.
+ */
+TEST( greaterThanOrEqualToOperator, worksProperly )
+{
+    {
+        auto const rhs = random_numeric_address();
+        auto const lhs = random_numeric_address( rhs );
+
+        EXPECT_TRUE( ( Address{ Address::NUMERIC, lhs } ) >= ( Address{ Address::NUMERIC, rhs } ) );
+    }
+
+    {
+        auto const rhs = random_numeric_address( Address::Numeric::MIN + 1 );
+        auto const lhs = random_numeric_address( Address::Numeric::MIN, rhs - 1 );
+
+        EXPECT_FALSE( ( Address{ Address::NUMERIC, lhs } ) >= ( Address{ Address::NUMERIC, rhs } ) );
+    }
+}
+
+/**
  * \brief Execute the picolibrary::I2C::Address unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
