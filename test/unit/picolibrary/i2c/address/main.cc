@@ -167,6 +167,29 @@ TEST( equalityOperator, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::I2C::operator!=( picolibrary::I2C::Address,
+ *        picolibrary::I2C::Address ) works properly.
+ */
+TEST( inqualityOperator, worksProperly )
+{
+    {
+        auto const numeric_address = random_numeric_address();
+
+        EXPECT_FALSE(
+            ( Address{ Address::NUMERIC, numeric_address } )
+            != ( Address{ Address::NUMERIC, numeric_address } ) );
+    }
+
+    {
+        auto const [ lhs_numeric_address, rhs_numeric_address ] = random_unique_numeric_addresses();
+
+        EXPECT_TRUE(
+            ( Address{ Address::NUMERIC, lhs_numeric_address } )
+            != ( Address{ Address::NUMERIC, rhs_numeric_address } ) );
+    }
+}
+
+/**
  * \brief Execute the picolibrary::I2C::Address unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
