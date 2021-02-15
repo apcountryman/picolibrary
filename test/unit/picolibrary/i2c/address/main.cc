@@ -21,6 +21,7 @@
  */
 
 #include <cstdint>
+#include <utility>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -35,9 +36,17 @@ using ::picolibrary::I2C::Address;
 using ::picolibrary::I2C::make_address;
 using ::picolibrary::Testing::Unit::random;
 
-auto random_numeric_address()
+auto random_numeric_address( std::uint_fast8_t min = Address::Numeric::MIN )
 {
-    return random<std::uint_fast8_t>( Address::Numeric::MIN, Address::Numeric::MAX );
+    return random<std::uint_fast8_t>( min, Address::Numeric::MAX );
+}
+
+auto random_unique_numeric_addresses()
+{
+    auto const a = random_numeric_address();
+    auto const b = random_numeric_address();
+
+    return std::pair<std::uint_fast8_t, std::uint_fast8_t>{ a, b != a ? b : b ^ random_numeric_address( 1 ) };
 }
 
 } // namespace
@@ -132,6 +141,29 @@ TEST( makeAddressTransmitted, worksProperly )
 
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value().transmitted(), transmitted_address );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::operator==( picolibrary::I2C::Address,
+ *        picolibrary::I2C::Address ) works properly.
+ */
+TEST( equalityOperator, worksProperly )
+{
+    {
+        auto const numeric_address = random_numeric_address();
+
+        EXPECT_TRUE(
+            ( Address{ Address::NUMERIC, numeric_address } )
+            == ( Address{ Address::NUMERIC, numeric_address } ) );
+    }
+
+    {
+        auto const [ lhs_numeric_address, rhs_numeric_address ] = random_unique_numeric_addresses();
+
+        EXPECT_FALSE(
+            ( Address{ Address::NUMERIC, lhs_numeric_address } )
+            == ( Address{ Address::NUMERIC, rhs_numeric_address } ) );
+    }
 }
 
 /**
