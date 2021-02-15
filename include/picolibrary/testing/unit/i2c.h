@@ -23,6 +23,57 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_I2C_H
 #define PICOLIBRARY_TESTING_UNIT_I2C_H
 
+#include <cstdint>
+
+#include "picolibrary/i2c.h"
+#include "picolibrary/testing/unit/random.h"
+
+namespace picolibrary::Testing::Unit {
+
+/**
+ * \brief Generate a pseudo-random I2C device address within the specified range.
+ *
+ * \param[in] min The lower bound of the allowable range.
+ * \param[in] max The upper bound of the allowable range.
+ *
+ * \return A pseudo-random I2C device address in the range [min,max].
+ */
+template<>
+inline auto random<I2C::Address>( I2C::Address min, I2C::Address max )
+{
+    return I2C::Address{ I2C::Address::NUMERIC,
+                         random<std::uint_fast8_t>( min.numeric(), max.numeric() ) };
+}
+
+/**
+ * \brief Generate a pseudo-random I2C device address greater than or equal to a minimum
+ *        address.
+ *
+ * \param[in] min The lower bound of the allowable range.
+ *
+ * \return A pseudo-random I2C device address in the range
+ *         [min,picolibrary::I2C::Address::max()].
+ */
+template<>
+inline auto random<I2C::Address>( I2C::Address min )
+{
+    return random<I2C::Address>( min, I2C::Address::max() );
+}
+
+/**
+ * \brief Generate a pseudo-random I2C device address.
+ *
+ * \return A pseudo-random I2C device address in the range
+ *         [picolibrary::I2C::Address::max(),picolibrary::I2C::Address::max()].
+ */
+template<>
+inline auto random<I2C::Address>()
+{
+    return random<I2C::Address>( I2C::Address::max(), I2C::Address::max() );
+}
+
+} // namespace picolibrary::Testing::Unit
+
 /**
  * \brief Inter-Integrated Circuit (I2C) unit testing facilities.
  */
