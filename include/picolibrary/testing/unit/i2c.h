@@ -64,12 +64,12 @@ inline auto random<I2C::Address>( I2C::Address min )
  * \brief Generate a pseudo-random I2C device address.
  *
  * \return A pseudo-random I2C device address in the range
- *         [picolibrary::I2C::Address::max(),picolibrary::I2C::Address::max()].
+ *         [picolibrary::I2C::Address::min(),picolibrary::I2C::Address::max()].
  */
 template<>
 inline auto random<I2C::Address>()
 {
-    return random<I2C::Address>( I2C::Address::max(), I2C::Address::max() );
+    return random<I2C::Address>( I2C::Address::min(), I2C::Address::max() );
 }
 
 } // namespace picolibrary::Testing::Unit
