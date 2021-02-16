@@ -49,6 +49,8 @@ namespace picolibrary::Testing::Interactive::I2C {
 template<template<typename> typename Output_Stream, typename Transmitter, typename Controller>
 void scan( Transmitter transmitter, Controller controller ) noexcept
 {
+    // #lizard forgives the length
+
     auto stream = Output_Stream{ std::move( transmitter ) };
 
     if ( stream.initialize().is_error() ) {
