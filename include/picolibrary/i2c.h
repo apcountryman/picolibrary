@@ -27,6 +27,7 @@
 
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
+#include "picolibrary/utility.h"
 
 /**
  * \brief Inter-Integrated Circuit (I2C) facilities.
@@ -347,6 +348,105 @@ enum class Operation : std::uint8_t {
 enum class Response : std::uint_fast8_t {
     ACK  = 0b0, ///< ACK.
     NACK = 0b1, ///< NACK.
+};
+
+/**
+ * \brief I2C basic controller concept.
+ */
+class Basic_Controller_Concept {
+  public:
+    Basic_Controller_Concept() = delete;
+
+    Basic_Controller_Concept( Basic_Controller_Concept && ) = delete;
+
+    Basic_Controller_Concept( Basic_Controller_Concept const & ) = delete;
+
+    ~Basic_Controller_Concept() = delete;
+
+    auto operator=( Basic_Controller_Concept && ) = delete;
+
+    auto operator=( Basic_Controller_Concept const & ) = delete;
+
+    /**
+     * \brief Initialize the controller's hardware.
+     *
+     * \return Nothing if controller hardware initialization succeeded.
+     * \return An error code if controller hardware initialization failed. If controller
+     *         hardware initialization cannot fail, return
+     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     */
+    auto initialize() noexcept -> Result<Void, Error_Code>;
+
+    /**
+     * \brief Transmit a start condition.
+     *
+     * \return Nothing if start condition transmission succeeded.
+     * \return An error code if start condition transmission failed. If start condition
+     *         transmission cannot fail, return picolibrary::Result<picolibrary::Void,
+     *         picolibrary::Void>.
+     */
+    auto start() noexcept -> Result<Void, Error_Code>;
+
+    /**
+     * \brief Transmit a repeated start condition.
+     *
+     * \return Nothing if repeated start condition transmission succeeded.
+     * \return An error code if repeated start condition transmission failed. If repeated
+     *         start condition transmission cannot fail, return
+     *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     */
+    auto repeated_start() noexcept -> Result<Void, Error_Code>;
+
+    /**
+     * \brief Transmit a stop condition.
+     *
+     * \return Nothing if stop condition transmission succeeded.
+     * \return An error code if stop condition transmission failed. If stop condition
+     *         transmission cannot fail, return picolibrary::Result<picolibrary::Void,
+     *         picolibrary::Void>.
+     */
+    auto stop() noexcept -> Result<Void, Error_Code>;
+
+    /**
+     * \brief Address a device.
+     *
+     * \param[in] address The address of the device to address.
+     * \param[in] operation The operation that will be performed once the device has been
+     *            addressed.
+     *
+     * \return Nothing if addressing the device succeeded.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to address the device.
+     * \return picolibrary::Generic_Error::NONRESPONSIVE_DEVICE if the device did not
+     *         respond when addressed.
+     * \return An error code if addressing the device failed for any other reason.
+     */
+    auto address( Address address, Operation operation ) noexcept -> Result<Void, Error_Code>;
+
+    /**
+     * \brief Read data from a device.
+     *
+     * \param[in] response The response to send after the data is read.
+     *
+     * \return The read data if the read succeeded.
+     * \return An error code if the read failed. If the read cannot fail, return
+     *         picolibrary::Result<std::uint8_t, picolibrary::Void>.
+     */
+    auto read( Response response ) noexcept -> Result<std::uint8_t, Error_Code>;
+
+    /**
+     * \brief Write data to a device.
+     *
+     * \param[in] data The data to write.
+     *
+     * \return Nothing if the write succeeded.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration during the write.
+     * \return picolibrary::Generic_Error::NONRESPONSIVE_DEVICE if the device did not
+     *         acknowledge the write.
+     * \return An error code if the write failed for any other reason.
+     */
+    auto write( std::uint8_t data ) noexcept -> Result<Void, Error_Code>;
 };
 
 } // namespace picolibrary::I2C
