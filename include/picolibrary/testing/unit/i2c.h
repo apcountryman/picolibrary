@@ -78,6 +78,19 @@ inline auto random<I2C::Address>()
     return random<I2C::Address>( I2C::Address::min(), I2C::Address::max() );
 }
 
+/**
+ * \brief Generate a pseudo-random I2C operation.
+ *
+ * \return A pseudo-random I2C operation.
+ */
+template<>
+inline auto random<I2C::Operation>()
+{
+    return static_cast<I2C::Operation>( random<std::uint_fast8_t>(
+        static_cast<std::uint_fast8_t>( I2C::Operation::WRITE ),
+        static_cast<std::uint_fast8_t>( I2C::Operation::READ ) ) );
+}
+
 } // namespace picolibrary::Testing::Unit
 
 /**
