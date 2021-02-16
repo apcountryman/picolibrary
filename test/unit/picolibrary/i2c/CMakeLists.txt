@@ -24,3 +24,19 @@ add_subdirectory( bus_control_guard )
 
 # build the picolibrary::I2C::Controller unit tests
 add_subdirectory( controller )
+
+# build the picolibrary::I2C unit tests
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+    add_executable(
+        test-unit-picolibrary-i2c
+        main.cc
+    )
+    target_link_libraries(
+        test-unit-picolibrary-i2c
+        picolibrary
+    )
+    add_test(
+        NAME    test-unit-picolibrary-i2c
+        COMMAND test-unit-picolibrary-i2c --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
