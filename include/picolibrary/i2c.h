@@ -608,6 +608,27 @@ class Controller : public Basic_Controller {
             return read( ++begin == end ? response : Response::ACK );
         } );
     }
+
+    using Basic_Controller::write;
+
+    /**
+     * \brief Write a block of data to a device.
+     *
+     * \param[in] begin The beginning of the block of data to write.
+     * \param[in] end The end of the block of data to write.
+     *
+     * \return Nothing if the write succeeded.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration during the write.
+     * \return picolibrary::Generic_Error::NONRESPONSIVE_DEVICE if the device did not
+     *         acknowledge the write.
+     * \return An error code if the write failed for any other reason.
+     */
+    auto write( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+    {
+        return for_each<Discard_Functor>(
+            begin, end, [ this ]( auto data ) noexcept { return write( data ); } );
+    }
 };
 
 } // namespace picolibrary::I2C
