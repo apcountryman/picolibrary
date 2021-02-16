@@ -770,6 +770,39 @@ auto make_bus_control_guard( Controller & controller ) noexcept
     return Bus_Control_Guard{ controller };
 }
 
+/**
+ * \brief Check if a device is responsive.
+ *
+ * \tparam Controller The type of I2C controller used to communicate with the device.
+ *
+ * \param[in] controller The I2C controller to use to communicate with the device.
+ * \param[in] address The address of the device.
+ * \param[in] operation The operation to request when addressing the device.
+ *
+ * \return Nothing if the device is responsive.
+ * \return picolibrary::Generic_Error::NONRESPONSIVE_DEVICE if the device is not
+ *         responsive.
+ * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost arbitration
+ *         while attempting to communicate with the device.
+ * \return An error code if the check failed for any other reason.
+ */
+template<typename Controller>
+auto ping( Controller & controller, Address address, Operation operation ) noexcept
+    -> Result<Void, Error_Code>
+{
+    auto guard = Bus_Control_Guard<Controller>{};
+    {
+        auto result = make_bus_control_guard( controller );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        guard = std::move( result ).value();
+    }
+
+    return controller.address( address, operation );
+}
+
 } // namespace picolibrary::I2C
 
 #endif // PICOLIBRARY_I2C_H
