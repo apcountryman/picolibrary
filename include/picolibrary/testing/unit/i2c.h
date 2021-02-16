@@ -23,7 +23,9 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_I2C_H
 #define PICOLIBRARY_TESTING_UNIT_I2C_H
 
+#include <algorithm>
 #include <cstdint>
+#include <vector>
 
 #include "gmock/gmock.h"
 #include "picolibrary/error.h"
@@ -304,6 +306,290 @@ class Mock_Basic_Controller {
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read, ( Response ) );
 
     MOCK_METHOD( (Result<Void, Error_Code>), write, ( std::uint8_t ) );
+};
+
+/**
+ * \brief Mock I2C controller.
+ */
+class Mock_Controller {
+  public:
+    /**
+     * \brief Movable mock controller handle.
+     */
+    class Handle {
+      public:
+        /**
+         * \brief Constructor.
+         */
+        Handle() noexcept = default;
+
+        /**
+         * \brief Constructor.
+         *
+         * \param[in] mock_controller The mock controller.
+         */
+        Handle( Mock_Controller & mock_controller ) noexcept :
+            m_mock_controller{ &mock_controller }
+        {
+        }
+
+        /**
+         * \brief Constructor.
+         *
+         * \param[in] source The source of the move.
+         */
+        Handle( Handle && source ) noexcept :
+            m_mock_controller{ source.m_mock_controller }
+        {
+            source.m_mock_controller = nullptr;
+        }
+
+        Handle( Handle const & ) = delete;
+
+        /**
+         * \brief Destructor.
+         */
+        ~Handle() noexcept = default;
+
+        /**
+         * \brief Assignment operator.
+         *
+         * \param[in] expression The expression to be assigned.
+         *
+         * \return The assigned to object.
+         */
+        auto & operator=( Handle && expression ) noexcept
+        {
+            if ( &expression != this ) {
+                m_mock_controller = expression.m_mock_controller;
+
+                expression.m_mock_controller = nullptr;
+            } // if
+
+            return *this;
+        }
+
+        auto operator=( Handle const & ) = delete;
+
+        /**
+         * \brief Get the mock basic controller.
+         *
+         * \return The mock basic controller.
+         */
+        auto & mock() noexcept
+        {
+            return *m_mock_controller;
+        }
+
+        /**
+         * \brief Initialize the controller's hardware.
+         *
+         * \return Nothing if controller hardware initialization succeeded.
+         * \return An error code if controller hardware initialization failed.
+         */
+        auto initialize()
+        {
+            return m_mock_controller->initialize();
+        }
+
+        /**
+         * \brief Transmit a start condition.
+         *
+         * \return Nothing if start condition transmission succeeded.
+         * \return An error code if start condition transmission failed.
+         */
+        auto start()
+        {
+            return m_mock_controller->start();
+        }
+
+        /**
+         * \brief Transmit a repeated start condition.
+         *
+         * \return Nothing if repeated start condition transmission succeeded.
+         * \return An error code if repeated start condition transmission failed.
+         */
+        auto repeated_start()
+        {
+            return m_mock_controller->repeated_start();
+        }
+
+        /**
+         * \brief Transmit a stop condition.
+         *
+         * \return Nothing if stop condition transmission succeeded.
+         * \return An error code if stop condition transmission failed.
+         */
+        auto stop()
+        {
+            return m_mock_controller->stop();
+        }
+
+        /**
+         * \brief Address a device.
+         *
+         * \param[in] address The address of the device to address.
+         * \param[in] operation The operation that will be performed once the device has
+         *            been addressed.
+         *
+         * \return Nothing if addressing the device succeeded.
+         * \return An error code if addressing the device failed.
+         */
+        auto address( Address address, Operation operation )
+        {
+            return m_mock_controller->address( address, operation );
+        }
+
+        /**
+         * \brief Read data from a device.
+         *
+         * \param[in] response The response to send after the data is read.
+         *
+         * \return The read data if the read succeeded.
+         * \return An error code if the read failed.
+         */
+        auto read( Response response )
+        {
+            return m_mock_controller->read( response );
+        }
+
+        /**
+         * \brief Read a block of data from a device.
+         *
+         * \param[out] begin The beginning of the block of read data.
+         * \param[out] end The end of the block of read data.
+         * \param[in] response The response to send after the last byte of the block is
+         *            read.
+         *
+         * \return Nothing if the read succeeded.
+         * \return An error code if the read failed.
+         */
+        auto read( std::uint8_t * begin, std::uint8_t * end, Response response )
+        {
+            return m_mock_controller->read( begin, end, response );
+        }
+
+        /**
+         * \brief Write data to the device.
+         *
+         * \param[in] data The data to write.
+         *
+         * \return Nothing if the write succeeded.
+         * \return An error code if the write failed.
+         */
+        auto write( std::uint8_t data )
+        {
+            return m_mock_controller->write( data );
+        }
+
+        /**
+         * \brief Write a block of data to a device.
+         *
+         * \param[in] begin The beginning of the block of data to write.
+         * \param[in] end The end of the block of data to write.
+         *
+         * \return Nothing if the write succeeded.
+         * \return An error code if the write failed.
+         */
+        auto write( std::uint8_t const * begin, std::uint8_t const * end )
+        {
+            return m_mock_controller->write( begin, end );
+        }
+
+      private:
+        /**
+         * \brief The mock basic controller.
+         */
+        Mock_Controller * m_mock_controller{};
+    };
+
+    /**
+     * \brief Constructor.
+     */
+    Mock_Controller() = default;
+
+    Mock_Controller( Mock_Controller && ) = delete;
+
+    Mock_Controller( Mock_Controller const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Mock_Controller() noexcept = default;
+
+    auto operator=( Mock_Controller && ) = delete;
+
+    auto operator=( Mock_Controller const & ) = delete;
+
+    /**
+     * \brief Get a movable handle to the mock basic controller.
+     *
+     * \return A movable handle to the mock basic controller.
+     */
+    auto handle() noexcept
+    {
+        return Handle{ *this };
+    }
+
+    MOCK_METHOD( (Result<Void, Error_Code>), initialize, () );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), start, () );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), repeated_start, () );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), stop, () );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), address, ( Address, Operation ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read, ( Response ) );
+
+    MOCK_METHOD( (Result<std::vector<std::uint8_t>, Error_Code>), read, ( std::vector<std::uint8_t>, Response ) );
+
+    /**
+     * \brief Read a block of data from a device.
+     *
+     * \param[out] begin The beginning of the block of read data.
+     * \param[out] end The end of the block of read data.
+     *
+     * \return Nothing if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read( std::uint8_t * begin, std::uint8_t * end, Response response ) -> Result<Void, Error_Code>
+    {
+        static_cast<void>( end );
+
+        auto const result = read( std::vector<std::uint8_t>{}, response );
+
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        std::for_each( result.value().begin(), result.value().end(), [ &begin ]( auto data ) {
+            *begin = data;
+
+            ++begin;
+        } );
+
+        return {};
+    }
+
+    MOCK_METHOD( (Result<Void, Error_Code>), write, ( std::uint8_t ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), write, (std::vector<std::uint8_t>));
+
+    /**
+     * \brief Write a block of data to a device.
+     *
+     * \param[in] begin The beginning of the block of data to write.
+     * \param[in] end The end of the block of data to write.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write( std::uint8_t const * begin, std::uint8_t const * end ) -> Result<Void, Error_Code>
+    {
+        return write( std::vector<std::uint8_t>{ begin, end } );
+    }
 };
 
 } // namespace picolibrary::Testing::Unit::I2C
