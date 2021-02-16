@@ -24,6 +24,7 @@
 #define PICOLIBRARY_I2C_H
 
 #include <cstdint>
+#include <utility>
 
 #include "picolibrary/algorithm.h"
 #include "picolibrary/error.h"
@@ -636,7 +637,32 @@ class Controller : public Basic_Controller {
  *
  * \tparam[in] Controller The type of I2C controller that is used to interact with the
  *             bus.
+ *
+ * \warning Stop condition transmission failures are ignored. A controller wrapper class
+ *          can be used to add stop condition transmission failure error handling to the
+ *          controller's stop condition transmission function.
  */
+template<typename Controller>
+class Bus_Control_Guard;
+
+/**
+ * \brief Transmit a start condition and construct a picolibrary::I2C::Bus_Control_Guard.
+ *
+ * \relatedalso picolibrary::I2C::Bus_Selection_Guard
+ *
+ * \tparam[in] Controller The type of I2C controller used to interact with the bus.
+ *
+ * \param[in] controller The I2C controller used to interact with the bus.
+ *
+ * \return The constructed picolibrary::I2C::Bus_Control_Guard if start condition
+ *         transmission succeeded.
+ * \return The error reported by the I2C controller if start condition transmission
+ *         failed.
+ */
+template<typename Controller>
+auto make_bus_control_guard( Controller & controller ) noexcept
+    -> Result<Bus_Control_Guard<Controller>, typename decltype( std::declval<Controller>().start() )::Error, false>;
+
 template<typename Controller>
 class Bus_Control_Guard {
   public:
@@ -650,14 +676,21 @@ class Bus_Control_Guard {
      *
      * \param[in] source The source of the move.
      */
-    constexpr Bus_Control_Guard( Bus_Control_Guard && source ) noexcept = default;
+    constexpr Bus_Control_Guard( Bus_Control_Guard && source ) noexcept :
+        m_controller{ source.m_controller }
+    {
+        source.m_controller = nullptr;
+    }
 
     Bus_Control_Guard( Bus_Control_Guard const & ) = delete;
 
     /**
      * \brief Destructor.
      */
-    ~Bus_Control_Guard() noexcept = default;
+    ~Bus_Control_Guard() noexcept
+    {
+        stop();
+    }
 
     /**
      * \brief Assignment operator.
@@ -666,11 +699,76 @@ class Bus_Control_Guard {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator    =( Bus_Control_Guard && expression ) noexcept
-        -> Bus_Control_Guard & = default;
+    constexpr auto & operator=( Bus_Control_Guard && expression ) noexcept
+    {
+        if ( &expression != this ) {
+            stop();
+
+            m_controller = expression.m_controller;
+
+            expression.m_controller = nullptr;
+        } // if
+
+        return *this;
+    }
 
     auto operator=( Bus_Control_Guard const & ) = delete;
+
+    /**
+     * \brief Transmit a repeated start condition.
+     *
+     * \return Nothing if repeated start condition transmission succeeded.
+     * \return The error reported by the I2C controller if repeated start condition
+     *         transmission failed.
+     */
+    auto repeated_start() noexcept
+    {
+        return m_controller->repeated_start();
+    }
+
+  private:
+    /**
+     * \brief The I2C controller used to interact with the bus.
+     */
+    Controller * m_controller{};
+
+    friend auto make_bus_control_guard<Controller>( Controller & controller ) noexcept -> Result<
+        Bus_Control_Guard<Controller>,
+        typename decltype( std::declval<Controller>().start() )::Error,
+        false>;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] controller The I2C controller used to interact with the bus.
+     */
+    constexpr Bus_Control_Guard( Controller & controller ) noexcept :
+        m_controller{ &controller }
+    {
+    }
+
+    /**
+     * \brief Transmit a stop condition.
+     */
+    constexpr void stop() noexcept
+    {
+        if ( m_controller ) {
+            static_cast<void>( m_controller->stop() );
+        } // if
+    }
 };
+
+template<typename Controller>
+auto make_bus_control_guard( Controller & controller ) noexcept
+    -> Result<Bus_Control_Guard<Controller>, typename decltype( std::declval<Controller>().start() )::Error, false>
+{
+    auto result = controller.start();
+    if ( result.is_error() ) {
+        return result.error();
+    } // if
+
+    return Bus_Control_Guard{ controller };
+}
 
 } // namespace picolibrary::I2C
 
