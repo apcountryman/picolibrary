@@ -25,6 +25,7 @@
 
 #include <cstdint>
 
+#include "picolibrary/algorithm.h"
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/utility.h"
@@ -588,6 +589,25 @@ template<typename Basic_Controller>
 class Controller : public Basic_Controller {
   public:
     using Basic_Controller::Basic_Controller;
+
+    using Basic_Controller::read;
+
+    /**
+     * \brief Read a block of data from a device.
+     *
+     * \param[out] begin The beginning of the block of read data.
+     * \param[out] end The end of the block of read data.
+     * \param[in] response The response to send after the last byte of the block is read.
+     *
+     * \return Nothing if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read( std::uint8_t * begin, std::uint8_t * end, Response response ) noexcept
+    {
+        return generate( begin, end, [ this, &begin, end, response ]() noexcept {
+            return read( ++begin == end ? response : Response::ACK );
+        } );
+    }
 };
 
 } // namespace picolibrary::I2C

@@ -20,9 +20,93 @@
  * \brief picolibrary::I2C::Controller unit test program.
  */
 
+#include <cstdint>
+#include <vector>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/i2c.h"
+#include "picolibrary/testing/unit/error.h"
+#include "picolibrary/testing/unit/i2c.h"
+#include "picolibrary/testing/unit/random.h"
+
+namespace {
+
+using ::picolibrary::I2C::Response;
+using ::picolibrary::Testing::Unit::Mock_Error;
+using ::picolibrary::Testing::Unit::random;
+using ::picolibrary::Testing::Unit::random_container;
+using ::testing::_;
+using ::testing::InSequence;
+using ::testing::Return;
+
+using Controller = ::picolibrary::I2C::Controller<::picolibrary::Testing::Unit::I2C::Mock_Basic_Controller>;
+
+} // namespace
+
+/**
+ * \brief Verify picolibrary::I2C::Controller::read( std::uint8_t *, std::uint8_t *,
+ *        picolibrary::I2C::Response ) properly handles a read error.
+ */
+TEST( readBlock, readError )
+{
+    auto controller = Controller{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( controller, read( _ ) ).WillOnce( Return( error ) );
+
+    auto       data   = std::vector<std::uint8_t>( random<std::uint_fast8_t>( 1 ) );
+    auto const result = controller.read( &*data.begin(), &*data.end(), random<Response>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::Controller::read( std::uint8_t *, std::uint8_t *,
+ *        picolibrary::I2C::Response ) works properly.
+ */
+TEST( readBlock, worksProperly )
+{
+    {
+        auto const in_sequence = InSequence{};
+
+        auto controller = Controller{};
+
+        auto const size          = random<std::uint_fast8_t>();
+        auto const data_expected = random_container<std::vector<std::uint8_t>>( size );
+
+        for ( auto const byte : data_expected ) {
+            EXPECT_CALL( controller, read( Response::ACK ) ).WillOnce( Return( byte ) );
+        } // for
+
+        auto data = std::vector<std::uint8_t>( size );
+        EXPECT_FALSE( controller.read( &*data.begin(), &*data.end(), Response::ACK ).is_error() );
+
+        EXPECT_EQ( data, data_expected );
+    }
+
+    {
+        auto const in_sequence = InSequence{};
+
+        auto controller = Controller{};
+
+        auto const size          = random<std::uint_fast8_t>();
+        auto const data_expected = random_container<std::vector<std::uint8_t>>( size );
+
+        for ( auto begin = data_expected.begin(); begin != data_expected.end(); ) {
+            auto const byte = *begin;
+            EXPECT_CALL( controller, read( ++begin == data_expected.end() ? Response::NACK : Response::ACK ) )
+                .WillOnce( Return( byte ) );
+        } // for
+
+        auto data = std::vector<std::uint8_t>( size );
+        EXPECT_FALSE( controller.read( &*data.begin(), &*data.end(), Response::NACK ).is_error() );
+
+        EXPECT_EQ( data, data_expected );
+    }
+}
 
 /**
  * \brief Execute the picolibrary::I2C::Controller unit tests.
