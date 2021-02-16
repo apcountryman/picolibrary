@@ -25,6 +25,7 @@
 
 #include <cstdint>
 
+#include "picolibrary/algorithm.h"
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/utility.h"
@@ -576,6 +577,58 @@ class Controller_Concept {
      */
     auto write( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
         -> Result<Void, Error_Code>;
+};
+
+/**
+ * \brief I2C controller.
+ *
+ * \tparam Basic_Controller The I2C basic controller to add I2C controller functionality
+ * to.
+ */
+template<typename Basic_Controller>
+class Controller : public Basic_Controller {
+  public:
+    using Basic_Controller::Basic_Controller;
+
+    using Basic_Controller::read;
+
+    /**
+     * \brief Read a block of data from a device.
+     *
+     * \param[out] begin The beginning of the block of read data.
+     * \param[out] end The end of the block of read data.
+     * \param[in] response The response to send after the last byte of the block is read.
+     *
+     * \return Nothing if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read( std::uint8_t * begin, std::uint8_t * end, Response response ) noexcept
+    {
+        return generate( begin, end, [ this, &begin, end, response ]() noexcept {
+            return read( ++begin == end ? response : Response::ACK );
+        } );
+    }
+
+    using Basic_Controller::write;
+
+    /**
+     * \brief Write a block of data to a device.
+     *
+     * \param[in] begin The beginning of the block of data to write.
+     * \param[in] end The end of the block of data to write.
+     *
+     * \return Nothing if the write succeeded.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration during the write.
+     * \return picolibrary::Generic_Error::NONRESPONSIVE_DEVICE if the device did not
+     *         acknowledge the write.
+     * \return An error code if the write failed for any other reason.
+     */
+    auto write( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+    {
+        return for_each<Discard_Functor>(
+            begin, end, [ this ]( auto data ) noexcept { return write( data ); } );
+    }
 };
 
 } // namespace picolibrary::I2C

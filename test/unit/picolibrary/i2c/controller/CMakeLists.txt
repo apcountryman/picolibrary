@@ -13,11 +13,21 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/i2c/CMakeLists.txt
-# Description: picolibrary::I2C unit tests CMake rules.
-
-# build the picolibrary::I2C::Address unit tests
-add_subdirectory( address )
+# File: test/unit/picolibrary/i2c/controller/CMakeLists.txt
+# Description: picolibrary::I2C::Controller unit tests CMake rules.
 
 # build the picolibrary::I2C::Controller unit tests
-add_subdirectory( controller )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+    add_executable(
+        test-unit-picolibrary-i2c-controller
+        main.cc
+    )
+    target_link_libraries(
+        test-unit-picolibrary-i2c-controller
+        picolibrary
+    )
+    add_test(
+        NAME    test-unit-picolibrary-i2c-controller
+        COMMAND test-unit-picolibrary-i2c-controller --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
