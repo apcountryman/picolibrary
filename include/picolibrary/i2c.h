@@ -578,6 +578,18 @@ class Controller_Concept {
         -> Result<Void, Error_Code>;
 };
 
+/**
+ * \brief I2C controller.
+ *
+ * \tparam Basic_Controller The I2C basic controller to add I2C controller functionality
+ * to.
+ */
+template<typename Basic_Controller>
+class Controller : public Basic_Controller {
+  public:
+    using Basic_Controller::Basic_Controller;
+};
+
 } // namespace picolibrary::I2C
 
 #endif // PICOLIBRARY_I2C_H
