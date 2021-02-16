@@ -803,6 +803,57 @@ auto ping( Controller & controller, Address address, Operation operation ) noexc
     return controller.address( address, operation );
 }
 
+/**
+ * \brief Scan a bus for responsive devices.
+ *
+ * \tparam Controller The type of I2C controller used to interact with the bus.
+ * \tparam Functor A binary functor that takes a device address / operation pair for which
+ *         a responsive device was found, and returns either
+ *         picolibrary::Result<picolibrary::Void, picolibrary::Error_Code> or
+ *         picolibrary::Result<picolibrary::Void, picolibrary::Void>. If an error is
+ *         returned by the functor, the scan halts and the error is returned.
+ *
+ * \param[in] controller The I2C controller for the bus to be scanned.
+ * \param[in] functor The functor to pass the device address / operation pairs for which
+ *            responsive devices are found.
+ *
+ * \return Nothing if the scan succeeded.
+ * \return An error code if the scan failed.
+ */
+template<typename Controller, typename Functor>
+auto scan( Controller & controller, Functor functor ) noexcept -> Result<Void, Error_Code>
+{
+    Operation const operations[]{
+        Operation::READ,
+        Operation::WRITE,
+    };
+
+    for ( auto numeric_address = Address::Numeric::MIN; numeric_address <= Address::Numeric::MAX;
+          ++numeric_address ) {
+        auto const address = Address{ Address::NUMERIC, numeric_address };
+
+        for ( auto const operation : operations ) {
+            {
+                auto result = ping( controller, address, operation );
+                if ( result.is_error() ) {
+                    if ( result.error() != Generic_Error::NONRESPONSIVE_DEVICE ) {
+                        return result.error();
+                    } // if
+
+                    continue;
+                } // if
+            }
+
+            auto result = functor( address, operation );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }     // for
+    }         // for
+
+    return {};
+}
+
 } // namespace picolibrary::I2C
 
 #endif // PICOLIBRARY_I2C_H

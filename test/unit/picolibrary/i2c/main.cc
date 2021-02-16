@@ -33,16 +33,19 @@
 namespace {
 
 using ::picolibrary::Error_Code;
+using ::picolibrary::Generic_Error;
 using ::picolibrary::Result;
 using ::picolibrary::Void;
 using ::picolibrary::I2C::Address;
 using ::picolibrary::I2C::Operation;
 using ::picolibrary::I2C::ping;
+using ::picolibrary::I2C::scan;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::I2C::Mock_Controller;
 using ::testing::_;
 using ::testing::InSequence;
+using ::testing::MockFunction;
 using ::testing::Return;
 
 } // namespace
@@ -116,6 +119,120 @@ TEST( ping, worksProperly )
     EXPECT_CALL( controller, stop() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( ping( controller, address, operation ).is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::scan() properly handles a start condition transmission
+ *        error.
+ */
+TEST( scan, startError )
+{
+    auto controller = Mock_Controller{};
+    auto functor    = MockFunction<Result<Void, Error_Code>( Address, Operation )>{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( controller, start() ).WillOnce( Return( error ) );
+
+    auto const result = scan( controller, functor.AsStdFunction() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::scan() properly handles an addressing error.
+ */
+TEST( scan, addressingError )
+{
+    auto controller = Mock_Controller{};
+    auto functor    = MockFunction<Result<Void, Error_Code>( Address, Operation )>{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( error ) );
+    EXPECT_CALL( controller, stop() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    auto const result = scan( controller, functor.AsStdFunction() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::scan() properly handles a stop condition transmission
+ *        error.
+ */
+TEST( scan, stopError )
+{
+    auto controller = Mock_Controller{};
+    auto functor    = MockFunction<Result<Void, Error_Code>( Address, Operation )>{};
+
+    EXPECT_CALL( controller, start() ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, address( _, _ ) ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, stop() ).WillRepeatedly( Return( random<Mock_Error>() ) );
+    EXPECT_CALL( functor, Call( _, _ ) ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( scan( controller, functor.AsStdFunction() ).is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::scan() properly handles a functor error.
+ */
+TEST( scan, functorError )
+{
+    auto controller = Mock_Controller{};
+    auto functor    = MockFunction<Result<Void, Error_Code>( Address, Operation )>{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, stop() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( functor, Call( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = scan( controller, functor.AsStdFunction() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::scan() works properly.
+ */
+TEST( scan, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto controller = Mock_Controller{};
+    auto functor    = MockFunction<Result<Void, Error_Code>( Address, Operation )>{};
+
+    Operation const operations[]{
+        Operation::READ,
+        Operation::WRITE,
+    };
+
+    for ( auto numeric_address = Address::Numeric::MIN; numeric_address <= Address::Numeric::MAX;
+          ++numeric_address ) {
+        for ( auto const operation : operations ) {
+            auto const address = Address{ Address::NUMERIC, numeric_address };
+
+            if ( random<bool>() ) {
+                EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+                EXPECT_CALL( controller, address( address, operation ) )
+                    .WillOnce( Return( Result<Void, Error_Code>{} ) );
+                EXPECT_CALL( controller, stop() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+                EXPECT_CALL( functor, Call( address, operation ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            } else {
+                EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+                EXPECT_CALL( controller, address( address, operation ) ).WillOnce( Return( Generic_Error::NONRESPONSIVE_DEVICE ) );
+                EXPECT_CALL( controller, stop() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            } // else
+        }     // for
+    }         // for
+
+    EXPECT_FALSE( scan( controller, functor.AsStdFunction() ).is_error() );
 }
 
 /**
