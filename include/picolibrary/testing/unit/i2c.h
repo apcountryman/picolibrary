@@ -91,6 +91,19 @@ inline auto random<I2C::Operation>()
         static_cast<std::uint_fast8_t>( I2C::Operation::READ ) ) );
 }
 
+/**
+ * \brief Generate a pseudo-random I2C response.
+ *
+ * \return A pseudo-random I2C response.
+ */
+template<>
+inline auto random<I2C::Response>()
+{
+    return static_cast<I2C::Response>( random<std::uint_fast8_t>(
+        static_cast<std::uint_fast8_t>( I2C::Response::ACK ),
+        static_cast<std::uint_fast8_t>( I2C::Response::NACK ) ) );
+}
+
 } // namespace picolibrary::Testing::Unit
 
 /**
