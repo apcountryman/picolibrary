@@ -631,6 +631,47 @@ class Controller : public Basic_Controller {
     }
 };
 
+/**
+ * \brief RAII I2C bus control guard.
+ *
+ * \tparam[in] Controller The type of I2C controller that is used to interact with the
+ *             bus.
+ */
+template<typename Controller>
+class Bus_Control_Guard {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Bus_Control_Guard() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Bus_Control_Guard( Bus_Control_Guard && source ) noexcept = default;
+
+    Bus_Control_Guard( Bus_Control_Guard const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Bus_Control_Guard() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator    =( Bus_Control_Guard && expression ) noexcept
+        -> Bus_Control_Guard & = default;
+
+    auto operator=( Bus_Control_Guard const & ) = delete;
+};
+
 } // namespace picolibrary::I2C
 
 #endif // PICOLIBRARY_I2C_H
