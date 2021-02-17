@@ -904,6 +904,59 @@ class Output_Stream : public Stream {
 };
 
 /**
+ * \brief Character output formatter.
+ *
+ * Characters only support the default format specification ("{}").
+ */
+template<>
+class Output_Formatter<char> {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Output_Formatter() noexcept = default;
+
+    Output_Formatter( Output_Formatter && ) = delete;
+
+    Output_Formatter( Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Output_Formatter() noexcept = default;
+
+    auto operator=( Output_Formatter && ) = delete;
+
+    auto operator=( Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Parse the format specification for the character to be formatted.
+     *
+     * \param[in] format The format specification for the character to be formatted.
+     *
+     * \return format.
+     */
+    constexpr auto parse( char const * format ) noexcept -> Result<char const *, Void>
+    {
+        return format;
+    }
+
+    /**
+     * \brief Write the character to the stream.
+     *
+     * \param[in] stream The stream to write the character to.
+     * \param[in] character The character to write to the stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto print( Output_Stream & stream, char character ) noexcept
+    {
+        return stream.put( character );
+    }
+};
+
+/**
  * \brief Null-terminated string output formatter.
  *
  * Null-terminated strings only support the default format specification ("{}").
