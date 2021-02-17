@@ -75,7 +75,7 @@ void scan( Transmitter transmitter, Controller controller ) noexcept
                 return stream.print(
                     "device found: {} ({})\n",
                     Format::Hexadecimal{ address.numeric() },
-                    operation == ::picolibrary::I2C::Operation::READ ? "R" : "W" );
+                    operation == ::picolibrary::I2C::Operation::READ ? 'R' : 'W' );
             } );
         if ( result.is_error() ) {
             static_cast<void>( stream.print( "scan error: {}\n", result.error() ) );
