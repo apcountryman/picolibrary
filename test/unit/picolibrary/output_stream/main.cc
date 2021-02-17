@@ -868,6 +868,63 @@ TEST( flush, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::Output_Formatter<char> properly handles an invalid format
+ *        string.
+ */
+TEST( outputFormatterChar, invalidFormatString )
+{
+    auto stream = Output_String_Stream{};
+
+    auto const result = stream.print(
+        ( std::string{ '{' } + random_container<std::string>( random<std::uint_fast8_t>( 1 ) ) + '}' )
+            .c_str(),
+        random<char>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), Generic_Error::INVALID_FORMAT );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_TRUE( stream.io_error_present() );
+    EXPECT_FALSE( stream.fatal_error_present() );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<char> properly handles a print error.
+ */
+TEST( outputFormatterChar, printError )
+{
+    auto stream = Mock_Output_Stream{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( stream.buffer(), put( A<char>() ) ).WillOnce( Return( error ) );
+
+    auto const result = stream.print( "{}", random<char>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_FALSE( stream.io_error_present() );
+    EXPECT_TRUE( stream.fatal_error_present() );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<char> works properly.
+ */
+TEST( outputFormatterChar, worksProperly )
+{
+    auto stream = Output_String_Stream{};
+
+    auto const character = random<char>();
+
+    EXPECT_FALSE( stream.print( "{}", character ).is_error() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), std::string{ character } );
+}
+
+/**
  * \brief Verify picolibrary::Output_Formatter<char const *> properly handles an invalid
  *        format string.
  */
