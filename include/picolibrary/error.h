@@ -367,6 +367,7 @@ enum class Generic_Error : Error_ID {
     INVALID_FORMAT,        ///< Invalid format string.
     NONRESPONSIVE_DEVICE,  ///< Nonresponsive device.
     ARBITRATION_LOST,      ///< Arbitration lost.
+    LOGIC_ERROR,           ///< Logic error.
 };
 
 /**
@@ -416,6 +417,7 @@ class Generic_Error_Category final : public Error_Category {
             case Generic_Error::INVALID_FORMAT: return "INVALID_FORMAT";
             case Generic_Error::NONRESPONSIVE_DEVICE: return "NONRESPONSIVE_DEVICE";
             case Generic_Error::ARBITRATION_LOST: return "ARBITRATION_LOST";
+            case Generic_Error::LOGIC_ERROR: return "LOGIC_ERROR";
         } // switch
 
         return "UNKNOWN";
