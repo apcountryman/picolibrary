@@ -58,6 +58,7 @@ TEST( errorDescription, worksProperly )
         { Generic_Error::NONRESPONSIVE_DEVICE, "NONRESPONSIVE_DEVICE" },
         { Generic_Error::ARBITRATION_LOST, "ARBITRATION_LOST" },
         { Generic_Error::LOGIC_ERROR, "LOGIC_ERROR" },
+        { Generic_Error::BUS_ERROR, "BUS_ERROR" },
     };
 
     for ( auto const test_case : test_cases ) {
@@ -69,7 +70,7 @@ TEST( errorDescription, worksProperly )
 
     EXPECT_STREQ(
         Generic_Error_Category::instance().error_description(
-            static_cast<Error_ID>( Generic_Error::LOGIC_ERROR ) + 1 ),
+            static_cast<Error_ID>( Generic_Error::BUS_ERROR ) + 1 ),
         "UNKNOWN" );
 }
 

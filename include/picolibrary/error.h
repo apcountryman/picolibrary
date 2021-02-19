@@ -368,6 +368,7 @@ enum class Generic_Error : Error_ID {
     NONRESPONSIVE_DEVICE,  ///< Nonresponsive device.
     ARBITRATION_LOST,      ///< Arbitration lost.
     LOGIC_ERROR,           ///< Logic error.
+    BUS_ERROR,             ///< Bus error.
 };
 
 /**
@@ -418,6 +419,7 @@ class Generic_Error_Category final : public Error_Category {
             case Generic_Error::NONRESPONSIVE_DEVICE: return "NONRESPONSIVE_DEVICE";
             case Generic_Error::ARBITRATION_LOST: return "ARBITRATION_LOST";
             case Generic_Error::LOGIC_ERROR: return "LOGIC_ERROR";
+            case Generic_Error::BUS_ERROR: return "BUS_ERROR";
         } // switch
 
         return "UNKNOWN";
