@@ -39,6 +39,7 @@ using ::picolibrary::Void;
 using ::picolibrary::I2C::Address;
 using ::picolibrary::I2C::Operation;
 using ::picolibrary::I2C::ping;
+using ::picolibrary::I2C::Response;
 using ::picolibrary::I2C::scan;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
@@ -88,6 +89,26 @@ TEST( ping, addressingError )
 }
 
 /**
+ * \brief Verify picolibrary::I2C::ping() properly handles a read error.
+ */
+TEST( ping, readError )
+{
+    auto controller = Mock_Controller{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, read( _ ) ).WillOnce( Return( error ) );
+    EXPECT_CALL( controller, stop() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    auto const result = ping( controller, random<Address>(), Operation::READ );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
  * \brief Verify picolibrary::I2C::ping() properly handles a stop condition transmission
  *        error.
  */
@@ -97,6 +118,7 @@ TEST( ping, stopError )
 
     EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, read( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
     EXPECT_CALL( controller, stop() ).WillOnce( Return( random<Mock_Error>() ) );
 
     EXPECT_FALSE( ping( controller, random<Address>(), random<Operation>() ).is_error() );
@@ -107,18 +129,36 @@ TEST( ping, stopError )
  */
 TEST( ping, worksProperly )
 {
-    auto const in_sequence = InSequence{};
+    {
+        auto const in_sequence = InSequence{};
 
-    auto controller = Mock_Controller{};
+        auto controller = Mock_Controller{};
 
-    auto const address   = random<Address>();
-    auto const operation = random<Operation>();
+        auto const address = random<Address>();
 
-    EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, address( address, operation ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, stop() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( controller, address( address, Operation::READ ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( controller, read( Response::NACK ) ).WillOnce( Return( random<std::uint8_t>() ) );
+        EXPECT_CALL( controller, stop() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
-    EXPECT_FALSE( ping( controller, address, operation ).is_error() );
+        EXPECT_FALSE( ping( controller, address, Operation::READ ).is_error() );
+    }
+
+    {
+        auto const in_sequence = InSequence{};
+
+        auto controller = Mock_Controller{};
+
+        auto const address = random<Address>();
+
+        EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( controller, address( address, Operation::WRITE ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( controller, stop() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+        EXPECT_FALSE( ping( controller, address, Operation::WRITE ).is_error() );
+    }
 }
 
 /**
@@ -161,6 +201,27 @@ TEST( scan, addressingError )
 }
 
 /**
+ * \brief Verify picolibrary::I2C::scan() properly handles a read error.
+ */
+TEST( scan, readError )
+{
+    auto controller = Mock_Controller{};
+    auto functor    = MockFunction<Result<Void, Error_Code>( Address, Operation )>{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, read( _ ) ).WillOnce( Return( error ) );
+    EXPECT_CALL( controller, stop() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    auto const result = scan( controller, functor.AsStdFunction() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
  * \brief Verify picolibrary::I2C::scan() properly handles a stop condition transmission
  *        error.
  */
@@ -171,6 +232,7 @@ TEST( scan, stopError )
 
     EXPECT_CALL( controller, start() ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
     EXPECT_CALL( controller, address( _, _ ) ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, read( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
     EXPECT_CALL( controller, stop() ).WillRepeatedly( Return( random<Mock_Error>() ) );
     EXPECT_CALL( functor, Call( _, _ ) ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
 
@@ -189,6 +251,7 @@ TEST( scan, functorError )
 
     EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, read( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
     EXPECT_CALL( controller, stop() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     EXPECT_CALL( functor, Call( _, _ ) ).WillOnce( Return( error ) );
 
@@ -222,6 +285,9 @@ TEST( scan, worksProperly )
                 EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
                 EXPECT_CALL( controller, address( address, operation ) )
                     .WillOnce( Return( Result<Void, Error_Code>{} ) );
+                if ( operation == Operation::READ ) {
+                    EXPECT_CALL( controller, read( Response::NACK ) ).WillOnce( Return( random<std::uint8_t>() ) );
+                } // if
                 EXPECT_CALL( controller, stop() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
                 EXPECT_CALL( functor, Call( address, operation ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
             } else {

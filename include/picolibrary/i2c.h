@@ -800,7 +800,21 @@ auto ping( Controller & controller, Address address, Operation operation ) noexc
         guard = std::move( result ).value();
     }
 
-    return controller.address( address, operation );
+    {
+        auto result = controller.address( address, operation );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+    }
+
+    if ( operation == Operation::READ ) {
+        auto result = controller.read( Response::NACK );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+    }     // if
+
+    return {};
 }
 
 /**
