@@ -13,33 +13,21 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/i2c/CMakeLists.txt
-# Description: picolibrary::I2C unit tests CMake rules.
+# File: test/unit/picolibrary/i2c/device/uint8_t/CMakeLists.txt
+# Description: picolibrary::I2C::Device<std::uint8_t> unit tests CMake rules.
 
-# build the picolibrary::I2C::Address unit tests
-add_subdirectory( address )
-
-# build the picolibrary::I2C::Bus_Control_Guard unit tests
-add_subdirectory( bus_control_guard )
-
-# build the picolibrary::I2C::Controller unit tests
-add_subdirectory( controller )
-
-# build the picolibrary::I2C::Device unit tests
-add_subdirectory( device )
-
-# build the picolibrary::I2C unit tests
+# build the picolibrary::I2C::Device<std::uint8_t> unit tests
 if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     add_executable(
-        test-unit-picolibrary-i2c
+        test-unit-picolibrary-i2c-device-uint8_t
         main.cc
     )
     target_link_libraries(
-        test-unit-picolibrary-i2c
+        test-unit-picolibrary-i2c-device-uint8_t
         picolibrary
     )
     add_test(
-        NAME    test-unit-picolibrary-i2c
-        COMMAND test-unit-picolibrary-i2c --gtest_color=yes
+        NAME    test-unit-picolibrary-i2c-device-uint8_t
+        COMMAND test-unit-picolibrary-i2c-device-uint8_t --gtest_color=yes
     )
 endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
