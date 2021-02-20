@@ -868,6 +868,21 @@ auto scan( Controller & controller, Functor functor ) noexcept -> Result<Void, E
     return {};
 }
 
+/**
+ * \brief I2C device.
+ *
+ * \tparam Register_Address The integral type used to hold device register addresses.
+ * \tparam Controller The type of I2C controller used to interact with the bus the device
+ *         is attached to.
+ * \tparam Bus_Multiplexer_Aligner A nullary functor that returns either
+ *         picolibrary::Result<Void, Error_Code> or picolibrary::Result<Void, Void>. The
+ *         functor must be default constructable, move constructable, and move assignable.
+ *         When called, this functor should align the I2C bus's multiplexer(s) (if any) to
+ *         enable communication with the device.
+ */
+template<typename Register_Address, typename Controller, typename Bus_Multiplexer_Aligner>
+class Device;
+
 } // namespace picolibrary::I2C
 
 #endif // PICOLIBRARY_I2C_H
