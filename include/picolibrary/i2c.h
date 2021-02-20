@@ -883,6 +883,51 @@ auto scan( Controller & controller, Functor functor ) noexcept -> Result<Void, E
 template<typename Register_Address, typename Controller, typename Bus_Multiplexer_Aligner>
 class Device;
 
+/**
+ * \brief 8-bit register address space I2C device.
+ *
+ * \tparam Controller The type of I2C controller used to interact with the bus the device
+ *         is attached to.
+ * \tparam Bus_Multiplexer_Aligner A nullary functor that returns either
+ *         picolibrary::Result<Void, Error_Code> or picolibrary::Result<Void, Void>. The
+ *         functor must be default constructable, move constructable, and move assignable.
+ *         When called, this functor should align the I2C bus's multiplexer(s) (if any) to
+ *         enable communication with the device.
+ */
+template<typename Controller, typename Bus_Multiplexer_Aligner>
+class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Device() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Device( Device && source ) noexcept = default;
+
+    Device( Device const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Device() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Device && expression ) noexcept -> Device & = default;
+
+    auto operator=( Device const & ) = delete;
+};
+
 } // namespace picolibrary::I2C
 
 #endif // PICOLIBRARY_I2C_H
