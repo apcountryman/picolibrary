@@ -43,6 +43,8 @@ using ::picolibrary::I2C::Address;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::I2C::Mock_Controller;
+using ::testing::MockFunction;
+using ::testing::Return;
 
 class Device :
     public ::picolibrary::I2C::Device<std::uint8_t, Mock_Controller, std::function<Result<Void, Error_Code>()>> {
@@ -62,6 +64,7 @@ class Device :
     }
 
     using ::picolibrary::I2C::Device<std::uint8_t, Mock_Controller, std::function<Result<Void, Error_Code>()>>::controller;
+    using ::picolibrary::I2C::Device<std::uint8_t, Mock_Controller, std::function<Result<Void, Error_Code>()>>::align_bus_multiplexer;
 };
 
 } // namespace
@@ -83,6 +86,49 @@ TEST( constructor, worksProperly )
     EXPECT_EQ( &device.controller(), &controller );
     EXPECT_EQ( device.address(), address );
     EXPECT_EQ( device.nonresponsive(), nonresponsive );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::Device<std::uint8_t>::align_bus_multiplexer() properly
+ *        handles an alignment error.
+ */
+TEST( alignBusMultiplexer, alignmentError )
+{
+    auto controller              = Mock_Controller{};
+    auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
+
+    auto const device = Device{ bus_multiplexer_aligner.AsStdFunction(),
+                                controller,
+                                random<Address>(),
+                                random<Mock_Error>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( error ) );
+
+    auto const result = device.align_bus_multiplexer();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::Device<std::uint8_t>::align_bus_multiplexer() works
+ *        properly.
+ */
+TEST( alignBusMultiplexer, worksProperly )
+{
+    auto controller              = Mock_Controller{};
+    auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
+
+    auto const device = Device{ bus_multiplexer_aligner.AsStdFunction(),
+                                controller,
+                                random<Address>(),
+                                random<Mock_Error>() };
+
+    EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( device.align_bus_multiplexer().is_error() );
 }
 
 /**

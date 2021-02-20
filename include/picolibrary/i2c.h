@@ -992,6 +992,18 @@ class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
     }
 
     /**
+     * \brief Align the I2C bus's multiplexer(s) (if any) to enable communication with the
+     *        device.
+     *
+     * \return Nothing if alignment succeeded.
+     * \return An error code if alignment failed.
+     */
+    auto align_bus_multiplexer() const noexcept
+    {
+        return m_align_bus_multiplexer();
+    }
+
+    /**
      * \brief Get the I2C controller used to interact with the bus the device is attached
      *        to.
      *
