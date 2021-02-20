@@ -898,6 +898,38 @@ template<typename Controller, typename Bus_Multiplexer_Aligner>
 class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
   public:
     /**
+     * \brief Destructor.
+     */
+    ~Device() noexcept = default;
+
+    Device( Device const & ) = delete;
+
+    auto operator=( Device const & ) = delete;
+
+    /**
+     * \brief Get the device address.
+     *
+     * \return The device address.
+     */
+    constexpr auto address() const noexcept
+    {
+        return m_address;
+    }
+
+    /**
+     * \brief Get the error code that is returned when the device does not respond when
+     *        addressed, or does does not acknowledge a write.
+     *
+     * \return The error code that is returned when the device does not respond when
+     *         addressed, or does does not acknowledge a write.
+     */
+    constexpr auto const & nonresponsive() const noexcept
+    {
+        return m_nonresponsive;
+    }
+
+  protected:
+    /**
      * \brief Constructor.
      */
     constexpr Device() noexcept = default;
@@ -905,16 +937,38 @@ class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
     /**
      * \brief Constructor.
      *
-     * \param[in] source The source of the move.
+     * \param[in] bus_multiplexer_aligner The device's bus multiplexer aligner.
+     * \param[in] controller The I2C controller used to interact with the bus the device
+     *            is attached to.
+     * \param[in] address The device address.
+     * \param[in] nonresponsive The error code to return when the device does not respond
+     *            when addressed, or does not acknowledge a write.
      */
-    constexpr Device( Device && source ) noexcept = default;
-
-    Device( Device const & ) = delete;
+    constexpr Device(
+        Bus_Multiplexer_Aligner bus_multiplexer_aligner,
+        Controller &            controller,
+        Address                 address,
+        Error_Code const &      nonresponsive ) noexcept :
+        m_align_bus_multiplexer{ std::move( bus_multiplexer_aligner ) },
+        m_controller{ &controller },
+        m_address{ address },
+        m_nonresponsive{ nonresponsive }
+    {
+    }
 
     /**
-     * \brief Destructor.
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
      */
-    ~Device() noexcept = default;
+    constexpr Device( Device && source ) noexcept :
+        m_align_bus_multiplexer{ std::move( source.m_align_bus_multiplexer ) },
+        m_controller{ source.m_controller },
+        m_address{ source.address },
+        m_nonresponsive{ source.m_nonresponsive }
+    {
+        source.m_controller = nullptr;
+    }
 
     /**
      * \brief Assignment operator.
@@ -923,9 +977,53 @@ class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Device && expression ) noexcept -> Device & = default;
+    constexpr auto & operator=( Device && expression ) noexcept
+    {
+        if ( &expression != this ) {
+            m_align_bus_multiplexer = std::move( expression.m_align_bus_multiplexer );
+            m_controller            = expression.m_controller;
+            m_address               = expression.m_address;
+            m_nonresponsive         = expression.m_nonresponsive;
 
-    auto operator=( Device const & ) = delete;
+            expression.m_controller = nullptr;
+        } // if
+
+        return *this;
+    }
+
+    /**
+     * \brief Get the I2C controller used to interact with the bus the device is attached
+     *        to.
+     *
+     * \return The I2C controller used to interact with the bus the device is attached to.
+     */
+    auto & controller() const noexcept
+    {
+        return *m_controller;
+    }
+
+  private:
+    /**
+     * \brief Align the I2C bus's multiplexer(s) (if any) to enable communication with the
+     *        device.
+     */
+    Bus_Multiplexer_Aligner m_align_bus_multiplexer{};
+
+    /**
+     * \brief The I2C controller used to interact with the bus the device is attached to.
+     */
+    Controller * m_controller{};
+
+    /**
+     * \brief The device address.
+     */
+    Address m_address{};
+
+    /**
+     * \brief The error code that is returned when the device does not respond when
+     *        addressed, or does does not acknowledge a write.
+     */
+    Error_Code m_nonresponsive{};
 };
 
 } // namespace picolibrary::I2C

@@ -20,9 +20,70 @@
  * \brief picolibrary::I2C::Device<std::uint8_t> unit test program.
  */
 
+#include <cstdint>
+#include <functional>
+#include <utility>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "picolibrary/error.h"
 #include "picolibrary/i2c.h"
+#include "picolibrary/result.h"
+#include "picolibrary/testing/unit/error.h"
+#include "picolibrary/testing/unit/i2c.h"
+#include "picolibrary/testing/unit/random.h"
+#include "picolibrary/utility.h"
+
+namespace {
+
+using ::picolibrary::Error_Code;
+using ::picolibrary::Result;
+using ::picolibrary::Void;
+using ::picolibrary::I2C::Address;
+using ::picolibrary::Testing::Unit::Mock_Error;
+using ::picolibrary::Testing::Unit::random;
+using ::picolibrary::Testing::Unit::I2C::Mock_Controller;
+
+class Device :
+    public ::picolibrary::I2C::Device<std::uint8_t, Mock_Controller, std::function<Result<Void, Error_Code>()>> {
+  public:
+    Device(
+        std::function<Result<Void, Error_Code>()> bus_multiplexer_aligner,
+        Mock_Controller &                         controller,
+        Address                                   address,
+        Error_Code const &                        nonresponsive ) noexcept :
+        ::picolibrary::I2C::Device<std::uint8_t, Mock_Controller, std::function<Result<Void, Error_Code>()>>{
+            std::move( bus_multiplexer_aligner ),
+            controller,
+            address,
+            nonresponsive
+        }
+    {
+    }
+
+    using ::picolibrary::I2C::Device<std::uint8_t, Mock_Controller, std::function<Result<Void, Error_Code>()>>::controller;
+};
+
+} // namespace
+
+/**
+ * \brief Verify picolibrary::I2C::Device<std::uint8_t>::Device( Bus_Multiplexer_Aligner,
+ *        Controller &, picolibrary::I2C::Address, picolibrary::Error_Code const & ) works
+ *        properly.
+ */
+TEST( constructor, worksProperly )
+{
+    auto controller = Mock_Controller{};
+
+    auto const address       = random<Address>();
+    auto const nonresponsive = random<Mock_Error>();
+
+    auto const device = Device{ {}, controller, address, nonresponsive };
+
+    EXPECT_EQ( &device.controller(), &controller );
+    EXPECT_EQ( device.address(), address );
+    EXPECT_EQ( device.nonresponsive(), nonresponsive );
+}
 
 /**
  * \brief Execute the picolibrary::I2C::Device<std::uint8_t> unit tests.
