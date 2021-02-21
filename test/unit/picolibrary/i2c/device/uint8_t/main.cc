@@ -17,7 +17,8 @@
 
 /**
  * \file
- * \brief picolibrary::I2C::Device<std::uint8_t> unit test program.
+ * \brief picolibrary::I2C::Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> unit
+ *        test program.
  */
 
 #include <cstdint>
@@ -70,9 +71,9 @@ class Device :
 } // namespace
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t>::Device( Bus_Multiplexer_Aligner,
- *        Controller &, picolibrary::I2C::Address, picolibrary::Error_Code const & ) works
- *        properly.
+ * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
+ *        Bus_Multiplexer_Aligner>::Device( Bus_Multiplexer_Aligner, Controller &,
+ *        picolibrary::I2C::Address, picolibrary::Error_Code const & ) works properly.
  */
 TEST( constructor, worksProperly )
 {
@@ -89,8 +90,9 @@ TEST( constructor, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t>::align_bus_multiplexer() properly
- *        handles an alignment error.
+ * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
+ *        Bus_Multiplexer_Aligner>::align_bus_multiplexer() properly handles an alignment
+ *        error.
  */
 TEST( alignBusMultiplexer, alignmentError )
 {
@@ -113,8 +115,8 @@ TEST( alignBusMultiplexer, alignmentError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t>::align_bus_multiplexer() works
- *        properly.
+ * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
+ *        Bus_Multiplexer_Aligner>::align_bus_multiplexer() works properly.
  */
 TEST( alignBusMultiplexer, worksProperly )
 {
@@ -132,7 +134,8 @@ TEST( alignBusMultiplexer, worksProperly )
 }
 
 /**
- * \brief Execute the picolibrary::I2C::Device<std::uint8_t> unit tests.
+ * \brief Execute the picolibrary::I2C::Device<std::uint8_t, Controller,
+ *        Bus_Multiplexer_Aligner> unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
  * \param[in] argv The array  of arguments to pass to testing::InitGoogleMock().
