@@ -69,8 +69,9 @@ class Device :
     {
     }
 
-    using ::picolibrary::I2C::Device<std::uint8_t, Mock_Controller, std::function<Result<Void, Error_Code>()>>::controller;
+    using ::picolibrary::I2C::Device<std::uint8_t, Mock_Controller, std::function<Result<Void, Error_Code>()>>::change_address;
     using ::picolibrary::I2C::Device<std::uint8_t, Mock_Controller, std::function<Result<Void, Error_Code>()>>::align_bus_multiplexer;
+    using ::picolibrary::I2C::Device<std::uint8_t, Mock_Controller, std::function<Result<Void, Error_Code>()>>::controller;
 };
 
 } // namespace
@@ -91,6 +92,27 @@ TEST( constructor, worksProperly )
     EXPECT_EQ( &device.controller(), &controller );
     EXPECT_EQ( device.address(), address );
     EXPECT_EQ( device.nonresponsive_device_error(), nonresponsive_device_error );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
+ *        Bus_Multiplexer_Aligner>::change_address() works properly.
+ */
+TEST( changeAddress, worksProperly )
+{
+    auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
+    auto controller              = Mock_Controller{};
+
+    auto device = Device{ bus_multiplexer_aligner.AsStdFunction(),
+                          controller,
+                          random<Address>(),
+                          random<Mock_Error>() };
+
+    auto const address = random<Address>();
+
+    device.change_address( address );
+
+    EXPECT_EQ( device.address(), address );
 }
 
 /**

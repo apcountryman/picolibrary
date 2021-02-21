@@ -1056,6 +1056,16 @@ class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
     }
 
     /**
+     * \brief Change the device address.
+     *
+     * \param[in] address The new device address.
+     */
+    void change_address( Address address ) noexcept
+    {
+        m_address = address;
+    }
+
+    /**
      * \brief Align the I2C bus's multiplexer(s) (if any) to enable communication with the
      *        device.
      *
