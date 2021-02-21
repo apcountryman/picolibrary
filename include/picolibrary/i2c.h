@@ -923,9 +923,9 @@ class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
      * \return The error code that is returned when the device does not respond when
      *         addressed, or does does not acknowledge a write.
      */
-    constexpr auto const & nonresponsive() const noexcept
+    constexpr auto const & nonresponsive_device_error() const noexcept
     {
-        return m_nonresponsive;
+        return m_nonresponsive_device_error;
     }
 
     /**
@@ -935,7 +935,8 @@ class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
      *
      * \return Nothing if the device is responsive.
      * \return picolibrary::I2C::Device<std::uint8_t, Controller,
-     *         Bus_Multiplexer_Aligner>::nonresponsive() if the device is not responsive.
+     *         Bus_Multiplexer_Aligner>::nonresponsive_device_error() if the device is not
+     *         responsive.
      * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
      *         arbitration while attempting to communicate with the device.
      * \return An error code if the check failed for any other reason.
@@ -953,7 +954,7 @@ class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
             auto result = I2C::ping( *m_controller, m_address, operation );
             if ( result.is_error() ) {
                 if ( result.error() == Generic_Error::NONRESPONSIVE_DEVICE ) {
-                    return m_nonresponsive;
+                    return m_nonresponsive_device_error;
                 } // if
 
                 return result.error();
@@ -968,7 +969,8 @@ class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
      *
      * \return Nothing if the device is responsive.
      * \return picolibrary::I2C::Device<std::uint8_t, Controller,
-     *         Bus_Multiplexer_Aligner>::nonresponsive() if the device is not responsive.
+     *         Bus_Multiplexer_Aligner>::nonresponsive_device_error() if the device is not
+     *         responsive.
      * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
      *         arbitration while attempting to communicate with the device.
      * \return An error code if the check failed for any other reason.
@@ -1003,18 +1005,18 @@ class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
      * \param[in] controller The I2C controller used to interact with the bus the device
      *            is attached to.
      * \param[in] address The device address.
-     * \param[in] nonresponsive The error code to return when the device does not respond
-     *            when addressed, or does not acknowledge a write.
+     * \param[in] nonresponsive_device_error The error code to return when the device does
+     *            not respond when addressed, or does not acknowledge a write.
      */
     constexpr Device(
         Bus_Multiplexer_Aligner bus_multiplexer_aligner,
         Controller &            controller,
         Address                 address,
-        Error_Code const &      nonresponsive ) noexcept :
+        Error_Code const &      nonresponsive_device_error ) noexcept :
         m_align_bus_multiplexer{ std::move( bus_multiplexer_aligner ) },
         m_controller{ &controller },
         m_address{ address },
-        m_nonresponsive{ nonresponsive }
+        m_nonresponsive_device_error{ nonresponsive_device_error }
     {
     }
 
@@ -1027,7 +1029,7 @@ class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
         m_align_bus_multiplexer{ std::move( source.m_align_bus_multiplexer ) },
         m_controller{ source.m_controller },
         m_address{ source.address },
-        m_nonresponsive{ source.m_nonresponsive }
+        m_nonresponsive_device_error{ source.m_nonresponsive_device_error }
     {
         source.m_controller = nullptr;
     }
@@ -1045,7 +1047,7 @@ class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
             m_align_bus_multiplexer = std::move( expression.m_align_bus_multiplexer );
             m_controller            = expression.m_controller;
             m_address               = expression.m_address;
-            m_nonresponsive         = expression.m_nonresponsive;
+            m_nonresponsive_device_error = expression.m_nonresponsive_device_error;
 
             expression.m_controller = nullptr;
         } // if
@@ -1097,7 +1099,7 @@ class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
      * \brief The error code that is returned when the device does not respond when
      *        addressed, or does does not acknowledge a write.
      */
-    Error_Code m_nonresponsive{};
+    Error_Code m_nonresponsive_device_error{};
 };
 
 } // namespace picolibrary::I2C

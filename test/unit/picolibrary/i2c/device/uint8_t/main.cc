@@ -59,12 +59,12 @@ class Device :
         std::function<Result<Void, Error_Code>()> bus_multiplexer_aligner,
         Mock_Controller &                         controller,
         Address                                   address,
-        Error_Code const &                        nonresponsive ) noexcept :
+        Error_Code const &                        nonresponsive_device_error ) noexcept :
         ::picolibrary::I2C::Device<std::uint8_t, Mock_Controller, std::function<Result<Void, Error_Code>()>>{
             std::move( bus_multiplexer_aligner ),
             controller,
             address,
-            nonresponsive
+            nonresponsive_device_error
         }
     {
     }
@@ -82,15 +82,15 @@ class Device :
  */
 TEST( constructor, worksProperly )
 {
-    auto       controller    = Mock_Controller{};
-    auto const address       = random<Address>();
-    auto const nonresponsive = random<Mock_Error>();
+    auto       controller                 = Mock_Controller{};
+    auto const address                    = random<Address>();
+    auto const nonresponsive_device_error = random<Mock_Error>();
 
-    auto const device = Device{ {}, controller, address, nonresponsive };
+    auto const device = Device{ {}, controller, address, nonresponsive_device_error };
 
     EXPECT_EQ( &device.controller(), &controller );
     EXPECT_EQ( device.address(), address );
-    EXPECT_EQ( device.nonresponsive(), nonresponsive );
+    EXPECT_EQ( device.nonresponsive_device_error(), nonresponsive_device_error );
 }
 
 /**
@@ -223,12 +223,12 @@ TEST( pingOperation, addressingError )
  */
 TEST( pingOperation, nonresponsiveDeviceError )
 {
-    auto       bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
-    auto       controller              = Mock_Controller{};
-    auto const nonresponsive           = random<Mock_Error>();
+    auto       bus_multiplexer_aligner    = MockFunction<Result<Void, Error_Code>()>{};
+    auto       controller                 = Mock_Controller{};
+    auto const nonresponsive_device_error = random<Mock_Error>();
 
     auto const device = Device{
-        bus_multiplexer_aligner.AsStdFunction(), controller, random<Address>(), nonresponsive
+        bus_multiplexer_aligner.AsStdFunction(), controller, random<Address>(), nonresponsive_device_error
     };
 
     EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
@@ -239,7 +239,7 @@ TEST( pingOperation, nonresponsiveDeviceError )
     auto const result = device.ping( random<Operation>() );
 
     EXPECT_TRUE( result.is_error() );
-    EXPECT_EQ( result.error(), nonresponsive );
+    EXPECT_EQ( result.error(), nonresponsive_device_error );
 }
 
 /**
@@ -427,12 +427,12 @@ TEST( ping, addressingError )
  */
 TEST( ping, nonresponsiveDeviceError )
 {
-    auto       bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
-    auto       controller              = Mock_Controller{};
-    auto const nonresponsive           = random<Mock_Error>();
+    auto       bus_multiplexer_aligner    = MockFunction<Result<Void, Error_Code>()>{};
+    auto       controller                 = Mock_Controller{};
+    auto const nonresponsive_device_error = random<Mock_Error>();
 
     auto const device = Device{
-        bus_multiplexer_aligner.AsStdFunction(), controller, random<Address>(), nonresponsive
+        bus_multiplexer_aligner.AsStdFunction(), controller, random<Address>(), nonresponsive_device_error
     };
 
     EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
@@ -443,7 +443,7 @@ TEST( ping, nonresponsiveDeviceError )
     auto const result = device.ping();
 
     EXPECT_TRUE( result.is_error() );
-    EXPECT_EQ( result.error(), nonresponsive );
+    EXPECT_EQ( result.error(), nonresponsive_device_error );
 }
 
 /**
