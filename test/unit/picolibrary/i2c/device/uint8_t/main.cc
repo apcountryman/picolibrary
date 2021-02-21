@@ -96,8 +96,8 @@ TEST( constructor, worksProperly )
  */
 TEST( alignBusMultiplexer, alignmentError )
 {
-    auto controller              = Mock_Controller{};
     auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
+    auto controller              = Mock_Controller{};
 
     auto const device = Device{ bus_multiplexer_aligner.AsStdFunction(),
                                 controller,
@@ -120,8 +120,8 @@ TEST( alignBusMultiplexer, alignmentError )
  */
 TEST( alignBusMultiplexer, worksProperly )
 {
-    auto controller              = Mock_Controller{};
     auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
+    auto controller              = Mock_Controller{};
 
     auto const device = Device{ bus_multiplexer_aligner.AsStdFunction(),
                                 controller,
