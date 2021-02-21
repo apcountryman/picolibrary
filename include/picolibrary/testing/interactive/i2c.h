@@ -72,6 +72,8 @@ void scan( Transmitter transmitter, Controller controller ) noexcept
 
         auto const result = ::picolibrary::I2C::scan(
             controller, [ &stream, &devices_found ]( auto address, auto operation ) noexcept {
+                devices_found = true;
+
                 return stream.print(
                     "device found: {} ({})\n",
                     Format::Hexadecimal{ address.numeric() },
