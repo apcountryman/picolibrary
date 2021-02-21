@@ -928,6 +928,68 @@ class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
         return m_nonresponsive;
     }
 
+    /**
+     * \brief Check if the device is responsive.
+     *
+     * \param[in] operation The operation to request when addressing the device.
+     *
+     * \return Nothing if the device is responsive.
+     * \return picolibrary::I2C::Device<std::uint8_t, Controller,
+     *         Bus_Multiplexer_Aligner>::nonresponsive() if the device is not responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the device.
+     * \return An error code if the check failed for any other reason.
+     */
+    auto ping( Operation operation ) const noexcept -> Result<Void, Error_Code>
+    {
+        {
+            auto result = m_align_bus_multiplexer();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        {
+            auto result = I2C::ping( *m_controller, m_address, operation );
+            if ( result.is_error() ) {
+                if ( result.error() == Generic_Error::NONRESPONSIVE_DEVICE ) {
+                    return m_nonresponsive;
+                } // if
+
+                return result.error();
+            } // if
+        }
+
+        return {};
+    }
+
+    /**
+     * \brief Check if the device is responsive.
+     *
+     * \return Nothing if the device is responsive.
+     * \return picolibrary::I2C::Device<std::uint8_t, Controller,
+     *         Bus_Multiplexer_Aligner>::nonresponsive() if the device is not responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the device.
+     * \return An error code if the check failed for any other reason.
+     */
+    auto ping() const noexcept -> Result<Void, Error_Code>
+    {
+        Operation const operations[]{
+            Operation::READ,
+            Operation::WRITE,
+        };
+
+        for ( auto const operation : operations ) {
+            auto result = ping( operation );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }     // for
+
+        return {};
+    }
+
   protected:
     /**
      * \brief Constructor.
