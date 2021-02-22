@@ -1088,6 +1088,83 @@ class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
         return *m_controller;
     }
 
+    /**
+     * \brief Read a register.
+     *
+     * \param[in] register_address The address of the register to read.
+     *
+     * \return The contents of the register if the read succeeded.
+     * \return picolibrary::I2C::Device<std::uint8_t, Controller,
+     *         Bus_Multiplexer_Aligner>::nonresponsive_device_error() if the device is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the device.
+     * \return An error code if the check failed for any other reason.
+     */
+    auto read( std::uint8_t register_address ) const noexcept -> Result<std::uint8_t, Error_Code>
+    {
+        {
+            auto result = m_align_bus_multiplexer();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        auto guard = Bus_Control_Guard<Controller>{};
+        {
+            auto result = make_bus_control_guard( *m_controller );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            guard = std::move( result ).value();
+        }
+
+        {
+            auto result = m_controller->address( m_address, Operation::WRITE );
+            if ( result.is_error() ) {
+                if ( result.error() == Generic_Error::NONRESPONSIVE_DEVICE ) {
+                    return m_nonresponsive_device_error;
+                } // if
+
+                return result.error();
+            } // if
+        }
+
+        {
+            auto result = m_controller->write( register_address );
+            if ( result.is_error() ) {
+                if ( result.error() == Generic_Error::NONRESPONSIVE_DEVICE ) {
+                    return m_nonresponsive_device_error;
+                } // if
+
+                return result.error();
+            } // if
+        }
+
+        {
+            auto result = guard.repeated_start();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        {
+            auto result = m_controller->address( m_address, Operation::READ );
+            if ( result.is_error() ) {
+                if ( result.error() == Generic_Error::NONRESPONSIVE_DEVICE ) {
+                    return m_nonresponsive_device_error;
+                } // if
+
+                return result.error();
+            } // if
+        }
+
+        {
+            return m_controller->read( Response::NACK );
+        }
+    }
+
   private:
     /**
      * \brief Align the I2C bus's multiplexer(s) (if any) to enable communication with the
