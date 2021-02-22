@@ -24,6 +24,7 @@
 #include <cstdint>
 #include <functional>
 #include <utility>
+#include <vector>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -46,6 +47,7 @@ using ::picolibrary::I2C::Operation;
 using ::picolibrary::I2C::Response;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
+using ::picolibrary::Testing::Unit::random_container;
 using ::picolibrary::Testing::Unit::I2C::Mock_Controller;
 using ::testing::_;
 using ::testing::A;
@@ -746,7 +748,7 @@ TEST( readRegister, repeatedStartError )
 /**
  * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
  *        Bus_Multiplexer_Aligner>::read( std::uint8_t ) properly handles an addressing
- *        error when preparing to read the contents of the register.
+ *        error when preparing to read the register.
  */
 TEST( readRegister, addressingErrorAddressRead )
 {
@@ -778,7 +780,7 @@ TEST( readRegister, addressingErrorAddressRead )
 /**
  * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
  *        Bus_Multiplexer_Aligner>::read( std::uint8_t ) properly handles a nonresponsive
- *        device error when preparing to read the contents of the register.
+ *        device error when preparing to read the register.
  */
 TEST( readRegister, nonresponsiveDeviceErrorAddressRead )
 {
@@ -893,6 +895,370 @@ TEST( readRegister, worksProperly )
 
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), data );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
+ *        Bus_Multiplexer_Aligner>::read( std::uint8_t, std::uint8_t *, std::uint8_t * )
+ *        properly handles a bus multiplexer alignment error.
+ */
+TEST( readRegisterBlock, alignmentError )
+{
+    auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
+    auto controller              = Mock_Controller{};
+
+    auto const device = Device{ bus_multiplexer_aligner.AsStdFunction(),
+                                controller,
+                                random<Address>(),
+                                random<Mock_Error>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( error ) );
+
+    auto       data   = std::vector<std::uint8_t>( random<std::uint_fast8_t>( 1 ) );
+    auto const result = device.read( random<std::uint8_t>(), &*data.begin(), &*data.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
+ *        Bus_Multiplexer_Aligner>::read( std::uint8_t, std::uint8_t *, std::uint8_t * )
+ *        properly handles a start condition transmission error.
+ */
+TEST( readRegisterBlock, startError )
+{
+    auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
+    auto controller              = Mock_Controller{};
+
+    auto const device = Device{ bus_multiplexer_aligner.AsStdFunction(),
+                                controller,
+                                random<Address>(),
+                                random<Mock_Error>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, start() ).WillOnce( Return( error ) );
+
+    auto       data   = std::vector<std::uint8_t>( random<std::uint_fast8_t>( 1 ) );
+    auto const result = device.read( random<std::uint8_t>(), &*data.begin(), &*data.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
+ *        Bus_Multiplexer_Aligner>::read( std::uint8_t, std::uint8_t *, std::uint8_t * )
+ *        properly handles an addressing error when preparing to write the register
+ *        address.
+ */
+TEST( readRegisterBlock, addressingErrorAddressWrite )
+{
+    auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
+    auto controller              = Mock_Controller{};
+
+    auto const device = Device{ bus_multiplexer_aligner.AsStdFunction(),
+                                controller,
+                                random<Address>(),
+                                random<Mock_Error>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( error ) );
+    EXPECT_CALL( controller, stop() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    auto       data   = std::vector<std::uint8_t>( random<std::uint_fast8_t>( 1 ) );
+    auto const result = device.read( random<std::uint8_t>(), &*data.begin(), &*data.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
+ *        Bus_Multiplexer_Aligner>::read( std::uint8_t, std::uint8_t *, std::uint8_t * )
+ *        properly handles a nonresponsive device error when preparing to write the
+ *        register address.
+ */
+TEST( readRegisterBlock, nonresponsiveDeviceErrorAddressWrite )
+{
+    auto       bus_multiplexer_aligner    = MockFunction<Result<Void, Error_Code>()>{};
+    auto       controller                 = Mock_Controller{};
+    auto const nonresponsive_device_error = random<Mock_Error>();
+
+    auto const device = Device{
+        bus_multiplexer_aligner.AsStdFunction(), controller, random<Address>(), nonresponsive_device_error
+    };
+
+    EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( Generic_Error::NONRESPONSIVE_DEVICE ) );
+    EXPECT_CALL( controller, stop() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    auto       data   = std::vector<std::uint8_t>( random<std::uint_fast8_t>( 1 ) );
+    auto const result = device.read( random<std::uint8_t>(), &*data.begin(), &*data.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), nonresponsive_device_error );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
+ *        Bus_Multiplexer_Aligner>::read( std::uint8_t, std::uint8_t *, std::uint8_t * )
+ *        properly handles a write error when writing the register address.
+ */
+TEST( readRegisterBlock, writeErrorWriteRegisterAddress )
+{
+    auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
+    auto controller              = Mock_Controller{};
+
+    auto const device = Device{ bus_multiplexer_aligner.AsStdFunction(),
+                                controller,
+                                random<Address>(),
+                                random<Mock_Error>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, write( A<std::uint8_t>() ) ).WillOnce( Return( error ) );
+    EXPECT_CALL( controller, stop() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    auto       data   = std::vector<std::uint8_t>( random<std::uint_fast8_t>( 1 ) );
+    auto const result = device.read( random<std::uint8_t>(), &*data.begin(), &*data.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
+ *        Bus_Multiplexer_Aligner>::read( std::uint8_t, std::uint8_t *, std::uint8_t * )
+ *        properly handles a nonresponsive device error when writing the register address.
+ */
+TEST( readRegisterBlock, nonresponsiveDeviceErrorWriteRegisterAddress )
+{
+    auto       bus_multiplexer_aligner    = MockFunction<Result<Void, Error_Code>()>{};
+    auto       controller                 = Mock_Controller{};
+    auto const nonresponsive_device_error = random<Mock_Error>();
+
+    auto const device = Device{
+        bus_multiplexer_aligner.AsStdFunction(), controller, random<Address>(), nonresponsive_device_error
+    };
+
+    EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, write( A<std::uint8_t>() ) ).WillOnce( Return( Generic_Error::NONRESPONSIVE_DEVICE ) );
+    EXPECT_CALL( controller, stop() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    auto       data   = std::vector<std::uint8_t>( random<std::uint_fast8_t>( 1 ) );
+    auto const result = device.read( random<std::uint8_t>(), &*data.begin(), &*data.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), nonresponsive_device_error );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
+ *        Bus_Multiplexer_Aligner>::read( std::uint8_t, std::uint8_t *, std::uint8_t * )
+ *        properly handles a repeated start condition transmission error.
+ */
+TEST( readRegisterBlock, repeatedStartError )
+{
+    auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
+    auto controller              = Mock_Controller{};
+
+    auto const device = Device{ bus_multiplexer_aligner.AsStdFunction(),
+                                controller,
+                                random<Address>(),
+                                random<Mock_Error>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, write( A<std::uint8_t>() ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, repeated_start() ).WillOnce( Return( error ) );
+    EXPECT_CALL( controller, stop() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    auto       data   = std::vector<std::uint8_t>( random<std::uint_fast8_t>( 1 ) );
+    auto const result = device.read( random<std::uint8_t>(), &*data.begin(), &*data.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
+ *        Bus_Multiplexer_Aligner>::read( std::uint8_t, std::uint8_t *, std::uint8_t * )
+ *        properly handles an addressing error when preparing to read the block of
+ *        registers.
+ */
+TEST( readRegisterBlock, addressingErrorAddressRead )
+{
+    auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
+    auto controller              = Mock_Controller{};
+
+    auto const device = Device{ bus_multiplexer_aligner.AsStdFunction(),
+                                controller,
+                                random<Address>(),
+                                random<Mock_Error>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, address( _, _ ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) )
+        .WillOnce( Return( error ) );
+    EXPECT_CALL( controller, write( A<std::uint8_t>() ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, repeated_start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, stop() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    auto       data   = std::vector<std::uint8_t>( random<std::uint_fast8_t>( 1 ) );
+    auto const result = device.read( random<std::uint8_t>(), &*data.begin(), &*data.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
+ *        Bus_Multiplexer_Aligner>::read( std::uint8_t, std::uint8_t *, std::uint8_t * )
+ *        properly handles a nonresponsive device error when preparing to read the block
+ *        of registers.
+ */
+TEST( readRegisterBlock, nonresponsiveDeviceErrorAddressRead )
+{
+    auto       bus_multiplexer_aligner    = MockFunction<Result<Void, Error_Code>()>{};
+    auto       controller                 = Mock_Controller{};
+    auto const nonresponsive_device_error = random<Mock_Error>();
+
+    auto const device = Device{
+        bus_multiplexer_aligner.AsStdFunction(), controller, random<Address>(), nonresponsive_device_error
+    };
+
+    EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, address( _, _ ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) )
+        .WillOnce( Return( Generic_Error::NONRESPONSIVE_DEVICE ) );
+    EXPECT_CALL( controller, write( A<std::uint8_t>() ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, repeated_start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, stop() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    auto       data   = std::vector<std::uint8_t>( random<std::uint_fast8_t>( 1 ) );
+    auto const result = device.read( random<std::uint8_t>(), &*data.begin(), &*data.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), nonresponsive_device_error );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
+ *        Bus_Multiplexer_Aligner>::read( std::uint8_t, std::uint8_t *, std::uint8_t * )
+ *        properly handles a read error.
+ */
+TEST( readRegisterBlock, readError )
+{
+    auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
+    auto controller              = Mock_Controller{};
+
+    auto const device = Device{ bus_multiplexer_aligner.AsStdFunction(),
+                                controller,
+                                random<Address>(),
+                                random<Mock_Error>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, address( _, _ ) ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, write( A<std::uint8_t>() ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, repeated_start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, read( A<std::vector<std::uint8_t>>(), _ ) ).WillOnce( Return( error ) );
+    EXPECT_CALL( controller, stop() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    auto       data   = std::vector<std::uint8_t>( random<std::uint_fast8_t>( 1 ) );
+    auto const result = device.read( random<std::uint8_t>(), &*data.begin(), &*data.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
+ *        Bus_Multiplexer_Aligner>::read( std::uint8_t, std::uint8_t *, std::uint8_t * )
+ *        properly handles a stop condition transmission error.
+ */
+TEST( readRegisterBlock, stopError )
+{
+    auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
+    auto controller              = Mock_Controller{};
+
+    auto const device = Device{ bus_multiplexer_aligner.AsStdFunction(),
+                                controller,
+                                random<Address>(),
+                                random<Mock_Error>() };
+
+    auto const size = random<std::uint_fast8_t>( 1 );
+
+    EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, address( _, _ ) ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, write( A<std::uint8_t>() ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, repeated_start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, read( A<std::vector<std::uint8_t>>(), _ ) )
+        .WillOnce( Return( random_container<std::vector<std::uint8_t>>( size ) ) );
+    EXPECT_CALL( controller, stop() ).WillOnce( Return( random<Mock_Error>() ) );
+
+    auto data = std::vector<std::uint8_t>( size );
+    EXPECT_FALSE( device.read( random<std::uint8_t>(), &*data.begin(), &*data.end() ).is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
+ *        Bus_Multiplexer_Aligner>::read( std::uint8_t, std::uint8_t *, std::uint8_t * )
+ *        works properly.
+ */
+TEST( readRegisterBlock, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto       bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
+    auto       controller              = Mock_Controller{};
+    auto const address                 = random<Address>();
+
+    auto const device = Device{
+        bus_multiplexer_aligner.AsStdFunction(), controller, address, random<Mock_Error>()
+    };
+
+    auto const register_address = random<std::uint8_t>();
+    auto const size             = random<std::uint_fast8_t>();
+    auto const data_expected    = random_container<std::vector<std::uint8_t>>( size );
+
+    EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, address( address, Operation::WRITE ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, write( register_address ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, repeated_start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, address( address, Operation::READ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, read( A<std::vector<std::uint8_t>>(), Response::NACK ) ).WillOnce( Return( data_expected ) );
+    EXPECT_CALL( controller, stop() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    auto data = std::vector<std::uint8_t>( size );
+    EXPECT_FALSE( device.read( register_address, &*data.begin(), &*data.end() ).is_error() );
+
+    EXPECT_EQ( data, data_expected );
 }
 
 /**
