@@ -897,19 +897,19 @@ class Device;
 template<typename Controller, typename Bus_Multiplexer_Aligner>
 class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
   public:
+    Device( Device const & ) = delete;
+
     /**
      * \brief Destructor.
      */
     ~Device() noexcept = default;
 
-    Device( Device const & ) = delete;
-
     auto operator=( Device const & ) = delete;
 
     /**
-     * \brief Get the device address.
+     * \brief Get the device's address.
      *
-     * \return The device address.
+     * \return The device's address.
      */
     constexpr auto address() const noexcept
     {
@@ -1004,7 +1004,7 @@ class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
      * \param[in] bus_multiplexer_aligner The device's bus multiplexer aligner.
      * \param[in] controller The I2C controller used to interact with the bus the device
      *            is attached to.
-     * \param[in] address The device address.
+     * \param[in] address The device's address.
      * \param[in] nonresponsive_device_error The error code to return when the device does
      *            not respond when addressed, or does not acknowledge a write.
      */
@@ -1028,7 +1028,7 @@ class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
     constexpr Device( Device && source ) noexcept :
         m_align_bus_multiplexer{ std::move( source.m_align_bus_multiplexer ) },
         m_controller{ source.m_controller },
-        m_address{ source.address },
+        m_address{ source.m_address },
         m_nonresponsive_device_error{ source.m_nonresponsive_device_error }
     {
         source.m_controller = nullptr;
@@ -1056,9 +1056,9 @@ class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
     }
 
     /**
-     * \brief Change the device address.
+     * \brief Change the device's address.
      *
-     * \param[in] address The new device address.
+     * \param[in] address The device's new address.
      */
     void change_address( Address address ) noexcept
     {
@@ -1403,7 +1403,7 @@ class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
     Controller * m_controller{};
 
     /**
-     * \brief The device address.
+     * \brief The device's address.
      */
     Address m_address{};
 

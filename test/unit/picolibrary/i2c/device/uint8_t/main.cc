@@ -1500,7 +1500,7 @@ TEST( writeRegister, stopError )
 
     EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, address( _, _ ) ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     EXPECT_CALL( controller, write( A<std::uint8_t>() ) ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
     EXPECT_CALL( controller, stop() ).WillOnce( Return( random<Mock_Error>() ) );
 
@@ -1784,7 +1784,7 @@ TEST( writeRegisterBlock, stopError )
 
     EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, address( _, _ ) ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     EXPECT_CALL( controller, write( A<std::uint8_t>() ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     EXPECT_CALL( controller, write( A<std::vector<std::uint8_t>>() ) )
         .WillOnce( Return( Result<Void, Error_Code>{} ) );
