@@ -50,6 +50,8 @@ namespace picolibrary::Testing::Interactive::GPIO {
 template<template<typename> typename Output_Stream, typename Transmitter, typename Output_Pin, typename Delayer>
 void toggle( Transmitter transmitter, Output_Pin pin, Delayer delay ) noexcept
 {
+    // #lizard forgives the length
+
     auto stream = Output_Stream{ std::move( transmitter ) };
 
     if ( stream.initialize().is_error() ) {
