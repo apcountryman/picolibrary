@@ -16,6 +16,6 @@
 # File: test/unit/picolibrary/i2c/device/CMakeLists.txt
 # Description: picolibrary::I2C::Device unit tests CMake rules.
 
-# build the picolibrary::I2C::Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner>
+# build the picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller, std::uint8_t>
 # unit tests
 add_subdirectory( uint8_t )
