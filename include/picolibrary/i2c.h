@@ -883,6 +883,537 @@ auto scan( Controller & controller, Functor functor ) noexcept -> Result<Void, E
 template<typename Register_Address, typename Controller, typename Bus_Multiplexer_Aligner>
 class Device;
 
+/**
+ * \brief 8-bit register address space I2C device.
+ *
+ * \tparam Controller The type of I2C controller used to interact with the bus the device
+ *         is attached to.
+ * \tparam Bus_Multiplexer_Aligner A nullary functor that returns either
+ *         picolibrary::Result<Void, Error_Code> or picolibrary::Result<Void, Void>. The
+ *         functor must be default constructable, move constructable, and move assignable.
+ *         When called, this functor should align the I2C bus's multiplexer(s) (if any) to
+ *         enable communication with the device.
+ */
+template<typename Controller, typename Bus_Multiplexer_Aligner>
+class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
+  public:
+    Device( Device const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Device() noexcept = default;
+
+    auto operator=( Device const & ) = delete;
+
+    /**
+     * \brief Get the device's address.
+     *
+     * \return The device's address.
+     */
+    constexpr auto address() const noexcept
+    {
+        return m_address;
+    }
+
+    /**
+     * \brief Get the error code that is returned when the device does not respond when
+     *        addressed, or does does not acknowledge a write.
+     *
+     * \return The error code that is returned when the device does not respond when
+     *         addressed, or does does not acknowledge a write.
+     */
+    constexpr auto const & nonresponsive_device_error() const noexcept
+    {
+        return m_nonresponsive_device_error;
+    }
+
+    /**
+     * \brief Check if the device is responsive.
+     *
+     * \param[in] operation The operation to request when addressing the device.
+     *
+     * \return Nothing if the device is responsive.
+     * \return picolibrary::I2C::Device<std::uint8_t, Controller,
+     *         Bus_Multiplexer_Aligner>::nonresponsive_device_error() if the device is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the device.
+     * \return An error code if the check failed for any other reason.
+     */
+    auto ping( Operation operation ) const noexcept -> Result<Void, Error_Code>
+    {
+        {
+            auto result = m_align_bus_multiplexer();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        {
+            auto result = I2C::ping( *m_controller, m_address, operation );
+            if ( result.is_error() ) {
+                if ( result.error() == Generic_Error::NONRESPONSIVE_DEVICE ) {
+                    return m_nonresponsive_device_error;
+                } // if
+
+                return result.error();
+            } // if
+        }
+
+        return {};
+    }
+
+    /**
+     * \brief Check if the device is responsive.
+     *
+     * \return Nothing if the device is responsive.
+     * \return picolibrary::I2C::Device<std::uint8_t, Controller,
+     *         Bus_Multiplexer_Aligner>::nonresponsive_device_error() if the device is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the device.
+     * \return An error code if the check failed for any other reason.
+     */
+    auto ping() const noexcept -> Result<Void, Error_Code>
+    {
+        Operation const operations[]{
+            Operation::READ,
+            Operation::WRITE,
+        };
+
+        for ( auto const operation : operations ) {
+            auto result = ping( operation );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }     // for
+
+        return {};
+    }
+
+  protected:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Device() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] bus_multiplexer_aligner The device's bus multiplexer aligner.
+     * \param[in] controller The I2C controller used to interact with the bus the device
+     *            is attached to.
+     * \param[in] address The device's address.
+     * \param[in] nonresponsive_device_error The error code to return when the device does
+     *            not respond when addressed, or does not acknowledge a write.
+     */
+    constexpr Device(
+        Bus_Multiplexer_Aligner bus_multiplexer_aligner,
+        Controller &            controller,
+        Address                 address,
+        Error_Code const &      nonresponsive_device_error ) noexcept :
+        m_align_bus_multiplexer{ std::move( bus_multiplexer_aligner ) },
+        m_controller{ &controller },
+        m_address{ address },
+        m_nonresponsive_device_error{ nonresponsive_device_error }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Device( Device && source ) noexcept :
+        m_align_bus_multiplexer{ std::move( source.m_align_bus_multiplexer ) },
+        m_controller{ source.m_controller },
+        m_address{ source.m_address },
+        m_nonresponsive_device_error{ source.m_nonresponsive_device_error }
+    {
+        source.m_controller = nullptr;
+    }
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto & operator=( Device && expression ) noexcept
+    {
+        if ( &expression != this ) {
+            m_align_bus_multiplexer = std::move( expression.m_align_bus_multiplexer );
+            m_controller            = expression.m_controller;
+            m_address               = expression.m_address;
+            m_nonresponsive_device_error = expression.m_nonresponsive_device_error;
+
+            expression.m_controller = nullptr;
+        } // if
+
+        return *this;
+    }
+
+    /**
+     * \brief Change the device's address.
+     *
+     * \param[in] address The device's new address.
+     */
+    void change_address( Address address ) noexcept
+    {
+        m_address = address;
+    }
+
+    /**
+     * \brief Align the I2C bus's multiplexer(s) (if any) to enable communication with the
+     *        device.
+     *
+     * \return Nothing if alignment succeeded.
+     * \return An error code if alignment failed.
+     */
+    auto align_bus_multiplexer() const noexcept
+    {
+        return m_align_bus_multiplexer();
+    }
+
+    /**
+     * \brief Get the I2C controller used to interact with the bus the device is attached
+     *        to.
+     *
+     * \return The I2C controller used to interact with the bus the device is attached to.
+     */
+    auto & controller() const noexcept
+    {
+        return *m_controller;
+    }
+
+    /**
+     * \brief Read a register.
+     *
+     * \param[in] register_address The address of the register to read.
+     *
+     * \return The data read from the register if the read succeeded.
+     * \return picolibrary::I2C::Device<std::uint8_t, Controller,
+     *         Bus_Multiplexer_Aligner>::nonresponsive_device_error() if the device is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the device.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto read( std::uint8_t register_address ) const noexcept -> Result<std::uint8_t, Error_Code>
+    {
+        {
+            auto result = m_align_bus_multiplexer();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        auto guard = Bus_Control_Guard<Controller>{};
+        {
+            auto result = make_bus_control_guard( *m_controller );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            guard = std::move( result ).value();
+        }
+
+        {
+            auto result = m_controller->address( m_address, Operation::WRITE );
+            if ( result.is_error() ) {
+                if ( result.error() == Generic_Error::NONRESPONSIVE_DEVICE ) {
+                    return m_nonresponsive_device_error;
+                } // if
+
+                return result.error();
+            } // if
+        }
+
+        {
+            auto result = m_controller->write( register_address );
+            if ( result.is_error() ) {
+                if ( result.error() == Generic_Error::NONRESPONSIVE_DEVICE ) {
+                    return m_nonresponsive_device_error;
+                } // if
+
+                return result.error();
+            } // if
+        }
+
+        {
+            auto result = guard.repeated_start();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        {
+            auto result = m_controller->address( m_address, Operation::READ );
+            if ( result.is_error() ) {
+                if ( result.error() == Generic_Error::NONRESPONSIVE_DEVICE ) {
+                    return m_nonresponsive_device_error;
+                } // if
+
+                return result.error();
+            } // if
+        }
+
+        {
+            return m_controller->read( Response::NACK );
+        }
+    }
+
+    /**
+     * \brief Read a block of registers.
+     *
+     * \param[in] register_address The address of the block of registers to read.
+     * \param[in] begin The beginning of the data read from the block of registers.
+     * \param[in] end The end of the data read from the block of registers.
+     *
+     * \warning This function does not verify that the register block size is non-zero. If
+     *          the register block size is zero, a NACK terminated read will never be
+     *          performed which results in the device retaining control of the SDA signal,
+     *          locking up the bus.
+     *
+     * \return Nothing if the read succeeded.
+     * \return picolibrary::I2C::Device<std::uint8_t, Controller,
+     *         Bus_Multiplexer_Aligner>::nonresponsive_device_error() if the device is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the device.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto read( std::uint8_t register_address, std::uint8_t * begin, std::uint8_t * end ) const noexcept
+        -> Result<Void, Error_Code>
+    {
+        {
+            auto result = m_align_bus_multiplexer();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        auto guard = Bus_Control_Guard<Controller>{};
+        {
+            auto result = make_bus_control_guard( *m_controller );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            guard = std::move( result ).value();
+        }
+
+        {
+            auto result = m_controller->address( m_address, Operation::WRITE );
+            if ( result.is_error() ) {
+                if ( result.error() == Generic_Error::NONRESPONSIVE_DEVICE ) {
+                    return m_nonresponsive_device_error;
+                } // if
+
+                return result.error();
+            } // if
+        }
+
+        {
+            auto result = m_controller->write( register_address );
+            if ( result.is_error() ) {
+                if ( result.error() == Generic_Error::NONRESPONSIVE_DEVICE ) {
+                    return m_nonresponsive_device_error;
+                } // if
+
+                return result.error();
+            } // if
+        }
+
+        {
+            auto result = guard.repeated_start();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        {
+            auto result = m_controller->address( m_address, Operation::READ );
+            if ( result.is_error() ) {
+                if ( result.error() == Generic_Error::NONRESPONSIVE_DEVICE ) {
+                    return m_nonresponsive_device_error;
+                } // if
+
+                return result.error();
+            } // if
+        }
+
+        {
+            return m_controller->read( begin, end, Response::NACK );
+        }
+    }
+
+    /**
+     * \brief Write to a register.
+     *
+     * \param[in] register_address The address of the register to write to.
+     * \param[in] data The data to write to the register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return picolibrary::I2C::Device<std::uint8_t, Controller,
+     *         Bus_Multiplexer_Aligner>::nonresponsive_device_error() if the device is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the device.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto write( std::uint8_t register_address, std::uint8_t data ) noexcept -> Result<Void, Error_Code>
+    {
+        {
+            auto result = m_align_bus_multiplexer();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        auto guard = Bus_Control_Guard<Controller>{};
+        {
+            auto result = make_bus_control_guard( *m_controller );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            guard = std::move( result ).value();
+        }
+
+        {
+            auto result = m_controller->address( m_address, Operation::WRITE );
+            if ( result.is_error() ) {
+                if ( result.error() == Generic_Error::NONRESPONSIVE_DEVICE ) {
+                    return m_nonresponsive_device_error;
+                } // if
+
+                return result.error();
+            } // if
+        }
+
+        {
+            auto result = m_controller->write( register_address );
+            if ( result.is_error() ) {
+                if ( result.error() == Generic_Error::NONRESPONSIVE_DEVICE ) {
+                    return m_nonresponsive_device_error;
+                } // if
+
+                return result.error();
+            } // if
+        }
+
+        {
+            auto result = m_controller->write( data );
+            if ( result.is_error() ) {
+                if ( result.error() == Generic_Error::NONRESPONSIVE_DEVICE ) {
+                    return m_nonresponsive_device_error;
+                } // if
+
+                return result.error();
+            } // if
+        }
+
+        return {};
+    }
+
+    /**
+     * \brief Write to a block of registers.
+     *
+     * \param[in] register_address The address of the block of registers to write to.
+     * \param[in] begin The beginning of the data to write to the block of registers.
+     * \param[in] end The end of the data to write to the block of registers.
+     *
+     * \return Nothing if the write succeeded.
+     * \return picolibrary::I2C::Device<std::uint8_t, Controller,
+     *         Bus_Multiplexer_Aligner>::nonresponsive_device_error() if the device is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the device.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto write( std::uint8_t register_address, std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+        -> Result<Void, Error_Code>
+    {
+        {
+            auto result = m_align_bus_multiplexer();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        auto guard = Bus_Control_Guard<Controller>{};
+        {
+            auto result = make_bus_control_guard( *m_controller );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            guard = std::move( result ).value();
+        }
+
+        {
+            auto result = m_controller->address( m_address, Operation::WRITE );
+            if ( result.is_error() ) {
+                if ( result.error() == Generic_Error::NONRESPONSIVE_DEVICE ) {
+                    return m_nonresponsive_device_error;
+                } // if
+
+                return result.error();
+            } // if
+        }
+
+        {
+            auto result = m_controller->write( register_address );
+            if ( result.is_error() ) {
+                if ( result.error() == Generic_Error::NONRESPONSIVE_DEVICE ) {
+                    return m_nonresponsive_device_error;
+                } // if
+
+                return result.error();
+            } // if
+        }
+
+        {
+            auto result = m_controller->write( begin, end );
+            if ( result.is_error() ) {
+                if ( result.error() == Generic_Error::NONRESPONSIVE_DEVICE ) {
+                    return m_nonresponsive_device_error;
+                } // if
+
+                return result.error();
+            } // if
+        }
+
+        return {};
+    }
+
+  private:
+    /**
+     * \brief Align the I2C bus's multiplexer(s) (if any) to enable communication with the
+     *        device.
+     */
+    Bus_Multiplexer_Aligner m_align_bus_multiplexer{};
+
+    /**
+     * \brief The I2C controller used to interact with the bus the device is attached to.
+     */
+    Controller * m_controller{};
+
+    /**
+     * \brief The device's address.
+     */
+    Address m_address{};
+
+    /**
+     * \brief The error code that is returned when the device does not respond when
+     *        addressed, or does does not acknowledge a write.
+     */
+    Error_Code m_nonresponsive_device_error{};
+};
+
 } // namespace picolibrary::I2C
 
 #endif // PICOLIBRARY_I2C_H

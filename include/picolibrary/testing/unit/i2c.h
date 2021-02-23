@@ -25,6 +25,7 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <functional>
 #include <vector>
 
 #include "gmock/gmock.h"
@@ -625,6 +626,106 @@ class Mock_Controller {
  */
 template<typename Register_Address>
 class Mock_Device;
+
+/**
+ * \brief Mock 8-bit register address space I2C device.
+ */
+template<>
+class Mock_Device<std::uint8_t> {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    Mock_Device() = default;
+
+    /**
+     * \brief Constructor.
+     */
+    Mock_Device( std::function<Result<Void, Error_Code>()>, Mock_Controller &, Address, Error_Code )
+    {
+    }
+
+    Mock_Device( Mock_Device && ) = delete;
+
+    Mock_Device( Mock_Device const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Mock_Device() noexcept = default;
+
+    auto operator=( Mock_Device && ) = delete;
+
+    auto operator=( Mock_Device const & ) = delete;
+
+    MOCK_METHOD( Address, address, (), ( const ) );
+
+    MOCK_METHOD( void, change_address, ( Address ) );
+
+    MOCK_METHOD( Error_Code, nonresponsive_device_error, (), ( const ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), align_bus_multiplexer, (), ( const ) );
+
+    MOCK_METHOD( Mock_Controller &, controller, (), ( const ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), ping, ( Operation ), ( const ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), ping, (), ( const ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read, ( std::uint8_t ) );
+
+    MOCK_METHOD(
+        (Result<std::vector<std::uint8_t>, Error_Code>),
+        read,
+        (std::uint8_t, std::vector<std::uint8_t>),
+        ( const ) );
+
+    /**
+     * \brief Read a block of registers.
+     *
+     * \param[in] register_address The address of the block of registers to read.
+     * \param[in] begin The beginning of the data read from the block of registers.
+     * \param[in] end The end of the data read from the block of registers.
+     *
+     * \return Nothing if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read( std::uint8_t register_address, std::uint8_t * begin, std::uint8_t * end ) const
+        -> Result<Void, Error_Code>
+    {
+        static_cast<void>( end );
+
+        auto const result = read( register_address, std::vector<std::uint8_t>{} );
+
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        std::for_each( result.value().begin(), result.value().end(), [ &begin ]( auto data ) {
+            *begin = data;
+
+            ++begin;
+        } );
+
+        return {};
+    }
+
+    MOCK_METHOD( (Result<Void, Error_Code>), write, ( std::uint8_t, std::uint8_t ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), write, (std::uint8_t, std::vector<std::uint8_t>));
+
+    /**
+     * \brief Write to a block of registers.
+     *
+     * \param[in] register_address The address of the block of registers to write to.
+     * \param[in] begin The beginning of the data to write to the block of registers.
+     * \param[in] end The end of the data to write to the block of registers.
+     */
+    auto write( std::uint8_t register_address, std::uint8_t const * begin, std::uint8_t const * end )
+    {
+        return write( register_address, std::vector<std::uint8_t>{ begin, end } );
+    }
+};
 
 } // namespace picolibrary::Testing::Unit::I2C
 
