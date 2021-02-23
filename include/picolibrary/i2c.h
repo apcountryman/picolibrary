@@ -871,31 +871,31 @@ auto scan( Controller & controller, Functor functor ) noexcept -> Result<Void, E
 /**
  * \brief I2C device.
  *
- * \tparam Register_Address The integral type used to hold device register addresses.
- * \tparam Controller The type of I2C controller used to interact with the bus the device
- *         is attached to.
  * \tparam Bus_Multiplexer_Aligner A nullary functor that returns either
  *         picolibrary::Result<Void, Error_Code> or picolibrary::Result<Void, Void>. The
  *         functor must be default constructable, move constructable, and move assignable.
  *         When called, this functor should align the I2C bus's multiplexer(s) (if any) to
  *         enable communication with the device.
+ * \tparam Controller The type of I2C controller used to interact with the bus the device
+ *         is attached to.
+ * \tparam Register_Address The integral type used to hold device register addresses.
  */
-template<typename Register_Address, typename Controller, typename Bus_Multiplexer_Aligner>
+template<typename Bus_Multiplexer_Aligner, typename Controller, typename Register_Address>
 class Device;
 
 /**
  * \brief 8-bit register address space I2C device.
  *
- * \tparam Controller The type of I2C controller used to interact with the bus the device
- *         is attached to.
  * \tparam Bus_Multiplexer_Aligner A nullary functor that returns either
  *         picolibrary::Result<Void, Error_Code> or picolibrary::Result<Void, Void>. The
  *         functor must be default constructable, move constructable, and move assignable.
  *         When called, this functor should align the I2C bus's multiplexer(s) (if any) to
  *         enable communication with the device.
+ * \tparam Controller The type of I2C controller used to interact with the bus the device
+ *         is attached to.
  */
-template<typename Controller, typename Bus_Multiplexer_Aligner>
-class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
+template<typename Bus_Multiplexer_Aligner, typename Controller>
+class Device<Bus_Multiplexer_Aligner, Controller, std::uint8_t> {
   public:
     Device( Device const & ) = delete;
 
@@ -934,8 +934,8 @@ class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
      * \param[in] operation The operation to request when addressing the device.
      *
      * \return Nothing if the device is responsive.
-     * \return picolibrary::I2C::Device<std::uint8_t, Controller,
-     *         Bus_Multiplexer_Aligner>::nonresponsive_device_error() if the device is not
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the device is not
      *         responsive.
      * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
      *         arbitration while attempting to communicate with the device.
@@ -968,8 +968,8 @@ class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
      * \brief Check if the device is responsive.
      *
      * \return Nothing if the device is responsive.
-     * \return picolibrary::I2C::Device<std::uint8_t, Controller,
-     *         Bus_Multiplexer_Aligner>::nonresponsive_device_error() if the device is not
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the device is not
      *         responsive.
      * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
      *         arbitration while attempting to communicate with the device.
@@ -1094,8 +1094,8 @@ class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
      * \param[in] register_address The address of the register to read.
      *
      * \return The data read from the register if the read succeeded.
-     * \return picolibrary::I2C::Device<std::uint8_t, Controller,
-     *         Bus_Multiplexer_Aligner>::nonresponsive_device_error() if the device is not
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the device is not
      *         responsive.
      * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
      *         arbitration while attempting to communicate with the device.
@@ -1178,8 +1178,8 @@ class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
      *          locking up the bus.
      *
      * \return Nothing if the read succeeded.
-     * \return picolibrary::I2C::Device<std::uint8_t, Controller,
-     *         Bus_Multiplexer_Aligner>::nonresponsive_device_error() if the device is not
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the device is not
      *         responsive.
      * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
      *         arbitration while attempting to communicate with the device.
@@ -1257,8 +1257,8 @@ class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
      * \param[in] data The data to write to the register.
      *
      * \return Nothing if the write succeeded.
-     * \return picolibrary::I2C::Device<std::uint8_t, Controller,
-     *         Bus_Multiplexer_Aligner>::nonresponsive_device_error() if the device is not
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the device is not
      *         responsive.
      * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
      *         arbitration while attempting to communicate with the device.
@@ -1327,8 +1327,8 @@ class Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> {
      * \param[in] end The end of the data to write to the block of registers.
      *
      * \return Nothing if the write succeeded.
-     * \return picolibrary::I2C::Device<std::uint8_t, Controller,
-     *         Bus_Multiplexer_Aligner>::nonresponsive_device_error() if the device is not
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the device is not
      *         responsive.
      * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
      *         arbitration while attempting to communicate with the device.

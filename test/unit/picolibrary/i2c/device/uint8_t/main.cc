@@ -17,7 +17,7 @@
 
 /**
  * \file
- * \brief picolibrary::I2C::Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner> unit
+ * \brief picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller, std::uint8_t> unit
  *        test program.
  */
 
@@ -56,14 +56,14 @@ using ::testing::MockFunction;
 using ::testing::Return;
 
 class Device :
-    public ::picolibrary::I2C::Device<std::uint8_t, Mock_Controller, std::function<Result<Void, Error_Code>()>> {
+    public ::picolibrary::I2C::Device<std::function<Result<Void, Error_Code>()>, Mock_Controller, std::uint8_t> {
   public:
     Device(
         std::function<Result<Void, Error_Code>()> bus_multiplexer_aligner,
         Mock_Controller &                         controller,
         Address                                   address,
         Error_Code const &                        nonresponsive_device_error ) noexcept :
-        ::picolibrary::I2C::Device<std::uint8_t, Mock_Controller, std::function<Result<Void, Error_Code>()>>{
+        ::picolibrary::I2C::Device<std::function<Result<Void, Error_Code>()>, Mock_Controller, std::uint8_t>{
             std::move( bus_multiplexer_aligner ),
             controller,
             address,
@@ -72,18 +72,18 @@ class Device :
     {
     }
 
-    using ::picolibrary::I2C::Device<std::uint8_t, Mock_Controller, std::function<Result<Void, Error_Code>()>>::change_address;
-    using ::picolibrary::I2C::Device<std::uint8_t, Mock_Controller, std::function<Result<Void, Error_Code>()>>::align_bus_multiplexer;
-    using ::picolibrary::I2C::Device<std::uint8_t, Mock_Controller, std::function<Result<Void, Error_Code>()>>::controller;
-    using ::picolibrary::I2C::Device<std::uint8_t, Mock_Controller, std::function<Result<Void, Error_Code>()>>::read;
-    using ::picolibrary::I2C::Device<std::uint8_t, Mock_Controller, std::function<Result<Void, Error_Code>()>>::write;
+    using ::picolibrary::I2C::Device<std::function<Result<Void, Error_Code>()>, Mock_Controller, std::uint8_t>::change_address;
+    using ::picolibrary::I2C::Device<std::function<Result<Void, Error_Code>()>, Mock_Controller, std::uint8_t>::align_bus_multiplexer;
+    using ::picolibrary::I2C::Device<std::function<Result<Void, Error_Code>()>, Mock_Controller, std::uint8_t>::controller;
+    using ::picolibrary::I2C::Device<std::function<Result<Void, Error_Code>()>, Mock_Controller, std::uint8_t>::read;
+    using ::picolibrary::I2C::Device<std::function<Result<Void, Error_Code>()>, Mock_Controller, std::uint8_t>::write;
 };
 
 } // namespace
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::Device( Bus_Multiplexer_Aligner, Controller &,
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::Device( Bus_Multiplexer_Aligner, Controller &,
  *        picolibrary::I2C::Address, picolibrary::Error_Code const & ) works properly.
  */
 TEST( constructor, worksProperly )
@@ -100,8 +100,8 @@ TEST( constructor, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::change_address() works properly.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::change_address() works properly.
  */
 TEST( changeAddress, worksProperly )
 {
@@ -121,9 +121,9 @@ TEST( changeAddress, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::align_bus_multiplexer() properly handles a bus
- *        multiplexer alignment error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::align_bus_multiplexer() properly handles a bus multiplexer
+ *        alignment error.
  */
 TEST( alignBusMultiplexer, alignmentError )
 {
@@ -146,8 +146,8 @@ TEST( alignBusMultiplexer, alignmentError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::align_bus_multiplexer() works properly.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::align_bus_multiplexer() works properly.
  */
 TEST( alignBusMultiplexer, worksProperly )
 {
@@ -165,9 +165,9 @@ TEST( alignBusMultiplexer, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::ping( picolibrary::I2C::Operation ) properly handles a
- *        bus multiplexer alignment error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::ping( picolibrary::I2C::Operation ) properly handles a bus
+ *        multiplexer alignment error.
  */
 TEST( pingOperation, alignmentError )
 {
@@ -190,9 +190,9 @@ TEST( pingOperation, alignmentError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::ping( picolibrary::I2C::Operation ) properly handles a
- *        start condition transmission error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::ping( picolibrary::I2C::Operation ) properly handles a start
+ *        condition transmission error.
  */
 TEST( pingOperation, startError )
 {
@@ -216,9 +216,9 @@ TEST( pingOperation, startError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::ping( picolibrary::I2C::Operation ) properly handles
- *        an addressing error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::ping( picolibrary::I2C::Operation ) properly handles an
+ *        addressing error.
  */
 TEST( pingOperation, addressingError )
 {
@@ -244,8 +244,8 @@ TEST( pingOperation, addressingError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::ping( picolibrary::I2C::Operation ) properly handles a
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::ping( picolibrary::I2C::Operation ) properly handles a
  *        nonresponsive device error.
  */
 TEST( pingOperation, nonresponsiveDeviceError )
@@ -270,9 +270,9 @@ TEST( pingOperation, nonresponsiveDeviceError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::ping( picolibrary::I2C::Operation ) properly handles a
- *        read error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::ping( picolibrary::I2C::Operation ) properly handles a read
+ *        error.
  */
 TEST( pingOperation, readError )
 {
@@ -299,9 +299,9 @@ TEST( pingOperation, readError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::ping( picolibrary::I2C::Operation ) properly handles a
- *        stop condition transmission error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::ping( picolibrary::I2C::Operation ) properly handles a stop
+ *        condition transmission error.
  */
 TEST( pingOperation, stopError )
 {
@@ -323,8 +323,8 @@ TEST( pingOperation, stopError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::ping( picolibrary::I2C::Operation ) works properly.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::ping( picolibrary::I2C::Operation ) works properly.
  */
 TEST( pingOperation, worksProperly )
 {
@@ -371,9 +371,8 @@ TEST( pingOperation, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::ping() properly handles a bus multiplexer alignment
- *        error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::ping() properly handles a bus multiplexer alignment error.
  */
 TEST( ping, alignmentError )
 {
@@ -396,9 +395,8 @@ TEST( ping, alignmentError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::ping() properly handles a start condition transmission
- *        error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::ping() properly handles a start condition transmission error.
  */
 TEST( ping, startError )
 {
@@ -422,8 +420,8 @@ TEST( ping, startError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::ping() properly handles an addressing error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::ping() properly handles an addressing error.
  */
 TEST( ping, addressingError )
 {
@@ -449,8 +447,8 @@ TEST( ping, addressingError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::ping() properly handles a nonresponsive device error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::ping() properly handles a nonresponsive device error.
  */
 TEST( ping, nonresponsiveDeviceError )
 {
@@ -474,8 +472,8 @@ TEST( ping, nonresponsiveDeviceError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::ping() properly handles a read error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::ping() properly handles a read error.
  */
 TEST( ping, readError )
 {
@@ -502,9 +500,8 @@ TEST( ping, readError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::ping() properly handles a stop condition transmission
- *        error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::ping() properly handles a stop condition transmission error.
  */
 TEST( ping, stopError )
 {
@@ -526,8 +523,8 @@ TEST( ping, stopError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::ping() works properly.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::ping() works properly.
  */
 TEST( ping, worksProperly )
 {
@@ -556,9 +553,9 @@ TEST( ping, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::read( std::uint8_t ) properly handles a bus
- *        multiplexer alignment error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::read( std::uint8_t ) properly handles a bus multiplexer alignment
+ *        error.
  */
 TEST( readRegister, alignmentError )
 {
@@ -581,9 +578,9 @@ TEST( readRegister, alignmentError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::read( std::uint8_t ) properly handles a start
- *        condition transmission error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::read( std::uint8_t ) properly handles a start condition
+ *        transmission error.
  */
 TEST( readRegister, startError )
 {
@@ -607,9 +604,9 @@ TEST( readRegister, startError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::read( std::uint8_t ) properly handles an addressing
- *        error when preparing to write the register address.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::read( std::uint8_t ) properly handles an addressing error when
+ *        preparing to write the register address.
  */
 TEST( readRegister, addressingErrorAddressWrite )
 {
@@ -635,9 +632,9 @@ TEST( readRegister, addressingErrorAddressWrite )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::read( std::uint8_t ) properly handles a nonresponsive
- *        device error when preparing to write the register address.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::read( std::uint8_t ) properly handles a nonresponsive device
+ *        error when preparing to write the register address.
  */
 TEST( readRegister, nonresponsiveDeviceErrorAddressWrite )
 {
@@ -661,8 +658,8 @@ TEST( readRegister, nonresponsiveDeviceErrorAddressWrite )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::read( std::uint8_t ) properly handles a write error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::read( std::uint8_t ) properly handles a write error.
  */
 TEST( readRegister, writeError )
 {
@@ -689,9 +686,9 @@ TEST( readRegister, writeError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::read( std::uint8_t ) properly handles a nonresponsive
- *        device error when writing the register address.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::read( std::uint8_t ) properly handles a nonresponsive device
+ *        error when writing the register address.
  */
 TEST( readRegister, nonresponsiveDeviceErrorWriteRegisterAddress )
 {
@@ -716,9 +713,9 @@ TEST( readRegister, nonresponsiveDeviceErrorWriteRegisterAddress )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::read( std::uint8_t ) properly handles a repeated start
- *        condition transmission error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::read( std::uint8_t ) properly handles a repeated start condition
+ *        transmission error.
  */
 TEST( readRegister, repeatedStartError )
 {
@@ -746,9 +743,9 @@ TEST( readRegister, repeatedStartError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::read( std::uint8_t ) properly handles an addressing
- *        error when preparing to read the register.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::read( std::uint8_t ) properly handles an addressing error when
+ *        preparing to read the register.
  */
 TEST( readRegister, addressingErrorAddressRead )
 {
@@ -778,9 +775,9 @@ TEST( readRegister, addressingErrorAddressRead )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::read( std::uint8_t ) properly handles a nonresponsive
- *        device error when preparing to read the register.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::read( std::uint8_t ) properly handles a nonresponsive device
+ *        error when preparing to read the register.
  */
 TEST( readRegister, nonresponsiveDeviceErrorAddressRead )
 {
@@ -808,8 +805,8 @@ TEST( readRegister, nonresponsiveDeviceErrorAddressRead )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::read( std::uint8_t ) properly handles a read error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::read( std::uint8_t ) properly handles a read error.
  */
 TEST( readRegister, readError )
 {
@@ -838,8 +835,8 @@ TEST( readRegister, readError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::read( std::uint8_t ) properly handles a stop condition
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::read( std::uint8_t ) properly handles a stop condition
  *        transmission error.
  */
 TEST( readRegister, stopError )
@@ -864,8 +861,8 @@ TEST( readRegister, stopError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::read( std::uint8_t ) works properly.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::read( std::uint8_t ) works properly.
  */
 TEST( readRegister, worksProperly )
 {
@@ -898,9 +895,9 @@ TEST( readRegister, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::read( std::uint8_t, std::uint8_t *, std::uint8_t * )
- *        properly handles a bus multiplexer alignment error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::read( std::uint8_t, std::uint8_t *, std::uint8_t * ) properly
+ *        handles a bus multiplexer alignment error.
  */
 TEST( readRegisterBlock, alignmentError )
 {
@@ -924,9 +921,9 @@ TEST( readRegisterBlock, alignmentError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::read( std::uint8_t, std::uint8_t *, std::uint8_t * )
- *        properly handles a start condition transmission error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::read( std::uint8_t, std::uint8_t *, std::uint8_t * ) properly
+ *        handles a start condition transmission error.
  */
 TEST( readRegisterBlock, startError )
 {
@@ -951,10 +948,9 @@ TEST( readRegisterBlock, startError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::read( std::uint8_t, std::uint8_t *, std::uint8_t * )
- *        properly handles an addressing error when preparing to write the register block
- *        address.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::read( std::uint8_t, std::uint8_t *, std::uint8_t * ) properly
+ *        handles an addressing error when preparing to write the register block address.
  */
 TEST( readRegisterBlock, addressingErrorAddressWrite )
 {
@@ -981,10 +977,10 @@ TEST( readRegisterBlock, addressingErrorAddressWrite )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::read( std::uint8_t, std::uint8_t *, std::uint8_t * )
- *        properly handles a nonresponsive device error when preparing to write the
- *        register block address.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::read( std::uint8_t, std::uint8_t *, std::uint8_t * ) properly
+ *        handles a nonresponsive device error when preparing to write the register block
+ *        address.
  */
 TEST( readRegisterBlock, nonresponsiveDeviceErrorAddressWrite )
 {
@@ -1009,9 +1005,9 @@ TEST( readRegisterBlock, nonresponsiveDeviceErrorAddressWrite )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::read( std::uint8_t, std::uint8_t *, std::uint8_t * )
- *        properly handles a write error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::read( std::uint8_t, std::uint8_t *, std::uint8_t * ) properly
+ *        handles a write error.
  */
 TEST( readRegisterBlock, writeError )
 {
@@ -1039,10 +1035,9 @@ TEST( readRegisterBlock, writeError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::read( std::uint8_t, std::uint8_t *, std::uint8_t * )
- *        properly handles a nonresponsive device error when writing the register block
- *        address.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::read( std::uint8_t, std::uint8_t *, std::uint8_t * ) properly
+ *        handles a nonresponsive device error when writing the register block address.
  */
 TEST( readRegisterBlock, nonresponsiveDeviceErrorWriteRegisterAddress )
 {
@@ -1068,9 +1063,9 @@ TEST( readRegisterBlock, nonresponsiveDeviceErrorWriteRegisterAddress )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::read( std::uint8_t, std::uint8_t *, std::uint8_t * )
- *        properly handles a repeated start condition transmission error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::read( std::uint8_t, std::uint8_t *, std::uint8_t * ) properly
+ *        handles a repeated start condition transmission error.
  */
 TEST( readRegisterBlock, repeatedStartError )
 {
@@ -1099,10 +1094,9 @@ TEST( readRegisterBlock, repeatedStartError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::read( std::uint8_t, std::uint8_t *, std::uint8_t * )
- *        properly handles an addressing error when preparing to read the block of
- *        registers.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::read( std::uint8_t, std::uint8_t *, std::uint8_t * ) properly
+ *        handles an addressing error when preparing to read the block of registers.
  */
 TEST( readRegisterBlock, addressingErrorAddressRead )
 {
@@ -1133,10 +1127,10 @@ TEST( readRegisterBlock, addressingErrorAddressRead )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::read( std::uint8_t, std::uint8_t *, std::uint8_t * )
- *        properly handles a nonresponsive device error when preparing to read the block
- *        of registers.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::read( std::uint8_t, std::uint8_t *, std::uint8_t * ) properly
+ *        handles a nonresponsive device error when preparing to read the block of
+ *        registers.
  */
 TEST( readRegisterBlock, nonresponsiveDeviceErrorAddressRead )
 {
@@ -1165,9 +1159,9 @@ TEST( readRegisterBlock, nonresponsiveDeviceErrorAddressRead )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::read( std::uint8_t, std::uint8_t *, std::uint8_t * )
- *        properly handles a read error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::read( std::uint8_t, std::uint8_t *, std::uint8_t * ) properly
+ *        handles a read error.
  */
 TEST( readRegisterBlock, readError )
 {
@@ -1197,9 +1191,9 @@ TEST( readRegisterBlock, readError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::read( std::uint8_t, std::uint8_t *, std::uint8_t * )
- *        properly handles a stop condition transmission error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::read( std::uint8_t, std::uint8_t *, std::uint8_t * ) properly
+ *        handles a stop condition transmission error.
  */
 TEST( readRegisterBlock, stopError )
 {
@@ -1227,9 +1221,9 @@ TEST( readRegisterBlock, stopError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::read( std::uint8_t, std::uint8_t *, std::uint8_t * )
- *        works properly.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::read( std::uint8_t, std::uint8_t *, std::uint8_t * ) works
+ *        properly.
  */
 TEST( readRegisterBlock, worksProperly )
 {
@@ -1263,9 +1257,9 @@ TEST( readRegisterBlock, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::write( std::uint8_t, std::uint8_t ) properly handles a
- *        bus multiplexer alignment error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::write( std::uint8_t, std::uint8_t ) properly handles a bus
+ *        multiplexer alignment error.
  */
 TEST( writeRegister, alignmentError )
 {
@@ -1288,9 +1282,9 @@ TEST( writeRegister, alignmentError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::write( std::uint8_t, std::uint8_t ) properly handles a
- *        start condition transmission error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::write( std::uint8_t, std::uint8_t ) properly handles a start
+ *        condition transmission error.
  */
 TEST( writeRegister, startError )
 {
@@ -1314,9 +1308,9 @@ TEST( writeRegister, startError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::write( std::uint8_t, std::uint8_t ) properly handles
- *        an addressing error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::write( std::uint8_t, std::uint8_t ) properly handles an
+ *        addressing error.
  */
 TEST( writeRegister, addressingError )
 {
@@ -1342,8 +1336,8 @@ TEST( writeRegister, addressingError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::write( std::uint8_t, std::uint8_t ) properly handles a
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::write( std::uint8_t, std::uint8_t ) properly handles a
  *        nonresponsive device error when addressing the device.
  */
 TEST( writeRegister, nonresponsiveDeviceErrorAddress )
@@ -1368,9 +1362,9 @@ TEST( writeRegister, nonresponsiveDeviceErrorAddress )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::write( std::uint8_t, std::uint8_t ) properly handles a
- *        write error when writing the register address.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::write( std::uint8_t, std::uint8_t ) properly handles a write
+ *        error when writing the register address.
  */
 TEST( writeRegister, writeErrorWriteRegisterAddress )
 {
@@ -1397,8 +1391,8 @@ TEST( writeRegister, writeErrorWriteRegisterAddress )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::write( std::uint8_t, std::uint8_t ) properly handles a
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::write( std::uint8_t, std::uint8_t ) properly handles a
  *        nonresponsive device error when writing the register address.
  */
 TEST( writeRegister, nonresponsiveDeviceErrorWriteRegisterAddress )
@@ -1424,9 +1418,9 @@ TEST( writeRegister, nonresponsiveDeviceErrorWriteRegisterAddress )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::write( std::uint8_t, std::uint8_t ) properly handles a
- *        write error when writing the data.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::write( std::uint8_t, std::uint8_t ) properly handles a write
+ *        error when writing the data.
  */
 TEST( writeRegister, writeErrorWriteData )
 {
@@ -1455,8 +1449,8 @@ TEST( writeRegister, writeErrorWriteData )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::write( std::uint8_t, std::uint8_t ) properly handles a
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::write( std::uint8_t, std::uint8_t ) properly handles a
  *        nonresponsive device error when writing the data.
  */
 TEST( writeRegister, nonresponsiveDeviceErrorWriteData )
@@ -1484,9 +1478,9 @@ TEST( writeRegister, nonresponsiveDeviceErrorWriteData )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::write( std::uint8_t, std::uint8_t ) properly handles a
- *        stop condition transmission error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::write( std::uint8_t, std::uint8_t ) properly handles a stop
+ *        condition transmission error.
  */
 TEST( writeRegister, stopError )
 {
@@ -1508,8 +1502,8 @@ TEST( writeRegister, stopError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::write( std::uint8_t, std::uint8_t ) works properly.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::write( std::uint8_t, std::uint8_t ) works properly.
  */
 TEST( writeRegister, worksProperly )
 {
@@ -1537,9 +1531,9 @@ TEST( writeRegister, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::write( std::uint8_t, std::uint8_t const *,
- *        std::uint8_t const * ) properly handles a bus multiplexer alignment error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::write( std::uint8_t, std::uint8_t const *, std::uint8_t const * )
+ *        properly handles a bus multiplexer alignment error.
  */
 TEST( writeRegisterBlock, alignmentError )
 {
@@ -1563,9 +1557,9 @@ TEST( writeRegisterBlock, alignmentError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::write( std::uint8_t, std::uint8_t const *,
- *        std::uint8_t const * ) properly handles a start condition transmission error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::write( std::uint8_t, std::uint8_t const *, std::uint8_t const * )
+ *        properly handles a start condition transmission error.
  */
 TEST( writeRegisterBlock, startError )
 {
@@ -1590,9 +1584,9 @@ TEST( writeRegisterBlock, startError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::write( std::uint8_t, std::uint8_t const *,
- *        std::uint8_t const * ) properly handles an addressing error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::write( std::uint8_t, std::uint8_t const *, std::uint8_t const * )
+ *        properly handles an addressing error.
  */
 TEST( writeRegisterBlock, addressingError )
 {
@@ -1619,10 +1613,9 @@ TEST( writeRegisterBlock, addressingError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::write( std::uint8_t, std::uint8_t const *,
- *        std::uint8_t const * ) properly handles a nonresponsive device error when
- *        addressing the device.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::write( std::uint8_t, std::uint8_t const *, std::uint8_t const * )
+ *        properly handles a nonresponsive device error when addressing the device.
  */
 TEST( writeRegisterBlock, nonresponsiveDeviceErrorAddress )
 {
@@ -1647,10 +1640,9 @@ TEST( writeRegisterBlock, nonresponsiveDeviceErrorAddress )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::write( std::uint8_t, std::uint8_t const *,
- *        std::uint8_t const * ) properly handles a write error when writing the register
- *        block address.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::write( std::uint8_t, std::uint8_t const *, std::uint8_t const * )
+ *        properly handles a write error when writing the register block address.
  */
 TEST( writeRegisterBlock, writeErrorWriteRegisterAddress )
 {
@@ -1678,10 +1670,10 @@ TEST( writeRegisterBlock, writeErrorWriteRegisterAddress )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::write( std::uint8_t, std::uint8_t const *,
- *        std::uint8_t const * ) properly handles a nonresponsive device error when
- *        writing the register block address.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::write( std::uint8_t, std::uint8_t const *, std::uint8_t const * )
+ *        properly handles a nonresponsive device error when writing the register block
+ *        address.
  */
 TEST( writeRegisterBlock, nonresponsiveDeviceErrorWriteRegisterAddress )
 {
@@ -1707,9 +1699,9 @@ TEST( writeRegisterBlock, nonresponsiveDeviceErrorWriteRegisterAddress )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::write( std::uint8_t, std::uint8_t const *,
- *        std::uint8_t const * ) properly handles a write error when writing the data.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::write( std::uint8_t, std::uint8_t const *, std::uint8_t const * )
+ *        properly handles a write error when writing the data.
  */
 TEST( writeRegisterBlock, writeErrorWriteData )
 {
@@ -1738,10 +1730,9 @@ TEST( writeRegisterBlock, writeErrorWriteData )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::write( std::uint8_t, std::uint8_t const *,
- *        std::uint8_t const * ) properly handles a nonresponsive device error when
- *        writing the data.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::write( std::uint8_t, std::uint8_t const *, std::uint8_t const * )
+ *        properly handles a nonresponsive device error when writing the data.
  */
 TEST( writeRegisterBlock, nonresponsiveDeviceErrorWriteData )
 {
@@ -1768,9 +1759,9 @@ TEST( writeRegisterBlock, nonresponsiveDeviceErrorWriteData )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::write( std::uint8_t, std::uint8_t const *,
- *        std::uint8_t const * ) properly handles a stop condition transmission error.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::write( std::uint8_t, std::uint8_t const *, std::uint8_t const * )
+ *        properly handles a stop condition transmission error.
  */
 TEST( writeRegisterBlock, stopError )
 {
@@ -1795,9 +1786,9 @@ TEST( writeRegisterBlock, stopError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner>::write( std::uint8_t, std::uint8_t const *,
- *        std::uint8_t const * ) works properly.
+ * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t>::write( std::uint8_t, std::uint8_t const *, std::uint8_t const * )
+ *        works properly.
  */
 TEST( writeRegisterBlock, worksProperly )
 {
@@ -1825,8 +1816,8 @@ TEST( writeRegisterBlock, worksProperly )
 }
 
 /**
- * \brief Execute the picolibrary::I2C::Device<std::uint8_t, Controller,
- *        Bus_Multiplexer_Aligner> unit tests.
+ * \brief Execute the picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+ *        std::uint8_t> unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
  * \param[in] argv The array  of arguments to pass to testing::InitGoogleMock().

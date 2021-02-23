@@ -14,10 +14,10 @@
 # permissions and limitations under the License.
 
 # File: test/unit/picolibrary/i2c/device/uint8_t/CMakeLists.txt
-# Description: picolibrary::I2C::Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner>
+# Description: picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller, std::uint8_t>
 #       unit tests CMake rules.
 
-# build the picolibrary::I2C::Device<std::uint8_t, Controller, Bus_Multiplexer_Aligner>
+# build the picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller, std::uint8_t>
 # unit tests
 if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     add_executable(
