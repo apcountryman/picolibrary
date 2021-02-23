@@ -618,6 +618,14 @@ class Mock_Controller {
     }
 };
 
+/**
+ * \brief Mock I2C device.
+ *
+ * \tparam Register_Address The integral type used to hold device register addresses.
+ */
+template<typename Register_Address>
+class Mock_Device;
+
 } // namespace picolibrary::Testing::Unit::I2C
 
 #endif // PICOLIBRARY_TESTING_UNIT_I2C_H
