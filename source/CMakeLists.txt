@@ -39,6 +39,7 @@ set(
     "picolibrary/i2c.cc"
     "picolibrary/iterator.cc"
     "picolibrary/microchip.cc"
+    "picolibrary/microchip/mcp23008.cc"
     "picolibrary/microchip/mcp3008.cc"
     "picolibrary/result.cc"
     "picolibrary/spi.cc"
@@ -65,6 +66,7 @@ if( ${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING} )
         "picolibrary/testing/interactive/gpio.cc"
         "picolibrary/testing/interactive/i2c.cc"
         "picolibrary/testing/interactive/microchip.cc"
+        "picolibrary/testing/interactive/microchip/mcp23008.cc"
         "picolibrary/testing/interactive/microchip/mcp3008.cc"
         "picolibrary/testing/interactive/spi.cc"
     )
@@ -81,6 +83,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
         "picolibrary/testing/unit/gpio.cc"
         "picolibrary/testing/unit/i2c.cc"
         "picolibrary/testing/unit/microchip.cc"
+        "picolibrary/testing/unit/microchip/mcp23008.cc"
         "picolibrary/testing/unit/microchip/mcp3008.cc"
         "picolibrary/testing/unit/random.cc"
         "picolibrary/testing/unit/spi.cc"
