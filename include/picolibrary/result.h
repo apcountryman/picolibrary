@@ -28,7 +28,7 @@
 #include <utility>
 
 #include "picolibrary/error.h"
-#include "picolibrary/utility.h"
+#include "picolibrary/void.h"
 
 namespace picolibrary {
 

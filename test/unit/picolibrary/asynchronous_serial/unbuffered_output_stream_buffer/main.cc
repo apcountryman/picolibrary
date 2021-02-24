@@ -32,7 +32,7 @@
 #include "picolibrary/testing/unit/asynchronous_serial.h"
 #include "picolibrary/testing/unit/error.h"
 #include "picolibrary/testing/unit/random.h"
-#include "picolibrary/utility.h"
+#include "picolibrary/void.h"
 
 namespace {
 

@@ -44,6 +44,7 @@ set(
     "picolibrary/spi.cc"
     "picolibrary/stream.cc"
     "picolibrary/utility.cc"
+    "picolibrary/void.cc"
 )
 set( PICOLIBRARY_LINK_LIBRARIES )
 

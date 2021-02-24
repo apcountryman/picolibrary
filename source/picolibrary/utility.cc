@@ -21,11 +21,3 @@
  */
 
 #include "picolibrary/utility.h"
-
-#include <type_traits>
-
-namespace picolibrary {
-
-static_assert( std::is_trivially_destructible_v<Void> );
-
-} // namespace picolibrary

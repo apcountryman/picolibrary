@@ -32,7 +32,7 @@
 #include "picolibrary/fixed_size_array.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
-#include "picolibrary/utility.h"
+#include "picolibrary/void.h"
 
 /**
  * \brief Formatting facilities.

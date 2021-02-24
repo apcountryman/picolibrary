@@ -29,7 +29,7 @@
 #include "picolibrary/algorithm.h"
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
-#include "picolibrary/utility.h"
+#include "picolibrary/void.h"
 
 /**
  * \brief Serial Peripheral Interface (SPI) facilities.

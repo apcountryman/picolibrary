@@ -26,7 +26,7 @@
 #include <cstdint>
 #include <type_traits>
 
-#include "picolibrary/utility.h"
+#include "picolibrary/void.h"
 
 namespace picolibrary {
 

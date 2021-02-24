@@ -34,7 +34,7 @@
 #include "picolibrary/testing/unit/error.h"
 #include "picolibrary/testing/unit/i2c.h"
 #include "picolibrary/testing/unit/random.h"
-#include "picolibrary/utility.h"
+#include "picolibrary/void.h"
 
 namespace {
 

@@ -33,7 +33,7 @@
 #include "picolibrary/i2c.h"
 #include "picolibrary/result.h"
 #include "picolibrary/testing/unit/random.h"
-#include "picolibrary/utility.h"
+#include "picolibrary/void.h"
 
 namespace picolibrary::Testing::Unit {
 

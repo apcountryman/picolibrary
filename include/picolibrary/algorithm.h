@@ -27,7 +27,7 @@
 #include <utility>
 
 #include "picolibrary/result.h"
-#include "picolibrary/utility.h"
+#include "picolibrary/void.h"
 
 namespace picolibrary {
 

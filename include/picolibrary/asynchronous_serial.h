@@ -28,6 +28,7 @@
 #include "picolibrary/algorithm.h"
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
+#include "picolibrary/void.h"
 
 /**
  * \brief Asynchronous serial facilities.
