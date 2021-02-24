@@ -20,9 +20,51 @@
  * \brief picolibrary::Microchip::MCP23008::Register_Cache unit test program.
  */
 
+#include <cstdint>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/microchip/mcp23008.h"
+#include "picolibrary/testing/unit/random.h"
+
+namespace {
+
+using ::picolibrary::Testing::Unit::random;
+
+class Cache : public ::picolibrary::Microchip::MCP23008::Register_Cache {
+  public:
+    constexpr Cache() noexcept
+    {
+    }
+
+    using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_iodir;
+    using ::picolibrary::Microchip::MCP23008::Register_Cache::initialize;
+};
+
+} // namespace
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Register_Cache::Register_Cache(),
+ *        picolibrary::Microchip::MCP23008::Register_Cache::initialize(),
+ *        picolibrary::Microchip::MCP23008::Register_Cache::iodir(), and
+ *        picolibrary::Microchip::MCP23008::Register_Cache::cache_iodir() work properly.
+ */
+TEST( iodir, worksProperly )
+{
+    auto cache = Cache{};
+
+    EXPECT_EQ( cache.iodir(), 0xFF );
+
+    auto const value = random<std::uint8_t>();
+
+    cache.cache_iodir( value );
+
+    EXPECT_EQ( cache.iodir(), value );
+
+    cache.initialize();
+
+    EXPECT_EQ( cache.iodir(), 0xFF );
+}
 
 /**
  * \brief Execute the picolibrary::Microchip::MCP23008::Register_Cache unit tests.

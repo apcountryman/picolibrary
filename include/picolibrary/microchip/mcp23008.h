@@ -249,6 +249,16 @@ class Register_Cache {
      */
     ~Register_Cache() noexcept = default;
 
+    /**
+     * \brief Get the cached IODIR register value.
+     *
+     * \return The cached IODIR register value.
+     */
+    constexpr auto iodir() const noexcept
+    {
+        return m_iodir;
+    }
+
   protected:
     /**
      * \brief Constructor.
@@ -295,6 +305,22 @@ class Register_Cache {
     {
         *this = {};
     }
+
+    /**
+     * \brief Update the cached IODIR register value.
+     *
+     * \param[in] value The updated IODIR register value.
+     */
+    constexpr void cache_iodir( std::uint8_t value ) noexcept
+    {
+        m_iodir = value;
+    }
+
+  private:
+    /**
+     * \brief The cached IODIR register value.
+     */
+    std::uint8_t m_iodir{ IODIR::POR };
 };
 
 } // namespace picolibrary::Microchip::MCP23008
