@@ -299,6 +299,16 @@ class Register_Cache {
         return m_intcon;
     }
 
+    /**
+     * \brief Get the cached IOCON register value.
+     *
+     * \return The cached IOCON register value.
+     */
+    constexpr auto iocon() const noexcept
+    {
+        return m_iocon;
+    }
+
   protected:
     /**
      * \brief Constructor.
@@ -396,6 +406,16 @@ class Register_Cache {
         m_intcon = value;
     }
 
+    /**
+     * \brief Update the cached IOCON register value.
+     *
+     * \param[in] value The updated IOCON register value.
+     */
+    constexpr void cache_iocon( std::uint8_t value ) noexcept
+    {
+        m_iocon = value;
+    }
+
   private:
     /**
      * \brief The cached IODIR register value.
@@ -421,6 +441,11 @@ class Register_Cache {
      * \brief The cached INTCON register value.
      */
     std::uint8_t m_intcon{ INTCON::POR };
+
+    /**
+     * \brief The cached IOCON register value.
+     */
+    std::uint8_t m_iocon{ IOCON::POR };
 };
 
 } // namespace picolibrary::Microchip::MCP23008
