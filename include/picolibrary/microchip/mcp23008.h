@@ -279,6 +279,16 @@ class Register_Cache {
         return m_gpinten;
     }
 
+    /**
+     * \brief Get the cached DEFVAL register value.
+     *
+     * \return The cached DEFVAL register value.
+     */
+    constexpr auto defval() const noexcept
+    {
+        return m_defval;
+    }
+
   protected:
     /**
      * \brief Constructor.
@@ -356,6 +366,16 @@ class Register_Cache {
         m_gpinten = value;
     }
 
+    /**
+     * \brief Update the cached DEFVAL register value.
+     *
+     * \param[in] value The updated DEFVAL register value.
+     */
+    constexpr void cache_defval( std::uint8_t value ) noexcept
+    {
+        m_defval = value;
+    }
+
   private:
     /**
      * \brief The cached IODIR register value.
@@ -371,6 +391,11 @@ class Register_Cache {
      * \brief The cached GPINTEN register value.
      */
     std::uint8_t m_gpinten{ GPINTEN::POR };
+
+    /**
+     * \brief The cached DEFVAL register value.
+     */
+    std::uint8_t m_defval{ DEFVAL::POR };
 };
 
 } // namespace picolibrary::Microchip::MCP23008

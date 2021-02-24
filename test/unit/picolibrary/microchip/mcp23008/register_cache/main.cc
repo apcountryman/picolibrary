@@ -37,6 +37,7 @@ class Cache : public ::picolibrary::Microchip::MCP23008::Register_Cache {
     {
     }
 
+    using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_defval;
     using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_gpinten;
     using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_iodir;
     using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_ipol;
@@ -112,6 +113,29 @@ TEST( gpinten, worksProperly )
     cache.initialize();
 
     EXPECT_EQ( cache.gpinten(), 0x00 );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Register_Cache::Register_Cache(),
+ *        picolibrary::Microchip::MCP23008::Register_Cache::initialize(),
+ *        picolibrary::Microchip::MCP23008::Register_Cache::defval(), and
+ *        picolibrary::Microchip::MCP23008::Register_Cache::cache_defval() work properly.
+ */
+TEST( defval, worksProperly )
+{
+    auto cache = Cache{};
+
+    EXPECT_EQ( cache.defval(), 0x00 );
+
+    auto const value = random<std::uint8_t>();
+
+    cache.cache_defval( value );
+
+    EXPECT_EQ( cache.defval(), value );
+
+    cache.initialize();
+
+    EXPECT_EQ( cache.defval(), 0x00 );
 }
 
 /**
