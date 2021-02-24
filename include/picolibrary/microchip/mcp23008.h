@@ -23,10 +23,28 @@
 #ifndef PICOLIBRARY_MICROCHIP_MCP23008_H
 #define PICOLIBRARY_MICROCHIP_MCP23008_H
 
+#include <cstdint>
+
 /**
  * \brief Microchip MCP23008 facilities.
  */
 namespace picolibrary::Microchip::MCP23008 {
+
+/**
+ * \brief I/O Direction (IODIR) register.
+ */
+struct IODIR {
+    /**
+     * \brief Register address.
+     */
+    static constexpr auto ADDRESS = std::uint8_t{ 0x00 };
+
+    /**
+     * \brief POR value.
+     */
+    static constexpr auto POR = std::uint8_t{ 0xFF };
+};
+
 } // namespace picolibrary::Microchip::MCP23008
 
 #endif // PICOLIBRARY_MICROCHIP_MCP23008_H
