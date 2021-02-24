@@ -199,6 +199,16 @@ struct INTF {
     static constexpr auto ADDRESS = std::uint8_t{ 0x07 };
 };
 
+/**
+ * \brief Interrupt Capture (INTCAP) register.
+ */
+struct INTCAP {
+    /**
+     * \brief Register address.
+     */
+    static constexpr auto ADDRESS = std::uint8_t{ 0x08 };
+};
+
 } // namespace picolibrary::Microchip::MCP23008
 
 #endif // PICOLIBRARY_MICROCHIP_MCP23008_H
