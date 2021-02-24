@@ -38,6 +38,7 @@ class Cache : public ::picolibrary::Microchip::MCP23008::Register_Cache {
     }
 
     using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_iodir;
+    using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_ipol;
     using ::picolibrary::Microchip::MCP23008::Register_Cache::initialize;
 };
 
@@ -64,6 +65,29 @@ TEST( iodir, worksProperly )
     cache.initialize();
 
     EXPECT_EQ( cache.iodir(), 0xFF );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Register_Cache::Register_Cache(),
+ *        picolibrary::Microchip::MCP23008::Register_Cache::initialize(),
+ *        picolibrary::Microchip::MCP23008::Register_Cache::ipol(), and
+ *        picolibrary::Microchip::MCP23008::Register_Cache::cache_ipol() work properly.
+ */
+TEST( ipol, worksProperly )
+{
+    auto cache = Cache{};
+
+    EXPECT_EQ( cache.ipol(), 0x00 );
+
+    auto const value = random<std::uint8_t>();
+
+    cache.cache_ipol( value );
+
+    EXPECT_EQ( cache.ipol(), value );
+
+    cache.initialize();
+
+    EXPECT_EQ( cache.ipol(), 0x00 );
 }
 
 /**

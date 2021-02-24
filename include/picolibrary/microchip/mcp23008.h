@@ -259,6 +259,16 @@ class Register_Cache {
         return m_iodir;
     }
 
+    /**
+     * \brief Get the cached IPOL register value.
+     *
+     * \return The cached IPOL register value.
+     */
+    constexpr auto ipol() const noexcept
+    {
+        return m_ipol;
+    }
+
   protected:
     /**
      * \brief Constructor.
@@ -316,11 +326,26 @@ class Register_Cache {
         m_iodir = value;
     }
 
+    /**
+     * \brief Update the cached IPOL register value.
+     *
+     * \param[in] value The updated IPOL register value.
+     */
+    constexpr void cache_ipol( std::uint8_t value ) noexcept
+    {
+        m_ipol = value;
+    }
+
   private:
     /**
      * \brief The cached IODIR register value.
      */
     std::uint8_t m_iodir{ IODIR::POR };
+
+    /**
+     * \brief The cached IPOL register value.
+     */
+    std::uint8_t m_ipol{ IPOL::POR };
 };
 
 } // namespace picolibrary::Microchip::MCP23008
