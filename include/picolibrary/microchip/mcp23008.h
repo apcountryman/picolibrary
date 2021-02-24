@@ -189,6 +189,16 @@ struct GPPU {
     static constexpr auto POR = std::uint8_t{ 0x00 };
 };
 
+/**
+ * \brief Interrupt Flag (INTF) register.
+ */
+struct INTF {
+    /**
+     * \brief Register address.
+     */
+    static constexpr auto ADDRESS = std::uint8_t{ 0x07 };
+};
+
 } // namespace picolibrary::Microchip::MCP23008
 
 #endif // PICOLIBRARY_MICROCHIP_MCP23008_H
