@@ -287,6 +287,14 @@ class Register_Cache {
      */
     constexpr auto operator =( Register_Cache const & expression ) noexcept
         -> Register_Cache & = default;
+
+    /**
+     * \brief Reset all cached register valies to the register POR values.
+     */
+    constexpr void initialize() noexcept
+    {
+        *this = {};
+    }
 };
 
 } // namespace picolibrary::Microchip::MCP23008
