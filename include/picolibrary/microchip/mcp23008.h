@@ -224,6 +224,21 @@ struct GPIO {
     static constexpr auto POR = std::uint8_t{ 0x00 };
 };
 
+/**
+ * \brief Output Latch (OLAT) register.
+ */
+struct OLAT {
+    /**
+     * \brief Register address.
+     */
+    static constexpr auto ADDRESS = std::uint8_t{ 0x0A };
+
+    /**
+     * \brief POR value.
+     */
+    static constexpr auto POR = std::uint8_t{ 0x00 };
+};
+
 } // namespace picolibrary::Microchip::MCP23008
 
 #endif // PICOLIBRARY_MICROCHIP_MCP23008_H
