@@ -75,6 +75,21 @@ struct GPINTEN {
     static constexpr auto POR = std::uint8_t{ 0x00 };
 };
 
+/**
+ * \brief Default Compare (DEFVAL) register.
+ */
+struct DEFVAL {
+    /**
+     * \brief Register address.
+     */
+    static constexpr auto ADDRESS = std::uint8_t{ 0x03 };
+
+    /**
+     * \brief POR value.
+     */
+    static constexpr auto POR = std::uint8_t{ 0x00 };
+};
+
 } // namespace picolibrary::Microchip::MCP23008
 
 #endif // PICOLIBRARY_MICROCHIP_MCP23008_H
