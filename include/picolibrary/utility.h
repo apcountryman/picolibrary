@@ -23,7 +23,21 @@
 #ifndef PICOLIBRARY_UTILITY_H
 #define PICOLIBRARY_UTILITY_H
 
+#include "picolibrary/result.h"
+#include "picolibrary/void.h"
+
 namespace picolibrary {
+
+/**
+ * \brief NOP.
+ *
+ * \return Success.
+ */
+constexpr auto nop() noexcept -> Result<Void, Void>
+{
+    return {};
+}
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_UTILITY_H
