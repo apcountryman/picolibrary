@@ -209,6 +209,21 @@ struct INTCAP {
     static constexpr auto ADDRESS = std::uint8_t{ 0x08 };
 };
 
+/**
+ * \brief Port (GPIO) register.
+ */
+struct GPIO {
+    /**
+     * \brief Register address.
+     */
+    static constexpr auto ADDRESS = std::uint8_t{ 0x09 };
+
+    /**
+     * \brief POR value.
+     */
+    static constexpr auto POR = std::uint8_t{ 0x00 };
+};
+
 } // namespace picolibrary::Microchip::MCP23008
 
 #endif // PICOLIBRARY_MICROCHIP_MCP23008_H
