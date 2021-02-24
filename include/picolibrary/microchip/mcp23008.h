@@ -269,6 +269,16 @@ class Register_Cache {
         return m_ipol;
     }
 
+    /**
+     * \brief Get the cached GPINTEN register value.
+     *
+     * \return The cached GPINTEN register value.
+     */
+    constexpr auto gpinten() const noexcept
+    {
+        return m_gpinten;
+    }
+
   protected:
     /**
      * \brief Constructor.
@@ -336,6 +346,16 @@ class Register_Cache {
         m_ipol = value;
     }
 
+    /**
+     * \brief Update the cached GPINTEN register value.
+     *
+     * \param[in] value The updated GPINTEN register value.
+     */
+    constexpr void cache_gpinten( std::uint8_t value ) noexcept
+    {
+        m_gpinten = value;
+    }
+
   private:
     /**
      * \brief The cached IODIR register value.
@@ -346,6 +366,11 @@ class Register_Cache {
      * \brief The cached IPOL register value.
      */
     std::uint8_t m_ipol{ IPOL::POR };
+
+    /**
+     * \brief The cached GPINTEN register value.
+     */
+    std::uint8_t m_gpinten{ GPINTEN::POR };
 };
 
 } // namespace picolibrary::Microchip::MCP23008
