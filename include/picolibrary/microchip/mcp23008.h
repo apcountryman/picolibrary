@@ -31,7 +31,7 @@
 namespace picolibrary::Microchip::MCP23008 {
 
 /**
- * \brief I/O Direction (IODIR) register.
+ * \brief I/O Direction Register (IODIR).
  */
 struct IODIR {
     /**
@@ -46,7 +46,7 @@ struct IODIR {
 };
 
 /**
- * \brief Input Polarity (IPOL) register.
+ * \brief Input Polarity Port Register (IPOL).
  */
 struct IPOL {
     /**
@@ -61,7 +61,7 @@ struct IPOL {
 };
 
 /**
- * \brief Interrupt-On-Change Control (GPINTEN) register.
+ * \brief Interrupt-On-Change Pins Register (GPINTEN).
  */
 struct GPINTEN {
     /**
@@ -76,7 +76,7 @@ struct GPINTEN {
 };
 
 /**
- * \brief Default Compare (DEFVAL) register.
+ * \brief Default Value Register (DEFVAL).
  */
 struct DEFVAL {
     /**
@@ -91,7 +91,7 @@ struct DEFVAL {
 };
 
 /**
- * \brief Interrupt Control (INTCON) register.
+ * \brief Interrupt-On-Change Control Register (INTCON).
  */
 struct INTCON {
     /**
@@ -106,11 +106,11 @@ struct INTCON {
 };
 
 /**
- * \brief Configuration (IOCON) register.
+ * \brief I/O Expander Configuration Register (IOCON).
  *
  * This register has the following fields:
- * - Interrupt Polarity (INTPOL)
- * - Open-Drain (ODR)
+ * - Interrupt Polarity Control (INTPOL)
+ * - Open-Drain Control (ODR)
  * - Slew Rate Control (DISSLW)
  * - Sequential Operation Mode (SEQOP)
  *
@@ -175,7 +175,7 @@ struct IOCON {
 };
 
 /**
- * \brief Pull-Up Resistor Configuration (GPPU) register.
+ * \brief GPIO Pull-Up Resistor Register (GPPU).
  */
 struct GPPU {
     /**
@@ -190,7 +190,7 @@ struct GPPU {
 };
 
 /**
- * \brief Interrupt Flag (INTF) register.
+ * \brief Interrupt Flag Register (INTF).
  */
 struct INTF {
     /**
@@ -200,7 +200,7 @@ struct INTF {
 };
 
 /**
- * \brief Interrupt Capture (INTCAP) register.
+ * \brief Interrupt Captured Value For Port Register (INTCAP).
  */
 struct INTCAP {
     /**
@@ -210,7 +210,7 @@ struct INTCAP {
 };
 
 /**
- * \brief Port (GPIO) register.
+ * \brief General Purpose I/O Port Register (GPIO).
  */
 struct GPIO {
     /**
@@ -225,7 +225,7 @@ struct GPIO {
 };
 
 /**
- * \brief Output Latch (OLAT) register.
+ * \brief Output Latch Register (OLAT).
  */
 struct OLAT {
     /**
