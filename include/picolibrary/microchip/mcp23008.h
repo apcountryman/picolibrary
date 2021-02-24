@@ -289,6 +289,16 @@ class Register_Cache {
         return m_defval;
     }
 
+    /**
+     * \brief Get the cached INTCON register value.
+     *
+     * \return The cached INTCON register value.
+     */
+    constexpr auto intcon() const noexcept
+    {
+        return m_intcon;
+    }
+
   protected:
     /**
      * \brief Constructor.
@@ -376,6 +386,16 @@ class Register_Cache {
         m_defval = value;
     }
 
+    /**
+     * \brief Update the cached INTCON register value.
+     *
+     * \param[in] value The updated INTCON register value.
+     */
+    constexpr void cache_intcon( std::uint8_t value ) noexcept
+    {
+        m_intcon = value;
+    }
+
   private:
     /**
      * \brief The cached IODIR register value.
@@ -396,6 +416,11 @@ class Register_Cache {
      * \brief The cached DEFVAL register value.
      */
     std::uint8_t m_defval{ DEFVAL::POR };
+
+    /**
+     * \brief The cached INTCON register value.
+     */
+    std::uint8_t m_intcon{ INTCON::POR };
 };
 
 } // namespace picolibrary::Microchip::MCP23008
