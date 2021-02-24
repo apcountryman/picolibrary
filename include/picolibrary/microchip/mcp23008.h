@@ -45,6 +45,21 @@ struct IODIR {
     static constexpr auto POR = std::uint8_t{ 0xFF };
 };
 
+/**
+ * \brief Input Polarity (IPOL) register.
+ */
+struct IPOL {
+    /**
+     * \brief Register address.
+     */
+    static constexpr auto ADDRESS = std::uint8_t{ 0x01 };
+
+    /**
+     * \brief POR value.
+     */
+    static constexpr auto POR = std::uint8_t{ 0x00 };
+};
+
 } // namespace picolibrary::Microchip::MCP23008
 
 #endif // PICOLIBRARY_MICROCHIP_MCP23008_H
