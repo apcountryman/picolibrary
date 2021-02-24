@@ -239,6 +239,56 @@ struct OLAT {
     static constexpr auto POR = std::uint8_t{ 0x00 };
 };
 
+/**
+ * \brief Microchip MCP23008 register cache.
+ */
+class Register_Cache {
+  public:
+    /**
+     * \brief Destructor.
+     */
+    ~Register_Cache() noexcept = default;
+
+  protected:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Register_Cache() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Register_Cache( Register_Cache && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Register_Cache( Register_Cache const & original ) noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Register_Cache && expression ) noexcept -> Register_Cache & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator =( Register_Cache const & expression ) noexcept
+        -> Register_Cache & = default;
+};
+
 } // namespace picolibrary::Microchip::MCP23008
 
 #endif // PICOLIBRARY_MICROCHIP_MCP23008_H
