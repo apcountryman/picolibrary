@@ -31,7 +31,7 @@
 #include "picolibrary/fixed_size_array.h"
 #include "picolibrary/result.h"
 #include "picolibrary/spi.h"
-#include "picolibrary/utility.h"
+#include "picolibrary/void.h"
 
 /**
  * \brief Microchip MCP3008 facilities.

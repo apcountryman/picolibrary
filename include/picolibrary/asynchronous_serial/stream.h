@@ -29,7 +29,7 @@
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
-#include "picolibrary/utility.h"
+#include "picolibrary/void.h"
 
 namespace picolibrary::Asynchronous_Serial {
 

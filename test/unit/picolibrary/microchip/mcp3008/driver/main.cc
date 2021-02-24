@@ -33,7 +33,7 @@
 #include "picolibrary/testing/unit/microchip/mcp3008.h"
 #include "picolibrary/testing/unit/random.h"
 #include "picolibrary/testing/unit/spi.h"
-#include "picolibrary/utility.h"
+#include "picolibrary/void.h"
 
 namespace {
 

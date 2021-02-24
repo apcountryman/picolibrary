@@ -17,13 +17,15 @@
 
 /**
  * \file
- * \brief picolibrary::Utility interface.
+ * \brief picolibrary::Void implementation.
  */
 
-#ifndef PICOLIBRARY_UTILITY_H
-#define PICOLIBRARY_UTILITY_H
+#include "picolibrary/void.h"
+
+#include <type_traits>
 
 namespace picolibrary {
-} // namespace picolibrary
 
-#endif // PICOLIBRARY_UTILITY_H
+static_assert( std::is_trivially_destructible_v<Void> );
+
+} // namespace picolibrary
