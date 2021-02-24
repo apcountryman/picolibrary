@@ -13,11 +13,5 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/microchip/CMakeLists.txt
-# Description: picolibrary::Microchip unit tests CMake rules.
-
-# build the picolibrary::Microchip::MCP23008 unit tests
-add_subdirectory( mcp23008 )
-
-# build the picolibrary::Microchip::MCP3008 unit tests
-add_subdirectory( mcp3008 )
+# File: test/unit/picolibrary/microchip/mcp23008/CMakeLists.txt
+# Description: picolibrary::Microchip::MCP23008 unit tests CMake rules.
