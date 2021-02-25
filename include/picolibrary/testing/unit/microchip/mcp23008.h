@@ -26,6 +26,52 @@
 #include <cstdint>
 
 #include "gmock/gmock.h"
+#include "picolibrary/microchip/mcp23008.h"
+#include "picolibrary/testing/unit/random.h"
+
+namespace picolibrary::Testing::Unit {
+
+/**
+ * \brief Generate a pseudo-random Microchip MCP23008 sequential operation mode.
+ *
+ * \return A pseudo-randomly generated Microchip MCP23008 sequential operation mode.
+ */
+template<>
+inline auto random<Microchip::MCP23008::Sequential_Operation_Mode>()
+{
+    return static_cast<Microchip::MCP23008::Sequential_Operation_Mode>( random<std::uint8_t>(
+        static_cast<std::uint8_t>( Microchip::MCP23008::Sequential_Operation_Mode::ENABLED ),
+        static_cast<std::uint8_t>( Microchip::MCP23008::Sequential_Operation_Mode::DISABLED ) ) );
+}
+
+/**
+ * \brief Generate a pseudo-random Microchip MCP23008 SDA slew rate control configuration.
+ *
+ * \return A pseudo-randomly generated Microchip MCP23008 SDA slew rate control
+ *         configuration.
+ */
+template<>
+inline auto random<Microchip::MCP23008::SDA_Slew_Rate_Control_Configuration>()
+{
+    return static_cast<Microchip::MCP23008::SDA_Slew_Rate_Control_Configuration>( random<std::uint8_t>(
+        static_cast<std::uint8_t>( Microchip::MCP23008::SDA_Slew_Rate_Control_Configuration::ENABLED ),
+        static_cast<std::uint8_t>( Microchip::MCP23008::SDA_Slew_Rate_Control_Configuration::DISABLED ) ) );
+}
+
+/**
+ * \brief Generate a pseudo-random Microchip MCP23008 interrupt mode.
+ *
+ * \return A pseudo-randomly generated Microchip MCP23008 interrupt mode.
+ */
+template<>
+inline auto random<Microchip::MCP23008::Interrupt_Mode>()
+{
+    return static_cast<Microchip::MCP23008::Interrupt_Mode>( random<std::uint8_t>(
+        static_cast<std::uint8_t>( Microchip::MCP23008::Interrupt_Mode::PUSH_PULL_ACTIVE_LOW ),
+        static_cast<std::uint8_t>( Microchip::MCP23008::Interrupt_Mode::OPEN_DRAIN ) ) );
+}
+
+} // namespace picolibrary::Testing::Unit
 
 /**
  * \brief Microchip MCP23008 unit testing facilities.
