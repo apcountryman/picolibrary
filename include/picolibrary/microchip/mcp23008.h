@@ -25,6 +25,8 @@
 
 #include <cstdint>
 
+#include "picolibrary/i2c.h"
+
 /**
  * \brief Microchip MCP23008 facilities.
  */
@@ -549,6 +551,41 @@ enum class Interrupt_Mode : std::uint8_t {
     OPEN_DRAIN            = 0b10 << IOCON::Bit::INTERRUPT_MODE, ///< Open-drain.
     PUSH_PULL_ACTIVE_HIGH = 0b01 << IOCON::Bit::INTERRUPT_MODE, ///< Push-pull, active high.
     PUSH_PULL_ACTIVE_LOW = 0b00 << IOCON::Bit::INTERRUPT_MODE, ///< Push-pull, active low.
+};
+
+/**
+ * \brief Microchip MCP23008 device address range.
+ */
+struct Address {
+    /**
+     * \brief The minimum device address.
+     */
+    static constexpr auto MIN = I2C::Address{ I2C::Address::NUMERIC, 0b010'0000 };
+
+    /**
+     * \brief The maximum device address.
+     */
+    static constexpr auto MAX = I2C::Address{ I2C::Address::NUMERIC, 0b010'0111 };
+
+    /**
+     * \brief Get the minimum device address.
+     *
+     * \return The minimum device address.
+     */
+    static constexpr auto min() noexcept
+    {
+        return MIN;
+    }
+
+    /**
+     * \brief Get the maximum device address.
+     *
+     * \return The maximum device address.
+     */
+    static constexpr auto max() noexcept
+    {
+        return MAX;
+    }
 };
 
 } // namespace picolibrary::Microchip::MCP23008
