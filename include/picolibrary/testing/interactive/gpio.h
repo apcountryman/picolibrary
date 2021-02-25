@@ -37,13 +37,13 @@ namespace picolibrary::Testing::Interactive::GPIO {
  *         information to the user.
  * \tparam Transmitter The type of asynchronous serial transmitter to use to transmit
  *         information to the user.
- * \tparam Input_Pin The type of input pin to toggle.
+ * \tparam Input_Pin The type of input pin to get the state of.
  * \tparam Delayer A nullary functor called to introduce a delay each time the pin's state
  *         is read
  *
  * \param[in] transmitter The asynchronous serial transmitter to use to transmit
  *            information to the user.
- * \param[in] pin The pin to toggle.
+ * \param[in] pin The pin to get the state of.
  * \param[in] delay The nullary functor called to introduce a delay each time the pin's
  *            state is read.
  */
