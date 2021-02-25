@@ -39,11 +39,13 @@ class Cache : public ::picolibrary::Microchip::MCP23008::Register_Cache {
 
     using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_defval;
     using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_gpinten;
+    using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_gpio;
     using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_gppu;
     using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_intcon;
     using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_iocon;
     using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_iodir;
     using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_ipol;
+    using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_olat;
     using ::picolibrary::Microchip::MCP23008::Register_Cache::initialize;
 };
 
@@ -208,6 +210,60 @@ TEST( gppu, worksProperly )
     cache.initialize();
 
     EXPECT_EQ( cache.gppu(), 0x00 );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Register_Cache::Register_Cache(),
+ *        picolibrary::Microchip::MCP23008::Register_Cache::initialize(),
+ *        picolibrary::Microchip::MCP23008::Register_Cache::gpio(),
+ *        picolibrary::Microchip::MCP23008::Register_Cache::olat(),
+ *        picolibrary::Microchip::MCP23008::Register_Cache::cache_gpio() work properly.
+ */
+TEST( gpio, worksProperly )
+{
+    auto cache = Cache{};
+
+    EXPECT_EQ( cache.gpio(), 0x00 );
+    EXPECT_EQ( cache.olat(), 0x00 );
+
+    auto const value = random<std::uint8_t>();
+
+    cache.cache_gpio( value );
+
+    EXPECT_EQ( cache.gpio(), value );
+    EXPECT_EQ( cache.olat(), value );
+
+    cache.initialize();
+
+    EXPECT_EQ( cache.gpio(), 0x00 );
+    EXPECT_EQ( cache.olat(), 0x00 );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Register_Cache::Register_Cache(),
+ *        picolibrary::Microchip::MCP23008::Register_Cache::initialize(),
+ *        picolibrary::Microchip::MCP23008::Register_Cache::gpio(),
+ *        picolibrary::Microchip::MCP23008::Register_Cache::olat(),
+ *        picolibrary::Microchip::MCP23008::Register_Cache::cache_olat() work properly.
+ */
+TEST( olat, worksProperly )
+{
+    auto cache = Cache{};
+
+    EXPECT_EQ( cache.gpio(), 0x00 );
+    EXPECT_EQ( cache.olat(), 0x00 );
+
+    auto const value = random<std::uint8_t>();
+
+    cache.cache_olat( value );
+
+    EXPECT_EQ( cache.gpio(), value );
+    EXPECT_EQ( cache.olat(), value );
+
+    cache.initialize();
+
+    EXPECT_EQ( cache.gpio(), 0x00 );
+    EXPECT_EQ( cache.olat(), 0x00 );
 }
 
 /**

@@ -319,6 +319,30 @@ class Register_Cache {
         return m_gppu;
     }
 
+    /**
+     * \brief Get the cached GPIO register value.
+     *
+     * \attention Writing to the GPIO register actually modifies the state of the OLAT
+     *            register. Therefore, this function actually returns the cached OLAT
+     *            register value.
+     *
+     * \return The cached GPIO register value.
+     */
+    constexpr auto gpio() const noexcept
+    {
+        return m_olat;
+    }
+
+    /**
+     * \brief Get the cached OLAT register value.
+     *
+     * \return The cached OLAT register value.
+     */
+    constexpr auto olat() const noexcept
+    {
+        return m_olat;
+    }
+
   protected:
     /**
      * \brief Constructor.
@@ -436,6 +460,30 @@ class Register_Cache {
         m_gppu = value;
     }
 
+    /**
+     * \brief Update the cached GPIO register value.
+     *
+     * \attention Writing to the GPIO register actually modifies the state of the OLAT
+     *            register. Therefore, this function actually updates the cached OLAT
+     *            register value.
+     *
+     * \param[in] value The updated GPIO register value.
+     */
+    constexpr void cache_gpio( std::uint8_t value ) noexcept
+    {
+        m_olat = value;
+    }
+
+    /**
+     * \brief Update the cached OLAT register value.
+     *
+     * \param[in] value The updated OLAT register value.
+     */
+    constexpr void cache_olat( std::uint8_t value ) noexcept
+    {
+        m_olat = value;
+    }
+
   private:
     /**
      * \brief The cached IODIR register value.
@@ -471,6 +519,11 @@ class Register_Cache {
      * \brief The cached GPPU register value.
      */
     std::uint8_t m_gppu{ GPPU::POR };
+
+    /**
+     * \brief The cached OLAT register value.
+     */
+    std::uint8_t m_olat{ OLAT::POR };
 };
 
 } // namespace picolibrary::Microchip::MCP23008
