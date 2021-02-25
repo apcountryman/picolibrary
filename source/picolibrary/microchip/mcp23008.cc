@@ -21,3 +21,10 @@
  */
 
 #include "picolibrary/microchip/mcp23008.h"
+
+namespace picolibrary::Microchip::MCP23008 {
+
+static_assert( Address::min() == Address::MIN );
+static_assert( Address::max() == Address::MAX );
+
+} // namespace picolibrary::Microchip::MCP23008
