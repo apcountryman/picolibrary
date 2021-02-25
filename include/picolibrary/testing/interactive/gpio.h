@@ -72,13 +72,14 @@ void state( Transmitter transmitter, Input_Pin pin, Delayer delay ) noexcept
 
         auto const result = pin.state();
         if ( result.is_error() ) {
-            static_cast<void>( stream.print( "pin state error: {}\n", result.error() ) );
+            static_cast<void>( stream.print( "pin state getting error: {}\n", result.error() ) );
 
             return;
         } // if
-        else {
-            static_cast<void>( result.is_high() ? stream.print( "pin is high\n" ) : stream.print( "pin is low\n" ) );
-        } // else
+
+        if ( stream.print( "pin is {}\n", result.value().is_high() ? "high" : "low" ).is_error() ) {
+            return;
+        } // if
     }     // for
 }
 
