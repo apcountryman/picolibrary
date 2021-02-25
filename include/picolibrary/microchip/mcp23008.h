@@ -309,6 +309,16 @@ class Register_Cache {
         return m_iocon;
     }
 
+    /**
+     * \brief Get the cached GPPU register value.
+     *
+     * \return The cached GPPU register value.
+     */
+    constexpr auto gppu() const noexcept
+    {
+        return m_gppu;
+    }
+
   protected:
     /**
      * \brief Constructor.
@@ -416,6 +426,16 @@ class Register_Cache {
         m_iocon = value;
     }
 
+    /**
+     * \brief Update the cached GPPU register value.
+     *
+     * \param[in] value The updated GPPU register value.
+     */
+    constexpr void cache_gppu( std::uint8_t value ) noexcept
+    {
+        m_gppu = value;
+    }
+
   private:
     /**
      * \brief The cached IODIR register value.
@@ -446,6 +466,11 @@ class Register_Cache {
      * \brief The cached IOCON register value.
      */
     std::uint8_t m_iocon{ IOCON::POR };
+
+    /**
+     * \brief The cached GPPU register value.
+     */
+    std::uint8_t m_gppu{ GPPU::POR };
 };
 
 } // namespace picolibrary::Microchip::MCP23008

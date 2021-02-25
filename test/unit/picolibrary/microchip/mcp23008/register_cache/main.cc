@@ -39,6 +39,7 @@ class Cache : public ::picolibrary::Microchip::MCP23008::Register_Cache {
 
     using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_defval;
     using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_gpinten;
+    using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_gppu;
     using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_intcon;
     using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_iocon;
     using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_iodir;
@@ -184,6 +185,29 @@ TEST( iocon, worksProperly )
     cache.initialize();
 
     EXPECT_EQ( cache.iocon(), 0x00 );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Register_Cache::Register_Cache(),
+ *        picolibrary::Microchip::MCP23008::Register_Cache::initialize(),
+ *        picolibrary::Microchip::MCP23008::Register_Cache::gppu(), and
+ *        picolibrary::Microchip::MCP23008::Register_Cache::cache_gppu() work properly.
+ */
+TEST( gppu, worksProperly )
+{
+    auto cache = Cache{};
+
+    EXPECT_EQ( cache.gppu(), 0x00 );
+
+    auto const value = random<std::uint8_t>();
+
+    cache.cache_gppu( value );
+
+    EXPECT_EQ( cache.gppu(), value );
+
+    cache.initialize();
+
+    EXPECT_EQ( cache.gppu(), 0x00 );
 }
 
 /**
