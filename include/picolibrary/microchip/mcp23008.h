@@ -31,7 +31,7 @@
 namespace picolibrary::Microchip::MCP23008 {
 
 /**
- * \brief I/O Direction Register (IODIR).
+ * \brief Microchip MCP23008 I/O Direction Register (IODIR).
  */
 struct IODIR {
     /**
@@ -46,7 +46,7 @@ struct IODIR {
 };
 
 /**
- * \brief Input Polarity Port Register (IPOL).
+ * \brief Microchip MCP23008 Input Polarity Port Register (IPOL).
  */
 struct IPOL {
     /**
@@ -61,7 +61,7 @@ struct IPOL {
 };
 
 /**
- * \brief Interrupt-On-Change Pins Register (GPINTEN).
+ * \brief Microchip MCP23008 Interrupt-On-Change Pins Register (GPINTEN).
  */
 struct GPINTEN {
     /**
@@ -76,7 +76,7 @@ struct GPINTEN {
 };
 
 /**
- * \brief Default Value Register (DEFVAL).
+ * \brief Microchip MCP23008 Default Value Register (DEFVAL).
  */
 struct DEFVAL {
     /**
@@ -91,7 +91,7 @@ struct DEFVAL {
 };
 
 /**
- * \brief Interrupt-On-Change Control Register (INTCON).
+ * \brief Microchip MCP23008 Interrupt-On-Change Control Register (INTCON).
  */
 struct INTCON {
     /**
@@ -106,7 +106,7 @@ struct INTCON {
 };
 
 /**
- * \brief I/O Expander Configuration Register (IOCON).
+ * \brief Microchip MCP23008 I/O Expander Configuration Register (IOCON).
  *
  * This register has the following fields:
  * - Interrupt Polarity Control (INTPOL)
@@ -175,7 +175,7 @@ struct IOCON {
 };
 
 /**
- * \brief GPIO Pull-Up Resistor Register (GPPU).
+ * \brief Microchip MCP23008 GPIO Pull-Up Resistor Register (GPPU).
  */
 struct GPPU {
     /**
@@ -190,7 +190,7 @@ struct GPPU {
 };
 
 /**
- * \brief Interrupt Flag Register (INTF).
+ * \brief Microchip MCP23008 Interrupt Flag Register (INTF).
  */
 struct INTF {
     /**
@@ -200,7 +200,7 @@ struct INTF {
 };
 
 /**
- * \brief Interrupt Captured Value For Port Register (INTCAP).
+ * \brief Microchip MCP23008 Interrupt Captured Value For Port Register (INTCAP).
  */
 struct INTCAP {
     /**
@@ -210,7 +210,7 @@ struct INTCAP {
 };
 
 /**
- * \brief General Purpose I/O Port Register (GPIO).
+ * \brief Microchip MCP23008 General Purpose I/O Port Register (GPIO).
  */
 struct GPIO {
     /**
@@ -225,7 +225,7 @@ struct GPIO {
 };
 
 /**
- * \brief Output Latch Register (OLAT).
+ * \brief Microchip MCP23008 Output Latch Register (OLAT).
  */
 struct OLAT {
     /**
