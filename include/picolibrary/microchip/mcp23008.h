@@ -239,6 +239,293 @@ struct OLAT {
     static constexpr auto POR = std::uint8_t{ 0x00 };
 };
 
+/**
+ * \brief Microchip MCP23008 register cache.
+ */
+class Register_Cache {
+  public:
+    /**
+     * \brief Destructor.
+     */
+    ~Register_Cache() noexcept = default;
+
+    /**
+     * \brief Get the cached IODIR register value.
+     *
+     * \return The cached IODIR register value.
+     */
+    constexpr auto iodir() const noexcept
+    {
+        return m_iodir;
+    }
+
+    /**
+     * \brief Get the cached IPOL register value.
+     *
+     * \return The cached IPOL register value.
+     */
+    constexpr auto ipol() const noexcept
+    {
+        return m_ipol;
+    }
+
+    /**
+     * \brief Get the cached GPINTEN register value.
+     *
+     * \return The cached GPINTEN register value.
+     */
+    constexpr auto gpinten() const noexcept
+    {
+        return m_gpinten;
+    }
+
+    /**
+     * \brief Get the cached DEFVAL register value.
+     *
+     * \return The cached DEFVAL register value.
+     */
+    constexpr auto defval() const noexcept
+    {
+        return m_defval;
+    }
+
+    /**
+     * \brief Get the cached INTCON register value.
+     *
+     * \return The cached INTCON register value.
+     */
+    constexpr auto intcon() const noexcept
+    {
+        return m_intcon;
+    }
+
+    /**
+     * \brief Get the cached IOCON register value.
+     *
+     * \return The cached IOCON register value.
+     */
+    constexpr auto iocon() const noexcept
+    {
+        return m_iocon;
+    }
+
+    /**
+     * \brief Get the cached GPPU register value.
+     *
+     * \return The cached GPPU register value.
+     */
+    constexpr auto gppu() const noexcept
+    {
+        return m_gppu;
+    }
+
+    /**
+     * \brief Get the cached GPIO register value.
+     *
+     * \attention Writing to the GPIO register actually modifies the state of the OLAT
+     *            register. Therefore, this function actually returns the cached OLAT
+     *            register value.
+     *
+     * \return The cached GPIO register value.
+     */
+    constexpr auto gpio() const noexcept
+    {
+        return m_olat;
+    }
+
+    /**
+     * \brief Get the cached OLAT register value.
+     *
+     * \return The cached OLAT register value.
+     */
+    constexpr auto olat() const noexcept
+    {
+        return m_olat;
+    }
+
+  protected:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Register_Cache() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Register_Cache( Register_Cache && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Register_Cache( Register_Cache const & original ) noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Register_Cache && expression ) noexcept -> Register_Cache & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator =( Register_Cache const & expression ) noexcept
+        -> Register_Cache & = default;
+
+    /**
+     * \brief Reset all cached register valies to the register POR values.
+     */
+    constexpr void initialize() noexcept
+    {
+        *this = {};
+    }
+
+    /**
+     * \brief Update the cached IODIR register value.
+     *
+     * \param[in] value The updated IODIR register value.
+     */
+    constexpr void cache_iodir( std::uint8_t value ) noexcept
+    {
+        m_iodir = value;
+    }
+
+    /**
+     * \brief Update the cached IPOL register value.
+     *
+     * \param[in] value The updated IPOL register value.
+     */
+    constexpr void cache_ipol( std::uint8_t value ) noexcept
+    {
+        m_ipol = value;
+    }
+
+    /**
+     * \brief Update the cached GPINTEN register value.
+     *
+     * \param[in] value The updated GPINTEN register value.
+     */
+    constexpr void cache_gpinten( std::uint8_t value ) noexcept
+    {
+        m_gpinten = value;
+    }
+
+    /**
+     * \brief Update the cached DEFVAL register value.
+     *
+     * \param[in] value The updated DEFVAL register value.
+     */
+    constexpr void cache_defval( std::uint8_t value ) noexcept
+    {
+        m_defval = value;
+    }
+
+    /**
+     * \brief Update the cached INTCON register value.
+     *
+     * \param[in] value The updated INTCON register value.
+     */
+    constexpr void cache_intcon( std::uint8_t value ) noexcept
+    {
+        m_intcon = value;
+    }
+
+    /**
+     * \brief Update the cached IOCON register value.
+     *
+     * \param[in] value The updated IOCON register value.
+     */
+    constexpr void cache_iocon( std::uint8_t value ) noexcept
+    {
+        m_iocon = value;
+    }
+
+    /**
+     * \brief Update the cached GPPU register value.
+     *
+     * \param[in] value The updated GPPU register value.
+     */
+    constexpr void cache_gppu( std::uint8_t value ) noexcept
+    {
+        m_gppu = value;
+    }
+
+    /**
+     * \brief Update the cached GPIO register value.
+     *
+     * \attention Writing to the GPIO register actually modifies the state of the OLAT
+     *            register. Therefore, this function actually updates the cached OLAT
+     *            register value.
+     *
+     * \param[in] value The updated GPIO register value.
+     */
+    constexpr void cache_gpio( std::uint8_t value ) noexcept
+    {
+        m_olat = value;
+    }
+
+    /**
+     * \brief Update the cached OLAT register value.
+     *
+     * \param[in] value The updated OLAT register value.
+     */
+    constexpr void cache_olat( std::uint8_t value ) noexcept
+    {
+        m_olat = value;
+    }
+
+  private:
+    /**
+     * \brief The cached IODIR register value.
+     */
+    std::uint8_t m_iodir{ IODIR::POR };
+
+    /**
+     * \brief The cached IPOL register value.
+     */
+    std::uint8_t m_ipol{ IPOL::POR };
+
+    /**
+     * \brief The cached GPINTEN register value.
+     */
+    std::uint8_t m_gpinten{ GPINTEN::POR };
+
+    /**
+     * \brief The cached DEFVAL register value.
+     */
+    std::uint8_t m_defval{ DEFVAL::POR };
+
+    /**
+     * \brief The cached INTCON register value.
+     */
+    std::uint8_t m_intcon{ INTCON::POR };
+
+    /**
+     * \brief The cached IOCON register value.
+     */
+    std::uint8_t m_iocon{ IOCON::POR };
+
+    /**
+     * \brief The cached GPPU register value.
+     */
+    std::uint8_t m_gppu{ GPPU::POR };
+
+    /**
+     * \brief The cached OLAT register value.
+     */
+    std::uint8_t m_olat{ OLAT::POR };
+};
+
 } // namespace picolibrary::Microchip::MCP23008
 
 #endif // PICOLIBRARY_MICROCHIP_MCP23008_H

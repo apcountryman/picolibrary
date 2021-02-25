@@ -13,8 +13,21 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/microchip/mcp23008/CMakeLists.txt
-# Description: picolibrary::Microchip::MCP23008 unit tests CMake rules.
+# File: test/unit/picolibrary/microchip/mcp23008/register_cache/CMakeLists.txt
+# Description: picolibrary::Microchip::MCP23008::Register_Cache unit tests CMake rules.
 
 # build the picolibrary::Microchip::MCP23008::Register_Cache unit tests
-add_subdirectory( register_cache )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+    add_executable(
+        test-unit-picolibrary-microchip-mcp23008-register_cache
+        main.cc
+    )
+    target_link_libraries(
+        test-unit-picolibrary-microchip-mcp23008-register_cache
+        picolibrary
+    )
+    add_test(
+        NAME    test-unit-picolibrary-microchip-mcp23008-register_cache
+        COMMAND test-unit-picolibrary-microchip-mcp23008-register_cache --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )

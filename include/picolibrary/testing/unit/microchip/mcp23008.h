@@ -23,10 +23,77 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_MICROCHIP_MCP23008_H
 #define PICOLIBRARY_TESTING_UNIT_MICROCHIP_MCP23008_H
 
+#include <cstdint>
+
+#include "gmock/gmock.h"
+
 /**
  * \brief Microchip MCP23008 unit testing facilities.
  */
 namespace picolibrary::Testing::Unit::Microchip::MCP23008 {
+
+/**
+ * \brief Microchip MCP23008 mock register cache.
+ */
+class Mock_Register_Cache {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    Mock_Register_Cache() = default;
+
+    Mock_Register_Cache( Mock_Register_Cache && ) = delete;
+
+    Mock_Register_Cache( Mock_Register_Cache const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Mock_Register_Cache() noexcept = default;
+
+    auto operator=( Mock_Register_Cache && ) = delete;
+
+    auto operator=( Mock_Register_Cache const & ) = delete;
+
+    MOCK_METHOD( void, initialize, () );
+
+    MOCK_METHOD( std::uint8_t, iodir, (), ( const ) );
+
+    MOCK_METHOD( void, cache_iodir, ( std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, ipol, (), ( const ) );
+
+    MOCK_METHOD( void, cache_ipol, ( std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, gpinten, (), ( const ) );
+
+    MOCK_METHOD( void, cache_gpinten, ( std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, defval, (), ( const ) );
+
+    MOCK_METHOD( void, cache_defval, ( std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, intcon, (), ( const ) );
+
+    MOCK_METHOD( void, cache_intcon, ( std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, iocon, (), ( const ) );
+
+    MOCK_METHOD( void, cache_iocon, ( std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, gppu, (), ( const ) );
+
+    MOCK_METHOD( void, cache_gppu, ( std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, gpio, (), ( const ) );
+
+    MOCK_METHOD( void, cache_gpio, ( std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, olat, (), ( const ) );
+
+    MOCK_METHOD( void, cache_olat, ( std::uint8_t ) );
+};
+
 } // namespace picolibrary::Testing::Unit::Microchip::MCP23008
 
 #endif // PICOLIBRARY_TESTING_UNIT_MICROCHIP_MCP23008_H
