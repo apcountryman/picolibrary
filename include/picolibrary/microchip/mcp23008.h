@@ -526,6 +526,31 @@ class Register_Cache {
     std::uint8_t m_olat{ OLAT::POR };
 };
 
+/**
+ * \brief Microchip MCP23008 sequential operation mode.
+ */
+enum class Sequential_Operation_Mode : std::uint8_t {
+    ENABLED  = 0b0 << IOCON::Bit::SEQOP, ///< Enabled.
+    DISABLED = 0b1 << IOCON::Bit::SEQOP, ///< Disabled.
+};
+
+/**
+ * \brief Microchip MCP23008 SDA slew rate control configuration.
+ */
+enum class SDA_Slew_Rate_Control_Configuration : std::uint8_t {
+    ENABLED  = 0b0 << IOCON::Bit::DISSLW, ///< Enabled.
+    DISABLED = 0b1 << IOCON::Bit::DISSLW, ///< Disabled.
+};
+
+/**
+ * \brief Microchip MCP23008 interrupt mode.
+ */
+enum class Interrupt_Mode : std::uint8_t {
+    OPEN_DRAIN            = 0b10 << IOCON::Bit::INTERRUPT_MODE, ///< Open-drain.
+    PUSH_PULL_ACTIVE_HIGH = 0b01 << IOCON::Bit::INTERRUPT_MODE, ///< Push-pull, active high.
+    PUSH_PULL_ACTIVE_LOW = 0b00 << IOCON::Bit::INTERRUPT_MODE, ///< Push-pull, active low.
+};
+
 } // namespace picolibrary::Microchip::MCP23008
 
 #endif // PICOLIBRARY_MICROCHIP_MCP23008_H
