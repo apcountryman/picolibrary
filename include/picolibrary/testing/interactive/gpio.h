@@ -31,6 +31,59 @@
 namespace picolibrary::Testing::Interactive::GPIO {
 
 /**
+ * \brief GPIO input pin state interactive test helper.
+ *
+ * \tparam Output_Stream The type of asynchronous serial output stream to use to output
+ *         information to the user.
+ * \tparam Transmitter The type of asynchronous serial transmitter to use to transmit
+ *         information to the user.
+ * \tparam Input_Pin The type of input pin to get the state of.
+ * \tparam Delayer A nullary functor called to introduce a delay each time the pin's state
+ *         is read
+ *
+ * \param[in] transmitter The asynchronous serial transmitter to use to transmit
+ *            information to the user.
+ * \param[in] pin The pin to get the state of.
+ * \param[in] delay The nullary functor called to introduce a delay each time the pin's
+ *            state is read.
+ */
+template<template<typename> typename Output_Stream, typename Transmitter, typename Input_Pin, typename Delayer>
+void state( Transmitter transmitter, Input_Pin pin, Delayer delay ) noexcept
+{
+    // #lizard forgives the length
+
+    auto stream = Output_Stream{ std::move( transmitter ) };
+
+    if ( stream.initialize().is_error() ) {
+        return;
+    } // if
+
+    {
+        auto const result = pin.initialize();
+        if ( result.is_error() ) {
+            static_cast<void>( stream.print( "pin initialization error: {}\n", result.error() ) );
+
+            return;
+        } // if
+    }
+
+    for ( ;; ) {
+        delay();
+
+        auto const result = pin.state();
+        if ( result.is_error() ) {
+            static_cast<void>( stream.print( "pin state getting error: {}\n", result.error() ) );
+
+            return;
+        } // if
+
+        if ( stream.print( "pin is {}\n", result.value().is_high() ? "high" : "low" ).is_error() ) {
+            return;
+        } // if
+    }     // for
+}
+
+/**
  * \brief GPIO output pin toggle interactive test helper.
  *
  * \tparam Output_Stream The type of asynchronous serial output stream to use to output
