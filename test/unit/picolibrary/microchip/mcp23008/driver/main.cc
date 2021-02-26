@@ -49,6 +49,8 @@ using ::picolibrary::Testing::Unit::I2C::Mock_Controller;
 using ::picolibrary::Testing::Unit::I2C::Mock_Device;
 using ::picolibrary::Testing::Unit::Microchip::MCP23008::Mock_Register_Cache;
 using ::testing::_;
+using ::testing::A;
+using ::testing::InSequence;
 using ::testing::Return;
 
 using Driver =
@@ -137,7 +139,7 @@ TEST( makeDriver, worksProperly )
  */
 TEST( readIODIR, readError )
 {
-    auto mcp23008 = Driver{};
+    auto const mcp23008 = Driver{};
 
     auto const error = random<Mock_Error>();
 
@@ -154,7 +156,7 @@ TEST( readIODIR, readError )
  */
 TEST( readIODIR, worksProperly )
 {
-    auto mcp23008 = Driver{};
+    auto const mcp23008 = Driver{};
 
     auto const data = random<std::uint8_t>();
 
@@ -164,6 +166,42 @@ TEST( readIODIR, worksProperly )
 
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), data );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Driver::write_iodir() properly handles
+ *        a write error.
+ */
+TEST( writeIODIR, writeError )
+{
+    auto mcp23008 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( mcp23008, write( _, A<std::uint8_t>() ) ).WillOnce( Return( error ) );
+    EXPECT_CALL( mcp23008, cache_iodir( _ ) ).Times( 0 );
+
+    auto const result = mcp23008.write_iodir( random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Driver::write_iodir() works properly.
+ */
+TEST( writeIODIR, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto mcp23008 = Driver{};
+
+    auto const data = random<std::uint8_t>();
+
+    EXPECT_CALL( mcp23008, write( 0x00, data ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( mcp23008, cache_iodir( data ) );
+
+    EXPECT_FALSE( mcp23008.write_iodir( data ).is_error() );
 }
 
 /**

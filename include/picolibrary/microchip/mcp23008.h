@@ -682,6 +682,31 @@ class Driver : public Device, public Register_Cache {
     {
         return this->read( IODIR::ADDRESS );
     }
+
+    /**
+     * \brief Write to the IODIR register.
+     *
+     * \param[in] data The data to write to the IODIR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto write_iodir( std::uint8_t data ) noexcept -> Result<Void, Error_Code>
+    {
+        auto result = this->write( IODIR::ADDRESS, data );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        this->cache_iodir( data );
+
+        return {};
+    }
 };
 
 /**
