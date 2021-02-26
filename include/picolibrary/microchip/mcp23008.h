@@ -588,6 +588,63 @@ struct Address {
     }
 };
 
+/**
+ * \brief Microchip MCP23008 driver.
+ *
+ * \tparam Bus_Multiplexer_Aligner A nullary functor that returns either
+ *         picolibrary::Result<Void, Error_Code> or picolibrary::Result<Void, Void>. The
+ *         functor must be default constructable, move constructable, and move assignable.
+ *         When called, this functor should align the I2C bus's multiplexer(s) (if any) to
+ *         enable communication with the Microchip MCP23008.
+ * \tparam Controller The type of I2C controller used to interact with the bus the
+ *         Microchip MCP23008 is attached to.
+ * \tparam Register_Cache The type of Microchip MCP23008 register cache implementation
+ *         used by the driver. The default Microchip MCP23008 register cache
+ *         implementation should be used unless memory use is being optimized, or a mock
+ *         Microchip MCP23008 register cache is being injected to support unit testing of
+ *         this driver.
+ * \tparam Device The type of I2C device implementation used by the driver. The default
+ *         I2C device implementation should be used unless a mock I2C device
+ *         implementation is being injected to support unit testing of this driver.
+ */
+template<
+    typename Bus_Multiplexer_Aligner,
+    typename Controller,
+    typename Register_Cache = MCP23008::Register_Cache,
+    typename Device = I2C::Device<Bus_Multiplexer_Aligner, Controller, std::uint8_t>>
+class Driver : public Device, public Register_Cache {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Driver() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Driver( Driver && source ) noexcept = default;
+
+    Driver( Driver const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Driver() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Driver && expression ) noexcept -> Driver & = default;
+
+    auto operator=( Driver const & ) = delete;
+};
+
 } // namespace picolibrary::Microchip::MCP23008
 
 #endif // PICOLIBRARY_MICROCHIP_MCP23008_H
