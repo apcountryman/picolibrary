@@ -16,5 +16,8 @@
 # File: test/unit/picolibrary/microchip/mcp23008/CMakeLists.txt
 # Description: picolibrary::Microchip::MCP23008 unit tests CMake rules.
 
+# build the picolibrary::Microchip::MCP23008::Driver unit tests
+add_subdirectory( driver )
+
 # build the picolibrary::Microchip::MCP23008::Register_Cache unit tests
 add_subdirectory( register_cache )
