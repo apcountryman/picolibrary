@@ -28,6 +28,7 @@
 
 #include "picolibrary/error.h"
 #include "picolibrary/i2c.h"
+#include "picolibrary/result.h"
 
 /**
  * \brief Microchip MCP23008 facilities.
@@ -666,6 +667,58 @@ class Driver : public Device, public Register_Cache {
 
     auto operator=( Driver const & ) = delete;
 };
+
+/**
+ * \brief Construct a picolibrary::Microchip::MCP23008::Driver.
+ *
+ * \tparam Bus_Multiplexer_Aligner A nullary functor that returns either
+ *         picolibrary::Result<Void, Error_Code> or picolibrary::Result<Void, Void>. The
+ *         functor must be default constructable, move constructable, and move assignable.
+ *         When called, this functor should align the I2C bus's multiplexer(s) (if any) to
+ *         enable communication with the Microchip MCP23008.
+ * \tparam Controller The type of I2C controller used to interact with the bus the
+ *         Microchip MCP23008 is attached to.
+ * \tparam Register_Cache The type of Microchip MCP23008 register cache implementation
+ *         used by the driver. The default Microchip MCP23008 register cache
+ *         implementation should be used unless memory use is being optimized, or a mock
+ *         Microchip MCP23008 register cache is being injected to support unit testing of
+ *         this driver.
+ * \tparam Device The type of I2C device implementation used by the driver. The default
+ *         I2C device implementation should be used unless a mock I2C device
+ *         implementation is being injected to support unit testing of this driver.
+ *
+ * \param[in] bus_multiplexer_aligner The MCP23008's bus multiplexer aligner.
+ * \param[in] controller The I2C controller used to interact with the bus the MCP23008 is
+ *            attached to.
+ * \param[in] address The MCP23008's address.
+ * \param[in] nonresponsive_device_error The error code to return when the MCP23008
+ *            does not respond when addressed, or does not acknowledge a write.
+ *
+ * \return The driver if address is greater than or equal to
+ *         picolibrary::Microchip::MCP23008::Address::MIN, and less than or equal to
+ *         picolibrary::Microchip::MCP23008::Address::MAX.
+ * \return picolibrary::Generic_Error::INVALID_ARGUMENT if address is less than
+ *         picolibrary::Microchip::MCP23008::Address::MIN, or greater than
+ *         picolibrary::Microchip::MCP23008::Address::MAX.
+ */
+template<
+    typename Bus_Multiplexer_Aligner,
+    typename Controller,
+    typename Register_Cache = MCP23008::Register_Cache,
+    typename Device = I2C::Device<Bus_Multiplexer_Aligner, Controller, std::uint8_t>>
+constexpr auto make_driver(
+    Bus_Multiplexer_Aligner bus_multiplexer_aligner,
+    Controller &            controller,
+    I2C::Address            address,
+    Error_Code const &      nonresponsive_device_error ) noexcept
+    -> Result<Driver<Bus_Multiplexer_Aligner, Controller, Register_Cache, Device>, Error_Code>
+{
+    if ( address < Address::MIN or address > Address::MAX ) {
+        return Generic_Error::INVALID_ARGUMENT;
+    } // if
+
+    return Driver{ std::move( bus_multiplexer_aligner ), controller, address, nonresponsive_device_error };
+}
 
 } // namespace picolibrary::Microchip::MCP23008
 

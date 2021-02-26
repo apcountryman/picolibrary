@@ -36,9 +36,11 @@
 namespace {
 
 using ::picolibrary::Error_Code;
+using ::picolibrary::Generic_Error;
 using ::picolibrary::Result;
 using ::picolibrary::Void;
 using ::picolibrary::I2C::Address;
+using ::picolibrary::Microchip::MCP23008::make_driver;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::I2C::Mock_Controller;
@@ -62,6 +64,62 @@ TEST( constructor, worksProperly )
 
     EXPECT_EQ( mcp23008.address(), address );
     EXPECT_EQ( mcp23008.nonresponsive_device_error(), nonresponsive_device_error );
+}
+
+/**
+ * \brief Verify picolibrary::Micorchip::MCP23008::make_driver() properly handles an
+ *        invalid device address.
+ */
+TEST( makeDriver, invalidAddress )
+{
+    {
+        auto controller = Mock_Controller{};
+
+        auto const result = make_driver(
+            std::function<Result<Void, Error_Code>()>{},
+            controller,
+            random<Address>(
+                Address{},
+                Address{ Address::NUMERIC,
+                         ::picolibrary::Microchip::MCP23008::Address::MIN.numeric() - 1 } ),
+            random<Mock_Error>() );
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), Generic_Error::INVALID_ARGUMENT );
+    }
+
+    {
+        auto controller = Mock_Controller{};
+
+        auto const result = make_driver(
+            std::function<Result<Void, Error_Code>()>{},
+            controller,
+            random<Address>( Address{
+                Address::NUMERIC, ::picolibrary::Microchip::MCP23008::Address::MAX.numeric() + 1 } ),
+            random<Mock_Error>() );
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), Generic_Error::INVALID_ARGUMENT );
+    }
+}
+
+/**
+ * \brief Verify picolibrary::Micorchip::MCP23008::make_driver() works properly.
+ */
+TEST( makeDriver, worksProperly )
+{
+    auto       controller = Mock_Controller{};
+    auto const address    = random<Address>(
+        ::picolibrary::Microchip::MCP23008::Address::MIN,
+        ::picolibrary::Microchip::MCP23008::Address::MAX );
+    auto const nonresponsive_device_error = random<Mock_Error>();
+
+    auto const result = make_driver(
+        std::function<Result<Void, Error_Code>()>{}, controller, address, nonresponsive_device_error );
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value().address(), address );
+    EXPECT_EQ( result.value().nonresponsive_device_error(), nonresponsive_device_error );
 }
 
 /**
