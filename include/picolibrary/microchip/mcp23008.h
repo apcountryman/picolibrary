@@ -24,7 +24,9 @@
 #define PICOLIBRARY_MICROCHIP_MCP23008_H
 
 #include <cstdint>
+#include <utility>
 
+#include "picolibrary/error.h"
 #include "picolibrary/i2c.h"
 
 /**
@@ -618,6 +620,26 @@ class Driver : public Device, public Register_Cache {
      * \brief Constructor.
      */
     constexpr Driver() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] bus_multiplexer_aligner The MCP23008's bus multiplexer aligner.
+     * \param[in] controller The I2C controller used to interact with the bus the MCP23008
+     *            is attached to.
+     * \param[in] address The MCP23008's address.
+     * \param[in] nonresponsive_device_error The error code to return when the MCP23008
+     *            does not respond when addressed, or does not acknowledge a write.
+     */
+    constexpr Driver(
+        Bus_Multiplexer_Aligner bus_multiplexer_aligner,
+        Controller &            controller,
+        I2C::Address            address,
+        Error_Code const &      nonresponsive_device_error ) noexcept :
+        Device{ std::move( bus_multiplexer_aligner ), controller, address, nonresponsive_device_error },
+        Register_Cache{}
+    {
+    }
 
     /**
      * \brief Constructor.
