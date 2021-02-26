@@ -672,7 +672,7 @@ class Mock_Device<std::uint8_t> {
 
     MOCK_METHOD( (Result<Void, Error_Code>), ping, (), ( const ) );
 
-    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read, ( std::uint8_t ) );
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read, ( std::uint8_t ), ( const ) );
 
     MOCK_METHOD(
         (Result<std::vector<std::uint8_t>, Error_Code>),
