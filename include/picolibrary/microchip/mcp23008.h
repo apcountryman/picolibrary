@@ -620,7 +620,7 @@ class Driver : public Device, public Register_Cache {
     /**
      * \brief Constructor.
      */
-    constexpr Driver() noexcept = default;
+    constexpr Driver() = default;
 
     /**
      * \brief Constructor.
@@ -666,6 +666,22 @@ class Driver : public Device, public Register_Cache {
     constexpr auto operator=( Driver && expression ) noexcept -> Driver & = default;
 
     auto operator=( Driver const & ) = delete;
+
+    /**
+     * \brief Read the IODIR register.
+     *
+     * \return The data read from the IODIR register if the read succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto read_iodir() const noexcept
+    {
+        return this->read( IODIR::ADDRESS );
+    }
 };
 
 /**

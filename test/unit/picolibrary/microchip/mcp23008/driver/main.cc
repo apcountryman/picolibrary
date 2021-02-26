@@ -20,6 +20,7 @@
  * \brief picolibrary::Microchip::MCP23008::Driver unit test program.
  */
 
+#include <cstdint>
 #include <functional>
 
 #include "gmock/gmock.h"
@@ -30,6 +31,7 @@
 #include "picolibrary/result.h"
 #include "picolibrary/testing/unit/error.h"
 #include "picolibrary/testing/unit/i2c.h"
+#include "picolibrary/testing/unit/microchip/mcp23008.h"
 #include "picolibrary/testing/unit/random.h"
 #include "picolibrary/void.h"
 
@@ -44,6 +46,13 @@ using ::picolibrary::Microchip::MCP23008::make_driver;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::I2C::Mock_Controller;
+using ::picolibrary::Testing::Unit::I2C::Mock_Device;
+using ::picolibrary::Testing::Unit::Microchip::MCP23008::Mock_Register_Cache;
+using ::testing::_;
+using ::testing::Return;
+
+using Driver =
+    ::picolibrary::Microchip::MCP23008::Driver<std::function<Result<Void, Error_Code>()>, Mock_Controller, Mock_Register_Cache, Mock_Device<std::uint8_t>>;
 
 } // namespace
 
@@ -120,6 +129,41 @@ TEST( makeDriver, worksProperly )
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value().address(), address );
     EXPECT_EQ( result.value().nonresponsive_device_error(), nonresponsive_device_error );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Driver::read_iodir() properly handles a
+ *        read error.
+ */
+TEST( readIODIR, readError )
+{
+    auto mcp23008 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( mcp23008, read( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = mcp23008.read_iodir();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Driver::read_iodir() works properly.
+ */
+TEST( readIODIR, worksProperly )
+{
+    auto mcp23008 = Driver{};
+
+    auto const data = random<std::uint8_t>();
+
+    EXPECT_CALL( mcp23008, read( 0x00 ) ).WillOnce( Return( data ) );
+
+    auto const result = mcp23008.read_iodir();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), data );
 }
 
 /**
