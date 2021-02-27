@@ -169,31 +169,31 @@ class Mock_Driver : public I2C::Mock_Device<std::uint8_t>, public Mock_Register_
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_iodir, (), ( const ) );
 
-    MOCK_METHOD( (Result<Void, Error_Code>), write_iodir, () );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_iodir, ( std::uint8_t ) );
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_ipol, (), ( const ) );
 
-    MOCK_METHOD( (Result<Void, Error_Code>), write_ipol, () );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_ipol, ( std::uint8_t ) );
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_gpinten, (), ( const ) );
 
-    MOCK_METHOD( (Result<Void, Error_Code>), write_gpinten, () );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_gpinten, ( std::uint8_t ) );
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_defval, (), ( const ) );
 
-    MOCK_METHOD( (Result<Void, Error_Code>), write_defval, () );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_defval, ( std::uint8_t ) );
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_intcon, (), ( const ) );
 
-    MOCK_METHOD( (Result<Void, Error_Code>), write_intcon, () );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_intcon, ( std::uint8_t ) );
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_iocon, (), ( const ) );
 
-    MOCK_METHOD( (Result<Void, Error_Code>), write_iocon, () );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_iocon, ( std::uint8_t ) );
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_gppu, (), ( const ) );
 
-    MOCK_METHOD( (Result<Void, Error_Code>), write_gppu, () );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_gppu, ( std::uint8_t ) );
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_intf, (), ( const ) );
 
@@ -201,11 +201,11 @@ class Mock_Driver : public I2C::Mock_Device<std::uint8_t>, public Mock_Register_
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_gpio, (), ( const ) );
 
-    MOCK_METHOD( (Result<Void, Error_Code>), write_gpio, () );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_gpio, ( std::uint8_t ) );
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_olat, (), ( const ) );
 
-    MOCK_METHOD( (Result<Void, Error_Code>), write_olat, () );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_olat, ( std::uint8_t ) );
 
     MOCK_METHOD(
         (Result<::picolibrary::Microchip::MCP23008::Interrupt_Context, Error_Code>),
