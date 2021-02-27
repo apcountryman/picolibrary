@@ -554,6 +554,21 @@ enum class Interrupt_Mode : std::uint8_t {
 };
 
 /**
+ * \brief Microchip MCP23008 interrupt context.
+ */
+struct Interrupt_Context {
+    /**
+     * \brief The INTF register value.
+     */
+    std::uint8_t intf;
+
+    /**
+     * \brief The INTCAP register value.
+     */
+    std::uint8_t intcap;
+};
+
+/**
  * \brief Microchip MCP23008 device address range.
  */
 struct Address {
