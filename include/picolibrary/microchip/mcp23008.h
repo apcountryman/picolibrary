@@ -1161,6 +1161,49 @@ constexpr auto make_driver(
     return Driver{ std::move( bus_multiplexer_aligner ), controller, address, nonresponsive_device_error };
 }
 
+/**
+ * \brief Microchip MCP23008 internally pulled-up input pin.
+ *
+ * \tparam Driver The MCP23008 driver implementation. The default Microchip MCP23008
+ *         driver implementation should be used unless a mock Microchip MCP23008 driver
+ *         implementation is being injected to support unit testing of this internally
+ *         pulled-up input pin.
+ */
+template<typename Driver>
+class Internally_Pulled_Up_Input_Pin {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Internally_Pulled_Up_Input_Pin() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Internally_Pulled_Up_Input_Pin( Internally_Pulled_Up_Input_Pin && source ) noexcept = default;
+
+    Internally_Pulled_Up_Input_Pin( Internally_Pulled_Up_Input_Pin const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Internally_Pulled_Up_Input_Pin() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Internally_Pulled_Up_Input_Pin && expression ) noexcept
+        -> Internally_Pulled_Up_Input_Pin & = default;
+
+    auto operator=( Internally_Pulled_Up_Input_Pin const & expression ) = delete;
+};
+
 } // namespace picolibrary::Microchip::MCP23008
 
 #endif // PICOLIBRARY_MICROCHIP_MCP23008_H
