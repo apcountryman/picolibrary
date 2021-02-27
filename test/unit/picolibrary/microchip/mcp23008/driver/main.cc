@@ -631,6 +631,41 @@ TEST( writeGPPU, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::Microchip::MCP23008::Driver::read_intf() properly handles a
+ *        read error.
+ */
+TEST( readINTF, readError )
+{
+    auto const mcp23008 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( mcp23008, read( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = mcp23008.read_intf();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Driver::read_intf() works properly.
+ */
+TEST( readINTF, worksProperly )
+{
+    auto const mcp23008 = Driver{};
+
+    auto const data = random<std::uint8_t>();
+
+    EXPECT_CALL( mcp23008, read( 0x07 ) ).WillOnce( Return( data ) );
+
+    auto const result = mcp23008.read_intf();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), data );
+}
+
+/**
  * \brief Execute the picolibrary::Microchip::MCP23008::Driver unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
