@@ -912,6 +912,47 @@ class Driver : public Device, public Register_Cache {
 
         return {};
     }
+
+    /**
+     * \brief Read the GPPU register.
+     *
+     * \return The data read from the GPPU register if the read succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto read_gppu() const noexcept
+    {
+        return this->read( GPPU::ADDRESS );
+    }
+
+    /**
+     * \brief Write to the GPPU register.
+     *
+     * \param[in] data The data to write to the GPPU register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto write_gppu( std::uint8_t data ) noexcept -> Result<Void, Error_Code>
+    {
+        auto result = this->write( GPPU::ADDRESS, data );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        this->cache_gppu( data );
+
+        return {};
+    }
 };
 
 /**
