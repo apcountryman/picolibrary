@@ -257,6 +257,14 @@ class Register_Cache {
     ~Register_Cache() noexcept = default;
 
     /**
+     * \brief Reset all cached register valies to the register POR values.
+     */
+    constexpr void initialize() noexcept
+    {
+        *this = {};
+    }
+
+    /**
      * \brief Get the cached IODIR register value.
      *
      * \return The cached IODIR register value.
@@ -388,14 +396,6 @@ class Register_Cache {
      */
     constexpr auto operator =( Register_Cache const & expression ) noexcept
         -> Register_Cache & = default;
-
-    /**
-     * \brief Reset all cached register valies to the register POR values.
-     */
-    constexpr void initialize() noexcept
-    {
-        *this = {};
-    }
 
     /**
      * \brief Update the cached IODIR register value.

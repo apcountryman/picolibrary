@@ -46,7 +46,6 @@ class Cache : public ::picolibrary::Microchip::MCP23008::Register_Cache {
     using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_iodir;
     using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_ipol;
     using ::picolibrary::Microchip::MCP23008::Register_Cache::cache_olat;
-    using ::picolibrary::Microchip::MCP23008::Register_Cache::initialize;
 };
 
 } // namespace
