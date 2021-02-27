@@ -27,6 +27,7 @@
 #include <utility>
 
 #include "picolibrary/error.h"
+#include "picolibrary/fixed_size_array.h"
 #include "picolibrary/i2c.h"
 #include "picolibrary/result.h"
 
@@ -1081,6 +1082,29 @@ class Driver : public Device, public Register_Cache {
         this->cache_olat( data );
 
         return {};
+    }
+
+    /**
+     * \brief Read the interrupt context.
+     *
+     * \return The interrupt context if the read succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto read_interrupt_context() const noexcept -> Result<Interrupt_Context, Error_Code>
+    {
+        auto buffer = Fixed_Size_Array<std::uint8_t, 2>{};
+
+        auto result = this->read( INTF::ADDRESS, buffer.begin(), buffer.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return Interrupt_Context{ .intf = buffer[ 0 ], .intcap = buffer[ 1 ] };
     }
 };
 

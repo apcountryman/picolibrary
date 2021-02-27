@@ -22,6 +22,7 @@
 
 #include <cstdint>
 #include <functional>
+#include <vector>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -840,6 +841,44 @@ TEST( writeOLAT, worksProperly )
     EXPECT_CALL( mcp23008, cache_olat( data ) );
 
     EXPECT_FALSE( mcp23008.write_olat( data ).is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Driver::read_interrupt_context()
+ *        properly handles a read error.
+ */
+TEST( readInterruptContext, readError )
+{
+    auto const mcp23008 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( mcp23008, read( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = mcp23008.read_interrupt_context();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Driver::read_interrupt_context() works
+ *        properly.
+ */
+TEST( readInterruptContext, worksProperly )
+{
+    auto const mcp23008 = Driver{};
+
+    auto const intf   = random<std::uint8_t>();
+    auto const intcap = random<std::uint8_t>();
+
+    EXPECT_CALL( mcp23008, read( 0x07, _ ) ).WillOnce( Return( std::vector<std::uint8_t>{ intf, intcap } ) );
+
+    auto const result = mcp23008.read_interrupt_context();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value().intf, intf );
+    EXPECT_EQ( result.value().intcap, intcap );
 }
 
 /**
