@@ -789,6 +789,47 @@ class Driver : public Device, public Register_Cache {
 
         return {};
     }
+
+    /**
+     * \brief Read the DEFVAL register.
+     *
+     * \return The data read from the DEFVAL register if the read succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto read_defval() const noexcept
+    {
+        return this->read( DEFVAL::ADDRESS );
+    }
+
+    /**
+     * \brief Write to the DEFVAL register.
+     *
+     * \param[in] data The data to write to the DEFVAL register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto write_defval( std::uint8_t data ) noexcept -> Result<Void, Error_Code>
+    {
+        auto result = this->write( DEFVAL::ADDRESS, data );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        this->cache_defval( data );
+
+        return {};
+    }
 };
 
 /**
