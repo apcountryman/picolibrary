@@ -24,8 +24,13 @@
 #define PICOLIBRARY_MICROCHIP_MCP23008_H
 
 #include <cstdint>
+#include <utility>
 
+#include "picolibrary/error.h"
+#include "picolibrary/fixed_size_array.h"
 #include "picolibrary/i2c.h"
+#include "picolibrary/result.h"
+#include "picolibrary/void.h"
 
 /**
  * \brief Microchip MCP23008 facilities.
@@ -602,6 +607,559 @@ struct Address {
         return MAX;
     }
 };
+
+/**
+ * \brief Microchip MCP23008 driver.
+ *
+ * \tparam Bus_Multiplexer_Aligner A nullary functor that returns either
+ *         picolibrary::Result<Void, Error_Code> or picolibrary::Result<Void, Void>. The
+ *         functor must be default constructable, move constructable, and move assignable.
+ *         When called, this functor should align the I2C bus's multiplexer(s) (if any) to
+ *         enable communication with the Microchip MCP23008.
+ * \tparam Controller The type of I2C controller used to interact with the bus the
+ *         Microchip MCP23008 is attached to.
+ * \tparam Register_Cache The type of Microchip MCP23008 register cache implementation
+ *         used by the driver. The default Microchip MCP23008 register cache
+ *         implementation should be used unless memory use is being optimized, or a mock
+ *         Microchip MCP23008 register cache is being injected to support unit testing of
+ *         this driver.
+ * \tparam Device The type of I2C device implementation used by the driver. The default
+ *         I2C device implementation should be used unless a mock I2C device
+ *         implementation is being injected to support unit testing of this driver.
+ */
+template<
+    typename Bus_Multiplexer_Aligner,
+    typename Controller,
+    typename Register_Cache = MCP23008::Register_Cache,
+    typename Device = I2C::Device<Bus_Multiplexer_Aligner, Controller, std::uint8_t>>
+class Driver : public Device, public Register_Cache {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Driver() = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] bus_multiplexer_aligner The MCP23008's bus multiplexer aligner.
+     * \param[in] controller The I2C controller used to interact with the bus the MCP23008
+     *            is attached to.
+     * \param[in] address The MCP23008's address.
+     * \param[in] nonresponsive_device_error The error code to return when the MCP23008
+     *            does not respond when addressed, or does not acknowledge a write.
+     */
+    constexpr Driver(
+        Bus_Multiplexer_Aligner bus_multiplexer_aligner,
+        Controller &            controller,
+        I2C::Address            address,
+        Error_Code const &      nonresponsive_device_error ) noexcept :
+        Device{ std::move( bus_multiplexer_aligner ), controller, address, nonresponsive_device_error },
+        Register_Cache{}
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Driver( Driver && source ) noexcept = default;
+
+    Driver( Driver const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Driver() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Driver && expression ) noexcept -> Driver & = default;
+
+    auto operator=( Driver const & ) = delete;
+
+    /**
+     * \brief Read the IODIR register.
+     *
+     * \return The data read from the IODIR register if the read succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto read_iodir() const noexcept
+    {
+        return this->read( IODIR::ADDRESS );
+    }
+
+    /**
+     * \brief Write to the IODIR register.
+     *
+     * \param[in] data The data to write to the IODIR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the write failed for any other reason.
+     */
+    auto write_iodir( std::uint8_t data ) noexcept -> Result<Void, Error_Code>
+    {
+        auto result = this->write( IODIR::ADDRESS, data );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        this->cache_iodir( data );
+
+        return {};
+    }
+
+    /**
+     * \brief Read the IPOL register.
+     *
+     * \return The data read from the IPOL register if the read succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto read_ipol() const noexcept
+    {
+        return this->read( IPOL::ADDRESS );
+    }
+
+    /**
+     * \brief Write to the IPOL register.
+     *
+     * \param[in] data The data to write to the IPOL register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the write failed for any other reason.
+     */
+    auto write_ipol( std::uint8_t data ) noexcept -> Result<Void, Error_Code>
+    {
+        auto result = this->write( IPOL::ADDRESS, data );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        this->cache_ipol( data );
+
+        return {};
+    }
+
+    /**
+     * \brief Read the GPINTEN register.
+     *
+     * \return The data read from the GPINTEN register if the read succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto read_gpinten() const noexcept
+    {
+        return this->read( GPINTEN::ADDRESS );
+    }
+
+    /**
+     * \brief Write to the GPINTEN register.
+     *
+     * \param[in] data The data to write to the GPINTEN register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the write failed for any other reason.
+     */
+    auto write_gpinten( std::uint8_t data ) noexcept -> Result<Void, Error_Code>
+    {
+        auto result = this->write( GPINTEN::ADDRESS, data );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        this->cache_gpinten( data );
+
+        return {};
+    }
+
+    /**
+     * \brief Read the DEFVAL register.
+     *
+     * \return The data read from the DEFVAL register if the read succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto read_defval() const noexcept
+    {
+        return this->read( DEFVAL::ADDRESS );
+    }
+
+    /**
+     * \brief Write to the DEFVAL register.
+     *
+     * \param[in] data The data to write to the DEFVAL register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the write failed for any other reason.
+     */
+    auto write_defval( std::uint8_t data ) noexcept -> Result<Void, Error_Code>
+    {
+        auto result = this->write( DEFVAL::ADDRESS, data );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        this->cache_defval( data );
+
+        return {};
+    }
+
+    /**
+     * \brief Read the INTCON register.
+     *
+     * \return The data read from the INTCON register if the read succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto read_intcon() const noexcept
+    {
+        return this->read( INTCON::ADDRESS );
+    }
+
+    /**
+     * \brief Write to the INTCON register.
+     *
+     * \param[in] data The data to write to the INTCON register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the write failed for any other reason.
+     */
+    auto write_intcon( std::uint8_t data ) noexcept -> Result<Void, Error_Code>
+    {
+        auto result = this->write( INTCON::ADDRESS, data );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        this->cache_intcon( data );
+
+        return {};
+    }
+
+    /**
+     * \brief Read the IOCON register.
+     *
+     * \return The data read from the IOCON register if the read succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto read_iocon() const noexcept
+    {
+        return this->read( IOCON::ADDRESS );
+    }
+
+    /**
+     * \brief Write to the IOCON register.
+     *
+     * \param[in] data The data to write to the IOCON register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the write failed for any other reason.
+     */
+    auto write_iocon( std::uint8_t data ) noexcept -> Result<Void, Error_Code>
+    {
+        auto result = this->write( IOCON::ADDRESS, data );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        this->cache_iocon( data );
+
+        return {};
+    }
+
+    /**
+     * \brief Read the GPPU register.
+     *
+     * \return The data read from the GPPU register if the read succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto read_gppu() const noexcept
+    {
+        return this->read( GPPU::ADDRESS );
+    }
+
+    /**
+     * \brief Write to the GPPU register.
+     *
+     * \param[in] data The data to write to the GPPU register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the write failed for any other reason.
+     */
+    auto write_gppu( std::uint8_t data ) noexcept -> Result<Void, Error_Code>
+    {
+        auto result = this->write( GPPU::ADDRESS, data );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        this->cache_gppu( data );
+
+        return {};
+    }
+
+    /**
+     * \brief Read the INTF register.
+     *
+     * \return The data read from the INTF register if the read succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto read_intf() const noexcept
+    {
+        return this->read( INTF::ADDRESS );
+    }
+
+    /**
+     * \brief Read the INTCAP register.
+     *
+     * \return The data read from the INTCAP register if the read succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto read_intcap() const noexcept
+    {
+        return this->read( INTCAP::ADDRESS );
+    }
+
+    /**
+     * \brief Read the GPIO register.
+     *
+     * \return The data read from the GPIO register if the read succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto read_gpio() const noexcept
+    {
+        return this->read( GPIO::ADDRESS );
+    }
+
+    /**
+     * \brief Write to the GPIO register.
+     *
+     * \param[in] data The data to write to the GPIO register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the write failed for any other reason.
+     */
+    auto write_gpio( std::uint8_t data ) noexcept -> Result<Void, Error_Code>
+    {
+        auto result = this->write( GPIO::ADDRESS, data );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        this->cache_gpio( data );
+
+        return {};
+    }
+
+    /**
+     * \brief Read the OLAT register.
+     *
+     * \return The data read from the OLAT register if the read succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto read_olat() const noexcept
+    {
+        return this->read( OLAT::ADDRESS );
+    }
+
+    /**
+     * \brief Write to the OLAT register.
+     *
+     * \param[in] data The data to write to the OLAT register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the write failed for any other reason.
+     */
+    auto write_olat( std::uint8_t data ) noexcept -> Result<Void, Error_Code>
+    {
+        auto result = this->write( OLAT::ADDRESS, data );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        this->cache_olat( data );
+
+        return {};
+    }
+
+    /**
+     * \brief Read the interrupt context.
+     *
+     * \return The interrupt context if the read succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto read_interrupt_context() const noexcept -> Result<Interrupt_Context, Error_Code>
+    {
+        auto buffer = Fixed_Size_Array<std::uint8_t, 2>{};
+
+        auto result = this->read( INTF::ADDRESS, buffer.begin(), buffer.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return Interrupt_Context{ .intf = buffer[ 0 ], .intcap = buffer[ 1 ] };
+    }
+};
+
+/**
+ * \brief Construct a picolibrary::Microchip::MCP23008::Driver.
+ *
+ * \tparam Bus_Multiplexer_Aligner A nullary functor that returns either
+ *         picolibrary::Result<Void, Error_Code> or picolibrary::Result<Void, Void>. The
+ *         functor must be default constructable, move constructable, and move assignable.
+ *         When called, this functor should align the I2C bus's multiplexer(s) (if any) to
+ *         enable communication with the Microchip MCP23008.
+ * \tparam Controller The type of I2C controller used to interact with the bus the
+ *         Microchip MCP23008 is attached to.
+ * \tparam Register_Cache The type of Microchip MCP23008 register cache implementation
+ *         used by the driver. The default Microchip MCP23008 register cache
+ *         implementation should be used unless memory use is being optimized, or a mock
+ *         Microchip MCP23008 register cache is being injected to support unit testing of
+ *         the driver.
+ * \tparam Device The type of I2C device implementation used by the driver. The default
+ *         I2C device implementation should be used unless a mock I2C device
+ *         implementation is being injected to support unit testing of the driver.
+ *
+ * \param[in] bus_multiplexer_aligner The MCP23008's bus multiplexer aligner.
+ * \param[in] controller The I2C controller used to interact with the bus the MCP23008 is
+ *            attached to.
+ * \param[in] address The MCP23008's address.
+ * \param[in] nonresponsive_device_error The error code to return when the MCP23008
+ *            does not respond when addressed, or does not acknowledge a write.
+ *
+ * \return The driver if address is greater than or equal to
+ *         picolibrary::Microchip::MCP23008::Address::MIN, and less than or equal to
+ *         picolibrary::Microchip::MCP23008::Address::MAX.
+ * \return picolibrary::Generic_Error::INVALID_ARGUMENT if address is less than
+ *         picolibrary::Microchip::MCP23008::Address::MIN, or greater than
+ *         picolibrary::Microchip::MCP23008::Address::MAX.
+ */
+template<
+    typename Bus_Multiplexer_Aligner,
+    typename Controller,
+    typename Register_Cache = MCP23008::Register_Cache,
+    typename Device = I2C::Device<Bus_Multiplexer_Aligner, Controller, std::uint8_t>>
+constexpr auto make_driver(
+    Bus_Multiplexer_Aligner bus_multiplexer_aligner,
+    Controller &            controller,
+    I2C::Address            address,
+    Error_Code const &      nonresponsive_device_error ) noexcept
+    -> Result<Driver<Bus_Multiplexer_Aligner, Controller, Register_Cache, Device>, Error_Code>
+{
+    if ( address < Address::MIN or address > Address::MAX ) {
+        return Generic_Error::INVALID_ARGUMENT;
+    } // if
+
+    return Driver{ std::move( bus_multiplexer_aligner ), controller, address, nonresponsive_device_error };
+}
 
 } // namespace picolibrary::Microchip::MCP23008
 
