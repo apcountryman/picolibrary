@@ -61,7 +61,7 @@ using Driver =
 
 /**
  * \brief Verify picolibrary::Microchip::MCP23008::Driver( Bus_Multiplexer_Aligner,
- *        Controller, picolibrary::I2C::Address, picolibrary::Error_Code const & ) works
+ *        Controller &, picolibrary::I2C::Address, picolibrary::Error_Code const & ) works
  *        properly.
  */
 TEST( constructor, worksProperly )

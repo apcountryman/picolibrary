@@ -30,6 +30,7 @@
 #include "picolibrary/fixed_size_array.h"
 #include "picolibrary/i2c.h"
 #include "picolibrary/result.h"
+#include "picolibrary/void.h"
 
 /**
  * \brief Microchip MCP23008 facilities.
@@ -710,7 +711,7 @@ class Driver : public Device, public Register_Cache {
      *         responsive.
      * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
      *         arbitration while attempting to communicate with the MCP23008.
-     * \return An error code if the read failed for any other reason.
+     * \return An error code if the write failed for any other reason.
      */
     auto write_iodir( std::uint8_t data ) noexcept -> Result<Void, Error_Code>
     {
@@ -751,7 +752,7 @@ class Driver : public Device, public Register_Cache {
      *         responsive.
      * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
      *         arbitration while attempting to communicate with the MCP23008.
-     * \return An error code if the read failed for any other reason.
+     * \return An error code if the write failed for any other reason.
      */
     auto write_ipol( std::uint8_t data ) noexcept -> Result<Void, Error_Code>
     {
@@ -792,7 +793,7 @@ class Driver : public Device, public Register_Cache {
      *         responsive.
      * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
      *         arbitration while attempting to communicate with the MCP23008.
-     * \return An error code if the read failed for any other reason.
+     * \return An error code if the write failed for any other reason.
      */
     auto write_gpinten( std::uint8_t data ) noexcept -> Result<Void, Error_Code>
     {
@@ -833,7 +834,7 @@ class Driver : public Device, public Register_Cache {
      *         responsive.
      * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
      *         arbitration while attempting to communicate with the MCP23008.
-     * \return An error code if the read failed for any other reason.
+     * \return An error code if the write failed for any other reason.
      */
     auto write_defval( std::uint8_t data ) noexcept -> Result<Void, Error_Code>
     {
@@ -874,7 +875,7 @@ class Driver : public Device, public Register_Cache {
      *         responsive.
      * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
      *         arbitration while attempting to communicate with the MCP23008.
-     * \return An error code if the read failed for any other reason.
+     * \return An error code if the write failed for any other reason.
      */
     auto write_intcon( std::uint8_t data ) noexcept -> Result<Void, Error_Code>
     {
@@ -915,7 +916,7 @@ class Driver : public Device, public Register_Cache {
      *         responsive.
      * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
      *         arbitration while attempting to communicate with the MCP23008.
-     * \return An error code if the read failed for any other reason.
+     * \return An error code if the write failed for any other reason.
      */
     auto write_iocon( std::uint8_t data ) noexcept -> Result<Void, Error_Code>
     {
@@ -956,7 +957,7 @@ class Driver : public Device, public Register_Cache {
      *         responsive.
      * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
      *         arbitration while attempting to communicate with the MCP23008.
-     * \return An error code if the read failed for any other reason.
+     * \return An error code if the write failed for any other reason.
      */
     auto write_gppu( std::uint8_t data ) noexcept -> Result<Void, Error_Code>
     {
@@ -1029,7 +1030,7 @@ class Driver : public Device, public Register_Cache {
      *         responsive.
      * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
      *         arbitration while attempting to communicate with the MCP23008.
-     * \return An error code if the read failed for any other reason.
+     * \return An error code if the write failed for any other reason.
      */
     auto write_gpio( std::uint8_t data ) noexcept -> Result<Void, Error_Code>
     {
@@ -1070,7 +1071,7 @@ class Driver : public Device, public Register_Cache {
      *         responsive.
      * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
      *         arbitration while attempting to communicate with the MCP23008.
-     * \return An error code if the read failed for any other reason.
+     * \return An error code if the write failed for any other reason.
      */
     auto write_olat( std::uint8_t data ) noexcept -> Result<Void, Error_Code>
     {
@@ -1122,10 +1123,10 @@ class Driver : public Device, public Register_Cache {
  *         used by the driver. The default Microchip MCP23008 register cache
  *         implementation should be used unless memory use is being optimized, or a mock
  *         Microchip MCP23008 register cache is being injected to support unit testing of
- *         this driver.
+ *         the driver.
  * \tparam Device The type of I2C device implementation used by the driver. The default
  *         I2C device implementation should be used unless a mock I2C device
- *         implementation is being injected to support unit testing of this driver.
+ *         implementation is being injected to support unit testing of the driver.
  *
  * \param[in] bus_multiplexer_aligner The MCP23008's bus multiplexer aligner.
  * \param[in] controller The I2C controller used to interact with the bus the MCP23008 is
