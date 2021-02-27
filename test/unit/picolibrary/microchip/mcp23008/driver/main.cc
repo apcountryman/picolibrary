@@ -418,6 +418,77 @@ TEST( writeDEFVAL, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::Microchip::MCP23008::Driver::read_intcon() properly handles
+ *        a read error.
+ */
+TEST( readINTCON, readError )
+{
+    auto const mcp23008 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( mcp23008, read( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = mcp23008.read_intcon();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Driver::read_intcon() works properly.
+ */
+TEST( readINTCON, worksProperly )
+{
+    auto const mcp23008 = Driver{};
+
+    auto const data = random<std::uint8_t>();
+
+    EXPECT_CALL( mcp23008, read( 0x04 ) ).WillOnce( Return( data ) );
+
+    auto const result = mcp23008.read_intcon();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), data );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Driver::write_intcon() properly handles
+ *        a write error.
+ */
+TEST( writeINTCON, writeError )
+{
+    auto mcp23008 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( mcp23008, write( _, A<std::uint8_t>() ) ).WillOnce( Return( error ) );
+    EXPECT_CALL( mcp23008, cache_intcon( _ ) ).Times( 0 );
+
+    auto const result = mcp23008.write_intcon( random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Driver::write_intcon() works properly.
+ */
+TEST( writeINTCON, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto mcp23008 = Driver{};
+
+    auto const data = random<std::uint8_t>();
+
+    EXPECT_CALL( mcp23008, write( 0x04, data ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( mcp23008, cache_intcon( data ) );
+
+    EXPECT_FALSE( mcp23008.write_intcon( data ).is_error() );
+}
+
+/**
  * \brief Execute the picolibrary::Microchip::MCP23008::Driver unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
