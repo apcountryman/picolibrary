@@ -871,6 +871,47 @@ class Driver : public Device, public Register_Cache {
 
         return {};
     }
+
+    /**
+     * \brief Read the IOCON register.
+     *
+     * \return The data read from the IOCON register if the read succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto read_iocon() const noexcept
+    {
+        return this->read( IOCON::ADDRESS );
+    }
+
+    /**
+     * \brief Write to the IOCON register.
+     *
+     * \param[in] data The data to write to the IOCON register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if the read failed for any other reason.
+     */
+    auto write_iocon( std::uint8_t data ) noexcept -> Result<Void, Error_Code>
+    {
+        auto result = this->write( IOCON::ADDRESS, data );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        this->cache_iocon( data );
+
+        return {};
+    }
 };
 
 /**
