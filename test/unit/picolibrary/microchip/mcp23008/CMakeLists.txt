@@ -19,5 +19,8 @@
 # build the picolibrary::Microchip::MCP23008::Driver unit tests
 add_subdirectory( driver )
 
+# build the picolibrary::Microchip::MCP23008::Internally_Pulled_Up_Input_Pin unit tests
+add_subdirectory( internally_pulled_up_input_pin )
+
 # build the picolibrary::Microchip::MCP23008::Register_Cache unit tests
 add_subdirectory( register_cache )
