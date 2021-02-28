@@ -301,6 +301,52 @@ TEST( state, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin::transition_to_high()
+ *        properly handles an IODIR register write error.
+ */
+TEST( transitionToHigh, writeIODIRError )
+{
+    auto driver = Mock_Driver{};
+
+    auto pin = Open_Drain_IO_Pin{ driver, random<std::uint8_t>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = pin.transition_to_high();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin::transition_to_high()
+ *        works properly.
+ */
+TEST( transitionToHigh, worksProperly )
+{
+    auto       driver = Mock_Driver{};
+    auto const mask   = random<std::uint8_t>();
+
+    auto pin = Open_Drain_IO_Pin{ driver, mask };
+
+    auto const iodir = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, iodir() ).WillOnce( Return( iodir ) );
+    EXPECT_CALL( driver, write_iodir( iodir | mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( pin.transition_to_high().is_error() );
+
+    EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+}
+
+/**
  * \brief Execute the picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
