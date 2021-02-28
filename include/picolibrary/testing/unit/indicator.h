@@ -26,9 +26,6 @@
 #include "picolibrary/indicator.h"
 #include "picolibrary/testing/unit/random.h"
 
-/**
- * \brief Indicator unit testing facilities.
- */
 namespace picolibrary::Testing::Unit {
 
 /**
@@ -44,5 +41,11 @@ inline auto random<Indicator::Initial_Indicator_State>()
 }
 
 } // namespace picolibrary::Testing::Unit
+
+/**
+ * \brief Indicator unit testing facilities.
+ */
+namespace picolibrary::Testing::Unit::Indicator {
+} // namespace picolibrary::Testing::Unit::Indicator
 
 #endif // PICOLIBRARY_TESTING_UNIT_INDICATOR_H
