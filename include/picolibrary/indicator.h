@@ -28,6 +28,14 @@
  */
 namespace picolibrary::Indicator {
 
+/**
+ * \brief Initial indicator state.
+ */
+enum class Initial_Indicator_State {
+    ILLUMINATED,  ///< Illuminated.
+    EXTINGUISHED, ///< Extinguished.
+};
+
 } // namespace picolibrary::Indicator
 
 #endif // PICOLIBRARY_INDICATOR_H
