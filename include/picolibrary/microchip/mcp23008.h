@@ -1168,6 +1168,10 @@ constexpr auto make_driver(
  *         driver implementation should be used unless a mock Microchip MCP23008 driver
  *         implementation is being injected to support unit testing of this internally
  *         pulled-up input pin.
+ *
+ * \warning GPPU register write failures that occur during destruction or move assignment
+ *          are ignored. A driver wrapper class can be used to add error handling to the
+ *          driver's GPPU register write function.
  */
 template<typename Driver>
 class Internally_Pulled_Up_Input_Pin {
@@ -1180,16 +1184,37 @@ class Internally_Pulled_Up_Input_Pin {
     /**
      * \brief Constructor.
      *
+     * \param[in] driver The driver for the MCP23008 the pin is a member of.
+     * \param[in] mask The mask identifying the pin.
+     */
+    constexpr Internally_Pulled_Up_Input_Pin( Driver & driver, std::uint8_t mask ) noexcept :
+        m_driver{ &driver },
+        m_mask{ mask }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
      * \param[in] source The source of the move.
      */
-    constexpr Internally_Pulled_Up_Input_Pin( Internally_Pulled_Up_Input_Pin && source ) noexcept = default;
+    constexpr Internally_Pulled_Up_Input_Pin( Internally_Pulled_Up_Input_Pin && source ) noexcept :
+        m_driver{ source.m_driver },
+        m_mask{ source.m_mask }
+    {
+        source.m_driver = nullptr;
+        source.m_mask   = 0;
+    }
 
     Internally_Pulled_Up_Input_Pin( Internally_Pulled_Up_Input_Pin const & ) = delete;
 
     /**
      * \brief Destructor.
      */
-    ~Internally_Pulled_Up_Input_Pin() noexcept = default;
+    ~Internally_Pulled_Up_Input_Pin() noexcept
+    {
+        disable();
+    }
 
     /**
      * \brief Assignment operator.
@@ -1198,10 +1223,43 @@ class Internally_Pulled_Up_Input_Pin {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Internally_Pulled_Up_Input_Pin && expression ) noexcept
-        -> Internally_Pulled_Up_Input_Pin & = default;
+    auto & operator=( Internally_Pulled_Up_Input_Pin && expression ) noexcept
+    {
+        if ( &expression != this ) {
+            disable();
+
+            m_driver = expression.m_driver;
+            m_mask   = expression.m_mask;
+
+            expression.m_driver = nullptr;
+            expression.m_mask   = 0;
+        } // if
+
+        return *this;
+    }
 
     auto operator=( Internally_Pulled_Up_Input_Pin const & expression ) = delete;
+
+  private:
+    /**
+     * \brief The MCP23008 driver used to access the MCP23008.
+     */
+    Driver * m_driver{};
+
+    /**
+     * \brief The mask identifying the pin.
+     */
+    std::uint8_t m_mask{};
+
+    /**
+     * \brief Disable the pin's internal pull-up resistor.
+     */
+    void disable() noexcept
+    {
+        if ( m_driver ) {
+            static_cast<void>( m_driver->write_gppu( m_driver->gppu() & ~m_mask ) );
+        } // if
+    }
 };
 
 } // namespace picolibrary::Microchip::MCP23008
