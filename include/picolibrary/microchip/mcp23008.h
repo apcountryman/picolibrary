@@ -1495,6 +1495,22 @@ class Open_Drain_IO_Pin {
         return m_driver->write_iodir( m_driver->iodir() & ~m_mask );
     }
 
+    /**
+     * \brief Toggle the pin state.
+     *
+     * \return Nothing if toggling the pin state succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if toggling the pin state failed for any other reason.
+     */
+    auto toggle() noexcept
+    {
+        return m_driver->write_iodir( m_driver->iodir() ^ m_mask );
+    }
+
   private:
     /**
      * \brief The driver for the MCP23008 the pin is a member of.
