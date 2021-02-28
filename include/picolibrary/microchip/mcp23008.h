@@ -28,6 +28,7 @@
 
 #include "picolibrary/error.h"
 #include "picolibrary/fixed_size_array.h"
+#include "picolibrary/gpio.h"
 #include "picolibrary/i2c.h"
 #include "picolibrary/result.h"
 #include "picolibrary/void.h"
@@ -1177,6 +1178,11 @@ template<typename Driver>
 class Internally_Pulled_Up_Input_Pin {
   public:
     /**
+     * \brief Initial internal pull-up resistor state.
+     */
+    using Initial_Pull_Up_State = ::picolibrary::GPIO::Initial_Pull_Up_State;
+
+    /**
      * \brief Constructor.
      */
     constexpr Internally_Pulled_Up_Input_Pin() noexcept = default;
@@ -1239,6 +1245,33 @@ class Internally_Pulled_Up_Input_Pin {
     }
 
     auto operator=( Internally_Pulled_Up_Input_Pin const & expression ) = delete;
+
+    /**
+     * \brief Initialize the pin's hardware.
+     *
+     * \param[in] initial_pull_up_state The initial state of the pin's internal pull-up
+     *            resistor.
+     *
+     * \return Nothing if pin hardware initialization succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if pin hardware initialization failed for any other reason.
+     */
+    auto initialize( Initial_Pull_Up_State initial_pull_up_state = Initial_Pull_Up_State::DISABLED ) noexcept
+        -> Result<Void, Error_Code>
+    {
+        auto gppu = m_driver->gppu();
+
+        switch ( initial_pull_up_state ) {
+            case Initial_Pull_Up_State::ENABLED: gppu |= m_mask; break;
+            case Initial_Pull_Up_State::DISABLED: gppu &= ~m_mask; break;
+        } // switch
+
+        return m_driver->write_gppu( gppu );
+    }
 
     /**
      * \brief Enable the pin's internal pull-up resistor.
