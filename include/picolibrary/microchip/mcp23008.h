@@ -1558,7 +1558,7 @@ class Open_Drain_IO_Pin {
     void disable() noexcept
     {
         if ( m_driver ) {
-            static_cast<void>( transition_to_high() );
+            static_cast<void>( m_driver->write_iodir( m_driver->iodir() | m_mask ) );
         } // if
     }
 };
