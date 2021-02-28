@@ -1362,6 +1362,10 @@ class Internally_Pulled_Up_Input_Pin {
  *         driver implementation should be used unless a mock Microchip MCP23008 driver
  *         implementation is being injected to support unit testing of this open-drain I/O
  *         pin.
+ *
+ * \warning IODIR register write failures that occur during destruction or move assignment
+ *          are ignored. A driver wrapper class can be used to add error handling to the
+ *          driver's IODIR register write function.
  */
 template<typename Driver>
 class Open_Drain_IO_Pin {
@@ -1374,16 +1378,37 @@ class Open_Drain_IO_Pin {
     /**
      * \brief Constructor.
      *
+     * \param[in] driver The driver for the MCP23008 the pin is a member of.
+     * \param[in] mask The mask identifying the pin.
+     */
+    constexpr Open_Drain_IO_Pin( Driver & driver, std::uint8_t mask ) noexcept :
+        m_driver{ &driver },
+        m_mask{ mask }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
      * \param[in] source The source of the move.
      */
-    constexpr Open_Drain_IO_Pin( Open_Drain_IO_Pin && source ) noexcept = default;
+    constexpr Open_Drain_IO_Pin( Open_Drain_IO_Pin && source ) noexcept :
+        m_driver{ source.m_driver },
+        m_mask{ source.m_mask }
+    {
+        source.m_driver = nullptr;
+        source.m_mask   = 0;
+    }
 
     Open_Drain_IO_Pin( Open_Drain_IO_Pin const & ) = delete;
 
     /**
      * \brief Destructor.
      */
-    ~Open_Drain_IO_Pin() noexcept = default;
+    ~Open_Drain_IO_Pin() noexcept
+    {
+        disable();
+    }
 
     /**
      * \brief Assignment operator.
@@ -1392,10 +1417,43 @@ class Open_Drain_IO_Pin {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator    =( Open_Drain_IO_Pin && expression ) noexcept
-        -> Open_Drain_IO_Pin & = default;
+    auto & operator=( Open_Drain_IO_Pin && expression ) noexcept
+    {
+        if ( &expression != this ) {
+            disable();
+
+            m_driver = expression.m_driver;
+            m_mask   = expression.m_mask;
+
+            expression.m_driver = nullptr;
+            expression.m_mask   = 0;
+        } // if
+
+        return *this;
+    }
 
     auto operator=( Open_Drain_IO_Pin const & ) = delete;
+
+  private:
+    /**
+     * \brief The driver for the MCP23008 the pin is a member of.
+     */
+    Driver * m_driver{};
+
+    /**
+     * \brief The mask identifying the pin.
+     */
+    std::uint8_t m_mask{};
+
+    /**
+     * \brief Disable the pin.
+     */
+    void disable() noexcept
+    {
+        if ( m_driver ) {
+            static_cast<void>( m_driver->write_iodir( m_driver->iodir() | m_mask ) );
+        } // if
+    }
 };
 
 } // namespace picolibrary::Microchip::MCP23008

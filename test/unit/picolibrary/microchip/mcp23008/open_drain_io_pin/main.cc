@@ -20,9 +20,239 @@
  * \brief picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin unit test program.
  */
 
+#include <cstdint>
+#include <utility>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "picolibrary/error.h"
 #include "picolibrary/microchip/mcp23008.h"
+#include "picolibrary/result.h"
+#include "picolibrary/testing/unit/error.h"
+#include "picolibrary/testing/unit/microchip/mcp23008.h"
+#include "picolibrary/testing/unit/random.h"
+#include "picolibrary/void.h"
+
+namespace {
+
+using ::picolibrary::Error_Code;
+using ::picolibrary::Result;
+using ::picolibrary::Void;
+using ::picolibrary::Testing::Unit::Mock_Error;
+using ::picolibrary::Testing::Unit::random;
+using ::picolibrary::Testing::Unit::Microchip::MCP23008::Mock_Driver;
+using ::testing::_;
+using ::testing::InSequence;
+using ::testing::Return;
+
+using Open_Drain_IO_Pin = ::picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin<Mock_Driver>;
+
+} // namespace
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin::Open_Drain_IO_Pin()
+ *        works properly.
+ */
+TEST( constructorDefault, worksProperly )
+{
+    Open_Drain_IO_Pin{};
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin::Open_Drain_IO_Pin(
+ *        picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin && ) works properly.
+ */
+TEST( constructorMove, worksProperly )
+{
+    {
+        Open_Drain_IO_Pin{ Open_Drain_IO_Pin{} };
+    }
+
+    {
+        auto const in_sequence = InSequence{};
+
+        auto       driver = Mock_Driver{};
+        auto const mask   = random<std::uint8_t>();
+
+        auto source = Open_Drain_IO_Pin{ driver, mask };
+
+        EXPECT_CALL( driver, iodir() ).Times( 0 );
+        EXPECT_CALL( driver, write_iodir( _ ) ).Times( 0 );
+
+        auto const pin = Open_Drain_IO_Pin{ std::move( source ) };
+
+        auto const iodir = random<std::uint8_t>();
+
+        EXPECT_CALL( driver, iodir() ).WillOnce( Return( iodir ) );
+        EXPECT_CALL( driver, write_iodir( iodir | mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    }
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin::~Open_Drain_IO_Pin()
+ *        properly handles an IODIR register write error.
+ */
+TEST( destructor, writeIODIRError )
+{
+    auto driver = Mock_Driver{};
+
+    auto const pin = Open_Drain_IO_Pin{ driver, random<std::uint8_t>() };
+
+    EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( random<Mock_Error>() ) );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin::operator=(
+ *        picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin && ) properly handles an
+ *        IODIR register write error.
+ */
+TEST( assignmentOperatorMove, writeIODIRError )
+{
+    {
+        auto driver = Mock_Driver{};
+
+        auto expression = Open_Drain_IO_Pin{};
+        auto object     = Open_Drain_IO_Pin{ driver, random<std::uint8_t>() };
+
+        EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
+        EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( random<Mock_Error>() ) );
+
+        object = std::move( expression );
+
+        EXPECT_CALL( driver, iodir() ).Times( 0 );
+        EXPECT_CALL( driver, write_iodir( _ ) ).Times( 0 );
+    }
+
+    {
+        auto driver_expression = Mock_Driver{};
+        auto driver_object     = Mock_Driver{};
+
+        auto expression = Open_Drain_IO_Pin{ driver_expression, random<std::uint8_t>() };
+        auto object     = Open_Drain_IO_Pin{ driver_object, random<std::uint8_t>() };
+
+        EXPECT_CALL( driver_expression, iodir() ).Times( 0 );
+        EXPECT_CALL( driver_object, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
+        EXPECT_CALL( driver_expression, write_iodir( _ ) ).Times( 0 );
+        EXPECT_CALL( driver_object, write_iodir( _ ) ).WillOnce( Return( random<Mock_Error>() ) );
+
+        object = std::move( expression );
+
+        EXPECT_CALL( driver_object, iodir() ).Times( 0 );
+        EXPECT_CALL( driver_expression, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
+        EXPECT_CALL( driver_object, write_iodir( _ ) ).Times( 0 );
+        EXPECT_CALL( driver_expression, write_iodir( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    }
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin::operator=(
+ *        picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin && ) works properly.
+ */
+TEST( assignmentOperatorMove, worksProperly )
+{
+    {
+        auto expression = Open_Drain_IO_Pin{};
+        auto object     = Open_Drain_IO_Pin{};
+
+        object = std::move( expression );
+    }
+
+    {
+        auto const in_sequence = InSequence{};
+
+        auto driver = Mock_Driver{};
+        auto mask   = random<std::uint8_t>();
+
+        auto expression = Open_Drain_IO_Pin{ driver, mask };
+        auto object     = Open_Drain_IO_Pin{};
+
+        EXPECT_CALL( driver, iodir() ).Times( 0 );
+        EXPECT_CALL( driver, write_iodir( _ ) ).Times( 0 );
+
+        object = std::move( expression );
+
+        auto const iodir = random<std::uint8_t>();
+
+        EXPECT_CALL( driver, iodir() ).WillOnce( Return( iodir ) );
+        EXPECT_CALL( driver, write_iodir( iodir | mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    }
+
+    {
+        auto const in_sequence = InSequence{};
+
+        auto driver = Mock_Driver{};
+        auto mask   = random<std::uint8_t>();
+
+        auto expression = Open_Drain_IO_Pin{};
+        auto object     = Open_Drain_IO_Pin{ driver, mask };
+
+        auto const iodir = random<std::uint8_t>();
+
+        EXPECT_CALL( driver, iodir() ).WillOnce( Return( iodir ) );
+        EXPECT_CALL( driver, write_iodir( iodir | mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+        object = std::move( expression );
+
+        EXPECT_CALL( driver, iodir() ).Times( 0 );
+        EXPECT_CALL( driver, write_iodir( _ ) ).Times( 0 );
+    }
+
+    {
+        auto const in_sequence = InSequence{};
+
+        auto       driver_expression = Mock_Driver{};
+        auto const mask_expression   = random<std::uint8_t>();
+        auto       driver_object     = Mock_Driver{};
+        auto const mask_object       = random<std::uint8_t>();
+
+        auto expression = Open_Drain_IO_Pin{ driver_expression, mask_expression };
+        auto object     = Open_Drain_IO_Pin{ driver_object, mask_object };
+
+        auto const iodir_object = random<std::uint8_t>();
+
+        EXPECT_CALL( driver_expression, iodir() ).Times( 0 );
+        EXPECT_CALL( driver_object, iodir() ).WillOnce( Return( iodir_object ) );
+        EXPECT_CALL( driver_expression, write_iodir( _ ) ).Times( 0 );
+        EXPECT_CALL( driver_object, write_iodir( iodir_object | mask_object ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+        object = std::move( expression );
+
+        auto const iodir_expression = random<std::uint8_t>();
+
+        EXPECT_CALL( driver_object, iodir() ).Times( 0 );
+        EXPECT_CALL( driver_expression, iodir() ).WillOnce( Return( iodir_expression ) );
+        EXPECT_CALL( driver_object, write_iodir( _ ) ).Times( 0 );
+        EXPECT_CALL( driver_expression, write_iodir( iodir_expression | mask_expression ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+    }
+
+    {
+        auto pin = Open_Drain_IO_Pin{};
+
+        pin = std::move( pin );
+    }
+
+    {
+        auto const in_sequence = InSequence{};
+
+        auto       driver = Mock_Driver{};
+        auto const mask   = random<std::uint8_t>();
+
+        auto pin = Open_Drain_IO_Pin{ driver, mask };
+
+        EXPECT_CALL( driver, iodir() ).Times( 0 );
+        EXPECT_CALL( driver, write_iodir( _ ) ).Times( 0 );
+
+        pin = std::move( pin );
+
+        auto const iodir = random<std::uint8_t>();
+
+        EXPECT_CALL( driver, iodir() ).WillOnce( Return( iodir ) );
+        EXPECT_CALL( driver, write_iodir( iodir | mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    }
+}
 
 /**
  * \brief Execute the picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin unit tests.
