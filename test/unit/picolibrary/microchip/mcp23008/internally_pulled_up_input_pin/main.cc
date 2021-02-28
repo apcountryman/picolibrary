@@ -448,6 +448,9 @@ TEST( state, readGPIOError )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
+
+    EXPECT_CALL( driver, gppu() ).WillOnce( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, write_gppu( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 }
 
 /**
@@ -468,7 +471,10 @@ TEST( state, worksProperly )
     auto const result = pin.state();
 
     EXPECT_TRUE( result.is_value() );
-    EXPECT_EQ( result.value().is_high(), gpio & mask );
+    EXPECT_EQ( result.value().is_high(), static_cast<bool>( gpio & mask ) );
+
+    EXPECT_CALL( driver, gppu() ).WillOnce( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, write_gppu( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 }
 
 /**
