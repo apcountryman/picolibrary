@@ -37,6 +37,7 @@ set(
     "picolibrary/format.cc"
     "picolibrary/gpio.cc"
     "picolibrary/i2c.cc"
+    "picolibrary/indicator.cc"
     "picolibrary/iterator.cc"
     "picolibrary/microchip.cc"
     "picolibrary/microchip/mcp23008.cc"
