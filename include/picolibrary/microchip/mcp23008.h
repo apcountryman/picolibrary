@@ -1371,6 +1371,11 @@ template<typename Driver>
 class Open_Drain_IO_Pin {
   public:
     /**
+     * \brief Pin state.
+     */
+    using Pin_State = ::picolibrary::GPIO::Pin_State;
+
+    /**
      * \brief Constructor.
      */
     constexpr Open_Drain_IO_Pin() noexcept = default;
@@ -1433,6 +1438,28 @@ class Open_Drain_IO_Pin {
     }
 
     auto operator=( Open_Drain_IO_Pin const & ) = delete;
+
+    /**
+     * \brief Get the state of the pin.
+     *
+     * \return High if the pin is high.
+     * \return low if the pin low.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if getting the state of the pin failed for any other reason.
+     */
+    auto state() const noexcept -> Result<Pin_State, Error_Code>
+    {
+        auto result = m_driver->read_gpio();
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return Pin_State{ static_cast<bool>( result.value() & m_mask ) };
+    }
 
   private:
     /**

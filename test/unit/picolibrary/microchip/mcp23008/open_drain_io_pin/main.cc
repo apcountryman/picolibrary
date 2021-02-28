@@ -255,6 +255,52 @@ TEST( assignmentOperatorMove, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::Microchip::Open_Drain_IO_Pin::state() properly handles a
+ *        GPIO register read error.
+ */
+TEST( state, readGPIOError )
+{
+    auto driver = Mock_Driver{};
+
+    auto const pin = Open_Drain_IO_Pin{ driver, random<std::uint8_t>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_gpio() ).WillOnce( Return( error ) );
+
+    auto const result = pin.state();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::Open_Drain_IO_Pin::state() works properly.
+ */
+TEST( state, worksProperly )
+{
+    auto       driver = Mock_Driver{};
+    auto const mask   = random<std::uint8_t>();
+
+    auto const pin = Open_Drain_IO_Pin{ driver, mask };
+
+    auto const gpio = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, read_gpio() ).WillOnce( Return( gpio ) );
+
+    auto const result = pin.state();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value().is_high(), static_cast<bool>( gpio & mask ) );
+
+    EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+}
+
+/**
  * \brief Execute the picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
