@@ -1355,6 +1355,49 @@ class Internally_Pulled_Up_Input_Pin {
     }
 };
 
+/**
+ * \brief Microchip MCP23008 open-drain I/O pin.
+ *
+ * \tparam Driver The MCP23008 driver implementation. The default Microchip MCP23008
+ *         driver implementation should be used unless a mock Microchip MCP23008 driver
+ *         implementation is being injected to support unit testing of this open-drain I/O
+ *         pin.
+ */
+template<typename Driver>
+class Open_Drain_IO_Pin {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Open_Drain_IO_Pin() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Open_Drain_IO_Pin( Open_Drain_IO_Pin && source ) noexcept = default;
+
+    Open_Drain_IO_Pin( Open_Drain_IO_Pin const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Open_Drain_IO_Pin() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator    =( Open_Drain_IO_Pin && expression ) noexcept
+        -> Open_Drain_IO_Pin & = default;
+
+    auto operator=( Open_Drain_IO_Pin const & ) = delete;
+};
+
 } // namespace picolibrary::Microchip::MCP23008
 
 #endif // PICOLIBRARY_MICROCHIP_MCP23008_H
