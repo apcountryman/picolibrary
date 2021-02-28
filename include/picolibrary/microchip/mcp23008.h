@@ -1478,6 +1478,23 @@ class Open_Drain_IO_Pin {
         return m_driver->write_iodir( m_driver->iodir() | m_mask );
     }
 
+    /**
+     * \brief Transition the pin to the low state.
+     *
+     * \return Nothing if transitioning the pin to the low state succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if transitioning the pin to the low state failed for any
+     *         other reason.
+     */
+    auto transition_to_low() noexcept
+    {
+        return m_driver->write_iodir( m_driver->iodir() & ~m_mask );
+    }
+
   private:
     /**
      * \brief The driver for the MCP23008 the pin is a member of.
@@ -1495,7 +1512,7 @@ class Open_Drain_IO_Pin {
     void disable() noexcept
     {
         if ( m_driver ) {
-            static_cast<void>( m_driver->write_iodir( m_driver->iodir() | m_mask ) );
+            static_cast<void>( transition_to_high() );
         } // if
     }
 };
