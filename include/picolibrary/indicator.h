@@ -28,6 +28,11 @@
  */
 namespace picolibrary::Indicator {
 
+enum class Initial_Indicator_State {
+    ILLUMINATED,
+    EXTINGUISHED,
+};
+
 } // namespace picolibrary::Indicator
 
 #endif // PICOLIBRARY_INDICATOR_H

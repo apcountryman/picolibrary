@@ -23,10 +23,26 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_INDICATOR_H
 #define PICOLIBRARY_TESTING_UNIT_INDICATOR_H
 
+#include "picolibrary/indicator.h"
+#include "picolibrary/testing/unit/random.h"
+
 /**
  * \brief Indicator unit testing facilities.
  */
-namespace picolibrary::Testing::Unit::Indicator {
-} // namespace picolibrary::Testing::Unit::Indicator
+namespace picolibrary::Testing::Unit {
+
+/**
+ * \brief Generate a pseudo-random picolibrary::Indicator::Initial_Indicator_State.
+ *
+ * \return A pseudo-randomly generated picolibrary::Indicator::Initial_Indicator_State.
+ */
+template<>
+inline auto random<Indicator::Initial_Indicator_State>()
+{
+    return random<bool>() ? Indicator::Initial_Indicator_State::ILLUMINATED
+                          : Indicator::Initial_Indicator_State::EXTINGUISHED;
+}
+
+} // namespace picolibrary::Testing::Unit
 
 #endif // PICOLIBRARY_TESTING_UNIT_INDICATOR_H
