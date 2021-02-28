@@ -1266,7 +1266,6 @@ class Internally_Pulled_Up_Input_Pin {
      * \return An error code if pin hardware initialization failed for any other reason.
      */
     auto initialize( Initial_Pull_Up_State initial_pull_up_state = Initial_Pull_Up_State::DISABLED ) noexcept
-        -> Result<Void, Error_Code>
     {
         auto gppu = m_driver->gppu();
 
@@ -1336,7 +1335,7 @@ class Internally_Pulled_Up_Input_Pin {
 
   private:
     /**
-     * \brief The MCP23008 driver used to access the MCP23008.
+     * \brief The driver for the MCP23008 the pin is a member of.
      */
     Driver * m_driver{};
 
