@@ -1257,6 +1257,23 @@ class Internally_Pulled_Up_Input_Pin {
         return m_driver->write_gppu( m_driver->gppu() | m_mask );
     }
 
+    /**
+     * \brief Disable the pin's internal pull-up resistor.
+     *
+     * \return Nothing if disabling the pin's internal pull-up resistor succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if disabling the pin's internal pull-up resistor failed for
+     *         any other reason.
+     */
+    auto disable_pull_up() noexcept
+    {
+        return m_driver->write_gppu( m_driver->gppu() & ~m_mask );
+    }
+
   private:
     /**
      * \brief The MCP23008 driver used to access the MCP23008.
@@ -1274,7 +1291,7 @@ class Internally_Pulled_Up_Input_Pin {
     void disable() noexcept
     {
         if ( m_driver ) {
-            static_cast<void>( m_driver->write_gppu( m_driver->gppu() & ~m_mask ) );
+            static_cast<void>( disable_pull_up() );
         } // if
     }
 };

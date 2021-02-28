@@ -311,6 +311,54 @@ TEST( enablePullUp, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::Microchip::Internally_Pulled_Up_Input_Pin::disable_pull_up()
+ *        properly handles a GPPU register write error.
+ */
+TEST( disablePullUp, writeGPPUError )
+{
+    auto driver = Mock_Driver{};
+
+    auto pin = Internally_Pulled_Up_Input_Pin{ driver, random<std::uint8_t>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, gppu() ).WillOnce( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, write_gppu( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = pin.disable_pull_up();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_CALL( driver, gppu() ).WillOnce( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, write_gppu( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::Internally_Pulled_Up_Input_Pin::disable_pull_up()
+ *        works properly.
+ */
+TEST( disablePullUp, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto       driver = Mock_Driver{};
+    auto const mask   = random<std::uint8_t>();
+
+    auto pin = Internally_Pulled_Up_Input_Pin{ driver, mask };
+
+    auto const gppu = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, gppu() ).WillOnce( Return( gppu ) );
+    EXPECT_CALL( driver, write_gppu( gppu & ~mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( pin.disable_pull_up().is_error() );
+
+    EXPECT_CALL( driver, gppu() ).WillOnce( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, write_gppu( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+}
+
+/**
  * \brief Execute the picolibrary::Microchip::MCP23008::Internally_Pulled_Up_Input_Pin
  *        unit tests.
  *
