@@ -26,9 +26,11 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/error.h"
+#include "picolibrary/gpio.h"
 #include "picolibrary/microchip/mcp23008.h"
 #include "picolibrary/result.h"
 #include "picolibrary/testing/unit/error.h"
+#include "picolibrary/testing/unit/gpio.h"
 #include "picolibrary/testing/unit/microchip/mcp23008.h"
 #include "picolibrary/testing/unit/random.h"
 #include "picolibrary/void.h"
@@ -38,6 +40,7 @@ namespace {
 using ::picolibrary::Error_Code;
 using ::picolibrary::Result;
 using ::picolibrary::Void;
+using ::picolibrary::GPIO::Initial_Pin_State;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::Microchip::MCP23008::Mock_Driver;
@@ -255,8 +258,77 @@ TEST( assignmentOperatorMove, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Microchip::Open_Drain_IO_Pin::state() properly handles a
- *        GPIO register read error.
+ * \brief Verify picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin::initialize()
+ *        properly handles an IODIR register write error.
+ */
+TEST( initialize, writeIODIRError )
+{
+    auto driver = Mock_Driver{};
+
+    auto pin = Open_Drain_IO_Pin{ driver, random<std::uint8_t>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = pin.initialize( random<Initial_Pin_State>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin::initialize() works
+ *        properly.
+ */
+TEST( initialize, worksProperly )
+{
+    {
+        auto const in_sequence = InSequence{};
+
+        auto       driver = Mock_Driver{};
+        auto const mask   = random<std::uint8_t>();
+
+        auto pin = Open_Drain_IO_Pin{ driver, mask };
+
+        auto const iodir = random<std::uint8_t>();
+
+        EXPECT_CALL( driver, iodir() ).WillOnce( Return( iodir ) );
+        EXPECT_CALL( driver, write_iodir( iodir & ~mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+        EXPECT_FALSE( pin.initialize( Initial_Pin_State::LOW ).is_error() );
+
+        EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
+        EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    }
+
+    {
+        auto const in_sequence = InSequence{};
+
+        auto       driver = Mock_Driver{};
+        auto const mask   = random<std::uint8_t>();
+
+        auto pin = Open_Drain_IO_Pin{ driver, mask };
+
+        auto const iodir = random<std::uint8_t>();
+
+        EXPECT_CALL( driver, iodir() ).WillOnce( Return( iodir ) );
+        EXPECT_CALL( driver, write_iodir( iodir | mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+        EXPECT_FALSE( pin.initialize( Initial_Pin_State::HIGH ).is_error() );
+
+        EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
+        EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    }
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin::state() properly
+ *        handles a GPIO register read error.
  */
 TEST( state, readGPIOError )
 {
@@ -278,7 +350,8 @@ TEST( state, readGPIOError )
 }
 
 /**
- * \brief Verify picolibrary::Microchip::Open_Drain_IO_Pin::state() works properly.
+ * \brief Verify picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin::state() works
+ *        properly.
  */
 TEST( state, worksProperly )
 {
@@ -330,6 +403,8 @@ TEST( transitionToHigh, writeIODIRError )
  */
 TEST( transitionToHigh, worksProperly )
 {
+    auto const in_sequence = InSequence{};
+
     auto       driver = Mock_Driver{};
     auto const mask   = random<std::uint8_t>();
 
@@ -376,6 +451,8 @@ TEST( transitionToLow, writeIODIRError )
  */
 TEST( transitionToLow, worksProperly )
 {
+    auto const in_sequence = InSequence{};
+
     auto       driver = Mock_Driver{};
     auto const mask   = random<std::uint8_t>();
 
@@ -422,6 +499,8 @@ TEST( toggle, writeIODIRError )
  */
 TEST( toggle, worksProperly )
 {
+    auto const in_sequence = InSequence{};
+
     auto       driver = Mock_Driver{};
     auto const mask   = random<std::uint8_t>();
 

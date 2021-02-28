@@ -1371,6 +1371,11 @@ template<typename Driver>
 class Open_Drain_IO_Pin {
   public:
     /**
+     * \brief Initial pin state.
+     */
+    using Initial_Pin_State = ::picolibrary::GPIO::Initial_Pin_State;
+
+    /**
      * \brief Pin state.
      */
     using Pin_State = ::picolibrary::GPIO::Pin_State;
@@ -1438,6 +1443,31 @@ class Open_Drain_IO_Pin {
     }
 
     auto operator=( Open_Drain_IO_Pin const & ) = delete;
+
+    /**
+     * \brief Initialize the pin's hardware.
+     *
+     * \param[in] initial_pin_state The initial state of the pin.
+     *
+     * \return Nothing if pin hardware initialization succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if pin hardware initialization failed for any other reason.
+     */
+    auto initialize( Initial_Pin_State initial_pin_state = Initial_Pin_State::LOW ) noexcept
+    {
+        auto iodir = m_driver->iodir();
+
+        switch ( initial_pin_state ) {
+            case Initial_Pin_State::HIGH: iodir |= m_mask; break;
+            case Initial_Pin_State::LOW: iodir &= ~m_mask; break;
+        } // switch
+
+        return m_driver->write_iodir( iodir );
+    }
 
     /**
      * \brief Get the state of the pin.
