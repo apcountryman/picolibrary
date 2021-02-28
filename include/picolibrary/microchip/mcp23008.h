@@ -1183,6 +1183,11 @@ class Internally_Pulled_Up_Input_Pin {
     using Initial_Pull_Up_State = ::picolibrary::GPIO::Initial_Pull_Up_State;
 
     /**
+     * \brief Pin state.
+     */
+    using Pin_State = ::picolibrary::GPIO::Pin_State;
+
+    /**
      * \brief Constructor.
      */
     constexpr Internally_Pulled_Up_Input_Pin() noexcept = default;
@@ -1305,6 +1310,28 @@ class Internally_Pulled_Up_Input_Pin {
     auto disable_pull_up() noexcept
     {
         return m_driver->write_gppu( m_driver->gppu() & ~m_mask );
+    }
+
+    /**
+     * \brief Get the state of the pin.
+     *
+     * \return High if the pin is high.
+     * \return low if the pin low.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if getting the state of the pin failed for any other reason.
+     */
+    auto state() const noexcept -> Result<Pin_State, Error_Code>
+    {
+        auto result = m_driver->read_gpio();
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return Pin_State{ static_cast<bool>( result.value() & m_mask ) };
     }
 
   private:
