@@ -1571,9 +1571,9 @@ class Open_Drain_IO_Pin {
  *         implementation is being injected to support unit testing of this push-pull I/O
  *         pin.
  *
- * \warning IODIR register write failures that occur during destruction or move assignment
- *          are ignored. A driver wrapper class can be used to add error handling to the
- *          driver's IODIR register write function.
+ * \warning IODIR and GPIO register write failures that occur during destruction or move
+ *          assignment are ignored. A driver wrapper class can be used to add error
+ *          handling to the driver's IODIR and GPIO register write functions.
  */
 template<typename Driver>
 class Push_Pull_IO_Pin {
