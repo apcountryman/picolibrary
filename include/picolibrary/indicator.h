@@ -67,7 +67,7 @@ class Fixed_Intensity_Indicator_Concept {
      *         hardware initialization cannot fail, return
      *         picolibrary::Result<picolibrary::Void, picolibrary::Void>.
      */
-    auto initialize( Initial_Indicator_State initial_state = Initial_Indicator_State::EXTINGUISHED ) noexcept
+    auto initialize( Initial_Indicator_State initial_indicator_state = Initial_Indicator_State::EXTINGUISHED ) noexcept
         -> Result<Void, Error_Code>;
 
     /**
@@ -95,8 +95,8 @@ class Fixed_Intensity_Indicator_Concept {
      *
      * \return Nothing if toggling the indicator succeeded.
      * \return An error code if toggling the indicator failed. If toggling the indicator
-     *          cannot fail, return picolibrary::Result<picolibrary::Void,
-     *          picolibrary::Void>.
+     *         cannot fail, return picolibrary::Result<picolibrary::Void,
+     *         picolibrary::Void>.
      */
     auto toggle() noexcept -> Result<Void, Error_Code>;
 };

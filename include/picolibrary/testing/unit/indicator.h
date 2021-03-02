@@ -24,8 +24,11 @@
 #define PICOLIBRARY_TESTING_UNIT_INDICATOR_H
 
 #include "gmock/gmock.h"
+#include "picolibrary/error.h"
 #include "picolibrary/indicator.h"
+#include "picolibrary/result.h"
 #include "picolibrary/testing/unit/random.h"
+#include "picolibrary/void.h"
 
 namespace picolibrary::Testing::Unit {
 
