@@ -45,15 +45,34 @@ enum class Initial_Indicator_State {
  */
 class Fixed_Intensity_Indicator_Concept {
   public:
-    Fixed_Intensity_Indicator_Concept() = delete;
+    /**
+     * \brief Constructor.
+     */
+    Fixed_Intensity_Indicator_Concept() noexcept = default;
 
-    Fixed_Intensity_Indicator_Concept( Fixed_Intensity_Indicator_Concept && ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Fixed_Intensity_Indicator_Concept( Fixed_Intensity_Indicator_Concept && source ) noexcept = default;
 
     Fixed_Intensity_Indicator_Concept( Fixed_Intensity_Indicator_Concept const & ) = delete;
 
-    ~Fixed_Intensity_Indicator_Concept() = delete;
+    /**
+     * \brief Destructor.
+     */
+    ~Fixed_Intensity_Indicator_Concept() noexcept = default;
 
-    auto operator=( Fixed_Intensity_Indicator_Concept && ) = delete;
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Fixed_Intensity_Indicator_Concept && expression ) noexcept
+        -> Fixed_Intensity_Indicator_Concept & = default;
 
     auto operator=( Fixed_Intensity_Indicator_Concept const & ) = delete;
 
