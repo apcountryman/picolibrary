@@ -266,7 +266,8 @@ TEST( assignmentOperatorMove, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Microchip::Internally_Pulled_Up_Input_Pin::initialize()
+ * \brief Verify
+ *        picolibrary::Microchip::MCP23008::Internally_Pulled_Up_Input_Pin::initialize()
  *        properly handles a GPPU register write error.
  */
 TEST( initialize, writeGPPUError )
@@ -290,7 +291,8 @@ TEST( initialize, writeGPPUError )
 }
 
 /**
- * \brief Verify picolibrary::Microchip::Internally_Pulled_Up_Input_Pin::initialize()
+ * \brief Verify
+ *        picolibrary::Microchip::MCP23008::Internally_Pulled_Up_Input_Pin::initialize()
  *        works properly.
  */
 TEST( initialize, worksProperly )
@@ -335,7 +337,8 @@ TEST( initialize, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Microchip::Internally_Pulled_Up_Input_Pin::enable_pull_up()
+ * \brief Verify
+ *        picolibrary::Microchip::MCP23008::Internally_Pulled_Up_Input_Pin::enable_pull_up()
  *        properly handles a GPPU register write error.
  */
 TEST( enablePullUp, writeGPPUError )
@@ -359,7 +362,8 @@ TEST( enablePullUp, writeGPPUError )
 }
 
 /**
- * \brief Verify picolibrary::Microchip::Internally_Pulled_Up_Input_Pin::enable_pull_up()
+ * \brief Verify
+ *        picolibrary::Microchip::MCP23008::Internally_Pulled_Up_Input_Pin::enable_pull_up()
  *        works properly.
  */
 TEST( enablePullUp, worksProperly )
@@ -383,7 +387,8 @@ TEST( enablePullUp, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Microchip::Internally_Pulled_Up_Input_Pin::disable_pull_up()
+ * \brief Verify
+ *        picolibrary::Microchip::MCP23008::Internally_Pulled_Up_Input_Pin::disable_pull_up()
  *        properly handles a GPPU register write error.
  */
 TEST( disablePullUp, writeGPPUError )
@@ -407,7 +412,8 @@ TEST( disablePullUp, writeGPPUError )
 }
 
 /**
- * \brief Verify picolibrary::Microchip::Internally_Pulled_Up_Input_Pin::disable_pull_up()
+ * \brief Verify
+ *        picolibrary::Microchip::MCP23008::Internally_Pulled_Up_Input_Pin::disable_pull_up()
  *        works properly.
  */
 TEST( disablePullUp, worksProperly )
@@ -431,8 +437,8 @@ TEST( disablePullUp, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Microchip::Internally_Pulled_Up_Input_Pin::state() properly
- *        handles a GPIO register read error.
+ * \brief Verify picolibrary::Microchip::MCP23008::Internally_Pulled_Up_Input_Pin::state()
+ *        properly handles a GPIO register read error.
  */
 TEST( state, readGPIOError )
 {
@@ -454,8 +460,8 @@ TEST( state, readGPIOError )
 }
 
 /**
- * \brief Verify picolibrary::Microchip::Internally_Pulled_Up_Input_Pin::state() works
- *        properly.
+ * \brief Verify picolibrary::Microchip::MCP23008::Internally_Pulled_Up_Input_Pin::state()
+ *        works properly.
  */
 TEST( state, worksProperly )
 {
