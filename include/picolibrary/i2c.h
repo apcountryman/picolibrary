@@ -357,15 +357,34 @@ enum class Response : std::uint_fast8_t {
  */
 class Basic_Controller_Concept {
   public:
-    Basic_Controller_Concept() = delete;
+    /**
+     * \brief Constructor.
+     */
+    Basic_Controller_Concept() noexcept = default;
 
-    Basic_Controller_Concept( Basic_Controller_Concept && ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Basic_Controller_Concept( Basic_Controller_Concept && source ) noexcept = default;
 
     Basic_Controller_Concept( Basic_Controller_Concept const & ) = delete;
 
-    ~Basic_Controller_Concept() = delete;
+    /**
+     * \brief Destructor.
+     */
+    ~Basic_Controller_Concept() noexcept = default;
 
-    auto operator=( Basic_Controller_Concept && ) = delete;
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator                     =( Basic_Controller_Concept && expression ) noexcept
+        -> Basic_Controller_Concept & = default;
 
     auto operator=( Basic_Controller_Concept const & ) = delete;
 
@@ -456,15 +475,33 @@ class Basic_Controller_Concept {
  */
 class Controller_Concept {
   public:
-    Controller_Concept() = delete;
+    /**
+     * \brief Constructor.
+     */
+    Controller_Concept() noexcept = default;
 
-    Controller_Concept( Controller_Concept && ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Controller_Concept( Controller_Concept && source ) noexcept = default;
 
     Controller_Concept( Controller_Concept const & ) = delete;
 
-    ~Controller_Concept() = delete;
+    /**
+     * \brief Destructor.
+     */
+    ~Controller_Concept() noexcept = default;
 
-    auto operator=( Controller_Concept && ) = delete;
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Controller_Concept && expression ) noexcept -> Controller_Concept & = default;
 
     auto operator=( Controller_Concept const & ) = delete;
 

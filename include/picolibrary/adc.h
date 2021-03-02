@@ -199,15 +199,34 @@ class Blocking_Single_Sample_Converter_Concept {
      */
     using Sample = ::picolibrary::ADC::Sample<std::uint_fast16_t, 0, 1023>;
 
-    Blocking_Single_Sample_Converter_Concept() = delete;
+    /**
+     * \brief Constructor.
+     */
+    Blocking_Single_Sample_Converter_Concept() noexcept = default;
 
-    Blocking_Single_Sample_Converter_Concept( Blocking_Single_Sample_Converter_Concept && ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Blocking_Single_Sample_Converter_Concept( Blocking_Single_Sample_Converter_Concept && source ) noexcept = default;
 
     Blocking_Single_Sample_Converter_Concept( Blocking_Single_Sample_Converter_Concept const & ) = delete;
 
-    ~Blocking_Single_Sample_Converter_Concept() = delete;
+    /**
+     * \brief Destructor.
+     */
+    ~Blocking_Single_Sample_Converter_Concept() noexcept = default;
 
-    auto operator=( Blocking_Single_Sample_Converter_Concept && ) = delete;
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Blocking_Single_Sample_Converter_Concept && expression ) noexcept
+        -> Blocking_Single_Sample_Converter_Concept & = default;
 
     auto operator=( Blocking_Single_Sample_Converter_Concept const & ) = delete;
 
@@ -241,15 +260,35 @@ class Non_Blocking_Single_Sample_Converter_Concept {
      */
     using Sample = ::picolibrary::ADC::Sample<std::uint_fast16_t, 0, 1023>;
 
-    Non_Blocking_Single_Sample_Converter_Concept() = delete;
+    /**
+     * \brief Constructor.
+     */
+    Non_Blocking_Single_Sample_Converter_Concept() noexcept = default;
 
-    Non_Blocking_Single_Sample_Converter_Concept( Non_Blocking_Single_Sample_Converter_Concept && ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Non_Blocking_Single_Sample_Converter_Concept(
+        Non_Blocking_Single_Sample_Converter_Concept && source ) noexcept = default;
 
     Non_Blocking_Single_Sample_Converter_Concept( Non_Blocking_Single_Sample_Converter_Concept const & ) = delete;
 
-    ~Non_Blocking_Single_Sample_Converter_Concept() = delete;
+    /**
+     * \brief Destructor.
+     */
+    ~Non_Blocking_Single_Sample_Converter_Concept() noexcept = default;
 
-    auto operator=( Non_Blocking_Single_Sample_Converter_Concept && ) = delete;
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Non_Blocking_Single_Sample_Converter_Concept && expression ) noexcept
+        -> Non_Blocking_Single_Sample_Converter_Concept & = default;
 
     auto operator=( Non_Blocking_Single_Sample_Converter_Concept const & ) = delete;
 
