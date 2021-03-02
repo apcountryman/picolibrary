@@ -1249,7 +1249,7 @@ class Internally_Pulled_Up_Input_Pin {
         return *this;
     }
 
-    auto operator=( Internally_Pulled_Up_Input_Pin const & expression ) = delete;
+    auto operator=( Internally_Pulled_Up_Input_Pin const & ) = delete;
 
     /**
      * \brief Initialize the pin's hardware.
