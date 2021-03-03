@@ -120,6 +120,29 @@ class Fixed_Intensity_Indicator_Concept {
     auto toggle() noexcept -> Result<Void, Error_Code>;
 };
 
+/**
+ * \brief Fixed intensity indicator
+ */
+template<typename Output_Pin>
+class GPIO_Output_Pin_Fixed_Intensity_Indicator : public Output_Pin {
+  public:
+    /**
+     * \brief Illuminate the indicator.
+     */
+    auto illuminate()
+    {
+        return Output_Pin::transition_to_high();
+    }
+
+    /**
+     * \brief Extinguish the indicator.
+     */
+    auto extinguish()
+    {
+        return Output_Pin::transition_to_low();
+    }
+};
+
 } // namespace picolibrary::Indicator
 
 #endif // PICOLIBRARY_INDICATOR_H
