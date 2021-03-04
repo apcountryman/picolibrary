@@ -1103,6 +1103,47 @@ TEST( enablePullUp, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::Microchip::MCP23008::Driver::disable_pull_up() properly
+ *        handles a write error.
+ */
+TEST( disablePullUp, writeError )
+{
+    auto mcp23008 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( mcp23008, gppu() ).WillOnce( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( mcp23008, write( _, A<std::uint8_t>() ) ).WillOnce( Return( error ) );
+    EXPECT_CALL( mcp23008, cache_gppu( _ ) ).Times( 0 );
+
+    auto const result = mcp23008.disable_pull_up( random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Driver::disable_pull_up() works
+ *        properly.
+ */
+TEST( disablePullUp, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto mcp23008 = Driver{};
+
+    auto const gppu = random<std::uint8_t>();
+    auto const mask = random<std::uint8_t>();
+    auto const data = static_cast<std::uint8_t>( gppu & ~mask );
+
+    EXPECT_CALL( mcp23008, gppu() ).WillOnce( Return( gppu ) );
+    EXPECT_CALL( mcp23008, write( 0x06, data ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( mcp23008, cache_gppu( data ) );
+
+    EXPECT_FALSE( mcp23008.disable_pull_up( mask ).is_error() );
+}
+
+/**
  * \brief Execute the picolibrary::Microchip::MCP23008::Driver unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
