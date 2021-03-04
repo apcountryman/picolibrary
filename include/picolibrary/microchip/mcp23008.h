@@ -1347,6 +1347,48 @@ class Driver : public Device, public Register_Cache {
     {
         return write_gpio( this->gpio() & ~mask );
     }
+
+    /**
+     * \brief Toggle the state of an open-drain output pin.
+     *
+     * \param[in] mask The mask identifying the open-drain output pin to toggle the state
+     *            of.
+     *
+     * \return Nothing if toggling the state of the open-drain output pin succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if transitioning the open-drain output pin to the low state
+     *         failed for any other reason.
+     * \return An error code if toggling the state of the open-drain output pin failed.
+     */
+    auto toggle_open_drain_output( std::uint8_t mask ) noexcept
+    {
+        return write_iodir( this->iodir() ^ mask );
+    }
+
+    /**
+     * \brief Toggle the state of an push-pull output pin.
+     *
+     * \param[in] mask The mask identifying the push-pull output pin to toggle the state
+     *            of.
+     *
+     * \return Nothing if toggling the state of the push-pull output pin succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if transitioning the push-pull output pin to the low state
+     *         failed for any other reason.
+     * \return An error code if toggling the state of the push-pull output pin failed.
+     */
+    auto toggle_push_pull_output( std::uint8_t mask ) noexcept
+    {
+        return write_gpio( this->gpio() ^ mask );
+    }
 };
 
 /**
