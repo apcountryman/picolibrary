@@ -1119,13 +1119,13 @@ class Driver : public Device, public Register_Cache {
      *            configuration.
      * \param[in] interrupt_mode The desired interrupt mode.
      *
-     * \return Nothing if configuration succeeded.
+     * \return Nothing if configuration of the MCP23008 succeeded.
      * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
      *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
      *         responsive.
      * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
      *         arbitration while attempting to communicate with the MCP23008.
-     * \return An error code if configuration failed for any other reason.
+     * \return An error code if configuration of the MCP23008 failed for any other reason.
      */
     auto configure(
         Sequential_Operation_Mode           sequential_operation_mode,
@@ -1136,6 +1136,27 @@ class Driver : public Device, public Register_Cache {
             static_cast<std::uint8_t>( sequential_operation_mode )
             | static_cast<std::uint8_t>( sda_slew_rate_control_configuration )
             | static_cast<std::uint8_t>( interrupt_mode ) );
+    }
+
+    /**
+     * \brief Configure a pin to act as an internally pulled-up input pin.
+     *
+     * \param[in] mask The mask identifying the pin to be configured as an internally
+     *            pulled-up input pin.
+     *
+     * \return Nothing if configuration of the pin as an internally pulled-up input pin
+     *         succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if configuration of the pin as an internally pulled-up input
+     *         pin failed for any other reason.
+     */
+    auto configure_pin_as_internally_pulled_up_input( std::uint8_t mask ) noexcept
+    {
+        return write_iodir( this->iodir() | mask );
     }
 };
 

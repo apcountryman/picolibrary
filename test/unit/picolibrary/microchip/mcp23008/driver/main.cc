@@ -885,8 +885,8 @@ TEST( readInterruptContext, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Microchip::MCP23008::Driver::configure() properly handles
- *        a write error.
+ * \brief Verify picolibrary::Microchip::MCP23008::Driver::configure() properly handles a
+ *        write error.
  */
 TEST( configure, writeError )
 {
@@ -930,6 +930,49 @@ TEST( configure, worksProperly )
     EXPECT_FALSE( mcp23008
                       .configure( sequential_operation_mode, sda_slew_rate_control_configuration, interrupt_mode )
                       .is_error() );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::Microchip::MCP23008::Driver::configure_pin_as_internally_pulled_up_input()
+ *        properly handles a write error.
+ */
+TEST( configurePinAsInternallyPulledUpInput, writeError )
+{
+    auto mcp23008 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( mcp23008, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( mcp23008, write( _, A<std::uint8_t>() ) ).WillOnce( Return( error ) );
+    EXPECT_CALL( mcp23008, cache_iodir( _ ) ).Times( 0 );
+
+    auto const result = mcp23008.configure_pin_as_internally_pulled_up_input( random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::Microchip::MCP23008::Driver::configure_pin_as_internally_pulled_up_input()
+ *        works properly.
+ */
+TEST( configurePinAsInternallyPulledUpInput, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto mcp23008 = Driver{};
+
+    auto const iodir = random<std::uint8_t>();
+    auto const mask  = random<std::uint8_t>();
+    auto const data  = static_cast<std::uint8_t>( iodir | mask );
+
+    EXPECT_CALL( mcp23008, iodir() ).WillOnce( Return( iodir ) );
+    EXPECT_CALL( mcp23008, write( 0x00, data ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( mcp23008, cache_iodir( data ) );
+
+    EXPECT_FALSE( mcp23008.configure_pin_as_internally_pulled_up_input( mask ).is_error() );
 }
 
 /**
