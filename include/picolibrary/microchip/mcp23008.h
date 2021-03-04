@@ -1089,6 +1089,8 @@ class Driver : public Device, public Register_Cache {
     /**
      * \brief Read the interrupt context.
      *
+     * \warning This function will not work properly if sequential operation is disabled.
+     *
      * \return The interrupt context if the read succeeded.
      * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
      *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
@@ -1107,6 +1109,33 @@ class Driver : public Device, public Register_Cache {
         } // if
 
         return Interrupt_Context{ .intf = buffer[ 0 ], .intcap = buffer[ 1 ] };
+    }
+
+    /**
+     * \brief Configure the MCP23008.
+     *
+     * \param[in] sequential_operation_mode The desired sequential operation mode.
+     * \param[in] sda_slew_rate_control_configuration The desired SDA slew rate control
+     *            configuration.
+     * \param[in] interrupt_mode The desired interrupt mode.
+     *
+     * \return Nothing if configuration succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if configuration failed for any other reason.
+     */
+    auto configure(
+        Sequential_Operation_Mode           sequential_operation_mode,
+        SDA_Slew_Rate_Control_Configuration sda_slew_rate_control_configuration,
+        Interrupt_Mode                      interrupt_mode )
+    {
+        return write_iocon(
+            static_cast<std::uint8_t>( sequential_operation_mode )
+            | static_cast<std::uint8_t>( sda_slew_rate_control_configuration )
+            | static_cast<std::uint8_t>( interrupt_mode ) );
     }
 };
 

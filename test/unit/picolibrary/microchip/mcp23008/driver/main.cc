@@ -43,7 +43,10 @@ using ::picolibrary::Generic_Error;
 using ::picolibrary::Result;
 using ::picolibrary::Void;
 using ::picolibrary::I2C::Address;
+using ::picolibrary::Microchip::MCP23008::Interrupt_Mode;
 using ::picolibrary::Microchip::MCP23008::make_driver;
+using ::picolibrary::Microchip::MCP23008::SDA_Slew_Rate_Control_Configuration;
+using ::picolibrary::Microchip::MCP23008::Sequential_Operation_Mode;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::I2C::Mock_Controller;
@@ -879,6 +882,54 @@ TEST( readInterruptContext, worksProperly )
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value().intf, intf );
     EXPECT_EQ( result.value().intcap, intcap );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Driver::configure() properly handles
+ *        a write error.
+ */
+TEST( configure, writeError )
+{
+    auto mcp23008 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( mcp23008, write( _, A<std::uint8_t>() ) ).WillOnce( Return( error ) );
+    EXPECT_CALL( mcp23008, cache_iocon( _ ) ).Times( 0 );
+
+    auto const result = mcp23008.configure(
+        random<Sequential_Operation_Mode>(),
+        random<SDA_Slew_Rate_Control_Configuration>(),
+        random<Interrupt_Mode>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Driver::configure() works properly.
+ */
+TEST( configure, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto mcp23008 = Driver{};
+
+    auto const sequential_operation_mode           = random<Sequential_Operation_Mode>();
+    auto const sda_slew_rate_control_configuration = random<SDA_Slew_Rate_Control_Configuration>();
+    auto const interrupt_mode                      = random<Interrupt_Mode>();
+
+    auto const data = static_cast<std::uint8_t>(
+        static_cast<std::uint8_t>( sequential_operation_mode )
+        | static_cast<std::uint8_t>( sda_slew_rate_control_configuration )
+        | static_cast<std::uint8_t>( interrupt_mode ) );
+
+    EXPECT_CALL( mcp23008, write( 0x05, data ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( mcp23008, cache_iocon( data ) );
+
+    EXPECT_FALSE( mcp23008
+                      .configure( sequential_operation_mode, sda_slew_rate_control_configuration, interrupt_mode )
+                      .is_error() );
 }
 
 /**
