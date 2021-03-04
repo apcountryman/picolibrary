@@ -1263,6 +1263,27 @@ class Driver : public Device, public Register_Cache {
 
         return static_cast<std::uint8_t>( result.value() & mask );
     }
+
+    /**
+     * \brief Transition an open-drain output pin to the high state.
+     *
+     * \param[in] mask The mask identifying the open-drain output pin to transition to the
+     *            high state.
+     *
+     * \return Nothing if transitioning the open-drain output pin to the high state
+     *         succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if transitioning the open-drain output pin to the high state
+     *         failed for any other reason.
+     */
+    auto transition_open_drain_output_to_high( std::uint8_t mask ) noexcept
+    {
+        return write_iodir( this->iodir() | mask );
+    }
 };
 
 /**
