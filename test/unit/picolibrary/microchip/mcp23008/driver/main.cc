@@ -1144,6 +1144,43 @@ TEST( disablePullUp, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::Microchip::MCP23008::Driver::state() properly handles a read
+ *        error.
+ */
+TEST( state, readError )
+{
+    auto const mcp23008 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( mcp23008, read( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = mcp23008.state( random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Driver::state() works properly.
+ */
+TEST( state, worksProperly )
+{
+    auto const mcp23008 = Driver{};
+
+    auto const data = random<std::uint8_t>();
+
+    EXPECT_CALL( mcp23008, read( 0x09 ) ).WillOnce( Return( data ) );
+
+    auto const mask = random<std::uint8_t>();
+
+    auto const result = mcp23008.state( mask );
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), data & mask );
+}
+
+/**
  * \brief Execute the picolibrary::Microchip::MCP23008::Driver unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().

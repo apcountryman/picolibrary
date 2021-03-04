@@ -1240,6 +1240,29 @@ class Driver : public Device, public Register_Cache {
     {
         return write_gppu( this->gppu() & ~mask );
     }
+
+    /**
+     * \brief Get the state of a pin.
+     *
+     * \param[in] mask The mask identifying the pin whose state is to be gotten.
+     *
+     * \return The state of the pin if getting the state of the pin succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if getting the state of the pin failed for any other reason.
+     */
+    auto state( std::uint8_t mask ) const noexcept -> Result<std::uint8_t, Error_Code>
+    {
+        auto result = read_gpio();
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return static_cast<std::uint8_t>( result.value() & mask );
+    }
 };
 
 /**
