@@ -1305,6 +1305,48 @@ class Driver : public Device, public Register_Cache {
     {
         return write_gpio( this->gpio() | mask );
     }
+
+    /**
+     * \brief Transition an open-drain output pin to the low state.
+     *
+     * \param[in] mask The mask identifying the open-drain output pin to transition to the
+     *            low state.
+     *
+     * \return Nothing if transitioning the open-drain output pin to the low state
+     *         succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if transitioning the open-drain output pin to the low state
+     *         failed for any other reason.
+     */
+    auto transition_open_drain_output_to_low( std::uint8_t mask ) noexcept
+    {
+        return write_iodir( this->iodir() & ~mask );
+    }
+
+    /**
+     * \brief Transition an push-pull output pin to the low state.
+     *
+     * \param[in] mask The mask identifying the push-pull output pin to transition to the
+     *            low state.
+     *
+     * \return Nothing if transitioning the push-pull output pin to the low state
+     *         succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if transitioning the push-pull output pin to the low state
+     *         failed for any other reason.
+     */
+    auto transition_push_pull_output_to_low( std::uint8_t mask ) noexcept
+    {
+        return write_gpio( this->gpio() & ~mask );
+    }
 };
 
 /**
