@@ -1185,7 +1185,7 @@ class Driver : public Device, public Register_Cache {
      * \param[in] mask The mask identifying the pin to be configured as a push-pull output
      *            pin.
      *
-     * \return Nothing if configuration of the pin as a push-pull output pin.
+     * \return Nothing if configuration of the pin as a push-pull output pin succeeded.
      * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
      *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
      *         responsive.
@@ -1197,6 +1197,27 @@ class Driver : public Device, public Register_Cache {
     auto configure_pin_as_push_pull_output( std::uint8_t mask ) noexcept
     {
         return write_iodir( this->iodir() & ~mask );
+    }
+
+    /**
+     * \brief Enable an internally pulled-up input pin's internal pull-up resistor.
+     *
+     * \param[in] mask The mask identifying the internally pulled-up input pin whose
+     *            internal pull-up resistor is to be enabled.
+     *
+     * \return Nothing if enabling the internally pulled-up input pin's internal pull-up
+     *         resistor succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if enabling the internally pulled-up input pin's internal
+     *         pull-up resistor failed for any other reason.
+     */
+    auto enable_pull_up( std::uint8_t mask ) noexcept
+    {
+        return write_gppu( this->gppu() | mask );
     }
 };
 
