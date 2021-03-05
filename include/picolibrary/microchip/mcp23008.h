@@ -1089,6 +1089,8 @@ class Driver : public Device, public Register_Cache {
     /**
      * \brief Read the interrupt context.
      *
+     * \warning This function will not work properly if sequential operation is disabled.
+     *
      * \return The interrupt context if the read succeeded.
      * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
      *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
@@ -1107,6 +1109,285 @@ class Driver : public Device, public Register_Cache {
         } // if
 
         return Interrupt_Context{ .intf = buffer[ 0 ], .intcap = buffer[ 1 ] };
+    }
+
+    /**
+     * \brief Configure the MCP23008.
+     *
+     * \param[in] sequential_operation_mode The desired sequential operation mode.
+     * \param[in] sda_slew_rate_control_configuration The desired SDA slew rate control
+     *            configuration.
+     * \param[in] interrupt_mode The desired interrupt mode.
+     *
+     * \return Nothing if configuration of the MCP23008 succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if configuration of the MCP23008 failed for any other reason.
+     */
+    auto configure(
+        Sequential_Operation_Mode           sequential_operation_mode,
+        SDA_Slew_Rate_Control_Configuration sda_slew_rate_control_configuration,
+        Interrupt_Mode                      interrupt_mode )
+    {
+        return write_iocon(
+            static_cast<std::uint8_t>( sequential_operation_mode )
+            | static_cast<std::uint8_t>( sda_slew_rate_control_configuration )
+            | static_cast<std::uint8_t>( interrupt_mode ) );
+    }
+
+    /**
+     * \brief Configure a pin to act as an internally pulled-up input pin.
+     *
+     * \param[in] mask The mask identifying the pin to be configured as an internally
+     *            pulled-up input pin.
+     *
+     * \return Nothing if configuring the pin as an internally pulled-up input pin
+     *         succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if configuring the pin as an internally pulled-up input pin
+     *         failed for any other reason.
+     */
+    auto configure_pin_as_internally_pulled_up_input( std::uint8_t mask ) noexcept
+    {
+        return write_iodir( this->iodir() | mask );
+    }
+
+    /**
+     * \brief Configure a pin to act as an open-drain output pin.
+     *
+     * \param[in] mask The mask identifying the pin to be configured as an open-drain
+     *            output pin.
+     *
+     * \return Nothing if configuring the pin as an open-drain output pin succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if configuring the pin as an open-drain output pin failed for
+     *         any other reason.
+     */
+    auto configure_pin_as_open_drain_output( std::uint8_t mask ) noexcept
+    {
+        return write_gpio( this->gpio() & ~mask );
+    }
+
+    /**
+     * \brief Configure a pin to act as a push-pull output pin.
+     *
+     * \param[in] mask The mask identifying the pin to be configured as a push-pull output
+     *            pin.
+     *
+     * \return Nothing if configuring the pin as a push-pull output pin succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if configuring the pin as a push-pull output pin failed for
+     *         any other reason.
+     */
+    auto configure_pin_as_push_pull_output( std::uint8_t mask ) noexcept
+    {
+        return write_iodir( this->iodir() & ~mask );
+    }
+
+    /**
+     * \brief Enable an internally pulled-up input pin's internal pull-up resistor.
+     *
+     * \param[in] mask The mask identifying the internally pulled-up input pin whose
+     *            internal pull-up resistor is to be enabled.
+     *
+     * \return Nothing if enabling the internally pulled-up input pin's internal pull-up
+     *         resistor succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if enabling the internally pulled-up input pin's internal
+     *         pull-up resistor failed for any other reason.
+     */
+    auto enable_pull_up( std::uint8_t mask ) noexcept
+    {
+        return write_gppu( this->gppu() | mask );
+    }
+
+    /**
+     * \brief Disable an internally pulled-up input pin's internal pull-up resistor.
+     *
+     * \param[in] mask The mask identifying the internally pulled-up input pin whose
+     *            internal pull-up resistor is to be disabled.
+     *
+     * \return Nothing if disabling the internally pulled-up input pin's internal pull-up
+     *         resistor succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if disabling the internally pulled-up input pin's internal
+     *         pull-up resistor failed for any other reason.
+     */
+    auto disable_pull_up( std::uint8_t mask ) noexcept
+    {
+        return write_gppu( this->gppu() & ~mask );
+    }
+
+    /**
+     * \brief Get the state of a pin.
+     *
+     * \param[in] mask The mask identifying the pin whose state is to be gotten.
+     *
+     * \return The state of the pin if getting the state of the pin succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if getting the state of the pin failed for any other reason.
+     */
+    auto state( std::uint8_t mask ) const noexcept -> Result<std::uint8_t, Error_Code>
+    {
+        auto result = read_gpio();
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return static_cast<std::uint8_t>( result.value() & mask );
+    }
+
+    /**
+     * \brief Transition an open-drain output pin to the high state.
+     *
+     * \param[in] mask The mask identifying the open-drain output pin to transition to the
+     *            high state.
+     *
+     * \return Nothing if transitioning the open-drain output pin to the high state
+     *         succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if transitioning the open-drain output pin to the high state
+     *         failed for any other reason.
+     */
+    auto transition_open_drain_output_to_high( std::uint8_t mask ) noexcept
+    {
+        return write_iodir( this->iodir() | mask );
+    }
+
+    /**
+     * \brief Transition a push-pull output pin to the high state.
+     *
+     * \param[in] mask The mask identifying the push-pull output pin to transition to the
+     *            high state.
+     *
+     * \return Nothing if transitioning the push-pull output pin to the high state
+     *         succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if transitioning the push-pull output pin to the high state
+     *         failed for any other reason.
+     */
+    auto transition_push_pull_output_to_high( std::uint8_t mask ) noexcept
+    {
+        return write_gpio( this->gpio() | mask );
+    }
+
+    /**
+     * \brief Transition an open-drain output pin to the low state.
+     *
+     * \param[in] mask The mask identifying the open-drain output pin to transition to the
+     *            low state.
+     *
+     * \return Nothing if transitioning the open-drain output pin to the low state
+     *         succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if transitioning the open-drain output pin to the low state
+     *         failed for any other reason.
+     */
+    auto transition_open_drain_output_to_low( std::uint8_t mask ) noexcept
+    {
+        return write_iodir( this->iodir() & ~mask );
+    }
+
+    /**
+     * \brief Transition a push-pull output pin to the low state.
+     *
+     * \param[in] mask The mask identifying the push-pull output pin to transition to the
+     *            low state.
+     *
+     * \return Nothing if transitioning the push-pull output pin to the low state
+     *         succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if transitioning the push-pull output pin to the low state
+     *         failed for any other reason.
+     */
+    auto transition_push_pull_output_to_low( std::uint8_t mask ) noexcept
+    {
+        return write_gpio( this->gpio() & ~mask );
+    }
+
+    /**
+     * \brief Toggle the state of an open-drain output pin.
+     *
+     * \param[in] mask The mask identifying the open-drain output pin to toggle the state
+     *            of.
+     *
+     * \return Nothing if toggling the state of the open-drain output pin succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if transitioning the open-drain output pin to the low state
+     *         failed for any other reason.
+     * \return An error code if toggling the state of the open-drain output pin failed.
+     */
+    auto toggle_open_drain_output( std::uint8_t mask ) noexcept
+    {
+        return write_iodir( this->iodir() ^ mask );
+    }
+
+    /**
+     * \brief Toggle the state of a push-pull output pin.
+     *
+     * \param[in] mask The mask identifying the push-pull output pin to toggle the state
+     *            of.
+     *
+     * \return Nothing if toggling the state of the push-pull output pin succeeded.
+     * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
+     *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
+     *         responsive.
+     * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
+     *         arbitration while attempting to communicate with the MCP23008.
+     * \return An error code if transitioning the push-pull output pin to the low state
+     *         failed for any other reason.
+     * \return An error code if toggling the state of the push-pull output pin failed.
+     */
+    auto toggle_push_pull_output( std::uint8_t mask ) noexcept
+    {
+        return write_gpio( this->gpio() ^ mask );
     }
 };
 
