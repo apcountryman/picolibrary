@@ -1547,15 +1547,16 @@ class Internally_Pulled_Up_Input_Pin {
      * \return An error code if pin hardware initialization failed for any other reason.
      */
     auto initialize( Initial_Pull_Up_State initial_pull_up_state = Initial_Pull_Up_State::DISABLED ) noexcept
+        -> Result<Void, Error_Code>
     {
-        auto gppu = m_driver->gppu();
-
         switch ( initial_pull_up_state ) {
-            case Initial_Pull_Up_State::ENABLED: gppu |= m_mask; break;
-            case Initial_Pull_Up_State::DISABLED: gppu &= ~m_mask; break;
+            case Initial_Pull_Up_State::ENABLED:
+                return m_driver->enable_pull_up( m_mask );
+            case Initial_Pull_Up_State::DISABLED:
+                return m_driver->disable_pull_up( m_mask );
         } // switch
 
-        return m_driver->write_gppu( gppu );
+        return {};
     }
 
     /**
@@ -1572,7 +1573,7 @@ class Internally_Pulled_Up_Input_Pin {
      */
     auto enable_pull_up() noexcept
     {
-        return m_driver->write_gppu( m_driver->gppu() | m_mask );
+        return m_driver->enable_pull_up( m_mask );
     }
 
     /**
@@ -1589,7 +1590,7 @@ class Internally_Pulled_Up_Input_Pin {
      */
     auto disable_pull_up() noexcept
     {
-        return m_driver->write_gppu( m_driver->gppu() & ~m_mask );
+        return m_driver->disable_pull_up( m_mask );
     }
 
     /**
@@ -1606,12 +1607,12 @@ class Internally_Pulled_Up_Input_Pin {
      */
     auto state() const noexcept -> Result<Pin_State, Error_Code>
     {
-        auto result = m_driver->read_gpio();
+        auto result = m_driver->state( m_mask );
         if ( result.is_error() ) {
             return result.error();
         } // if
 
-        return Pin_State{ static_cast<bool>( result.value() & m_mask ) };
+        return static_cast<bool>( result.value() );
     }
 
   private:
@@ -1631,7 +1632,7 @@ class Internally_Pulled_Up_Input_Pin {
     void disable() noexcept
     {
         if ( m_driver ) {
-            static_cast<void>( disable_pull_up() );
+            static_cast<void>( m_driver->disable_pull_up( m_mask ) );
         } // if
     }
 };
