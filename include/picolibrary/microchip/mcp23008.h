@@ -1144,15 +1144,15 @@ class Driver : public Device, public Register_Cache {
      * \param[in] mask The mask identifying the pin to be configured as an internally
      *            pulled-up input pin.
      *
-     * \return Nothing if configuration of the pin as an internally pulled-up input pin
+     * \return Nothing if configuring the pin as an internally pulled-up input pin
      *         succeeded.
      * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
      *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
      *         responsive.
      * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
      *         arbitration while attempting to communicate with the MCP23008.
-     * \return An error code if configuration of the pin as an internally pulled-up input
-     *         pin failed for any other reason.
+     * \return An error code if configuring the pin as an internally pulled-up input pin
+     *         failed for any other reason.
      */
     auto configure_pin_as_internally_pulled_up_input( std::uint8_t mask ) noexcept
     {
@@ -1165,14 +1165,14 @@ class Driver : public Device, public Register_Cache {
      * \param[in] mask The mask identifying the pin to be configured as an open-drain
      *            output pin.
      *
-     * \return Nothing if configuration of the pin as an open-drain output pin succeeded.
+     * \return Nothing if configuring the pin as an open-drain output pin succeeded.
      * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
      *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
      *         responsive.
      * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
      *         arbitration while attempting to communicate with the MCP23008.
-     * \return An error code if configuration of the pin as an open-drain output pin
-     *         failed for any other reason.
+     * \return An error code if configuring the pin as an open-drain output pin failed for
+     *         any other reason.
      */
     auto configure_pin_as_open_drain_output( std::uint8_t mask ) noexcept
     {
@@ -1185,14 +1185,14 @@ class Driver : public Device, public Register_Cache {
      * \param[in] mask The mask identifying the pin to be configured as a push-pull output
      *            pin.
      *
-     * \return Nothing if configuration of the pin as a push-pull output pin succeeded.
+     * \return Nothing if configuring the pin as a push-pull output pin succeeded.
      * \return picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
      *         std::uint8_t>::nonresponsive_device_error() if the MCP23008 is not
      *         responsive.
      * \return picolibrary::Generic_Error::ARBITRATION_LOST if the controller lost
      *         arbitration while attempting to communicate with the MCP23008.
-     * \return An error code if configuration of the pin as a push-pull output pin failed
-     *         for any other reason.
+     * \return An error code if configuring the pin as a push-pull output pin failed for
+     *         any other reason.
      */
     auto configure_pin_as_push_pull_output( std::uint8_t mask ) noexcept
     {
@@ -1286,7 +1286,7 @@ class Driver : public Device, public Register_Cache {
     }
 
     /**
-     * \brief Transition an push-pull output pin to the high state.
+     * \brief Transition a push-pull output pin to the high state.
      *
      * \param[in] mask The mask identifying the push-pull output pin to transition to the
      *            high state.
@@ -1328,7 +1328,7 @@ class Driver : public Device, public Register_Cache {
     }
 
     /**
-     * \brief Transition an push-pull output pin to the low state.
+     * \brief Transition a push-pull output pin to the low state.
      *
      * \param[in] mask The mask identifying the push-pull output pin to transition to the
      *            low state.
@@ -1370,7 +1370,7 @@ class Driver : public Device, public Register_Cache {
     }
 
     /**
-     * \brief Toggle the state of an push-pull output pin.
+     * \brief Toggle the state of a push-pull output pin.
      *
      * \param[in] mask The mask identifying the push-pull output pin to toggle the state
      *            of.
