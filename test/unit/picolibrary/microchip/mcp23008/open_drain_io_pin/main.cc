@@ -72,22 +72,17 @@ TEST( constructorMove, worksProperly )
     }
 
     {
-        auto const in_sequence = InSequence{};
-
         auto       driver = Mock_Driver{};
         auto const mask   = random<std::uint8_t>();
 
         auto source = Open_Drain_IO_Pin{ driver, mask };
 
-        EXPECT_CALL( driver, iodir() ).Times( 0 );
-        EXPECT_CALL( driver, write_iodir( _ ) ).Times( 0 );
+        EXPECT_CALL( driver, configure_pin_as_internally_pulled_up_input( _ ) ).Times( 0 );
 
         auto const pin = Open_Drain_IO_Pin{ std::move( source ) };
 
-        auto const iodir = random<std::uint8_t>();
-
-        EXPECT_CALL( driver, iodir() ).WillOnce( Return( iodir ) );
-        EXPECT_CALL( driver, write_iodir( iodir | mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, configure_pin_as_internally_pulled_up_input( mask ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
     }
 }
 
@@ -101,8 +96,8 @@ TEST( destructor, writeIODIRError )
 
     auto const pin = Open_Drain_IO_Pin{ driver, random<std::uint8_t>() };
 
-    EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( random<Mock_Error>() ) );
+    EXPECT_CALL( driver, configure_pin_as_internally_pulled_up_input( _ ) )
+        .WillOnce( Return( random<Mock_Error>() ) );
 }
 
 /**
@@ -118,13 +113,10 @@ TEST( assignmentOperatorMove, writeIODIRError )
         auto expression = Open_Drain_IO_Pin{};
         auto object     = Open_Drain_IO_Pin{ driver, random<std::uint8_t>() };
 
-        EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
-        EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( random<Mock_Error>() ) );
+        EXPECT_CALL( driver, configure_pin_as_internally_pulled_up_input( _ ) )
+            .WillOnce( Return( random<Mock_Error>() ) );
 
         object = std::move( expression );
-
-        EXPECT_CALL( driver, iodir() ).Times( 0 );
-        EXPECT_CALL( driver, write_iodir( _ ) ).Times( 0 );
     }
 
     {
@@ -134,17 +126,13 @@ TEST( assignmentOperatorMove, writeIODIRError )
         auto expression = Open_Drain_IO_Pin{ driver_expression, random<std::uint8_t>() };
         auto object     = Open_Drain_IO_Pin{ driver_object, random<std::uint8_t>() };
 
-        EXPECT_CALL( driver_expression, iodir() ).Times( 0 );
-        EXPECT_CALL( driver_object, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
-        EXPECT_CALL( driver_expression, write_iodir( _ ) ).Times( 0 );
-        EXPECT_CALL( driver_object, write_iodir( _ ) ).WillOnce( Return( random<Mock_Error>() ) );
+        EXPECT_CALL( driver_object, configure_pin_as_internally_pulled_up_input( _ ) )
+            .WillOnce( Return( random<Mock_Error>() ) );
 
         object = std::move( expression );
 
-        EXPECT_CALL( driver_object, iodir() ).Times( 0 );
-        EXPECT_CALL( driver_expression, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
-        EXPECT_CALL( driver_object, write_iodir( _ ) ).Times( 0 );
-        EXPECT_CALL( driver_expression, write_iodir( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver_expression, configure_pin_as_internally_pulled_up_input( _ ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
     }
 }
 
@@ -162,48 +150,36 @@ TEST( assignmentOperatorMove, worksProperly )
     }
 
     {
-        auto const in_sequence = InSequence{};
-
         auto driver = Mock_Driver{};
         auto mask   = random<std::uint8_t>();
 
         auto expression = Open_Drain_IO_Pin{ driver, mask };
         auto object     = Open_Drain_IO_Pin{};
 
-        EXPECT_CALL( driver, iodir() ).Times( 0 );
-        EXPECT_CALL( driver, write_iodir( _ ) ).Times( 0 );
+        EXPECT_CALL( driver, configure_pin_as_internally_pulled_up_input( _ ) ).Times( 0 );
 
         object = std::move( expression );
 
-        auto const iodir = random<std::uint8_t>();
-
-        EXPECT_CALL( driver, iodir() ).WillOnce( Return( iodir ) );
-        EXPECT_CALL( driver, write_iodir( iodir | mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, configure_pin_as_internally_pulled_up_input( mask ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
     }
 
     {
-        auto const in_sequence = InSequence{};
-
         auto driver = Mock_Driver{};
         auto mask   = random<std::uint8_t>();
 
         auto expression = Open_Drain_IO_Pin{};
         auto object     = Open_Drain_IO_Pin{ driver, mask };
 
-        auto const iodir = random<std::uint8_t>();
-
-        EXPECT_CALL( driver, iodir() ).WillOnce( Return( iodir ) );
-        EXPECT_CALL( driver, write_iodir( iodir | mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, configure_pin_as_internally_pulled_up_input( mask ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
         object = std::move( expression );
 
-        EXPECT_CALL( driver, iodir() ).Times( 0 );
-        EXPECT_CALL( driver, write_iodir( _ ) ).Times( 0 );
+        EXPECT_CALL( driver, configure_pin_as_internally_pulled_up_input( _ ) ).Times( 0 );
     }
 
     {
-        auto const in_sequence = InSequence{};
-
         auto       driver_expression = Mock_Driver{};
         auto const mask_expression   = random<std::uint8_t>();
         auto       driver_object     = Mock_Driver{};
@@ -212,22 +188,14 @@ TEST( assignmentOperatorMove, worksProperly )
         auto expression = Open_Drain_IO_Pin{ driver_expression, mask_expression };
         auto object     = Open_Drain_IO_Pin{ driver_object, mask_object };
 
-        auto const iodir_object = random<std::uint8_t>();
-
-        EXPECT_CALL( driver_expression, iodir() ).Times( 0 );
-        EXPECT_CALL( driver_object, iodir() ).WillOnce( Return( iodir_object ) );
-        EXPECT_CALL( driver_expression, write_iodir( _ ) ).Times( 0 );
-        EXPECT_CALL( driver_object, write_iodir( iodir_object | mask_object ) )
+        EXPECT_CALL( driver_expression, configure_pin_as_internally_pulled_up_input( _ ) ).Times( 0 );
+        EXPECT_CALL( driver_object, configure_pin_as_internally_pulled_up_input( mask_object ) )
             .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
         object = std::move( expression );
 
-        auto const iodir_expression = random<std::uint8_t>();
-
-        EXPECT_CALL( driver_object, iodir() ).Times( 0 );
-        EXPECT_CALL( driver_expression, iodir() ).WillOnce( Return( iodir_expression ) );
-        EXPECT_CALL( driver_object, write_iodir( _ ) ).Times( 0 );
-        EXPECT_CALL( driver_expression, write_iodir( iodir_expression | mask_expression ) )
+        EXPECT_CALL( driver_object, configure_pin_as_internally_pulled_up_input( _ ) ).Times( 0 );
+        EXPECT_CALL( driver_expression, configure_pin_as_internally_pulled_up_input( mask_expression ) )
             .WillOnce( Return( Result<Void, Error_Code>{} ) );
     }
 
@@ -238,30 +206,25 @@ TEST( assignmentOperatorMove, worksProperly )
     }
 
     {
-        auto const in_sequence = InSequence{};
-
         auto       driver = Mock_Driver{};
         auto const mask   = random<std::uint8_t>();
 
         auto pin = Open_Drain_IO_Pin{ driver, mask };
 
-        EXPECT_CALL( driver, iodir() ).Times( 0 );
-        EXPECT_CALL( driver, write_iodir( _ ) ).Times( 0 );
+        EXPECT_CALL( driver, configure_pin_as_internally_pulled_up_input( _ ) ).Times( 0 );
 
         pin = std::move( pin );
 
-        auto const iodir = random<std::uint8_t>();
-
-        EXPECT_CALL( driver, iodir() ).WillOnce( Return( iodir ) );
-        EXPECT_CALL( driver, write_iodir( iodir | mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, configure_pin_as_internally_pulled_up_input( mask ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
     }
 }
 
 /**
  * \brief Verify picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin::initialize()
- *        properly handles an IODIR register write error.
+ *        properly handles a configuration error
  */
-TEST( initialize, writeIODIRError )
+TEST( initialize, configureError )
 {
     auto driver = Mock_Driver{};
 
@@ -269,16 +232,63 @@ TEST( initialize, writeIODIRError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( error ) );
+    EXPECT_CALL( driver, configure_pin_as_open_drain_output( _ ) ).WillOnce( Return( error ) );
 
     auto const result = pin.initialize( random<Initial_Pin_State>() );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, configure_pin_as_internally_pulled_up_input( _ ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin::initialize()
+ *        properly handles a low state transition error.
+ */
+TEST( initialize, transitionToLowError )
+{
+    auto driver = Mock_Driver{};
+
+    auto pin = Open_Drain_IO_Pin{ driver, random<std::uint8_t>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, configure_pin_as_open_drain_output( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, transition_open_drain_output_to_low( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = pin.initialize( Initial_Pin_State::LOW );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_CALL( driver, configure_pin_as_internally_pulled_up_input( _ ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
+}
+
+/**
+ * \brief Verify picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin::initialize()
+ *        properly handles a high state transition error.
+ */
+TEST( initialize, transitionToHighError )
+{
+    auto driver = Mock_Driver{};
+
+    auto pin = Open_Drain_IO_Pin{ driver, random<std::uint8_t>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, configure_pin_as_open_drain_output( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, transition_open_drain_output_to_high( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = pin.initialize( Initial_Pin_State::HIGH );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_CALL( driver, configure_pin_as_internally_pulled_up_input( _ ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
 }
 
 /**
@@ -295,15 +305,15 @@ TEST( initialize, worksProperly )
 
         auto pin = Open_Drain_IO_Pin{ driver, mask };
 
-        auto const iodir = random<std::uint8_t>();
+        EXPECT_CALL( driver, configure_pin_as_open_drain_output( mask ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, transition_open_drain_output_to_low( mask ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
-        EXPECT_CALL( driver, iodir() ).WillOnce( Return( iodir ) );
-        EXPECT_CALL( driver, write_iodir( iodir & ~mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_FALSE( pin.initialize().is_error() );
 
-        EXPECT_FALSE( pin.initialize( Initial_Pin_State::LOW ).is_error() );
-
-        EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
-        EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, configure_pin_as_internally_pulled_up_input( _ ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
     }
 
     {
@@ -314,23 +324,42 @@ TEST( initialize, worksProperly )
 
         auto pin = Open_Drain_IO_Pin{ driver, mask };
 
-        auto const iodir = random<std::uint8_t>();
+        EXPECT_CALL( driver, configure_pin_as_open_drain_output( mask ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, transition_open_drain_output_to_low( mask ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
-        EXPECT_CALL( driver, iodir() ).WillOnce( Return( iodir ) );
-        EXPECT_CALL( driver, write_iodir( iodir | mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_FALSE( pin.initialize( Initial_Pin_State::LOW ).is_error() );
+
+        EXPECT_CALL( driver, configure_pin_as_internally_pulled_up_input( _ ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+    }
+
+    {
+        auto const in_sequence = InSequence{};
+
+        auto       driver = Mock_Driver{};
+        auto const mask   = random<std::uint8_t>();
+
+        auto pin = Open_Drain_IO_Pin{ driver, mask };
+
+        EXPECT_CALL( driver, configure_pin_as_open_drain_output( mask ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, transition_open_drain_output_to_high( mask ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
         EXPECT_FALSE( pin.initialize( Initial_Pin_State::HIGH ).is_error() );
 
-        EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
-        EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, configure_pin_as_internally_pulled_up_input( _ ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
     }
 }
 
 /**
  * \brief Verify picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin::state() properly
- *        handles a GPIO register read error.
+ *        handles a state get error.
  */
-TEST( state, readGPIOError )
+TEST( state, getStateError )
 {
     auto driver = Mock_Driver{};
 
@@ -338,15 +367,15 @@ TEST( state, readGPIOError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( driver, read_gpio() ).WillOnce( Return( error ) );
+    EXPECT_CALL( driver, state( _ ) ).WillOnce( Return( error ) );
 
     auto const result = pin.state();
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, configure_pin_as_internally_pulled_up_input( _ ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
 }
 
 /**
@@ -360,24 +389,24 @@ TEST( state, worksProperly )
 
     auto const pin = Open_Drain_IO_Pin{ driver, mask };
 
-    auto const gpio = random<std::uint8_t>();
+    auto const state = random<std::uint8_t>();
 
-    EXPECT_CALL( driver, read_gpio() ).WillOnce( Return( gpio ) );
+    EXPECT_CALL( driver, state( mask ) ).WillOnce( Return( state ) );
 
     auto const result = pin.state();
 
     EXPECT_TRUE( result.is_value() );
-    EXPECT_EQ( result.value().is_high(), static_cast<bool>( gpio & mask ) );
+    EXPECT_EQ( result.value().is_high(), static_cast<bool>( state ) );
 
-    EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, configure_pin_as_internally_pulled_up_input( _ ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
 }
 
 /**
  * \brief Verify picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin::transition_to_high()
- *        properly handles an IODIR register write error.
+ *        properly handles state transition error.
  */
-TEST( transitionToHigh, writeIODIRError )
+TEST( transitionToHigh, transitionError )
 {
     auto driver = Mock_Driver{};
 
@@ -385,16 +414,15 @@ TEST( transitionToHigh, writeIODIRError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( error ) );
+    EXPECT_CALL( driver, transition_open_drain_output_to_high( _ ) ).WillOnce( Return( error ) );
 
     auto const result = pin.transition_to_high();
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, configure_pin_as_internally_pulled_up_input( _ ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
 }
 
 /**
@@ -403,29 +431,25 @@ TEST( transitionToHigh, writeIODIRError )
  */
 TEST( transitionToHigh, worksProperly )
 {
-    auto const in_sequence = InSequence{};
-
     auto       driver = Mock_Driver{};
     auto const mask   = random<std::uint8_t>();
 
     auto pin = Open_Drain_IO_Pin{ driver, mask };
 
-    auto const iodir = random<std::uint8_t>();
-
-    EXPECT_CALL( driver, iodir() ).WillOnce( Return( iodir ) );
-    EXPECT_CALL( driver, write_iodir( iodir | mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, transition_open_drain_output_to_high( mask ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( pin.transition_to_high().is_error() );
 
-    EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, configure_pin_as_internally_pulled_up_input( _ ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
 }
 
 /**
  * \brief Verify picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin::transition_to_low()
- *        properly handles an IODIR register write error.
+ *        properly handles a state transition error.
  */
-TEST( transitionToLow, writeIODIRError )
+TEST( transitionToLow, transitionError )
 {
     auto driver = Mock_Driver{};
 
@@ -433,16 +457,15 @@ TEST( transitionToLow, writeIODIRError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( error ) );
+    EXPECT_CALL( driver, transition_open_drain_output_to_low( _ ) ).WillOnce( Return( error ) );
 
     auto const result = pin.transition_to_low();
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, configure_pin_as_internally_pulled_up_input( _ ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
 }
 
 /**
@@ -451,29 +474,25 @@ TEST( transitionToLow, writeIODIRError )
  */
 TEST( transitionToLow, worksProperly )
 {
-    auto const in_sequence = InSequence{};
-
     auto       driver = Mock_Driver{};
     auto const mask   = random<std::uint8_t>();
 
     auto pin = Open_Drain_IO_Pin{ driver, mask };
 
-    auto const iodir = random<std::uint8_t>();
-
-    EXPECT_CALL( driver, iodir() ).WillOnce( Return( iodir ) );
-    EXPECT_CALL( driver, write_iodir( iodir & ~mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, transition_open_drain_output_to_low( mask ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( pin.transition_to_low().is_error() );
 
-    EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, configure_pin_as_internally_pulled_up_input( _ ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
 }
 
 /**
  * \brief Verify picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin::toggle() properly
- *        handles an IODIR register write error.
+ *        handles a toggle error.
  */
-TEST( toggle, writeIODIRError )
+TEST( toggle, toggleError )
 {
     auto driver = Mock_Driver{};
 
@@ -481,16 +500,15 @@ TEST( toggle, writeIODIRError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( error ) );
+    EXPECT_CALL( driver, toggle_open_drain_output( _ ) ).WillOnce( Return( error ) );
 
     auto const result = pin.toggle();
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, configure_pin_as_internally_pulled_up_input( _ ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
 }
 
 /**
@@ -499,22 +517,17 @@ TEST( toggle, writeIODIRError )
  */
 TEST( toggle, worksProperly )
 {
-    auto const in_sequence = InSequence{};
-
     auto       driver = Mock_Driver{};
     auto const mask   = random<std::uint8_t>();
 
     auto pin = Open_Drain_IO_Pin{ driver, mask };
 
-    auto const iodir = random<std::uint8_t>();
-
-    EXPECT_CALL( driver, iodir() ).WillOnce( Return( iodir ) );
-    EXPECT_CALL( driver, write_iodir( iodir ^ mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, toggle_open_drain_output( mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( pin.toggle().is_error() );
 
-    EXPECT_CALL( driver, iodir() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_iodir( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, configure_pin_as_internally_pulled_up_input( _ ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
 }
 
 /**
