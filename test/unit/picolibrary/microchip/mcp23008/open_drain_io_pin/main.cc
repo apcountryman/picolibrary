@@ -88,9 +88,9 @@ TEST( constructorMove, worksProperly )
 
 /**
  * \brief Verify picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin::~Open_Drain_IO_Pin()
- *        properly handles an IODIR register write error.
+ *        properly handles a configuration error.
  */
-TEST( destructor, writeIODIRError )
+TEST( destructor, configurationError )
 {
     auto driver = Mock_Driver{};
 
@@ -102,10 +102,10 @@ TEST( destructor, writeIODIRError )
 
 /**
  * \brief Verify picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin::operator=(
- *        picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin && ) properly handles an
- *        IODIR register write error.
+ *        picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin && ) properly handles a
+ *        configuration error.
  */
-TEST( assignmentOperatorMove, writeIODIRError )
+TEST( assignmentOperatorMove, configurationError )
 {
     {
         auto driver = Mock_Driver{};
@@ -224,7 +224,7 @@ TEST( assignmentOperatorMove, worksProperly )
  * \brief Verify picolibrary::Microchip::MCP23008::Open_Drain_IO_Pin::initialize()
  *        properly handles a configuration error
  */
-TEST( initialize, configureError )
+TEST( initialize, configurationError )
 {
     auto driver = Mock_Driver{};
 
