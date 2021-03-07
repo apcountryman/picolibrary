@@ -1956,19 +1956,21 @@ class Push_Pull_IO_Pin {
     auto initialize( Initial_Pin_State initial_pin_state = Initial_Pin_State::LOW ) noexcept
         -> Result<Void, Error_Code>
     {
-        auto gpio = m_driver->gpio();
-
+        auto transition_pin = static_cast<Result<Void, Error_Code> ( Driver::* )( std::uint8_t )>( nullptr );
         switch ( initial_pin_state ) {
-            case Initial_Pin_State::HIGH: gpio |= m_mask; break;
-            case Initial_Pin_State::LOW: gpio &= ~m_mask; break;
+            case Initial_Pin_State::HIGH:
+                transition_pin = &Driver::transition_push_pull_output_to_high;
+                break;
+            case Initial_Pin_State::LOW:
+                transition_pin = &Driver::transition_push_pull_output_to_low;
+                break;
         } // switch
-
-        auto result = m_driver->write_gpio( gpio );
+        auto result = ( m_driver->*transition_pin )( m_mask );
         if ( result.is_error() ) {
             return result.error();
         } // if
 
-        return m_driver->write_iodir( m_driver->iodir() & ~m_mask );
+        return m_driver->configure_pin_as_push_pull_output( m_mask );
     }
 
     /**
@@ -1985,12 +1987,12 @@ class Push_Pull_IO_Pin {
      */
     auto state() const noexcept -> Result<Pin_State, Error_Code>
     {
-        auto result = m_driver->read_gpio();
+        auto result = m_driver->state( m_mask );
         if ( result.is_error() ) {
             return result.error();
         } // if
 
-        return Pin_State{ static_cast<bool>( result.value() & m_mask ) };
+        return Pin_State{ static_cast<bool>( result.value() ) };
     }
 
     /**
@@ -2007,7 +2009,7 @@ class Push_Pull_IO_Pin {
      */
     auto transition_to_high() noexcept
     {
-        return m_driver->write_gpio( m_driver->gpio() | m_mask );
+        return m_driver->transition_push_pull_output_to_high( m_mask );
     }
 
     /**
@@ -2024,7 +2026,7 @@ class Push_Pull_IO_Pin {
      */
     auto transition_to_low() noexcept
     {
-        return m_driver->write_gpio( m_driver->gpio() & ~m_mask );
+        return m_driver->transition_push_pull_output_to_low( m_mask );
     }
 
     /**
@@ -2040,7 +2042,7 @@ class Push_Pull_IO_Pin {
      */
     auto toggle() noexcept
     {
-        return m_driver->write_gpio( m_driver->gpio() ^ m_mask );
+        return m_driver->toggle_push_pull_output( m_mask );
     }
 
   private:
@@ -2060,8 +2062,7 @@ class Push_Pull_IO_Pin {
     void disable() noexcept
     {
         if ( m_driver ) {
-            static_cast<void>( m_driver->write_iodir( m_driver->iodir() | m_mask ) );
-            static_cast<void>( m_driver->write_gpio( m_driver->gpio() & ~m_mask ) );
+            static_cast<void>( m_driver->configure_pin_as_internally_pulled_up_input( m_mask ) );
         } // if
     }
 };
