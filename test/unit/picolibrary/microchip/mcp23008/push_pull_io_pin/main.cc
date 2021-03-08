@@ -359,7 +359,7 @@ TEST( initialize, worksProperly )
 
 /**
  * \brief Verify picolibrary::Microchip::MCP23008::Push_Pull_IO_Pin::state() properly
- *        handles state get error.
+ *        handles a state get error.
  */
 TEST( state, getStateError )
 {
