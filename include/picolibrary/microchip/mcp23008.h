@@ -1451,9 +1451,8 @@ constexpr auto make_driver(
  *         implementation is being injected to support unit testing of this internally
  *         pulled-up input pin.
  *
- * \warning GPPU register write failures that occur during destruction or move assignment
- *          are ignored. A driver wrapper class can be used to add error handling to the
- *          driver's GPPU register write function.
+ * \warning If disabling the pin's internal pull-up resistor fails during destruction or
+ *          move assignment, the error is ignored.
  */
 template<typename Driver>
 class Internally_Pulled_Up_Input_Pin {
@@ -1645,9 +1644,8 @@ class Internally_Pulled_Up_Input_Pin {
  *         implementation is being injected to support unit testing of this open-drain I/O
  *         pin.
  *
- * \warning IODIR register write failures that occur during destruction or move assignment
- *          are ignored. A driver wrapper class can be used to add error handling to the
- *          driver's IODIR register write function.
+ * \warning If configuring the pin as an internally pulled-up input fails during
+ *          destruction or move assignment, the error is ignored.
  */
 template<typename Driver>
 class Open_Drain_IO_Pin {
@@ -1858,10 +1856,8 @@ class Open_Drain_IO_Pin {
  *         driver implementation should be used unless a mock Microchip MCP23008 driver
  *         implementation is being injected to support unit testing of this push-pull I/O
  *         pin.
- *
- * \warning IODIR and GPIO register write failures that occur during destruction or move
- *          assignment are ignored. A driver wrapper class can be used to add error
- *          handling to the driver's IODIR and GPIO register write functions.
+ * \warning If configuring the pin as an internally pulled-up input fails during
+ *          destruction or move assignment, the error is ignored.
  */
 template<typename Driver>
 class Push_Pull_IO_Pin {
