@@ -45,7 +45,7 @@ using ::picolibrary::Void;
 using ::picolibrary::I2C::Address;
 using ::picolibrary::Microchip::MCP23008::Interrupt_Mode;
 using ::picolibrary::Microchip::MCP23008::make_driver;
-using ::picolibrary::Microchip::MCP23008::SDA_Slew_Rate_Control_Configuration;
+using ::picolibrary::Microchip::MCP23008::SDA_Slew_Rate_Control;
 using ::picolibrary::Microchip::MCP23008::Sequential_Operation_Mode;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
@@ -898,9 +898,7 @@ TEST( configure, writeError )
     EXPECT_CALL( mcp23008, cache_iocon( _ ) ).Times( 0 );
 
     auto const result = mcp23008.configure(
-        random<Sequential_Operation_Mode>(),
-        random<SDA_Slew_Rate_Control_Configuration>(),
-        random<Interrupt_Mode>() );
+        random<Sequential_Operation_Mode>(), random<SDA_Slew_Rate_Control>(), random<Interrupt_Mode>() );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -915,12 +913,12 @@ TEST( configure, worksProperly )
 
     auto mcp23008 = Driver{};
 
-    auto const sequential_operation_mode           = random<Sequential_Operation_Mode>();
-    auto const sda_slew_rate_control_configuration = random<SDA_Slew_Rate_Control_Configuration>();
-    auto const interrupt_mode                      = random<Interrupt_Mode>();
+    auto const sequential_operation_mode_configuration = random<Sequential_Operation_Mode>();
+    auto const sda_slew_rate_control_configuration     = random<SDA_Slew_Rate_Control>();
+    auto const interrupt_mode                          = random<Interrupt_Mode>();
 
     auto const data = static_cast<std::uint8_t>(
-        static_cast<std::uint8_t>( sequential_operation_mode )
+        static_cast<std::uint8_t>( sequential_operation_mode_configuration )
         | static_cast<std::uint8_t>( sda_slew_rate_control_configuration )
         | static_cast<std::uint8_t>( interrupt_mode ) );
 
@@ -928,7 +926,7 @@ TEST( configure, worksProperly )
     EXPECT_CALL( mcp23008, cache_iocon( data ) );
 
     EXPECT_FALSE( mcp23008
-                      .configure( sequential_operation_mode, sda_slew_rate_control_configuration, interrupt_mode )
+                      .configure( sequential_operation_mode_configuration, sda_slew_rate_control_configuration, interrupt_mode )
                       .is_error() );
 }
 
