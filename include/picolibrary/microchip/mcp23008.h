@@ -535,7 +535,7 @@ class Register_Cache {
 };
 
 /**
- * \brief Microchip MCP23008 sequential operation mode.
+ * \brief Microchip MCP23008 sequential operation mode configuration.
  */
 enum class Sequential_Operation_Mode : std::uint8_t {
     ENABLED  = 0b0 << IOCON::Bit::SEQOP, ///< Enabled.
@@ -545,7 +545,7 @@ enum class Sequential_Operation_Mode : std::uint8_t {
 /**
  * \brief Microchip MCP23008 SDA slew rate control configuration.
  */
-enum class SDA_Slew_Rate_Control_Configuration : std::uint8_t {
+enum class SDA_Slew_Rate_Control : std::uint8_t {
     ENABLED  = 0b0 << IOCON::Bit::DISSLW, ///< Enabled.
     DISABLED = 0b1 << IOCON::Bit::DISSLW, ///< Disabled.
 };
@@ -1114,7 +1114,8 @@ class Driver : public Device, public Register_Cache {
     /**
      * \brief Configure the MCP23008.
      *
-     * \param[in] sequential_operation_mode The desired sequential operation mode.
+     * \param[in] sequential_operation_mode_configuration The desired sequential operation
+     *            mode configuration.
      * \param[in] sda_slew_rate_control_configuration The desired SDA slew rate control
      *            configuration.
      * \param[in] interrupt_mode The desired interrupt mode.
@@ -1128,12 +1129,12 @@ class Driver : public Device, public Register_Cache {
      * \return An error code if configuration of the MCP23008 failed for any other reason.
      */
     auto configure(
-        Sequential_Operation_Mode           sequential_operation_mode,
-        SDA_Slew_Rate_Control_Configuration sda_slew_rate_control_configuration,
-        Interrupt_Mode                      interrupt_mode )
+        Sequential_Operation_Mode sequential_operation_mode_configuration,
+        SDA_Slew_Rate_Control     sda_slew_rate_control_configuration,
+        Interrupt_Mode            interrupt_mode )
     {
         return write_iocon(
-            static_cast<std::uint8_t>( sequential_operation_mode )
+            static_cast<std::uint8_t>( sequential_operation_mode_configuration )
             | static_cast<std::uint8_t>( sda_slew_rate_control_configuration )
             | static_cast<std::uint8_t>( interrupt_mode ) );
     }
