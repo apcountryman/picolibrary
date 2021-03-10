@@ -136,7 +136,7 @@ class GPIO_Output_Pin_Fixed_Intensity_Indicator : public Output_Pin {
      *
      * \param[in] initial_indicator_state The initial state of the indicator.
      *
-     * \return Nothing if the indicator hardware initialization succeeded.
+     * \return Nothing if indicator hardware initialization succeeded.
      * \return The error reported by the underlying pin if pin hardware initialization
      *         failed.
      */
@@ -151,7 +151,7 @@ class GPIO_Output_Pin_Fixed_Intensity_Indicator : public Output_Pin {
     /**
      * \brief Illuminate the indicator.
      *
-     * \return Nothing if transitioning the pin to the high state succeeded.
+     * \return Nothing if illuminating the indicator succeeded.
      * \return The error reported by the underlying pin if transitioning the pin to the
      *         high state failed.
      */
@@ -163,7 +163,7 @@ class GPIO_Output_Pin_Fixed_Intensity_Indicator : public Output_Pin {
     /**
      * \brief Extinguish the indicator.
      *
-     * \return Nothing if transitioning the pin to the low state succeeded.
+     * \return Nothing if extinguishing the indicator succeeded.
      * \return The error reported by the underlying pin if transitioning the pin to the
      *         low state failed.
      */
