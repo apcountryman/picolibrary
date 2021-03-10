@@ -55,11 +55,11 @@ inline auto random<Microchip::MCP23008::Sequential_Operation_Mode>()
  *         configuration.
  */
 template<>
-inline auto random<Microchip::MCP23008::SDA_Slew_Rate_Control_Configuration>()
+inline auto random<Microchip::MCP23008::SDA_Slew_Rate_Control>()
 {
-    return static_cast<Microchip::MCP23008::SDA_Slew_Rate_Control_Configuration>( random<std::uint8_t>(
-        static_cast<std::uint8_t>( Microchip::MCP23008::SDA_Slew_Rate_Control_Configuration::ENABLED ),
-        static_cast<std::uint8_t>( Microchip::MCP23008::SDA_Slew_Rate_Control_Configuration::DISABLED ) ) );
+    return static_cast<Microchip::MCP23008::SDA_Slew_Rate_Control>( random<std::uint8_t>(
+        static_cast<std::uint8_t>( Microchip::MCP23008::SDA_Slew_Rate_Control::ENABLED ),
+        static_cast<std::uint8_t>( Microchip::MCP23008::SDA_Slew_Rate_Control::DISABLED ) ) );
 }
 
 /**
@@ -212,6 +212,37 @@ class Mock_Driver : public I2C::Mock_Device<std::uint8_t>, public Mock_Register_
         read_interrupt_context,
         (),
         ( const ) );
+
+    MOCK_METHOD(
+        (Result<Void, Error_Code>),
+        configure,
+        ( ::picolibrary::Microchip::MCP23008::Sequential_Operation_Mode,
+          ::picolibrary::Microchip::MCP23008::SDA_Slew_Rate_Control,
+          ::picolibrary::Microchip::MCP23008::Interrupt_Mode ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), configure_pin_as_internally_pulled_up_input, ( std::uint8_t ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), configure_pin_as_open_drain_output, ( std::uint8_t ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), configure_pin_as_push_pull_output, ( std::uint8_t ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), enable_pull_up, ( std::uint8_t ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), disable_pull_up, ( std::uint8_t ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), state, ( std::uint8_t ), ( const ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), transition_open_drain_output_to_high, ( std::uint8_t ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), transition_push_pull_output_to_high, ( std::uint8_t ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), transition_open_drain_output_to_low, ( std::uint8_t ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), transition_push_pull_output_to_low, ( std::uint8_t ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), toggle_open_drain_output, ( std::uint8_t ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), toggle_push_pull_output, ( std::uint8_t ) );
 };
 
 } // namespace picolibrary::Testing::Unit::Microchip::MCP23008
