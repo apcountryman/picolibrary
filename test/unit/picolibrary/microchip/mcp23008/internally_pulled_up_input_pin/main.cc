@@ -31,7 +31,6 @@
 #include "picolibrary/microchip/mcp23008.h"
 #include "picolibrary/result.h"
 #include "picolibrary/testing/unit/error.h"
-#include "picolibrary/testing/unit/gpio.h"
 #include "picolibrary/testing/unit/microchip/mcp23008.h"
 #include "picolibrary/testing/unit/random.h"
 #include "picolibrary/void.h"
@@ -46,7 +45,6 @@ using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::Microchip::MCP23008::Mock_Driver;
 using ::testing::_;
-using ::testing::InSequence;
 using ::testing::Return;
 
 using Internally_Pulled_Up_Input_Pin = ::picolibrary::Microchip::MCP23008::Internally_Pulled_Up_Input_Pin<Mock_Driver>;
@@ -76,47 +74,40 @@ TEST( constructorMove, worksProperly )
     }
 
     {
-        auto const in_sequence = InSequence{};
-
         auto       driver = Mock_Driver{};
         auto const mask   = random<std::uint8_t>();
 
         auto source = Internally_Pulled_Up_Input_Pin{ driver, mask };
 
-        EXPECT_CALL( driver, gppu() ).Times( 0 );
-        EXPECT_CALL( driver, write_gppu( _ ) ).Times( 0 );
+        EXPECT_CALL( driver, disable_pull_up( _ ) ).Times( 0 );
 
         auto const pin = Internally_Pulled_Up_Input_Pin{ std::move( source ) };
 
-        auto const gppu = random<std::uint8_t>();
-
-        EXPECT_CALL( driver, gppu() ).WillOnce( Return( gppu ) );
-        EXPECT_CALL( driver, write_gppu( gppu & ~mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, disable_pull_up( mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     }
 }
 
 /**
  * \brief Verify
  *        picolibrary::Microchip::MCP23008::Internally_Pulled_Up_Input_Pin::~Internally_Pulled_Up_Input_Pin()
- *        properly handles a GPPU register write error.
+ *        properly handles an internal pull-up resistor disable error.
  */
-TEST( destructor, writeGPPUError )
+TEST( destructor, disablePullUpError )
 {
     auto driver = Mock_Driver{};
 
     auto const pin = Internally_Pulled_Up_Input_Pin{ driver, random<std::uint8_t>() };
 
-    EXPECT_CALL( driver, gppu() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_gppu( _ ) ).WillOnce( Return( random<Mock_Error>() ) );
+    EXPECT_CALL( driver, disable_pull_up( _ ) ).WillOnce( Return( random<Mock_Error>() ) );
 }
 
 /**
  * \brief Verify
  *        picolibrary::Microchip::MCP23008::Internally_Pulled_Up_Input_Pin::operator=(
  *        picolibrary::Microchip::MCP23008::Internally_Pulled_Up_Input_Pin && ) properly
- *        handles a GPPU register write error.
+ *        handles an internal pull-up resistor disable error.
  */
-TEST( assignmentOperatorMove, writeGPPUError )
+TEST( assignmentOperatorMove, disablePullUpError )
 {
     {
         auto driver = Mock_Driver{};
@@ -124,13 +115,9 @@ TEST( assignmentOperatorMove, writeGPPUError )
         auto expression = Internally_Pulled_Up_Input_Pin{};
         auto object = Internally_Pulled_Up_Input_Pin{ driver, random<std::uint8_t>() };
 
-        EXPECT_CALL( driver, gppu() ).WillOnce( Return( random<std::uint8_t>() ) );
-        EXPECT_CALL( driver, write_gppu( _ ) ).WillOnce( Return( random<Mock_Error>() ) );
+        EXPECT_CALL( driver, disable_pull_up( _ ) ).WillOnce( Return( random<Mock_Error>() ) );
 
         object = std::move( expression );
-
-        EXPECT_CALL( driver, gppu() ).Times( 0 );
-        EXPECT_CALL( driver, write_gppu( _ ) ).Times( 0 );
     }
 
     {
@@ -140,17 +127,11 @@ TEST( assignmentOperatorMove, writeGPPUError )
         auto expression = Internally_Pulled_Up_Input_Pin{ driver_expression, random<std::uint8_t>() };
         auto object = Internally_Pulled_Up_Input_Pin{ driver_object, random<std::uint8_t>() };
 
-        EXPECT_CALL( driver_expression, gppu() ).Times( 0 );
-        EXPECT_CALL( driver_object, gppu() ).WillOnce( Return( random<std::uint8_t>() ) );
-        EXPECT_CALL( driver_expression, write_gppu( _ ) ).Times( 0 );
-        EXPECT_CALL( driver_object, write_gppu( _ ) ).WillOnce( Return( random<Mock_Error>() ) );
+        EXPECT_CALL( driver_object, disable_pull_up( _ ) ).WillOnce( Return( random<Mock_Error>() ) );
 
         object = std::move( expression );
 
-        EXPECT_CALL( driver_object, gppu() ).Times( 0 );
-        EXPECT_CALL( driver_expression, gppu() ).WillOnce( Return( random<std::uint8_t>() ) );
-        EXPECT_CALL( driver_object, write_gppu( _ ) ).Times( 0 );
-        EXPECT_CALL( driver_expression, write_gppu( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver_expression, disable_pull_up( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     }
 }
 
@@ -170,48 +151,34 @@ TEST( assignmentOperatorMove, worksProperly )
     }
 
     {
-        auto const in_sequence = InSequence{};
-
         auto driver = Mock_Driver{};
         auto mask   = random<std::uint8_t>();
 
         auto expression = Internally_Pulled_Up_Input_Pin{ driver, mask };
         auto object     = Internally_Pulled_Up_Input_Pin{};
 
-        EXPECT_CALL( driver, gppu() ).Times( 0 );
-        EXPECT_CALL( driver, write_gppu( _ ) ).Times( 0 );
+        EXPECT_CALL( driver, disable_pull_up( _ ) ).Times( 0 );
 
         object = std::move( expression );
 
-        auto const gppu = random<std::uint8_t>();
-
-        EXPECT_CALL( driver, gppu() ).WillOnce( Return( gppu ) );
-        EXPECT_CALL( driver, write_gppu( gppu & ~mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, disable_pull_up( mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     }
 
     {
-        auto const in_sequence = InSequence{};
-
         auto driver = Mock_Driver{};
         auto mask   = random<std::uint8_t>();
 
         auto expression = Internally_Pulled_Up_Input_Pin{};
         auto object     = Internally_Pulled_Up_Input_Pin{ driver, mask };
 
-        auto const gppu = random<std::uint8_t>();
-
-        EXPECT_CALL( driver, gppu() ).WillOnce( Return( gppu ) );
-        EXPECT_CALL( driver, write_gppu( gppu & ~mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, disable_pull_up( mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
         object = std::move( expression );
 
-        EXPECT_CALL( driver, gppu() ).Times( 0 );
-        EXPECT_CALL( driver, write_gppu( _ ) ).Times( 0 );
+        EXPECT_CALL( driver, disable_pull_up( _ ) ).Times( 0 );
     }
 
     {
-        auto const in_sequence = InSequence{};
-
         auto       driver_expression = Mock_Driver{};
         auto const mask_expression   = random<std::uint8_t>();
         auto       driver_object     = Mock_Driver{};
@@ -220,22 +187,14 @@ TEST( assignmentOperatorMove, worksProperly )
         auto expression = Internally_Pulled_Up_Input_Pin{ driver_expression, mask_expression };
         auto object = Internally_Pulled_Up_Input_Pin{ driver_object, mask_object };
 
-        auto const gppu_object = random<std::uint8_t>();
-
-        EXPECT_CALL( driver_expression, gppu() ).Times( 0 );
-        EXPECT_CALL( driver_object, gppu() ).WillOnce( Return( gppu_object ) );
-        EXPECT_CALL( driver_expression, write_gppu( _ ) ).Times( 0 );
-        EXPECT_CALL( driver_object, write_gppu( gppu_object & ~mask_object ) )
+        EXPECT_CALL( driver_expression, disable_pull_up( _ ) ).Times( 0 );
+        EXPECT_CALL( driver_object, disable_pull_up( mask_object ) )
             .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
         object = std::move( expression );
 
-        auto const gppu_expression = random<std::uint8_t>();
-
-        EXPECT_CALL( driver_object, gppu() ).Times( 0 );
-        EXPECT_CALL( driver_expression, gppu() ).WillOnce( Return( gppu_expression ) );
-        EXPECT_CALL( driver_object, write_gppu( _ ) ).Times( 0 );
-        EXPECT_CALL( driver_expression, write_gppu( gppu_expression & ~mask_expression ) )
+        EXPECT_CALL( driver_object, disable_pull_up( _ ) ).Times( 0 );
+        EXPECT_CALL( driver_expression, disable_pull_up( mask_expression ) )
             .WillOnce( Return( Result<Void, Error_Code>{} ) );
     }
 
@@ -246,31 +205,25 @@ TEST( assignmentOperatorMove, worksProperly )
     }
 
     {
-        auto const in_sequence = InSequence{};
-
         auto       driver = Mock_Driver{};
         auto const mask   = random<std::uint8_t>();
 
         auto pin = Internally_Pulled_Up_Input_Pin{ driver, mask };
 
-        EXPECT_CALL( driver, gppu() ).Times( 0 );
-        EXPECT_CALL( driver, write_gppu( _ ) ).Times( 0 );
+        EXPECT_CALL( driver, disable_pull_up( _ ) ).Times( 0 );
 
         pin = std::move( pin );
 
-        auto const gppu = random<std::uint8_t>();
-
-        EXPECT_CALL( driver, gppu() ).WillOnce( Return( gppu ) );
-        EXPECT_CALL( driver, write_gppu( gppu & ~mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, disable_pull_up( mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     }
 }
 
 /**
  * \brief Verify
  *        picolibrary::Microchip::MCP23008::Internally_Pulled_Up_Input_Pin::initialize()
- *        properly handles a GPPU register write error.
+ *        handles an internal pull-up resistor enable error.
  */
-TEST( initialize, writeGPPUError )
+TEST( initialize, enablePullUpError )
 {
     auto driver = Mock_Driver{};
 
@@ -278,16 +231,37 @@ TEST( initialize, writeGPPUError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( driver, gppu() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_gppu( _ ) ).WillOnce( Return( error ) );
+    EXPECT_CALL( driver, enable_pull_up( _ ) ).WillOnce( Return( error ) );
 
-    auto const result = pin.initialize( random<Initial_Pull_Up_State>() );
+    auto const result = pin.initialize( Initial_Pull_Up_State::ENABLED );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( driver, gppu() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_gppu( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, disable_pull_up( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::Microchip::MCP23008::Internally_Pulled_Up_Input_Pin::initialize()
+ *        handles an internal pull-up resistor disable error.
+ */
+TEST( initialize, disablePullUpError )
+{
+    auto driver = Mock_Driver{};
+
+    auto pin = Internally_Pulled_Up_Input_Pin{ driver, random<std::uint8_t>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, disable_pull_up( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = pin.initialize( Initial_Pull_Up_State::DISABLED );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_CALL( driver, disable_pull_up( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 }
 
 /**
@@ -298,50 +272,51 @@ TEST( initialize, writeGPPUError )
 TEST( initialize, worksProperly )
 {
     {
-        auto const in_sequence = InSequence{};
-
         auto       driver = Mock_Driver{};
         auto const mask   = random<std::uint8_t>();
 
         auto pin = Internally_Pulled_Up_Input_Pin{ driver, mask };
 
-        auto const gppu = random<std::uint8_t>();
+        EXPECT_CALL( driver, disable_pull_up( mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
-        EXPECT_CALL( driver, gppu() ).WillOnce( Return( gppu ) );
-        EXPECT_CALL( driver, write_gppu( gppu | mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_FALSE( pin.initialize().is_error() );
 
-        EXPECT_FALSE( pin.initialize( Initial_Pull_Up_State::ENABLED ).is_error() );
-
-        EXPECT_CALL( driver, gppu() ).WillOnce( Return( random<std::uint8_t>() ) );
-        EXPECT_CALL( driver, write_gppu( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, disable_pull_up( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     }
 
     {
-        auto const in_sequence = InSequence{};
-
         auto       driver = Mock_Driver{};
         auto const mask   = random<std::uint8_t>();
 
         auto pin = Internally_Pulled_Up_Input_Pin{ driver, mask };
 
-        auto const gppu = random<std::uint8_t>();
+        EXPECT_CALL( driver, enable_pull_up( mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
-        EXPECT_CALL( driver, gppu() ).WillOnce( Return( gppu ) );
-        EXPECT_CALL( driver, write_gppu( gppu & ~mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_FALSE( pin.initialize( Initial_Pull_Up_State::ENABLED ).is_error() );
+
+        EXPECT_CALL( driver, disable_pull_up( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    }
+
+    {
+        auto       driver = Mock_Driver{};
+        auto const mask   = random<std::uint8_t>();
+
+        auto pin = Internally_Pulled_Up_Input_Pin{ driver, mask };
+
+        EXPECT_CALL( driver, disable_pull_up( mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
         EXPECT_FALSE( pin.initialize( Initial_Pull_Up_State::DISABLED ).is_error() );
 
-        EXPECT_CALL( driver, gppu() ).WillOnce( Return( random<std::uint8_t>() ) );
-        EXPECT_CALL( driver, write_gppu( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, disable_pull_up( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     }
 }
 
 /**
  * \brief Verify
  *        picolibrary::Microchip::MCP23008::Internally_Pulled_Up_Input_Pin::enable_pull_up()
- *        properly handles a GPPU register write error.
+ *        properly handles an internal pull-up resistor enable error.
  */
-TEST( enablePullUp, writeGPPUError )
+TEST( enablePullUp, enablePullUpError )
 {
     auto driver = Mock_Driver{};
 
@@ -349,16 +324,14 @@ TEST( enablePullUp, writeGPPUError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( driver, gppu() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_gppu( _ ) ).WillOnce( Return( error ) );
+    EXPECT_CALL( driver, enable_pull_up( _ ) ).WillOnce( Return( error ) );
 
     auto const result = pin.enable_pull_up();
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( driver, gppu() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_gppu( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, disable_pull_up( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 }
 
 /**
@@ -368,30 +341,24 @@ TEST( enablePullUp, writeGPPUError )
  */
 TEST( enablePullUp, worksProperly )
 {
-    auto const in_sequence = InSequence{};
-
     auto       driver = Mock_Driver{};
     auto const mask   = random<std::uint8_t>();
 
     auto pin = Internally_Pulled_Up_Input_Pin{ driver, mask };
 
-    auto const gppu = random<std::uint8_t>();
-
-    EXPECT_CALL( driver, gppu() ).WillOnce( Return( gppu ) );
-    EXPECT_CALL( driver, write_gppu( gppu | mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, enable_pull_up( mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( pin.enable_pull_up().is_error() );
 
-    EXPECT_CALL( driver, gppu() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_gppu( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, disable_pull_up( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 }
 
 /**
  * \brief Verify
  *        picolibrary::Microchip::MCP23008::Internally_Pulled_Up_Input_Pin::disable_pull_up()
- *        properly handles a GPPU register write error.
+ *        properly handles an internal pull-up resistor disable error.
  */
-TEST( disablePullUp, writeGPPUError )
+TEST( disablePullUp, disablePullUpError )
 {
     auto driver = Mock_Driver{};
 
@@ -399,16 +366,14 @@ TEST( disablePullUp, writeGPPUError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( driver, gppu() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_gppu( _ ) ).WillOnce( Return( error ) );
+    EXPECT_CALL( driver, disable_pull_up( _ ) ).WillOnce( Return( error ) );
 
     auto const result = pin.disable_pull_up();
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( driver, gppu() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_gppu( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, disable_pull_up( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 }
 
 /**
@@ -418,29 +383,23 @@ TEST( disablePullUp, writeGPPUError )
  */
 TEST( disablePullUp, worksProperly )
 {
-    auto const in_sequence = InSequence{};
-
     auto       driver = Mock_Driver{};
     auto const mask   = random<std::uint8_t>();
 
     auto pin = Internally_Pulled_Up_Input_Pin{ driver, mask };
 
-    auto const gppu = random<std::uint8_t>();
-
-    EXPECT_CALL( driver, gppu() ).WillOnce( Return( gppu ) );
-    EXPECT_CALL( driver, write_gppu( gppu & ~mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, disable_pull_up( mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( pin.disable_pull_up().is_error() );
 
-    EXPECT_CALL( driver, gppu() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_gppu( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, disable_pull_up( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 }
 
 /**
  * \brief Verify picolibrary::Microchip::MCP23008::Internally_Pulled_Up_Input_Pin::state()
- *        properly handles a GPIO register read error.
+ *        properly handles a state get error.
  */
-TEST( state, readGPIOError )
+TEST( state, getStateError )
 {
     auto driver = Mock_Driver{};
 
@@ -448,15 +407,14 @@ TEST( state, readGPIOError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( driver, read_gpio() ).WillOnce( Return( error ) );
+    EXPECT_CALL( driver, state( _ ) ).WillOnce( Return( error ) );
 
     auto const result = pin.state();
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( driver, gppu() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_gppu( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, disable_pull_up( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 }
 
 /**
@@ -470,17 +428,16 @@ TEST( state, worksProperly )
 
     auto const pin = Internally_Pulled_Up_Input_Pin{ driver, mask };
 
-    auto const gpio = random<std::uint8_t>();
+    auto const state = random<std::uint8_t>();
 
-    EXPECT_CALL( driver, read_gpio() ).WillOnce( Return( gpio ) );
+    EXPECT_CALL( driver, state( mask ) ).WillOnce( Return( state ) );
 
     auto const result = pin.state();
 
     EXPECT_TRUE( result.is_value() );
-    EXPECT_EQ( result.value().is_high(), static_cast<bool>( gpio & mask ) );
+    EXPECT_EQ( result.value().is_high(), static_cast<bool>( state ) );
 
-    EXPECT_CALL( driver, gppu() ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, write_gppu( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, disable_pull_up( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 }
 
 /**
