@@ -47,6 +47,8 @@ namespace picolibrary::Testing::Interactive::GPIO {
 template<typename Input_Pin, typename Delayer>
 void state( Output_Stream & stream, Input_Pin pin, Delayer delay ) noexcept
 {
+    // #lizard forgives the length
+
     {
         auto const result = pin.initialize();
         if ( result.is_error() ) {
