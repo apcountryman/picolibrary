@@ -24,6 +24,7 @@
 #define PICOLIBRARY_INDICATOR_H
 
 #include "picolibrary/error.h"
+#include "picolibrary/gpio.h"
 #include "picolibrary/result.h"
 #include "picolibrary/void.h"
 
@@ -118,6 +119,58 @@ class Fixed_Intensity_Indicator_Concept {
      *         picolibrary::Void>.
      */
     auto toggle() noexcept -> Result<Void, Error_Code>;
+};
+
+/**
+ * \brief GPIO output pin based fixed intensity indicator.
+ *
+ * \tparam Output_Pin The type of output pin used to manipulate the indicator.
+ */
+template<typename Output_Pin>
+class GPIO_Output_Pin_Fixed_Intensity_Indicator : public Output_Pin {
+  public:
+    using Output_Pin::Output_Pin;
+
+    /**
+     * \brief Initialize the indicator's hardware.
+     *
+     * \param[in] initial_indicator_state The initial state of the indicator.
+     *
+     * \return Nothing if indicator hardware initialization succeeded.
+     * \return The error reported by the underlying pin if indicator hardware
+     *         initialization failed.
+     */
+    auto initialize( Initial_Indicator_State initial_indicator_state = Initial_Indicator_State::EXTINGUISHED ) noexcept
+    {
+        return Output_Pin::initialize(
+            initial_indicator_state == Initial_Indicator_State::ILLUMINATED
+                ? GPIO::Initial_Pin_State::HIGH
+                : GPIO::Initial_Pin_State::LOW );
+    }
+
+    /**
+     * \brief Illuminate the indicator.
+     *
+     * \return Nothing if illuminating the indicator succeeded.
+     * \return The error reported by the underlying pin if illuminating the indicator
+     *         failed.
+     */
+    auto illuminate() noexcept
+    {
+        return this->transition_to_high();
+    }
+
+    /**
+     * \brief Extinguish the indicator.
+     *
+     * \return Nothing if extinguishing the indicator succeeded.
+     * \return The error reported by the underlying pin if extinguishing the indicator
+     *         failed.
+     */
+    auto extinguish() noexcept
+    {
+        return this->transition_to_low();
+    }
 };
 
 } // namespace picolibrary::Indicator
