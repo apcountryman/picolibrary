@@ -70,20 +70,37 @@ void sample(
 {
     // #lizard forgives the PARAM
 
-    if ( controller.initialize().is_error() ) {
+    auto stream = Output_Stream{ std::move( transmitter ) };
+
+    if ( stream.initialize().is_error() ) {
         return;
     } // if
+
+    {
+        auto const result = controller.initialize();
+        if ( result.is_error() ) {
+            static_cast<void>(
+                stream.print( "controller initialization error: {}\n", result.error() ) );
+
+            return;
+        } // if
+    }
 
     auto mcp3008 = ::picolibrary::Microchip::MCP3008::Driver{
         controller, configuration, std::move( device_selector ), Generic_Error::NONRESPONSIVE_DEVICE
     };
 
-    if ( mcp3008.initialize().is_error() ) {
-        return;
-    } // if
+    {
+        auto const result = mcp3008.initialize();
+        if ( result.is_error() ) {
+            static_cast<void>( stream.print( "MCP3008 initialization error: {}\n", result.error() ) );
 
-    ADC::sample_blocking_single_sample_converter<Output_Stream>(
-        std::move( transmitter ),
+            return;
+        } // if
+    }
+
+    ADC::sample_blocking_single_sample_converter(
+        stream,
         ::picolibrary::Microchip::MCP3008::Blocking_Single_Sample_Converter{ mcp3008, input },
         std::move( delay ) );
 }
