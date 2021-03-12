@@ -87,8 +87,7 @@ TEST( initialize, worksProperly )
     for ( auto const test_case : test_cases ) {
         auto indicator = Indicator{};
 
-        EXPECT_CALL( indicator, initialize( test_case.pin_state ) )
-            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( indicator, initialize( test_case.pin_state ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
         EXPECT_FALSE( indicator.initialize( test_case.indicator_state ).is_error() );
     } // for
