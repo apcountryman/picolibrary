@@ -77,8 +77,8 @@ TEST( initialize, initializationError )
 TEST( initialize, worksProperly )
 {
     struct {
-        Initial_Indicator_State requested_state;
-        Initial_Pin_State       actual_state;
+        Initial_Indicator_State indicator_state;
+        Initial_Pin_State       pin_state;
     } const test_cases[]{
         { Initial_Indicator_State::ILLUMINATED, Initial_Pin_State::HIGH },
         { Initial_Indicator_State::EXTINGUISHED, Initial_Pin_State::LOW },
@@ -87,10 +87,10 @@ TEST( initialize, worksProperly )
     for ( auto const test_case : test_cases ) {
         auto indicator = Indicator{};
 
-        EXPECT_CALL( indicator, initialize( test_case.actual_state ) )
+        EXPECT_CALL( indicator, initialize( test_case.pin_state ) )
             .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
-        EXPECT_FALSE( indicator.initialize( test_case.requested_state ).is_error() );
+        EXPECT_FALSE( indicator.initialize( test_case.indicator_state ).is_error() );
     } // for
 }
 
@@ -161,7 +161,8 @@ TEST( extinguish, worksProperly )
 }
 
 /**
- * \brief Execute the picolibrary::Indicator::GPIO_Output_Pin_Fixed_Intensity_Indicator unit tests.
+ * \brief Execute the picolibrary::Indicator::GPIO_Output_Pin_Fixed_Intensity_Indicator
+ *        unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
  * \param[in] argv The array  of arguments to pass to testing::InitGoogleMock().

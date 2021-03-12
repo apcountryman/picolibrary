@@ -122,9 +122,9 @@ class Fixed_Intensity_Indicator_Concept {
 };
 
 /**
- * \brief GPIO output pin based fixed intensity indicator
+ * \brief GPIO output pin based fixed intensity indicator.
  *
- * \tparam Output_Pin The type of output pin being adapted.
+ * \tparam Output_Pin The type of output pin used to manipulate the indicator.
  */
 template<typename Output_Pin>
 class GPIO_Output_Pin_Fixed_Intensity_Indicator : public Output_Pin {
@@ -137,8 +137,8 @@ class GPIO_Output_Pin_Fixed_Intensity_Indicator : public Output_Pin {
      * \param[in] initial_indicator_state The initial state of the indicator.
      *
      * \return Nothing if indicator hardware initialization succeeded.
-     * \return The error reported by the underlying pin if pin hardware initialization
-     *         failed.
+     * \return The error reported by the underlying pin if indicator hardware
+     *         initialization failed.
      */
     auto initialize( Initial_Indicator_State initial_indicator_state = Initial_Indicator_State::EXTINGUISHED ) noexcept
     {
@@ -152,8 +152,8 @@ class GPIO_Output_Pin_Fixed_Intensity_Indicator : public Output_Pin {
      * \brief Illuminate the indicator.
      *
      * \return Nothing if illuminating the indicator succeeded.
-     * \return The error reported by the underlying pin if transitioning the pin to the
-     *         high state failed.
+     * \return The error reported by the underlying pin if illuminating the indicator
+     *         failed.
      */
     auto illuminate() noexcept
     {
@@ -164,8 +164,8 @@ class GPIO_Output_Pin_Fixed_Intensity_Indicator : public Output_Pin {
      * \brief Extinguish the indicator.
      *
      * \return Nothing if extinguishing the indicator succeeded.
-     * \return The error reported by the underlying pin if transitioning the pin to the
-     *         low state failed.
+     * \return The error reported by the underlying pin if extinguishing the indicator
+     *         failed.
      */
     auto extinguish() noexcept
     {
