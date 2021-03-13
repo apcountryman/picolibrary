@@ -59,6 +59,8 @@ namespace picolibrary::Testing::Interactive::Microchip::MCP23008 {
 template<template<typename> typename Output_Stream, typename Transmitter, typename Controller, typename Delayer>
 void state( Transmitter transmitter, Controller controller, I2C::Address address, std::uint8_t mask, Delayer delay ) noexcept
 {
+    // #lizard forgives the length
+
     auto stream = Output_Stream{ std::move( transmitter ) };
 
     if ( stream.initialize().is_error() ) {
