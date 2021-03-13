@@ -45,7 +45,7 @@ namespace picolibrary::Testing::Interactive::Microchip::MCP23008 {
  *         information to the user.
  * \tparam Controller The type of I2C controller used to interact with the bus the
  *         Microchip MCP23008 is attached to.
- * \tparam Delayer A nullary functor called to introduce a delay each time the pins' state
+ * \tparam Delayer A nullary functor called to introduce a delay each time the pin's state
  *         is gotten.
  *
  * \param[in] transmitter The asynchronous serial transmitter to use to transmit
@@ -55,6 +55,8 @@ namespace picolibrary::Testing::Interactive::Microchip::MCP23008 {
  * \param[in] address The Microchip MCP23008's address.
  * \param[in] mask The mask identifying the Microchip MCP23008 internally pulled-up input
  *            pin.
+ * \param[in] delay The nullary functor called to introduce a delay each time the pin's
+ *            state is gotten.
  */
 template<template<typename> typename Output_Stream, typename Transmitter, typename Controller, typename Delayer>
 void state( Transmitter transmitter, Controller controller, I2C::Address address, std::uint8_t mask, Delayer delay ) noexcept
