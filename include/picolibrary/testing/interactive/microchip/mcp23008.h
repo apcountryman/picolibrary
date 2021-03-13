@@ -99,6 +99,68 @@ void state( Transmitter transmitter, Controller controller, I2C::Address address
         std::move( delay ) );
 }
 
+/**
+ * \brief Microchip MCP23008 output pin toggle interactive test helper.
+ *
+ * \tparam Output_Stream The type of asynchronous serial output stream to use to output
+ *         information to the user.
+ * \tparam Output_Pin The type of Microchip MCP23008 output pin to toggle.
+ * \tparam Transmitter The type of asynchronous serial transmitter to use to transmit
+ *         information to the user.
+ * \tparam Controller The type of I2C controller used to interact with the bus the
+ *         Microchip MCP23008 is attached to.
+ * \tparam Delayer A nullary functor called to introduce a delay each time the pin is
+ *         toggled.
+ *
+ * \param[in] transmitter The asynchronous serial transmitter to use to transmit
+ *            information to the user.
+ * \param[in] controller The I2C controller used to interact with the bus the Microchip
+ *            MCP23008 is attached to.
+ * \param[in] address The Microchip MCP23008's address.
+ * \param[in] mask The mask identifying the Microchip MCP23008 output pin.
+ * \param[in] delay The nullary functor called to introduce a delay each time the pin is
+ *            toggled.
+ */
+template<template<typename> typename Output_Stream, template<typename> typename Output_Pin, typename Transmitter, typename Controller, typename Delayer>
+void state( Transmitter transmitter, Controller controller, I2C::Address address, std::uint8_t mask, Delayer delay ) noexcept
+{
+    // #lizard forgives the length
+
+    auto stream = Output_Stream{ std::move( transmitter ) };
+
+    if ( stream.initialize().is_error() ) {
+        return;
+    } // if
+
+    {
+        auto const result = controller.initialize();
+        if ( result.is_error() ) {
+            static_cast<void>(
+                stream.print( "controller initialization error: {}\n", result.error() ) );
+
+            return;
+        } // if
+    }
+
+    auto driver = ::picolibrary::Microchip::MCP23008::Driver<decltype( nop ), Controller>{};
+
+    {
+        auto result = ::picolibrary::Microchip::MCP23008::make_driver(
+            nop, controller, address, Generic_Error::NONRESPONSIVE_DEVICE );
+        if ( result.is_error() ) {
+            static_cast<void>( stream.print( "driver construction error: {}\n", result.error() ) );
+
+            return;
+        } // if
+
+        driver = std::move( result ).value();
+    }
+
+    driver.initialize();
+
+    GPIO::state( stream, Output_Pin{ driver, mask }, std::move( delay ) );
+}
+
 } // namespace picolibrary::Testing::Interactive::Microchip::MCP23008
 
 #endif // PICOLIBRARY_TESTING_INTERACTIVE_MICROCHIP_MCP23008_H
