@@ -1,4 +1,7 @@
 # Contributing to picolibrary
+The following is a set of guidelines for contributing to `picolibrary`.
+Note that these are guidelines, not rules.
+Use your best judgment.
 
 # Contents
 - [I have a question](#i-have-a-question)
