@@ -1,3 +1,0 @@
-Resolves #.
-
-@apcountryman
