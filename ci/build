@@ -71,7 +71,7 @@ function display_version()
 function ensure_no_build_errors_are_present()
 {
     local -r build_directory="$repository/build/$configuration"
-    local -r build_configuration="$repository/configuration/CMakeLists.txt.$configuration"
+    local -r build_configuration="$repository/configuration/$configuration/CMakeLists.txt"
 
     if ! mkdir -p "$build_directory"; then
         abort

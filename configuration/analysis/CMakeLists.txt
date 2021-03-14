@@ -13,8 +13,8 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: configuration/CMakeLists.txt.testing-interactive
-# Description: picolibrary interactive testing configuration.
+# File: configuration/analysis/CMakeLists.txt
+# Description: picolibrary static analysis configuration.
 
 # install prefix is not applicable
 mark_as_advanced( CMAKE_INSTALL_PREFIX )
@@ -23,7 +23,7 @@ mark_as_advanced( CMAKE_INSTALL_PREFIX )
 set( CMAKE_BUILD_TYPE                            "Release" CACHE STRING "" FORCE )
 set( CMAKE_EXPORT_COMPILE_COMMANDS               ON        CACHE BOOL   "" FORCE )
 set( PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS  OFF       CACHE BOOL   "" FORCE )
-set( PICOLIBRARY_USE_STATIC_ANALYSIS_BUILD_FLAGS OFF       CACHE BOOL   "" FORCE )
+set( PICOLIBRARY_USE_STATIC_ANALYSIS_BUILD_FLAGS ON        CACHE BOOL   "" FORCE )
 mark_as_advanced(
     CMAKE_BUILD_TYPE
     CMAKE_EXPORT_COMPILE_COMMANDS

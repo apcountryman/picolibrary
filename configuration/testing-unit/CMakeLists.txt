@@ -13,17 +13,17 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: configuration/CMakeLists.txt.release
-# Description: picolibrary release configuration.
+# File: configuration/testing-unit/CMakeLists.txt
+# Description: picolibrary unit testing configuration.
 
 # install prefix is not applicable
 mark_as_advanced( CMAKE_INSTALL_PREFIX )
 
 # build configuration
-set( CMAKE_BUILD_TYPE                            "Release" CACHE STRING "" FORCE )
-set( CMAKE_EXPORT_COMPILE_COMMANDS               ON        CACHE BOOL   "" FORCE )
-set( PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS  OFF       CACHE BOOL   "" FORCE )
-set( PICOLIBRARY_USE_STATIC_ANALYSIS_BUILD_FLAGS OFF       CACHE BOOL   "" FORCE )
+set( CMAKE_BUILD_TYPE                            "Debug" CACHE STRING "" FORCE )
+set( CMAKE_EXPORT_COMPILE_COMMANDS               ON      CACHE BOOL   "" FORCE )
+set( PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS  OFF     CACHE BOOL   "" FORCE )
+set( PICOLIBRARY_USE_STATIC_ANALYSIS_BUILD_FLAGS OFF     CACHE BOOL   "" FORCE )
 mark_as_advanced(
     CMAKE_BUILD_TYPE
     CMAKE_EXPORT_COMPILE_COMMANDS
@@ -35,7 +35,7 @@ mark_as_advanced(
 set( PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION OFF CACHE BOOL "" FORCE )
 
 # unit testing configuration
-set( PICOLIBRARY_ENABLE_UNIT_TESTING            OFF CACHE BOOL "" FORCE )
+set( PICOLIBRARY_ENABLE_UNIT_TESTING            ON  CACHE BOOL "" FORCE )
 set( PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST OFF CACHE BOOL "" FORCE )
 mark_as_advanced(
     PICOLIBRARY_ENABLE_UNIT_TESTING
