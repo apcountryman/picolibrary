@@ -36,10 +36,22 @@ Please provide as much detail as possible, covering things such as:
 - References to any relevant product pages, data sheets, application notes, and/or other
   documentation from the hardware manufacturer
 
-If the request for an enhancement to an existing feature is accepted, issues for designing
-or implementing the enhancement will be created as appropriate.
+If the request for the enhancement to the existing feature is accepted, issue(s) for
+designing or implementing the enhancement will be created as appropriate.
 
 ## Design an enhancement to an existing feature
+To design an enhancement to an existing feature, please use the `enhancement-design` issue
+template to open an issue that details the design.
+Please provide as much detail as possible, covering things such as:
+- The use case(s) for the enhancement
+- Description of current behavior, and how it will change
+- Detailed designs for all types, constants, and function required to implement the
+  enhancement
+- References to any relevant product pages, data sheets, application notes, and/or other
+  documentation from the hardware manufacturer
+
+If the design for the enhancement to the existing feature is accepted, issue(s) for
+implementing the enhancement will be created.
 
 ## Implement an enhancement to an existing feature
 
@@ -52,7 +64,7 @@ Please provide as much detail as possible, covering things such as:
 - References to any relevant product pages, data sheets, application notes, and/or other
   documentation from the hardware manufacturer
 
-If the request for a new feature is accepted, issues for designing or implementing the
+If the request for the new feature is accepted, issue(s) for designing or implementing the
 feature will be created as appropriate.
 
 ## Design a new feature
