@@ -28,6 +28,13 @@ template to open an issue for your question.
 ## Report a bug
 
 ## Request an enhancement to an existing feature
+To request an enhancement to an existing feature, please use the `enhancement-request`
+issue template to open an issue that details the desired enhancement.
+Please provide as much detail as possible, covering things such as:
+- The use case(s) for the enhancement
+- Description of current behavior, and how it will change
+- References to any relevant data sheets, application notes, or other documentation from
+  the hardware manufacturer
 
 ## Design an enhancement to an existing feature
 
