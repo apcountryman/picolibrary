@@ -21,7 +21,7 @@ If you have a question, please review the relevant library documentation, and
 search/browse existing issues.
 If you have not found an answer to your question after reviewing the relevant library
 documentation, and searching/browsing existing issues, please use the `question` issue
-template to open an issue for your question.
+template to open an issue to ask your question.
 
 # How can I contribute
 
