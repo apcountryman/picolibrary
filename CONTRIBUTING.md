@@ -38,6 +38,16 @@ Please provide as much detail as possible, covering things such as:
 If the bug report can be verified, the changes required to fix the bug will be captured in
 the issue in preparation for implementing the bug fix.
 
+## Implement a bug fix
+Issues for implementing bug fixes can be found by looking for issues with the `type-bug`
+type label and `status-awaiting_development` status label.
+To implement a bug fix, please open a draft pull request that references the associated
+issue and implement the bug fix.
+Please mark the pull request as "Ready for review" and request a review when the pull
+request is ready for a review.
+If changes are requested, please discuss and/or address the review findings before
+requesting a new review.
+
 ## Request an enhancement to an existing feature
 To request an enhancement to an existing feature, please use the `enhancement-request`
 issue template to open an issue that details the desired enhancement.
