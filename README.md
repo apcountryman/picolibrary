@@ -55,8 +55,8 @@ See the `install` script's help text for usage details.
 ```
 
 ## Contributing
-If your are interested in contributing to `picolibrary`, please [read the
-`CONTRIBUTING.md` file in this repository](CONTRIBUTING.md)
+If you are interested in contributing to `picolibrary`, please [read the `CONTRIBUTING.md`
+file in this repository](CONTRIBUTING.md)
 
 ## Authors
 - Andrew Countryman

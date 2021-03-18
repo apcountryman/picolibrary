@@ -7,20 +7,21 @@ Use your best judgment.
 - [I have a question](#i-have-a-question)
 - [How can I contribute](#how-can-I-contribute)
     - [Report a bug](#report-a-bug)
+    - [Implement a bug fix](#implement-a-bug-fix)
     - [Request an enhancement to an existing feature](#request-an-enhancement-to-an-existing-feature)
     - [Design an enhancement to an existing feature](#design-an-enhancement-to-an-existing-feature)
     - [Implement an enhancement to an existing feature](#implement-an-enhancement-to-an-existing-feature)
     - [Request a new feature](#request-a-new-feature)
     - [Design a new feature](#design-a-new-feature)
     - [Implement a new feature](#implement-a-new-feature)
-    - [Refactoring](#refactoring)
+    - [Perform a refactoring](#perform-a-refactoring)
 - [Style-guide](#style-guide)
 
 # I have a question
 If you have a question, please review the relevant library documentation, and
 search/browse existing issues.
 If you have not found an answer to your question after reviewing the relevant library
-documentation, and searching/browsing existing issues, please use the `question` issue
+documentation and searching/browsing existing issues, please use the `question` issue
 template to open an issue to ask your question.
 
 # How can I contribute
