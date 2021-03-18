@@ -5,7 +5,7 @@ Use your best judgment.
 
 # Contents
 - [I have a question](#i-have-a-question)
-- [How can I contribute](#how-can-I-contribute)
+- [How can I contribute](#how-can-i-contribute)
     - [Report a bug](#report-a-bug)
     - [Implement a bug fix](#implement-a-bug-fix)
     - [Request an enhancement to an existing feature](#request-an-enhancement-to-an-existing-feature)
