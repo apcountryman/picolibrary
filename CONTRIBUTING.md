@@ -112,6 +112,14 @@ If the design for the new feature is accepted, issue(s) for implementing the fea
 be created.
 
 ## Implement a new feature
+Issues for adding a new feature can be found by looking for issues with the `type-feature`
+type label and `status-awaiting_development` status label.
+To implement a new feature, please open a draft pull request that references the
+associated issue and implement the new feature.
+Please mark the pull request as "Ready for review" and request a review when the pull
+request is ready for a review.
+If changes are requested, please discuss and/or address the review findings before
+requesting a new review.
 
 ## Refactoring
 
