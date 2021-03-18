@@ -75,6 +75,15 @@ If the design for the enhancement to the existing feature is accepted, issue(s) 
 implementing the enhancement will be created.
 
 ## Implement an enhancement to an existing feature
+Issues for implementing enhancements to existing features can be found by looking for
+issues with the `type-enhancement` type label and `status-awaiting_development` status
+label.
+To implement an enhancement to an existing feature, please open a draft pull request that
+references the associated issue and implement the enhancement.
+Please mark the pull request as "Ready for review" and request a review when the pull
+request is ready for a review.
+If changes are requested, please discuss and/or address the review findings before
+requesting a new review.
 
 ## Request a new feature
 To request a new feature, please use the `feature-request` issue template to open an issue
