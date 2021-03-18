@@ -131,4 +131,23 @@ request is ready for a review.
 If changes are requested, please discuss and/or address the review findings before
 requesting a new review.
 
-# Style Guide
+# Style guide
+C++ source code is formatted using `clang-format`.
+Non-inline comments use a column limit of 90, but this is not enforced by clang-format.
+The `format` script in the `ci` directory can be used to run `clang-format` on all C++
+source code in the repository.
+See the `format` script's help text for usage details.
+```shell
+./ci/format --help
+```
+
+Formatting for all source code and content that is not C++ is neither automated nor
+documented (with the exception of a column limit) at this time.
+Please use a column limit of 90 for source code and content that is not C++.
+Please imitate the formatting of existing source code and content when adding or modifying
+source code or content that is not C++.
+
+All non-formatting style issues are neither enforced via automation nor documented at this
+time.
+Please imitate existing source code and content when adding or modifying source code or
+content.
