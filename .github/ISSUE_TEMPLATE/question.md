@@ -7,4 +7,5 @@ assignees: ''
 
 ---
 
-Please provide any additional question details that are not covered by the issue's title.
+Please review the relevant library documentation, and search/browse existing issues before
+opening an issue to ask your question.
