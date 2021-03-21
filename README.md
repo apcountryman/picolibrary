@@ -1,6 +1,8 @@
 # picolibrary
 ![CI](https://github.com/apcountryman/picolibrary/workflows/CI/badge.svg)
 
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](CODE_OF_CONDUCT.md)
+
 A C++ microcontroller driver/utility library targeted for use with resource
 constrained microcontrollers.
 
@@ -53,6 +55,11 @@ See the `install` script's help text for usage details.
 ```shell
 ./git/hooks/install --help
 ```
+
+## Code of Conduct
+`picolibrary` has adopted the Contributor Covenant 2.0 code of conduct.
+For more information, [see the `CODE_OF_CONDUCT.md` file in this
+repository](CODE_OF_CONDUCT.md).
 
 ## Contributing
 If you are interested in contributing to `picolibrary`, please [read the `CONTRIBUTING.md`
