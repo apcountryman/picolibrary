@@ -1,6 +1,5 @@
 # picolibrary
 ![CI](https://github.com/apcountryman/picolibrary/workflows/CI/badge.svg)
-
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](CODE_OF_CONDUCT.md)
 
 A C++ microcontroller driver/utility library targeted for use with resource
