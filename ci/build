@@ -73,15 +73,7 @@ function ensure_no_build_errors_are_present()
     local -r build_directory="$repository/build/$configuration"
     local -r build_configuration="$repository/configuration/$configuration/CMakeLists.txt"
 
-    if ! mkdir -p "$build_directory"; then
-        abort
-    fi
-
-    if ! cd "$build_directory"; then
-        abort
-    fi
-
-    if ! cmake -C "$build_configuration" "$repository"; then
+    if ! cmake -C "$build_configuration" -S "$repository" -B "$build_directory"; then
         abort
     fi
 
