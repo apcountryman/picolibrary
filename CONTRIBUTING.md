@@ -113,8 +113,8 @@ If the design for the new feature is accepted, issue(s) for implementing the fea
 be created.
 
 ## Implement a new feature
-Issues for adding a new feature can be found by looking for issues with the `type-feature`
-type label and `status-awaiting_development` status label.
+Issues for implementing a new feature can be found by looking for issues with the
+`type-feature` type label and `status-awaiting_development` status label.
 To implement a new feature, please open a draft pull request that references the
 associated issue and implement the feature.
 Please mark the pull request as "Ready for review" and request a review when the pull

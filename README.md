@@ -62,7 +62,7 @@ repository](CODE_OF_CONDUCT.md).
 
 ## Contributing
 If you are interested in contributing to `picolibrary`, please [read the `CONTRIBUTING.md`
-file in this repository](CONTRIBUTING.md)
+file in this repository](CONTRIBUTING.md).
 
 ## Authors
 - Andrew Countryman
