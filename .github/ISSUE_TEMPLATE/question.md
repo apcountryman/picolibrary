@@ -7,5 +7,5 @@ assignees: ''
 
 ---
 
-Please review the relevant library documentation, and search/browse existing issues before
+Please review the relevant project documentation, and search/browse existing issues before
 opening an issue to ask your question.
