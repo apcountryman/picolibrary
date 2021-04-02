@@ -124,7 +124,7 @@ void state( Transmitter transmitter, Controller controller, I2C::Address address
  *            toggled.
  */
 template<template<typename> typename Output_Stream, template<typename> typename Output_Pin, typename Transmitter, typename Controller, typename Delayer>
-void state( Transmitter transmitter, Controller controller, I2C::Address address, std::uint8_t mask, Delayer delay ) noexcept
+void toggle( Transmitter transmitter, Controller controller, I2C::Address address, std::uint8_t mask, Delayer delay ) noexcept
 {
     // #lizard forgives the length
 
@@ -160,7 +160,7 @@ void state( Transmitter transmitter, Controller controller, I2C::Address address
 
     driver.initialize();
 
-    GPIO::state( stream, Output_Pin{ driver, mask }, std::move( delay ) );
+    GPIO::toggle( stream, Output_Pin{ driver, mask }, std::move( delay ) );
 }
 
 } // namespace picolibrary::Testing::Interactive::Microchip::MCP23008
