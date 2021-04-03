@@ -79,11 +79,11 @@ void state( Transmitter transmitter, Controller controller, I2C::Address address
         } // if
     }
 
-    auto driver = ::picolibrary::Microchip::MCP23008::Driver<decltype( nop ), Controller>{};
+    auto driver = ::picolibrary::Microchip::MCP23008::Driver<decltype( &nop ), Controller>{};
 
     {
         auto result = ::picolibrary::Microchip::MCP23008::make_driver(
-            nop, controller, address, Generic_Error::NONRESPONSIVE_DEVICE );
+            &nop, controller, address, Generic_Error::NONRESPONSIVE_DEVICE );
         if ( result.is_error() ) {
             static_cast<void>( stream.print( "driver construction error: {}\n", result.error() ) );
 
@@ -144,11 +144,11 @@ void toggle( Transmitter transmitter, Controller controller, I2C::Address addres
         } // if
     }
 
-    auto driver = ::picolibrary::Microchip::MCP23008::Driver<decltype( nop ), Controller>{};
+    auto driver = ::picolibrary::Microchip::MCP23008::Driver<decltype( &nop ), Controller>{};
 
     {
         auto result = ::picolibrary::Microchip::MCP23008::make_driver(
-            nop, controller, address, Generic_Error::NONRESPONSIVE_DEVICE );
+            &nop, controller, address, Generic_Error::NONRESPONSIVE_DEVICE );
         if ( result.is_error() ) {
             static_cast<void>( stream.print( "driver construction error: {}\n", result.error() ) );
 
