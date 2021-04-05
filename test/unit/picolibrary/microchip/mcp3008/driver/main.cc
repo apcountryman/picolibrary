@@ -207,7 +207,7 @@ TEST( sample, worksProperly )
     auto const result = mcp3008.sample( input );
 
     EXPECT_TRUE( result.is_value() );
-    EXPECT_EQ( result.value(), sample );
+    EXPECT_EQ( result.value().value(), sample );
 }
 
 /**

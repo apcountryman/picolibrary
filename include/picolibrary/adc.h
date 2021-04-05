@@ -135,7 +135,7 @@ class Sample {
      *
      * \return The sample value.
      */
-    constexpr operator Value() const noexcept
+    constexpr auto value() const noexcept
     {
         return m_value;
     }
@@ -165,7 +165,7 @@ class Sample {
 template<typename Value, Value MIN, Value MAX>
 constexpr auto operator==( Sample<Value, MIN, MAX> lhs, Sample<Value, MIN, MAX> rhs ) noexcept
 {
-    return static_cast<Value>( lhs ) == static_cast<Value>( rhs );
+    return lhs.value() == rhs.value();
 }
 
 /**
