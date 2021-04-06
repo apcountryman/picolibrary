@@ -79,7 +79,8 @@ void sample_blocking_single_sample_converter( Output_Stream & stream, Blocking_S
             return;
         } // if
 
-        if ( stream.print( "{}\n", Format::Decimal{ result.value() } ).is_error() ) {
+        auto const sample = result.value();
+        if ( stream.print( "{}\n", Format::Decimal{ sample.value() } ).is_error() ) {
             return;
         } // if
     }     // for

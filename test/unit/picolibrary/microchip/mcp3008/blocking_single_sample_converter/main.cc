@@ -96,7 +96,7 @@ TEST( sample, worksProperly )
     auto const result = adc.sample();
 
     EXPECT_TRUE( result.is_value() );
-    EXPECT_EQ( result.value(), sample );
+    EXPECT_EQ( result.value().value(), sample );
 }
 
 /**

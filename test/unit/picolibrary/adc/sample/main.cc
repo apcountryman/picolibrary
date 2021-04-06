@@ -80,7 +80,7 @@ TYPED_TEST( constructorDefault, worksProperly )
 
     EXPECT_EQ( sample.min(), Sample::MIN );
     EXPECT_EQ( sample.max(), Sample::MAX );
-    EXPECT_EQ( static_cast<Value>( sample ), Value{} );
+    EXPECT_EQ( sample.value(), Value{} );
 }
 
 /**
@@ -111,7 +111,7 @@ TYPED_TEST( constructorValue, worksProperly )
 
     EXPECT_EQ( sample.min(), Sample::MIN );
     EXPECT_EQ( sample.max(), Sample::MAX );
-    EXPECT_EQ( static_cast<Value>( sample ), value );
+    EXPECT_EQ( sample.value(), value );
 }
 
 /**
