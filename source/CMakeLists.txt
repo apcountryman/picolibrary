@@ -105,6 +105,7 @@ add_library(
 )
 target_include_directories(
     picolibrary
+    PUBLIC "${PICOLIBRARY_HARDWARE_INCLUDE_DIR}"
     PUBLIC "${PROJECT_SOURCE_DIR}/include"
 )
 target_compile_definitions(
