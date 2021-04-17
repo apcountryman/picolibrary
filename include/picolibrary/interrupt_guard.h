@@ -31,17 +31,20 @@ namespace picolibrary {
  * \brief When a picolibrary::Interrupt_Guard is destructed, restore the interrupt enable
  *        state to what is was when the picolibrary::Interrupt_Guard was constructed.
  */
-struct Restore_Interrupt_Enable_State {};
+struct Restore_Interrupt_Enable_State {
+};
 
 /**
  * \brief When a picolibrary::Interrupt_Guard is destructed, enable interrupts.
  */
-struct Enable_Interrupts {};
+struct Enable_Interrupts {
+};
 
 /**
  * \brief When a picolibrary::Interrupt_Guard is destructed, disable interrupts.
  */
-struct Disable_Interrupts {};
+struct Disable_Interrupts {
+};
 
 } // namespace picolibrary
 
@@ -69,11 +72,9 @@ namespace picolibrary {
  */
 template<typename Action_On_Destruction>
 class Interrupt_Guard {
-    public:
-        static_assert(
-                std::is_same_v<Action_On_Destruction, Restore_Interrupt_Enable_State> or
-                std::is_same_v<Action_On_Destruction, Enable_Interrupts> or
-                std::is_same_v<Action_On_Destruction, Disable_Interrupts> );
+  public:
+    static_assert(
+        std::is_same_v<Action_On_Destruction, Restore_Interrupt_Enable_State> or std::is_same_v<Action_On_Destruction, Enable_Interrupts> or std::is_same_v<Action_On_Destruction, Disable_Interrupts> );
 
     /**
      * \brief Constructor.
