@@ -29,6 +29,8 @@ option( PICOLIBRARY_ENABLE_UNIT_TESTING                       "picolibrary: enab
 option( PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS            "picolibrary: use parent project's build flags"          ON  )
 option( PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST            "picolibrary: use parent project's Google Test"          ON  )
 
+set( PICOLIBRARY_HARDWARE_INCLUDE_DIR "" CACHE STRING "picolibrary: hardware specific header files include directory" )
+
 if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} AND ${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION} )
     message( FATAL_ERROR "picolibrary unit tests require human readable error information" )
 endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} AND ${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION} )

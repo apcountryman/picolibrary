@@ -38,6 +38,7 @@ set(
     "picolibrary/gpio.cc"
     "picolibrary/i2c.cc"
     "picolibrary/indicator.cc"
+    "picolibrary/interrupt_guard.cc"
     "picolibrary/iterator.cc"
     "picolibrary/microchip.cc"
     "picolibrary/microchip/mcp23008.cc"
@@ -104,6 +105,7 @@ add_library(
 )
 target_include_directories(
     picolibrary
+    PUBLIC "${PICOLIBRARY_HARDWARE_INCLUDE_DIR}"
     PUBLIC "${PROJECT_SOURCE_DIR}/include"
 )
 target_compile_definitions(
