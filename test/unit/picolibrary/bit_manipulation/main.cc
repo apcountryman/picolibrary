@@ -28,9 +28,83 @@
 
 namespace {
 
+using ::picolibrary::mask;
 using ::picolibrary::reflect;
 
 } // namespace
+
+/**
+ * \brief Verify picolibrary::mask() works properly for std::uint8_t masks.
+ */
+TEST( mask, uint8WorksProperly )
+{
+    struct {
+        std::uint_fast8_t size;
+        std::uint_fast8_t bit;
+        std::uint8_t      mask;
+    } const test_cases[]{
+        // clang-format off
+
+        { 0, 0, 0b00000000 },
+        { 0, 1, 0b00000000 },
+        { 0, 2, 0b00000000 },
+        { 0, 3, 0b00000000 },
+        { 0, 4, 0b00000000 },
+        { 0, 5, 0b00000000 },
+        { 0, 6, 0b00000000 },
+        { 0, 7, 0b00000000 },
+
+        { 1, 0, 0b00000001 },
+        { 1, 1, 0b00000010 },
+        { 1, 2, 0b00000100 },
+        { 1, 3, 0b00001000 },
+        { 1, 4, 0b00010000 },
+        { 1, 5, 0b00100000 },
+        { 1, 6, 0b01000000 },
+        { 1, 7, 0b10000000 },
+
+        { 2, 0, 0b00000011 },
+        { 2, 1, 0b00000110 },
+        { 2, 2, 0b00001100 },
+        { 2, 3, 0b00011000 },
+        { 2, 4, 0b00110000 },
+        { 2, 5, 0b01100000 },
+        { 2, 6, 0b11000000 },
+
+        { 3, 0, 0b00000111 },
+        { 3, 1, 0b00001110 },
+        { 3, 2, 0b00011100 },
+        { 3, 3, 0b00111000 },
+        { 3, 4, 0b01110000 },
+        { 3, 5, 0b11100000 },
+
+        { 4, 0, 0b00001111 },
+        { 4, 1, 0b00011110 },
+        { 4, 2, 0b00111100 },
+        { 4, 3, 0b01111000 },
+        { 4, 4, 0b11110000 },
+
+        { 5, 0, 0b00011111 },
+        { 5, 1, 0b00111110 },
+        { 5, 2, 0b01111100 },
+        { 5, 3, 0b11111000 },
+
+        { 6, 0, 0b00111111 },
+        { 6, 1, 0b01111110 },
+        { 6, 2, 0b11111100 },
+
+        { 7, 0, 0b01111111 },
+        { 7, 1, 0b11111110 },
+
+        { 8, 0, 0b11111111 },
+
+        // clang-format on
+    };
+
+    for ( auto const test_case : test_cases ) {
+        EXPECT_EQ( mask<std::uint8_t>( test_case.size, test_case.bit ), test_case.mask );
+    } // for
+}
 
 /**
  * \brief Verify picolibrary::reflect() works properly with std::uint8_t input.

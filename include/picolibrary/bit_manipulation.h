@@ -23,9 +23,27 @@
 #ifndef PICOLIBRARY_BIT_MANIPULATION_H
 #define PICOLIBRARY_BIT_MANIPULATION_H
 
+#include <cstdint>
 #include <limits>
 
 namespace picolibrary {
+
+/**
+ * \brief Create a bit mask.
+ *
+ * \tparam Mask The type of mask to create.
+ *
+ * \param[in] size The size of the mask (the number of masked bits).
+ * \param[in] bit The bit position of the least significant masked bit.
+ *
+ * \return The created bit mask.
+ */
+template<typename Mask>
+constexpr auto mask( std::uint_fast8_t size, std::uint_fast8_t bit ) noexcept
+{
+    return static_cast<Mask>(
+        ( std::numeric_limits<Mask>::max() >> ( std::numeric_limits<Mask>::digits - size ) ) << bit );
+}
 
 /**
  * \brief Reflect the bits in an integer.
