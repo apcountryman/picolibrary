@@ -40,6 +40,18 @@ struct Without_Interrupt_Support {
 };
 
 /**
+ * \brief picolibrary::Circular_Buffer overflow/underflow protection enabled policy.
+ */
+struct With_Overflow_Underflow_Protection {
+};
+
+/**
+ * \brief picolibrary::Circular_Buffer overflow/underflow protection disabled policy.
+ */
+struct Without_Overflow_Underflow_Protection {
+};
+
+/**
  * \brief Circular buffer.
  *
  * \tparam T The circular buffer element type.
@@ -47,8 +59,11 @@ struct Without_Interrupt_Support {
  * \tparam Interrupt_Support The circular buffer interrupt support policy
  *         (picolibrary::With_Interrupt_Support or
  *         picolibrary::Without_Interrupt_Support).
+ * \tparam Overflow_Underflow_Protection The circular buffer overflow/underflow protection
+ *         policy (picolibrary::With_Overflow_Underflow_Protection or
+ *         picolibrary::Without_Overflow_Underflow_Protection).
  */
-template<typename T, std::size_t N, typename Interrupt_Support>
+template<typename T, std::size_t N, typename Interrupt_Support, typename Overflow_Underflow_Protection>
 class Circular_Buffer;
 
 } // namespace picolibrary
