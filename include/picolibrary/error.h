@@ -360,15 +360,17 @@ constexpr auto operator!=( Error_Code const & lhs, Error_Code const & rhs ) noex
  * \relatedalso picolibrary::Generic_Error_Category
  */
 enum class Generic_Error : Error_ID {
-    INVALID_ARGUMENT,      ///< Invalid argument.
-    UNSUPPORTED_OPERATION, ///< Unsupported operation.
-    OPERATION_TIMEOUT,     ///< Operation timeout.
-    IO_STREAM_DEGRADED,    ///< I/O stream degraded.
-    INVALID_FORMAT,        ///< Invalid format string.
-    NONRESPONSIVE_DEVICE,  ///< Nonresponsive device.
-    ARBITRATION_LOST,      ///< Arbitration lost.
-    LOGIC_ERROR,           ///< Logic error.
-    BUS_ERROR,             ///< Bus error.
+    INVALID_ARGUMENT,                ///< Invalid argument.
+    UNSUPPORTED_OPERATION,           ///< Unsupported operation.
+    OPERATION_TIMEOUT,               ///< Operation timeout.
+    IO_STREAM_DEGRADED,              ///< I/O stream degraded.
+    INVALID_FORMAT,                  ///< Invalid format string.
+    NONRESPONSIVE_DEVICE,            ///< Nonresponsive device.
+    ARBITRATION_LOST,                ///< Arbitration lost.
+    LOGIC_ERROR,                     ///< Logic error.
+    BUS_ERROR,                       ///< Bus error.
+    CIRCULAR_BUFFER_WOULD_OVERFLOW,  ///< Circular buffer would overflow.
+    CIRCULAR_BUFFER_WOULD_UNDERFLOW, ///< Circular buffer would underflow.
 };
 
 /**
@@ -420,6 +422,10 @@ class Generic_Error_Category final : public Error_Category {
             case Generic_Error::ARBITRATION_LOST: return "ARBITRATION_LOST";
             case Generic_Error::LOGIC_ERROR: return "LOGIC_ERROR";
             case Generic_Error::BUS_ERROR: return "BUS_ERROR";
+            case Generic_Error::CIRCULAR_BUFFER_WOULD_OVERFLOW:
+                return "CIRCULAR_BUFFER_WOULD_OVERFLOW";
+            case Generic_Error::CIRCULAR_BUFFER_WOULD_UNDERFLOW:
+                return "CIRCULAR_BUFFER_WOULD_UNDERFLOW";
         } // switch
 
         return "UNKNOWN";
