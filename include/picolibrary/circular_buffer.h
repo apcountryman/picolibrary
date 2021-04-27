@@ -24,6 +24,12 @@
 #define PICOLIBRARY_CIRCULAR_BUFFER_H
 
 #include <cstddef>
+#include <new>
+#include <type_traits>
+#include <utility>
+
+#include "picolibrary/result.h"
+#include "picolibrary/void.h"
 
 namespace picolibrary {
 
@@ -65,6 +71,235 @@ struct Without_Overflow_Underflow_Protection {
  */
 template<typename T, std::size_t N, typename Interrupt_Support, typename Overflow_Underflow_Protection>
 class Circular_Buffer;
+
+/**
+ * \brief Circular buffer.
+ *
+ * \tparam T The circular buffer element type.
+ * \tparam N The maximum number of elements in the circular buffer.
+ */
+template<typename T, std::size_t N>
+class Circular_Buffer<T, N, Without_Interrupt_Support, Without_Overflow_Underflow_Protection> {
+  public:
+    static_assert( N > 0 );
+
+    /**
+     * \brief The circular buffer element type.
+     */
+    using Value = T;
+
+    /**
+     * \brief The number of elements in the circular buffer.
+     */
+    using Size = std::size_t;
+
+    /**
+     * \brief A reference to a circular buffer element.
+     */
+    using Reference = Value &;
+
+    /**
+     * \brief A reference to a const circular buffer element.
+     */
+    using Const_Reference = Value const &;
+
+    /**
+     * \brief Constructor.
+     */
+    Circular_Buffer() noexcept = default;
+
+    Circular_Buffer( Circular_Buffer && ) = delete;
+
+    Circular_Buffer( Circular_Buffer const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Circular_Buffer() noexcept
+    {
+        while ( not empty() ) { pop(); } // while
+    }
+
+    auto operator=( Circular_Buffer && ) = delete;
+
+    auto operator=( Circular_Buffer const & ) = delete;
+
+    /**
+     * \brief Access the first element in the circular buffer.
+     *
+     * \warning Calling this function on an empty circular buffer results in undefined
+     *          behavior.
+     *
+     * \return The first element in the circular buffer.
+     */
+    auto front() noexcept -> Reference
+    {
+        return *std::launder( reinterpret_cast<Value *>( m_read ) );
+    }
+
+    /**
+     * \brief Access the first element in the circular buffer.
+     *
+     * \warning Calling this function on an empty circular buffer results in undefined
+     *          behavior.
+     *
+     * \return The first element in the circular buffer.
+     */
+    auto front() const noexcept -> Const_Reference
+    {
+        return *std::launder( reinterpret_cast<Value const *>( m_read ) );
+    }
+
+    /**
+     * \brief Access the last element in the circular buffer.
+     *
+     * \warning Calling this function on an empty circular buffer results in undefined
+     *          behavior.
+     *
+     * \return The last element in the circular buffer.
+     */
+    auto back() noexcept -> Reference
+    {
+        return *std::launder( reinterpret_cast<Value *>(
+            m_write == &m_storage[ 0 ] ? &m_storage[ N - 1 ] : m_write - 1 ) );
+    }
+
+    /**
+     * \brief Access the last element in the circular buffer.
+     *
+     * \warning Calling this function on an empty circular buffer results in undefined
+     *          behavior.
+     *
+     * \return The last element in the circular buffer.
+     */
+    auto back() const noexcept -> Const_Reference
+    {
+        return *std::launder( reinterpret_cast<Value const *>(
+            m_write == &m_storage[ 0 ] ? &m_storage[ N - 1 ] : m_write - 1 ) );
+    }
+
+    /**
+     * \brief Check if the circular buffer is empty.
+     *
+     * \return true if the circular buffer is empty.
+     * \return false if the circular buffer is not empty.
+     */
+    auto empty() const noexcept
+    {
+        return not m_size;
+    }
+
+    /**
+     * \brief Get the number of elements in the circular buffer.
+     *
+     * \return The number of elements in the circular buffer.
+     */
+    auto size() const noexcept
+    {
+        return m_size;
+    }
+
+    /**
+     * \brief Get the maximum number of elements the circular buffer can hold.
+     *
+     * \return The maximum number of elements the circular buffer can hold.
+     */
+    auto max_size() const noexcept
+    {
+        return N;
+    }
+
+    /**
+     * \brief Push a value to the end of the circular buffer.
+     *
+     * \warning Calling this function on a full circular buffer results in undefined
+     *          behavior.
+     *
+     * \param[in] value The value to push to the end of the circular buffer.
+     *
+     * \return Success.
+     */
+    auto push( Value && value ) noexcept -> Result<Void, Void>
+    {
+        new ( m_write ) Value{ std::move( value ) };
+
+        m_write = m_write + 1 == &m_storage[ N ] ? &m_storage[ 0 ] : m_write + 1;
+
+        ++m_size;
+
+        return {};
+    }
+
+    /**
+     * \brief Push a value to the end of the circular buffer, constructing the element
+     *        in-place.
+     *
+     * \warning Calling this function on a full circular buffer results in undefined
+     *          behavior.
+     *
+     * \tparam Arguments Value constructor argument types.
+     *
+     * \param[in] arguments Value constructor arguments.
+     *
+     * \return Success.
+     */
+    template<typename... Arguments>
+    auto emplace( Arguments &&... arguments ) noexcept -> Result<Void, Void>
+    {
+        new ( m_write ) Value{ std::forward<Arguments>( arguments )... };
+
+        m_write = m_write + 1 == &m_storage[ N ] ? &m_storage[ 0 ] : m_write + 1;
+
+        ++m_size;
+
+        return {};
+    }
+
+    /**
+     * \brief Remove an element from the front of the circular buffer.
+     *
+     * \warning Calling this function on an empty circular buffer results in undefined
+     *          behavior.
+     *
+     * \return Success.
+     */
+    auto pop() noexcept -> Result<Void, Void>
+    {
+        std::launder( reinterpret_cast<Value *>( m_read ) )->~Value();
+
+        m_read = m_read + 1 == &m_storage[ N ] ? &m_storage[ 0 ] : m_read + 1;
+
+        --m_size;
+
+        return {};
+    }
+
+  private:
+    /**
+     * \brief Circular buffer element storage.
+     */
+    using Storage = std::aligned_storage_t<sizeof( Value ), alignof( Value )>;
+
+    /**
+     * \brief The circular buffer read pointer.
+     */
+    Storage * m_read{ &m_storage[ 0 ] };
+
+    /**
+     * \brief The circular buffer write pointer.
+     */
+    Storage * m_write{ &m_storage[ 0 ] };
+
+    /**
+     * \brief The number of elements in the circular buffer.
+     */
+    Size m_size{ 0 };
+
+    /**
+     * \brief The circular buffer storage.
+     */
+    Storage m_storage[ N ];
+};
 
 } // namespace picolibrary
 
