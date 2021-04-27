@@ -59,6 +59,10 @@ TEST( errorDescription, worksProperly )
         { Generic_Error::ARBITRATION_LOST, "ARBITRATION_LOST" },
         { Generic_Error::LOGIC_ERROR, "LOGIC_ERROR" },
         { Generic_Error::BUS_ERROR, "BUS_ERROR" },
+        { Generic_Error::CIRCULAR_BUFFER_WOULD_OVERFLOW,
+          "CIRCULAR_BUFFER_WOULD_OVERFLOW" },
+        { Generic_Error::CIRCULAR_BUFFER_WOULD_UNDERFLOW,
+          "CIRCULAR_BUFFER_WOULD_UNDERFLOW" },
     };
 
     for ( auto const test_case : test_cases ) {
@@ -70,7 +74,7 @@ TEST( errorDescription, worksProperly )
 
     EXPECT_STREQ(
         Generic_Error_Category::instance().error_description(
-            static_cast<Error_ID>( Generic_Error::BUS_ERROR ) + 1 ),
+            static_cast<Error_ID>( Generic_Error::CIRCULAR_BUFFER_WOULD_UNDERFLOW ) + 1 ),
         "UNKNOWN" );
 }
 
