@@ -190,6 +190,17 @@ class Circular_Buffer<T, N, Without_Interrupt_Support, Without_Overflow_Underflo
     }
 
     /**
+     * \brief Check if the circular buffer is full.
+     *
+     * \return true if the circular buffer is empty.
+     * \return false if the circular buffer is not empty.
+     */
+    auto full() const noexcept
+    {
+        return m_size == N;
+    }
+
+    /**
      * \brief Get the number of elements in the circular buffer.
      *
      * \return The number of elements in the circular buffer.
