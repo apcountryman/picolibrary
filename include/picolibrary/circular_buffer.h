@@ -117,7 +117,7 @@ class Circular_Buffer<T, N, Without_Interrupt_Support, Without_Overflow_Underflo
      */
     ~Circular_Buffer() noexcept
     {
-        while ( not empty() ) { pop(); } // while
+        clear();
     }
 
     auto operator=( Circular_Buffer && ) = delete;
@@ -283,6 +283,14 @@ class Circular_Buffer<T, N, Without_Interrupt_Support, Without_Overflow_Underflo
         --m_size;
 
         return {};
+    }
+
+    /**
+     * \brief Remove all circular buffer elements.
+     */
+    void clear() noexcept
+    {
+        while ( not empty() ) { static_cast<void>( pop() ); } // while
     }
 
   private:
