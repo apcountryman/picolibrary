@@ -192,8 +192,8 @@ class Circular_Buffer<T, N, Without_Interrupt_Support, Without_Overflow_Underflo
     /**
      * \brief Check if the circular buffer is full.
      *
-     * \return true if the circular buffer is empty.
-     * \return false if the circular buffer is not empty.
+     * \return true if the circular buffer is full.
+     * \return false if the circular buffer is not full.
      */
     auto full() const noexcept
     {
