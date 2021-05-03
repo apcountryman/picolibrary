@@ -243,6 +243,27 @@ class Circular_Buffer<T, N, Without_Interrupt_Support, Without_Overflow_Underflo
     }
 
     /**
+     * \brief Push a value to the end of the circular buffer.
+     *
+     * \warning Calling this function on a full circular buffer results in undefined
+     *          behavior.
+     *
+     * \param[in] value The value to push to the end of the circular buffer.
+     *
+     * \return Success.
+     */
+    auto push( Value const & value ) noexcept -> Result<Void, Void>
+    {
+        new ( m_write ) Value{ value };
+
+        m_write = m_write + 1 == &m_storage[ N ] ? &m_storage[ 0 ] : m_write + 1;
+
+        ++m_size;
+
+        return {};
+    }
+
+    /**
      * \brief Push a value to the end of the circular buffer, constructing the element
      *        in-place.
      *
@@ -485,6 +506,30 @@ class Circular_Buffer<T, N, Without_Interrupt_Support, With_Overflow_Underflow_P
         } // if
 
         new ( m_write ) Value{ std::move( value ) };
+
+        m_write = m_write + 1 == &m_storage[ N ] ? &m_storage[ 0 ] : m_write + 1;
+
+        ++m_size;
+
+        return {};
+    }
+
+    /**
+     * \brief Push a value to the end of the circular buffer.
+     *
+     * \param[in] value The value to push to the end of the circular buffer.
+     *
+     * \return Nothing if the circular buffer is not full.
+     * \return picolibrary::Generic_Error::CIRCULAR_BUFFER_WOULD_OVERFLOW if the circular
+     *         buffer is full.
+     */
+    auto push( Value const & value ) noexcept -> Result<Void, Error_Code>
+    {
+        if ( full() ) {
+            return Generic_Error::CIRCULAR_BUFFER_WOULD_OVERFLOW;
+        } // if
+
+        new ( m_write ) Value{ value };
 
         m_write = m_write + 1 == &m_storage[ N ] ? &m_storage[ 0 ] : m_write + 1;
 
