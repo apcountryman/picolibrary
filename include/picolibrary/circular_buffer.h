@@ -708,8 +708,8 @@ class Circular_Buffer<T, N, With_Interrupt_Support, Without_Overflow_Underflow_P
      */
     auto back_from_interrupt() noexcept -> Value volatile &
     {
-        auto write = Storage volatile * { m_write };
-        
+        auto write = ( Storage volatile * ){ m_write };
+
         return *std::launder( reinterpret_cast<Value volatile *>(
             write == &m_storage[ 0 ] ? &m_storage[ N - 1 ] : write - 1 ) );
     }
@@ -745,8 +745,8 @@ class Circular_Buffer<T, N, With_Interrupt_Support, Without_Overflow_Underflow_P
      */
     auto back_from_interrupt() const noexcept -> Value const volatile &
     {
-        auto write = Storage volatile * { m_write };
-        
+        auto write = ( Storage volatile * ){ m_write };
+
         return *std::launder( reinterpret_cast<Value const volatile *>(
             write == &m_storage[ 0 ] ? &m_storage[ N - 1 ] : write - 1 ) );
     }
@@ -855,8 +855,8 @@ class Circular_Buffer<T, N, With_Interrupt_Support, Without_Overflow_Underflow_P
     {
         auto guard = Interrupt_Guard<Restore_Interrupt_Enable_State>{};
 
-        auto write = Storage volatile * { m_write };
-        
+        auto write = ( Storage volatile * ){ m_write };
+
         new ( write ) Value{ std::move( value ) };
 
         m_write = write + 1 == &m_storage[ N ] ? &m_storage[ 0 ] : write + 1;
@@ -878,7 +878,7 @@ class Circular_Buffer<T, N, With_Interrupt_Support, Without_Overflow_Underflow_P
      */
     auto push_from_interrupt( Value && value ) noexcept -> Result<Void, Void>
     {
-        auto write = Storage volatile * { m_write };
+        auto write = ( Storage volatile * ){ m_write };
 
         new ( write ) Value{ std::move( value ) };
 
@@ -903,7 +903,7 @@ class Circular_Buffer<T, N, With_Interrupt_Support, Without_Overflow_Underflow_P
     {
         auto guard = Interrupt_Guard<Restore_Interrupt_Enable_State>{};
 
-        auto write = Storage volatile * { m_write };
+        auto write = ( Storage volatile * ){ m_write };
 
         new ( write ) Value{ value };
 
@@ -926,7 +926,7 @@ class Circular_Buffer<T, N, With_Interrupt_Support, Without_Overflow_Underflow_P
      */
     auto push_from_interrupt( Value const & value ) noexcept -> Result<Void, Void>
     {
-        auto write = Storage volatile * { m_write };
+        auto write = ( Storage volatile * ){ m_write };
 
         new ( write ) Value{ value };
 
@@ -955,7 +955,7 @@ class Circular_Buffer<T, N, With_Interrupt_Support, Without_Overflow_Underflow_P
     {
         auto guard = Interrupt_Guard<Restore_Interrupt_Enable_State>{};
 
-        auto write = Storage volatile * { m_write };
+        auto write = ( Storage volatile * ){ m_write };
 
         new ( write ) Value{ std::forward<Arguments>( arguments )... };
 
@@ -982,7 +982,7 @@ class Circular_Buffer<T, N, With_Interrupt_Support, Without_Overflow_Underflow_P
     template<typename... Arguments>
     auto emplace_from_interrupt( Arguments &&... arguments ) noexcept -> Result<Void, Void>
     {
-        auto write = Storage volatile * { m_write };
+        auto write = ( Storage volatile * ){ m_write };
 
         new ( write ) Value{ std::forward<Arguments>( arguments )... };
 
