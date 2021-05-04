@@ -476,7 +476,8 @@ class Circular_Buffer<T, N, Without_Interrupt_Support, With_Overflow_Underflow_P
      *
      * \param[in] value The value to push to the end of the circular buffer.
      *
-     * \return Nothing if the circular buffer is not full.
+     * \return Nothing if the value was successfully pushed to the end of the circular
+     *         buffer.
      * \return picolibrary::Generic_Error::CIRCULAR_BUFFER_WOULD_OVERFLOW if the circular
      *         buffer is full.
      */
@@ -500,7 +501,8 @@ class Circular_Buffer<T, N, Without_Interrupt_Support, With_Overflow_Underflow_P
      *
      * \param[in] value The value to push to the end of the circular buffer.
      *
-     * \return Nothing if the circular buffer is not full.
+     * \return Nothing if the value was successfully pushed to the end of the circular
+     *         buffer.
      * \return picolibrary::Generic_Error::CIRCULAR_BUFFER_WOULD_OVERFLOW if the circular
      *         buffer is full.
      */
@@ -527,7 +529,8 @@ class Circular_Buffer<T, N, Without_Interrupt_Support, With_Overflow_Underflow_P
      *
      * \param[in] arguments Value constructor arguments.
      *
-     * \return Nothing if the circular buffer is not full.
+     * \return Nothing if the value was successfully pushed to the end of the circular
+     *         buffer.
      * \return picolibrary::Generic_Error::CIRCULAR_BUFFER_WOULD_OVERFLOW if the circular
      *         buffer is full.
      */
@@ -550,7 +553,8 @@ class Circular_Buffer<T, N, Without_Interrupt_Support, With_Overflow_Underflow_P
     /**
      * \brief Remove an element from the front of the circular buffer.
      *
-     * \return Nothing if the circular buffer is not empty.
+     * \return Nothing if an element was successfully removed from the front of the
+     *         circular buffer.
      * \return picolibrary::Generic_Error::CIRCULAR_BUFFER_WOULD_UNDERFLOW if the circular
      *         buffer is empty.
      */
@@ -1320,7 +1324,8 @@ class Circular_Buffer<T, N, With_Interrupt_Support, With_Overflow_Underflow_Prot
      *
      * \param[in] value The value to push to the end of the circular buffer.
      *
-     * \return Nothing if the circular buffer is not full.
+     * \return Nothing if the value was successfully pushed to the end of the circular
+     *         buffer.
      * \return picolibrary::Generic_Error::CIRCULAR_BUFFER_WOULD_OVERFLOW if the circular
      *         buffer is full.
      */
@@ -1348,7 +1353,8 @@ class Circular_Buffer<T, N, With_Interrupt_Support, With_Overflow_Underflow_Prot
      *
      * \param[in] value The value to push to the end of the circular buffer.
      *
-     * \return Nothing if the circular buffer is not full.
+     * \return Nothing if the value was successfully pushed to the end of the circular
+     *         buffer.
      * \return picolibrary::Generic_Error::CIRCULAR_BUFFER_WOULD_OVERFLOW if the circular
      *         buffer is full.
      */
@@ -1374,7 +1380,8 @@ class Circular_Buffer<T, N, With_Interrupt_Support, With_Overflow_Underflow_Prot
      *
      * \param[in] value The value to push to the end of the circular buffer.
      *
-     * \return Nothing if the circular buffer is not full.
+     * \return Nothing if the value was successfully pushed to the end of the circular
+     *         buffer.
      * \return picolibrary::Generic_Error::CIRCULAR_BUFFER_WOULD_OVERFLOW if the circular
      *         buffer is full.
      */
@@ -1402,7 +1409,8 @@ class Circular_Buffer<T, N, With_Interrupt_Support, With_Overflow_Underflow_Prot
      *
      * \param[in] value The value to push to the end of the circular buffer.
      *
-     * \return Nothing if the circular buffer is not full.
+     * \return Nothing if the value was successfully pushed to the end of the circular
+     *         buffer.
      * \return picolibrary::Generic_Error::CIRCULAR_BUFFER_WOULD_OVERFLOW if the circular
      *         buffer is full.
      */
@@ -1431,7 +1439,8 @@ class Circular_Buffer<T, N, With_Interrupt_Support, With_Overflow_Underflow_Prot
      *
      * \param[in] arguments Value constructor arguments.
      *
-     * \return Nothing if the circular buffer is not full.
+     * \return Nothing if the value was successfully pushed to the end of the circular
+     *         buffer.
      * \return picolibrary::Generic_Error::CIRCULAR_BUFFER_WOULD_OVERFLOW if the circular
      *         buffer is full.
      */
@@ -1463,7 +1472,8 @@ class Circular_Buffer<T, N, With_Interrupt_Support, With_Overflow_Underflow_Prot
      *
      * \param[in] arguments Value constructor arguments.
      *
-     * \return Nothing if the circular buffer is not full.
+     * \return Nothing if the value was successfully pushed to the end of the circular
+     *         buffer.
      * \return picolibrary::Generic_Error::CIRCULAR_BUFFER_WOULD_OVERFLOW if the circular
      *         buffer is full.
      */
@@ -1488,7 +1498,8 @@ class Circular_Buffer<T, N, With_Interrupt_Support, With_Overflow_Underflow_Prot
     /**
      * \brief Remove an element from the front of the circular buffer.
      *
-     * \return Nothing if the circular buffer is not empty.
+     * \return Nothing if an element was successfully removed from the front of the
+     *         circular buffer.
      * \return picolibrary::Generic_Error::CIRCULAR_BUFFER_WOULD_UNDERFLOW if the circular
      *         buffer is empty.
      */
@@ -1512,7 +1523,8 @@ class Circular_Buffer<T, N, With_Interrupt_Support, With_Overflow_Underflow_Prot
     /**
      * \brief Remove an element from the front of the circular buffer.
      *
-     * \return Nothing if the circular buffer is not empty.
+     * \return Nothing if an element was successfully removed from the front of the
+     *         circular buffer.
      * \return picolibrary::Generic_Error::CIRCULAR_BUFFER_WOULD_UNDERFLOW if the circular
      *         buffer is empty.
      */
