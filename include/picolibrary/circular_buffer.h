@@ -708,8 +708,10 @@ class Circular_Buffer<T, N, With_Interrupt_Support, Without_Overflow_Underflow_P
      */
     auto back_from_interrupt() noexcept -> Value volatile &
     {
+        auto write = Storage volatile * { m_write };
+        
         return *std::launder( reinterpret_cast<Value volatile *>(
-            m_write == &m_storage[ 0 ] ? &m_storage[ N - 1 ] : m_write - 1 ) );
+            write == &m_storage[ 0 ] ? &m_storage[ N - 1 ] : write - 1 ) );
     }
 
     /**
@@ -743,8 +745,10 @@ class Circular_Buffer<T, N, With_Interrupt_Support, Without_Overflow_Underflow_P
      */
     auto back_from_interrupt() const noexcept -> Value const volatile &
     {
+        auto write = Storage volatile * { m_write };
+        
         return *std::launder( reinterpret_cast<Value const volatile *>(
-            m_write == &m_storage[ 0 ] ? &m_storage[ N - 1 ] : m_write - 1 ) );
+            write == &m_storage[ 0 ] ? &m_storage[ N - 1 ] : write - 1 ) );
     }
 
     /**
@@ -851,9 +855,11 @@ class Circular_Buffer<T, N, With_Interrupt_Support, Without_Overflow_Underflow_P
     {
         auto guard = Interrupt_Guard<Restore_Interrupt_Enable_State>{};
 
-        new ( m_write ) Value{ std::move( value ) };
+        auto write = Storage volatile * { m_write };
+        
+        new ( write ) Value{ std::move( value ) };
 
-        m_write = m_write + 1 == &m_storage[ N ] ? &m_storage[ 0 ] : m_write + 1;
+        m_write = write + 1 == &m_storage[ N ] ? &m_storage[ 0 ] : write + 1;
 
         ++m_size;
 
@@ -872,9 +878,11 @@ class Circular_Buffer<T, N, With_Interrupt_Support, Without_Overflow_Underflow_P
      */
     auto push_from_interrupt( Value && value ) noexcept -> Result<Void, Void>
     {
-        new ( m_write ) Value{ std::move( value ) };
+        auto write = Storage volatile * { m_write };
 
-        m_write = m_write + 1 == &m_storage[ N ] ? &m_storage[ 0 ] : m_write + 1;
+        new ( write ) Value{ std::move( value ) };
+
+        m_write = write + 1 == &m_storage[ N ] ? &m_storage[ 0 ] : write + 1;
 
         ++m_size;
 
@@ -895,9 +903,11 @@ class Circular_Buffer<T, N, With_Interrupt_Support, Without_Overflow_Underflow_P
     {
         auto guard = Interrupt_Guard<Restore_Interrupt_Enable_State>{};
 
-        new ( m_write ) Value{ value };
+        auto write = Storage volatile * { m_write };
 
-        m_write = m_write + 1 == &m_storage[ N ] ? &m_storage[ 0 ] : m_write + 1;
+        new ( write ) Value{ value };
+
+        m_write = write + 1 == &m_storage[ N ] ? &m_storage[ 0 ] : write + 1;
 
         ++m_size;
 
@@ -916,9 +926,11 @@ class Circular_Buffer<T, N, With_Interrupt_Support, Without_Overflow_Underflow_P
      */
     auto push_from_interrupt( Value const & value ) noexcept -> Result<Void, Void>
     {
-        new ( m_write ) Value{ value };
+        auto write = Storage volatile * { m_write };
 
-        m_write = m_write + 1 == &m_storage[ N ] ? &m_storage[ 0 ] : m_write + 1;
+        new ( write ) Value{ value };
+
+        m_write = write + 1 == &m_storage[ N ] ? &m_storage[ 0 ] : write + 1;
 
         ++m_size;
 
@@ -943,9 +955,11 @@ class Circular_Buffer<T, N, With_Interrupt_Support, Without_Overflow_Underflow_P
     {
         auto guard = Interrupt_Guard<Restore_Interrupt_Enable_State>{};
 
-        new ( m_write ) Value{ std::forward<Arguments>( arguments )... };
+        auto write = Storage volatile * { m_write };
 
-        m_write = m_write + 1 == &m_storage[ N ] ? &m_storage[ 0 ] : m_write + 1;
+        new ( write ) Value{ std::forward<Arguments>( arguments )... };
+
+        m_write = write + 1 == &m_storage[ N ] ? &m_storage[ 0 ] : write + 1;
 
         ++m_size;
 
@@ -968,9 +982,11 @@ class Circular_Buffer<T, N, With_Interrupt_Support, Without_Overflow_Underflow_P
     template<typename... Arguments>
     auto emplace_from_interrupt( Arguments &&... arguments ) noexcept -> Result<Void, Void>
     {
-        new ( m_write ) Value{ std::forward<Arguments>( arguments )... };
+        auto write = Storage volatile * { m_write };
 
-        m_write = m_write + 1 == &m_storage[ N ] ? &m_storage[ 0 ] : m_write + 1;
+        new ( write ) Value{ std::forward<Arguments>( arguments )... };
+
+        m_write = write + 1 == &m_storage[ N ] ? &m_storage[ 0 ] : write + 1;
 
         ++m_size;
 
