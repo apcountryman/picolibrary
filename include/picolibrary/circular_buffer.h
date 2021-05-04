@@ -95,16 +95,6 @@ class Circular_Buffer<T, N, Without_Interrupt_Support, Without_Overflow_Underflo
     using Size = std::size_t;
 
     /**
-     * \brief A reference to a circular buffer element.
-     */
-    using Reference = Value &;
-
-    /**
-     * \brief A reference to a const circular buffer element.
-     */
-    using Const_Reference = Value const &;
-
-    /**
      * \brief Constructor.
      */
     Circular_Buffer() noexcept = default;
@@ -133,7 +123,7 @@ class Circular_Buffer<T, N, Without_Interrupt_Support, Without_Overflow_Underflo
      *
      * \return The first element in the circular buffer.
      */
-    auto front() noexcept -> Reference
+    auto front() noexcept -> Value &
     {
         return *std::launder( reinterpret_cast<Value *>( m_read ) );
     }
@@ -146,7 +136,7 @@ class Circular_Buffer<T, N, Without_Interrupt_Support, Without_Overflow_Underflo
      *
      * \return The first element in the circular buffer.
      */
-    auto front() const noexcept -> Const_Reference
+    auto front() const noexcept -> Value const &
     {
         return *std::launder( reinterpret_cast<Value const *>( m_read ) );
     }
@@ -159,7 +149,7 @@ class Circular_Buffer<T, N, Without_Interrupt_Support, Without_Overflow_Underflo
      *
      * \return The last element in the circular buffer.
      */
-    auto back() noexcept -> Reference
+    auto back() noexcept -> Value &
     {
         return *std::launder( reinterpret_cast<Value *>(
             m_write == &m_storage[ 0 ] ? &m_storage[ N - 1 ] : m_write - 1 ) );
@@ -173,7 +163,7 @@ class Circular_Buffer<T, N, Without_Interrupt_Support, Without_Overflow_Underflo
      *
      * \return The last element in the circular buffer.
      */
-    auto back() const noexcept -> Const_Reference
+    auto back() const noexcept -> Value const &
     {
         return *std::launder( reinterpret_cast<Value const *>(
             m_write == &m_storage[ 0 ] ? &m_storage[ N - 1 ] : m_write - 1 ) );
@@ -364,16 +354,6 @@ class Circular_Buffer<T, N, Without_Interrupt_Support, With_Overflow_Underflow_P
     using Size = std::size_t;
 
     /**
-     * \brief A reference to a circular buffer element.
-     */
-    using Reference = Value &;
-
-    /**
-     * \brief A reference to a const circular buffer element.
-     */
-    using Const_Reference = Value const &;
-
-    /**
      * \brief Constructor.
      */
     Circular_Buffer() noexcept = default;
@@ -402,7 +382,7 @@ class Circular_Buffer<T, N, Without_Interrupt_Support, With_Overflow_Underflow_P
      *
      * \return The first element in the circular buffer.
      */
-    auto front() noexcept -> Reference
+    auto front() noexcept -> Value &
     {
         return *std::launder( reinterpret_cast<Value *>( m_read ) );
     }
@@ -415,7 +395,7 @@ class Circular_Buffer<T, N, Without_Interrupt_Support, With_Overflow_Underflow_P
      *
      * \return The first element in the circular buffer.
      */
-    auto front() const noexcept -> Const_Reference
+    auto front() const noexcept -> Value const &
     {
         return *std::launder( reinterpret_cast<Value const *>( m_read ) );
     }
@@ -428,7 +408,7 @@ class Circular_Buffer<T, N, Without_Interrupt_Support, With_Overflow_Underflow_P
      *
      * \return The last element in the circular buffer.
      */
-    auto back() noexcept -> Reference
+    auto back() noexcept -> Value &
     {
         return *std::launder( reinterpret_cast<Value *>(
             m_write == &m_storage[ 0 ] ? &m_storage[ N - 1 ] : m_write - 1 ) );
@@ -442,7 +422,7 @@ class Circular_Buffer<T, N, Without_Interrupt_Support, With_Overflow_Underflow_P
      *
      * \return The last element in the circular buffer.
      */
-    auto back() const noexcept -> Const_Reference
+    auto back() const noexcept -> Value const &
     {
         return *std::launder( reinterpret_cast<Value const *>(
             m_write == &m_storage[ 0 ] ? &m_storage[ N - 1 ] : m_write - 1 ) );
