@@ -29,6 +29,25 @@
 namespace picolibrary {
 
 /**
+ * \brief Lookup an integer's highest bit set.
+ *
+ * \tparam Integer The type of integer the lookup will be performed on.
+ *
+ * \param[in] value The value whose highest bit set is to be looked up.
+ *
+ * \return The value's highest bit set.
+ */
+template<typename Integer>
+auto highest_bit_set( Integer value ) noexcept
+{
+    auto bit = std::uint_fast8_t{ 0 };
+
+    for ( ; value >>= 1; ++bit ) {} // for
+
+    return bit;
+}
+
+/**
  * \brief Create a bit mask.
  *
  * \tparam Mask The type of mask to create.
