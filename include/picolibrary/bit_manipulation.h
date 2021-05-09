@@ -38,7 +38,7 @@ namespace picolibrary {
  * \return The value's highest bit set.
  */
 template<typename Integer>
-auto highest_bit_set( Integer value ) noexcept
+constexpr auto highest_bit_set( Integer value ) noexcept
 {
     auto bit = std::uint_fast8_t{ 0 };
 
