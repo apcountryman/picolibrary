@@ -23,10 +23,18 @@
 #ifndef PICOLIBRARY_HSM_H
 #define PICOLIBRARY_HSM_H
 
+#include <cstdint>
+
 /**
  * \brief Hierarchical State Machine (HSM) facilities.
  */
 namespace picolibrary::HSM {
+
+/**
+ * \brief Event ID number.
+ */
+using Event_ID = std::uint_fast8_t;
+
 } // namespace picolibrary::HSM
 
 #endif // PICOLIBRARY_HSM_H
