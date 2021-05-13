@@ -35,6 +35,67 @@ namespace picolibrary::HSM {
  */
 using Event_ID = std::uint_fast8_t;
 
+/**
+ * \brief Event category.
+ */
+class Event_Category {
+  public:
+    Event_Category( Event_Category && ) = delete;
+
+    Event_Category( Event_Category const & ) = delete;
+
+    auto operator=( Event_Category && ) = delete;
+
+    auto operator=( Event_Category const & ) = delete;
+
+    /**
+     * \brief Get the name of the event category.
+     *
+     * \return The name of the event category if
+     *         PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION is not defined.
+     * \return An empty string if
+     *         PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION is defined.
+     */
+#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION
+    virtual auto name() const noexcept -> char const * = 0;
+#else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION
+    auto const * name() const noexcept
+    {
+        return "";
+    }
+#endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION
+
+    /**
+     * \brief Get an event ID's description.
+     *
+     * \param[in] id The event ID whose description is to be got.
+     *
+     * \return The event ID's description if
+     *         PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION is not defined.
+     * \return An empty string if
+     *         PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION is defined.
+     */
+#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION
+    virtual auto event_description( Event_ID id ) const noexcept -> char const * = 0;
+#else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION
+    auto const * name() const noexcept
+    {
+        return "";
+    }
+#endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION
+
+  protected:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Event_Category() noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Event_Category() noexcept = default;
+};
+
 } // namespace picolibrary::HSM
 
 #endif // PICOLIBRARY_HSM_H
