@@ -200,7 +200,7 @@ class Event {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Event && expression ) noexcept -> Event & = default;
+    auto operator=( Event && expression ) noexcept -> Event & = default;
 
     /**
      * \brief Assignment operator.
@@ -209,7 +209,7 @@ class Event {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Event const & expression ) noexcept -> Event & = default;
+    auto operator=( Event const & expression ) noexcept -> Event & = default;
 
   private:
     /**
