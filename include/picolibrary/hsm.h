@@ -96,6 +96,52 @@ class Event_Category {
     ~Event_Category() noexcept = default;
 };
 
+/**
+ * \brief Event.
+ */
+class Event {
+  public:
+    Event() = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    virtual ~Event() noexcept = default;
+
+  protected:
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Event( Event && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Event( Event const & original ) noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Event && expression ) noexcept -> Event & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Event const & expression ) noexcept -> Event & = default;
+};
+
 } // namespace picolibrary::HSM
 
 #endif // PICOLIBRARY_HSM_H
