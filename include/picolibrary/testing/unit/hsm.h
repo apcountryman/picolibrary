@@ -71,6 +71,24 @@ class Mock_Event_Category : public ::picolibrary::HSM::Event_Category {
     MOCK_METHOD( char const *, event_description, ( ::picolibrary::HSM::Event_ID ), ( const, noexcept, override ) );
 };
 
+/**
+ * \brief Mock event.
+ */
+class Mock_Event : public ::picolibrary::HSM::Event {
+  public:
+    Mock_Event() = delete;
+
+    Mock_Event( Mock_Event && ) = delete;
+
+    Mock_Event( Mock_Event const & ) = delete;
+
+    virtual ~Mock_Event() noexcept override = default;
+
+    auto operator=( Mock_Event && ) = delete;
+
+    auto operator=( Mock_Event const & ) = delete;
+};
+
 } // namespace picolibrary::Testing::Unit::HSM
 
 #endif // PICOLIBRARY_TESTING_UNIT_HSM_H
