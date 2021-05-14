@@ -20,9 +20,63 @@
  * \brief picolibrary::HSM::Event unit test program.
  */
 
+#include <string>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/hsm.h"
+#include "picolibrary/testing/unit/hsm.h"
+#include "picolibrary/testing/unit/random.h"
+
+namespace {
+
+using ::picolibrary::HSM::Event_ID;
+using ::picolibrary::Testing::Unit::random;
+using ::picolibrary::Testing::Unit::random_container;
+using ::picolibrary::Testing::Unit::HSM::Mock_Event_Category;
+using ::testing::Return;
+
+class Event final : public ::picolibrary::HSM::Event {
+  public:
+    Event() = delete;
+
+    constexpr Event( ::picolibrary::HSM::Event_Category const & category, Event_ID id ) noexcept :
+        ::picolibrary::HSM::Event{ category, id }
+    {
+    }
+
+    constexpr Event( Event && source ) noexcept = default;
+
+    constexpr Event( Event const & original ) noexcept = default;
+
+    virtual ~Event() noexcept override final = default;
+
+    constexpr auto operator=( Event && expression ) noexcept -> Event & = default;
+
+    constexpr auto operator=( Event const & expression ) noexcept -> Event & = default;
+};
+
+} // namespace
+
+/**
+ * \brief Verify picolibrary::HSM::Event::Event( picolibrary::HSM::Event_Category const &,
+ *        picolibrary::HSM::Event_ID ) works properly.
+ */
+TEST( constructor, worksProperly )
+{
+    auto const category = Mock_Event_Category{};
+    auto const id       = random<Event_ID>();
+
+    auto const event = Event{ category, id };
+
+    auto const description = random_container<std::string>();
+
+    EXPECT_CALL( category, event_description( id ) ).WillOnce( Return( description.c_str() ) );
+
+    EXPECT_EQ( &event.category(), &category );
+    EXPECT_EQ( event.id(), id );
+    EXPECT_STREQ( event.description(), description.c_str() );
+}
 
 /**
  * \brief Execute the picolibrary::HSM::Event unit tests.

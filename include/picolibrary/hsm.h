@@ -25,6 +25,11 @@
 
 #include <cstdint>
 
+#include "picolibrary/error.h"
+#include "picolibrary/result.h"
+#include "picolibrary/stream.h"
+#include "picolibrary/void.h"
+
 /**
  * \brief Hierarchical State Machine (HSM) facilities.
  */
@@ -108,7 +113,72 @@ class Event {
      */
     virtual ~Event() noexcept = default;
 
+    /**
+     * \brief Get the event's category.
+     *
+     * \return The event's category.
+     */
+    constexpr auto const & category() const noexcept
+    {
+        return *m_category;
+    }
+
+    /**
+     * \brief Get the event's ID.
+     *
+     * \return The event's ID.
+     */
+    constexpr auto id() const noexcept
+    {
+        return m_id;
+    }
+
+    /**
+     * \brief Get the event's description.
+     *
+     * \return The event's description.
+     */
+    auto description() const noexcept
+    {
+        return category().event_description( id() );
+    }
+
+    /**
+     * \brief Write the event's details to a stream.
+     *
+     * \param[in] stream The stream to write the event details to.
+     *
+     * \return Success.
+     */
+#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION
+    virtual auto print_details( Output_Stream & stream ) const noexcept -> Result<Void, Error_Code>
+    {
+        static_cast<void>( stream );
+
+        return {};
+    }
+#else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION
+    auto print_details( Output_Stream & stream ) const noexcept -> Result<Void, Void>
+    {
+        static_cast<void>( stream );
+
+        return {};
+    }
+#endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION
+
   protected:
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] category The event's category.
+     * \param[in] id The event's ID.
+     */
+    constexpr Event( Event_Category const & category, Event_ID id ) noexcept :
+        m_category{ &category },
+        m_id{ id }
+    {
+    }
+
     /**
      * \brief Constructor.
      *
@@ -140,6 +210,17 @@ class Event {
      * \return The assigned to object.
      */
     constexpr auto operator=( Event const & expression ) noexcept -> Event & = default;
+
+  private:
+    /**
+     * \brief The event's category.
+     */
+    Event_Category const * m_category{};
+
+    /**
+     * \brief The event's ID.
+     */
+    Event_ID m_id{};
 };
 
 } // namespace picolibrary::HSM
