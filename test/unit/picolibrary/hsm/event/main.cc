@@ -20,20 +20,37 @@
  * \brief picolibrary::HSM::Event unit test program.
  */
 
+#include <cstdint>
 #include <string>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "picolibrary/error.h"
 #include "picolibrary/hsm.h"
+#include "picolibrary/result.h"
+#include "picolibrary/testing/unit/error.h"
 #include "picolibrary/testing/unit/hsm.h"
 #include "picolibrary/testing/unit/random.h"
+#include "picolibrary/testing/unit/stream.h"
+#include "picolibrary/void.h"
 
 namespace {
 
+using ::picolibrary::Error_Code;
+using ::picolibrary::Generic_Error;
+using ::picolibrary::Result;
+using ::picolibrary::Void;
 using ::picolibrary::HSM::Event_ID;
+using ::picolibrary::Testing::Unit::Mock_Error;
+using ::picolibrary::Testing::Unit::Mock_Output_Stream;
+using ::picolibrary::Testing::Unit::Output_String_Stream;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::random_container;
+using ::picolibrary::Testing::Unit::HSM::Mock_Event;
 using ::picolibrary::Testing::Unit::HSM::Mock_Event_Category;
+using ::testing::_;
+using ::testing::A;
+using ::testing::Ref;
 using ::testing::Return;
 
 class Event final : public ::picolibrary::HSM::Event {
@@ -76,6 +93,114 @@ TEST( constructor, worksProperly )
     EXPECT_EQ( &event.category(), &category );
     EXPECT_EQ( event.id(), id );
     EXPECT_STREQ( event.description(), description.c_str() );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::HSM::Event> properly handles
+ *        an invalid format string.
+ */
+TEST( outputFormatter, invalidFormatString )
+{
+    auto stream = Output_String_Stream{};
+
+    auto const result = stream.print(
+        ( std::string{ '{' } + random_container<std::string>( random<std::uint_fast8_t>( 1 ) ) + '}' )
+            .c_str(),
+        static_cast<::picolibrary::HSM::Event const &>( Mock_Event{} ) );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), Generic_Error::INVALID_FORMAT );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_TRUE( stream.io_error_present() );
+    EXPECT_FALSE( stream.fatal_error_present() );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::HSM::Event> properly handles a
+ *        print error
+ */
+TEST( outputFormatter, printError )
+{
+    auto stream = Mock_Output_Stream{};
+
+    auto const category = Mock_Event_Category{};
+
+    auto const event = Mock_Event{ category, random<Event_ID>() };
+
+    auto const category_name = random_container<std::string>();
+    auto const description   = random_container<std::string>();
+    auto const error         = random<Mock_Error>();
+
+    EXPECT_CALL( category, name() ).WillOnce( Return( category_name.c_str() ) );
+    EXPECT_CALL( category, event_description( _ ) ).WillOnce( Return( description.c_str() ) );
+    EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
+    EXPECT_CALL( event, print_details( _ ) ).Times( 0 );
+
+    auto const result = stream.print( "{}", static_cast<::picolibrary::HSM::Event const &>( event ) );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_FALSE( stream.io_error_present() );
+    EXPECT_TRUE( stream.fatal_error_present() );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::HSM::Event> properly handles a
+ *        details print error.
+ */
+TEST( outputFormatter, detailsPrintError )
+{
+    auto stream = Output_String_Stream{};
+
+    auto const category = Mock_Event_Category{};
+
+    auto const event = Mock_Event{ category, random<Event_ID>() };
+
+    auto const category_name = random_container<std::string>();
+    auto const description   = random_container<std::string>();
+    auto const error         = random<Mock_Error>();
+
+    EXPECT_CALL( category, name() ).WillOnce( Return( category_name.c_str() ) );
+    EXPECT_CALL( category, event_description( _ ) ).WillOnce( Return( description.c_str() ) );
+    EXPECT_CALL( event, print_details( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = stream.print( "{}", static_cast<::picolibrary::HSM::Event const &>( event ) );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_FALSE( stream.io_error_present() );
+    EXPECT_FALSE( stream.fatal_error_present() );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::HSM::Event> works properly.
+ */
+TEST( outputFormatter, worksProperly )
+{
+    auto stream = Output_String_Stream{};
+
+    auto const category = Mock_Event_Category{};
+    auto const id       = random<Event_ID>();
+
+    auto const event = Mock_Event{ category, id };
+
+    auto const category_name = random_container<std::string>();
+    auto const description   = random_container<std::string>();
+
+    EXPECT_CALL( category, name() ).WillOnce( Return( category_name.c_str() ) );
+    EXPECT_CALL( category, event_description( id ) ).WillOnce( Return( description.c_str() ) );
+    EXPECT_CALL( event, print_details( Ref( stream ) ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE(
+        stream.print( "{}", static_cast<::picolibrary::HSM::Event const &>( event ) ).is_error() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), category_name + "::" + description );
 }
 
 /**

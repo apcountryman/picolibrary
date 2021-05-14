@@ -225,4 +225,70 @@ class Event {
 
 } // namespace picolibrary::HSM
 
+namespace picolibrary {
+
+/**
+ * \brief picolibrary::HSM::Event output formatter.
+ *
+ * picolibrary::HSM::Event only supports the default format specification ("{}").
+ */
+template<>
+class Output_Formatter<HSM::Event> {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Output_Formatter() noexcept = default;
+
+    Output_Formatter( Output_Formatter && ) = delete;
+
+    Output_Formatter( Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Output_Formatter() noexcept = default;
+
+    auto operator=( Output_Formatter && ) = delete;
+
+    auto operator=( Output_Formatter const & ) = delete;
+
+    /**
+     * \brie Parse the format specification for the picolibrary::HSM::Event to be
+     *       formatted.
+     *
+     * \param[in] format The format specification for the picolibrary::HSM::Event to
+     *            be formatted.
+     *
+     * \return format.
+     */
+    constexpr auto parse( char const * format ) noexcept -> Result<char const *, Void>
+    {
+        return format;
+    }
+
+    /**
+     * \brief Write the picolibrary::HSM::Event to the stream.
+     *
+     * \param[in] stream The stream to write the picolibrary::HSM::Event to.
+     * \param[in] event The picolibrary::HSM::Event to write to the stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto print( Output_Stream & stream, HSM::Event const & event ) noexcept -> Result<Void, Error_Code>
+    {
+        {
+            auto result = stream.print( "{}::{}", event.category().name(), event.description() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        return event.print_details( stream );
+    }
+};
+
+} // namespace picolibrary
+
 #endif // PICOLIBRARY_HSM_H
