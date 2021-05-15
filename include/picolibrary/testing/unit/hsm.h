@@ -24,7 +24,12 @@
 #define PICOLIBRARY_TESTING_UNIT_HSM_H
 
 #include "gmock/gmock.h"
+#include "picolibrary/error.h"
 #include "picolibrary/hsm.h"
+#include "picolibrary/result.h"
+#include "picolibrary/stream.h"
+#include "picolibrary/testing/unit/random.h"
+#include "picolibrary/void.h"
 
 /**
  * \brief Hierarchical State Machine (HSM) unit testing facilities.
@@ -69,6 +74,31 @@ class Mock_Event_Category : public ::picolibrary::HSM::Event_Category {
     MOCK_METHOD( char const *, name, (), ( const, noexcept, override ) );
 
     MOCK_METHOD( char const *, event_description, ( ::picolibrary::HSM::Event_ID ), ( const, noexcept, override ) );
+};
+
+/**
+ * \brief Mock event.
+ */
+class Mock_Event : public ::picolibrary::HSM::Event {
+  public:
+    Mock_Event(
+        Mock_Event_Category const &  category = Mock_Event_Category::instance(),
+        ::picolibrary::HSM::Event_ID id       = random<::picolibrary::HSM::Event_ID>() ) :
+        ::picolibrary::HSM::Event{ category, id }
+    {
+    }
+
+    Mock_Event( Mock_Event && ) = delete;
+
+    Mock_Event( Mock_Event const & ) = delete;
+
+    virtual ~Mock_Event() noexcept override = default;
+
+    auto operator=( Mock_Event && ) = delete;
+
+    auto operator=( Mock_Event const & ) = delete;
+
+    MOCK_METHOD( (Result<Void, Error_Code>), print_details, (Output_Stream &), ( const, noexcept, override ) );
 };
 
 } // namespace picolibrary::Testing::Unit::HSM
