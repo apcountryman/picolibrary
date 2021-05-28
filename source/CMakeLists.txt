@@ -51,6 +51,7 @@ set(
     "picolibrary/utility.cc"
     "picolibrary/void.cc"
     "picolibrary/wiznet.cc"
+    "picolibrary/wiznet/w5500.cc"
 )
 set( PICOLIBRARY_LINK_LIBRARIES )
 
