@@ -118,6 +118,9 @@ jobs:
         runs-on: ubuntu-20.04
         steps:
             - uses: actions/checkout@v2
+            - name: Configure dependencies
+              shell: bash
+              run: update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-10 100
             - name: Format
               shell: bash
               run: ./ci/format
