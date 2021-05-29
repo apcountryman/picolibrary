@@ -97,6 +97,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
         "picolibrary/testing/unit/spi.cc"
         "picolibrary/testing/unit/stream.cc"
         "picolibrary/testing/unit/wiznet.cc"
+        "picolibrary/testing/unit/wiznet/w5500.cc"
     )
     list(
         APPEND PICOLIBRARY_LINK_LIBRARIES
