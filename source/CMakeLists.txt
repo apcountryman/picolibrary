@@ -96,6 +96,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
         "picolibrary/testing/unit/random.cc"
         "picolibrary/testing/unit/spi.cc"
         "picolibrary/testing/unit/stream.cc"
+        "picolibrary/testing/unit/wiznet.cc"
     )
     list(
         APPEND PICOLIBRARY_LINK_LIBRARIES
