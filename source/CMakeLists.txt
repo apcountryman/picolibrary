@@ -75,6 +75,7 @@ if( ${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING} )
         "picolibrary/testing/interactive/microchip/mcp23008.cc"
         "picolibrary/testing/interactive/microchip/mcp3008.cc"
         "picolibrary/testing/interactive/spi.cc"
+        "picolibrary/testing/interactive/wiznet.cc"
     )
 endif( ${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING} )
 
