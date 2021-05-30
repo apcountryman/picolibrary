@@ -13,8 +13,5 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/wiznet/CMakeLists.txt
-# Description: picolibrary::WIZnet unit tests CMake rules.
-
-# build the picolibrary::WIZnet::W5500 unit tests
-add_subdirectory( w5500 )
+# File: test/unit/picolibrary/wiznet/w5500/CMakeLists.txt
+# Description: picolibrary::WIZnet::W5500 unit tests CMake rules.
