@@ -289,6 +289,19 @@ class Output_Formatter<HSM::Event> {
     }
 };
 
+/**
+ * \brief Event type tag.
+ *
+ * \tparam T The event type.
+ */
+template<typename T>
+struct Event_Type {
+    /**
+     * \brief The event type.
+     */
+    using Type = T;
+};
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_HSM_H
