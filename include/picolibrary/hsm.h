@@ -223,6 +223,19 @@ class Event {
     Event_ID m_id{};
 };
 
+/**
+ * \brief Event type tag.
+ *
+ * \tparam T The event type.
+ */
+template<typename T>
+struct Event_Type {
+    /**
+     * \brief The event type.
+     */
+    using Type = T;
+};
+
 } // namespace picolibrary::HSM
 
 namespace picolibrary {
@@ -287,19 +300,6 @@ class Output_Formatter<HSM::Event> {
 
         return event.print_details( stream );
     }
-};
-
-/**
- * \brief Event type tag.
- *
- * \tparam T The event type.
- */
-template<typename T>
-struct Event_Type {
-    /**
-     * \brief The event type.
-     */
-    using Type = T;
 };
 
 } // namespace picolibrary
