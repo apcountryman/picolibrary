@@ -23,10 +23,52 @@
 #ifndef PICOLIBRARY_WIZNET_W5500_H
 #define PICOLIBRARY_WIZNET_W5500_H
 
+#include <cstdint>
+
+#include "picolibrary/bit_manipulation.h"
+
 /**
  * \brief WIZnet W5500 facilities.
  */
 namespace picolibrary::WIZnet::W5500 {
+
+/**
+ * \brief Control byte definitions.
+ *
+ * The control byte has the following fields:
+ * - SPI Operation Mode Bits (OM)
+ * - Read/Write Access Mode Bit (RWB)
+ * - Block Select Bits (BSB)
+ */
+struct Control_Byte {
+    /**
+     * \brief Field sizes.
+     */
+    struct Size {
+        static constexpr auto OM  = std::uint_fast8_t{ 2 }; ///< OM.
+        static constexpr auto RWB = std::uint_fast8_t{ 1 }; ///< RWB.
+        static constexpr auto BSB = std::uint_fast8_t{ 5 }; ///< BSB.
+    };
+
+    /**
+     * \brief Field bit positions.
+     */
+    struct Bit {
+        static constexpr auto OM  = std::uint_fast8_t{};                  ///< OM.
+        static constexpr auto RWB = std::uint_fast8_t{ OM + Size::OM };   ///< RWB.
+        static constexpr auto BSB = std::uint_fast8_t{ RWB + Size::RWB }; ///< BSB.
+    };
+
+    /**
+     * \brief Field bit masks.
+     */
+    struct Mask {
+        static constexpr auto OM  = mask<std::uint8_t>( Size::OM, Bit::OM );   ///< OM.
+        static constexpr auto RWB = mask<std::uint8_t>( Size::RWB, Bit::RWB ); ///< RWB.
+        static constexpr auto BSB = mask<std::uint8_t>( Size::BSB, Bit::BSB ); ///< BSB.
+    };
+};
+
 } // namespace picolibrary::WIZnet::W5500
 
 #endif // PICOLIBRARY_WIZNET_W5500_H

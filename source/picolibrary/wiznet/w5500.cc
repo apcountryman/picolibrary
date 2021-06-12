@@ -21,3 +21,9 @@
  */
 
 #include "picolibrary/wiznet/w5500.h"
+
+namespace picolibrary::WIZnet::W5500 {
+
+static_assert( Control_Byte::Bit::BSB == 3 );
+
+} // namespace picolibrary::WIZnet::W5500
