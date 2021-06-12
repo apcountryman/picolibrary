@@ -103,6 +103,14 @@ enum class Region : std::uint8_t {
     RX_BUFFER = 0b11 << Control_Byte::Bit::REGION, ///< RX buffer.
 };
 
+/**
+ * \brief Operation.
+ */
+enum class Operation : std::uint8_t {
+    READ  = 0b0 << Control_Byte::Bit::RWB, ///< Read.
+    WRITE = 0b1 << Control_Byte::Bit::RWB, ///< Write.
+};
+
 } // namespace picolibrary::WIZnet::W5500
 
 #endif // PICOLIBRARY_WIZNET_W5500_H
