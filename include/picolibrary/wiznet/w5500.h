@@ -111,6 +111,16 @@ enum class Operation : std::uint8_t {
     WRITE = 0b1 << Control_Byte::Bit::RWB, ///< Write.
 };
 
+/**
+ * \brief SPI mode.
+ */
+enum class SPI_Mode : std::uint8_t {
+    VARIABLE_LENGTH_DATA = 0b00 << Control_Byte::Bit::OM,     ///< Variable length data.
+    FIXED_LENGTH_DATA_1_BYTE = 0b01 << Control_Byte::Bit::OM, ///< Fixed length data, 1 byte.
+    FIXED_LENGTH_DATA_2_BYTE = 0b10 << Control_Byte::Bit::OM, ///< Fixed length data, 2 bytes.
+    FIXED_LENGTH_DATA_4_BYTE = 0b11 << Control_Byte::Bit::OM, ///< Fixed length data, 4 bytes.
+};
+
 } // namespace picolibrary::WIZnet::W5500
 
 #endif // PICOLIBRARY_WIZNET_W5500_H
