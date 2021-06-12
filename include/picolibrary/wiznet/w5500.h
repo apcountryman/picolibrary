@@ -80,6 +80,20 @@ struct Control_Byte {
     };
 };
 
+/**
+ * \brief Socket ID.
+ */
+enum class Socket_ID : std::uint8_t {
+    _0 = 0 << Control_Byte::Bit::SOCKET, ///< 0.
+    _1 = 1 << Control_Byte::Bit::SOCKET, ///< 1.
+    _2 = 2 << Control_Byte::Bit::SOCKET, ///< 2.
+    _3 = 3 << Control_Byte::Bit::SOCKET, ///< 3.
+    _4 = 4 << Control_Byte::Bit::SOCKET, ///< 4.
+    _5 = 5 << Control_Byte::Bit::SOCKET, ///< 5.
+    _6 = 6 << Control_Byte::Bit::SOCKET, ///< 6.
+    _7 = 7 << Control_Byte::Bit::SOCKET, ///< 7.
+};
+
 } // namespace picolibrary::WIZnet::W5500
 
 #endif // PICOLIBRARY_WIZNET_W5500_H
