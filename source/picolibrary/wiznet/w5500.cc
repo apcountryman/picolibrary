@@ -25,5 +25,7 @@
 namespace picolibrary::WIZnet::W5500 {
 
 static_assert( Control_Byte::Bit::BSB == 3 );
+static_assert( Control_Byte::Bit::REGION == 3 );
+static_assert( Control_Byte::Bit::SOCKET == 5 );
 
 } // namespace picolibrary::WIZnet::W5500

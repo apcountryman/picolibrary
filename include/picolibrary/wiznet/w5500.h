@@ -39,6 +39,8 @@ namespace picolibrary::WIZnet::W5500 {
  * - SPI Operation Mode Bits (OM)
  * - Read/Write Access Mode Bit (RWB)
  * - Block Select Bits (BSB)
+ * - Region (REGION)
+ * - Socket (SOCKET)
  */
 struct Control_Byte {
     /**
@@ -48,6 +50,9 @@ struct Control_Byte {
         static constexpr auto OM  = std::uint_fast8_t{ 2 }; ///< OM.
         static constexpr auto RWB = std::uint_fast8_t{ 1 }; ///< RWB.
         static constexpr auto BSB = std::uint_fast8_t{ 5 }; ///< BSB.
+
+        static constexpr auto REGION = std::uint_fast8_t{ 2 }; ///< REGION.
+        static constexpr auto SOCKET = std::uint_fast8_t{ 3 }; ///< SOCKET.
     };
 
     /**
@@ -57,6 +62,9 @@ struct Control_Byte {
         static constexpr auto OM  = std::uint_fast8_t{};                  ///< OM.
         static constexpr auto RWB = std::uint_fast8_t{ OM + Size::OM };   ///< RWB.
         static constexpr auto BSB = std::uint_fast8_t{ RWB + Size::RWB }; ///< BSB.
+
+        static constexpr auto REGION = std::uint_fast8_t{ RWB + Size::RWB }; ///< REGION.
+        static constexpr auto SOCKET = std::uint_fast8_t{ REGION + Size::REGION }; ///< SOCKET.
     };
 
     /**
@@ -66,6 +74,9 @@ struct Control_Byte {
         static constexpr auto OM  = mask<std::uint8_t>( Size::OM, Bit::OM );   ///< OM.
         static constexpr auto RWB = mask<std::uint8_t>( Size::RWB, Bit::RWB ); ///< RWB.
         static constexpr auto BSB = mask<std::uint8_t>( Size::BSB, Bit::BSB ); ///< BSB.
+
+        static constexpr auto REGION = mask<std::uint8_t>( Size::REGION, Bit::REGION ); ///< REGION.
+        static constexpr auto SOCKET = mask<std::uint8_t>( Size::SOCKET, Bit::SOCKET ); ///< SOCKET.
     };
 };
 
