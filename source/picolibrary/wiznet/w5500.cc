@@ -25,5 +25,7 @@
 namespace picolibrary::WIZnet::W5500 {
 
 static_assert( Control_Byte::Bit::BSB == 3 );
+static_assert( Control_Byte::Bit::REGION == 3 );
+static_assert( Control_Byte::Bit::SOCKET == 5 ); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 
 } // namespace picolibrary::WIZnet::W5500
