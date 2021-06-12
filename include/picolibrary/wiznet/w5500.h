@@ -94,6 +94,15 @@ enum class Socket_ID : std::uint8_t {
     _7 = 7 << Control_Byte::Bit::SOCKET, ///< 7.
 };
 
+/**
+ * \brief Region.
+ */
+enum class Region : std::uint8_t {
+    REGISTERS = 0b01 << Control_Byte::Bit::REGION, ///< Registers.
+    TX_BUFFER = 0b10 << Control_Byte::Bit::REGION, ///< TX buffer.
+    RX_BUFFER = 0b11 << Control_Byte::Bit::REGION, ///< RX buffer.
+};
+
 } // namespace picolibrary::WIZnet::W5500
 
 #endif // PICOLIBRARY_WIZNET_W5500_H
