@@ -24,8 +24,10 @@
 #define PICOLIBRARY_WIZNET_W5500_H
 
 #include <cstdint>
+#include <utility>
 
 #include "picolibrary/bit_manipulation.h"
+#include "picolibrary/spi.h"
 
 /**
  * \brief WIZnet W5500 facilities.
@@ -119,6 +121,80 @@ enum class SPI_Mode : std::uint8_t {
     FIXED_LENGTH_DATA_1_BYTE = 0b01 << Control_Byte::Bit::OM, ///< Fixed length data, 1 byte.
     FIXED_LENGTH_DATA_2_BYTE = 0b10 << Control_Byte::Bit::OM, ///< Fixed length data, 2 bytes.
     FIXED_LENGTH_DATA_4_BYTE = 0b11 << Control_Byte::Bit::OM, ///< Fixed length data, 4 bytes.
+};
+
+/**
+ * \brief WIZnet W5500 communication controller.
+ *
+ * \tparam Controller_Type The type of SPI controller used to communicate with the W5500.
+ * \tparam Device_Selector_Type The type of SPI device selector used to select and
+ *         deselect the W5500.
+ * \tparam Device The type of SPI device implementation used by the communication
+ *         controller. The default SPI device implementation should be used unless a mock
+ *         SPI device implementation is being injected to support unit testing of this
+ *         communication controller.
+ */
+template<typename Controller_Type, typename Device_Selector_Type, typename Device = SPI::Device<Controller_Type, Device_Selector_Type>>
+class Communication_Controller : public Device {
+  public:
+    /**
+     * \brief The type of SPI controller used to communicate with the W5500.
+     */
+    using Controller = Controller_Type;
+
+    /**
+     * \brief The type of SPI device selector used to select and deselect the W5500.
+     */
+    using Device_Selector = Device_Selector_Type;
+
+    Communication_Controller( Communication_Controller const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Communication_Controller() noexcept = default;
+
+    auto operator=( Communication_Controller const & ) = delete;
+
+  protected:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Communication_Controller() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] controller The controller used to communicate with the W5500.
+     * \param[in] configuration The controller clock, and data exchange bit order
+     *            configuration that meets the W5500's communication requirements.
+     * \param[in] device_selector The device selector used to select and deselect the
+     *            W5500.
+     */
+    constexpr Communication_Controller(
+        Controller &                       controller,
+        typename Controller::Configuration configuration,
+        Device_Selector                    device_selector ) noexcept :
+        Device{ controller, configuration, std::move( device_selector ) }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Communication_Controller( Communication_Controller && source ) noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator                     =( Communication_Controller && expression ) noexcept
+        -> Communication_Controller & = default;
 };
 
 } // namespace picolibrary::WIZnet::W5500
