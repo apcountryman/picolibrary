@@ -28,6 +28,7 @@
 #include "gtest/gtest.h"
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
+#include "picolibrary/testing/unit/error.h"
 #include "picolibrary/testing/unit/random.h"
 #include "picolibrary/testing/unit/spi.h"
 #include "picolibrary/void.h"
@@ -38,11 +39,13 @@ namespace {
 using ::picolibrary::Error_Code;
 using ::picolibrary::Result;
 using ::picolibrary::Void;
+using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::SPI::Mock_Controller;
 using ::picolibrary::Testing::Unit::SPI::Mock_Device;
 using ::picolibrary::Testing::Unit::SPI::Mock_Device_Selector;
 using ::picolibrary::WIZnet::W5500::Operation;
+using ::testing::A;
 using ::testing::InSequence;
 using ::testing::Return;
 using ::testing::ReturnRef;
@@ -58,6 +61,99 @@ class Communication_Controller :
 };
 
 } // namespace
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::read( std::uint16_t
+ *        ) properly handles a configuration error.
+ */
+TEST( readCommonRegister, configurationError )
+{
+    auto const communication_controller = Communication_Controller{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( communication_controller, configure() ).WillOnce( Return( error ) );
+
+    auto const result = communication_controller.read( random<std::uint16_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::read( std::uint16_t
+ *        ) properly handles a selection error.
+ */
+TEST( readCommonRegister, selectionError )
+{
+    auto const communication_controller = Communication_Controller{};
+
+    auto device_selector        = Mock_Device_Selector{};
+    auto device_selector_handle = device_selector.handle();
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( communication_controller, configure() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( communication_controller, device_selector() ).WillOnce( ReturnRef( device_selector_handle ) );
+    EXPECT_CALL( device_selector, select() ).WillOnce( Return( error ) );
+
+    auto const result = communication_controller.read( random<std::uint16_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::read( std::uint16_t
+ *        ) properly handles a frame transmission error.
+ */
+TEST( readCommonRegister, frameTransmissionError )
+{
+    auto const communication_controller = Communication_Controller{};
+
+    auto device_selector        = Mock_Device_Selector{};
+    auto device_selector_handle = device_selector.handle();
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( communication_controller, configure() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( communication_controller, device_selector() ).WillOnce( ReturnRef( device_selector_handle ) );
+    EXPECT_CALL( device_selector, select() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( communication_controller, transmit( A<std::vector<std::uint8_t>>() ) ).WillOnce( Return( error ) );
+    EXPECT_CALL( device_selector, deselect() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    auto const result = communication_controller.read( random<std::uint16_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::read( std::uint16_t
+ *        ) properly handles a data reception error.
+ */
+TEST( readCommonRegister, dataReceptionError )
+{
+    auto const communication_controller = Communication_Controller{};
+
+    auto device_selector        = Mock_Device_Selector{};
+    auto device_selector_handle = device_selector.handle();
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( communication_controller, configure() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( communication_controller, device_selector() ).WillOnce( ReturnRef( device_selector_handle ) );
+    EXPECT_CALL( device_selector, select() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( communication_controller, transmit( A<std::vector<std::uint8_t>>() ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( communication_controller, receive() ).WillOnce( Return( error ) );
+    EXPECT_CALL( device_selector, deselect() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    auto const result = communication_controller.read( random<std::uint16_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::read( std::uint16_t
