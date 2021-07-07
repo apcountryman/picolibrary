@@ -24,9 +24,13 @@
 #define PICOLIBRARY_WIZNET_W5500_H
 
 #include <cstdint>
+#include <limits>
 #include <utility>
 
 #include "picolibrary/bit_manipulation.h"
+#include "picolibrary/error.h"
+#include "picolibrary/fixed_size_array.h"
+#include "picolibrary/result.h"
 #include "picolibrary/spi.h"
 
 /**
@@ -160,7 +164,7 @@ class Communication_Controller : public Device {
     /**
      * \brief Constructor.
      */
-    constexpr Communication_Controller() noexcept = default;
+    constexpr Communication_Controller() = default;
 
     /**
      * \brief Constructor.
@@ -195,6 +199,70 @@ class Communication_Controller : public Device {
      */
     auto operator                     =( Communication_Controller && expression ) noexcept
         -> Communication_Controller & = default;
+
+    /**
+     * \brief Read a common register.
+     *
+     * \param[in] offset The offset of the common register to read.
+     *
+     * \return The data read from the register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read( std::uint16_t offset ) const noexcept -> Result<std::uint8_t, Error_Code>
+    {
+        {
+            auto result = this->configure();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        auto const frame = make_frame( offset, Operation::READ );
+
+        auto guard = SPI::Device_Selection_Guard<Device_Selector>{};
+        {
+            auto result = SPI::make_device_selection_guard( this->device_selector() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            guard = std::move( result ).value();
+        }
+
+        {
+            auto result = this->transmit( frame.begin(), frame.end() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        return this->receive();
+    }
+
+  private:
+    /**
+     * \brief SPI communication frame.
+     */
+    using Frame = Fixed_Size_Array<std::uint8_t, 3>;
+
+    /**
+     * \brief Construct an SPI communication frame for accessing common registers.
+     *
+     * \param[in] offset The offset of the common registers to be accessed.
+     * \param[in] operation The operation to be performed.
+     *
+     * \return The SPI communication frame for accessing common registers.
+     */
+    auto make_frame( std::uint16_t offset, Operation operation ) const noexcept
+    {
+        return Frame{
+            static_cast<std::uint8_t>( offset >> std::numeric_limits<std::uint8_t>::digits ),
+            static_cast<std::uint8_t>( offset ),
+            static_cast<std::uint8_t>(
+                static_cast<std::uint8_t>( SPI_Mode::VARIABLE_LENGTH_DATA )
+                | static_cast<std::uint8_t>( operation ) ),
+        };
+    }
 };
 
 } // namespace picolibrary::WIZnet::W5500
