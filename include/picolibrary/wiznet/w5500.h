@@ -32,6 +32,7 @@
 #include "picolibrary/fixed_size_array.h"
 #include "picolibrary/result.h"
 #include "picolibrary/spi.h"
+#include "picolibrary/void.h"
 
 /**
  * \brief WIZnet W5500 facilities.
@@ -239,6 +240,48 @@ class Communication_Controller : public Device {
         return this->receive();
     }
 
+    /**
+     * \brief Read a block of common register.
+     *
+     * \param[in] offset The offset of the block of common registers to read.
+     * \param[in] begin The beginning of the data read from the block of common registers.
+     * \param[in] end The end of the data read from the block of common registers.
+     *
+     * \return Nothing if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read( std::uint16_t offset, std::uint8_t * begin, std::uint8_t * end ) const noexcept
+        -> Result<Void, Error_Code>
+    {
+        {
+            auto result = this->configure();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        auto const frame = make_frame( offset, Operation::READ );
+
+        auto guard = SPI::Device_Selection_Guard<Device_Selector>{};
+        {
+            auto result = SPI::make_device_selection_guard( this->device_selector() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            guard = std::move( result ).value();
+        }
+
+        {
+            auto result = this->transmit( frame.begin(), frame.end() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        return this->receive( begin, end );
+    }
+
   private:
     /**
      * \brief SPI communication frame.
@@ -248,7 +291,8 @@ class Communication_Controller : public Device {
     /**
      * \brief Construct an SPI communication frame for accessing common registers.
      *
-     * \param[in] offset The offset of the common registers to be accessed.
+     * \param[in] offset The offset of the common register or block of common registers to
+     *            be accessed.
      * \param[in] operation The operation to be performed.
      *
      * \return The SPI communication frame for accessing common registers.
