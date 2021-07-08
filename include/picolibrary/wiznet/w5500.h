@@ -322,6 +322,48 @@ class Communication_Controller : public Device {
         return this->transmit( data );
     }
 
+    /**
+     * \brief Write to a block of common registers.
+     *
+     * \param[in] offset The offset of the block of registers to write to.
+     * \param[in] begin The beginning of the data to write to the block of registers.
+     * \param[in] end The end of the data to write to the block of registers.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write( std::uint16_t offset, std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+        -> Result<Void, Error_Code>
+    {
+        {
+            auto result = this->configure();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        auto const frame = make_frame( offset, Operation::WRITE );
+
+        auto guard = SPI::Device_Selection_Guard<Device_Selector>{};
+        {
+            auto result = SPI::make_device_selection_guard( this->device_selector() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            guard = std::move( result ).value();
+        }
+
+        {
+            auto result = this->transmit( frame.begin(), frame.end() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        return this->transmit( begin, end );
+    }
+
   private:
     /**
      * \brief SPI communication frame.

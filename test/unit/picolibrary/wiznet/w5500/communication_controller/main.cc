@@ -461,6 +461,142 @@ TEST( writeCommonRegister, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::write(
+ *        std::uint16_t, std::uint8_t const *, std::uint8_t const * ) properly handles a
+ *        configuration error.
+ */
+TEST( writeCommonRegisterBlock, configurationError )
+{
+    auto communication_controller = Communication_Controller{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( communication_controller, configure() ).WillOnce( Return( error ) );
+
+    auto const data   = random_container<std::vector<std::uint8_t>>();
+    auto const result = communication_controller.write(
+        random<std::uint16_t>(), &*data.begin(), &*data.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::write(
+ *        std::uint16_t, std::uint8_t const *, std::uint8_t const * ) properly handles a
+ *        selection error.
+ */
+TEST( writeCommonRegisterBlock, selectionError )
+{
+    auto communication_controller = Communication_Controller{};
+
+    auto device_selector        = Mock_Device_Selector{};
+    auto device_selector_handle = device_selector.handle();
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( communication_controller, configure() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( communication_controller, device_selector() ).WillOnce( ReturnRef( device_selector_handle ) );
+    EXPECT_CALL( device_selector, select() ).WillOnce( Return( error ) );
+
+    auto const data   = random_container<std::vector<std::uint8_t>>();
+    auto const result = communication_controller.write(
+        random<std::uint16_t>(), &*data.begin(), &*data.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::write(
+ *        std::uint16_t, std::uint8_t const *, std::uint8_t const * ) properly handles a
+ *        frame transmission error.
+ */
+TEST( writeCommonRegisterBlock, frameTransmissionError )
+{
+    auto communication_controller = Communication_Controller{};
+
+    auto device_selector        = Mock_Device_Selector{};
+    auto device_selector_handle = device_selector.handle();
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( communication_controller, configure() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( communication_controller, device_selector() ).WillOnce( ReturnRef( device_selector_handle ) );
+    EXPECT_CALL( device_selector, select() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( communication_controller, transmit( A<std::vector<std::uint8_t>>() ) ).WillOnce( Return( error ) );
+    EXPECT_CALL( device_selector, deselect() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    auto const data   = random_container<std::vector<std::uint8_t>>();
+    auto const result = communication_controller.write(
+        random<std::uint16_t>(), &*data.begin(), &*data.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::write(
+ *        std::uint16_t, std::uint8_t const *, std::uint8_t const * ) properly handles a
+ *        data transmission error.
+ */
+TEST( writeCommonRegisterBlock, dataTransmissionError )
+{
+    auto communication_controller = Communication_Controller{};
+
+    auto device_selector        = Mock_Device_Selector{};
+    auto device_selector_handle = device_selector.handle();
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( communication_controller, configure() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( communication_controller, device_selector() ).WillOnce( ReturnRef( device_selector_handle ) );
+    EXPECT_CALL( device_selector, select() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( communication_controller, transmit( A<std::vector<std::uint8_t>>() ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) )
+        .WillOnce( Return( error ) );
+    EXPECT_CALL( device_selector, deselect() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    auto const data   = random_container<std::vector<std::uint8_t>>();
+    auto const result = communication_controller.write(
+        random<std::uint16_t>(), &*data.begin(), &*data.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::write(
+ *        std::uint16_t, std::uint8_t const *, std::uint8_t const * ) works properly.
+ */
+TEST( writeCommonRegisterBlock, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto communication_controller = Communication_Controller{};
+
+    auto device_selector        = Mock_Device_Selector{};
+    auto device_selector_handle = device_selector.handle();
+
+    auto const offset = random<std::uint16_t>();
+    auto const frame  = std::vector<std::uint8_t>{
+        static_cast<std::uint8_t>( offset >> std::numeric_limits<std::uint8_t>::digits ),
+        static_cast<std::uint8_t>( offset ),
+        static_cast<std::uint8_t>( Operation::WRITE ),
+    };
+    auto const data = random_container<std::vector<std::uint8_t>>();
+
+    EXPECT_CALL( communication_controller, configure() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( communication_controller, device_selector() ).WillOnce( ReturnRef( device_selector_handle ) );
+    EXPECT_CALL( device_selector, select() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( communication_controller, transmit( frame ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( communication_controller, transmit( data ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( device_selector, deselect() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( communication_controller.write( offset, &*data.begin(), &*data.end() ).is_error() );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Communication_Controller unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
