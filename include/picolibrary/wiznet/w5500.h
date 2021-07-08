@@ -204,7 +204,7 @@ class Communication_Controller : public Device {
     /**
      * \brief Read a common register.
      *
-     * \param[in] offset The offset of the common register to read.
+     * \param[in] offset The offset of the register to read.
      *
      * \return The data read from the register if the read succeeded.
      * \return An error code if the read failed.
@@ -243,9 +243,9 @@ class Communication_Controller : public Device {
     /**
      * \brief Read a block of common register.
      *
-     * \param[in] offset The offset of the block of common registers to read.
-     * \param[in] begin The beginning of the data read from the block of common registers.
-     * \param[in] end The end of the data read from the block of common registers.
+     * \param[in] offset The offset of the block of registers to read.
+     * \param[in] begin The beginning of the data read from the block of registers.
+     * \param[in] end The end of the data read from the block of registers.
      *
      * \return Nothing if the read succeeded.
      * \return An error code if the read failed.
@@ -282,6 +282,46 @@ class Communication_Controller : public Device {
         return this->receive( begin, end );
     }
 
+    /**
+     * \brief Write to a common register.
+     *
+     * \param[in] offset The offset of the register to write to.
+     * \param[in] data The data to write to the register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write( std::uint16_t offset, std::uint8_t data ) noexcept -> Result<Void, Error_Code>
+    {
+        {
+            auto result = this->configure();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        auto const frame = make_frame( offset, Operation::WRITE );
+
+        auto guard = SPI::Device_Selection_Guard<Device_Selector>{};
+        {
+            auto result = SPI::make_device_selection_guard( this->device_selector() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            guard = std::move( result ).value();
+        }
+
+        {
+            auto result = this->transmit( frame.begin(), frame.end() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        return this->transmit( data );
+    }
+
   private:
     /**
      * \brief SPI communication frame.
@@ -291,11 +331,10 @@ class Communication_Controller : public Device {
     /**
      * \brief Construct an SPI communication frame for accessing common registers.
      *
-     * \param[in] offset The offset of the common register or block of common registers to
-     *            be accessed.
+     * \param[in] offset The offset of the register or block of registers to be accessed.
      * \param[in] operation The operation to be performed.
      *
-     * \return The SPI communication frame for accessing common registers.
+     * \return The SPI communication frame.
      */
     auto make_frame( std::uint16_t offset, Operation operation ) const noexcept
     {
