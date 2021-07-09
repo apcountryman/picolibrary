@@ -211,6 +211,8 @@ class Communication_Controller : public Device {
      */
     auto read( std::uint16_t offset ) const noexcept -> Result<std::uint8_t, Error_Code>
     {
+        // #lizard forgives the length
+
         {
             auto result = this->configure();
             if ( result.is_error() ) {
@@ -253,6 +255,8 @@ class Communication_Controller : public Device {
     auto read( std::uint16_t offset, std::uint8_t * begin, std::uint8_t * end ) const noexcept
         -> Result<Void, Error_Code>
     {
+        // #lizard forgives the length
+
         {
             auto result = this->configure();
             if ( result.is_error() ) {
@@ -293,6 +297,8 @@ class Communication_Controller : public Device {
      */
     auto write( std::uint16_t offset, std::uint8_t data ) noexcept -> Result<Void, Error_Code>
     {
+        // #lizard forgives the length
+
         {
             auto result = this->configure();
             if ( result.is_error() ) {
@@ -335,6 +341,8 @@ class Communication_Controller : public Device {
     auto write( std::uint16_t offset, std::uint8_t const * begin, std::uint8_t const * end ) noexcept
         -> Result<Void, Error_Code>
     {
+        // #lizard forgives the length
+
         {
             auto result = this->configure();
             if ( result.is_error() ) {
