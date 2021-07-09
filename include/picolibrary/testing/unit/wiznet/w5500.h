@@ -23,6 +23,41 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_WIZNET_W5500_H
 #define PICOLIBRARY_TESTING_UNIT_WIZNET_W5500_H
 
+#include <cstdint>
+
+#include "picolibrary/testing/unit/random.h"
+#include "picolibrary/wiznet/w5500.h"
+
+namespace picolibrary::Testing::Unit {
+
+/**
+ * \brief Generate a pseudo-random WIZnet W5500 socket ID.
+ *
+ * \return A pseudo-randomly generated WIZnet W5500 socket ID.
+ */
+template<>
+inline auto random<WIZnet::W5500::Socket_ID>()
+{
+    return static_cast<WIZnet::W5500::Socket_ID>( random<std::uint8_t>(
+        static_cast<std::uint8_t>( WIZnet::W5500::Socket_ID::_0 ),
+        static_cast<std::uint8_t>( WIZnet::W5500::Socket_ID::_7 ) ) );
+}
+
+/**
+ * \brief Generate a pseudo-random WIZnet W5500 region.
+ *
+ * \return A pseudo-randomly generated WIZnet W5500 region.
+ */
+template<>
+inline auto random<WIZnet::W5500::Region>()
+{
+    return static_cast<WIZnet::W5500::Region>( random<std::uint8_t>(
+        static_cast<std::uint8_t>( WIZnet::W5500::Region::REGISTERS ),
+        static_cast<std::uint8_t>( WIZnet::W5500::Region::RX_BUFFER ) ) );
+}
+
+} // namespace picolibrary::Testing::Unit
+
 /**
  * \brief WIZnet W5500 unit testing facilities.
  */
