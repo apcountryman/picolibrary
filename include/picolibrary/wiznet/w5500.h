@@ -374,7 +374,7 @@ class Communication_Controller : public Device {
     }
 
     /**
-     * \brief Read a byte of socket register or socket buffer memory.
+     * \brief Read a byte of socket register or buffer memory.
      *
      * \param[in] socket_id The ID of the socket whose register or buffer memory will be
      *            read.
@@ -419,7 +419,7 @@ class Communication_Controller : public Device {
     }
 
     /**
-     * \brief Read a block of socket register or socket buffer memory.
+     * \brief Read a block of socket register or buffer memory.
      *
      * \param[in] socket_id The ID of the socket whose register or buffer memory will be
      *            read.
@@ -468,7 +468,7 @@ class Communication_Controller : public Device {
     }
 
     /**
-     * \brief Write to a byte of socket register or socket buffer memory.
+     * \brief Write to a byte of socket register or buffer memory.
      *
      * \param[in] socket_id The ID of the socket whose register or buffer memory will be
      *            written to.
@@ -511,6 +511,55 @@ class Communication_Controller : public Device {
         }
 
         return this->transmit( data );
+    }
+
+    /**
+     * \brief Write to a block of socket register or buffer memory.
+     *
+     * \param[in] socket_id The ID of the socket whose register or buffer memory will be
+     *            written to.
+     * \param[in] region The memory region to write to.
+     * \param[in] offset The offset of the block of register or buffer memory to write to.
+     * \param[in] begin The beginning of the data to write to the block of register or
+     *            buffer memory.
+     * \param[in] end The end of the data to write to the block of register or buffer
+     *            memory.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write( Socket_ID socket_id, Region region, std::uint16_t offset, std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+        -> Result<Void, Error_Code>
+    {
+        // #lizard forgives the length
+
+        {
+            auto result = this->configure();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        auto const frame = make_frame( socket_id, region, offset, Operation::WRITE );
+
+        auto guard = SPI::Device_Selection_Guard<Device_Selector>{};
+        {
+            auto result = SPI::make_device_selection_guard( this->device_selector() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            guard = std::move( result ).value();
+        }
+
+        {
+            auto result = this->transmit( frame.begin(), frame.end() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        return this->transmit( begin, end );
     }
 
   private:
