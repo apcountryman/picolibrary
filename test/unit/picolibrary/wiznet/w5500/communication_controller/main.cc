@@ -49,6 +49,7 @@ using ::picolibrary::Testing::Unit::SPI::Mock_Device_Selector;
 using ::picolibrary::WIZnet::W5500::Operation;
 using ::picolibrary::WIZnet::W5500::Region;
 using ::picolibrary::WIZnet::W5500::Socket_ID;
+using ::picolibrary::WIZnet::W5500::SPI_Mode;
 using ::testing::_;
 using ::testing::A;
 using ::testing::InSequence;
@@ -178,7 +179,8 @@ TEST( readCommonRegister, worksProperly )
     auto const frame  = std::vector<std::uint8_t>{
         static_cast<std::uint8_t>( offset >> std::numeric_limits<std::uint8_t>::digits ),
         static_cast<std::uint8_t>( offset ),
-        static_cast<std::uint8_t>( Operation::READ ),
+        static_cast<std::uint8_t>( SPI_Mode::VARIABLE_LENGTH_DATA )
+            | static_cast<std::uint8_t>( Operation::READ ),
     };
     auto const data = random<std::uint8_t>();
 
@@ -317,7 +319,8 @@ TEST( readCommonRegisterBlock, worksProperly )
     auto const frame  = std::vector<std::uint8_t>{
         static_cast<std::uint8_t>( offset >> std::numeric_limits<std::uint8_t>::digits ),
         static_cast<std::uint8_t>( offset ),
-        static_cast<std::uint8_t>( Operation::READ ),
+        static_cast<std::uint8_t>( SPI_Mode::VARIABLE_LENGTH_DATA )
+            | static_cast<std::uint8_t>( Operation::READ ),
     };
     auto const size          = random<std::uint_fast8_t>();
     auto const data_expected = random_container<std::vector<std::uint8_t>>( size );
@@ -449,7 +452,8 @@ TEST( writeCommonRegister, worksProperly )
     auto const frame  = std::vector<std::uint8_t>{
         static_cast<std::uint8_t>( offset >> std::numeric_limits<std::uint8_t>::digits ),
         static_cast<std::uint8_t>( offset ),
-        static_cast<std::uint8_t>( Operation::WRITE ),
+        static_cast<std::uint8_t>( SPI_Mode::VARIABLE_LENGTH_DATA )
+            | static_cast<std::uint8_t>( Operation::WRITE ),
     };
     auto const data = random<std::uint8_t>();
 
@@ -585,7 +589,8 @@ TEST( writeCommonRegisterBlock, worksProperly )
     auto const frame  = std::vector<std::uint8_t>{
         static_cast<std::uint8_t>( offset >> std::numeric_limits<std::uint8_t>::digits ),
         static_cast<std::uint8_t>( offset ),
-        static_cast<std::uint8_t>( Operation::WRITE ),
+        static_cast<std::uint8_t>( SPI_Mode::VARIABLE_LENGTH_DATA )
+            | static_cast<std::uint8_t>( Operation::WRITE ),
     };
     auto const data = random_container<std::vector<std::uint8_t>>();
 
@@ -721,7 +726,8 @@ TEST( readSocketRegisterBufferDataByte, worksProperly )
         static_cast<std::uint8_t>( offset >> std::numeric_limits<std::uint8_t>::digits ),
         static_cast<std::uint8_t>( offset ),
         static_cast<std::uint8_t>(
-            static_cast<std::uint8_t>( socket_id ) | static_cast<std::uint8_t>( region )
+            static_cast<std::uint8_t>( SPI_Mode::VARIABLE_LENGTH_DATA )
+            | static_cast<std::uint8_t>( socket_id ) | static_cast<std::uint8_t>( region )
             | static_cast<std::uint8_t>( Operation::READ ) ),
     };
     auto const data = random<std::uint8_t>();
