@@ -73,7 +73,7 @@ class Communication_Controller :
  * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::read( std::uint16_t
  *        ) properly handles a configuration error.
  */
-TEST( readCommonRegister, configurationError )
+TEST( readCommonRegisterMemory, configurationError )
 {
     auto const communication_controller = Communication_Controller{};
 
@@ -91,7 +91,7 @@ TEST( readCommonRegister, configurationError )
  * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::read( std::uint16_t
  *        ) properly handles a selection error.
  */
-TEST( readCommonRegister, selectionError )
+TEST( readCommonRegisterMemory, selectionError )
 {
     auto const communication_controller = Communication_Controller{};
 
@@ -114,7 +114,7 @@ TEST( readCommonRegister, selectionError )
  * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::read( std::uint16_t
  *        ) properly handles a frame transmission error.
  */
-TEST( readCommonRegister, frameTransmissionError )
+TEST( readCommonRegisterMemory, frameTransmissionError )
 {
     auto const communication_controller = Communication_Controller{};
 
@@ -139,7 +139,7 @@ TEST( readCommonRegister, frameTransmissionError )
  * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::read( std::uint16_t
  *        ) properly handles a data reception error.
  */
-TEST( readCommonRegister, dataReceptionError )
+TEST( readCommonRegisterMemory, dataReceptionError )
 {
     auto const communication_controller = Communication_Controller{};
 
@@ -166,7 +166,7 @@ TEST( readCommonRegister, dataReceptionError )
  * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::read( std::uint16_t
  *        ) works properly.
  */
-TEST( readCommonRegister, worksProperly )
+TEST( readCommonRegisterMemory, worksProperly )
 {
     auto const in_sequence = InSequence{};
 
@@ -202,7 +202,7 @@ TEST( readCommonRegister, worksProperly )
  *        std::uint16_t, std::uint8_t *, std::uint8_t * ) properly handles a configuration
  *        error.
  */
-TEST( readCommonRegisterBlock, configurationError )
+TEST( readCommonRegisterMemoryBlock, configurationError )
 {
     auto const communication_controller = Communication_Controller{};
 
@@ -223,7 +223,7 @@ TEST( readCommonRegisterBlock, configurationError )
  *        std::uint16_t, std::uint8_t *, std::uint8_t * ) properly handles a selection
  *        error.
  */
-TEST( readCommonRegisterBlock, selectionError )
+TEST( readCommonRegisterMemoryBlock, selectionError )
 {
     auto const communication_controller = Communication_Controller{};
 
@@ -249,7 +249,7 @@ TEST( readCommonRegisterBlock, selectionError )
  *        std::uint16_t, std::uint8_t *, std::uint8_t * ) properly handles a frame
  *        transmission error.
  */
-TEST( readCommonRegisterBlock, frameTransmissionError )
+TEST( readCommonRegisterMemoryBlock, frameTransmissionError )
 {
     auto const communication_controller = Communication_Controller{};
 
@@ -277,7 +277,7 @@ TEST( readCommonRegisterBlock, frameTransmissionError )
  *        std::uint16_t, std::uint8_t *, std::uint8_t * ) properly handles a data
  *        reception error.
  */
-TEST( readCommonRegisterBlock, dataReceptionError )
+TEST( readCommonRegisterMemoryBlock, dataReceptionError )
 {
     auto const communication_controller = Communication_Controller{};
 
@@ -306,7 +306,7 @@ TEST( readCommonRegisterBlock, dataReceptionError )
  * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::read(
  *        std::uint16_t, std::uint8_t *, std::uint8_t * ) works properly.
  */
-TEST( readCommonRegisterBlock, worksProperly )
+TEST( readCommonRegisterMemoryBlock, worksProperly )
 {
     auto const in_sequence = InSequence{};
 
@@ -609,7 +609,7 @@ TEST( writeCommonRegisterBlock, worksProperly )
  *        picolibrary::WIZnet::W5500::Socket_ID, picolibrary::WIZnet::W5500::Region,
  *        std::uint16_t ) properly handles a configuration error.
  */
-TEST( readSocketRegisterBufferDataByte, configurationError )
+TEST( readSocketRegisterBufferMemory, configurationError )
 {
     auto const communication_controller = Communication_Controller{};
 
@@ -629,7 +629,7 @@ TEST( readSocketRegisterBufferDataByte, configurationError )
  *        picolibrary::WIZnet::W5500::Socket_ID, picolibrary::WIZnet::W5500::Region,
  *        std::uint16_t ) properly handles a selection error.
  */
-TEST( readSocketRegisterBufferDataByte, selectionError )
+TEST( readSocketRegisterBufferMemory, selectionError )
 {
     auto const communication_controller = Communication_Controller{};
 
@@ -654,7 +654,7 @@ TEST( readSocketRegisterBufferDataByte, selectionError )
  *        picolibrary::WIZnet::W5500::Socket_ID, picolibrary::WIZnet::W5500::Region,
  *        std::uint16_t ) properly handles a frame transmission error.
  */
-TEST( readSocketRegisterBufferDataByte, frameTransmissionError )
+TEST( readSocketRegisterBufferMemory, frameTransmissionError )
 {
     auto const communication_controller = Communication_Controller{};
 
@@ -681,7 +681,7 @@ TEST( readSocketRegisterBufferDataByte, frameTransmissionError )
  *        picolibrary::WIZnet::W5500::Socket_ID, picolibrary::WIZnet::W5500::Region,
  *        std::uint16_t ) properly handles a data reception error.
  */
-TEST( readSocketRegisterBufferDataByte, dataReceptionError )
+TEST( readSocketRegisterBufferMemory, dataReceptionError )
 {
     auto const communication_controller = Communication_Controller{};
 
@@ -710,7 +710,7 @@ TEST( readSocketRegisterBufferDataByte, dataReceptionError )
  *        picolibrary::WIZnet::W5500::Socket_ID, picolibrary::WIZnet::W5500::Region,
  *        std::uint16_t ) works properly.
  */
-TEST( readSocketRegisterBufferDataByte, worksProperly )
+TEST( readSocketRegisterBufferMemory, worksProperly )
 {
     auto const in_sequence = InSequence{};
 
@@ -751,7 +751,7 @@ TEST( readSocketRegisterBufferDataByte, worksProperly )
  *        std::uint16_t, std::uint8_t *, std::uint8_t * ) properly handles a configuration
  *        error.
  */
-TEST( readSocketRegisterBufferDataBlock, configurationError )
+TEST( readSocketRegisterBufferMemoryBlock, configurationError )
 {
     auto const communication_controller = Communication_Controller{};
 
@@ -773,7 +773,7 @@ TEST( readSocketRegisterBufferDataBlock, configurationError )
  *        std::uint16_t, std::uint8_t *, std::uint8_t * ) properly handles a selection
  *        error.
  */
-TEST( readSocketRegisterBufferDataBlock, selectionError )
+TEST( readSocketRegisterBufferMemoryBlock, selectionError )
 {
     auto const communication_controller = Communication_Controller{};
 
@@ -800,7 +800,7 @@ TEST( readSocketRegisterBufferDataBlock, selectionError )
  *        std::uint16_t, std::uint8_t *, std::uint8_t * ) properly handles a frame
  *        transmission error.
  */
-TEST( readSocketRegisterBufferDataBlock, frameTransmissionError )
+TEST( readSocketRegisterBufferMemoryBlock, frameTransmissionError )
 {
     auto const communication_controller = Communication_Controller{};
 
@@ -829,7 +829,7 @@ TEST( readSocketRegisterBufferDataBlock, frameTransmissionError )
  *        std::uint16_t, std::uint8_t *, std::uint8_t * ) properly handles a data
  *        reception error.
  */
-TEST( readSocketRegisterBufferDataBlock, dataReceptionError )
+TEST( readSocketRegisterBufferMemoryBlock, dataReceptionError )
 {
     auto const communication_controller = Communication_Controller{};
 
@@ -859,7 +859,7 @@ TEST( readSocketRegisterBufferDataBlock, dataReceptionError )
  *        picolibrary::WIZnet::W5500::Socket_ID, picolibrary::WIZnet::W5500::Region,
  *        std::uint16_t, std::uint8_t *, std::uint8_t * ) works properly.
  */
-TEST( readSocketRegisterBufferDataBlock, worksProperly )
+TEST( readSocketRegisterBufferMemoryBlock, worksProperly )
 {
     auto const in_sequence = InSequence{};
 
