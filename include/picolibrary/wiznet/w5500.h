@@ -202,11 +202,11 @@ class Communication_Controller : public Device {
         -> Communication_Controller & = default;
 
     /**
-     * \brief Read a common register.
+     * \brief Read a byte of common register memory.
      *
-     * \param[in] offset The offset of the register to read.
+     * \param[in] offset The offset of the register memory to read.
      *
-     * \return The data read from the register if the read succeeded.
+     * \return The data read from register memory if the read succeeded.
      * \return An error code if the read failed.
      */
     auto read( std::uint16_t offset ) const noexcept -> Result<std::uint8_t, Error_Code>
@@ -243,11 +243,11 @@ class Communication_Controller : public Device {
     }
 
     /**
-     * \brief Read a block of common register.
+     * \brief Read a block of common register memory.
      *
-     * \param[in] offset The offset of the block of registers to read.
-     * \param[in] begin The beginning of the data read from the block of registers.
-     * \param[in] end The end of the data read from the block of registers.
+     * \param[in] offset The offset of the block of register memory to read.
+     * \param[in] begin The beginning of the data read from the block of register memory.
+     * \param[in] end The end of the data read from the block of register memory.
      *
      * \return Nothing if the read succeeded.
      * \return An error code if the read failed.
@@ -287,10 +287,10 @@ class Communication_Controller : public Device {
     }
 
     /**
-     * \brief Write to a common register.
+     * \brief Write to a byte of common register memory.
      *
-     * \param[in] offset The offset of the register to write to.
-     * \param[in] data The data to write to the register.
+     * \param[in] offset The offset of the register memory to write to.
+     * \param[in] data The data to write to register memory.
      *
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
@@ -329,11 +329,12 @@ class Communication_Controller : public Device {
     }
 
     /**
-     * \brief Write to a block of common registers.
+     * \brief Write to a block of common register memory.
      *
-     * \param[in] offset The offset of the block of registers to write to.
-     * \param[in] begin The beginning of the data to write to the block of registers.
-     * \param[in] end The end of the data to write to the block of registers.
+     * \param[in] offset The offset of the block of register memory to write to.
+     * \param[in] begin The beginning of the data to write to the block of register
+     *            memory.
+     * \param[in] end The end of the data to write to the block of register memory.
      *
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
@@ -373,13 +374,14 @@ class Communication_Controller : public Device {
     }
 
     /**
-     * \brief Read a socket register or a byte of socket buffer data.
+     * \brief Read a byte of socket register or socket buffer memory.
      *
-     * \param[in] socket_id The ID of the socket whose memory will be read.
+     * \param[in] socket_id The ID of the socket whose register or buffer memory will be
+     *            read.
      * \param[in] region The memory region to read.
-     * \param[in] offset The offset of the register or byte of buffer data to read.
+     * \param[in] offset The offset of the register or buffer memory to read.
      *
-     * \return The data read from the register or buffer if the read succeeded.
+     * \return The data read from register or buffer memory if the read succeeded.
      * \return An error code if the read failed.
      */
     auto read( Socket_ID socket_id, Region region, std::uint16_t offset ) const noexcept
@@ -417,14 +419,16 @@ class Communication_Controller : public Device {
     }
 
     /**
-     * \brief Read a block of socket registers or a block of socket buffer data.
+     * \brief Read a block of socket register or socket buffer memory.
      *
-     * \param[in] socket_id The ID of the socket whose memory will be read.
+     * \param[in] socket_id The ID of the socket whose register or buffer memory will be
+     *            read.
      * \param[in] region The memory region to read.
-     * \param[in] offset The offset of the register or byte of buffer data to read.
-     * \param[in] begin The beginning of the data read from the block of registers or
-     *            buffer.
-     * \param[in] end The end of the data read from the block of registers or buffer.
+     * \param[in] offset The offset of the register or or buffer memory to read.
+     * \param[in] begin The beginning of the data read from the block of register or
+     *            buffer memory.
+     * \param[in] end The end of the data read from the block of register or buffer
+     *            memory.
      *
      * \return Nothing if the read succeeded.
      * \return An error code if the read failed.
@@ -470,12 +474,12 @@ class Communication_Controller : public Device {
     using Frame = Fixed_Size_Array<std::uint8_t, 3>;
 
     /**
-     * \brief Construct an SPI communication frame for accessing common registers.
+     * \brief Construct an SPI communication frame for accessing common register memory.
      *
-     * \param[in] offset The offset of the register(s) to be accessed.
+     * \param[in] offset The offset of the register memory to be accessed.
      * \param[in] operation The operation to be performed.
      *
-     * \return The SPI communication frame.
+     * \return The SPI communication frame for accessing the register memory.
      */
     auto make_frame( std::uint16_t offset, Operation operation ) const noexcept
     {
@@ -489,15 +493,16 @@ class Communication_Controller : public Device {
     }
 
     /**
-     * \brief Construct an SPI communication frame for accessing socket registers or
-     *        buffers.
+     * \brief Construct an SPI communication frame for accessing socket register or buffer
+     *        memory.
      *
-     * \param[in] socket_id The ID of the socket whose memory will be accessed.
+     * \param[in] socket_id The ID of the socket whose register or buffer memory will be
+     *            accessed.
      * \param[in] region The memory region to be accessed.
-     * \param[in] offset The offset of the register(s) or buffer data to be accessed.
+     * \param[in] offset The offset of the register or buffer memory to be accessed.
      * \param[in] operation The operation to be performed.
      *
-     * \return The SPI communication frame.
+     * \return The SPI communication frame for accessing the register or buffer memory.
      */
     auto make_frame( Socket_ID socket_id, Region region, std::uint16_t offset, Operation operation ) const noexcept
     {
