@@ -372,6 +372,50 @@ class Communication_Controller : public Device {
         return this->transmit( begin, end );
     }
 
+    /**
+     * \brief Read a socket register or a byte of socket buffer data.
+     *
+     * \param[in] socket_id The ID of the socket whose memory will be read.
+     * \param[in] region The memory region to read.
+     * \param[in] offset The offset of the register or byte of buffer data to read.
+     *
+     * \return The data read from the register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read( Socket_ID socket_id, Region region, std::uint16_t offset ) const noexcept
+        -> Result<std::uint8_t, Error_Code>
+    {
+        // #lizard forgives the length
+
+        {
+            auto result = this->configure();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        auto const frame = make_frame( socket_id, region, offset, Operation::READ );
+
+        auto guard = SPI::Device_Selection_Guard<Device_Selector>{};
+        {
+            auto result = SPI::make_device_selection_guard( this->device_selector() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            guard = std::move( result ).value();
+        }
+
+        {
+            auto result = this->transmit( frame.begin(), frame.end() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        return this->receive();
+    }
+
   private:
     /**
      * \brief SPI communication frame.
@@ -381,7 +425,7 @@ class Communication_Controller : public Device {
     /**
      * \brief Construct an SPI communication frame for accessing common registers.
      *
-     * \param[in] offset The offset of the register or block of registers to be accessed.
+     * \param[in] offset The offset of the register(s) to be accessed.
      * \param[in] operation The operation to be performed.
      *
      * \return The SPI communication frame.
@@ -393,6 +437,29 @@ class Communication_Controller : public Device {
             static_cast<std::uint8_t>( offset ),
             static_cast<std::uint8_t>(
                 static_cast<std::uint8_t>( SPI_Mode::VARIABLE_LENGTH_DATA )
+                | static_cast<std::uint8_t>( operation ) ),
+        };
+    }
+
+    /**
+     * \brief Construct an SPI communication frame for accessing socket registers or
+     *        buffers.
+     *
+     * \param[in] socket_id The ID of the socket whose memory will be accessed.
+     * \param[in] region The memory region to be accessed.
+     * \param[in] offset The offset of the register(s) or buffer data to be accessed.
+     * \param[in] operation The operation to be performed.
+     *
+     * \return The SPI communication frame.
+     */
+    auto make_frame( Socket_ID socket_id, Region region, std::uint16_t offset, Operation operation ) const noexcept
+    {
+        return Frame{
+            static_cast<std::uint8_t>( offset >> std::numeric_limits<std::uint8_t>::digits ),
+            static_cast<std::uint8_t>( offset ),
+            static_cast<std::uint8_t>(
+                static_cast<std::uint8_t>( SPI_Mode::VARIABLE_LENGTH_DATA )
+                | static_cast<std::uint8_t>( socket_id ) | static_cast<std::uint8_t>( region )
                 | static_cast<std::uint8_t>( operation ) ),
         };
     }
