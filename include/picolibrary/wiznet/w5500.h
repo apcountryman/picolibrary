@@ -467,6 +467,52 @@ class Communication_Controller : public Device {
         return this->receive( begin, end );
     }
 
+    /**
+     * \brief Write to a byte of socket register or socket buffer memory.
+     *
+     * \param[in] socket_id The ID of the socket whose register or buffer memory will be
+     *            written to.
+     * \param[in] region The memory region to write to.
+     * \param[in] offset The offset of the register or buffer memory to write to.
+     * \param[in] data The data to write to register or buffer memory.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write( Socket_ID socket_id, Region region, std::uint16_t offset, std::uint8_t data ) noexcept
+        -> Result<Void, Error_Code>
+    {
+        // #lizard forgives the length
+
+        {
+            auto result = this->configure();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        auto const frame = make_frame( socket_id, region, offset, Operation::WRITE );
+
+        auto guard = SPI::Device_Selection_Guard<Device_Selector>{};
+        {
+            auto result = SPI::make_device_selection_guard( this->device_selector() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            guard = std::move( result ).value();
+        }
+
+        {
+            auto result = this->transmit( frame.begin(), frame.end() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        return this->transmit( data );
+    }
+
   private:
     /**
      * \brief SPI communication frame.
