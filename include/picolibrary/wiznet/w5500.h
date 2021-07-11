@@ -379,7 +379,7 @@ class Communication_Controller : public Device {
      * \param[in] region The memory region to read.
      * \param[in] offset The offset of the register or byte of buffer data to read.
      *
-     * \return The data read from the register if the read succeeded.
+     * \return The data read from the register or buffer if the read succeeded.
      * \return An error code if the read failed.
      */
     auto read( Socket_ID socket_id, Region region, std::uint16_t offset ) const noexcept
@@ -414,6 +414,53 @@ class Communication_Controller : public Device {
         }
 
         return this->receive();
+    }
+
+    /**
+     * \brief Read a block of socket registers or a block of socket buffer data.
+     *
+     * \param[in] socket_id The ID of the socket whose memory will be read.
+     * \param[in] region The memory region to read.
+     * \param[in] offset The offset of the register or byte of buffer data to read.
+     * \param[in] begin The beginning of the data read from the block of registers or
+     *            buffer.
+     * \param[in] end The end of the data read from the block of registers or buffer.
+     *
+     * \return Nothing if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read( Socket_ID socket_id, Region region, std::uint16_t offset, std::uint8_t * begin, std::uint8_t * end ) const noexcept
+        -> Result<Void, Error_Code>
+    {
+        // #lizard forgives the length
+
+        {
+            auto result = this->configure();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        auto const frame = make_frame( socket_id, region, offset, Operation::READ );
+
+        auto guard = SPI::Device_Selection_Guard<Device_Selector>{};
+        {
+            auto result = SPI::make_device_selection_guard( this->device_selector() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            guard = std::move( result ).value();
+        }
+
+        {
+            auto result = this->transmit( frame.begin(), frame.end() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        return this->receive( begin, end );
     }
 
   private:
