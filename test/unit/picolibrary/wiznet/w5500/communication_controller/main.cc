@@ -342,7 +342,7 @@ TEST( readCommonRegisterMemoryBlock, worksProperly )
  * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::write(
  *        std::uint16_t, std::uint8_t ) properly handles a configuration error.
  */
-TEST( writeCommonRegister, configurationError )
+TEST( writeCommonRegisterMemory, configurationError )
 {
     auto communication_controller = Communication_Controller{};
 
@@ -361,7 +361,7 @@ TEST( writeCommonRegister, configurationError )
  * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::write(
  *        std::uint16_t, std::uint8_t ) properly handles a selection error.
  */
-TEST( writeCommonRegister, selectionError )
+TEST( writeCommonRegisterMemory, selectionError )
 {
     auto communication_controller = Communication_Controller{};
 
@@ -385,7 +385,7 @@ TEST( writeCommonRegister, selectionError )
  * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::write(
  *        std::uint16_t, std::uint8_t ) properly handles a frame transmission error.
  */
-TEST( writeCommonRegister, frameTransmissionError )
+TEST( writeCommonRegisterMemory, frameTransmissionError )
 {
     auto communication_controller = Communication_Controller{};
 
@@ -411,7 +411,7 @@ TEST( writeCommonRegister, frameTransmissionError )
  * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::write(
  *        std::uint16_t, std::uint8_t ) properly handles a data transmission error.
  */
-TEST( writeCommonRegister, dataTransmissionError )
+TEST( writeCommonRegisterMemory, dataTransmissionError )
 {
     auto communication_controller = Communication_Controller{};
 
@@ -439,7 +439,7 @@ TEST( writeCommonRegister, dataTransmissionError )
  * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::write(
  *        std::uint16_t, std::uint8_t ) works properly.
  */
-TEST( writeCommonRegister, worksProperly )
+TEST( writeCommonRegisterMemory, worksProperly )
 {
     auto const in_sequence = InSequence{};
 
@@ -472,7 +472,7 @@ TEST( writeCommonRegister, worksProperly )
  *        std::uint16_t, std::uint8_t const *, std::uint8_t const * ) properly handles a
  *        configuration error.
  */
-TEST( writeCommonRegisterBlock, configurationError )
+TEST( writeCommonRegisterMemoryBlock, configurationError )
 {
     auto communication_controller = Communication_Controller{};
 
@@ -493,7 +493,7 @@ TEST( writeCommonRegisterBlock, configurationError )
  *        std::uint16_t, std::uint8_t const *, std::uint8_t const * ) properly handles a
  *        selection error.
  */
-TEST( writeCommonRegisterBlock, selectionError )
+TEST( writeCommonRegisterMemoryBlock, selectionError )
 {
     auto communication_controller = Communication_Controller{};
 
@@ -519,7 +519,7 @@ TEST( writeCommonRegisterBlock, selectionError )
  *        std::uint16_t, std::uint8_t const *, std::uint8_t const * ) properly handles a
  *        frame transmission error.
  */
-TEST( writeCommonRegisterBlock, frameTransmissionError )
+TEST( writeCommonRegisterMemoryBlock, frameTransmissionError )
 {
     auto communication_controller = Communication_Controller{};
 
@@ -547,7 +547,7 @@ TEST( writeCommonRegisterBlock, frameTransmissionError )
  *        std::uint16_t, std::uint8_t const *, std::uint8_t const * ) properly handles a
  *        data transmission error.
  */
-TEST( writeCommonRegisterBlock, dataTransmissionError )
+TEST( writeCommonRegisterMemoryBlock, dataTransmissionError )
 {
     auto communication_controller = Communication_Controller{};
 
@@ -576,7 +576,7 @@ TEST( writeCommonRegisterBlock, dataTransmissionError )
  * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::write(
  *        std::uint16_t, std::uint8_t const *, std::uint8_t const * ) works properly.
  */
-TEST( writeCommonRegisterBlock, worksProperly )
+TEST( writeCommonRegisterMemoryBlock, worksProperly )
 {
     auto const in_sequence = InSequence{};
 
