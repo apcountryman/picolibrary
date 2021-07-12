@@ -382,7 +382,7 @@ TEST( writeCommonRegister, selectionError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::read(
+ * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::write(
  *        std::uint16_t, std::uint8_t ) properly handles a frame transmission error.
  */
 TEST( writeCommonRegister, frameTransmissionError )
@@ -409,7 +409,7 @@ TEST( writeCommonRegister, frameTransmissionError )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::write(
- *        std::uint16_t, std::uint8_t ) properly handles a data reception error.
+ *        std::uint16_t, std::uint8_t ) properly handles a data transmission error.
  */
 TEST( writeCommonRegister, dataTransmissionError )
 {
@@ -943,7 +943,7 @@ TEST( writeSocketRegisterBufferMemory, selectionError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::read(
+ * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::write(
  *        picolibrary::WIZnet::W5500::Socket_ID, picolibrary::WIZnet::W5500::Region,
  *        std::uint16_t, std::uint8_t ) properly handles a frame transmission error.
  */
@@ -972,7 +972,7 @@ TEST( writeSocketRegisterBufferMemory, frameTransmissionError )
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::write(
  *        picolibrary::WIZnet::W5500::Socket_ID, picolibrary::WIZnet::W5500::Region,
- *        std::uint16_t, std::uint8_t ) properly handles a data reception error.
+ *        std::uint16_t, std::uint8_t ) properly handles a data transmission error.
  */
 TEST( writeSocketRegisterBufferMemory, dataTransmissionError )
 {
