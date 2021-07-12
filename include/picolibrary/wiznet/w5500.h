@@ -24,8 +24,15 @@
 #define PICOLIBRARY_WIZNET_W5500_H
 
 #include <cstdint>
+#include <limits>
+#include <utility>
 
 #include "picolibrary/bit_manipulation.h"
+#include "picolibrary/error.h"
+#include "picolibrary/fixed_size_array.h"
+#include "picolibrary/result.h"
+#include "picolibrary/spi.h"
+#include "picolibrary/void.h"
 
 /**
  * \brief WIZnet W5500 facilities.
@@ -119,6 +126,490 @@ enum class SPI_Mode : std::uint8_t {
     FIXED_LENGTH_DATA_1_BYTE = 0b01 << Control_Byte::Bit::OM, ///< Fixed length data, 1 byte.
     FIXED_LENGTH_DATA_2_BYTE = 0b10 << Control_Byte::Bit::OM, ///< Fixed length data, 2 bytes.
     FIXED_LENGTH_DATA_4_BYTE = 0b11 << Control_Byte::Bit::OM, ///< Fixed length data, 4 bytes.
+};
+
+/**
+ * \brief WIZnet W5500 communication controller.
+ *
+ * \tparam Controller_Type The type of SPI controller used to communicate with the W5500.
+ * \tparam Device_Selector_Type The type of SPI device selector used to select and
+ *         deselect the W5500.
+ * \tparam Device The type of SPI device implementation used by the communication
+ *         controller. The default SPI device implementation should be used unless a mock
+ *         SPI device implementation is being injected to support unit testing of this
+ *         communication controller.
+ */
+template<typename Controller_Type, typename Device_Selector_Type, typename Device = SPI::Device<Controller_Type, Device_Selector_Type>>
+class Communication_Controller : public Device {
+  public:
+    /**
+     * \brief The type of SPI controller used to communicate with the W5500.
+     */
+    using Controller = Controller_Type;
+
+    /**
+     * \brief The type of SPI device selector used to select and deselect the W5500.
+     */
+    using Device_Selector = Device_Selector_Type;
+
+    Communication_Controller( Communication_Controller const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Communication_Controller() noexcept = default;
+
+    auto operator=( Communication_Controller const & ) = delete;
+
+  protected:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Communication_Controller() = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] controller The controller used to communicate with the W5500.
+     * \param[in] configuration The controller clock, and data exchange bit order
+     *            configuration that meets the W5500's communication requirements.
+     * \param[in] device_selector The device selector used to select and deselect the
+     *            W5500.
+     */
+    constexpr Communication_Controller(
+        Controller &                       controller,
+        typename Controller::Configuration configuration,
+        Device_Selector                    device_selector ) noexcept :
+        Device{ controller, configuration, std::move( device_selector ) }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Communication_Controller( Communication_Controller && source ) noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator                     =( Communication_Controller && expression ) noexcept
+        -> Communication_Controller & = default;
+
+    /**
+     * \brief Read a byte of common register memory.
+     *
+     * \param[in] offset The offset of the register memory to read.
+     *
+     * \return The data read from register memory if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read( std::uint16_t offset ) const noexcept -> Result<std::uint8_t, Error_Code>
+    {
+        // #lizard forgives the length
+
+        {
+            auto result = this->configure();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        auto const frame = make_frame( offset, Operation::READ );
+
+        auto guard = SPI::Device_Selection_Guard<Device_Selector>{};
+        {
+            auto result = SPI::make_device_selection_guard( this->device_selector() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            guard = std::move( result ).value();
+        }
+
+        {
+            auto result = this->transmit( frame.begin(), frame.end() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        return this->receive();
+    }
+
+    /**
+     * \brief Read a block of common register memory.
+     *
+     * \param[in] offset The offset of the block of register memory to read.
+     * \param[in] begin The beginning of the data read from the block of register memory.
+     * \param[in] end The end of the data read from the block of register memory.
+     *
+     * \return Nothing if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read( std::uint16_t offset, std::uint8_t * begin, std::uint8_t * end ) const noexcept
+        -> Result<Void, Error_Code>
+    {
+        // #lizard forgives the length
+
+        {
+            auto result = this->configure();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        auto const frame = make_frame( offset, Operation::READ );
+
+        auto guard = SPI::Device_Selection_Guard<Device_Selector>{};
+        {
+            auto result = SPI::make_device_selection_guard( this->device_selector() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            guard = std::move( result ).value();
+        }
+
+        {
+            auto result = this->transmit( frame.begin(), frame.end() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        return this->receive( begin, end );
+    }
+
+    /**
+     * \brief Write to a byte of common register memory.
+     *
+     * \param[in] offset The offset of the register memory to write to.
+     * \param[in] data The data to write to register memory.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write( std::uint16_t offset, std::uint8_t data ) noexcept -> Result<Void, Error_Code>
+    {
+        // #lizard forgives the length
+
+        {
+            auto result = this->configure();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        auto const frame = make_frame( offset, Operation::WRITE );
+
+        auto guard = SPI::Device_Selection_Guard<Device_Selector>{};
+        {
+            auto result = SPI::make_device_selection_guard( this->device_selector() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            guard = std::move( result ).value();
+        }
+
+        {
+            auto result = this->transmit( frame.begin(), frame.end() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        return this->transmit( data );
+    }
+
+    /**
+     * \brief Write to a block of common register memory.
+     *
+     * \param[in] offset The offset of the block of register memory to write to.
+     * \param[in] begin The beginning of the data to write to the block of register
+     *            memory.
+     * \param[in] end The end of the data to write to the block of register memory.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write( std::uint16_t offset, std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+        -> Result<Void, Error_Code>
+    {
+        // #lizard forgives the length
+
+        {
+            auto result = this->configure();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        auto const frame = make_frame( offset, Operation::WRITE );
+
+        auto guard = SPI::Device_Selection_Guard<Device_Selector>{};
+        {
+            auto result = SPI::make_device_selection_guard( this->device_selector() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            guard = std::move( result ).value();
+        }
+
+        {
+            auto result = this->transmit( frame.begin(), frame.end() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        return this->transmit( begin, end );
+    }
+
+    /**
+     * \brief Read a byte of socket register or buffer memory.
+     *
+     * \param[in] socket_id The ID of the socket whose register or buffer memory will be
+     *            read.
+     * \param[in] region The memory region to read.
+     * \param[in] offset The offset of the register or buffer memory to read.
+     *
+     * \return The data read from register or buffer memory if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read( Socket_ID socket_id, Region region, std::uint16_t offset ) const noexcept
+        -> Result<std::uint8_t, Error_Code>
+    {
+        // #lizard forgives the length
+
+        {
+            auto result = this->configure();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        auto const frame = make_frame( socket_id, region, offset, Operation::READ );
+
+        auto guard = SPI::Device_Selection_Guard<Device_Selector>{};
+        {
+            auto result = SPI::make_device_selection_guard( this->device_selector() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            guard = std::move( result ).value();
+        }
+
+        {
+            auto result = this->transmit( frame.begin(), frame.end() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        return this->receive();
+    }
+
+    /**
+     * \brief Read a block of socket register or buffer memory.
+     *
+     * \param[in] socket_id The ID of the socket whose register or buffer memory will be
+     *            read.
+     * \param[in] region The memory region to read.
+     * \param[in] offset The offset of the register or or buffer memory to read.
+     * \param[in] begin The beginning of the data read from the block of register or
+     *            buffer memory.
+     * \param[in] end The end of the data read from the block of register or buffer
+     *            memory.
+     *
+     * \return Nothing if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read( Socket_ID socket_id, Region region, std::uint16_t offset, std::uint8_t * begin, std::uint8_t * end ) const noexcept
+        -> Result<Void, Error_Code>
+    {
+        // #lizard forgives the length
+
+        {
+            auto result = this->configure();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        auto const frame = make_frame( socket_id, region, offset, Operation::READ );
+
+        auto guard = SPI::Device_Selection_Guard<Device_Selector>{};
+        {
+            auto result = SPI::make_device_selection_guard( this->device_selector() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            guard = std::move( result ).value();
+        }
+
+        {
+            auto result = this->transmit( frame.begin(), frame.end() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        return this->receive( begin, end );
+    }
+
+    /**
+     * \brief Write to a byte of socket register or buffer memory.
+     *
+     * \param[in] socket_id The ID of the socket whose register or buffer memory will be
+     *            written to.
+     * \param[in] region The memory region to write to.
+     * \param[in] offset The offset of the register or buffer memory to write to.
+     * \param[in] data The data to write to register or buffer memory.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write( Socket_ID socket_id, Region region, std::uint16_t offset, std::uint8_t data ) noexcept
+        -> Result<Void, Error_Code>
+    {
+        // #lizard forgives the length
+
+        {
+            auto result = this->configure();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        auto const frame = make_frame( socket_id, region, offset, Operation::WRITE );
+
+        auto guard = SPI::Device_Selection_Guard<Device_Selector>{};
+        {
+            auto result = SPI::make_device_selection_guard( this->device_selector() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            guard = std::move( result ).value();
+        }
+
+        {
+            auto result = this->transmit( frame.begin(), frame.end() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        return this->transmit( data );
+    }
+
+    /**
+     * \brief Write to a block of socket register or buffer memory.
+     *
+     * \param[in] socket_id The ID of the socket whose register or buffer memory will be
+     *            written to.
+     * \param[in] region The memory region to write to.
+     * \param[in] offset The offset of the block of register or buffer memory to write to.
+     * \param[in] begin The beginning of the data to write to the block of register or
+     *            buffer memory.
+     * \param[in] end The end of the data to write to the block of register or buffer
+     *            memory.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write( Socket_ID socket_id, Region region, std::uint16_t offset, std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+        -> Result<Void, Error_Code>
+    {
+        // #lizard forgives the length
+
+        {
+            auto result = this->configure();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        auto const frame = make_frame( socket_id, region, offset, Operation::WRITE );
+
+        auto guard = SPI::Device_Selection_Guard<Device_Selector>{};
+        {
+            auto result = SPI::make_device_selection_guard( this->device_selector() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            guard = std::move( result ).value();
+        }
+
+        {
+            auto result = this->transmit( frame.begin(), frame.end() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        return this->transmit( begin, end );
+    }
+
+  private:
+    /**
+     * \brief SPI communication frame.
+     */
+    using Frame = Fixed_Size_Array<std::uint8_t, 3>;
+
+    /**
+     * \brief Construct an SPI communication frame for accessing common register memory.
+     *
+     * \param[in] offset The offset of the register memory to be accessed.
+     * \param[in] operation The operation to be performed.
+     *
+     * \return The SPI communication frame for accessing the register memory.
+     */
+    auto make_frame( std::uint16_t offset, Operation operation ) const noexcept
+    {
+        return Frame{
+            static_cast<std::uint8_t>( offset >> std::numeric_limits<std::uint8_t>::digits ),
+            static_cast<std::uint8_t>( offset ),
+            static_cast<std::uint8_t>(
+                static_cast<std::uint8_t>( SPI_Mode::VARIABLE_LENGTH_DATA )
+                | static_cast<std::uint8_t>( operation ) ),
+        };
+    }
+
+    /**
+     * \brief Construct an SPI communication frame for accessing socket register or buffer
+     *        memory.
+     *
+     * \param[in] socket_id The ID of the socket whose register or buffer memory will be
+     *            accessed.
+     * \param[in] region The memory region to be accessed.
+     * \param[in] offset The offset of the register or buffer memory to be accessed.
+     * \param[in] operation The operation to be performed.
+     *
+     * \return The SPI communication frame for accessing the register or buffer memory.
+     */
+    auto make_frame( Socket_ID socket_id, Region region, std::uint16_t offset, Operation operation ) const noexcept
+    {
+        return Frame{
+            static_cast<std::uint8_t>( offset >> std::numeric_limits<std::uint8_t>::digits ),
+            static_cast<std::uint8_t>( offset ),
+            static_cast<std::uint8_t>(
+                static_cast<std::uint8_t>( SPI_Mode::VARIABLE_LENGTH_DATA )
+                | static_cast<std::uint8_t>( socket_id ) | static_cast<std::uint8_t>( region )
+                | static_cast<std::uint8_t>( operation ) ),
+        };
+    }
 };
 
 } // namespace picolibrary::WIZnet::W5500
