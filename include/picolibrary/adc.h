@@ -332,6 +332,85 @@ class Non_Blocking_Single_Sample_Converter_Concept {
     auto sample() noexcept -> Result<Sample, Error_Code>;
 };
 
+/**
+ * \brief Blocking, free running ADC concept.
+ */
+class Blocking_Free_Running_Converter_Concept {
+  public:
+    /**
+     * \brief ADC sample.
+     */
+    using Sample = ::picolibrary::ADC::Sample<std::uint_fast16_t, 0, 1023>;
+
+    /**
+     * \brief Constructor.
+     */
+    Blocking_Free_Running_Converter_Concept() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Blocking_Free_Running_Converter_Concept( Blocking_Free_Running_Converter_Concept && source ) noexcept = default;
+
+    Blocking_Free_Running_Converter_Concept( Blocking_Free_Running_Converter_Concept const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Blocking_Free_Running_Converter_Concept() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Blocking_Free_Running_Converter_Concept && expression ) noexcept
+        -> Blocking_Free_Running_Converter_Concept & = default;
+
+    auto operator=( Blocking_Free_Running_Converter_Concept const & ) = delete;
+
+    /**
+     * \brief Initialize the ADC's hardware.
+     *
+     * \return Nothing if ADC hardware initialization succeeded.
+     * \return An error code if ADC hardware initialization failed. If ADC hardware
+     *         initialization cannot fail, return picolibrary::Result<picolibrary::Void,
+     *         picolibrary::Void>.
+     */
+    auto initialize() noexcept -> Result<Void, Error_Code>;
+
+    /**
+     * \brief Start the ADC.
+     *
+     * \return Nothing if starting the ADC succeeded.
+     * \return An error code if starting the ADC failed. If starting the ADC cannot fail,
+     *         return picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     */
+    auto start_converter() noexcept -> Result<Void, Error_Code>;
+
+    /**
+     * \brief Stop the ADC.
+     *
+     * \return Nothing if stopping the ADC succeeded.
+     * \return An error code if stopping the ADC failed. If stopping the ADC cannot fail,
+     *         return picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     */
+    auto stop_converter() noexcept -> Result<Void, Error_Code>;
+
+    /**
+     * \brief Get a sample.
+     *
+     * \return A sample if getting the sample succeeded.
+     * \return An error code if getting the sample failed. If getting the sample cannot
+     *         fail, return picolibrary::Result<Sample, picolibrary::Void>.
+     */
+    auto sample() noexcept -> Result<Sample, Error_Code>;
+};
+
 } // namespace picolibrary::ADC
 
 #endif // PICOLIBRARY_ADC_H
