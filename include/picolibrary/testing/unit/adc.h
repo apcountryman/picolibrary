@@ -397,8 +397,8 @@ class Mock_Blocking_Free_Running_Converter {
         /**
          * \brief Constructor.
          *
-         * \param[in] mock_blocking_free_running_converter The mock blocking, free
-         *            running ADC.
+         * \param[in] mock_blocking_free_running_converter The mock blocking, free running
+         *            ADC.
          */
         Handle( Mock_Blocking_Free_Running_Converter & mock_blocking_free_running_converter ) noexcept :
             m_mock_blocking_free_running_converter{ &mock_blocking_free_running_converter }
