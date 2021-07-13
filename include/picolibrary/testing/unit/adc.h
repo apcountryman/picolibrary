@@ -577,8 +577,7 @@ class Mock_Non_Blocking_Free_Running_Converter {
          * \param[in] mock_non_blocking_free_running_converter The mock non-blocking, free
          *            running ADC.
          */
-        Handle( Mock_Non_Blocking_Free_Running_Converter & mock_non_blocking_free_running_converter ) noexcept
-            :
+        Handle( Mock_Non_Blocking_Free_Running_Converter & mock_non_blocking_free_running_converter ) noexcept :
             m_mock_non_blocking_free_running_converter{ &mock_non_blocking_free_running_converter }
         {
         }
