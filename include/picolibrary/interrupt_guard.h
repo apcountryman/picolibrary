@@ -41,12 +41,6 @@ struct Enable_Interrupts {
 };
 
 /**
- * \brief When a picolibrary::Interrupt_Guard is destructed, disable interrupts.
- */
-struct Disable_Interrupts {
-};
-
-/**
  * \biref Interrupt guard.
  *
  * The default interrupt guard implementation does nothing. The default implementation can
@@ -76,8 +70,7 @@ namespace picolibrary {
 template<typename Action_On_Destruction>
 class Interrupt_Guard {
   public:
-    static_assert(
-        std::is_same_v<Action_On_Destruction, Restore_Interrupt_Enable_State> or std::is_same_v<Action_On_Destruction, Enable_Interrupts> or std::is_same_v<Action_On_Destruction, Disable_Interrupts> );
+    static_assert( std::is_same_v<Action_On_Destruction, Restore_Interrupt_Enable_State> or std::is_same_v<Action_On_Destruction, Enable_Interrupts> );
 
     /**
      * \brief Constructor.
