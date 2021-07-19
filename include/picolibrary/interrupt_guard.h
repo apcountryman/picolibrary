@@ -46,14 +46,6 @@ struct Enable_Interrupts {
 struct Disable_Interrupts {
 };
 
-} // namespace picolibrary
-
-#if __has_include( "picolibrary/hardware/interrupt_guard.h" )
-#include "picolibrary/hardware/interrupt_guard.h"
-#else // __has_include( "picolibrary/hardware/interrupt_guard.h" )
-
-namespace picolibrary {
-
 /**
  * \biref Interrupt guard.
  *
@@ -70,6 +62,17 @@ namespace picolibrary {
  *         or picolibrary::Disable_Interrupts) when the picolibrary::Interrupt_Guard is
  *         destructed.
  */
+template<typename Action_On_Destruction>
+class Interrupt_Guard;
+
+} // namespace picolibrary
+
+#if __has_include( "picolibrary/hardware/interrupt_guard.h" )
+#include "picolibrary/hardware/interrupt_guard.h"
+#else // __has_include( "picolibrary/hardware/interrupt_guard.h" )
+
+namespace picolibrary {
+
 template<typename Action_On_Destruction>
 class Interrupt_Guard {
   public:
