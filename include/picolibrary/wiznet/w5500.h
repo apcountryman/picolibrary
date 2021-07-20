@@ -616,10 +616,10 @@ class Communication_Controller : public Device {
  * \brief WIZnet W5500 Mode Register (MR).
  *
  * This register has the following fields:
- * - Force ARP Request Mode (FARP)
- * - PPPoE Mode (PPPOE)
- * - Ping Block Mode (PB)
- * - WoL Mode (WOL)
+ * - Force ARP Request Enable (FARP)
+ * - PPPoE Enable (PPPOE)
+ * - Ping Block Enable (PB)
+ * - WoL Enable (WOL)
  * - Reset (RST)
  */
 struct MR {
@@ -930,7 +930,7 @@ struct UPORTR {
 };
 
 /**
- * \brief PHY Configuration Register (PHYCFGR).
+ * \brief WIZnet W5500 PHY Configuration Register (PHYCFGR).
  *
  * This register has the following fields:
  * - Link Status (LNK)
@@ -998,14 +998,14 @@ struct VERSIONR {
  *
  * This register has the following fields:
  * - Protocol (P)
- * - UDP Unicast Blocking Mode (UCASTB)
- * - MACRAW IPv6 Packet Blocking Mode (MIP6B)
- * - TCP No Delayed ACK Mode (ND)
- * - UDP Multicast Version (MC)
- * - MACRAW Multicast Blocking Mode (MMB)
- * - UDP/MACRAW Broadcast Blocking Mode (BCASTB)
- * - UDP Multicasting Mode (MULTI)
- * - MACRAW MAC Filter Mode (MFEN)
+ * - UDP Unicast Blocking Enable (UCASTB)
+ * - MACRAW IPv6 Packet Blocking Enable (MIP6B)
+ * - TCP No Delayed ACK Enable (ND)
+ * - UDP Multicast IGMP Version (MC)
+ * - MACRAW Multicast Blocking Enable (MMB)
+ * - UDP/MACRAW Broadcast Blocking Enable (BCASTB)
+ * - UDP Multicasting Enable (MULTI)
+ * - MACRAW MAC Filter Enable (MFEN)
  */
 struct SN_MR {
     /**
@@ -1077,7 +1077,7 @@ struct SN_CR {
  * - Peer Disconnected (DISCON)
  * - Data Received (RECV)
  * - Timeout (TIMEOUT)
- * - Transmit Complete (SEND_OK)
+ * - Transmission Complete (SEND_OK)
  */
 struct SN_IR {
     /**
@@ -1094,7 +1094,7 @@ struct SN_IR {
         static constexpr auto RECV      = std::uint_fast8_t{ 1 }; ///< RECV.
         static constexpr auto TIMEOUT   = std::uint_fast8_t{ 1 }; ///< TIMEOUT.
         static constexpr auto SEND_OK   = std::uint_fast8_t{ 1 }; ///< SEND_OK.
-        static constexpr auto RESERVED5 = std::uint_fast8_t{ 1 }; ///< RESERVED5.
+        static constexpr auto RESERVED5 = std::uint_fast8_t{ 3 }; ///< RESERVED5.
     };
 
     /**
@@ -1193,7 +1193,7 @@ struct SN_TOS {
 };
 
 /**
- * \brief WIZnet W5500 TTL Register (SN_TTL).
+ * \brief WIZnet W5500 Socket N TTL Register (SN_TTL).
  */
 struct SN_TTL {
     /**
@@ -1290,7 +1290,7 @@ struct SN_RX_WR {
  * - Peer Disconnected (DISCON)
  * - Data Received (RECV)
  * - Timeout (TIMEOUT)
- * - Transmit Complete (SEND_OK)
+ * - Transmission Complete (SEND_OK)
  */
 struct SN_IMR {
     /**
@@ -1307,7 +1307,7 @@ struct SN_IMR {
         static constexpr auto RECV      = std::uint_fast8_t{ 1 }; ///< RECV.
         static constexpr auto TIMEOUT   = std::uint_fast8_t{ 1 }; ///< TIMEOUT.
         static constexpr auto SEND_OK   = std::uint_fast8_t{ 1 }; ///< SEND_OK.
-        static constexpr auto RESERVED5 = std::uint_fast8_t{ 1 }; ///< RESERVED5.
+        static constexpr auto RESERVED5 = std::uint_fast8_t{ 3 }; ///< RESERVED5.
     };
 
     /**
