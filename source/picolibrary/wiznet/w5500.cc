@@ -41,5 +41,6 @@ static_assert( SN_MR::Bit::MMB == 5 ); // NOLINT(cppcoreguidelines-avoid-magic-n
 static_assert( SN_MR::Bit::MULTI == 7 ); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 static_assert( SN_MR::Bit::MFEN == 7 ); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 static_assert( SN_IR::Bit::RESERVED5 == 5 ); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+static_assert( SN_IMR::Bit::RESERVED5 == 5 ); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 
 } // namespace picolibrary::WIZnet::W5500
