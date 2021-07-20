@@ -612,6 +612,749 @@ class Communication_Controller : public Device {
     }
 };
 
+/**
+ * \brief WIZnet W5500 Mode Register (MR).
+ *
+ * This register has the following fields:
+ * - Force ARP Request Enable (FARP)
+ * - PPPoE Enable (PPPOE)
+ * - Ping Block Enable (PB)
+ * - WoL Enable (WOL)
+ * - Reset (RST)
+ */
+struct MR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0000 };
+
+    /**
+     * \brief Field sizes.
+     */
+    struct Size {
+        static constexpr auto RESERVED0 = std::uint_fast8_t{ 1 }; ///< RESERVED0.
+        static constexpr auto FARP      = std::uint_fast8_t{ 1 }; ///< FARP.
+        static constexpr auto RESERVED2 = std::uint_fast8_t{ 1 }; ///< RESERVED2.
+        static constexpr auto PPPOE     = std::uint_fast8_t{ 1 }; ///< PPPOE.
+        static constexpr auto PB        = std::uint_fast8_t{ 1 }; ///< PB.
+        static constexpr auto WOL       = std::uint_fast8_t{ 1 }; ///< WOL.
+        static constexpr auto RESERVED6 = std::uint_fast8_t{ 1 }; ///< RESERVED6.
+        static constexpr auto RST       = std::uint_fast8_t{ 1 }; ///< RST.
+    };
+
+    /**
+     * \brief Field bit positions.
+     */
+    struct Bit {
+        static constexpr auto RESERVED0 = std::uint_fast8_t{}; ///< RESERVED0.
+        static constexpr auto FARP = std::uint_fast8_t{ RESERVED0 + Size::RESERVED0 }; ///< FARP.
+        static constexpr auto RESERVED2 = std::uint_fast8_t{ FARP + Size::FARP }; ///< RESERVED2.
+        static constexpr auto PPPOE = std::uint_fast8_t{ RESERVED2 + Size::RESERVED2 }; ///< PPPOE.
+        static constexpr auto PB  = std::uint_fast8_t{ PPPOE + Size::PPPOE }; ///< PB.
+        static constexpr auto WOL = std::uint_fast8_t{ PB + Size::PB };       ///< WOL.
+        static constexpr auto RESERVED6 = std::uint_fast8_t{ WOL + Size::WOL }; ///< RESERVED6.
+        static constexpr auto RST = std::uint_fast8_t{ RESERVED6 + Size::RESERVED6 }; ///< RST.
+    };
+
+    /**
+     * \brief Field bit masks.
+     */
+    struct Mask {
+        static constexpr auto RESERVED0 = mask<std::uint8_t>( Size::RESERVED0, Bit::RESERVED0 ); ///< RESERVED0.
+        static constexpr auto FARP = mask<std::uint8_t>( Size::FARP, Bit::FARP ); ///< FARP.
+        static constexpr auto RESERVED2 = mask<std::uint8_t>( Size::RESERVED2, Bit::RESERVED2 ); ///< RESERVED2.
+        static constexpr auto PPPOE = mask<std::uint8_t>( Size::PPPOE, Bit::PPPOE ); ///< PPPOE.
+        static constexpr auto PB  = mask<std::uint8_t>( Size::PB, Bit::PB );   ///< PB.
+        static constexpr auto WOL = mask<std::uint8_t>( Size::WOL, Bit::WOL ); ///< WOL.
+        static constexpr auto RESERVED6 = mask<std::uint8_t>( Size::RESERVED6, Bit::RESERVED6 ); ///< RESERVED6.
+        static constexpr auto RST = mask<std::uint8_t>( Size::RST, Bit::RST ); ///< RST.
+    };
+};
+
+/**
+ * \brief WIZnet W5500 Gateway IP Address Register (GAR).
+ */
+struct GAR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0001 };
+};
+
+/**
+ * \brief WIZnet W5500 Subnet Mask Register (SUBR).
+ */
+struct SUBR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0005 };
+};
+
+/**
+ * \brief WIZnet W5500 Source Hardware Address Register (SHAR).
+ */
+struct SHAR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0009 };
+};
+
+/**
+ * \brief WIZnet W5500 Source IP Address Register (SIPR).
+ */
+struct SIPR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x000F };
+};
+
+/**
+ * \brief WIZnet W5500 Interrupt Low Level Timer Register (INTLEVEL).
+ */
+struct INTLEVEL {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0013 };
+};
+
+/**
+ * \brief WIZnet W5500 Interrupt Register (IR).
+ *
+ * This register has the following fields:
+ * - WoL UDP Magic Packet Received (MP)
+ * - PPPoE Connection Closed (PPPOE)
+ * - Destination Unreachable (UNREACH)
+ * - IP Conflict (CONFLICT)
+ */
+struct IR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0015 };
+
+    /**
+     * \brief Field sizes.
+     */
+    struct Size {
+        static constexpr auto RESERVED0 = std::uint_fast8_t{ 4 }; ///< RESERVED0.
+        static constexpr auto MP        = std::uint_fast8_t{ 1 }; ///< MP.
+        static constexpr auto PPPOE     = std::uint_fast8_t{ 1 }; ///< PPPOE.
+        static constexpr auto UNREACH   = std::uint_fast8_t{ 1 }; ///< UNREACH.
+        static constexpr auto CONFLICT  = std::uint_fast8_t{ 1 }; ///< CONFLICT.
+    };
+
+    /**
+     * \brief Field bit positions.
+     */
+    struct Bit {
+        static constexpr auto RESERVED0 = std::uint_fast8_t{}; ///< RESERVED0.
+        static constexpr auto MP = std::uint_fast8_t{ RESERVED0 + Size::RESERVED0 }; ///< MP.
+        static constexpr auto PPPOE = std::uint_fast8_t{ MP + Size::MP }; ///< PPPOE.
+        static constexpr auto UNREACH = std::uint_fast8_t{ PPPOE + Size::PPPOE }; ///< UNREACH.
+        static constexpr auto CONFLICT = std::uint_fast8_t{ UNREACH + Size::UNREACH }; ///< CONFLICT.
+    };
+
+    /**
+     * \brief Field bit masks.
+     */
+    struct Mask {
+        static constexpr auto RESERVED0 = mask<std::uint8_t>( Size::RESERVED0, Bit::RESERVED0 ); ///< RESERVED0.
+        static constexpr auto MP = mask<std::uint8_t>( Size::MP, Bit::MP ); ///< MP.
+        static constexpr auto PPPOE = mask<std::uint8_t>( Size::PPPOE, Bit::PPPOE ); ///< PPPOE.
+        static constexpr auto UNREACH = mask<std::uint8_t>( Size::UNREACH, Bit::UNREACH ); ///< UNREACH.
+        static constexpr auto CONFLICT = mask<std::uint8_t>( Size::CONFLICT, Bit::CONFLICT ); ///< CONFLICT.
+    };
+};
+
+/**
+ * \brief WIZnet W5500 Interrupt Mask Register (IMR).
+ *
+ * This register has the following fields:
+ * - WoL UDP Magic Packet Received (MP)
+ * - PPPoE Connection Closed (PPPOE)
+ * - Destination Unreachable (UNREACH)
+ * - IP Conflict (CONFLICT)
+ */
+struct IMR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0016 };
+
+    /**
+     * \brief Field sizes.
+     */
+    struct Size {
+        static constexpr auto RESERVED0 = std::uint_fast8_t{ 4 }; ///< RESERVED0.
+        static constexpr auto MP        = std::uint_fast8_t{ 1 }; ///< MP.
+        static constexpr auto PPPOE     = std::uint_fast8_t{ 1 }; ///< PPPOE.
+        static constexpr auto UNREACH   = std::uint_fast8_t{ 1 }; ///< UNREACH.
+        static constexpr auto CONFLICT  = std::uint_fast8_t{ 1 }; ///< CONFLICT.
+    };
+
+    /**
+     * \brief Field bit positions.
+     */
+    struct Bit {
+        static constexpr auto RESERVED0 = std::uint_fast8_t{}; ///< RESERVED0.
+        static constexpr auto MP = std::uint_fast8_t{ RESERVED0 + Size::RESERVED0 }; ///< MP.
+        static constexpr auto PPPOE = std::uint_fast8_t{ MP + Size::MP }; ///< PPPOE.
+        static constexpr auto UNREACH = std::uint_fast8_t{ PPPOE + Size::PPPOE }; ///< UNREACH.
+        static constexpr auto CONFLICT = std::uint_fast8_t{ UNREACH + Size::UNREACH }; ///< CONFLICT.
+    };
+
+    /**
+     * \brief Field bit masks.
+     */
+    struct Mask {
+        static constexpr auto RESERVED0 = mask<std::uint8_t>( Size::RESERVED0, Bit::RESERVED0 ); ///< RESERVED0.
+        static constexpr auto MP = mask<std::uint8_t>( Size::MP, Bit::MP ); ///< MP.
+        static constexpr auto PPPOE = mask<std::uint8_t>( Size::PPPOE, Bit::PPPOE ); ///< PPPOE.
+        static constexpr auto UNREACH = mask<std::uint8_t>( Size::UNREACH, Bit::UNREACH ); ///< UNREACH.
+        static constexpr auto CONFLICT = mask<std::uint8_t>( Size::CONFLICT, Bit::CONFLICT ); ///< CONFLICT.
+    };
+};
+
+/**
+ * \brief WIZnet W5500 Socket Interrupt Register (SIR).
+ */
+struct SIR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0017 };
+};
+
+/**
+ * \brief WIZnet W5500 Socket Interrupt Mask Register (SIMR).
+ */
+struct SIMR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0018 };
+};
+
+/**
+ * \brief WIZnet W5500 Retry Time Value Register (RTR).
+ */
+struct RTR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0019 };
+};
+
+/**
+ * \brief WIZnet W5500 Retry Count Register (RCR).
+ */
+struct RCR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x001B };
+};
+
+/**
+ * \brief WIZnet W5500 PPPoE LCP Request Timer Register (PTIMER).
+ */
+struct PTIMER {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x001C };
+};
+
+/**
+ * \brief WIZnet W5500 PPPoE LCP Magic Number Register (PMAGIC).
+ */
+struct PMAGIC {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x001D };
+};
+
+/**
+ * \brief WIZnet W5500 PPPoE Server Hardware Address Register (PHAR).
+ */
+struct PHAR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x001E };
+};
+
+/**
+ * \brief WIZnet W5500 PPPoE Server Session ID Register (PSID).
+ */
+struct PSID {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0024 };
+};
+
+/**
+ * \brief WIZnet W5500 PPPoE Maximum Receive Unit Register (PMRU).
+ */
+struct PMRU {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0026 };
+};
+
+/**
+ * \brief WIZnet W5500 Unreachable IP Address Register (UIPR).
+ */
+struct UIPR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0028 };
+};
+
+/**
+ * \brief WIZnet W5500 Unreachable Port Register (UPORTR).
+ */
+struct UPORTR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x002C };
+};
+
+/**
+ * \brief WIZnet W5500 PHY Configuration Register (PHYCFGR).
+ *
+ * This register has the following fields:
+ * - Link Status (LNK)
+ * - Speed Status (SPD)
+ * - Duplex Status (DPX)
+ * - Operating Mode Configuration (OPMDC)
+ * - Configure Operating Mode (OPMD)
+ * - Reset (RST)
+ */
+struct PHYCFGR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x002E };
+
+    /**
+     * \brief Field sizes.
+     */
+    struct Size {
+        static constexpr auto LNK   = std::uint_fast8_t{ 1 }; ///< LNK.
+        static constexpr auto SPD   = std::uint_fast8_t{ 1 }; ///< SPD.
+        static constexpr auto DPX   = std::uint_fast8_t{ 1 }; ///< DPX.
+        static constexpr auto OPMDC = std::uint_fast8_t{ 3 }; ///< OPMDC.
+        static constexpr auto OPMD  = std::uint_fast8_t{ 1 }; ///< OPMD.
+        static constexpr auto RST   = std::uint_fast8_t{ 1 }; ///< RST.
+    };
+
+    /**
+     * \brief Field bit positions.
+     */
+    struct Bit {
+        static constexpr auto LNK   = std::uint_fast8_t{};                  /// LNK
+        static constexpr auto SPD   = std::uint_fast8_t{ LNK + Size::LNK }; ///< SPD.
+        static constexpr auto DPX   = std::uint_fast8_t{ SPD + Size::SPD }; ///< DPX.
+        static constexpr auto OPMDC = std::uint_fast8_t{ DPX + Size::DPX }; ///< OPMDC.
+        static constexpr auto OPMD  = std::uint_fast8_t{ OPMDC + Size::OPMDC }; ///< OPMD.
+        static constexpr auto RST   = std::uint_fast8_t{ OPMD + Size::OPMD };   ///< RST.
+    };
+
+    /**
+     * \brief Field bit masks.
+     */
+    struct Mask {
+        static constexpr auto LNK = mask<std::uint8_t>( Size::LNK, Bit::LNK ); ///< LNK.
+        static constexpr auto SPD = mask<std::uint8_t>( Size::SPD, Bit::SPD ); ///< SPD.
+        static constexpr auto DPX = mask<std::uint8_t>( Size::DPX, Bit::DPX ); ///< DPX.
+        static constexpr auto OPMDC = mask<std::uint8_t>( Size::OPMDC, Bit::OPMDC ); ///< OPMDC.
+        static constexpr auto OPMD = mask<std::uint8_t>( Size::OPMD, Bit::OPMD ); ///< OPMD.
+        static constexpr auto RST = mask<std::uint8_t>( Size::RST, Bit::RST ); ///< RST.
+    };
+};
+
+/**
+ * \brief WIZnet W5500 Chip Version Register (VERSIONR).
+ */
+struct VERSIONR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0039 };
+};
+
+/**
+ * \brief WIZnet W5500 Socket N Mode Register (SN_MR).
+ *
+ * This register has the following fields:
+ * - Protocol (P)
+ * - UDP Unicast Blocking Enable (UCASTB)
+ * - MACRAW IPv6 Packet Blocking Enable (MIP6B)
+ * - TCP No Delayed ACK Enable (ND)
+ * - UDP Multicast IGMP Version (MC)
+ * - MACRAW Multicast Blocking Enable (MMB)
+ * - UDP/MACRAW Broadcast Blocking Enable (BCASTB)
+ * - UDP Multicasting Enable (MULTI)
+ * - MACRAW MAC Filter Enable (MFEN)
+ */
+struct SN_MR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0000 };
+
+    /**
+     * \brief Field sizes.
+     */
+    struct Size {
+        static constexpr auto P      = std::uint_fast8_t{ 4 }; ///< P.
+        static constexpr auto UCASTB = std::uint_fast8_t{ 1 }; ///< UCASTB.
+        static constexpr auto MIP6B  = std::uint_fast8_t{ 1 }; ///< MIP6B.
+        static constexpr auto ND     = std::uint_fast8_t{ 1 }; ///< ND.
+        static constexpr auto MC     = std::uint_fast8_t{ 1 }; ///< MC.
+        static constexpr auto MMB    = std::uint_fast8_t{ 1 }; ///< MMB.
+        static constexpr auto BCASTB = std::uint_fast8_t{ 1 }; ///< BCASTB.
+        static constexpr auto MULTI  = std::uint_fast8_t{ 1 }; ///< MULTI.
+        static constexpr auto MFEN   = std::uint_fast8_t{ 1 }; ///< MFEN.
+    };
+
+    /**
+     * \brief Field bit positions.
+     */
+    struct Bit {
+        static constexpr auto P      = std::uint_fast8_t{};              ///< P.
+        static constexpr auto UCASTB = std::uint_fast8_t{ P + Size::P }; ///< UCASTB.
+        static constexpr auto MIP6B  = std::uint_fast8_t{ P + Size::P }; ///< MIP6B.
+        static constexpr auto ND  = std::uint_fast8_t{ UCASTB + Size::UCASTB }; ///< ND.
+        static constexpr auto MC  = std::uint_fast8_t{ UCASTB + Size::UCASTB }; ///< MC.
+        static constexpr auto MMB = std::uint_fast8_t{ UCASTB + Size::UCASTB }; ///< MMB.
+        static constexpr auto BCASTB = std::uint_fast8_t{ ND + Size::ND }; ///< BCASTB.
+        static constexpr auto MULTI = std::uint_fast8_t{ BCASTB + Size::BCASTB }; ///< MULTI.
+        static constexpr auto MFEN = std::uint_fast8_t{ BCASTB + Size::BCASTB }; ///< MFEN.
+    };
+
+    /**
+     * \brief Field bit masks.
+     */
+    struct Mask {
+        static constexpr auto P = mask<std::uint8_t>( Size::P, Bit::P ); ///< P.
+        static constexpr auto UCASTB = mask<std::uint8_t>( Size::UCASTB, Bit::UCASTB ); ///< UCASTB.
+        static constexpr auto MIP6B = mask<std::uint8_t>( Size::MIP6B, Bit::MIP6B ); ///< MIP6B.
+        static constexpr auto ND  = mask<std::uint8_t>( Size::ND, Bit::ND );   ///< ND.
+        static constexpr auto MC  = mask<std::uint8_t>( Size::MC, Bit::MC );   ///< MC.
+        static constexpr auto MMB = mask<std::uint8_t>( Size::MMB, Bit::MMB ); ///< MMB.
+        static constexpr auto BCASTB = mask<std::uint8_t>( Size::BCASTB, Bit::BCASTB ); ///< BCASTB.
+        static constexpr auto MULTI = mask<std::uint8_t>( Size::MULTI, Bit::MULTI ); ///< MULTI.
+        static constexpr auto MFEN = mask<std::uint8_t>( Size::MFEN, Bit::MFEN ); ///< MFEN.
+    };
+};
+
+/**
+ * \brief WIZnet W5500 Socket N Command Register (SN_CR).
+ */
+struct SN_CR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0001 };
+};
+
+/**
+ * \brief WIZnet W5500 Socket N Interrupt Register (SN_IR).
+ *
+ * This register has the following fields:
+ * - Peer Connected (CON)
+ * - Peer Disconnected (DISCON)
+ * - Data Received (RECV)
+ * - Timeout (TIMEOUT)
+ * - Transmission Complete (SEND_OK)
+ */
+struct SN_IR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0002 };
+
+    /**
+     * \brief Field sizes.
+     */
+    struct Size {
+        static constexpr auto CON       = std::uint_fast8_t{ 1 }; ///< CON.
+        static constexpr auto DISCON    = std::uint_fast8_t{ 1 }; ///< DISCON.
+        static constexpr auto RECV      = std::uint_fast8_t{ 1 }; ///< RECV.
+        static constexpr auto TIMEOUT   = std::uint_fast8_t{ 1 }; ///< TIMEOUT.
+        static constexpr auto SEND_OK   = std::uint_fast8_t{ 1 }; ///< SEND_OK.
+        static constexpr auto RESERVED5 = std::uint_fast8_t{ 3 }; ///< RESERVED5.
+    };
+
+    /**
+     * \brief Field bit positions.
+     */
+    struct Bit {
+        static constexpr auto CON    = std::uint_fast8_t{};                  ///< CON.
+        static constexpr auto DISCON = std::uint_fast8_t{ CON + Size::CON }; ///< DISCON.
+        static constexpr auto RECV = std::uint_fast8_t{ DISCON + Size::DISCON }; ///< RECV.
+        static constexpr auto TIMEOUT = std::uint_fast8_t{ RECV + Size::RECV }; ///< TIMEOUT.
+        static constexpr auto SEND_OK = std::uint_fast8_t{ TIMEOUT + Size::TIMEOUT }; ///< SEND_OK.
+        static constexpr auto RESERVED5 = std::uint_fast8_t{ SEND_OK + Size::SEND_OK }; ///< RESERVED5.
+    };
+
+    /**
+     * \brief Field bit masks.
+     */
+    struct Mask {
+        static constexpr auto CON = mask<std::uint8_t>( Size::CON, Bit::CON ); ///< CON.
+        static constexpr auto DISCON = mask<std::uint8_t>( Size::DISCON, Bit::DISCON ); ///< DISCON.
+        static constexpr auto RECV = mask<std::uint8_t>( Size::RECV, Bit::RECV ); ///< RECV.
+        static constexpr auto TIMEOUT = mask<std::uint8_t>( Size::TIMEOUT, Bit::TIMEOUT ); ///< TIMEOUT.
+        static constexpr auto SEND_OK = mask<std::uint8_t>( Size::SEND_OK, Bit::SEND_OK ); ///< SEND_OK.
+        static constexpr auto RESERVED5 = mask<std::uint8_t>( Size::RESERVED5, Bit::RESERVED5 ); ///< RESERVED5.
+    };
+};
+
+/**
+ * \brief WIZnet W5500 Socket N Status Register (SN_SR).
+ */
+struct SN_SR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0003 };
+};
+
+/**
+ * \brief WIZnet W5500 Socket N Source Port Register (SN_PORT).
+ */
+struct SN_PORT {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0004 };
+};
+
+/**
+ * \brief WIZnet W5500 Socket N Destination Hardware Address Register (SN_DHAR).
+ */
+struct SN_DHAR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0006 };
+};
+
+/**
+ * \brief WIZnet W5500 Socket N Destination IP Address Register (SN_DIPR).
+ */
+struct SN_DIPR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x000C };
+};
+
+/**
+ * \brief WIZnet W5500 Socket N Destination Port Register (SN_DPORT).
+ */
+struct SN_DPORT {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0010 };
+};
+
+/**
+ * \brief WIZnet W5500 Socket N Maximum Segment Size Register (SN_MSSR).
+ */
+struct SN_MSSR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0012 };
+};
+
+/**
+ * \brief WIZnet W5500 Socket N TOS Register (SN_TOS).
+ */
+struct SN_TOS {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0015 };
+};
+
+/**
+ * \brief WIZnet W5500 Socket N TTL Register (SN_TTL).
+ */
+struct SN_TTL {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0016 };
+};
+
+/**
+ * \brief WIZnet W5500 Socket N Receive Buffer Size Register (SN_RXBUF_SIZE).
+ */
+struct SN_RXBUF_SIZE {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x001E };
+};
+
+/**
+ * \brief WIZnet W5500 Socket N Transmit Buffer Size Register (SN_TXBUF_SIZE).
+ */
+struct SN_TXBUF_SIZE {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x001F };
+};
+
+/**
+ * \brief WIZnet W5500 Socket N Transmit Buffer Free Size Register (SN_TX_FSR).
+ */
+struct SN_TX_FSR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0020 };
+};
+
+/**
+ * \brief WIZnet W5500 Socket N Transmit Buffer Read Pointer Register (SN_TX_RD).
+ */
+struct SN_TX_RD {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0022 };
+};
+
+/**
+ * \brief WIZnet W5500 Socket N Transmit Buffer Write Pointer Register (SN_TX_WR).
+ */
+struct SN_TX_WR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0024 };
+};
+
+/**
+ * \brief WIZnet W5500 Socket N Receive Buffer Received Size Register (SN_RX_RSR).
+ */
+struct SN_RX_RSR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0026 };
+};
+
+/**
+ * \brief WIZnet W5500 Socket N Receive Buffer Read Pointer Register (SN_RX_RD).
+ */
+struct SN_RX_RD {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x0028 };
+};
+
+/**
+ * \brief WIZnet W5500 Socket N Receive Buffer Write Pointer Register (SN_RX_WR).
+ */
+struct SN_RX_WR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x002A };
+};
+
+/**
+ * \brief WIZnet W5500 Socket N Interrupt Mask Register (SN_IMR).
+ *
+ * This register has the following fields:
+ * - Peer Connected (CON)
+ * - Peer Disconnected (DISCON)
+ * - Data Received (RECV)
+ * - Timeout (TIMEOUT)
+ * - Transmission Complete (SEND_OK)
+ */
+struct SN_IMR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x002C };
+
+    /**
+     * \brief Field sizes.
+     */
+    struct Size {
+        static constexpr auto CON       = std::uint_fast8_t{ 1 }; ///< CON.
+        static constexpr auto DISCON    = std::uint_fast8_t{ 1 }; ///< DISCON.
+        static constexpr auto RECV      = std::uint_fast8_t{ 1 }; ///< RECV.
+        static constexpr auto TIMEOUT   = std::uint_fast8_t{ 1 }; ///< TIMEOUT.
+        static constexpr auto SEND_OK   = std::uint_fast8_t{ 1 }; ///< SEND_OK.
+        static constexpr auto RESERVED5 = std::uint_fast8_t{ 3 }; ///< RESERVED5.
+    };
+
+    /**
+     * \brief Field bit positions.
+     */
+    struct Bit {
+        static constexpr auto CON    = std::uint_fast8_t{};                  ///< CON.
+        static constexpr auto DISCON = std::uint_fast8_t{ CON + Size::CON }; ///< DISCON.
+        static constexpr auto RECV = std::uint_fast8_t{ DISCON + Size::DISCON }; ///< RECV.
+        static constexpr auto TIMEOUT = std::uint_fast8_t{ RECV + Size::RECV }; ///< TIMEOUT.
+        static constexpr auto SEND_OK = std::uint_fast8_t{ TIMEOUT + Size::TIMEOUT }; ///< SEND_OK.
+        static constexpr auto RESERVED5 = std::uint_fast8_t{ SEND_OK + Size::SEND_OK }; ///< RESERVED5.
+    };
+
+    /**
+     * \brief Field bit masks.
+     */
+    struct Mask {
+        static constexpr auto CON = mask<std::uint8_t>( Size::CON, Bit::CON ); ///< CON.
+        static constexpr auto DISCON = mask<std::uint8_t>( Size::DISCON, Bit::DISCON ); ///< DISCON.
+        static constexpr auto RECV = mask<std::uint8_t>( Size::RECV, Bit::RECV ); ///< RECV.
+        static constexpr auto TIMEOUT = mask<std::uint8_t>( Size::TIMEOUT, Bit::TIMEOUT ); ///< TIMEOUT.
+        static constexpr auto SEND_OK = mask<std::uint8_t>( Size::SEND_OK, Bit::SEND_OK ); ///< SEND_OK.
+        static constexpr auto RESERVED5 = mask<std::uint8_t>( Size::RESERVED5, Bit::RESERVED5 ); ///< RESERVED5.
+    };
+};
+
+/**
+ * \brief WIZnet W5500 Socket N Fragment Offset In IP Header Register (SN_FRAG).
+ */
+struct SN_FRAG {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x002D };
+};
+
+/**
+ * \brief WIZnet W5500 Socket N Keep Alive Time Register (SN_KPALVTR).
+ */
+struct SN_KPALVTR {
+    /**
+     * \brief Register offset.
+     */
+    static constexpr auto OFFSET = std::uint16_t{ 0x002F };
+};
+
 } // namespace picolibrary::WIZnet::W5500
 
 #endif // PICOLIBRARY_WIZNET_W5500_H

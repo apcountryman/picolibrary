@@ -28,4 +28,19 @@ static_assert( Control_Byte::Bit::BSB == 3 );
 static_assert( Control_Byte::Bit::REGION == 3 );
 static_assert( Control_Byte::Bit::SOCKET == 5 ); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 
+static_assert( MR::Bit::RST == 7 ); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+static_assert( IR::Bit::CONFLICT == 7 ); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+static_assert( IMR::Bit::CONFLICT == 7 ); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+static_assert( PHYCFGR::Bit::RST == 7 ); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+
+static_assert( SN_MR::Bit::UCASTB == 4 );
+static_assert( SN_MR::Bit::MIP6B == 4 );
+static_assert( SN_MR::Bit::ND == 5 ); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+static_assert( SN_MR::Bit::MC == 5 ); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+static_assert( SN_MR::Bit::MMB == 5 ); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+static_assert( SN_MR::Bit::MULTI == 7 ); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+static_assert( SN_MR::Bit::MFEN == 7 ); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+static_assert( SN_IR::Bit::RESERVED5 == 5 ); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+static_assert( SN_IMR::Bit::RESERVED5 == 5 ); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+
 } // namespace picolibrary::WIZnet::W5500
