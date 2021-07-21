@@ -285,6 +285,8 @@ class Mock_Driver : public Mock_Communication_Controller {
     auto operator=( Mock_Driver && ) = delete;
 
     auto operator=( Mock_Driver const & ) = delete;
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_mr, (), ( const ) );
 };
 
 } // namespace picolibrary::Testing::Unit::WIZnet::W5500

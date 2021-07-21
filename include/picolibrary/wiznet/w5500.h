@@ -1382,7 +1382,7 @@ class Driver : public Communication_Controller_Type {
     /**
      * \brief Constructor.
      */
-    constexpr Driver() noexcept = default;
+    constexpr Driver() = default;
 
     /**
      * \brief Constructor.
@@ -1423,6 +1423,17 @@ class Driver : public Communication_Controller_Type {
     auto operator=( Driver && expression ) noexcept -> Driver & = default;
 
     auto operator=( Driver const & ) = delete;
+
+    /**
+     * \brief Read the MR register.
+     *
+     * \return The data read from the MR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_mr() const noexcept
+    {
+        return this->read( MR::OFFSET );
+    }
 };
 
 } // namespace picolibrary::WIZnet::W5500
