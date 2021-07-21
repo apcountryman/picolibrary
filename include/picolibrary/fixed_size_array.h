@@ -25,6 +25,7 @@
 
 #include <cstddef>
 
+#include "picolibrary/algorithm.h"
 #include "picolibrary/iterator.h"
 
 namespace picolibrary {
@@ -387,6 +388,46 @@ class Fixed_Size_Array {
         return N;
     }
 };
+
+/**
+ * \brief Equality operator.
+ *
+ * \relatedalso picolibrary::Fixed_Size_Array
+ *
+ * \tparam T The array element type.
+ * \tparam N The number of elements in the array.
+ *
+ * \param[in] lhs The left hand side of the comparison.
+ * \param[in] rhs The right hand side of the comparison.
+ *
+ * \return true if lhs is equal to rhs.
+ * \return false if lhs is not equal to rhs.
+ */
+template<typename T, std::size_t N>
+auto operator==( Fixed_Size_Array<T, N> const & lhs, Fixed_Size_Array<T, N> const & rhs ) noexcept
+{
+    return equal( lhs.begin(), lhs.end(), rhs.begin() );
+}
+
+/**
+ * \brief Inequality operator.
+ *
+ * \relatedalso picolibrary::Fixed_Size_Array
+ *
+ * \tparam T The array element type.
+ * \tparam N The number of elements in the array.
+ *
+ * \param[in] lhs The left hand side of the comparison.
+ * \param[in] rhs The right hand side of the comparison.
+ *
+ * \return true if lhs is not equal to rhs.
+ * \return false if lhs is equal to rhs.
+ */
+template<typename T, std::size_t N>
+auto operator!=( Fixed_Size_Array<T, N> const & lhs, Fixed_Size_Array<T, N> const & rhs ) noexcept
+{
+    return not( lhs == rhs );
+}
 
 } // namespace picolibrary
 
