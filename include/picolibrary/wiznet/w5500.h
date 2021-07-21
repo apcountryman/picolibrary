@@ -1434,6 +1434,19 @@ class Driver : public Communication_Controller_Type {
     {
         return this->read( MR::OFFSET );
     }
+
+    /**
+     * \brief Write to the MR register.
+     *
+     * \param[in] data The data to write to the MR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_mr( std::uint8_t data ) noexcept
+    {
+        return this->write( MR::OFFSET, data );
+    }
 };
 
 } // namespace picolibrary::WIZnet::W5500
