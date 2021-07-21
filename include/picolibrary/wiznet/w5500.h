@@ -1447,6 +1447,24 @@ class Driver : public Communication_Controller_Type {
     {
         return this->write( MR::OFFSET, data );
     }
+
+    /**
+     * \brief Read the GAR register.
+     *
+     * \return The data read from the GAR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_gar() const noexcept -> Result<Fixed_Size_Array<std::uint8_t, 4>, Error_Code>
+    {
+        Fixed_Size_Array<std::uint8_t, 4> data;
+
+        auto result = this->read( GAR::OFFSET, data.begin(), data.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return data;
+    }
 };
 
 } // namespace picolibrary::WIZnet::W5500

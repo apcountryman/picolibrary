@@ -20,11 +20,14 @@
  * \brief picolibrary::WIZnet::W5500::Driver unit test program.
  */
 
+#include <algorithm>
 #include <cstdint>
+#include <vector>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/error.h"
+#include "picolibrary/fixed_size_array.h"
 #include "picolibrary/result.h"
 #include "picolibrary/testing/unit/error.h"
 #include "picolibrary/testing/unit/random.h"
@@ -40,6 +43,7 @@ using ::picolibrary::Result;
 using ::picolibrary::Void;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
+using ::picolibrary::Testing::Unit::random_container;
 using ::picolibrary::Testing::Unit::SPI::Mock_Controller;
 using ::picolibrary::Testing::Unit::SPI::Mock_Device_Selector;
 using ::picolibrary::Testing::Unit::WIZnet::W5500::Mock_Communication_Controller;
@@ -50,6 +54,16 @@ using ::testing::Return;
 using Driver = ::picolibrary::WIZnet::W5500::Driver<Mock_Controller, Mock_Device_Selector::Handle, Mock_Communication_Controller>;
 
 } // namespace
+
+namespace picolibrary {
+
+template<typename T, std::size_t N>
+auto operator==( Fixed_Size_Array<T, N> const & lhs, std::vector<T> const & rhs )
+{
+    return std::equal( lhs.begin(), lhs.end(), rhs.begin(), rhs.end() );
+}
+
+} // namespace picolibrary
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Driver::read_mr() properly handles a read
@@ -116,6 +130,41 @@ TEST( writeMR, worksProperly )
     EXPECT_CALL( w5500, write( 0x0000, data ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( w5500.write_mr( data ).is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::read_gar() properly handles a read
+ *        error.
+ */
+TEST( readGAR, readError )
+{
+    auto const w5500 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( w5500, read( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = w5500.read_gar();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::read_gar() works properly.
+ */
+TEST( readGAR, worksProperly )
+{
+    auto const w5500 = Driver{};
+
+    auto const data = random_container<std::vector<std::uint8_t>>( 4 );
+
+    EXPECT_CALL( w5500, read( 0x0001, _ ) ).WillOnce( Return( data ) );
+
+    auto const result = w5500.read_gar();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), data );
 }
 
 /**
