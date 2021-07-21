@@ -1355,6 +1355,76 @@ struct SN_KPALVTR {
     static constexpr auto OFFSET = std::uint16_t{ 0x002F };
 };
 
+/**
+ * \brief WIZnet W5500 driver.
+ *
+ * \tparam Controller_Type The type of SPI controller used to communicate with the W5500.
+ * \tparam Device_Selector_Type The type of SPI device selector used to select and
+ *         deselect the W5500.
+ * \tparam Communication_Controller_Type The type of communication controller
+ *         implementation used by the driver. The default communication controller
+ *         implementation should be used unless a mock implementation is begin injected to
+ *         support unit testing of this driver.
+ */
+template<typename Controller_Type, typename Device_Selector_Type, typename Communication_Controller_Type = Communication_Controller<Controller_Type, Device_Selector_Type>>
+class Driver : public Communication_Controller_Type {
+  public:
+    /**
+     * \brief The type of SPI controller used to communicate with the W5500.
+     */
+    using Controller = Controller_Type;
+
+    /**
+     * \brief The type of SPI device selector used to select and deselect the W5500.
+     */
+    using Device_Selector = Device_Selector_Type;
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Driver() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] controller The controller used to communicate with the W5500.
+     * \param[in] configuration The controller clock, and data exchange bit order
+     *            configuration that meets the W5500's communication requirements.
+     * \param[in] device_selector The device selector used to select and deselect the
+     *            W5500.
+     */
+    constexpr Driver( Controller & controller, typename Controller::Configuration configuration, Device_Selector device_selector ) noexcept
+        :
+        Communication_Controller_Type{ controller, configuration, std::move( device_selector ) }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Driver( Driver && source ) noexcept = default;
+
+    Driver( Driver const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Driver() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Driver && expression ) noexcept -> Driver & = default;
+
+    auto operator=( Driver const & ) = delete;
+};
+
 } // namespace picolibrary::WIZnet::W5500
 
 #endif // PICOLIBRARY_WIZNET_W5500_H
