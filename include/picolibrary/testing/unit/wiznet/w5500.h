@@ -246,6 +246,47 @@ class Mock_Communication_Controller : public SPI::Mock_Device {
     }
 };
 
+/**
+ * \brief WIZnet W5500 mock driver.
+ */
+class Mock_Driver : public Mock_Communication_Controller {
+  public:
+    /**
+     * \brief The type of SPI controller used to communicate with the W5500.
+     */
+    using Controller = SPI::Mock_Controller;
+
+    /**
+     * \brief The type of SPI device selector used to select and deselect the W5500.
+     */
+    using Device_Selector = SPI::Mock_Device_Selector::Handle;
+
+    /**
+     * \brief Constructor.
+     */
+    Mock_Driver() = default;
+
+    /**
+     * \brief Constructor.
+     */
+    Mock_Driver( Controller &, Controller::Configuration, Device_Selector )
+    {
+    }
+
+    Mock_Driver( Mock_Driver && ) = delete;
+
+    Mock_Driver( Mock_Driver const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Mock_Driver() noexcept = default;
+
+    auto operator=( Mock_Driver && ) = delete;
+
+    auto operator=( Mock_Driver const & ) = delete;
+};
+
 } // namespace picolibrary::Testing::Unit::WIZnet::W5500
 
 #endif // PICOLIBRARY_TESTING_UNIT_WIZNET_W5500_H
