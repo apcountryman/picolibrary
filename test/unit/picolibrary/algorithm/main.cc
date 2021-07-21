@@ -20,8 +20,10 @@
  * \brief picolibrary::Algorithm unit test program.
  */
 
+#include <cstddef>
 #include <cstdint>
 #include <type_traits>
+#include <utility>
 #include <vector>
 
 #include "gmock/gmock.h"
@@ -49,7 +51,98 @@ using ::testing::MockFunction;
 using ::testing::Ref;
 using ::testing::Return;
 
+template<typename T>
+auto random_unique_values()
+{
+    auto const a = random<T>();
+    auto const b = random<T>();
+
+    return std::pair<T, T>{ a, b != a ? b : b ^ random<T>( 1 ) };
+}
+
+template<typename Container>
+auto random_unique_containers( std::size_t size = random<std::uint_fast8_t>( 1 ) )
+{
+    auto a = random_container<Container>( size );
+    auto b = random_container<Container>( size );
+
+    if ( a == b ) {
+        b[ random<std::size_t>( 0, size - 1 ) ] ^= random<typename Container::value_type>( 1 );
+    } // if
+
+    return std::pair<Container, Container>{ std::move( a ), std::move( b ) };
+}
+
 } // namespace
+
+/**
+ * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2 ),
+ *        picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2 ),
+ *        picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Predicate ), and
+ *        picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2, Predicate )
+ *        work properly.
+ */
+TEST( equal, worksProperly )
+{
+    // picolibrary::equal( Iterator_1, Iterator_1, Iterator_2 )
+    // picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Predicate )
+    {
+        auto const values = random_container<std::vector<std::uint_fast8_t>>();
+
+        EXPECT_TRUE( ::picolibrary::equal( values.begin(), values.end(), values.begin() ) );
+        EXPECT_TRUE( ::picolibrary::equal(
+            values.begin(), values.end(), values.begin(), []( auto a, auto b ) {
+                return a == b;
+            } ) );
+    }
+
+    {
+        auto const [ values_1, values_2 ] = random_unique_containers<std::vector<std::uint_fast8_t>>();
+
+        EXPECT_FALSE( ::picolibrary::equal( values_1.begin(), values_1.end(), values_2.begin() ) );
+        EXPECT_FALSE( ::picolibrary::equal(
+            values_1.begin(), values_1.end(), values_2.begin(), []( auto a, auto b ) {
+                return a == b;
+            } ) );
+    }
+
+    // picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2 )
+    // picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2, Predicate )
+    {
+        auto const values = random_container<std::vector<std::uint_fast8_t>>();
+
+        EXPECT_TRUE( ::picolibrary::equal(
+            values.begin(), values.end(), values.begin(), values.end() ) );
+        EXPECT_TRUE( ::picolibrary::equal(
+            values.begin(), values.end(), values.begin(), values.end(), []( auto a, auto b ) {
+                return a == b;
+            } ) );
+    }
+
+    {
+        auto const [ size_1, size_2 ] = random_unique_values<std::uint_fast8_t>();
+        auto const values_1 = random_container<std::vector<std::uint_fast8_t>>( size_1 );
+        auto const values_2 = random_container<std::vector<std::uint_fast8_t>>( size_2 );
+
+        EXPECT_FALSE( ::picolibrary::equal(
+            values_1.begin(), values_1.end(), values_2.begin(), values_2.end() ) );
+        EXPECT_FALSE( ::picolibrary::equal(
+            values_1.begin(), values_1.end(), values_2.begin(), values_2.end(), []( auto a, auto b ) {
+                return a == b;
+            } ) );
+    }
+
+    {
+        auto const [ values_1, values_2 ] = random_unique_containers<std::vector<std::uint_fast8_t>>();
+
+        EXPECT_FALSE( ::picolibrary::equal(
+            values_1.begin(), values_1.end(), values_2.begin(), values_2.end() ) );
+        EXPECT_FALSE( ::picolibrary::equal(
+            values_1.begin(), values_1.end(), values_2.begin(), values_2.end(), []( auto a, auto b ) {
+                return a == b;
+            } ) );
+    }
+}
 
 /**
  * \brief Verify picolibrary::for_each() properly handles a functor error.
