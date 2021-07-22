@@ -1844,6 +1844,30 @@ class Driver : public Communication_Controller_Type {
         return this->write( IR::OFFSET, data );
     }
 
+    /**
+     * \brief Read the IMR register.
+     *
+     * \return The data read from the IMR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_imr() const noexcept
+    {
+        return this->read( IMR::OFFSET );
+    }
+
+    /**
+     * \brief Write to the IMR register.
+     *
+     * \param[in] data The data to write to the IMR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_imr( IMR::Type data ) noexcept
+    {
+        return this->write( IMR::OFFSET, data );
+    }
+
   private:
     /**
      * \brief Convert an array to data.
