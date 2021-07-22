@@ -75,7 +75,7 @@ auto random_fixed_size_array()
 }
 
 template<typename T, std::size_t N>
-auto vector_from_fixed_size_array( Fixed_Size_Array<T, N> const & array )
+auto convert_fixed_size_array_to_vector( Fixed_Size_Array<T, N> const & array )
 {
     return std::vector<T>( array.begin(), array.end() );
 }
@@ -221,7 +221,7 @@ TEST( writeGAR, worksProperly )
 
     auto const data = random_fixed_size_array<std::uint8_t, 4>();
 
-    EXPECT_CALL( w5500, write( 0x0001, vector_from_fixed_size_array( data ) ) )
+    EXPECT_CALL( w5500, write( 0x0001, convert_fixed_size_array_to_vector( data ) ) )
         .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( w5500.write_gar( data ).is_error() );
@@ -289,7 +289,7 @@ TEST( writeSUBR, worksProperly )
 
     auto const data = random_fixed_size_array<std::uint8_t, 4>();
 
-    EXPECT_CALL( w5500, write( 0x0005, vector_from_fixed_size_array( data ) ) )
+    EXPECT_CALL( w5500, write( 0x0005, convert_fixed_size_array_to_vector( data ) ) )
         .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( w5500.write_subr( data ).is_error() );
@@ -357,7 +357,7 @@ TEST( writeSHAR, worksProperly )
 
     auto const data = random_fixed_size_array<std::uint8_t, 6>();
 
-    EXPECT_CALL( w5500, write( 0x0009, vector_from_fixed_size_array( data ) ) )
+    EXPECT_CALL( w5500, write( 0x0009, convert_fixed_size_array_to_vector( data ) ) )
         .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( w5500.write_shar( data ).is_error() );
@@ -425,7 +425,7 @@ TEST( writeSIPR, worksProperly )
 
     auto const data = random_fixed_size_array<std::uint8_t, 4>();
 
-    EXPECT_CALL( w5500, write( 0x000F, vector_from_fixed_size_array( data ) ) )
+    EXPECT_CALL( w5500, write( 0x000F, convert_fixed_size_array_to_vector( data ) ) )
         .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( w5500.write_sipr( data ).is_error() );
