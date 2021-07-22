@@ -1868,6 +1868,17 @@ class Driver : public Communication_Controller_Type {
         return this->write( IMR::OFFSET, data );
     }
 
+    /**
+     * \brief Read the SIR register.
+     *
+     * \return The data read from the SIR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_sir() const noexcept
+    {
+        return this->read( SIR::OFFSET );
+    }
+
   private:
     /**
      * \brief Convert an array to data.
