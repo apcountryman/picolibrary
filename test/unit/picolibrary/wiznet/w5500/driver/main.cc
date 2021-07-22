@@ -287,6 +287,74 @@ TEST( writeSUBR, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::read_shar() properly handles a read
+ *        error.
+ */
+TEST( readSHAR, readError )
+{
+    auto const w5500 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( w5500, read( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = w5500.read_shar();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::read_shar() works properly.
+ */
+TEST( readSHAR, worksProperly )
+{
+    auto const w5500 = Driver{};
+
+    auto const data = random_container<std::vector<std::uint8_t>>( 6 );
+
+    EXPECT_CALL( w5500, read( 0x0009, _ ) ).WillOnce( Return( data ) );
+
+    auto const result = w5500.read_shar();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), data );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::write_shar() properly handles a write
+ *        error.
+ */
+TEST( writeSHAR, writeError )
+{
+    auto w5500 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( w5500, write( _, A<std::vector<std::uint8_t>>() ) ).WillOnce( Return( error ) );
+
+    auto const result = w5500.write_shar( random_fixed_size_array<std::uint8_t, 6>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::write_shar() works properly.
+ */
+TEST( writeSHAR, worksProperly )
+{
+    auto w5500 = Driver{};
+
+    auto const data = random_fixed_size_array<std::uint8_t, 6>();
+
+    EXPECT_CALL( w5500, write( 0x0009, vector_from_fixed_size_array( data ) ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( w5500.write_shar( data ).is_error() );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Driver unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().

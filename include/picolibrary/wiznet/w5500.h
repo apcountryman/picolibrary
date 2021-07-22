@@ -1724,6 +1724,37 @@ class Driver : public Communication_Controller_Type {
     {
         return this->write( SUBR::OFFSET, data.begin(), data.end() );
     }
+
+    /**
+     * \brief Read the SHAR register.
+     *
+     * \return The data read from the SHAR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_shar() const noexcept -> Result<SHAR::Type, Error_Code>
+    {
+        SHAR::Type data;
+
+        auto result = this->read( SHAR::OFFSET, data.begin(), data.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return data;
+    }
+
+    /**
+     * \brief Write to the SHAR register.
+     *
+     * \param[in] data The data to write to the SHAR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_shar( SHAR::Type const & data ) noexcept
+    {
+        return this->write( SHAR::OFFSET, data.begin(), data.end() );
+    }
 };
 
 } // namespace picolibrary::WIZnet::W5500
