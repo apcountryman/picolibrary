@@ -23,6 +23,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
+#include <limits>
 #include <vector>
 
 #include "gmock/gmock.h"
@@ -54,6 +55,14 @@ using ::testing::A;
 using ::testing::Return;
 
 using Driver = ::picolibrary::WIZnet::W5500::Driver<Mock_Controller, Mock_Device_Selector::Handle, Mock_Communication_Controller>;
+
+inline auto convert_data_to_vector( std::uint16_t data )
+{
+    return std::vector<std::uint8_t>{
+        static_cast<std::uint8_t>( data >> std::numeric_limits<std::uint8_t>::digits ),
+        static_cast<std::uint8_t>( data ),
+    };
+}
 
 template<typename T, std::size_t N>
 auto random_fixed_size_array()
@@ -420,6 +429,74 @@ TEST( writeSIPR, worksProperly )
         .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( w5500.write_sipr( data ).is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::read_intlevel() properly handles a
+ *        read error.
+ */
+TEST( readINTLEVEL, readError )
+{
+    auto const w5500 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( w5500, read( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = w5500.read_intlevel();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::read_intlevel() works properly.
+ */
+TEST( readINTLEVEL, worksProperly )
+{
+    auto const w5500 = Driver{};
+
+    auto const data = random<std::uint16_t>();
+
+    EXPECT_CALL( w5500, read( 0x0013, _ ) ).WillOnce( Return( convert_data_to_vector( data ) ) );
+
+    auto const result = w5500.read_intlevel();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), data );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::write_intlevel() properly handles a
+ *        write error.
+ */
+TEST( writeINTLEVEL, writeError )
+{
+    auto w5500 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( w5500, write( _, A<std::vector<std::uint8_t>>() ) ).WillOnce( Return( error ) );
+
+    auto const result = w5500.write_intlevel( random<std::uint16_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::write_intlevel() works properly.
+ */
+TEST( writeINTLEVEL, worksProperly )
+{
+    auto w5500 = Driver{};
+
+    auto const data = random<std::uint16_t>();
+
+    EXPECT_CALL( w5500, write( 0x0013, convert_data_to_vector( data ) ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( w5500.write_intlevel( data ).is_error() );
 }
 
 /**

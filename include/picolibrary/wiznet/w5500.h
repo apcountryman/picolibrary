@@ -1786,6 +1786,68 @@ class Driver : public Communication_Controller_Type {
     {
         return this->write( SIPR::OFFSET, data.begin(), data.end() );
     }
+
+    /**
+     * \brief Read the INTLEVEL register.
+     *
+     * \return The data read from the INTLEVEL register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_intlevel() const noexcept -> Result<INTLEVEL::Type, Error_Code>
+    {
+        Fixed_Size_Array<std::uint8_t, 2> array;
+
+        auto result = this->read( INTLEVEL::OFFSET, array.begin(), array.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return convert_array_to_data( array );
+    }
+
+    /**
+     * \brief Write to the INTLEVEL register.
+     *
+     * \param[in] data The data to write to the INTLEVEL register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_intlevel( INTLEVEL::Type data ) noexcept
+    {
+        auto const array = convert_data_to_array( data );
+
+        return this->write( INTLEVEL::OFFSET, array.begin(), array.end() );
+    }
+
+  private:
+    /**
+     * \brief Convert an array to data.
+     *
+     * \param[in] array The array to convert.
+     *
+     * \return The result of the conversion.
+     */
+    static constexpr auto convert_array_to_data( Fixed_Size_Array<std::uint8_t, 2> const & array ) noexcept
+    {
+        return static_cast<std::uint16_t>(
+            ( array[ 0 ] << std::numeric_limits<std::uint8_t>::digits ) | array[ 1 ] );
+    }
+
+    /**
+     * \brief Convert data to an array.
+     *
+     * \param[in] data The data to convert.
+     *
+     * \return The result of the conversion.
+     */
+    static constexpr auto convert_data_to_array( std::uint16_t data ) noexcept
+    {
+        return Fixed_Size_Array<std::uint8_t, 2>{
+            static_cast<std::uint8_t>( data >> std::numeric_limits<std::uint8_t>::digits ),
+            static_cast<std::uint8_t>( data ),
+        };
+    }
 };
 
 } // namespace picolibrary::WIZnet::W5500
