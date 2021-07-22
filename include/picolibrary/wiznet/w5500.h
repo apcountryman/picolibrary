@@ -1658,7 +1658,7 @@ class Driver : public Communication_Controller_Type {
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto write_mr( std::uint8_t data ) noexcept
+    auto write_mr( MR::Type data ) noexcept
     {
         return this->write( MR::OFFSET, data );
     }
@@ -1669,9 +1669,9 @@ class Driver : public Communication_Controller_Type {
      * \return The data read from the GAR register if the read succeeded.
      * \return An error code if the read failed.
      */
-    auto read_gar() const noexcept -> Result<Fixed_Size_Array<std::uint8_t, 4>, Error_Code>
+    auto read_gar() const noexcept -> Result<GAR::Type, Error_Code>
     {
-        Fixed_Size_Array<std::uint8_t, 4> data;
+        GAR::Type data;
 
         auto result = this->read( GAR::OFFSET, data.begin(), data.end() );
         if ( result.is_error() ) {
