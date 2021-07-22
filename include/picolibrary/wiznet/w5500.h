@@ -624,6 +624,11 @@ class Communication_Controller : public Device {
  */
 struct MR {
     /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0000 };
@@ -676,6 +681,11 @@ struct MR {
  */
 struct GAR {
     /**
+     * \brief Register type.
+     */
+    using Type = Fixed_Size_Array<std::uint8_t, 4>;
+
+    /**
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0001 };
@@ -685,6 +695,11 @@ struct GAR {
  * \brief WIZnet W5500 Subnet Mask Register (SUBR).
  */
 struct SUBR {
+    /**
+     * \brief Register type.
+     */
+    using Type = Fixed_Size_Array<std::uint8_t, 4>;
+
     /**
      * \brief Register offset.
      */
@@ -696,6 +711,11 @@ struct SUBR {
  */
 struct SHAR {
     /**
+     * \brief Register type.
+     */
+    using Type = Fixed_Size_Array<std::uint8_t, 6>;
+
+    /**
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0009 };
@@ -706,6 +726,11 @@ struct SHAR {
  */
 struct SIPR {
     /**
+     * \brief Register type.
+     */
+    using Type = Fixed_Size_Array<std::uint8_t, 4>;
+
+    /**
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x000F };
@@ -715,6 +740,11 @@ struct SIPR {
  * \brief WIZnet W5500 Interrupt Low Level Timer Register (INTLEVEL).
  */
 struct INTLEVEL {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
     /**
      * \brief Register offset.
      */
@@ -731,6 +761,11 @@ struct INTLEVEL {
  * - IP Conflict (CONFLICT)
  */
 struct IR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
     /**
      * \brief Register offset.
      */
@@ -781,6 +816,11 @@ struct IR {
  */
 struct IMR {
     /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0016 };
@@ -824,6 +864,11 @@ struct IMR {
  */
 struct SIR {
     /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0017 };
@@ -833,6 +878,11 @@ struct SIR {
  * \brief WIZnet W5500 Socket Interrupt Mask Register (SIMR).
  */
 struct SIMR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
     /**
      * \brief Register offset.
      */
@@ -844,6 +894,11 @@ struct SIMR {
  */
 struct RTR {
     /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
+    /**
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0019 };
@@ -853,6 +908,11 @@ struct RTR {
  * \brief WIZnet W5500 Retry Count Register (RCR).
  */
 struct RCR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
     /**
      * \brief Register offset.
      */
@@ -864,6 +924,11 @@ struct RCR {
  */
 struct PTIMER {
     /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x001C };
@@ -873,6 +938,11 @@ struct PTIMER {
  * \brief WIZnet W5500 PPPoE LCP Magic Number Register (PMAGIC).
  */
 struct PMAGIC {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
     /**
      * \brief Register offset.
      */
@@ -884,6 +954,11 @@ struct PMAGIC {
  */
 struct PHAR {
     /**
+     * \brief Register type.
+     */
+    using Type = Fixed_Size_Array<std::uint8_t, 6>;
+
+    /**
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x001E };
@@ -893,6 +968,11 @@ struct PHAR {
  * \brief WIZnet W5500 PPPoE Server Session ID Register (PSID).
  */
 struct PSID {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
     /**
      * \brief Register offset.
      */
@@ -904,6 +984,11 @@ struct PSID {
  */
 struct PMRU {
     /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
+    /**
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0026 };
@@ -914,6 +999,11 @@ struct PMRU {
  */
 struct UIPR {
     /**
+     * \brief Register type.
+     */
+    using Type = Fixed_Size_Array<std::uint8_t, 4>;
+
+    /**
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0028 };
@@ -923,6 +1013,11 @@ struct UIPR {
  * \brief WIZnet W5500 Unreachable Port Register (UPORTR).
  */
 struct UPORTR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
     /**
      * \brief Register offset.
      */
@@ -941,6 +1036,11 @@ struct UPORTR {
  * - Reset (RST)
  */
 struct PHYCFGR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
     /**
      * \brief Register offset.
      */
@@ -988,6 +1088,11 @@ struct PHYCFGR {
  */
 struct VERSIONR {
     /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0039 };
@@ -1008,6 +1113,11 @@ struct VERSIONR {
  * - MACRAW MAC Filter Enable (MFEN)
  */
 struct SN_MR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
     /**
      * \brief Register offset.
      */
@@ -1064,6 +1174,11 @@ struct SN_MR {
  */
 struct SN_CR {
     /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0001 };
@@ -1080,6 +1195,11 @@ struct SN_CR {
  * - Transmission Complete (SEND_OK)
  */
 struct SN_IR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
     /**
      * \brief Register offset.
      */
@@ -1127,6 +1247,11 @@ struct SN_IR {
  */
 struct SN_SR {
     /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0003 };
@@ -1136,6 +1261,11 @@ struct SN_SR {
  * \brief WIZnet W5500 Socket N Source Port Register (SN_PORT).
  */
 struct SN_PORT {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
     /**
      * \brief Register offset.
      */
@@ -1147,6 +1277,11 @@ struct SN_PORT {
  */
 struct SN_DHAR {
     /**
+     * \brief Register type.
+     */
+    using Type = Fixed_Size_Array<std::uint8_t, 6>;
+
+    /**
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0006 };
@@ -1156,6 +1291,11 @@ struct SN_DHAR {
  * \brief WIZnet W5500 Socket N Destination IP Address Register (SN_DIPR).
  */
 struct SN_DIPR {
+    /**
+     * \brief Register type.
+     */
+    using Type = Fixed_Size_Array<std::uint8_t, 4>;
+
     /**
      * \brief Register offset.
      */
@@ -1167,6 +1307,11 @@ struct SN_DIPR {
  */
 struct SN_DPORT {
     /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
+    /**
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0010 };
@@ -1176,6 +1321,11 @@ struct SN_DPORT {
  * \brief WIZnet W5500 Socket N Maximum Segment Size Register (SN_MSSR).
  */
 struct SN_MSSR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
     /**
      * \brief Register offset.
      */
@@ -1187,6 +1337,11 @@ struct SN_MSSR {
  */
 struct SN_TOS {
     /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0015 };
@@ -1196,6 +1351,11 @@ struct SN_TOS {
  * \brief WIZnet W5500 Socket N TTL Register (SN_TTL).
  */
 struct SN_TTL {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
     /**
      * \brief Register offset.
      */
@@ -1207,6 +1367,11 @@ struct SN_TTL {
  */
 struct SN_RXBUF_SIZE {
     /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x001E };
@@ -1216,6 +1381,11 @@ struct SN_RXBUF_SIZE {
  * \brief WIZnet W5500 Socket N Transmit Buffer Size Register (SN_TXBUF_SIZE).
  */
 struct SN_TXBUF_SIZE {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
     /**
      * \brief Register offset.
      */
@@ -1227,6 +1397,11 @@ struct SN_TXBUF_SIZE {
  */
 struct SN_TX_FSR {
     /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
+    /**
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0020 };
@@ -1236,6 +1411,11 @@ struct SN_TX_FSR {
  * \brief WIZnet W5500 Socket N Transmit Buffer Read Pointer Register (SN_TX_RD).
  */
 struct SN_TX_RD {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
     /**
      * \brief Register offset.
      */
@@ -1247,6 +1427,11 @@ struct SN_TX_RD {
  */
 struct SN_TX_WR {
     /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
+    /**
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0024 };
@@ -1256,6 +1441,11 @@ struct SN_TX_WR {
  * \brief WIZnet W5500 Socket N Receive Buffer Received Size Register (SN_RX_RSR).
  */
 struct SN_RX_RSR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
     /**
      * \brief Register offset.
      */
@@ -1267,6 +1457,11 @@ struct SN_RX_RSR {
  */
 struct SN_RX_RD {
     /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
+    /**
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0028 };
@@ -1276,6 +1471,11 @@ struct SN_RX_RD {
  * \brief WIZnet W5500 Socket N Receive Buffer Write Pointer Register (SN_RX_WR).
  */
 struct SN_RX_WR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
     /**
      * \brief Register offset.
      */
@@ -1293,6 +1493,11 @@ struct SN_RX_WR {
  * - Transmission Complete (SEND_OK)
  */
 struct SN_IMR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
     /**
      * \brief Register offset.
      */
@@ -1340,6 +1545,11 @@ struct SN_IMR {
  */
 struct SN_FRAG {
     /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
+    /**
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x002D };
@@ -1349,6 +1559,11 @@ struct SN_FRAG {
  * \brief WIZnet W5500 Socket N Keep Alive Time Register (SN_KPALVTR).
  */
 struct SN_KPALVTR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
     /**
      * \brief Register offset.
      */
