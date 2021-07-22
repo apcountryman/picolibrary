@@ -21,6 +21,7 @@
  */
 
 #include <algorithm>
+#include <cstddef>
 #include <cstdint>
 #include <vector>
 
@@ -39,6 +40,7 @@
 namespace {
 
 using ::picolibrary::Error_Code;
+using ::picolibrary::Fixed_Size_Array;
 using ::picolibrary::Result;
 using ::picolibrary::Void;
 using ::picolibrary::Testing::Unit::Mock_Error;
@@ -52,6 +54,22 @@ using ::testing::A;
 using ::testing::Return;
 
 using Driver = ::picolibrary::WIZnet::W5500::Driver<Mock_Controller, Mock_Device_Selector::Handle, Mock_Communication_Controller>;
+
+template<typename T, std::size_t N>
+auto random_fixed_size_array()
+{
+    Fixed_Size_Array<T, N> array;
+
+    std::generate( array.begin(), array.end(), []() { return random<T>(); } );
+
+    return array;
+}
+
+template<typename T, std::size_t N>
+auto vector_from_fixed_size_array( Fixed_Size_Array<T, N> const & array )
+{
+    return std::vector<T>( array.begin(), array.end() );
+}
 
 } // namespace
 
@@ -165,6 +183,39 @@ TEST( readGAR, worksProperly )
 
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), data );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::write_gar() properly handles a write
+ *        error.
+ */
+TEST( writeGAR, writeError )
+{
+    auto w5500 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( w5500, write( _, A<std::vector<std::uint8_t>>() ) ).WillOnce( Return( error ) );
+
+    auto const result = w5500.write_gar( random_fixed_size_array<std::uint8_t, 4>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::write_gar() works properly.
+ */
+TEST( writeGAR, worksProperly )
+{
+    auto w5500 = Driver{};
+
+    auto const data = random_fixed_size_array<std::uint8_t, 4>();
+
+    EXPECT_CALL( w5500, write( 0x0001, vector_from_fixed_size_array( data ) ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( w5500.write_gar( data ).is_error() );
 }
 
 /**

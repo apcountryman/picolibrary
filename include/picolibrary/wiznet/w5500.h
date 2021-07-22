@@ -1680,6 +1680,19 @@ class Driver : public Communication_Controller_Type {
 
         return data;
     }
+
+    /**
+     * \brief Write to the GAR register.
+     *
+     * \param[in] data The data to write to the GAR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_gar( GAR::Type const & data ) noexcept
+    {
+        return this->write( GAR::OFFSET, data.begin(), data.end() );
+    }
 };
 
 } // namespace picolibrary::WIZnet::W5500
