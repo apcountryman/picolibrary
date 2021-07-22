@@ -1693,6 +1693,37 @@ class Driver : public Communication_Controller_Type {
     {
         return this->write( GAR::OFFSET, data.begin(), data.end() );
     }
+
+    /**
+     * \brief Read the SUBR register.
+     *
+     * \return The data read from the SUBR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_subr() const noexcept -> Result<SUBR::Type, Error_Code>
+    {
+        SUBR::Type data;
+
+        auto result = this->read( SUBR::OFFSET, data.begin(), data.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return data;
+    }
+
+    /**
+     * \brief Write to the SUBR register.
+     *
+     * \param[in] data The data to write to the SUBR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_subr( SUBR::Type const & data ) noexcept
+    {
+        return this->write( SUBR::OFFSET, data.begin(), data.end() );
+    }
 };
 
 } // namespace picolibrary::WIZnet::W5500
