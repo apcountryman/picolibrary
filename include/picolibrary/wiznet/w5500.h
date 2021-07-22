@@ -1820,6 +1820,30 @@ class Driver : public Communication_Controller_Type {
         return this->write( INTLEVEL::OFFSET, array.begin(), array.end() );
     }
 
+    /**
+     * \brief Read the IR register.
+     *
+     * \return The data read from the IR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_ir() const noexcept
+    {
+        return this->read( IR::OFFSET );
+    }
+
+    /**
+     * \brief Write to the IR register.
+     *
+     * \param[in] data The data to write to the IR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_ir( IR::Type data ) noexcept
+    {
+        return this->write( IR::OFFSET, data );
+    }
+
   private:
     /**
      * \brief Convert an array to data.
