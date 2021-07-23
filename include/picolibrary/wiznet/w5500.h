@@ -1903,6 +1903,39 @@ class Driver : public Communication_Controller_Type {
         return this->write( SIMR::OFFSET, data );
     }
 
+    /**
+     * \brief Read the RTR register.
+     *
+     * \return The data read from the RTR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_rtr() const noexcept -> Result<RTR::Type, Error_Code>
+    {
+        Fixed_Size_Array<std::uint8_t, 2> array;
+
+        auto result = this->read( RTR::OFFSET, array.begin(), array.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return convert_array_to_data( array );
+    }
+
+    /**
+     * \brief Write to the RTR register.
+     *
+     * \param[in] data The data to write to the RTR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_rtr( RTR::Type data ) noexcept
+    {
+        auto const array = convert_data_to_array( data );
+
+        return this->write( RTR::OFFSET, array.begin(), array.end() );
+    }
+
   private:
     /**
      * \brief Convert an array to data.
