@@ -2165,6 +2165,17 @@ class Driver : public Communication_Controller_Type {
         return this->write( PHYCFGR::OFFSET, data );
     }
 
+    /**
+     * \brief Read the VERSIONR register.
+     *
+     * \return The data read from the VERSIONR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_versionr() const noexcept
+    {
+        return this->read( VERSIONR::OFFSET );
+    }
+
   private:
     /**
      * \brief Convert an array to data.
