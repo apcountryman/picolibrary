@@ -1984,6 +1984,30 @@ class Driver : public Communication_Controller_Type {
         return this->write( PTIMER::OFFSET, data );
     }
 
+    /**
+     * \brief Read the PMAGIC register.
+     *
+     * \return The data read from the PMAGIC register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_pmagic() const noexcept
+    {
+        return this->read( PMAGIC::OFFSET );
+    }
+
+    /**
+     * \brief Write to the PMAGIC register.
+     *
+     * \param[in] data The data to write to the PMAGIC register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_pmagic( PMAGIC::Type data ) noexcept
+    {
+        return this->write( PMAGIC::OFFSET, data );
+    }
+
   private:
     /**
      * \brief Convert an array to data.

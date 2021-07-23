@@ -323,6 +323,9 @@ class Mock_Driver : public Mock_Communication_Controller {
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_ptimer, (), ( const ) );
     MOCK_METHOD( (Result<Void, Error_Code>), write_ptimer, ( std::uint8_t ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_pmagic, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_pmagic, ( std::uint8_t ) );
 };
 
 } // namespace picolibrary::Testing::Unit::WIZnet::W5500
