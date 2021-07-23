@@ -1420,7 +1420,7 @@ TEST( readSNMR, worksProperly )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Driver::write_sn_mr() properly handles a
- * write error.
+ *        write error.
  */
 TEST( writeSNMR, writeError )
 {
@@ -1490,7 +1490,7 @@ TEST( readSNCR, worksProperly )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Driver::write_sn_cr() properly handles a
- * write error.
+ *        write error.
  */
 TEST( writeSNCR, writeError )
 {
@@ -1560,7 +1560,7 @@ TEST( readSNIR, worksProperly )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Driver::write_sn_ir() properly handles a
- * write error.
+ *        write error.
  */
 TEST( writeSNIR, writeError )
 {
