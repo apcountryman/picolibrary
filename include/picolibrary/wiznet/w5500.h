@@ -1570,6 +1570,736 @@ struct SN_KPALVTR {
     static constexpr auto OFFSET = std::uint16_t{ 0x002F };
 };
 
+/**
+ * \brief WIZnet W5500 driver.
+ *
+ * \tparam Controller_Type The type of SPI controller used to communicate with the W5500.
+ * \tparam Device_Selector_Type The type of SPI device selector used to select and
+ *         deselect the W5500.
+ * \tparam Communication_Controller_Type The type of communication controller
+ *         implementation used by the driver. The default communication controller
+ *         implementation should be used unless a mock implementation is begin injected to
+ *         support unit testing of this driver.
+ */
+template<typename Controller_Type, typename Device_Selector_Type, typename Communication_Controller_Type = Communication_Controller<Controller_Type, Device_Selector_Type>>
+class Driver : public Communication_Controller_Type {
+  public:
+    /**
+     * \brief The type of SPI controller used to communicate with the W5500.
+     */
+    using Controller = Controller_Type;
+
+    /**
+     * \brief The type of SPI device selector used to select and deselect the W5500.
+     */
+    using Device_Selector = Device_Selector_Type;
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Driver() = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] controller The controller used to communicate with the W5500.
+     * \param[in] configuration The controller clock, and data exchange bit order
+     *            configuration that meets the W5500's communication requirements.
+     * \param[in] device_selector The device selector used to select and deselect the
+     *            W5500.
+     */
+    constexpr Driver( Controller & controller, typename Controller::Configuration configuration, Device_Selector device_selector ) noexcept
+        :
+        Communication_Controller_Type{ controller, configuration, std::move( device_selector ) }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Driver( Driver && source ) noexcept = default;
+
+    Driver( Driver const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Driver() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Driver && expression ) noexcept -> Driver & = default;
+
+    auto operator=( Driver const & ) = delete;
+
+    /**
+     * \brief Read the MR register.
+     *
+     * \return The data read from the MR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_mr() const noexcept
+    {
+        return this->read( MR::OFFSET );
+    }
+
+    /**
+     * \brief Write to the MR register.
+     *
+     * \param[in] data The data to write to the MR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_mr( MR::Type data ) noexcept
+    {
+        return this->write( MR::OFFSET, data );
+    }
+
+    /**
+     * \brief Read the GAR register.
+     *
+     * \return The data read from the GAR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_gar() const noexcept -> Result<GAR::Type, Error_Code>
+    {
+        GAR::Type data;
+
+        auto result = this->read( GAR::OFFSET, data.begin(), data.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return data;
+    }
+
+    /**
+     * \brief Write to the GAR register.
+     *
+     * \param[in] data The data to write to the GAR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_gar( GAR::Type const & data ) noexcept
+    {
+        return this->write( GAR::OFFSET, data.begin(), data.end() );
+    }
+
+    /**
+     * \brief Read the SUBR register.
+     *
+     * \return The data read from the SUBR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_subr() const noexcept -> Result<SUBR::Type, Error_Code>
+    {
+        SUBR::Type data;
+
+        auto result = this->read( SUBR::OFFSET, data.begin(), data.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return data;
+    }
+
+    /**
+     * \brief Write to the SUBR register.
+     *
+     * \param[in] data The data to write to the SUBR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_subr( SUBR::Type const & data ) noexcept
+    {
+        return this->write( SUBR::OFFSET, data.begin(), data.end() );
+    }
+
+    /**
+     * \brief Read the SHAR register.
+     *
+     * \return The data read from the SHAR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_shar() const noexcept -> Result<SHAR::Type, Error_Code>
+    {
+        SHAR::Type data;
+
+        auto result = this->read( SHAR::OFFSET, data.begin(), data.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return data;
+    }
+
+    /**
+     * \brief Write to the SHAR register.
+     *
+     * \param[in] data The data to write to the SHAR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_shar( SHAR::Type const & data ) noexcept
+    {
+        return this->write( SHAR::OFFSET, data.begin(), data.end() );
+    }
+
+    /**
+     * \brief Read the SIPR register.
+     *
+     * \return The data read from the SIPR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_sipr() const noexcept -> Result<SIPR::Type, Error_Code>
+    {
+        SIPR::Type data;
+
+        auto result = this->read( SIPR::OFFSET, data.begin(), data.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return data;
+    }
+
+    /**
+     * \brief Write to the SIPR register.
+     *
+     * \param[in] data The data to write to the SIPR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_sipr( SIPR::Type const & data ) noexcept
+    {
+        return this->write( SIPR::OFFSET, data.begin(), data.end() );
+    }
+
+    /**
+     * \brief Read the INTLEVEL register.
+     *
+     * \return The data read from the INTLEVEL register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_intlevel() const noexcept -> Result<INTLEVEL::Type, Error_Code>
+    {
+        Fixed_Size_Array<std::uint8_t, 2> array;
+
+        auto result = this->read( INTLEVEL::OFFSET, array.begin(), array.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return convert_array_to_data( array );
+    }
+
+    /**
+     * \brief Write to the INTLEVEL register.
+     *
+     * \param[in] data The data to write to the INTLEVEL register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_intlevel( INTLEVEL::Type data ) noexcept
+    {
+        auto const array = convert_data_to_array( data );
+
+        return this->write( INTLEVEL::OFFSET, array.begin(), array.end() );
+    }
+
+    /**
+     * \brief Read the IR register.
+     *
+     * \return The data read from the IR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_ir() const noexcept
+    {
+        return this->read( IR::OFFSET );
+    }
+
+    /**
+     * \brief Write to the IR register.
+     *
+     * \param[in] data The data to write to the IR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_ir( IR::Type data ) noexcept
+    {
+        return this->write( IR::OFFSET, data );
+    }
+
+    /**
+     * \brief Read the IMR register.
+     *
+     * \return The data read from the IMR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_imr() const noexcept
+    {
+        return this->read( IMR::OFFSET );
+    }
+
+    /**
+     * \brief Write to the IMR register.
+     *
+     * \param[in] data The data to write to the IMR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_imr( IMR::Type data ) noexcept
+    {
+        return this->write( IMR::OFFSET, data );
+    }
+
+    /**
+     * \brief Read the SIR register.
+     *
+     * \return The data read from the SIR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_sir() const noexcept
+    {
+        return this->read( SIR::OFFSET );
+    }
+
+    /**
+     * \brief Read the SIMR register.
+     *
+     * \return The data read from the SIMR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_simr() const noexcept
+    {
+        return this->read( SIMR::OFFSET );
+    }
+
+    /**
+     * \brief Write to the SIMR register.
+     *
+     * \param[in] data The data to write to the SIMR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_simr( SIMR::Type data ) noexcept
+    {
+        return this->write( SIMR::OFFSET, data );
+    }
+
+    /**
+     * \brief Read the RTR register.
+     *
+     * \return The data read from the RTR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_rtr() const noexcept -> Result<RTR::Type, Error_Code>
+    {
+        Fixed_Size_Array<std::uint8_t, 2> array;
+
+        auto result = this->read( RTR::OFFSET, array.begin(), array.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return convert_array_to_data( array );
+    }
+
+    /**
+     * \brief Write to the RTR register.
+     *
+     * \param[in] data The data to write to the RTR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_rtr( RTR::Type data ) noexcept
+    {
+        auto const array = convert_data_to_array( data );
+
+        return this->write( RTR::OFFSET, array.begin(), array.end() );
+    }
+
+    /**
+     * \brief Read the RCR register.
+     *
+     * \return The data read from the RCR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_rcr() const noexcept
+    {
+        return this->read( RCR::OFFSET );
+    }
+
+    /**
+     * \brief Write to the RCR register.
+     *
+     * \param[in] data The data to write to the RCR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_rcr( RCR::Type data ) noexcept
+    {
+        return this->write( RCR::OFFSET, data );
+    }
+
+    /**
+     * \brief Read the PTIMER register.
+     *
+     * \return The data read from the PTIMER register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_ptimer() const noexcept
+    {
+        return this->read( PTIMER::OFFSET );
+    }
+
+    /**
+     * \brief Write to the PTIMER register.
+     *
+     * \param[in] data The data to write to the PTIMER register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_ptimer( PTIMER::Type data ) noexcept
+    {
+        return this->write( PTIMER::OFFSET, data );
+    }
+
+    /**
+     * \brief Read the PMAGIC register.
+     *
+     * \return The data read from the PMAGIC register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_pmagic() const noexcept
+    {
+        return this->read( PMAGIC::OFFSET );
+    }
+
+    /**
+     * \brief Write to the PMAGIC register.
+     *
+     * \param[in] data The data to write to the PMAGIC register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_pmagic( PMAGIC::Type data ) noexcept
+    {
+        return this->write( PMAGIC::OFFSET, data );
+    }
+
+    /**
+     * \brief Read the PHAR register.
+     *
+     * \return The data read from the PHAR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_phar() const noexcept -> Result<PHAR::Type, Error_Code>
+    {
+        PHAR::Type data;
+
+        auto result = this->read( PHAR::OFFSET, data.begin(), data.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return data;
+    }
+
+    /**
+     * \brief Write to the PHAR register.
+     *
+     * \param[in] data The data to write to the PHAR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_phar( PHAR::Type const & data ) noexcept
+    {
+        return this->write( PHAR::OFFSET, data.begin(), data.end() );
+    }
+
+    /**
+     * \brief Read the PSID register.
+     *
+     * \return The data read from the PSID register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_psid() const noexcept -> Result<PSID::Type, Error_Code>
+    {
+        Fixed_Size_Array<std::uint8_t, 2> array;
+
+        auto result = this->read( PSID::OFFSET, array.begin(), array.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return convert_array_to_data( array );
+    }
+
+    /**
+     * \brief Write to the PSID register.
+     *
+     * \param[in] data The data to write to the PSID register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_psid( PSID::Type data ) noexcept
+    {
+        auto const array = convert_data_to_array( data );
+
+        return this->write( PSID::OFFSET, array.begin(), array.end() );
+    }
+
+    /**
+     * \brief Read the PMRU register.
+     *
+     * \return The data read from the PMRU register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_pmru() const noexcept -> Result<PMRU::Type, Error_Code>
+    {
+        Fixed_Size_Array<std::uint8_t, 2> array;
+
+        auto result = this->read( PMRU::OFFSET, array.begin(), array.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return convert_array_to_data( array );
+    }
+
+    /**
+     * \brief Write to the PMRU register.
+     *
+     * \param[in] data The data to write to the PMRU register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_pmru( PMRU::Type data ) noexcept
+    {
+        auto const array = convert_data_to_array( data );
+
+        return this->write( PMRU::OFFSET, array.begin(), array.end() );
+    }
+
+    /**
+     * \brief Read the UIPR register.
+     *
+     * \return The data read from the UIPR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_uipr() const noexcept -> Result<UIPR::Type, Error_Code>
+    {
+        UIPR::Type data;
+
+        auto result = this->read( UIPR::OFFSET, data.begin(), data.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return data;
+    }
+
+    /**
+     * \brief Read the UPORTR register.
+     *
+     * \return The data read from the UPORTR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_uportr() const noexcept -> Result<UPORTR::Type, Error_Code>
+    {
+        Fixed_Size_Array<std::uint8_t, 2> array;
+
+        auto result = this->read( UPORTR::OFFSET, array.begin(), array.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return convert_array_to_data( array );
+    }
+
+    /**
+     * \brief Read the PHYCFGR register.
+     *
+     * \return The data read from the PHYCFGR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_phycfgr() const noexcept
+    {
+        return this->read( PHYCFGR::OFFSET );
+    }
+
+    /**
+     * \brief Write to the PHYCFGR register.
+     *
+     * \param[in] data The data to write to the PHYCFGR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_phycfgr( PHYCFGR::Type data ) noexcept
+    {
+        return this->write( PHYCFGR::OFFSET, data );
+    }
+
+    /**
+     * \brief Read the VERSIONR register.
+     *
+     * \return The data read from the VERSIONR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_versionr() const noexcept
+    {
+        return this->read( VERSIONR::OFFSET );
+    }
+
+    /**
+     * \brief Read a socket's SN_MR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_MR register is to be read.
+     *
+     * \return The data read from the socket's SN_MR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_sn_mr( Socket_ID socket_id ) const noexcept
+    {
+        return this->read( socket_id, Region::REGISTERS, SN_MR::OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_MR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_MR register is to be written to.
+     * \param[in] data The data to write to the socket's SN_MR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_sn_mr( Socket_ID socket_id, SN_MR::Type data ) noexcept
+    {
+        return this->write( socket_id, Region::REGISTERS, SN_MR::OFFSET, data );
+    }
+
+    /**
+     * \brief Read a socket's SN_CR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_CR register is to be read.
+     *
+     * \return The data read from the socket's SN_CR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_sn_cr( Socket_ID socket_id ) const noexcept
+    {
+        return this->read( socket_id, Region::REGISTERS, SN_CR::OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_CR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_CR register is to be written to.
+     * \param[in] data The data to write to the socket's SN_CR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_sn_cr( Socket_ID socket_id, SN_CR::Type data ) noexcept
+    {
+        return this->write( socket_id, Region::REGISTERS, SN_CR::OFFSET, data );
+    }
+
+    /**
+     * \brief Read a socket's SN_IR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_IR register is to be read.
+     *
+     * \return The data read from the socket's SN_IR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_sn_ir( Socket_ID socket_id ) const noexcept
+    {
+        return this->read( socket_id, Region::REGISTERS, SN_IR::OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_IR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_IR register is to be written to.
+     * \param[in] data The data to write to the socket's SN_IR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_sn_ir( Socket_ID socket_id, SN_IR::Type data ) noexcept
+    {
+        return this->write( socket_id, Region::REGISTERS, SN_IR::OFFSET, data );
+    }
+
+    /**
+     * \brief Read a socket's SN_SR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_SR register is to be read.
+     *
+     * \return The data read from the socket's SN_SR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_sn_sr( Socket_ID socket_id ) const noexcept
+    {
+        return this->read( socket_id, Region::REGISTERS, SN_SR::OFFSET );
+    }
+
+  private:
+    /**
+     * \brief Convert an array to data.
+     *
+     * \param[in] array The array to convert.
+     *
+     * \return The result of the conversion.
+     */
+    static constexpr auto convert_array_to_data( Fixed_Size_Array<std::uint8_t, 2> const & array ) noexcept
+    {
+        return static_cast<std::uint16_t>(
+            ( array[ 0 ] << std::numeric_limits<std::uint8_t>::digits ) | array[ 1 ] );
+    }
+
+    /**
+     * \brief Convert data to an array.
+     *
+     * \param[in] data The data to convert.
+     *
+     * \return The result of the conversion.
+     */
+    static constexpr auto convert_data_to_array( std::uint16_t data ) noexcept
+    {
+        return Fixed_Size_Array<std::uint8_t, 2>{
+            static_cast<std::uint8_t>( data >> std::numeric_limits<std::uint8_t>::digits ),
+            static_cast<std::uint8_t>( data ),
+        };
+    }
+};
+
 } // namespace picolibrary::WIZnet::W5500
 
 #endif // PICOLIBRARY_WIZNET_W5500_H
