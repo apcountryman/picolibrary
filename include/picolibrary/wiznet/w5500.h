@@ -2141,6 +2141,30 @@ class Driver : public Communication_Controller_Type {
         return convert_array_to_data( array );
     }
 
+    /**
+     * \brief Read the PHYCFGR register.
+     *
+     * \return The data read from the PHYCFGR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_phycfgr() const noexcept
+    {
+        return this->read( PHYCFGR::OFFSET );
+    }
+
+    /**
+     * \brief Write to the PHYCFGR register.
+     *
+     * \param[in] data The data to write to the PHYCFGR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_phycfgr( PHYCFGR::Type data ) noexcept
+    {
+        return this->write( PHYCFGR::OFFSET, data );
+    }
+
   private:
     /**
      * \brief Convert an array to data.

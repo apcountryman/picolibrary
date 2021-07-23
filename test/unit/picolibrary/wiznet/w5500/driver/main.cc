@@ -1279,6 +1279,73 @@ TEST( readUPORTR, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::read_phycfgr() properly handles a
+ *        read error.
+ */
+TEST( readPHYCFGR, readError )
+{
+    auto const w5500 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( w5500, read( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = w5500.read_phycfgr();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::read_phycfgr() works properly.
+ */
+TEST( readPHYCFGR, worksProperly )
+{
+    auto const w5500 = Driver{};
+
+    auto const data = random<std::uint8_t>();
+
+    EXPECT_CALL( w5500, read( 0x002E ) ).WillOnce( Return( data ) );
+
+    auto const result = w5500.read_phycfgr();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), data );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::write_phycfgr() properly handles a
+ *        write error.
+ */
+TEST( writePHYCFGR, writeError )
+{
+    auto w5500 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( w5500, write( _, A<std::uint8_t>() ) ).WillOnce( Return( error ) );
+
+    auto const result = w5500.write_phycfgr( random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::write_phycfgr() works properly.
+ */
+TEST( writePHYCFGR, worksProperly )
+{
+    auto w5500 = Driver{};
+
+    auto const data = random<std::uint8_t>();
+
+    EXPECT_CALL( w5500, write( 0x002E, data ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( w5500.write_phycfgr( data ).is_error() );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Driver unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
