@@ -347,6 +347,9 @@ class Mock_Driver : public Mock_Communication_Controller {
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_sn_mr, ( Socket_ID ), ( const ) );
     MOCK_METHOD( (Result<Void, Error_Code>), write_sn_mr, ( Socket_ID, std::uint8_t ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_sn_cr, ( Socket_ID ), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_sn_cr, ( Socket_ID, std::uint8_t ) );
 };
 
 } // namespace picolibrary::Testing::Unit::WIZnet::W5500

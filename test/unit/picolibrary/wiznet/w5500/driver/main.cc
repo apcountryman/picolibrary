@@ -1386,7 +1386,7 @@ TEST( readVERSIONR, worksProperly )
  * \brief Verify picolibrary::WIZnet::W5500::Driver::read_sn_mr() properly handles a read
  *        error.
  */
-TEST( readSnMR, readError )
+TEST( readSNMR, readError )
 {
     auto const w5500 = Driver{};
 
@@ -1403,7 +1403,7 @@ TEST( readSnMR, readError )
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Driver::read_sn_mr() works properly.
  */
-TEST( readSnMR, worksProperly )
+TEST( readSNMR, worksProperly )
 {
     auto const w5500 = Driver{};
 
@@ -1422,7 +1422,7 @@ TEST( readSnMR, worksProperly )
  * \brief Verify picolibrary::WIZnet::W5500::Driver::write_sn_mr() properly handles a
  * write error.
  */
-TEST( writeSnMR, writeError )
+TEST( writeSNMR, writeError )
 {
     auto w5500 = Driver{};
 
@@ -1439,7 +1439,7 @@ TEST( writeSnMR, writeError )
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Driver::write_sn_mr() works properly.
  */
-TEST( writeSnMR, worksProperly )
+TEST( writeSNMR, worksProperly )
 {
     auto w5500 = Driver{};
 
@@ -1450,6 +1450,76 @@ TEST( writeSnMR, worksProperly )
         .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( w5500.write_sn_mr( socket_id, data ).is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::read_sn_cr() properly handles a read
+ *        error.
+ */
+TEST( readSNCR, readError )
+{
+    auto const w5500 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( w5500, read( _, _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = w5500.read_sn_cr( random<Socket_ID>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::read_sn_cr() works properly.
+ */
+TEST( readSNCR, worksProperly )
+{
+    auto const w5500 = Driver{};
+
+    auto const socket_id = random<Socket_ID>();
+    auto const data      = random<std::uint8_t>();
+
+    EXPECT_CALL( w5500, read( socket_id, Region::REGISTERS, 0x0001 ) ).WillOnce( Return( data ) );
+
+    auto const result = w5500.read_sn_cr( socket_id );
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), data );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::write_sn_cr() properly handles a
+ * write error.
+ */
+TEST( writeSNCR, writeError )
+{
+    auto w5500 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( w5500, write( _, _, _, A<std::uint8_t>() ) ).WillOnce( Return( error ) );
+
+    auto const result = w5500.write_sn_cr( random<Socket_ID>(), random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::write_sn_cr() works properly.
+ */
+TEST( writeSNCR, worksProperly )
+{
+    auto w5500 = Driver{};
+
+    auto const socket_id = random<Socket_ID>();
+    auto const data      = random<std::uint8_t>();
+
+    EXPECT_CALL( w5500, write( socket_id, Region::REGISTERS, 0x0001, data ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( w5500.write_sn_cr( socket_id, data ).is_error() );
 }
 
 /**

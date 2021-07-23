@@ -2203,6 +2203,33 @@ class Driver : public Communication_Controller_Type {
         return this->write( socket_id, Region::REGISTERS, SN_MR::OFFSET, data );
     }
 
+    /**
+     * \brief Read a socket's SN_CR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_CR register is to be read.
+     *
+     * \return The data read from the socket's SN_CR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_sn_cr( Socket_ID socket_id ) const noexcept
+    {
+        return this->read( socket_id, Region::REGISTERS, SN_CR::OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_CR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_CR register is to be written to.
+     * \param[in] data The data to write to the socket's SN_CR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_sn_cr( Socket_ID socket_id, SN_CR::Type data ) noexcept
+    {
+        return this->write( socket_id, Region::REGISTERS, SN_CR::OFFSET, data );
+    }
+
   private:
     /**
      * \brief Convert an array to data.
