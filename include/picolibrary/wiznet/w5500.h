@@ -2008,6 +2008,37 @@ class Driver : public Communication_Controller_Type {
         return this->write( PMAGIC::OFFSET, data );
     }
 
+    /**
+     * \brief Read the PHAR register.
+     *
+     * \return The data read from the PHAR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_phar() const noexcept -> Result<PHAR::Type, Error_Code>
+    {
+        PHAR::Type data;
+
+        auto result = this->read( PHAR::OFFSET, data.begin(), data.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return data;
+    }
+
+    /**
+     * \brief Write to the PHAR register.
+     *
+     * \param[in] data The data to write to the PHAR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_phar( PHAR::Type const & data ) noexcept
+    {
+        return this->write( PHAR::OFFSET, data.begin(), data.end() );
+    }
+
   private:
     /**
      * \brief Convert an array to data.
