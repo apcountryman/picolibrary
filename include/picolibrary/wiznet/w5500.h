@@ -2257,6 +2257,19 @@ class Driver : public Communication_Controller_Type {
         return this->write( socket_id, Region::REGISTERS, SN_IR::OFFSET, data );
     }
 
+    /**
+     * \brief Read a socket's SN_SR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_SR register is to be read.
+     *
+     * \return The data read from the socket's SN_SR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_sn_sr( Socket_ID socket_id ) const noexcept
+    {
+        return this->read( socket_id, Region::REGISTERS, SN_SR::OFFSET );
+    }
+
   private:
     /**
      * \brief Convert an array to data.
