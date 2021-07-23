@@ -1244,6 +1244,41 @@ TEST( readUIPR, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::read_uportr() properly handles a read
+ *        error.
+ */
+TEST( readUPORTR, readError )
+{
+    auto const w5500 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( w5500, read( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = w5500.read_uportr();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::read_uportr() works properly.
+ */
+TEST( readUPORTR, worksProperly )
+{
+    auto const w5500 = Driver{};
+
+    auto const data = random<std::uint16_t>();
+
+    EXPECT_CALL( w5500, read( 0x002C, _ ) ).WillOnce( Return( convert_data_to_vector( data ) ) );
+
+    auto const result = w5500.read_uportr();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), data );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Driver unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().

@@ -2123,6 +2123,24 @@ class Driver : public Communication_Controller_Type {
         return data;
     }
 
+    /**
+     * \brief Read the UPORTR register.
+     *
+     * \return The data read from the UPORTR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_uportr() const noexcept -> Result<UPORTR::Type, Error_Code>
+    {
+        Fixed_Size_Array<std::uint8_t, 2> array;
+
+        auto result = this->read( UPORTR::OFFSET, array.begin(), array.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return convert_array_to_data( array );
+    }
+
   private:
     /**
      * \brief Convert an array to data.
