@@ -2105,6 +2105,24 @@ class Driver : public Communication_Controller_Type {
         return this->write( PMRU::OFFSET, array.begin(), array.end() );
     }
 
+    /**
+     * \brief Read the UIPR register.
+     *
+     * \return The data read from the UIPR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_uipr() const noexcept -> Result<UIPR::Type, Error_Code>
+    {
+        UIPR::Type data;
+
+        auto result = this->read( UIPR::OFFSET, data.begin(), data.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return data;
+    }
+
   private:
     /**
      * \brief Convert an array to data.
