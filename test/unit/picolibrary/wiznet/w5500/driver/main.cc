@@ -804,6 +804,73 @@ TEST( writeRTR, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::read_rcr() properly handles a read
+ *        error.
+ */
+TEST( readRCR, readError )
+{
+    auto const w5500 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( w5500, read( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = w5500.read_rcr();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::read_rcr() works properly.
+ */
+TEST( readRCR, worksProperly )
+{
+    auto const w5500 = Driver{};
+
+    auto const data = random<std::uint8_t>();
+
+    EXPECT_CALL( w5500, read( 0x001B ) ).WillOnce( Return( data ) );
+
+    auto const result = w5500.read_rcr();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), data );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::write_rcr() properly handles a write
+ *        error.
+ */
+TEST( writeRCR, writeError )
+{
+    auto w5500 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( w5500, write( _, A<std::uint8_t>() ) ).WillOnce( Return( error ) );
+
+    auto const result = w5500.write_rcr( random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::write_rcr() works properly.
+ */
+TEST( writeRCR, worksProperly )
+{
+    auto w5500 = Driver{};
+
+    auto const data = random<std::uint8_t>();
+
+    EXPECT_CALL( w5500, write( 0x001B, data ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( w5500.write_rcr( data ).is_error() );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Driver unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().

@@ -1936,6 +1936,30 @@ class Driver : public Communication_Controller_Type {
         return this->write( RTR::OFFSET, array.begin(), array.end() );
     }
 
+    /**
+     * \brief Read the RCR register.
+     *
+     * \return The data read from the RCR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_rcr() const noexcept
+    {
+        return this->read( RCR::OFFSET );
+    }
+
+    /**
+     * \brief Write to the RCR register.
+     *
+     * \param[in] data The data to write to the RCR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_rcr( RCR::Type data ) noexcept
+    {
+        return this->write( RCR::OFFSET, data );
+    }
+
   private:
     /**
      * \brief Convert an array to data.
