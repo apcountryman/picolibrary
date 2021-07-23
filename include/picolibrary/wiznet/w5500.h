@@ -1960,6 +1960,30 @@ class Driver : public Communication_Controller_Type {
         return this->write( RCR::OFFSET, data );
     }
 
+    /**
+     * \brief Read the PTIMER register.
+     *
+     * \return The data read from the PTIMER register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_ptimer() const noexcept
+    {
+        return this->read( PTIMER::OFFSET );
+    }
+
+    /**
+     * \brief Write to the PTIMER register.
+     *
+     * \param[in] data The data to write to the PTIMER register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_ptimer( PTIMER::Type data ) noexcept
+    {
+        return this->write( PTIMER::OFFSET, data );
+    }
+
   private:
     /**
      * \brief Convert an array to data.
