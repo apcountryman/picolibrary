@@ -1879,6 +1879,30 @@ class Driver : public Communication_Controller_Type {
         return this->read( SIR::OFFSET );
     }
 
+    /**
+     * \brief Read the SIMR register.
+     *
+     * \return The data read from the SIMR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_simr() const noexcept
+    {
+        return this->read( SIMR::OFFSET );
+    }
+
+    /**
+     * \brief Write to the SIMR register.
+     *
+     * \param[in] data The data to write to the SIMR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_simr( SIMR::Type data ) noexcept
+    {
+        return this->write( SIMR::OFFSET, data );
+    }
+
   private:
     /**
      * \brief Convert an array to data.

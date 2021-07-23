@@ -669,6 +669,73 @@ TEST( readSIR, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::read_simr() properly handles a read
+ *        error.
+ */
+TEST( readSIMR, readError )
+{
+    auto const w5500 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( w5500, read( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = w5500.read_simr();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::read_simr() works properly.
+ */
+TEST( readSIMR, worksProperly )
+{
+    auto const w5500 = Driver{};
+
+    auto const data = random<std::uint8_t>();
+
+    EXPECT_CALL( w5500, read( 0x0018 ) ).WillOnce( Return( data ) );
+
+    auto const result = w5500.read_simr();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), data );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::write_simr() properly handles a write
+ *        error.
+ */
+TEST( writeSIMR, writeError )
+{
+    auto w5500 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( w5500, write( _, A<std::uint8_t>() ) ).WillOnce( Return( error ) );
+
+    auto const result = w5500.write_simr( random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::write_simr() works properly.
+ */
+TEST( writeSIMR, worksProperly )
+{
+    auto w5500 = Driver{};
+
+    auto const data = random<std::uint8_t>();
+
+    EXPECT_CALL( w5500, write( 0x0018, data ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( w5500.write_simr( data ).is_error() );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Driver unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
