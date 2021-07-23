@@ -2072,6 +2072,39 @@ class Driver : public Communication_Controller_Type {
         return this->write( PSID::OFFSET, array.begin(), array.end() );
     }
 
+    /**
+     * \brief Read the PMRU register.
+     *
+     * \return The data read from the PMRU register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_pmru() const noexcept -> Result<PMRU::Type, Error_Code>
+    {
+        Fixed_Size_Array<std::uint8_t, 2> array;
+
+        auto result = this->read( PMRU::OFFSET, array.begin(), array.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return convert_array_to_data( array );
+    }
+
+    /**
+     * \brief Write to the PMRU register.
+     *
+     * \param[in] data The data to write to the PMRU register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_pmru( PMRU::Type data ) noexcept
+    {
+        auto const array = convert_data_to_array( data );
+
+        return this->write( PMRU::OFFSET, array.begin(), array.end() );
+    }
+
   private:
     /**
      * \brief Convert an array to data.
