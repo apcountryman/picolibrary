@@ -2039,6 +2039,39 @@ class Driver : public Communication_Controller_Type {
         return this->write( PHAR::OFFSET, data.begin(), data.end() );
     }
 
+    /**
+     * \brief Read the PSID register.
+     *
+     * \return The data read from the PSID register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_psid() const noexcept -> Result<PSID::Type, Error_Code>
+    {
+        Fixed_Size_Array<std::uint8_t, 2> array;
+
+        auto result = this->read( PSID::OFFSET, array.begin(), array.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return convert_array_to_data( array );
+    }
+
+    /**
+     * \brief Write to the PSID register.
+     *
+     * \param[in] data The data to write to the PSID register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_psid( PSID::Type data ) noexcept
+    {
+        auto const array = convert_data_to_array( data );
+
+        return this->write( PSID::OFFSET, array.begin(), array.end() );
+    }
+
   private:
     /**
      * \brief Convert an array to data.
