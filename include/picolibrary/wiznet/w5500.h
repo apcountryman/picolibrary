@@ -2495,6 +2495,19 @@ class Driver : public Communication_Controller {
         return write( socket_id, SN_TX_WR::OFFSET, data );
     }
 
+    /**
+     * \brief Read a socket's SN_RX_RSR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_RX_RSR register is to be read.
+     *
+     * \return The data read from the socket's SN_RX_RSR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_sn_rx_rsr( Socket_ID socket_id ) const noexcept
+    {
+        return read<SN_RX_RSR::Type>( socket_id, SN_RX_RSR::OFFSET );
+    }
+
   private:
     /**
      * \brief Read a common register.
