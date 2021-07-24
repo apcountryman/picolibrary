@@ -2636,10 +2636,10 @@ class Driver : public Communication_Controller {
     /**
      * \brief Read data from a socket's receive buffer.
      *
-     * \param[in] socket_id The ID of the socket whose receive buffer will be read.
-     * \param[in] offset The offset of the data to read.
-     * \param[in] begin The beginning of the data read from the receive buffer.
-     * \param[in] end The end of the data read from the receive buffer.
+     * \param[in] socket_id The ID of the socket whose receive buffer is to be read.
+     * \param[in] offset The offset of the buffer memory to read.
+     * \param[out] begin The beginning of the data read from the buffer.
+     * \param[out] end The end of the data read from the buffer.
      *
      * \return Nothing if the read succeeded.
      * \return An error code if the read failed.
@@ -2647,6 +2647,23 @@ class Driver : public Communication_Controller {
     auto read( Socket_ID socket_id, std::uint16_t offset, std::uint8_t * begin, std::uint8_t * end ) const noexcept
     {
         return Communication_Controller::read( socket_id, Region::RX_BUFFER, offset, begin, end );
+    }
+
+    /**
+     * \brief Write data to a socket's transmit buffer.
+     *
+     * \param[in] socket_id The ID of the socket whose transmit buffer is to be written
+     *            to.
+     * \param[in] offset The offset of the buffer memory to write to.
+     * \param[in] begin The beginning of the data to write to the buffer.
+     * \param[in] end The end of the data to write to the buffer.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write( Socket_ID socket_id, std::uint16_t offset, std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+    {
+        return Communication_Controller::write( socket_id, Region::TX_BUFFER, offset, begin, end );
     }
 
   private:

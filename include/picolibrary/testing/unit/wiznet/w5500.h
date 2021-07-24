@@ -415,10 +415,10 @@ class Mock_Driver : public Mock_Communication_Controller {
     /**
      * \brief Read data from a socket's receive buffer.
      *
-     * \param[in] socket_id The ID of the socket whose receive buffer will be read.
-     * \param[in] offset The offset of the data to read.
-     * \param[in] begin The beginning of the data read from the receive buffer.
-     * \param[in] end The end of the data read from the receive buffer.
+     * \param[in] socket_id The ID of the socket whose receive buffer is to be read.
+     * \param[in] offset The offset of the buffer memory to read.
+     * \param[out] begin The beginning of the data read from the buffer.
+     * \param[out] end The end of the data read from the buffer.
      *
      * \return Nothing if the read succeeded.
      * \return An error code if the read failed.
@@ -441,6 +441,25 @@ class Mock_Driver : public Mock_Communication_Controller {
         } );
 
         return {};
+    }
+
+    MOCK_METHOD( (Result<Void, Error_Code>), write, (Socket_ID, std::uint16_t, std::vector<std::uint8_t>));
+
+    /**
+     * \brief Write data to a socket's transmit buffer.
+     *
+     * \param[in] socket_id The ID of the socket whose transmit buffer is to be written
+     *            to.
+     * \param[in] offset The offset of the buffer memory to write to.
+     * \param[in] begin The beginning of the data to write to the buffer.
+     * \param[in] end The end of the data to write to the buffer.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write( Socket_ID socket_id, std::uint16_t offset, std::uint8_t const * begin, std::uint8_t const * end )
+    {
+        return write( socket_id, offset, std::vector<std::uint8_t>{ begin, end } );
     }
 };
 

@@ -2804,6 +2804,43 @@ TEST( read, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::write() properly handles a write
+ *        error.
+ */
+TEST( write, writeError )
+{
+    auto w5500 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( w5500, write( _, _, _, A<std::vector<std::uint8_t>>() ) ).WillOnce( Return( error ) );
+
+    auto const data   = random_container<std::vector<std::uint8_t>>();
+    auto const result = w5500.write(
+        random<Socket_ID>(), random<std::uint16_t>(), &*data.begin(), &*data.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::write() works properly.
+ */
+TEST( write, worksProperly )
+{
+    auto w5500 = Driver{};
+
+    auto const socket_id = random<Socket_ID>();
+    auto const offset    = random<std::uint16_t>();
+    auto const data      = random_container<std::vector<std::uint8_t>>();
+
+    EXPECT_CALL( w5500, write( socket_id, Region::TX_BUFFER, offset, data ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( w5500.write( socket_id, offset, &*data.begin(), &*data.end() ).is_error() );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Driver unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
