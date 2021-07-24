@@ -1581,8 +1581,8 @@ struct SN_KPALVTR {
  *         implementation should be used unless a mock implementation is begin injected to
  *         support unit testing of this driver.
  */
-template<typename Controller_Type, typename Device_Selector_Type, typename Communication_Controller_Type = Communication_Controller<Controller_Type, Device_Selector_Type>>
-class Driver : public Communication_Controller_Type {
+template<typename Controller_Type, typename Device_Selector_Type, typename Communication_Controller = ::picolibrary::WIZnet::W5500::Communication_Controller<Controller_Type, Device_Selector_Type>>
+class Driver : public Communication_Controller {
   public:
     /**
      * \brief The type of SPI controller used to communicate with the W5500.
@@ -1610,7 +1610,7 @@ class Driver : public Communication_Controller_Type {
      */
     constexpr Driver( Controller & controller, typename Controller::Configuration configuration, Device_Selector device_selector ) noexcept
         :
-        Communication_Controller_Type{ controller, configuration, std::move( device_selector ) }
+        Communication_Controller{ controller, configuration, std::move( device_selector ) }
     {
     }
 
@@ -1647,7 +1647,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto read_mr() const noexcept
     {
-        return this->read( MR::OFFSET );
+        return read<MR::Type>( MR::OFFSET );
     }
 
     /**
@@ -1660,7 +1660,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto write_mr( MR::Type data ) noexcept
     {
-        return this->write( MR::OFFSET, data );
+        return write( MR::OFFSET, data );
     }
 
     /**
@@ -1669,16 +1669,9 @@ class Driver : public Communication_Controller_Type {
      * \return The data read from the GAR register if the read succeeded.
      * \return An error code if the read failed.
      */
-    auto read_gar() const noexcept -> Result<GAR::Type, Error_Code>
+    auto read_gar() const noexcept
     {
-        GAR::Type data;
-
-        auto result = this->read( GAR::OFFSET, data.begin(), data.end() );
-        if ( result.is_error() ) {
-            return result.error();
-        } // if
-
-        return data;
+        return read<GAR::Type>( GAR::OFFSET );
     }
 
     /**
@@ -1691,7 +1684,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto write_gar( GAR::Type const & data ) noexcept
     {
-        return this->write( GAR::OFFSET, data.begin(), data.end() );
+        return write( GAR::OFFSET, data );
     }
 
     /**
@@ -1700,16 +1693,9 @@ class Driver : public Communication_Controller_Type {
      * \return The data read from the SUBR register if the read succeeded.
      * \return An error code if the read failed.
      */
-    auto read_subr() const noexcept -> Result<SUBR::Type, Error_Code>
+    auto read_subr() const noexcept
     {
-        SUBR::Type data;
-
-        auto result = this->read( SUBR::OFFSET, data.begin(), data.end() );
-        if ( result.is_error() ) {
-            return result.error();
-        } // if
-
-        return data;
+        return read<SUBR::Type>( SUBR::OFFSET );
     }
 
     /**
@@ -1722,7 +1708,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto write_subr( SUBR::Type const & data ) noexcept
     {
-        return this->write( SUBR::OFFSET, data.begin(), data.end() );
+        return write( SUBR::OFFSET, data );
     }
 
     /**
@@ -1731,16 +1717,9 @@ class Driver : public Communication_Controller_Type {
      * \return The data read from the SHAR register if the read succeeded.
      * \return An error code if the read failed.
      */
-    auto read_shar() const noexcept -> Result<SHAR::Type, Error_Code>
+    auto read_shar() const noexcept
     {
-        SHAR::Type data;
-
-        auto result = this->read( SHAR::OFFSET, data.begin(), data.end() );
-        if ( result.is_error() ) {
-            return result.error();
-        } // if
-
-        return data;
+        return read<SHAR::Type>( SHAR::OFFSET );
     }
 
     /**
@@ -1753,7 +1732,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto write_shar( SHAR::Type const & data ) noexcept
     {
-        return this->write( SHAR::OFFSET, data.begin(), data.end() );
+        return write( SHAR::OFFSET, data );
     }
 
     /**
@@ -1762,16 +1741,9 @@ class Driver : public Communication_Controller_Type {
      * \return The data read from the SIPR register if the read succeeded.
      * \return An error code if the read failed.
      */
-    auto read_sipr() const noexcept -> Result<SIPR::Type, Error_Code>
+    auto read_sipr() const noexcept
     {
-        SIPR::Type data;
-
-        auto result = this->read( SIPR::OFFSET, data.begin(), data.end() );
-        if ( result.is_error() ) {
-            return result.error();
-        } // if
-
-        return data;
+        return read<SIPR::Type>( SIPR::OFFSET );
     }
 
     /**
@@ -1784,7 +1756,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto write_sipr( SIPR::Type const & data ) noexcept
     {
-        return this->write( SIPR::OFFSET, data.begin(), data.end() );
+        return write( SIPR::OFFSET, data );
     }
 
     /**
@@ -1793,16 +1765,9 @@ class Driver : public Communication_Controller_Type {
      * \return The data read from the INTLEVEL register if the read succeeded.
      * \return An error code if the read failed.
      */
-    auto read_intlevel() const noexcept -> Result<INTLEVEL::Type, Error_Code>
+    auto read_intlevel() const noexcept
     {
-        Fixed_Size_Array<std::uint8_t, 2> array;
-
-        auto result = this->read( INTLEVEL::OFFSET, array.begin(), array.end() );
-        if ( result.is_error() ) {
-            return result.error();
-        } // if
-
-        return convert_array_to_data( array );
+        return read<INTLEVEL::Type>( INTLEVEL::OFFSET );
     }
 
     /**
@@ -1815,9 +1780,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto write_intlevel( INTLEVEL::Type data ) noexcept
     {
-        auto const array = convert_data_to_array( data );
-
-        return this->write( INTLEVEL::OFFSET, array.begin(), array.end() );
+        return write( INTLEVEL::OFFSET, data );
     }
 
     /**
@@ -1828,7 +1791,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto read_ir() const noexcept
     {
-        return this->read( IR::OFFSET );
+        return read<IR::Type>( IR::OFFSET );
     }
 
     /**
@@ -1841,7 +1804,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto write_ir( IR::Type data ) noexcept
     {
-        return this->write( IR::OFFSET, data );
+        return write( IR::OFFSET, data );
     }
 
     /**
@@ -1852,7 +1815,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto read_imr() const noexcept
     {
-        return this->read( IMR::OFFSET );
+        return read<IMR::Type>( IMR::OFFSET );
     }
 
     /**
@@ -1865,7 +1828,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto write_imr( IMR::Type data ) noexcept
     {
-        return this->write( IMR::OFFSET, data );
+        return write( IMR::OFFSET, data );
     }
 
     /**
@@ -1876,7 +1839,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto read_sir() const noexcept
     {
-        return this->read( SIR::OFFSET );
+        return read<SIR::Type>( SIR::OFFSET );
     }
 
     /**
@@ -1887,7 +1850,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto read_simr() const noexcept
     {
-        return this->read( SIMR::OFFSET );
+        return read<SIMR::Type>( SIMR::OFFSET );
     }
 
     /**
@@ -1900,7 +1863,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto write_simr( SIMR::Type data ) noexcept
     {
-        return this->write( SIMR::OFFSET, data );
+        return write( SIMR::OFFSET, data );
     }
 
     /**
@@ -1909,16 +1872,9 @@ class Driver : public Communication_Controller_Type {
      * \return The data read from the RTR register if the read succeeded.
      * \return An error code if the read failed.
      */
-    auto read_rtr() const noexcept -> Result<RTR::Type, Error_Code>
+    auto read_rtr() const noexcept
     {
-        Fixed_Size_Array<std::uint8_t, 2> array;
-
-        auto result = this->read( RTR::OFFSET, array.begin(), array.end() );
-        if ( result.is_error() ) {
-            return result.error();
-        } // if
-
-        return convert_array_to_data( array );
+        return read<RTR::Type>( RTR::OFFSET );
     }
 
     /**
@@ -1931,9 +1887,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto write_rtr( RTR::Type data ) noexcept
     {
-        auto const array = convert_data_to_array( data );
-
-        return this->write( RTR::OFFSET, array.begin(), array.end() );
+        return write( RTR::OFFSET, data );
     }
 
     /**
@@ -1944,7 +1898,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto read_rcr() const noexcept
     {
-        return this->read( RCR::OFFSET );
+        return read<RCR::Type>( RCR::OFFSET );
     }
 
     /**
@@ -1957,7 +1911,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto write_rcr( RCR::Type data ) noexcept
     {
-        return this->write( RCR::OFFSET, data );
+        return write( RCR::OFFSET, data );
     }
 
     /**
@@ -1968,7 +1922,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto read_ptimer() const noexcept
     {
-        return this->read( PTIMER::OFFSET );
+        return read<PTIMER::Type>( PTIMER::OFFSET );
     }
 
     /**
@@ -1981,7 +1935,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto write_ptimer( PTIMER::Type data ) noexcept
     {
-        return this->write( PTIMER::OFFSET, data );
+        return write( PTIMER::OFFSET, data );
     }
 
     /**
@@ -1992,7 +1946,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto read_pmagic() const noexcept
     {
-        return this->read( PMAGIC::OFFSET );
+        return read<PMAGIC::Type>( PMAGIC::OFFSET );
     }
 
     /**
@@ -2005,7 +1959,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto write_pmagic( PMAGIC::Type data ) noexcept
     {
-        return this->write( PMAGIC::OFFSET, data );
+        return write( PMAGIC::OFFSET, data );
     }
 
     /**
@@ -2014,16 +1968,9 @@ class Driver : public Communication_Controller_Type {
      * \return The data read from the PHAR register if the read succeeded.
      * \return An error code if the read failed.
      */
-    auto read_phar() const noexcept -> Result<PHAR::Type, Error_Code>
+    auto read_phar() const noexcept
     {
-        PHAR::Type data;
-
-        auto result = this->read( PHAR::OFFSET, data.begin(), data.end() );
-        if ( result.is_error() ) {
-            return result.error();
-        } // if
-
-        return data;
+        return read<PHAR::Type>( PHAR::OFFSET );
     }
 
     /**
@@ -2036,7 +1983,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto write_phar( PHAR::Type const & data ) noexcept
     {
-        return this->write( PHAR::OFFSET, data.begin(), data.end() );
+        return write( PHAR::OFFSET, data );
     }
 
     /**
@@ -2045,16 +1992,9 @@ class Driver : public Communication_Controller_Type {
      * \return The data read from the PSID register if the read succeeded.
      * \return An error code if the read failed.
      */
-    auto read_psid() const noexcept -> Result<PSID::Type, Error_Code>
+    auto read_psid() const noexcept
     {
-        Fixed_Size_Array<std::uint8_t, 2> array;
-
-        auto result = this->read( PSID::OFFSET, array.begin(), array.end() );
-        if ( result.is_error() ) {
-            return result.error();
-        } // if
-
-        return convert_array_to_data( array );
+        return read<PSID::Type>( PSID::OFFSET );
     }
 
     /**
@@ -2067,9 +2007,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto write_psid( PSID::Type data ) noexcept
     {
-        auto const array = convert_data_to_array( data );
-
-        return this->write( PSID::OFFSET, array.begin(), array.end() );
+        return write( PSID::OFFSET, data );
     }
 
     /**
@@ -2078,16 +2016,9 @@ class Driver : public Communication_Controller_Type {
      * \return The data read from the PMRU register if the read succeeded.
      * \return An error code if the read failed.
      */
-    auto read_pmru() const noexcept -> Result<PMRU::Type, Error_Code>
+    auto read_pmru() const noexcept
     {
-        Fixed_Size_Array<std::uint8_t, 2> array;
-
-        auto result = this->read( PMRU::OFFSET, array.begin(), array.end() );
-        if ( result.is_error() ) {
-            return result.error();
-        } // if
-
-        return convert_array_to_data( array );
+        return read<PMRU::Type>( PMRU::OFFSET );
     }
 
     /**
@@ -2100,9 +2031,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto write_pmru( PMRU::Type data ) noexcept
     {
-        auto const array = convert_data_to_array( data );
-
-        return this->write( PMRU::OFFSET, array.begin(), array.end() );
+        return write( PMRU::OFFSET, data );
     }
 
     /**
@@ -2111,16 +2040,9 @@ class Driver : public Communication_Controller_Type {
      * \return The data read from the UIPR register if the read succeeded.
      * \return An error code if the read failed.
      */
-    auto read_uipr() const noexcept -> Result<UIPR::Type, Error_Code>
+    auto read_uipr() const noexcept
     {
-        UIPR::Type data;
-
-        auto result = this->read( UIPR::OFFSET, data.begin(), data.end() );
-        if ( result.is_error() ) {
-            return result.error();
-        } // if
-
-        return data;
+        return read<UIPR::Type>( UIPR::OFFSET );
     }
 
     /**
@@ -2129,16 +2051,9 @@ class Driver : public Communication_Controller_Type {
      * \return The data read from the UPORTR register if the read succeeded.
      * \return An error code if the read failed.
      */
-    auto read_uportr() const noexcept -> Result<UPORTR::Type, Error_Code>
+    auto read_uportr() const noexcept
     {
-        Fixed_Size_Array<std::uint8_t, 2> array;
-
-        auto result = this->read( UPORTR::OFFSET, array.begin(), array.end() );
-        if ( result.is_error() ) {
-            return result.error();
-        } // if
-
-        return convert_array_to_data( array );
+        return read<UPORTR::Type>( UPORTR::OFFSET );
     }
 
     /**
@@ -2149,7 +2064,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto read_phycfgr() const noexcept
     {
-        return this->read( PHYCFGR::OFFSET );
+        return read<PHYCFGR::Type>( PHYCFGR::OFFSET );
     }
 
     /**
@@ -2162,7 +2077,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto write_phycfgr( PHYCFGR::Type data ) noexcept
     {
-        return this->write( PHYCFGR::OFFSET, data );
+        return write( PHYCFGR::OFFSET, data );
     }
 
     /**
@@ -2173,7 +2088,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto read_versionr() const noexcept
     {
-        return this->read( VERSIONR::OFFSET );
+        return read<VERSIONR::Type>( VERSIONR::OFFSET );
     }
 
     /**
@@ -2186,7 +2101,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto read_sn_mr( Socket_ID socket_id ) const noexcept
     {
-        return this->read( socket_id, Region::REGISTERS, SN_MR::OFFSET );
+        return read<SN_MR::Type>( socket_id, SN_MR::OFFSET );
     }
 
     /**
@@ -2200,7 +2115,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto write_sn_mr( Socket_ID socket_id, SN_MR::Type data ) noexcept
     {
-        return this->write( socket_id, Region::REGISTERS, SN_MR::OFFSET, data );
+        return write( socket_id, SN_MR::OFFSET, data );
     }
 
     /**
@@ -2213,7 +2128,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto read_sn_cr( Socket_ID socket_id ) const noexcept
     {
-        return this->read( socket_id, Region::REGISTERS, SN_CR::OFFSET );
+        return read<SN_CR::Type>( socket_id, SN_CR::OFFSET );
     }
 
     /**
@@ -2227,7 +2142,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto write_sn_cr( Socket_ID socket_id, SN_CR::Type data ) noexcept
     {
-        return this->write( socket_id, Region::REGISTERS, SN_CR::OFFSET, data );
+        return write( socket_id, SN_CR::OFFSET, data );
     }
 
     /**
@@ -2240,7 +2155,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto read_sn_ir( Socket_ID socket_id ) const noexcept
     {
-        return this->read( socket_id, Region::REGISTERS, SN_IR::OFFSET );
+        return read<SN_IR::Type>( socket_id, SN_IR::OFFSET );
     }
 
     /**
@@ -2254,7 +2169,7 @@ class Driver : public Communication_Controller_Type {
      */
     auto write_sn_ir( Socket_ID socket_id, SN_IR::Type data ) noexcept
     {
-        return this->write( socket_id, Region::REGISTERS, SN_IR::OFFSET, data );
+        return write( socket_id, SN_IR::OFFSET, data );
     }
 
     /**
@@ -2267,36 +2182,329 @@ class Driver : public Communication_Controller_Type {
      */
     auto read_sn_sr( Socket_ID socket_id ) const noexcept
     {
-        return this->read( socket_id, Region::REGISTERS, SN_SR::OFFSET );
+        return read<SN_SR::Type>( socket_id, SN_SR::OFFSET );
     }
 
   private:
     /**
-     * \brief Convert an array to data.
+     * \brief Read a common register.
      *
-     * \param[in] array The array to convert.
+     * \tparam Register The type of register to read.
      *
-     * \return The result of the conversion.
+     * \param[in] offset The offset of the register to read.
+     *
+     * \return The data read from the register if the read succeeded.
+     * \return An error code if the read failed.
      */
-    static constexpr auto convert_array_to_data( Fixed_Size_Array<std::uint8_t, 2> const & array ) noexcept
+    template<typename Register>
+    auto read( std::uint16_t offset ) const noexcept
     {
-        return static_cast<std::uint16_t>(
-            ( array[ 0 ] << std::numeric_limits<std::uint8_t>::digits ) | array[ 1 ] );
+        return read( offset, Register{} );
     }
 
     /**
-     * \brief Convert data to an array.
+     * \brief Read a common register.
      *
-     * \param[in] data The data to convert.
+     * \param[in] offset The offset of the register to read.
      *
-     * \return The result of the conversion.
+     * \return The data read from the register if the read succeeded.
+     * \return An error code if the read failed.
      */
-    static constexpr auto convert_data_to_array( std::uint16_t data ) noexcept
+    auto read( std::uint16_t offset, std::uint8_t ) const noexcept
     {
-        return Fixed_Size_Array<std::uint8_t, 2>{
+        return Communication_Controller::read( offset );
+    }
+
+    /**
+     * \brief Read a common register.
+     *
+     * \param[in] offset The offset of the register to read.
+     *
+     * \return The data read from the register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read( std::uint16_t offset, std::uint16_t ) const noexcept -> Result<std::uint16_t, Error_Code>
+    {
+        Fixed_Size_Array<std::uint8_t, 2> buffer;
+
+        auto result = Communication_Controller::read( offset, buffer.begin(), buffer.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return static_cast<std::uint16_t>(
+            ( buffer[ 0 ] << std::numeric_limits<std::uint8_t>::digits ) | buffer[ 1 ] );
+    }
+
+    /**
+     * \brief Read a common register.
+     *
+     * \param[in] offset The offset of the register to read.
+     *
+     * \return The data read from the register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read( std::uint16_t offset, Fixed_Size_Array<std::uint8_t, 4> const & ) const noexcept
+        -> Result<Fixed_Size_Array<std::uint8_t, 4>, Error_Code>
+    {
+        Fixed_Size_Array<std::uint8_t, 4> buffer;
+
+        auto result = Communication_Controller::read( offset, buffer.begin(), buffer.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return buffer;
+    }
+
+    /**
+     * \brief Read a common register.
+     *
+     * \param[in] offset The offset of the register to read.
+     *
+     * \return The data read from the register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read( std::uint16_t offset, Fixed_Size_Array<std::uint8_t, 6> const & ) const noexcept
+        -> Result<Fixed_Size_Array<std::uint8_t, 6>, Error_Code>
+    {
+        Fixed_Size_Array<std::uint8_t, 6> buffer;
+
+        auto result = Communication_Controller::read( offset, buffer.begin(), buffer.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return buffer;
+    }
+
+    /**
+     * \brief Write to a common register.
+     *
+     * \param[in] offset The offset of the register to write to.
+     * \param[in] data The data to write to the register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write( std::uint16_t offset, std::uint8_t data ) noexcept
+    {
+        return Communication_Controller::write( offset, data );
+    }
+
+    /**
+     * \brief Write to a common register.
+     *
+     * \param[in] offset The offset of the register to write to.
+     * \param[in] data The data to write to the register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write( std::uint16_t offset, std::uint16_t data ) noexcept
+    {
+        auto const buffer = Fixed_Size_Array<std::uint8_t, 2>{
             static_cast<std::uint8_t>( data >> std::numeric_limits<std::uint8_t>::digits ),
             static_cast<std::uint8_t>( data ),
         };
+
+        return Communication_Controller::write( offset, buffer.begin(), buffer.end() );
+    }
+
+    /**
+     * \brief Write to a common register.
+     *
+     * \param[in] offset The offset of the register to write to.
+     * \param[in] data The data to write to the register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write( std::uint16_t offset, Fixed_Size_Array<std::uint8_t, 4> const & data ) noexcept
+    {
+        return Communication_Controller::write( offset, data.begin(), data.end() );
+    }
+
+    /**
+     * \brief Write to a common register.
+     *
+     * \param[in] offset The offset of the register to write to.
+     * \param[in] data The data to write to the register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write( std::uint16_t offset, Fixed_Size_Array<std::uint8_t, 6> const & data ) noexcept
+    {
+        return Communication_Controller::write( offset, data.begin(), data.end() );
+    }
+
+    /**
+     * \brief Read a socket register.
+     *
+     * \tparam Register The type of register to read.
+     *
+     * \param[in] socket_id The ID of the socket whose register is to be read.
+     * \param[in] offset The offset of the register to read.
+     *
+     * \return The data read from the register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    template<typename Register>
+    auto read( Socket_ID socket_id, std::uint16_t offset ) const noexcept
+    {
+        return read( socket_id, offset, Register{} );
+    }
+
+    /**
+     * \brief Read a socket register.
+     *
+     * \param[in] socket_id The ID of the socket whose register is to be read.
+     * \param[in] offset The offset of the register to read.
+     *
+     * \return The data read from the register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read( Socket_ID socket_id, std::uint16_t offset, std::uint8_t ) const noexcept
+    {
+        return Communication_Controller::read( socket_id, Region::REGISTERS, offset );
+    }
+
+    /**
+     * \brief Read a socket register.
+     *
+     * \param[in] socket_id The ID of the socket whose register is to be read.
+     * \param[in] offset The offset of the register to read.
+     *
+     * \return The data read from the register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read( Socket_ID socket_id, std::uint16_t offset, std::uint16_t ) const noexcept
+        -> Result<std::uint16_t, Error_Code>
+    {
+        Fixed_Size_Array<std::uint8_t, 2> buffer;
+
+        auto result = Communication_Controller::read(
+            socket_id, Region::REGISTERS, offset, buffer.begin(), buffer.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return static_cast<std::uint16_t>(
+            ( buffer[ 0 ] << std::numeric_limits<std::uint8_t>::digits ) | buffer[ 1 ] );
+    }
+
+    /**
+     * \brief Read a socket register.
+     *
+     * \param[in] socket_id The ID of the socket whose register is to be read.
+     * \param[in] offset The offset of the register to read.
+     *
+     * \return The data read from the register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read( Socket_ID socket_id, std::uint16_t offset, Fixed_Size_Array<std::uint8_t, 4> const & ) const noexcept
+        -> Result<Fixed_Size_Array<std::uint8_t, 4>, Error_Code>
+    {
+        Fixed_Size_Array<std::uint8_t, 4> buffer;
+
+        auto result = Communication_Controller::read(
+            socket_id, Region::REGISTERS, offset, buffer.begin(), buffer.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return buffer;
+    }
+
+    /**
+     * \brief Read a socket register.
+     *
+     * \param[in] socket_id The ID of the socket whose register is to be read.
+     * \param[in] offset The offset of the register to read.
+     *
+     * \return The data read from the register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read( Socket_ID socket_id, std::uint16_t offset, Fixed_Size_Array<std::uint8_t, 6> const & ) const noexcept
+        -> Result<Fixed_Size_Array<std::uint8_t, 6>, Error_Code>
+    {
+        Fixed_Size_Array<std::uint8_t, 6> buffer;
+
+        auto result = read( socket_id, Region::REGISTERS, offset, buffer.begin(), buffer.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return buffer;
+    }
+
+    /**
+     * \brief Write to a socket register.
+     *
+     * \param[in] socket_id The ID of the socket whose register is to be written to.
+     * \param[in] offset The offset of the register to write to.
+     * \param[in] data The data to write to the register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write( Socket_ID socket_id, std::uint16_t offset, std::uint8_t data ) noexcept
+    {
+        return Communication_Controller::write( socket_id, Region::REGISTERS, offset, data );
+    }
+
+    /**
+     * \brief Write to a socket register.
+     *
+     * \param[in] socket_id The ID of the socket whose register is to be written to.
+     * \param[in] offset The offset of the register to write to.
+     * \param[in] data The data to write to the register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write( Socket_ID socket_id, std::uint16_t offset, std::uint16_t data ) noexcept
+    {
+        auto const buffer = Fixed_Size_Array<std::uint8_t, 2>{
+            static_cast<std::uint8_t>( data >> std::numeric_limits<std::uint8_t>::digits ),
+            static_cast<std::uint8_t>( data ),
+        };
+
+        return Communication_Controller::write(
+            socket_id, Region::REGISTERS, offset, buffer.begin(), buffer.end() );
+    }
+
+    /**
+     * \brief Write to a socket register.
+     *
+     * \param[in] socket_id The ID of the socket whose register is to be written to.
+     * \param[in] offset The offset of the register to write to.
+     * \param[in] data The data to write to the register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write( Socket_ID socket_id, std::uint16_t offset, Fixed_Size_Array<std::uint8_t, 4> const & data ) noexcept
+    {
+        return Communication_Controller::write(
+            socket_id, Region::REGISTERS, offset, data.begin(), data.end() );
+    }
+
+    /**
+     * \brief Write to a socket register.
+     *
+     * \param[in] socket_id The ID of the socket whose register is to be written to.
+     * \param[in] offset The offset of the register to write to.
+     * \param[in] data The data to write to the register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write( Socket_ID socket_id, std::uint16_t offset, Fixed_Size_Array<std::uint8_t, 6> const & data ) noexcept
+    {
+        return Communication_Controller::write(
+            socket_id, Region::REGISTERS, offset, data.begin(), data.end() );
     }
 };
 
