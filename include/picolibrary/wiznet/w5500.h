@@ -2213,6 +2213,34 @@ class Driver : public Communication_Controller {
         return write( socket_id, SN_PORT::OFFSET, data );
     }
 
+    /**
+     * \brief Read a socket's SN_DHAR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_DHAR register is to be read.
+     *
+     * \return The data read from the socket's SN_DHAR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_sn_dhar( Socket_ID socket_id ) const noexcept
+    {
+        return read<SN_DHAR::Type>( socket_id, SN_DHAR::OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_DHAR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_DHAR register is to be written
+     *            to.
+     * \param[in] data The data to write to the socket's SN_DHAR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_sn_dhar( Socket_ID socket_id, SN_DHAR::Type const & data ) noexcept
+    {
+        return write( socket_id, SN_DHAR::OFFSET, data );
+    }
+
   private:
     /**
      * \brief Read a common register.
@@ -2459,7 +2487,8 @@ class Driver : public Communication_Controller {
     {
         Fixed_Size_Array<std::uint8_t, 6> buffer;
 
-        auto result = read( socket_id, Region::REGISTERS, offset, buffer.begin(), buffer.end() );
+        auto result = Communication_Controller::read(
+            socket_id, Region::REGISTERS, offset, buffer.begin(), buffer.end() );
         if ( result.is_error() ) {
             return result.error();
         } // if
