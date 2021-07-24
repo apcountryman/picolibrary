@@ -2441,6 +2441,19 @@ class Driver : public Communication_Controller {
         return write( socket_id, SN_TXBUF_SIZE::OFFSET, data );
     }
 
+    /**
+     * \brief Read a socket's SN_TX_FSR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_TX_FSR register is to be read.
+     *
+     * \return The data read from the socket's SN_TX_FSR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_sn_tx_fsr( Socket_ID socket_id ) const noexcept
+    {
+        return read<SN_TX_FSR::Type>( socket_id, SN_TX_FSR::OFFSET );
+    }
+
   private:
     /**
      * \brief Read a common register.
