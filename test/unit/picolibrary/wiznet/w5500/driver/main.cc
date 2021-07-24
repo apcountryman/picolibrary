@@ -1913,6 +1913,77 @@ TEST( writeSNDPORT, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::read_sn_mssr() properly handles a
+ *        read error.
+ */
+TEST( readSNMSSR, readError )
+{
+    auto const w5500 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( w5500, read( _, _, _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = w5500.read_sn_mssr( random<Socket_ID>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::read_sn_mssr() works properly.
+ */
+TEST( readSNMSSR, worksProperly )
+{
+    auto const w5500 = Driver{};
+
+    auto const socket_id = random<Socket_ID>();
+    auto const data      = random<std::uint16_t>();
+
+    EXPECT_CALL( w5500, read( socket_id, Region::REGISTERS, 0x0012, _ ) )
+        .WillOnce( Return( convert_data_to_vector( data ) ) );
+
+    auto const result = w5500.read_sn_mssr( socket_id );
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), data );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::write_sn_mssr() properly handles a
+ *        write error.
+ */
+TEST( writeSNMSSR, writeError )
+{
+    auto w5500 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( w5500, write( _, _, _, A<std::vector<std::uint8_t>>() ) ).WillOnce( Return( error ) );
+
+    auto const result = w5500.write_sn_mssr( random<Socket_ID>(), random<std::uint16_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::write_sn_mssr() works properly.
+ */
+TEST( writeSNMSSR, worksProperly )
+{
+    auto w5500 = Driver{};
+
+    auto const socket_id = random<Socket_ID>();
+    auto const data      = random<std::uint16_t>();
+
+    EXPECT_CALL( w5500, write( socket_id, Region::REGISTERS, 0x0012, convert_data_to_vector( data ) ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( w5500.write_sn_mssr( socket_id, data ).is_error() );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Driver unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().

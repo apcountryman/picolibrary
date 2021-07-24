@@ -2297,6 +2297,34 @@ class Driver : public Communication_Controller {
         return write( socket_id, SN_DPORT::OFFSET, data );
     }
 
+    /**
+     * \brief Read a socket's SN_MSSR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_MSSR register is to be read.
+     *
+     * \return The data read from the socket's SN_MSSR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_sn_mssr( Socket_ID socket_id ) const noexcept
+    {
+        return read<SN_MSSR::Type>( socket_id, SN_MSSR::OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_MSSR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_MSSR register is to be written
+     *            to.
+     * \param[in] data The data to write to the socket's SN_MSSR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_sn_mssr( Socket_ID socket_id, SN_MSSR::Type data ) noexcept
+    {
+        return write( socket_id, SN_MSSR::OFFSET, data );
+    }
+
   private:
     /**
      * \brief Read a common register.
