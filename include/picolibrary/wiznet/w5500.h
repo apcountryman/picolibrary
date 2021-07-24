@@ -2381,6 +2381,36 @@ class Driver : public Communication_Controller {
         return write( socket_id, SN_TTL::OFFSET, data );
     }
 
+    /**
+     * \brief Read a socket's SN_RXBUF_SIZE register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_RXBUF_SIZE register is to be
+     *            read.
+     *
+     * \return The data read from the socket's SN_RXBUF_SIZE register if the read
+     *         succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_sn_rxbuf_size( Socket_ID socket_id ) const noexcept
+    {
+        return read<SN_RXBUF_SIZE::Type>( socket_id, SN_RXBUF_SIZE::OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_RXBUF_SIZE register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_RXBUF_SIZE register is to be
+     *            written to.
+     * \param[in] data The data to write to the socket's SN_RXBUF_SIZE register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_sn_rxbuf_size( Socket_ID socket_id, SN_RXBUF_SIZE::Type data ) noexcept
+    {
+        return write( socket_id, SN_RXBUF_SIZE::OFFSET, data );
+    }
+
   private:
     /**
      * \brief Read a common register.
