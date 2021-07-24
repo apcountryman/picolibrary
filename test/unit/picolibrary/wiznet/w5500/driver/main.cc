@@ -2301,6 +2301,43 @@ TEST( readSNTXFSR, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::read_sn_tx_rd() properly handles a
+ *        read error.
+ */
+TEST( readSNTXRD, readError )
+{
+    auto const w5500 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( w5500, read( _, _, _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = w5500.read_sn_tx_rd( random<Socket_ID>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::read_sn_tx_rd() works properly.
+ */
+TEST( readSNTXRD, worksProperly )
+{
+    auto const w5500 = Driver{};
+
+    auto const socket_id = random<Socket_ID>();
+    auto const data      = random<std::uint16_t>();
+
+    EXPECT_CALL( w5500, read( socket_id, Region::REGISTERS, 0x0022, _ ) )
+        .WillOnce( Return( convert_data_to_vector( data ) ) );
+
+    auto const result = w5500.read_sn_tx_rd( socket_id );
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), data );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Driver unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
