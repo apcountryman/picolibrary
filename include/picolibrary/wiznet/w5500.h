@@ -2241,6 +2241,34 @@ class Driver : public Communication_Controller {
         return write( socket_id, SN_DHAR::OFFSET, data );
     }
 
+    /**
+     * \brief Read a socket's SN_DIPR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_DIPR register is to be read.
+     *
+     * \return The data read from the socket's SN_DIPR register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_sn_dipr( Socket_ID socket_id ) const noexcept
+    {
+        return read<SN_DIPR::Type>( socket_id, SN_DIPR::OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_DIPR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_DIPR register is to be written
+     *            to.
+     * \param[in] data The data to write to the socket's SN_DIPR register.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write_sn_dipr( Socket_ID socket_id, SN_DIPR::Type const & data ) noexcept
+    {
+        return write( socket_id, SN_DIPR::OFFSET, data );
+    }
+
   private:
     /**
      * \brief Read a common register.
