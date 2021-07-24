@@ -2633,6 +2633,22 @@ class Driver : public Communication_Controller {
         return write( socket_id, SN_KPALVTR::OFFSET, data );
     }
 
+    /**
+     * \brief Read data from a socket's receive buffer.
+     *
+     * \param[in] socket_id The ID of the socket whose receive buffer will be read.
+     * \param[in] offset The offset of the data to read.
+     * \param[in] begin The beginning of the data read from the receive buffer.
+     * \param[in] end The end of the data read from the receive buffer.
+     *
+     * \return Nothing if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read( Socket_ID socket_id, std::uint16_t offset, std::uint8_t * begin, std::uint8_t * end ) const noexcept
+    {
+        return Communication_Controller::read( socket_id, Region::RX_BUFFER, offset, begin, end );
+    }
+
   private:
     /**
      * \brief Read a common register.

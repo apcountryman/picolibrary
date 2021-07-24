@@ -405,6 +405,43 @@ class Mock_Driver : public Mock_Communication_Controller {
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_sn_kpalvtr, ( Socket_ID ), ( const ) );
     MOCK_METHOD( (Result<Void, Error_Code>), write_sn_kpalvtr, ( Socket_ID, std::uint8_t ) );
+
+    MOCK_METHOD(
+        (Result<std::vector<std::uint8_t>, Error_Code>),
+        read,
+        (Socket_ID, std::uint16_t, std::vector<std::uint8_t>),
+        ( const ) );
+
+    /**
+     * \brief Read data from a socket's receive buffer.
+     *
+     * \param[in] socket_id The ID of the socket whose receive buffer will be read.
+     * \param[in] offset The offset of the data to read.
+     * \param[in] begin The beginning of the data read from the receive buffer.
+     * \param[in] end The end of the data read from the receive buffer.
+     *
+     * \return Nothing if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read( Socket_ID socket_id, std::uint16_t offset, std::uint8_t * begin, std::uint8_t * end ) const
+        -> Result<Void, Error_Code>
+    {
+        static_cast<void>( end );
+
+        auto const result = read( socket_id, offset, std::vector<std::uint8_t>{} );
+
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        std::for_each( result.value().begin(), result.value().end(), [ &begin ]( auto data ) {
+            *begin = data;
+
+            ++begin;
+        } );
+
+        return {};
+    }
 };
 
 } // namespace picolibrary::Testing::Unit::WIZnet::W5500

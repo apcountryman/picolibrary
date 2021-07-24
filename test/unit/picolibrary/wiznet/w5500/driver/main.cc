@@ -2765,6 +2765,45 @@ TEST( writeSNKPALVTR, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::read() properly handles a read error.
+ */
+TEST( read, readError )
+{
+    auto const w5500 = Driver{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( w5500, read( _, _, _, _ ) ).WillOnce( Return( error ) );
+
+    auto       data   = std::vector<std::uint8_t>( random<std::uint_fast8_t>( 1 ) );
+    auto const result = w5500.read(
+        random<Socket_ID>(), random<std::uint16_t>(), &*data.begin(), &*data.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Driver::read() works properly.
+ */
+TEST( read, worksProperly )
+{
+    auto const w5500 = Driver{};
+
+    auto const socket_id     = random<Socket_ID>();
+    auto const offset        = random<std::uint16_t>();
+    auto const size          = random<std::uint_fast8_t>();
+    auto const data_expected = random_container<std::vector<std::uint8_t>>( size );
+
+    EXPECT_CALL( w5500, read( socket_id, Region::RX_BUFFER, offset, _ ) ).WillOnce( Return( data_expected ) );
+
+    auto data = std::vector<std::uint8_t>( size );
+    EXPECT_FALSE( w5500.read( socket_id, offset, &*data.begin(), &*data.end() ).is_error() );
+
+    EXPECT_EQ( data, data_expected );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Driver unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
