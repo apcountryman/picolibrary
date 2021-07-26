@@ -246,6 +246,223 @@ class Mock_Communication_Controller : public SPI::Mock_Device {
     }
 };
 
+/**
+ * \brief WIZnet W5500 mock driver.
+ */
+class Mock_Driver : public Mock_Communication_Controller {
+  public:
+    /**
+     * \brief The type of SPI controller used to communicate with the W5500.
+     */
+    using Controller = SPI::Mock_Controller;
+
+    /**
+     * \brief The type of SPI device selector used to select and deselect the W5500.
+     */
+    using Device_Selector = SPI::Mock_Device_Selector::Handle;
+
+    /**
+     * \brief Constructor.
+     */
+    Mock_Driver() = default;
+
+    /**
+     * \brief Constructor.
+     */
+    Mock_Driver( Controller &, Controller::Configuration, Device_Selector )
+    {
+    }
+
+    Mock_Driver( Mock_Driver && ) = delete;
+
+    Mock_Driver( Mock_Driver const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Mock_Driver() noexcept = default;
+
+    auto operator=( Mock_Driver && ) = delete;
+
+    auto operator=( Mock_Driver const & ) = delete;
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_mr, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_mr, ( std::uint8_t ) );
+
+    MOCK_METHOD( (Result<Fixed_Size_Array<std::uint8_t, 4>, Error_Code>), read_gar, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_gar, ( (Fixed_Size_Array<std::uint8_t, 4> const &)) );
+
+    MOCK_METHOD( (Result<Fixed_Size_Array<std::uint8_t, 4>, Error_Code>), read_subr, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_subr, ( (Fixed_Size_Array<std::uint8_t, 4> const &)) );
+
+    MOCK_METHOD( (Result<Fixed_Size_Array<std::uint8_t, 6>, Error_Code>), read_shar, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_shar, ( (Fixed_Size_Array<std::uint8_t, 6> const &)) );
+
+    MOCK_METHOD( (Result<Fixed_Size_Array<std::uint8_t, 4>, Error_Code>), read_sipr, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_sipr, ( (Fixed_Size_Array<std::uint8_t, 4> const &)) );
+
+    MOCK_METHOD( (Result<std::uint16_t, Error_Code>), read_intlevel, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_intlevel, ( std::uint16_t ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_ir, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_ir, ( std::uint8_t ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_imr, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_imr, ( std::uint8_t ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_sir, (), ( const ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_simr, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_simr, ( std::uint8_t ) );
+
+    MOCK_METHOD( (Result<std::uint16_t, Error_Code>), read_rtr, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_rtr, ( std::uint16_t ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_rcr, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_rcr, ( std::uint8_t ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_ptimer, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_ptimer, ( std::uint8_t ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_pmagic, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_pmagic, ( std::uint8_t ) );
+
+    MOCK_METHOD( (Result<Fixed_Size_Array<std::uint8_t, 6>, Error_Code>), read_phar, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_phar, ( (Fixed_Size_Array<std::uint8_t, 6> const &)) );
+
+    MOCK_METHOD( (Result<std::uint16_t, Error_Code>), read_psid, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_psid, ( std::uint16_t ) );
+
+    MOCK_METHOD( (Result<std::uint16_t, Error_Code>), read_pmru, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_pmru, ( std::uint16_t ) );
+
+    MOCK_METHOD( (Result<Fixed_Size_Array<std::uint8_t, 4>, Error_Code>), read_uipr, (), ( const ) );
+
+    MOCK_METHOD( (Result<std::uint16_t, Error_Code>), read_uportr, (), ( const ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_phycfgr, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_phycfgr, ( std::uint8_t ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_versionr, (), ( const ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_sn_mr, ( Socket_ID ), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_sn_mr, ( Socket_ID, std::uint8_t ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_sn_cr, ( Socket_ID ), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_sn_cr, ( Socket_ID, std::uint8_t ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_sn_ir, ( Socket_ID ), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_sn_ir, ( Socket_ID, std::uint8_t ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_sn_sr, ( Socket_ID ), ( const ) );
+
+    MOCK_METHOD( (Result<std::uint16_t, Error_Code>), read_sn_port, ( Socket_ID ), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_sn_port, ( Socket_ID, std::uint16_t ) );
+
+    MOCK_METHOD( (Result<Fixed_Size_Array<std::uint8_t, 6>, Error_Code>), read_sn_dhar, ( Socket_ID ), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_sn_dhar, ( Socket_ID, (Fixed_Size_Array<std::uint8_t, 6> const &)) );
+
+    MOCK_METHOD( (Result<Fixed_Size_Array<std::uint8_t, 4>, Error_Code>), read_sn_dipr, ( Socket_ID ), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_sn_dipr, ( Socket_ID, (Fixed_Size_Array<std::uint8_t, 4> const &)) );
+
+    MOCK_METHOD( (Result<std::uint16_t, Error_Code>), read_sn_dport, ( Socket_ID ), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_sn_dport, ( Socket_ID, std::uint16_t ) );
+
+    MOCK_METHOD( (Result<std::uint16_t, Error_Code>), read_sn_mssr, ( Socket_ID ), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_sn_mssr, ( Socket_ID, std::uint16_t ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_sn_tos, ( Socket_ID ), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_sn_tos, ( Socket_ID, std::uint8_t ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_sn_ttl, ( Socket_ID ), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_sn_ttl, ( Socket_ID, std::uint8_t ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_sn_rxbuf_size, ( Socket_ID ), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_sn_rxbuf_size, ( Socket_ID, std::uint8_t ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_sn_txbuf_size, ( Socket_ID ), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_sn_txbuf_size, ( Socket_ID, std::uint8_t ) );
+
+    MOCK_METHOD( (Result<std::uint16_t, Error_Code>), read_sn_tx_fsr, ( Socket_ID ), ( const ) );
+
+    MOCK_METHOD( (Result<std::uint16_t, Error_Code>), read_sn_tx_rd, ( Socket_ID ), ( const ) );
+
+    MOCK_METHOD( (Result<std::uint16_t, Error_Code>), read_sn_tx_wr, ( Socket_ID ), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_sn_tx_wr, ( Socket_ID, std::uint16_t ) );
+
+    MOCK_METHOD( (Result<std::uint16_t, Error_Code>), read_sn_rx_rsr, ( Socket_ID ), ( const ) );
+
+    MOCK_METHOD( (Result<std::uint16_t, Error_Code>), read_sn_rx_rd, ( Socket_ID ), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_sn_rx_rd, ( Socket_ID, std::uint16_t ) );
+
+    MOCK_METHOD( (Result<std::uint16_t, Error_Code>), read_sn_rx_wr, ( Socket_ID ), ( const ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_sn_imr, ( Socket_ID ), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_sn_imr, ( Socket_ID, std::uint8_t ) );
+
+    MOCK_METHOD( (Result<std::uint16_t, Error_Code>), read_sn_frag, ( Socket_ID ), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_sn_frag, ( Socket_ID, std::uint16_t ) );
+
+    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_sn_kpalvtr, ( Socket_ID ), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_sn_kpalvtr, ( Socket_ID, std::uint8_t ) );
+
+    MOCK_METHOD(
+        (Result<std::vector<std::uint8_t>, Error_Code>),
+        read,
+        (Socket_ID, std::uint16_t, std::vector<std::uint8_t>),
+        ( const ) );
+
+    /**
+     * \brief Read data from a socket's receive buffer.
+     *
+     * \param[in] socket_id The ID of the socket whose receive buffer is to be read.
+     * \param[in] offset The offset of the buffer memory to read.
+     * \param[out] begin The beginning of the data read from the buffer.
+     * \param[out] end The end of the data read from the buffer.
+     *
+     * \return Nothing if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read( Socket_ID socket_id, std::uint16_t offset, std::uint8_t * begin, std::uint8_t * end ) const
+        -> Result<Void, Error_Code>
+    {
+        static_cast<void>( end );
+
+        auto const result = read( socket_id, offset, std::vector<std::uint8_t>{} );
+
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        std::for_each( result.value().begin(), result.value().end(), [ &begin ]( auto data ) {
+            *begin = data;
+
+            ++begin;
+        } );
+
+        return {};
+    }
+
+    MOCK_METHOD( (Result<Void, Error_Code>), write, (Socket_ID, std::uint16_t, std::vector<std::uint8_t>));
+
+    /**
+     * \brief Write data to a socket's transmit buffer.
+     *
+     * \param[in] socket_id The ID of the socket whose transmit buffer is to be written
+     *            to.
+     * \param[in] offset The offset of the buffer memory to write to.
+     * \param[in] begin The beginning of the data to write to the buffer.
+     * \param[in] end The end of the data to write to the buffer.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto write( Socket_ID socket_id, std::uint16_t offset, std::uint8_t const * begin, std::uint8_t const * end )
+    {
+        return write( socket_id, offset, std::vector<std::uint8_t>{ begin, end } );
+    }
+};
+
 } // namespace picolibrary::Testing::Unit::WIZnet::W5500
 
 #endif // PICOLIBRARY_TESTING_UNIT_WIZNET_W5500_H
