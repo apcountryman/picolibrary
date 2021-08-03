@@ -2451,7 +2451,7 @@ class Driver : public Communication_Controller {
      */
     auto read_sn_tx_fsr( Socket_ID socket_id ) const noexcept
     {
-        return read<SN_TX_FSR::Type>( socket_id, SN_TX_FSR::OFFSET );
+        return read_unstable<SN_TX_FSR::Type>( socket_id, SN_TX_FSR::OFFSET );
     }
 
     /**
@@ -2505,7 +2505,7 @@ class Driver : public Communication_Controller {
      */
     auto read_sn_rx_rsr( Socket_ID socket_id ) const noexcept
     {
-        return read<SN_RX_RSR::Type>( socket_id, SN_RX_RSR::OFFSET );
+        return read_unstable<SN_RX_RSR::Type>( socket_id, SN_RX_RSR::OFFSET );
     }
 
     /**
@@ -2919,6 +2919,62 @@ class Driver : public Communication_Controller {
         } // if
 
         return buffer;
+    }
+
+    /**
+     * \brief Read an unstable socket register.
+     *
+     * \tparam Register The type of register to read.
+     *
+     * \param[in] socket_id The ID of the socket whose register is to be read.
+     * \param[in] offset The offset of the register to read.
+     *
+     * \return The data read from the register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    template<typename Register>
+    auto read_unstable( Socket_ID socket_id, std::uint16_t offset ) const noexcept
+    {
+        return read_unstable( socket_id, offset, Register{} );
+    }
+
+    /**
+     * \brief Read an unstable socket register.
+     *
+     * \param[in] socket_id The ID of the socket whose register is to be read.
+     * \param[in] offset The offset of the register to read.
+     *
+     * \return The data read from the register if the read succeeded.
+     * \return An error code if the read failed.
+     */
+    auto read_unstable( Socket_ID socket_id, std::uint16_t offset, std::uint16_t ) const noexcept
+        -> Result<std::uint16_t, Error_Code>
+    {
+        // #lizard forgives the length
+
+        std::uint16_t previous;
+
+        {
+            auto result = read<std::uint16_t>( socket_id, offset );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            previous = result.value();
+        }
+
+        for ( ;; ) {
+            auto result = read<std::uint16_t>( socket_id, offset );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            if ( result.value() == previous ) {
+                return result.value();
+            } // if
+
+            previous = result.value();
+        } // for
     }
 
     /**

@@ -54,6 +54,7 @@ using ::picolibrary::WIZnet::W5500::Region;
 using ::picolibrary::WIZnet::W5500::Socket_ID;
 using ::testing::_;
 using ::testing::A;
+using ::testing::InSequence;
 using ::testing::Return;
 
 using Driver = ::picolibrary::WIZnet::W5500::Driver<Mock_Controller, Mock_Device_Selector::Handle, Mock_Communication_Controller>;
@@ -80,6 +81,15 @@ template<typename T, std::size_t N>
 auto convert_fixed_size_array_to_vector( Fixed_Size_Array<T, N> const & array )
 {
     return std::vector<T>( array.begin(), array.end() );
+}
+
+template<typename T>
+auto random_unique_values()
+{
+    auto const a = random<T>();
+    auto const b = random<T>();
+
+    return std::pair<T, T>{ a, b != a ? b : b ^ random<T>( 1 ) };
 }
 
 } // namespace
@@ -2269,16 +2279,33 @@ TEST( writeSNTXBUFSIZE, worksProperly )
  */
 TEST( readSNTXFSR, readError )
 {
-    auto const w5500 = Driver{};
+    {
+        auto const w5500 = Driver{};
 
-    auto const error = random<Mock_Error>();
+        auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( w5500, read( _, _, _, _ ) ).WillOnce( Return( error ) );
+        EXPECT_CALL( w5500, read( _, _, _, _ ) ).WillOnce( Return( error ) );
 
-    auto const result = w5500.read_sn_tx_fsr( random<Socket_ID>() );
+        auto const result = w5500.read_sn_tx_fsr( random<Socket_ID>() );
 
-    EXPECT_TRUE( result.is_error() );
-    EXPECT_EQ( result.error(), error );
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), error );
+    }
+
+    {
+        auto const w5500 = Driver{};
+
+        auto const error = random<Mock_Error>();
+
+        EXPECT_CALL( w5500, read( _, _, _, _ ) )
+            .WillOnce( Return( convert_data_to_vector( random<std::uint16_t>() ) ) )
+            .WillOnce( Return( error ) );
+
+        auto const result = w5500.read_sn_tx_fsr( random<Socket_ID>() );
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), error );
+    }
 }
 
 /**
@@ -2286,18 +2313,45 @@ TEST( readSNTXFSR, readError )
  */
 TEST( readSNTXFSR, worksProperly )
 {
-    auto const w5500 = Driver{};
+    {
+        auto const in_sequence = InSequence{};
 
-    auto const socket_id = random<Socket_ID>();
-    auto const data      = random<std::uint16_t>();
+        auto const w5500 = Driver{};
 
-    EXPECT_CALL( w5500, read( socket_id, Region::REGISTERS, 0x0020, _ ) )
-        .WillOnce( Return( convert_data_to_vector( data ) ) );
+        auto const socket_id = random<Socket_ID>();
+        auto const [ a, b ]  = random_unique_values<std::uint16_t>();
 
-    auto const result = w5500.read_sn_tx_fsr( socket_id );
+        EXPECT_CALL( w5500, read( socket_id, Region::REGISTERS, 0x0020, _ ) )
+            .WillOnce( Return( convert_data_to_vector( a ) ) );
+        EXPECT_CALL( w5500, read( socket_id, Region::REGISTERS, 0x0020, _ ) )
+            .WillOnce( Return( convert_data_to_vector( b ) ) );
+        EXPECT_CALL( w5500, read( socket_id, Region::REGISTERS, 0x0020, _ ) )
+            .WillOnce( Return( convert_data_to_vector( b ) ) );
 
-    EXPECT_TRUE( result.is_value() );
-    EXPECT_EQ( result.value(), data );
+        auto const result = w5500.read_sn_tx_fsr( socket_id );
+
+        EXPECT_TRUE( result.is_value() );
+        EXPECT_EQ( result.value(), b );
+    }
+
+    {
+        auto const in_sequence = InSequence{};
+
+        auto const w5500 = Driver{};
+
+        auto const socket_id = random<Socket_ID>();
+        auto const data      = random<std::uint16_t>();
+
+        EXPECT_CALL( w5500, read( socket_id, Region::REGISTERS, 0x0020, _ ) )
+            .WillOnce( Return( convert_data_to_vector( data ) ) );
+        EXPECT_CALL( w5500, read( socket_id, Region::REGISTERS, 0x0020, _ ) )
+            .WillOnce( Return( convert_data_to_vector( data ) ) );
+
+        auto const result = w5500.read_sn_tx_fsr( socket_id );
+
+        EXPECT_TRUE( result.is_value() );
+        EXPECT_EQ( result.value(), data );
+    }
 }
 
 /**
@@ -2414,16 +2468,33 @@ TEST( writeSNTXWR, worksProperly )
  */
 TEST( readSNRXRSR, readError )
 {
-    auto const w5500 = Driver{};
+    {
+        auto const w5500 = Driver{};
 
-    auto const error = random<Mock_Error>();
+        auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( w5500, read( _, _, _, _ ) ).WillOnce( Return( error ) );
+        EXPECT_CALL( w5500, read( _, _, _, _ ) ).WillOnce( Return( error ) );
 
-    auto const result = w5500.read_sn_rx_rsr( random<Socket_ID>() );
+        auto const result = w5500.read_sn_rx_rsr( random<Socket_ID>() );
 
-    EXPECT_TRUE( result.is_error() );
-    EXPECT_EQ( result.error(), error );
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), error );
+    }
+
+    {
+        auto const w5500 = Driver{};
+
+        auto const error = random<Mock_Error>();
+
+        EXPECT_CALL( w5500, read( _, _, _, _ ) )
+            .WillOnce( Return( convert_data_to_vector( random<std::uint16_t>() ) ) )
+            .WillOnce( Return( error ) );
+
+        auto const result = w5500.read_sn_rx_rsr( random<Socket_ID>() );
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), error );
+    }
 }
 
 /**
@@ -2431,18 +2502,45 @@ TEST( readSNRXRSR, readError )
  */
 TEST( readSNRXRSR, worksProperly )
 {
-    auto const w5500 = Driver{};
+    {
+        auto const in_sequence = InSequence{};
 
-    auto const socket_id = random<Socket_ID>();
-    auto const data      = random<std::uint16_t>();
+        auto const w5500 = Driver{};
 
-    EXPECT_CALL( w5500, read( socket_id, Region::REGISTERS, 0x0026, _ ) )
-        .WillOnce( Return( convert_data_to_vector( data ) ) );
+        auto const socket_id = random<Socket_ID>();
+        auto const [ a, b ]  = random_unique_values<std::uint16_t>();
 
-    auto const result = w5500.read_sn_rx_rsr( socket_id );
+        EXPECT_CALL( w5500, read( socket_id, Region::REGISTERS, 0x0026, _ ) )
+            .WillOnce( Return( convert_data_to_vector( a ) ) );
+        EXPECT_CALL( w5500, read( socket_id, Region::REGISTERS, 0x0026, _ ) )
+            .WillOnce( Return( convert_data_to_vector( b ) ) );
+        EXPECT_CALL( w5500, read( socket_id, Region::REGISTERS, 0x0026, _ ) )
+            .WillOnce( Return( convert_data_to_vector( b ) ) );
 
-    EXPECT_TRUE( result.is_value() );
-    EXPECT_EQ( result.value(), data );
+        auto const result = w5500.read_sn_rx_rsr( socket_id );
+
+        EXPECT_TRUE( result.is_value() );
+        EXPECT_EQ( result.value(), b );
+    }
+
+    {
+        auto const in_sequence = InSequence{};
+
+        auto const w5500 = Driver{};
+
+        auto const socket_id = random<Socket_ID>();
+        auto const data      = random<std::uint16_t>();
+
+        EXPECT_CALL( w5500, read( socket_id, Region::REGISTERS, 0x0026, _ ) )
+            .WillOnce( Return( convert_data_to_vector( data ) ) );
+        EXPECT_CALL( w5500, read( socket_id, Region::REGISTERS, 0x0026, _ ) )
+            .WillOnce( Return( convert_data_to_vector( data ) ) );
+
+        auto const result = w5500.read_sn_rx_rsr( socket_id );
+
+        EXPECT_TRUE( result.is_value() );
+        EXPECT_EQ( result.value(), data );
+    }
 }
 
 /**
