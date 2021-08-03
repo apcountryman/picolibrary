@@ -2950,6 +2950,8 @@ class Driver : public Communication_Controller {
     auto read_unstable( Socket_ID socket_id, std::uint16_t offset, std::uint16_t ) const noexcept
         -> Result<std::uint16_t, Error_Code>
     {
+        // #lizard forgives the length
+
         std::uint16_t previous;
 
         {
