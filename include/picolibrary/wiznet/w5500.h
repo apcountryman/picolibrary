@@ -1579,6 +1579,14 @@ enum class Ping_Blocking : std::uint8_t {
 };
 
 /**
+ * \brief WIZnet W5500 force ARP configuration.
+ */
+enum class Force_ARP : std::uint8_t {
+    DISABLED = 0b0 << MR::Bit::FARP, ///< Disabled.
+    ENABLED  = 0b1 << MR::Bit::FARP, ///< Enabled.
+};
+
+/**
  * \brief WIZnet W5500 socket buffer size.
  */
 enum class Buffer_Size : std::uint8_t {
