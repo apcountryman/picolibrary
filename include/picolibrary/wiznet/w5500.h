@@ -1571,6 +1571,14 @@ struct SN_KPALVTR {
 };
 
 /**
+ * \brief WIZnet W5500 ping blocking configuration.
+ */
+enum class Ping_Blocking : std::uint8_t {
+    DISABLED = 0b0 << MR::Bit::PB, ///< Disabled.
+    ENABLED  = 0b1 << MR::Bit::PB, ///< Enabled.
+};
+
+/**
  * \brief WIZnet W5500 socket buffer size.
  */
 enum class Buffer_Size : std::uint8_t {
