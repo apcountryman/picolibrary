@@ -1571,6 +1571,16 @@ struct SN_KPALVTR {
 };
 
 /**
+ * \brief WIZnet W5500 socket protocol.
+ */
+enum class Protocol : std::uint8_t {
+    CLOSED = 0b0000 << SN_MR::Bit::P, ///< Closed.
+    TCP    = 0b0001 << SN_MR::Bit::P, ///< TCP.
+    UDP    = 0b0010 << SN_MR::Bit::P, ///< UDP.
+    MACRAW = 0b0100 << SN_MR::Bit::P, ///< MACRAW.
+};
+
+/**
  * \brief WIZnet W5500 socket command.
  */
 enum class Command : std::uint8_t {
