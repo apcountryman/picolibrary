@@ -1609,6 +1609,14 @@ enum class Broadcast_Blocking : std::uint8_t {
 };
 
 /**
+ * \brief WIZnet W5500 socket UDP unicast blocking configuration.
+ */
+enum class UDP_Unicast_Blocking : std::uint8_t {
+    DISABLED = 0b0 << SN_MR::Bit::UCASTB, ///< Disabled.
+    ENABLED  = 0b1 << SN_MR::Bit::UCASTB, ///< Enabled.
+};
+
+/**
  * \brief WIZnet W5500 socket UDP multicast IGMP version.
  */
 enum class UDP_Multicast_IGMP_Version : std::uint8_t {
