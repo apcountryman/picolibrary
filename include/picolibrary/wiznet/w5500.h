@@ -1628,6 +1628,17 @@ enum class Socket_Status : std::uint8_t {
 };
 
 /**
+ * \brief WIZnet W5500 socket interrupt masks.
+ */
+struct Socket_Interrupt {
+    static constexpr auto PEER_CONNECTED    = SN_IR::Mask::CON;    ///< Peer connected.
+    static constexpr auto PEER_DISCONNECTED = SN_IR::Mask::DISCON; ///< Peer disconnected.
+    static constexpr auto DATA_RECEIVED     = SN_IR::Mask::RECV;   ///< Data received.
+    static constexpr auto TIMEOUT   = SN_IR::Mask::TIMEOUT; ///< ARP/TCP timeout occurred.
+    static constexpr auto DATA_SENT = SN_IR::Mask::SEND_OK; ///< SEND command completed.
+};
+
+/**
  * \brief WIZnet W5500 driver.
  *
  * \tparam Controller_Type The type of SPI controller used to communicate with the W5500.

@@ -43,4 +43,10 @@ static_assert( SN_MR::Bit::MFEN == 7 ); // NOLINT(cppcoreguidelines-avoid-magic-
 static_assert( SN_IR::Bit::RESERVED5 == 5 ); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 static_assert( SN_IMR::Bit::RESERVED5 == 5 ); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 
+static_assert( SN_IR::Bit::CON == SN_IMR::Bit::CON );
+static_assert( SN_IR::Bit::DISCON == SN_IMR::Bit::DISCON );
+static_assert( SN_IR::Bit::RECV == SN_IMR::Bit::RECV );
+static_assert( SN_IR::Bit::TIMEOUT == SN_IMR::Bit::TIMEOUT );
+static_assert( SN_IR::Bit::SEND_OK == SN_IMR::Bit::SEND_OK );
+
 } // namespace picolibrary::WIZnet::W5500
