@@ -1613,6 +1613,22 @@ struct Interrupt {
 };
 
 /**
+ * \brief WIZnet W5500 PHY mode.
+ */
+enum class PHY_Mode : std::uint8_t {
+    // clang-format off
+    CONFIGURED_BY_HARDWARE                        = ( 0b0 << PHYCFGR::Bit::OPMD ) | ( 0b000 << PHYCFGR::Bit::OPMDC ), ///< Configured by hardware.
+    POWER_DOWN                                    = ( 0b1 << PHYCFGR::Bit::OPMD ) | ( 0b110 << PHYCFGR::Bit::OPMDC ), ///< Power down.
+    _10_BT_HALF_DUPLEX_AUTO_NEGOTIATION_DISABLED  = ( 0b1 << PHYCFGR::Bit::OPMD ) | ( 0b000 << PHYCFGR::Bit::OPMDC ), ///< 10 BT, half-duplex, auto-negotiation disabled.
+    _10_BT_FULL_DUPLEX_AUTO_NEGOTIATION_DISABLED  = ( 0b1 << PHYCFGR::Bit::OPMD ) | ( 0b001 << PHYCFGR::Bit::OPMDC ), ///< 10 BT, full-duplex, auto-negotiation disabled.
+    _100_BT_HALF_DUPLEX_AUTO_NEGOTIATION_DISABLED = ( 0b1 << PHYCFGR::Bit::OPMD ) | ( 0b010 << PHYCFGR::Bit::OPMDC ), ///< 100 BT, half-duplex, auto-negotiation disabled.
+    _100_BT_FULL_DUPLEX_AUTO_NEGOTIATION_DISABLED = ( 0b1 << PHYCFGR::Bit::OPMD ) | ( 0b011 << PHYCFGR::Bit::OPMDC ), ///< 100 BT, full-duplex, auto-negotiation disabled.
+    _100_BT_HALF_DUPLEX_AUTO_NEGOTIATION_ENABLED  = ( 0b1 << PHYCFGR::Bit::OPMD ) | ( 0b100 << PHYCFGR::Bit::OPMDC ), ///< 100 BT, half-duplex, auto-negotiation enabled.
+    ALL_CAPABLE_AUTO_NEGOTIATION_ENABLED          = ( 0b1 << PHYCFGR::Bit::OPMD ) | ( 0b111 << PHYCFGR::Bit::OPMDC ), ///< All capable, auto-negotiation enabled.
+    // clang-format on
+};
+
+/**
  * \brief WIZnet W5500 link status.
  */
 enum class Link_Status : std::uint8_t {
