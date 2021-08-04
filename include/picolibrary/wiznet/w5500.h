@@ -1593,6 +1593,14 @@ enum class Protocol : std::uint8_t {
 };
 
 /**
+ * \brief WIZnet W5500 socket MACRAW IPv6 packet blocking configuration.
+ */
+enum class MACRAW_IPv6_Packet_Blocking : std::uint8_t {
+    DISABLED = 0b0 << SN_MR::Bit::MIP6B, ///< Disabled.
+    ENABLED  = 0b1 << SN_MR::Bit::MIP6B, ///< Enabled.
+};
+
+/**
  * \brief WIZnet W5500 socket command.
  */
 enum class Command : std::uint8_t {
