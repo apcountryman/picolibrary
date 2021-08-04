@@ -1571,6 +1571,18 @@ struct SN_KPALVTR {
 };
 
 /**
+ * \brief WIZnet W5500 socket buffer size.
+ */
+enum class Buffer_Size : std::uint8_t {
+    _0_KIB  = 0,  ///< 0 KiB.
+    _1_KIB  = 1,  ///< 1 KiB.
+    _2_KIB  = 2,  ///< 2 KiB.
+    _4_KIB  = 4,  ///< 4 KiB.
+    _8_KIB  = 8,  ///< 8 KiB.
+    _16_KIB = 16, ///< 16 KiB.
+};
+
+/**
  * \brief WIZnet W5500 socket protocol.
  */
 enum class Protocol : std::uint8_t {
