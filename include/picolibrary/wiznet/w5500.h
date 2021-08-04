@@ -1571,6 +1571,22 @@ struct SN_KPALVTR {
 };
 
 /**
+ * \brief WIZnet W5500 socket command.
+ */
+enum class Command : std::uint8_t {
+    NONE                         = 0x00, ///< None.
+    OPEN                         = 0x01, ///< Open.
+    LISTEN                       = 0x02, ///< Listen.
+    CONNECT                      = 0x04, ///< Connect.
+    DISCONNECT                   = 0x08, ///< Disconnect.
+    CLOSE                        = 0x10, ///< Close.
+    SEND                         = 0x20, ///< Send.
+    SEND_UDP_DATAGRAM_MANUAL_MAC = 0x21, ///< Send a UDP datagram using a manually configured destination MAC address instead of one obtained by ARP.
+    SEND_TCP_KEEP_ALIVE_PACKET   = 0x22, ///< Send a TCP keep-alive packet.
+    RECEIVE                      = 0x40, ///< Receive.
+};
+
+/**
  * \brief WIZnet W5500 driver.
  *
  * \tparam Controller_Type The type of SPI controller used to communicate with the W5500.
