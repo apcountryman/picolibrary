@@ -1587,6 +1587,25 @@ enum class Command : std::uint8_t {
 };
 
 /**
+ * \brief WIZnet W5500 socket status.
+ */
+enum class Socket_Status : std::uint8_t {
+    CLOSED        = 0x00, ///< Closed.
+    OPENED_TCP    = 0x13, ///< Opened (TCP).
+    LISTEN        = 0x14, ///< Waiting for connection request from remote endpoint.
+    ESTABLISED    = 0x17, ///< Established.
+    CLOSE_WAIT    = 0x1C, ///< Waiting for connection termination request from local user.
+    OPENED_UDP    = 0x22, ///< Opened (UDP).
+    OPENED_MACRAW = 0x42, ///< Opened (MACRAW).
+    SYN_SENT = 0x15, ///< Connection request sent, waiting for matching connection request.
+    SYN_RECEIVED = 0x16, ///< Connection request sent and received, waiting for request acknowledgement.
+    FIN_WAIT     = 0x18, ///< Waiting for connection termination request, or acknowledgement of previously sent termination request, from remote endpoint.
+    CLOSING      = 0x1A, ///< Waiting for connection termination request acknowledgement from remote endpoint.
+    TIME_WAIT    = 0x1B, ///< Waiting for enough time to pass to be sure the remote endpoint received the connection termination request acknowledgement.
+    LAST_ACK     = 0x1D, ///< Waiting for connection termination request acknowledgement from remote endpoint.
+};
+
+/**
  * \brief WIZnet W5500 driver.
  *
  * \tparam Controller_Type The type of SPI controller used to communicate with the W5500.
