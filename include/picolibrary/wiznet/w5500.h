@@ -1603,6 +1603,16 @@ enum class WoL : std::uint8_t {
 };
 
 /**
+ * \brief WIZnet W5500 interrupt masks.
+ */
+struct Interrupt {
+    static constexpr auto WOL_UDP_MAGIC_PACKET_RECEIVED = IR::Mask::MP; ///< WoL UDP magic packet received.
+    static constexpr auto PPPOE_CONNECTION_CLOSED = IR::Mask::PPPOE; ///< PPPoE connection closed.
+    static constexpr auto ICMP_DESTINATION_PORT_UNREACHABLE_PACKET_RECEIVED = IR::Mask::UNREACH; ///< ICMP destination port unreachable packet received.
+    static constexpr auto IP_ADDRESS_CONFLICT = IR::Mask::CONFLICT; ///< IP address conflict.
+};
+
+/**
  * \brief WIZnet W5500 socket buffer size.
  */
 enum class Buffer_Size : std::uint8_t {
