@@ -1617,6 +1617,14 @@ enum class UDP_Multicast_IGMP_Version : std::uint8_t {
 };
 
 /**
+ * \brief WIZnet W5500 socket UDP multicasting configuration.
+ */
+enum class UDP_Multicasting : std::uint8_t {
+    DISABLED = 0b0 << SN_MR::Bit::MULTI, ///< Disabled.
+    ENABLED  = 0b1 << SN_MR::Bit::MULTI, ///< Enabled.
+};
+
+/**
  * \brief WIZnet W5500 socket MACRAW IPv6 packet blocking configuration.
  */
 enum class MACRAW_IPv6_Packet_Blocking : std::uint8_t {
