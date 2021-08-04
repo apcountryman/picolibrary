@@ -1593,6 +1593,14 @@ enum class Protocol : std::uint8_t {
 };
 
 /**
+ * \brief WIZnet W5500 socket TCP no delayed ACK configuration.
+ */
+enum class No_Delayed_ACK : std::uint8_t {
+    DISABLED = 0b0 << SN_MR::Bit::ND, ///< Disabled.
+    ENABLED  = 0b1 << SN_MR::Bit::ND, ///< Enabled.
+};
+
+/**
  * \brief WIZnet W5500 socket MACRAW/UDP broadcast blocking configuration.
  */
 enum class Broadcast_Blocking : std::uint8_t {
