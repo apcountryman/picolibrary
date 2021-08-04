@@ -1609,6 +1609,14 @@ enum class Broadcast_Blocking : std::uint8_t {
 };
 
 /**
+ * \brief WIZnet W5500 socket UDP multicast IGMP version.
+ */
+enum class UDP_Multicast_IGMP_Version : std::uint8_t {
+    _1 = 0b1 << SN_MR::Bit::MC, ///< IGMP version 1.
+    _2 = 0b0 << SN_MR::Bit::MC, ///< IGMP version 2.
+};
+
+/**
  * \brief WIZnet W5500 socket MACRAW IPv6 packet blocking configuration.
  */
 enum class MACRAW_IPv6_Packet_Blocking : std::uint8_t {
