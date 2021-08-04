@@ -1609,6 +1609,14 @@ enum class MACRAW_MAC_Filtering : std::uint8_t {
 };
 
 /**
+ * \brief WIZnet W5500 socket MACRAW multicast blocking configuration.
+ */
+enum class MACRAW_Multicast_Blocking : std::uint8_t {
+    DISABLED = 0b0 << SN_MR::Bit::MMB, ///< Disabled.
+    ENABLED  = 0b1 << SN_MR::Bit::MMB, ///< Enabled.
+};
+
+/**
  * \brief WIZnet W5500 socket command.
  */
 enum class Command : std::uint8_t {
