@@ -1601,6 +1601,14 @@ enum class MACRAW_IPv6_Packet_Blocking : std::uint8_t {
 };
 
 /**
+ * \brief WIZnet W5500 socket MACRAW MAC filtering configuration.
+ */
+enum class MACRAW_MAC_Filtering : std::uint8_t {
+    DISABLED = 0b0 << SN_MR::Bit::MFEN, ///< Disabled.
+    ENABLED  = 0b1 << SN_MR::Bit::MFEN, ///< Enabled.
+};
+
+/**
  * \brief WIZnet W5500 socket command.
  */
 enum class Command : std::uint8_t {
