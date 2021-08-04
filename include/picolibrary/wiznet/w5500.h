@@ -1613,6 +1613,14 @@ struct Interrupt {
 };
 
 /**
+ * \brief WIZnet W5500 link status.
+ */
+enum class Link_Status : std::uint8_t {
+    DOWN = 0b0 << PHYCFGR::Bit::LNK, ///< Down.
+    UP   = 0b1 << PHYCFGR::Bit::LNK, ///< Up.
+};
+
+/**
  * \brief WIZnet W5500 socket buffer size.
  */
 enum class Buffer_Size : std::uint8_t {
