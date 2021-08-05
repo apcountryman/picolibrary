@@ -17,7 +17,7 @@
 
 /**
  * \file
- * \brief picolibrary::HSM implementation.
+ * \brief picolibrary::Event implementation.
  */
 
-#include "picolibrary/hsm.h"
+#include "picolibrary/event.h"

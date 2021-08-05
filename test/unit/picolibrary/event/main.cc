@@ -17,7 +17,7 @@
 
 /**
  * \file
- * \brief picolibrary::HSM::Event unit test program.
+ * \brief picolibrary::Event unit test program.
  */
 
 #include <cstdint>
@@ -26,10 +26,10 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/error.h"
-#include "picolibrary/hsm.h"
+#include "picolibrary/event.h"
 #include "picolibrary/result.h"
 #include "picolibrary/testing/unit/error.h"
-#include "picolibrary/testing/unit/hsm.h"
+#include "picolibrary/testing/unit/event.h"
 #include "picolibrary/testing/unit/random.h"
 #include "picolibrary/testing/unit/stream.h"
 #include "picolibrary/void.h"
@@ -37,28 +37,29 @@
 namespace {
 
 using ::picolibrary::Error_Code;
+using ::picolibrary::Event_Category;
+using ::picolibrary::Event_ID;
 using ::picolibrary::Generic_Error;
 using ::picolibrary::Result;
 using ::picolibrary::Void;
-using ::picolibrary::HSM::Event_ID;
 using ::picolibrary::Testing::Unit::Mock_Error;
+using ::picolibrary::Testing::Unit::Mock_Event;
+using ::picolibrary::Testing::Unit::Mock_Event_Category;
 using ::picolibrary::Testing::Unit::Mock_Output_Stream;
 using ::picolibrary::Testing::Unit::Output_String_Stream;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::random_container;
-using ::picolibrary::Testing::Unit::HSM::Mock_Event;
-using ::picolibrary::Testing::Unit::HSM::Mock_Event_Category;
 using ::testing::_;
 using ::testing::A;
 using ::testing::Ref;
 using ::testing::Return;
 
-class Event final : public ::picolibrary::HSM::Event {
+class Event final : public ::picolibrary::Event {
   public:
     Event() = delete;
 
-    constexpr Event( ::picolibrary::HSM::Event_Category const & category, Event_ID id ) noexcept :
-        ::picolibrary::HSM::Event{ category, id }
+    constexpr Event( Event_Category const & category, Event_ID id ) noexcept :
+        ::picolibrary::Event{ category, id }
     {
     }
 
@@ -76,8 +77,8 @@ class Event final : public ::picolibrary::HSM::Event {
 } // namespace
 
 /**
- * \brief Verify picolibrary::HSM::Event::Event( picolibrary::HSM::Event_Category const &,
- *        picolibrary::HSM::Event_ID ) works properly.
+ * \brief Verify picolibrary::Event::Event( picolibrary::Event_Category const &,
+ *        picolibrary::Event_ID ) works properly.
  */
 TEST( constructor, worksProperly )
 {
@@ -96,8 +97,8 @@ TEST( constructor, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::HSM::Event> properly handles
- *        an invalid format string.
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Event> properly handles an
+ *        invalid format string.
  */
 TEST( outputFormatter, invalidFormatString )
 {
@@ -106,7 +107,7 @@ TEST( outputFormatter, invalidFormatString )
     auto const result = stream.print(
         ( std::string{ '{' } + random_container<std::string>( random<std::uint_fast8_t>( 1 ) ) + '}' )
             .c_str(),
-        static_cast<::picolibrary::HSM::Event const &>( Mock_Event{} ) );
+        static_cast<::picolibrary::Event const &>( Mock_Event{} ) );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::INVALID_FORMAT );
@@ -117,7 +118,7 @@ TEST( outputFormatter, invalidFormatString )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::HSM::Event> properly handles a
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Event> properly handles a
  *        print error
  */
 TEST( outputFormatter, printError )
@@ -137,7 +138,7 @@ TEST( outputFormatter, printError )
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
     EXPECT_CALL( event, print_details( _ ) ).Times( 0 );
 
-    auto const result = stream.print( "{}", static_cast<::picolibrary::HSM::Event const &>( event ) );
+    auto const result = stream.print( "{}", static_cast<::picolibrary::Event const &>( event ) );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -148,7 +149,7 @@ TEST( outputFormatter, printError )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::HSM::Event> properly handles a
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Event> properly handles a
  *        details print error.
  */
 TEST( outputFormatter, detailsPrintError )
@@ -167,7 +168,7 @@ TEST( outputFormatter, detailsPrintError )
     EXPECT_CALL( category, event_description( _ ) ).WillOnce( Return( description.c_str() ) );
     EXPECT_CALL( event, print_details( _ ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.print( "{}", static_cast<::picolibrary::HSM::Event const &>( event ) );
+    auto const result = stream.print( "{}", static_cast<::picolibrary::Event const &>( event ) );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -178,7 +179,7 @@ TEST( outputFormatter, detailsPrintError )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::HSM::Event> works properly.
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Event> works properly.
  */
 TEST( outputFormatter, worksProperly )
 {
@@ -196,15 +197,14 @@ TEST( outputFormatter, worksProperly )
     EXPECT_CALL( category, event_description( id ) ).WillOnce( Return( description.c_str() ) );
     EXPECT_CALL( event, print_details( Ref( stream ) ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
-    EXPECT_FALSE(
-        stream.print( "{}", static_cast<::picolibrary::HSM::Event const &>( event ) ).is_error() );
+    EXPECT_FALSE( stream.print( "{}", static_cast<::picolibrary::Event const &>( event ) ).is_error() );
 
     EXPECT_TRUE( stream.is_nominal() );
     EXPECT_EQ( stream.string(), category_name + "::" + description );
 }
 
 /**
- * \brief Execute the picolibrary::HSM::Event unit tests.
+ * \brief Execute the picolibrary::Event unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
  * \param[in] argv The array  of arguments to pass to testing::InitGoogleMock().

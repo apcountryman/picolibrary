@@ -34,10 +34,10 @@ set(
     "picolibrary/circular_buffer.cc"
     "picolibrary/crc.cc"
     "picolibrary/error.cc"
+    "picolibrary/event.cc"
     "picolibrary/fixed_size_array.cc"
     "picolibrary/format.cc"
     "picolibrary/gpio.cc"
-    "picolibrary/hsm.cc"
     "picolibrary/i2c.cc"
     "picolibrary/indicator.cc"
     "picolibrary/interrupt_guard.cc"
@@ -88,8 +88,8 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
         "picolibrary/testing/unit/asynchronous_serial.cc"
         "picolibrary/testing/unit/crc.cc"
         "picolibrary/testing/unit/error.cc"
+        "picolibrary/testing/unit/event.cc"
         "picolibrary/testing/unit/gpio.cc"
-        "picolibrary/testing/unit/hsm.cc"
         "picolibrary/testing/unit/i2c.cc"
         "picolibrary/testing/unit/indicator.cc"
         "picolibrary/testing/unit/microchip.cc"
@@ -120,7 +120,7 @@ target_include_directories(
 target_compile_definitions(
     picolibrary
     PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION}>,PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION,>"
-    PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION}>,PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION,>"
+    PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION}>,PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION,>"
 )
 target_link_libraries(
     picolibrary

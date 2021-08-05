@@ -13,8 +13,21 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/hsm/CMakeLists.txt
-# Description: picolibrary::HSM unit tests CMake rules.
+# File: test/unit/picolibrary/event/CMakeLists.txt
+# Description: picolibrary::Event unit tests CMake rules.
 
-# build the picolibrary::HSM::Event unit tests
-add_subdirectory( event )
+# build the picolibrary::Event unit tests
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+    add_executable(
+        test-unit-picolibrary-event
+        main.cc
+    )
+    target_link_libraries(
+        test-unit-picolibrary-event
+        picolibrary
+    )
+    add_test(
+        NAME    test-unit-picolibrary-event
+        COMMAND test-unit-picolibrary-event --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
