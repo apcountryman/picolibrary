@@ -1640,8 +1640,8 @@ enum class Link_Status : std::uint8_t {
  * \brief WIZnet W5500 link mode.
  */
 enum class Link_Mode : std::uint8_t {
-    HALF_DUPLEX = 0b0 << PHYCFGR::Bit::LNK, ///< Half-duplex.
-    FULL_DUPLEX = 0b1 << PHYCFGR::Bit::LNK, ///< Full-duplex.
+    HALF_DUPLEX = 0b0 << PHYCFGR::Bit::DPX, ///< Half-duplex.
+    FULL_DUPLEX = 0b1 << PHYCFGR::Bit::DPX, ///< Full-duplex.
 };
 
 /**
