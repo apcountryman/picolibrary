@@ -21,3 +21,15 @@
  */
 
 #include "picolibrary/testing/unit/indicator.h"
+
+namespace picolibrary::Testing::Unit::Indicator {
+
+Mock_Fixed_Intensity_Indicator::Mock_Fixed_Intensity_Indicator()
+{
+}
+
+Mock_Fixed_Intensity_Indicator::~Mock_Fixed_Intensity_Indicator() noexcept
+{
+}
+
+} // namespace picolibrary::Testing::Unit::Indicator

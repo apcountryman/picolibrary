@@ -167,7 +167,7 @@ class Mock_Input_Pin {
     /**
      * \brief Constructor.
      */
-    Mock_Input_Pin() = default;
+    Mock_Input_Pin();
 
     Mock_Input_Pin( Mock_Input_Pin && ) = delete;
 
@@ -176,7 +176,7 @@ class Mock_Input_Pin {
     /**
      * \brief Destructor.
      */
-    ~Mock_Input_Pin() noexcept = default;
+    ~Mock_Input_Pin() noexcept;
 
     auto operator=( Mock_Input_Pin && ) = delete;
 
@@ -329,7 +329,7 @@ class Mock_Internally_Pulled_Up_Input_Pin {
     /**
      * \brief Constructor.
      */
-    Mock_Internally_Pulled_Up_Input_Pin() = default;
+    Mock_Internally_Pulled_Up_Input_Pin();
 
     Mock_Internally_Pulled_Up_Input_Pin( Mock_Internally_Pulled_Up_Input_Pin && ) = delete;
 
@@ -338,7 +338,7 @@ class Mock_Internally_Pulled_Up_Input_Pin {
     /**
      * \brief Destructor.
      */
-    ~Mock_Internally_Pulled_Up_Input_Pin() noexcept = default;
+    ~Mock_Internally_Pulled_Up_Input_Pin() noexcept;
 
     auto operator=( Mock_Internally_Pulled_Up_Input_Pin && ) = delete;
 
@@ -494,7 +494,7 @@ class Mock_Output_Pin {
     /**
      * \brief Constructor.
      */
-    Mock_Output_Pin() = default;
+    Mock_Output_Pin();
 
     Mock_Output_Pin( Mock_Output_Pin && ) = delete;
 
@@ -503,7 +503,7 @@ class Mock_Output_Pin {
     /**
      * \brief Destructor.
      */
-    ~Mock_Output_Pin() noexcept = default;
+    ~Mock_Output_Pin() noexcept;
 
     auto operator=( Mock_Output_Pin && ) = delete;
 
@@ -669,7 +669,7 @@ class Mock_IO_Pin {
     /**
      * \brief Constructor.
      */
-    Mock_IO_Pin() = default;
+    Mock_IO_Pin();
 
     Mock_IO_Pin( Mock_IO_Pin && ) = delete;
 
@@ -678,7 +678,7 @@ class Mock_IO_Pin {
     /**
      * \brief Destructor.
      */
-    ~Mock_IO_Pin() noexcept = default;
+    ~Mock_IO_Pin() noexcept;
 
     auto operator=( Mock_IO_Pin && ) = delete;
 

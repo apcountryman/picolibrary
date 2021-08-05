@@ -182,7 +182,7 @@ class Mock_Fixed_Intensity_Indicator {
     /**
      * \brief Constructor.
      */
-    Mock_Fixed_Intensity_Indicator() = default;
+    Mock_Fixed_Intensity_Indicator();
 
     Mock_Fixed_Intensity_Indicator( Mock_Fixed_Intensity_Indicator && ) = delete;
 
@@ -191,7 +191,7 @@ class Mock_Fixed_Intensity_Indicator {
     /**
      * \brief Destructor.
      */
-    ~Mock_Fixed_Intensity_Indicator() noexcept = default;
+    ~Mock_Fixed_Intensity_Indicator() noexcept;
 
     auto operator=( Mock_Fixed_Intensity_Indicator && ) = delete;
 

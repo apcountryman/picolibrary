@@ -71,7 +71,7 @@ class Mock_Error_Category : public Error_Category {
     /**
      * \brief Constructor.
      */
-    Mock_Error_Category() = default;
+    Mock_Error_Category();
 
     Mock_Error_Category( Mock_Error_Category && ) = delete;
 
@@ -80,7 +80,7 @@ class Mock_Error_Category : public Error_Category {
     /**
      * \brief Destructor.
      */
-    ~Mock_Error_Category() noexcept = default;
+    ~Mock_Error_Category() noexcept;
 
     auto operator=( Mock_Error_Category && ) = delete;
 

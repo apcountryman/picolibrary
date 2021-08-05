@@ -96,7 +96,7 @@ class Mock_Driver {
     /**
      * \brief Constructor.
      */
-    Mock_Driver() = default;
+    Mock_Driver();
 
     /**
      * \brief Constructor.
@@ -112,7 +112,7 @@ class Mock_Driver {
     /**
      * \brief Destructor.
      */
-    ~Mock_Driver() noexcept = default;
+    ~Mock_Driver() noexcept;
 
     auto operator=( Mock_Driver && ) = delete;
 

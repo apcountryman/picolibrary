@@ -21,3 +21,15 @@
  */
 
 #include "picolibrary/testing/unit/microchip/mcp3008.h"
+
+namespace picolibrary::Testing::Unit::Microchip::MCP3008 {
+
+Mock_Driver::Mock_Driver()
+{
+}
+
+Mock_Driver::~Mock_Driver() noexcept
+{
+}
+
+} // namespace picolibrary::Testing::Unit::Microchip::MCP3008

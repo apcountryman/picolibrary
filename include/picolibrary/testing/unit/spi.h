@@ -169,7 +169,7 @@ class Mock_Basic_Controller {
     /**
      * \brief Constructor.
      */
-    Mock_Basic_Controller() = default;
+    Mock_Basic_Controller();
 
     Mock_Basic_Controller( Mock_Basic_Controller && ) = delete;
 
@@ -178,7 +178,7 @@ class Mock_Basic_Controller {
     /**
      * \brief Destructor.
      */
-    ~Mock_Basic_Controller() noexcept = default;
+    ~Mock_Basic_Controller() noexcept;
 
     auto operator=( Mock_Basic_Controller && ) = delete;
 
@@ -404,7 +404,7 @@ class Mock_Controller {
     /**
      * \brief Constructor.
      */
-    Mock_Controller() = default;
+    Mock_Controller();
 
     Mock_Controller( Mock_Controller && ) = delete;
 
@@ -413,7 +413,7 @@ class Mock_Controller {
     /**
      * \brief Destructor.
      */
-    ~Mock_Controller() noexcept = default;
+    ~Mock_Controller() noexcept;
 
     auto operator=( Mock_Controller && ) = delete;
 
@@ -638,7 +638,7 @@ class Mock_Device_Selector {
     /**
      * \brief Constructor.
      */
-    Mock_Device_Selector() = default;
+    Mock_Device_Selector();
 
     Mock_Device_Selector( Mock_Device_Selector && ) = delete;
 
@@ -647,7 +647,7 @@ class Mock_Device_Selector {
     /**
      * \brief Destructor.
      */
-    ~Mock_Device_Selector() noexcept = default;
+    ~Mock_Device_Selector() noexcept;
 
     auto operator=( Mock_Device_Selector && ) = delete;
 
@@ -688,7 +688,7 @@ class Mock_Device {
     /**
      * \brief Constructor.
      */
-    Mock_Device() = default;
+    Mock_Device();
 
     /**
      * \brief Constructor.
@@ -704,7 +704,7 @@ class Mock_Device {
     /**
      * \brief Destructor.
      */
-    ~Mock_Device() noexcept = default;
+    ~Mock_Device() noexcept;
 
     auto operator=( Mock_Device && ) = delete;
 

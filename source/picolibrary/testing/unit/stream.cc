@@ -21,3 +21,24 @@
  */
 
 #include "picolibrary/testing/unit/stream.h"
+
+namespace picolibrary::Testing::Unit {
+
+Mock_Stream_Buffer::Mock_Stream_Buffer()
+{
+}
+
+Mock_Stream_Buffer::~Mock_Stream_Buffer() noexcept
+{
+}
+
+Mock_Output_Stream::Mock_Output_Stream()
+{
+    set_buffer( &m_buffer );
+}
+
+Mock_Output_Stream::~Mock_Output_Stream() noexcept
+{
+}
+
+} // namespace picolibrary::Testing::Unit

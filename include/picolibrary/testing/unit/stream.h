@@ -45,7 +45,7 @@ class Mock_Stream_Buffer : public Stream_Buffer {
     /**
      * \brief Constructor.
      */
-    Mock_Stream_Buffer() = default;
+    Mock_Stream_Buffer();
 
     Mock_Stream_Buffer( Mock_Stream_Buffer && ) = delete;
 
@@ -54,7 +54,7 @@ class Mock_Stream_Buffer : public Stream_Buffer {
     /**
      * \brief Destructor.
      */
-    ~Mock_Stream_Buffer() noexcept = default;
+    ~Mock_Stream_Buffer() noexcept;
 
     auto operator=( Mock_Stream_Buffer && ) = delete;
 
@@ -187,10 +187,7 @@ class Mock_Output_Stream : public Output_Stream {
     /**
      * \brief Constructor.
      */
-    Mock_Output_Stream()
-    {
-        set_buffer( &m_buffer );
-    }
+    Mock_Output_Stream();
 
     Mock_Output_Stream( Mock_Output_Stream && ) = delete;
 
@@ -199,7 +196,7 @@ class Mock_Output_Stream : public Output_Stream {
     /**
      * \brief Destructor.
      */
-    ~Mock_Output_Stream() noexcept = default;
+    ~Mock_Output_Stream() noexcept;
 
     auto operator=( Mock_Output_Stream && ) = delete;
 

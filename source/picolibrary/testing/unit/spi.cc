@@ -21,3 +21,39 @@
  */
 
 #include "picolibrary/testing/unit/spi.h"
+
+namespace picolibrary::Testing::Unit::SPI {
+
+Mock_Basic_Controller::Mock_Basic_Controller()
+{
+}
+
+Mock_Basic_Controller::~Mock_Basic_Controller() noexcept
+{
+}
+
+Mock_Controller::Mock_Controller()
+{
+}
+
+Mock_Controller::~Mock_Controller() noexcept
+{
+}
+
+Mock_Device_Selector::Mock_Device_Selector()
+{
+}
+
+Mock_Device_Selector::~Mock_Device_Selector() noexcept
+{
+}
+
+Mock_Device::Mock_Device()
+{
+}
+
+Mock_Device::~Mock_Device() noexcept
+{
+}
+
+} // namespace picolibrary::Testing::Unit::SPI

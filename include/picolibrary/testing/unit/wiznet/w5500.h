@@ -98,7 +98,7 @@ class Mock_Communication_Controller : public SPI::Mock_Device {
     /**
      * \brief Constructor.
      */
-    Mock_Communication_Controller() = default;
+    Mock_Communication_Controller();
 
     /**
      * \brief Constructor.
@@ -114,7 +114,7 @@ class Mock_Communication_Controller : public SPI::Mock_Device {
     /**
      * \brief Destructor.
      */
-    ~Mock_Communication_Controller() noexcept = default;
+    ~Mock_Communication_Controller() noexcept;
 
     auto operator=( Mock_Communication_Controller && ) = delete;
 
@@ -264,7 +264,7 @@ class Mock_Driver : public Mock_Communication_Controller {
     /**
      * \brief Constructor.
      */
-    Mock_Driver() = default;
+    Mock_Driver();
 
     /**
      * \brief Constructor.
@@ -280,7 +280,7 @@ class Mock_Driver : public Mock_Communication_Controller {
     /**
      * \brief Destructor.
      */
-    ~Mock_Driver() noexcept = default;
+    ~Mock_Driver() noexcept;
 
     auto operator=( Mock_Driver && ) = delete;
 

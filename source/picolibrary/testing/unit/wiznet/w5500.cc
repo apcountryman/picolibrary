@@ -21,3 +21,23 @@
  */
 
 #include "picolibrary/testing/unit/wiznet/w5500.h"
+
+namespace picolibrary::Testing::Unit::WIZnet::W5500 {
+
+Mock_Communication_Controller::Mock_Communication_Controller()
+{
+}
+
+Mock_Communication_Controller::~Mock_Communication_Controller() noexcept
+{
+}
+
+Mock_Driver::Mock_Driver()
+{
+}
+
+Mock_Driver::~Mock_Driver() noexcept
+{
+}
+
+} // namespace picolibrary::Testing::Unit::WIZnet::W5500

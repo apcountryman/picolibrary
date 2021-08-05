@@ -21,3 +21,15 @@
  */
 
 #include "picolibrary/testing/unit/error.h"
+
+namespace picolibrary::Testing::Unit {
+
+Mock_Error_Category::Mock_Error_Category()
+{
+}
+
+Mock_Error_Category::~Mock_Error_Category() noexcept
+{
+}
+
+} // namespace picolibrary::Testing::Unit

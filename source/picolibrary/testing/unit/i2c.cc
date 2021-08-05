@@ -21,3 +21,31 @@
  */
 
 #include "picolibrary/testing/unit/i2c.h"
+
+namespace picolibrary::Testing::Unit::I2C {
+
+Mock_Basic_Controller::Mock_Basic_Controller()
+{
+}
+
+Mock_Basic_Controller::~Mock_Basic_Controller() noexcept
+{
+}
+
+Mock_Controller::Mock_Controller()
+{
+}
+
+Mock_Controller::~Mock_Controller() noexcept
+{
+}
+
+Mock_Device<std::uint8_t>::Mock_Device()
+{
+}
+
+Mock_Device<std::uint8_t>::~Mock_Device() noexcept
+{
+}
+
+} // namespace picolibrary::Testing::Unit::I2C

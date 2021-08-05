@@ -21,3 +21,23 @@
  */
 
 #include "picolibrary/testing/unit/microchip/mcp23008.h"
+
+namespace picolibrary::Testing::Unit::Microchip::MCP23008 {
+
+Mock_Register_Cache::Mock_Register_Cache()
+{
+}
+
+Mock_Register_Cache::~Mock_Register_Cache() noexcept
+{
+}
+
+Mock_Driver::Mock_Driver()
+{
+}
+
+Mock_Driver::~Mock_Driver() noexcept
+{
+}
+
+} // namespace picolibrary::Testing::Unit::Microchip::MCP23008

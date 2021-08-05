@@ -56,7 +56,7 @@ class Mock_Event_Category : public ::picolibrary::HSM::Event_Category {
     /**
      * \brief Constructor.
      */
-    Mock_Event_Category() = default;
+    Mock_Event_Category();
 
     Mock_Event_Category( Mock_Event_Category && ) = delete;
 
@@ -65,7 +65,7 @@ class Mock_Event_Category : public ::picolibrary::HSM::Event_Category {
     /**
      * \brief Destructor.
      */
-    ~Mock_Event_Category() noexcept = default;
+    ~Mock_Event_Category() noexcept;
 
     auto operator=( Mock_Event_Category && ) = delete;
 
@@ -83,16 +83,13 @@ class Mock_Event : public ::picolibrary::HSM::Event {
   public:
     Mock_Event(
         Mock_Event_Category const &  category = Mock_Event_Category::instance(),
-        ::picolibrary::HSM::Event_ID id       = random<::picolibrary::HSM::Event_ID>() ) :
-        ::picolibrary::HSM::Event{ category, id }
-    {
-    }
+        ::picolibrary::HSM::Event_ID id       = random<::picolibrary::HSM::Event_ID>() );
 
     Mock_Event( Mock_Event && ) = delete;
 
     Mock_Event( Mock_Event const & ) = delete;
 
-    virtual ~Mock_Event() noexcept override = default;
+    virtual ~Mock_Event() noexcept override;
 
     auto operator=( Mock_Event && ) = delete;
 

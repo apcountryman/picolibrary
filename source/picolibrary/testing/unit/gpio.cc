@@ -21,3 +21,39 @@
  */
 
 #include "picolibrary/testing/unit/gpio.h"
+
+namespace picolibrary::Testing::Unit::GPIO {
+
+Mock_Input_Pin::Mock_Input_Pin()
+{
+}
+
+Mock_Input_Pin::~Mock_Input_Pin() noexcept
+{
+}
+
+Mock_Internally_Pulled_Up_Input_Pin::Mock_Internally_Pulled_Up_Input_Pin()
+{
+}
+
+Mock_Internally_Pulled_Up_Input_Pin::~Mock_Internally_Pulled_Up_Input_Pin() noexcept
+{
+}
+
+Mock_Output_Pin::Mock_Output_Pin()
+{
+}
+
+Mock_Output_Pin::~Mock_Output_Pin() noexcept
+{
+}
+
+Mock_IO_Pin::Mock_IO_Pin()
+{
+}
+
+Mock_IO_Pin::~Mock_IO_Pin() noexcept
+{
+}
+
+} // namespace picolibrary::Testing::Unit::GPIO

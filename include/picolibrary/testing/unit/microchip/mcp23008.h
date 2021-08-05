@@ -90,7 +90,7 @@ class Mock_Register_Cache {
     /**
      * \brief Constructor.
      */
-    Mock_Register_Cache() = default;
+    Mock_Register_Cache();
 
     Mock_Register_Cache( Mock_Register_Cache && ) = delete;
 
@@ -99,7 +99,7 @@ class Mock_Register_Cache {
     /**
      * \brief Destructor.
      */
-    ~Mock_Register_Cache() noexcept = default;
+    ~Mock_Register_Cache() noexcept;
 
     auto operator=( Mock_Register_Cache && ) = delete;
 
@@ -152,7 +152,7 @@ class Mock_Driver : public I2C::Mock_Device<std::uint8_t>, public Mock_Register_
     /**
      * \brief Constructor.
      */
-    Mock_Driver() = default;
+    Mock_Driver();
 
     Mock_Driver( Mock_Driver && ) = delete;
 
@@ -161,7 +161,7 @@ class Mock_Driver : public I2C::Mock_Device<std::uint8_t>, public Mock_Register_
     /**
      * \brief Destructor.
      */
-    ~Mock_Driver() noexcept = default;
+    ~Mock_Driver() noexcept;
 
     auto operator=( Mock_Driver && ) = delete;
 

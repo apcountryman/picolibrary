@@ -21,3 +21,26 @@
  */
 
 #include "picolibrary/testing/unit/hsm.h"
+
+#include "picolibrary/hsm.h"
+
+namespace picolibrary::Testing::Unit::HSM {
+
+Mock_Event_Category::Mock_Event_Category()
+{
+}
+
+Mock_Event_Category::~Mock_Event_Category() noexcept
+{
+}
+
+Mock_Event::Mock_Event( Mock_Event_Category const & category, ::picolibrary::HSM::Event_ID id ) :
+    ::picolibrary::HSM::Event{ category, id }
+{
+}
+
+Mock_Event::~Mock_Event() noexcept
+{
+}
+
+} // namespace picolibrary::Testing::Unit::HSM
