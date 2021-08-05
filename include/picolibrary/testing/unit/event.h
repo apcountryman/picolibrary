@@ -17,29 +17,26 @@
 
 /**
  * \file
- * \brief picolibrary::Testing::Unit::HSM interface.
+ * \brief picolibrary::Testing::Unit::Event interface.
  */
 
-#ifndef PICOLIBRARY_TESTING_UNIT_HSM_H
-#define PICOLIBRARY_TESTING_UNIT_HSM_H
+#ifndef PICOLIBRARY_TESTING_UNIT_EVENT_H
+#define PICOLIBRARY_TESTING_UNIT_EVENT_H
 
 #include "gmock/gmock.h"
 #include "picolibrary/error.h"
-#include "picolibrary/hsm.h"
+#include "picolibrary/event.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
 #include "picolibrary/testing/unit/random.h"
 #include "picolibrary/void.h"
 
-/**
- * \brief Hierarchical State Machine (HSM) unit testing facilities.
- */
-namespace picolibrary::Testing::Unit::HSM {
+namespace picolibrary::Testing::Unit {
 
 /**
  * \brief Mock event category.
  */
-class Mock_Event_Category : public ::picolibrary::HSM::Event_Category {
+class Mock_Event_Category : public Event_Category {
   public:
     /**
      * \brief Get a reference to the mock event category instance.
@@ -73,18 +70,18 @@ class Mock_Event_Category : public ::picolibrary::HSM::Event_Category {
 
     MOCK_METHOD( char const *, name, (), ( const, noexcept, override ) );
 
-    MOCK_METHOD( char const *, event_description, ( ::picolibrary::HSM::Event_ID ), ( const, noexcept, override ) );
+    MOCK_METHOD( char const *, event_description, ( Event_ID ), ( const, noexcept, override ) );
 };
 
 /**
  * \brief Mock event.
  */
-class Mock_Event : public ::picolibrary::HSM::Event {
+class Mock_Event : public Event {
   public:
     Mock_Event(
-        Mock_Event_Category const &  category = Mock_Event_Category::instance(),
-        ::picolibrary::HSM::Event_ID id       = random<::picolibrary::HSM::Event_ID>() ) :
-        ::picolibrary::HSM::Event{ category, id }
+        Mock_Event_Category const & category = Mock_Event_Category::instance(),
+        Event_ID                    id       = random<Event_ID>() ) :
+        Event{ category, id }
     {
     }
 
@@ -101,6 +98,6 @@ class Mock_Event : public ::picolibrary::HSM::Event {
     MOCK_METHOD( (Result<Void, Error_Code>), print_details, (Output_Stream &), ( const, noexcept, override ) );
 };
 
-} // namespace picolibrary::Testing::Unit::HSM
+} // namespace picolibrary::Testing::Unit
 
-#endif // PICOLIBRARY_TESTING_UNIT_HSM_H
+#endif // PICOLIBRARY_TESTING_UNIT_EVENT_H

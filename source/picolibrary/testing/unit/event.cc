@@ -17,7 +17,7 @@
 
 /**
  * \file
- * \brief picolibrary::Testing::Unit::HSM implementation.
+ * \brief picolibrary::Testing::Unit::Event implementation.
  */
 
-#include "picolibrary/testing/unit/hsm.h"
+#include "picolibrary/testing/unit/event.h"

@@ -17,11 +17,11 @@
 
 /**
  * \file
- * \brief picolibrary::HSM interface.
+ * \brief picolibrary::Event interface.
  */
 
-#ifndef PICOLIBRARY_HSM_H
-#define PICOLIBRARY_HSM_H
+#ifndef PICOLIBRARY_EVENT_H
+#define PICOLIBRARY_EVENT_H
 
 #include <cstddef>
 #include <cstdint>
@@ -34,10 +34,7 @@
 #include "picolibrary/stream.h"
 #include "picolibrary/void.h"
 
-/**
- * \brief Hierarchical State Machine (HSM) facilities.
- */
-namespace picolibrary::HSM {
+namespace picolibrary {
 
 /**
  * \brief Event ID number.
@@ -61,18 +58,18 @@ class Event_Category {
      * \brief Get the name of the event category.
      *
      * \return The name of the event category if
-     *         PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION is not defined.
-     * \return An empty string if
-     *         PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION is defined.
+     *         PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION is not defined.
+     * \return An empty string if PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION is
+     *         defined.
      */
-#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION
+#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
     virtual auto name() const noexcept -> char const * = 0;
-#else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION
+#else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
     auto const * name() const noexcept
     {
         return "";
     }
-#endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION
+#endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
 
     /**
      * \brief Get an event ID's description.
@@ -80,18 +77,18 @@ class Event_Category {
      * \param[in] id The event ID whose description is to be got.
      *
      * \return The event ID's description if
-     *         PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION is not defined.
-     * \return An empty string if
-     *         PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION is defined.
+     *         PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION is not defined.
+     * \return An empty string if PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION is
+     *         defined.
      */
-#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION
+#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
     virtual auto event_description( Event_ID id ) const noexcept -> char const * = 0;
-#else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION
+#else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
     auto const * name() const noexcept
     {
         return "";
     }
-#endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION
+#endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
 
   protected:
     /**
@@ -154,21 +151,21 @@ class Event {
      *
      * \return Success.
      */
-#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION
+#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
     virtual auto print_details( Output_Stream & stream ) const noexcept -> Result<Void, Error_Code>
     {
         static_cast<void>( stream );
 
         return {};
     }
-#else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION
+#else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
     auto print_details( Output_Stream & stream ) const noexcept -> Result<Void, Void>
     {
         static_cast<void>( stream );
 
         return {};
     }
-#endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION
+#endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
 
   protected:
     /**
@@ -257,7 +254,7 @@ class Event_Storage {
      *
      * \param[in] event The event to be stored.
      */
-    template<typename Event, typename = std::enable_if_t<std::is_base_of_v<::picolibrary::HSM::Event, Event>>>
+    template<typename Event, typename = std::enable_if_t<std::is_base_of_v<::picolibrary::Event, Event>>>
     Event_Storage( Event && event ) noexcept
     {
         new ( &m_storage ) Event{ std::forward<Event>( event ) };
@@ -321,17 +318,13 @@ class Event_Storage {
     std::aligned_storage_t<SIZE, alignof( Event )> m_storage;
 };
 
-} // namespace picolibrary::HSM
-
-namespace picolibrary {
-
 /**
- * \brief picolibrary::HSM::Event output formatter.
+ * \brief picolibrary::Event output formatter.
  *
- * picolibrary::HSM::Event only supports the default format specification ("{}").
+ * picolibrary::Event only supports the default format specification ("{}").
  */
 template<>
-class Output_Formatter<HSM::Event> {
+class Output_Formatter<Event> {
   public:
     /**
      * \brief Constructor.
@@ -352,11 +345,10 @@ class Output_Formatter<HSM::Event> {
     auto operator=( Output_Formatter const & ) = delete;
 
     /**
-     * \brie Parse the format specification for the picolibrary::HSM::Event to be
-     *       formatted.
+     * \brie Parse the format specification for the picolibrary::Event to be formatted.
      *
-     * \param[in] format The format specification for the picolibrary::HSM::Event to
-     *            be formatted.
+     * \param[in] format The format specification for the picolibrary::Event to be
+     *            formatted.
      *
      * \return format.
      */
@@ -366,15 +358,15 @@ class Output_Formatter<HSM::Event> {
     }
 
     /**
-     * \brief Write the picolibrary::HSM::Event to the stream.
+     * \brief Write the picolibrary::Event to the stream.
      *
-     * \param[in] stream The stream to write the picolibrary::HSM::Event to.
-     * \param[in] event The picolibrary::HSM::Event to write to the stream.
+     * \param[in] stream The stream to write the picolibrary::Event to.
+     * \param[in] event The picolibrary::Event to write to the stream.
      *
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto print( Output_Stream & stream, HSM::Event const & event ) noexcept -> Result<Void, Error_Code>
+    auto print( Output_Stream & stream, Event const & event ) noexcept -> Result<Void, Error_Code>
     {
         {
             auto result = stream.print( "{}::{}", event.category().name(), event.description() );
@@ -389,4 +381,4 @@ class Output_Formatter<HSM::Event> {
 
 } // namespace picolibrary
 
-#endif // PICOLIBRARY_HSM_H
+#endif // PICOLIBRARY_EVENT_H

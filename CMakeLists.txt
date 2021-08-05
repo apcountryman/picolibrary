@@ -23,12 +23,12 @@ project(
 )
 
 # project configuration
-option( PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION     "picolibrary: suppress human readable error information"     OFF )
-option( PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION "picolibrary: suppress human readable HSM event information" OFF )
-option( PICOLIBRARY_ENABLE_INTERACTIVE_TESTING                    "picolibrary: enable interactive testing"                    OFF )
-option( PICOLIBRARY_ENABLE_UNIT_TESTING                           "picolibrary: enable unit testing"                           OFF )
-option( PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS                "picolibrary: use parent project's build flags"              ON  )
-option( PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST                "picolibrary: use parent project's Google Test"              ON  )
+option( PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION "picolibrary: suppress human readable error information" OFF )
+option( PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION "picolibrary: suppress human readable event information" OFF )
+option( PICOLIBRARY_ENABLE_INTERACTIVE_TESTING                "picolibrary: enable interactive testing"                OFF )
+option( PICOLIBRARY_ENABLE_UNIT_TESTING                       "picolibrary: enable unit testing"                       OFF )
+option( PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS            "picolibrary: use parent project's build flags"          ON  )
+option( PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST            "picolibrary: use parent project's Google Test"          ON  )
 
 set( PICOLIBRARY_HARDWARE_INCLUDE_DIR "" CACHE STRING "picolibrary: hardware specific header files include directory" )
 
@@ -36,9 +36,9 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} AND ${PICOLIBRARY_SUPPRESS_HUMAN_READABLE
     message( FATAL_ERROR "picolibrary unit tests require human readable error information" )
 endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} AND ${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION} )
 
-if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} AND ${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION} )
-    message( FATAL_ERROR "picolibrary unit tests require human readable HSM event information" )
-endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} AND ${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_HSM_EVENT_INFORMATION} )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} AND ${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION} )
+    message( FATAL_ERROR "picolibrary unit tests require human readable event information" )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} AND ${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION} )
 
 # load additional CMake modules
 list(

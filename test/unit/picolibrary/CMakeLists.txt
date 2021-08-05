@@ -34,6 +34,9 @@ add_subdirectory( crc )
 # build the picolibrary::Error_Code unit tests
 add_subdirectory( error_code )
 
+# build the picolibrary::Event unit tests
+add_subdirectory( event )
+
 # build the picolibrary::Format unit tests
 add_subdirectory( format )
 
@@ -45,9 +48,6 @@ add_subdirectory( generic_error_category )
 
 # build the picolibrary::GPIO unit tests
 add_subdirectory( gpio )
-
-# build the picolibrary::HSM unit tests
-add_subdirectory( hsm )
 
 # build the picolibrary::I2C unit tests
 add_subdirectory( i2c )
