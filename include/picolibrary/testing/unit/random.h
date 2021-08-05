@@ -36,7 +36,7 @@ namespace picolibrary::Testing::Unit {
  *
  * \return The unit testing pseudo-random number generator.
  */
-auto & pseudo_random_number_generator()
+inline auto & pseudo_random_number_generator()
 {
     static auto generator = std::mt19937{ std::random_device{}() };
 
@@ -141,7 +141,7 @@ auto random_container( std::size_t size = random<std::uint_fast8_t>() )
  * \return A pseudo-random std::string of the specified length.
  */
 template<>
-auto random_container<std::string>( std::size_t length )
+inline auto random_container<std::string>( std::size_t length )
 {
     auto string = std::string( length, ' ' );
 
