@@ -257,6 +257,8 @@ class Event_Storage {
     template<typename Event, typename = std::enable_if_t<std::is_base_of_v<::picolibrary::Event, Event>>>
     Event_Storage( Event && event ) noexcept
     {
+        static_assert( sizeof( Event ) <= SIZE );
+
         new ( &m_storage ) Event{ std::forward<Event>( event ) };
     }
 
@@ -271,6 +273,8 @@ class Event_Storage {
     template<typename Event, typename... Arguments>
     Event_Storage( Event_Type<Event>, Arguments &&... arguments ) noexcept
     {
+        static_assert( sizeof( Event ) <= SIZE );
+
         new ( &m_storage )
             typename Event_Type<Event>::Type{ std::forward<Arguments>( arguments )... };
     }
