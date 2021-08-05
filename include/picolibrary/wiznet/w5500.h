@@ -1645,6 +1645,14 @@ enum class Link_Mode : std::uint8_t {
 };
 
 /**
+ * \brief WIZnet W5500 link speed.
+ */
+enum class Link_Speed : std::uint8_t {
+    _10_MBPS  = 0b0 << PHYCFGR::Bit::SPD, ///< 10 Mb/s.
+    _100_MBPS = 0b1 << PHYCFGR::Bit::SPD, ///< 100 Mb/s.
+};
+
+/**
  * \brief WIZnet W5500 socket buffer size.
  */
 enum class Buffer_Size : std::uint8_t {
