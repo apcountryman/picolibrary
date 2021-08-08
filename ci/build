@@ -93,14 +93,6 @@ function main()
         local argument="$1"; shift
 
         case "$argument" in
-            --help)
-                display_help_text
-                exit
-                ;;
-            --version)
-                display_version
-                exit
-                ;;
             --configuration)
                 if [[ -n "$configuration" ]]; then
                     abort "build configuration already specified"
@@ -115,6 +107,14 @@ function main()
                 if [[ "$configuration" != "release" && "$configuration" != "testing-interactive" && "$configuration" != "testing-unit" ]]; then
                     abort "'$configuration' is not a supported build configuration"
                 fi
+                ;;
+            --help)
+                display_help_text
+                exit
+                ;;
+            --version)
+                display_version
+                exit
                 ;;
             --*)
                 ;&
