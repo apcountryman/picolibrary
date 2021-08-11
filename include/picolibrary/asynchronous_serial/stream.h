@@ -84,7 +84,10 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
     auto operator=( Unbuffered_Output_Stream_Buffer const & ) = delete;
 
     /**
-     * \copydoc picolibrary::Stream_Buffer::initialize()
+     * \brief Initialize the transmitter's hardware.
+     *
+     * \return Nothing if transmitter hardware initialization succeeded.
+     * \return An error code if transmitter hardware initialization failed.
      */
     virtual auto initialize() noexcept -> Result<Void, Error_Code> override final
     {
@@ -92,7 +95,12 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
     }
 
     /**
-     * \copydoc picolibrary::Stream_Buffer::put( char )
+     * \brief Transmit a character.
+     *
+     * \param[in] character The character to transmit.
+     *
+     * \return Nothing if transmission succeeded.
+     * \return An error code if transmission failed.
      */
     virtual auto put( char character ) noexcept -> Result<Void, Error_Code> override final
     {
@@ -100,7 +108,12 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
     }
 
     /**
-     * \copydoc picolibrary::Stream_Buffer::put( std::uint8_t )
+     * \brief Transmit an unsigned byte.
+     *
+     * \param[in] value The unsigned byte to transmit.
+     *
+     * \return Nothing if transmission succeeded.
+     * \return An error code if transmission failed.
      */
     virtual auto put( std::uint8_t value ) noexcept -> Result<Void, Error_Code> override final
     {
@@ -108,7 +121,12 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
     }
 
     /**
-     * \copydoc picolibrary::Stream_Buffer::put( std::int8_t )
+     * \brief Transmit a signed byte.
+     *
+     * \param[in] value The signed byte to transmit.
+     *
+     * \return Nothing if transmission succeeded.
+     * \return An error code if transmission failed.
      */
     virtual auto put( std::int8_t value ) noexcept -> Result<Void, Error_Code> override final
     {
@@ -116,7 +134,9 @@ class Unbuffered_Output_Stream_Buffer : public Stream_Buffer {
     }
 
     /**
-     * \copydoc picolibrary::Stream_Buffer::flush()
+     * \brief Transmit any data that is buffered in the put area of the buffer.
+     *
+     * \return Success.
      */
     virtual auto flush() noexcept -> Result<Void, Error_Code> override final
     {

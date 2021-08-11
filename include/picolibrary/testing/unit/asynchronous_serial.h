@@ -43,7 +43,7 @@ template<typename Data_Type>
 class Mock_Basic_Transmitter {
   public:
     /**
-     * \copydoc picolibrary::Asynchronous_Serial::Basic_Transmitter_Concept::Data
+     * \brief The integral type used to hold the data to be transmitted.
      */
     using Data = Data_Type;
 
@@ -53,7 +53,7 @@ class Mock_Basic_Transmitter {
     class Handle {
       public:
         /**
-         * \copydoc picolibrary::Asynchronous_Serial::Basic_Transmitter_Concept::Data
+         * \brief The integral type used to hold the data to be transmitted.
          */
         using Data = Data_Type;
 
@@ -193,7 +193,7 @@ template<typename Data_Type>
 class Mock_Transmitter {
   public:
     /**
-     * \copydoc picolibrary::Asynchronous_Serial::Transmitter_Concept::Data
+     * \brief The integral type used to hold the data to be transmitted.
      */
     using Data = Data_Type;
 
@@ -203,7 +203,7 @@ class Mock_Transmitter {
     class Handle {
       public:
         /**
-         * \copydoc picolibrary::Asynchronous_Serial::Transmitter_Concept::Data
+         * \brief The integral type used to hold the data to be transmitted.
          */
         using Data = Data_Type;
 

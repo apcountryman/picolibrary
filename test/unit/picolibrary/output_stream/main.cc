@@ -57,59 +57,36 @@ using ::testing::Ref;
 using ::testing::Return;
 using ::testing::SafeMatcherCast;
 
-/**
- * \brief Formatted output test type.
- */
 enum class Foo {};
 
 } // namespace
 
-/**
- * \brief Foo output formatter.
- */
 template<>
 class picolibrary::Output_Formatter<::Foo> {
   public:
-    /**
-     * \brief Constructor.
-     */
     Output_Formatter() noexcept = default;
 
     Output_Formatter( Output_Formatter && ) = delete;
 
     Output_Formatter( Output_Formatter const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Output_Formatter() noexcept = default;
 
     auto operator=( Output_Formatter && ) = delete;
 
     auto operator=( Output_Formatter const & ) = delete;
 
-    /**
-     * \copydoc picolibrary::Output_Formatter::parse()
-     */
     auto parse( char const * format ) noexcept
     {
         return Testing::Unit::Mock_Output_Formatter<::Foo>::instance().parse( format );
     }
 
-    /**
-     * \copydoc picolibrary::Output_Formatter::print()
-     */
     auto print( Output_Stream & stream, ::Foo const & value ) noexcept
     {
         return Testing::Unit::Mock_Output_Formatter<::Foo>::instance().print( stream, value );
     }
 };
 
-/**
- * \brief Generate a pseudo-random Foo.
- *
- * \return A pseudo-randomly generated Foo.
- */
 template<>
 inline auto picolibrary::Testing::Unit::random<::Foo>()
 {

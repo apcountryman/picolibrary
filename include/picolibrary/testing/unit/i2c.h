@@ -113,17 +113,17 @@ inline auto random<I2C::Response>()
 namespace picolibrary::Testing::Unit::I2C {
 
 /**
- * \copydoc picolibrary::I2C::Address
+ * \brief Device address.
  */
 using Address = ::picolibrary::I2C::Address;
 
 /**
- * \copydoc picolibrary::I2C::Operation
+ * \brief Operation.
  */
 using Operation = ::picolibrary::I2C::Operation;
 
 /**
- * \copydoc picolibrary::I2C::Response
+ * \brief Response.
  */
 using Response = ::picolibrary::I2C::Response;
 
