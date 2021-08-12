@@ -45,7 +45,7 @@ template<typename Value_Type, Value_Type MIN_SAMPLE, Value_Type MAX_SAMPLE>
 class Mock_Blocking_Single_Sample_Converter {
   public:
     /**
-     * \copydoc picolibrary::ADC::Blocking_Single_Sample_Converter_Concept::Sample
+     * \brief ADC sample.
      */
     using Sample = ::picolibrary::ADC::Sample<Value_Type, MIN_SAMPLE, MAX_SAMPLE>;
 
@@ -55,7 +55,7 @@ class Mock_Blocking_Single_Sample_Converter {
     class Handle {
       public:
         /**
-         * \copydoc picolibrary::ADC::Blocking_Single_Sample_Converter_Concept::Sample
+         * \brief ADC sample.
          */
         using Sample = ::picolibrary::ADC::Sample<Value_Type, MIN_SAMPLE, MAX_SAMPLE>;
 
@@ -196,7 +196,7 @@ template<typename Value_Type, Value_Type MIN_SAMPLE, Value_Type MAX_SAMPLE>
 class Mock_Non_Blocking_Single_Sample_Converter {
   public:
     /**
-     * \copydoc picolibrary::ADC::Non_Blocking_Single_Sample_Converter_Concept::Sample
+     * \brief ADC sample.
      */
     using Sample = ::picolibrary::ADC::Sample<Value_Type, MIN_SAMPLE, MAX_SAMPLE>;
 
@@ -206,7 +206,7 @@ class Mock_Non_Blocking_Single_Sample_Converter {
     class Handle {
       public:
         /**
-         * \copydoc picolibrary::ADC::Non_Blocking_Single_Sample_Converter_Concept::Sample
+         * \brief ADC sample.
          */
         using Sample = ::picolibrary::ADC::Sample<Value_Type, MIN_SAMPLE, MAX_SAMPLE>;
 
@@ -375,7 +375,7 @@ template<typename Value_Type, Value_Type MIN_SAMPLE, Value_Type MAX_SAMPLE>
 class Mock_Blocking_Free_Running_Converter {
   public:
     /**
-     * \copydoc picolibrary::ADC::Blocking_Free_Running_Converter_Concept::Sample
+     * \brief ADC sample.
      */
     using Sample = ::picolibrary::ADC::Sample<Value_Type, MIN_SAMPLE, MAX_SAMPLE>;
 
@@ -385,7 +385,7 @@ class Mock_Blocking_Free_Running_Converter {
     class Handle {
       public:
         /**
-         * \copydoc picolibrary::ADC::Blocking_Free_Running_Converter_Concept::Sample
+         * \brief ADC sample.
          */
         using Sample = ::picolibrary::ADC::Sample<Value_Type, MIN_SAMPLE, MAX_SAMPLE>;
 
@@ -552,7 +552,7 @@ template<typename Value_Type, Value_Type MIN_SAMPLE, Value_Type MAX_SAMPLE>
 class Mock_Non_Blocking_Free_Running_Converter {
   public:
     /**
-     * \copydoc picolibrary::ADC::Non_Blocking_Free_Running_Converter_Concept::Sample
+     * \brief ADC sample.
      */
     using Sample = ::picolibrary::ADC::Sample<Value_Type, MIN_SAMPLE, MAX_SAMPLE>;
 
@@ -562,7 +562,7 @@ class Mock_Non_Blocking_Free_Running_Converter {
     class Handle {
       public:
         /**
-         * \copydoc picolibrary::ADC::Non_Blocking_Free_Running_Converter_Concept::Sample
+         * \brief ADC sample.
          */
         using Sample = ::picolibrary::ADC::Sample<Value_Type, MIN_SAMPLE, MAX_SAMPLE>;
 

@@ -47,7 +47,9 @@ struct is_error_code_enum : std::false_type {
 };
 
 /**
- * \copydoc picolibrary::is_error_code_enum
+ * \brief Check if an enum is an error code enum.
+ *
+ * \tparam Enum The enum to check.
  */
 template<typename Enum>
 constexpr auto is_error_code_enum_v = is_error_code_enum<Enum>::value;
@@ -274,7 +276,12 @@ class Error_Code final {
 
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
         /**
-         * \copydoc picolibrary::Error_Category::name()
+         * \brief Get the name of the error category.
+         *
+         * \return The name of the error category if
+         *         PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION is not defined.
+         * \return An empty string if
+         *         PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION is defined.
          */
         virtual auto name() const noexcept -> char const * override final
         {
@@ -284,7 +291,14 @@ class Error_Code final {
 
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
         /**
-         * \copydoc picolibrary::Error_Category::error_description()
+         * \brief Get an error ID's description.
+         *
+         * \param[in] id The error ID whose description is to be got.
+         *
+         * \return The error ID's description if
+         *         PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION is not defined.
+         * \return An empty string if
+         *         PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION is defined.
          */
         virtual auto error_description( Error_ID id ) const noexcept -> char const * override final
         {
@@ -398,7 +412,12 @@ class Generic_Error_Category final : public Error_Category {
 
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
     /**
-     * \copydoc picolibrary::Error_Category::name()
+     * \brief Get the name of the error category.
+     *
+     * \return The name of the error category if
+     *         PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION is not defined.
+     * \return An empty string if PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION is
+     *         defined.
      */
     virtual auto name() const noexcept -> char const * override final
     {
@@ -408,7 +427,14 @@ class Generic_Error_Category final : public Error_Category {
 
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
     /**
-     * \copydoc picolibrary::Error_Category::error_description()
+     * \brief Get an error ID's description.
+     *
+     * \param[in] id The error ID whose description is to be got.
+     *
+     * \return The error ID's description if
+     *         PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION is not defined.
+     * \return An empty string if PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION is
+     *         defined.
      */
     virtual auto error_description( Error_ID id ) const noexcept -> char const * override final
     {

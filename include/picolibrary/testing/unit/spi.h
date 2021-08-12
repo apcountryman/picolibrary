@@ -43,7 +43,8 @@ namespace picolibrary::Testing::Unit::SPI {
 class Mock_Basic_Controller {
   public:
     /**
-     * \copydoc picolibrary::SPI::Basic_Controller_Concept::Configuration
+     * \brief Clock (frequency, polarity, and phase), and data exchange bit order
+     *        configuration.
      */
     using Configuration = std::uint_fast16_t;
 
@@ -53,7 +54,8 @@ class Mock_Basic_Controller {
     class Handle {
       public:
         /**
-         * \copydoc picolibrary::SPI::Basic_Controller_Concept::Configuration
+         * \brief Clock (frequency, polarity, and phase), and data exchange bit order
+         *        configuration.
          */
         using Configuration = std::uint_fast16_t;
 
@@ -207,7 +209,8 @@ class Mock_Basic_Controller {
 class Mock_Controller {
   public:
     /**
-     * \copydoc picolibrary::SPI::Controller_Concept::Configuration
+     * \brief Clock (frequency, polarity, and phase), and data exchange bit order
+     *        configuration.
      */
     using Configuration = std::uint_fast16_t;
 
@@ -217,7 +220,8 @@ class Mock_Controller {
     class Handle {
       public:
         /**
-         * \copydoc picolibrary::SPI::Controller_Concept::Configuration
+         * \brief Clock (frequency, polarity, and phase), and data exchange bit order
+         *        configuration.
          */
         using Configuration = std::uint_fast16_t;
 
@@ -676,12 +680,12 @@ class Mock_Device_Selector {
 class Mock_Device {
   public:
     /**
-     * \copydoc picolibrary::SPI::Device::Controller
+     * \brief The type of controller used to communicate with the device.
      */
     using Controller = Mock_Controller;
 
     /**
-     * \copydoc picolibrary::SPI::Device::Device_Selector
+     * \brief The type of device selector used to select and deselect the device.
      */
     using Device_Selector = Mock_Device_Selector::Handle;
 

@@ -264,7 +264,10 @@ class Stream {
     }
 
     /**
-     * \copydoc picolibrary::Stream::error_present()
+     * \brief Check if errors are present (I/O error and/or fatal error present).
+     *
+     * \return true if errors are present.
+     * \return false if no errors are present.
      */
     constexpr auto operator!() const noexcept
     {

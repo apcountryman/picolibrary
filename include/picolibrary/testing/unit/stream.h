@@ -67,7 +67,15 @@ class Mock_Stream_Buffer : public Stream_Buffer {
     MOCK_METHOD( (Result<Void, Error_Code>), put, ( std::string ) );
 
     /**
-     * \copydoc picolibrary::Stream_Buffer::put( char const *, char const * )
+     * \brief Write a block of characters to the put area of the buffer.
+     *
+     * \param[in] begin The beginning of the block of characters to write to the put area
+     *            of the buffer.
+     * \param[in] end The end of the block of characters to write to the put area of the
+     *            buffer.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
      */
     virtual auto put( char const * begin, char const * end ) noexcept -> Result<Void, Error_Code> override
     {
@@ -75,7 +83,13 @@ class Mock_Stream_Buffer : public Stream_Buffer {
     }
 
     /**
-     * \copydoc picolibrary::Stream_Buffer::put( char const * )
+     * \brief Write a null-terminated string to the put area of the buffer.
+     *
+     * \param[in] string The null-terminated string to write to the put area of the
+     *            buffer.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
      */
     virtual auto put( char const * string ) noexcept -> Result<Void, Error_Code> override
     {
@@ -87,7 +101,15 @@ class Mock_Stream_Buffer : public Stream_Buffer {
     MOCK_METHOD( (Result<Void, Error_Code>), put, (std::vector<std::uint8_t>));
 
     /**
-     * \copydoc picolibrary::Stream_Buffer::put( std::uint8_t const *, std::uint8_t const * )
+     * \brief Write a block of unsigned bytes to the put area of the buffer.
+     *
+     * \param[in] begin The beginning of the block of unsigned bytes to write to the put
+     *            area of the buffer.
+     * \param[in] end The end of the block of unsigned bytes to write to the put area of
+     *            the buffer.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
      */
     virtual auto put( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
         -> Result<Void, Error_Code> override
@@ -100,7 +122,15 @@ class Mock_Stream_Buffer : public Stream_Buffer {
     MOCK_METHOD( (Result<Void, Error_Code>), put, (std::vector<std::int8_t>));
 
     /**
-     * \copydoc picolibrary::Stream_Buffer::put( std::int8_t const *, std::int8_t const * )
+     * \brief Write a block of signed bytes to the put area of the buffer.
+     *
+     * \param[in] begin The beginning of the block of signed bytes to write to the put
+     *            area of the buffer.
+     * \param[in] end The end of the block of signed bytes to write to the put area of the
+     *            buffer.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
      */
     virtual auto put( std::int8_t const * begin, std::int8_t const * end ) noexcept
         -> Result<Void, Error_Code> override
@@ -272,7 +302,9 @@ class String_Stream_Buffer : public Stream_Buffer {
     }
 
     /**
-     * \copydoc picolibrary::Stream_Buffer::initialize()
+     * \brief Initialize the string's hardware.
+     *
+     * \return Success.
      */
     virtual auto initialize() noexcept -> Result<Void, Error_Code> override final
     {
@@ -280,7 +312,11 @@ class String_Stream_Buffer : public Stream_Buffer {
     }
 
     /**
-     * \copydoc picolibrary::Stream_Buffer::put( char )
+     * \brief Write a character to the string.
+     *
+     * \param[in] character The character to write to the string.
+     *
+     * \return Success.
      */
     virtual auto put( char character ) noexcept -> Result<Void, Error_Code> override final
     {
@@ -290,7 +326,11 @@ class String_Stream_Buffer : public Stream_Buffer {
     }
 
     /**
-     * \copydoc picolibrary::Stream_Buffer::put( std::uint8_t )
+     * \brief Write an unsigned byte to the string.
+     *
+     * \param[in] value The unsigned byte to write to the string.
+     *
+     * \return Success.
      */
     virtual auto put( std::uint8_t value ) noexcept -> Result<Void, Error_Code> override final
     {
@@ -300,7 +340,11 @@ class String_Stream_Buffer : public Stream_Buffer {
     }
 
     /**
-     * \copydoc picolibrary::Stream_Buffer::put( std::int8_t )
+     * \brief Write a signed byte to the string.
+     *
+     * \param[in] value The signed byte to write to the string.
+     *
+     * \return Success.
      */
     virtual auto put( std::int8_t value ) noexcept -> Result<Void, Error_Code> override final
     {
@@ -310,7 +354,9 @@ class String_Stream_Buffer : public Stream_Buffer {
     }
 
     /**
-     * \copydoc picolibrary::Stream_Buffer::flush()
+     * \brief Write any data that is buffered in the put area of the buffer to the string.
+     *
+     * \return Success.
      */
     virtual auto flush() noexcept -> Result<Void, Error_Code> override final
     {

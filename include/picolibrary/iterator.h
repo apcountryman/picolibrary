@@ -75,7 +75,9 @@ struct Iterator_Traits {
 };
 
 /**
- * \copydoc picolibrary::Iterator_Traits
+ * \brief Iterator traits.
+ *
+ * \tparam Iterator The iterator type whose traits will be retrieved.
  */
 template<typename Iterator>
 struct Iterator_Traits<Iterator, std::void_t<typename Iterator::Difference, typename Iterator::Value, typename Iterator::Pointer, typename Iterator::Reference, typename Iterator::Iterator_Category>> {

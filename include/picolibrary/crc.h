@@ -404,7 +404,15 @@ class Bitwise_Calculator {
         -> Bitwise_Calculator & = default;
 
     /**
-     * \copydoc picolibrary::CRC::Calculator_Concept::calculate()
+     * \brief Calculate the CRC remainder for a message.
+     *
+     * \tparam Iterator Message iterator. The iterated over type must be convertible to a
+     *         std::uint8_t.
+     *
+     * \param[in] begin The beginning of the message to perform the calculation on.
+     * \param[in] end The end of the message to perform the calculation on.
+     *
+     * \return The CRC remainder for the message.
      */
     template<typename Iterator>
     auto calculate( Iterator begin, Iterator end ) const noexcept -> Register
@@ -561,7 +569,15 @@ class Augmented_Nibble_Indexed_Lookup_Table_Calculator {
         -> Augmented_Nibble_Indexed_Lookup_Table_Calculator & = default;
 
     /**
-     * \copydoc picolibrary::CRC::Calculator_Concept::calculate()
+     * \brief Calculate the CRC remainder for a message.
+     *
+     * \tparam Iterator Message iterator. The iterated over type must be convertible to a
+     *         std::uint8_t.
+     *
+     * \param[in] begin The beginning of the message to perform the calculation on.
+     * \param[in] end The end of the message to perform the calculation on.
+     *
+     * \return The CRC remainder for the message.
      */
     template<typename Iterator>
     auto calculate( Iterator begin, Iterator end ) const noexcept -> Register
@@ -712,7 +728,15 @@ class Direct_Nibble_Indexed_Lookup_Table_Calculator {
         -> Direct_Nibble_Indexed_Lookup_Table_Calculator & = default;
 
     /**
-     * \copydoc picolibrary::CRC::Calculator_Concept::calculate()
+     * \brief Calculate the CRC remainder for a message.
+     *
+     * \tparam Iterator Message iterator. The iterated over type must be convertible to a
+     *         std::uint8_t.
+     *
+     * \param[in] begin The beginning of the message to perform the calculation on.
+     * \param[in] end The end of the message to perform the calculation on.
+     *
+     * \return The CRC remainder for the message.
      */
     template<typename Iterator>
     auto calculate( Iterator begin, Iterator end ) const noexcept -> Register
@@ -875,7 +899,15 @@ class Augmented_Byte_Indexed_Lookup_Table_Calculator {
         -> Augmented_Byte_Indexed_Lookup_Table_Calculator & = default;
 
     /**
-     * \copydoc picolibrary::CRC::Calculator_Concept::calculate()
+     * \brief Calculate the CRC remainder for a message.
+     *
+     * \tparam Iterator Message iterator. The iterated over type must be convertible to a
+     *         std::uint8_t.
+     *
+     * \param[in] begin The beginning of the message to perform the calculation on.
+     * \param[in] end The end of the message to perform the calculation on.
+     *
+     * \return The CRC remainder for the message.
      */
     template<typename Iterator>
     auto calculate( Iterator begin, Iterator end ) const noexcept -> Register
@@ -1026,7 +1058,15 @@ class Direct_Byte_Indexed_Lookup_Table_Calculator {
         -> Direct_Byte_Indexed_Lookup_Table_Calculator & = default;
 
     /**
-     * \copydoc picolibrary::CRC::Calculator_Concept::calculate()
+     * \brief Calculate the CRC remainder for a message.
+     *
+     * \tparam Iterator Message iterator. The iterated over type must be convertible to a
+     *         std::uint8_t.
+     *
+     * \param[in] begin The beginning of the message to perform the calculation on.
+     * \param[in] end The end of the message to perform the calculation on.
+     *
+     * \return The CRC remainder for the message.
      */
     template<typename Iterator>
     auto calculate( Iterator begin, Iterator end ) const noexcept -> Register
