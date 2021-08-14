@@ -120,17 +120,67 @@ TEST( constructorMove, worksProperly )
  * \brief Verify picolibrary::SPI::Device_Selection_Guard::~Device_Selection_Guard()
  *        properly handles a device deselection error.
  */
-TEST( destructor, deselectionError )
+TEST( destructorDeathTest, deselectionError )
 {
-    auto device_selector = Mock_Device_Selector{};
+    EXPECT_DEATH(
+        {
+            auto device_selector = Mock_Device_Selector{};
 
-    EXPECT_CALL( device_selector, select() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( device_selector, select() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
-    auto const result = make_device_selection_guard( device_selector );
+            auto const result = make_device_selection_guard( device_selector );
 
-    EXPECT_FALSE( result.is_error() );
+            EXPECT_FALSE( result.is_error() );
 
-    EXPECT_CALL( device_selector, deselect() ).WillOnce( Return( random<Mock_Error>() ) );
+            EXPECT_CALL( device_selector, deselect() ).WillOnce( Return( random<Mock_Error>() ) );
+        },
+        "" );
+}
+
+/**
+ * \brief Verify picolibrary::SPI::Device_Selection_Guard::operator=(
+ *        picolibrary::SPI::Device_Selection_Guard && ) properly handles a device
+ *        deselection error
+ */
+TEST( assignmentOperatorMoveDeathTest, deselectionError )
+{
+    EXPECT_DEATH(
+        {
+            auto device_selector = Mock_Device_Selector{};
+
+            EXPECT_CALL( device_selector, select() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+            auto expression = Device_Selection_Guard{};
+            auto object     = make_device_selection_guard( device_selector );
+
+            EXPECT_FALSE( object.is_error() );
+
+            EXPECT_CALL( device_selector, deselect() ).WillOnce( Return( random<Mock_Error>() ) );
+
+            object.value() = std::move( expression );
+        },
+        "" );
+
+    EXPECT_DEATH(
+        {
+            auto device_selector_expression = Mock_Device_Selector{};
+            auto device_selector_object     = Mock_Device_Selector{};
+
+            EXPECT_CALL( device_selector_expression, select() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( device_selector_object, select() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+            auto expression = make_device_selection_guard( device_selector_expression );
+            auto object     = make_device_selection_guard( device_selector_object );
+
+            EXPECT_FALSE( expression.is_error() );
+            EXPECT_FALSE( object.is_error() );
+
+            EXPECT_CALL( device_selector_expression, deselect() ).Times( 0 );
+            EXPECT_CALL( device_selector_object, deselect() ).WillOnce( Return( random<Mock_Error>() ) );
+
+            object.value() = std::move( expression ).value();
+        },
+        "" );
 }
 
 /**

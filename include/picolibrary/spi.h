@@ -28,6 +28,7 @@
 
 #include "picolibrary/algorithm.h"
 #include "picolibrary/error.h"
+#include "picolibrary/fatal_error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/void.h"
 
@@ -456,9 +457,7 @@ class GPIO_Output_Pin_Device_Selector : public GPIO_Output_Pin {
  * \tparam Device_Selector The type of SPI device selector used to select and deselect the
  *         device.
  *
- * \warning Device deselection failures are ignored. A device selector wrapper class can
- *          be used to add device selection failure error handling to the device
- *          selector's device deselection function.
+ * \warning Device deselection failure is treated as a fatal error.
  */
 template<typename Device_Selector>
 class Device_Selection_Guard;
@@ -509,9 +508,7 @@ class Device_Selection_Guard {
      */
     ~Device_Selection_Guard() noexcept
     {
-        if ( m_device_selector ) {
-            static_cast<void>( m_device_selector->deselect() );
-        } // if
+        deselect();
     }
 
     /**
@@ -524,9 +521,7 @@ class Device_Selection_Guard {
     constexpr auto & operator=( Device_Selection_Guard && expression ) noexcept
     {
         if ( &expression != this ) {
-            if ( m_device_selector ) {
-                static_cast<void>( m_device_selector->deselect() );
-            } // if
+            deselect();
 
             m_device_selector = expression.m_device_selector;
 
@@ -559,6 +554,19 @@ class Device_Selection_Guard {
     constexpr Device_Selection_Guard( Device_Selector & device_selector ) noexcept :
         m_device_selector{ &device_selector }
     {
+    }
+
+    /**
+     * \brief Deselect the device.
+     */
+    constexpr void deselect() noexcept
+    {
+        if ( m_device_selector ) {
+            auto result = m_device_selector->deselect();
+            if ( result.is_error() ) {
+                trap_fatal_error( result.error() );
+            } // if
+        }     // if
     }
 };
 
