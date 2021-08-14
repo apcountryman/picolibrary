@@ -25,6 +25,7 @@
 
 #include <utility>
 
+#include "picolibrary/fatal_error.h"
 #include "picolibrary/stream.h"
 
 /**
@@ -52,7 +53,11 @@ void state( Output_Stream & stream, Input_Pin pin, Delayer delay ) noexcept
     {
         auto const result = pin.initialize();
         if ( result.is_error() ) {
-            static_cast<void>( stream.print( "pin initialization error: {}\n", result.error() ) );
+            auto const print_result = stream.print(
+                "pin initialization error: {}\n", result.error() );
+            if ( print_result.is_error() ) {
+                trap_fatal_error( print_result.error() );
+            } // if
 
             return;
         } // if
@@ -63,13 +68,19 @@ void state( Output_Stream & stream, Input_Pin pin, Delayer delay ) noexcept
 
         auto const result = pin.state();
         if ( result.is_error() ) {
-            static_cast<void>( stream.print( "pin state getting error: {}\n", result.error() ) );
+            auto const print_result = stream.print(
+                "pin state getting error: {}\n", result.error() );
+            if ( print_result.is_error() ) {
+                trap_fatal_error( print_result.error() );
+            } // if
 
             return;
         } // if
 
-        if ( stream.print( "pin is {}\n", result.value().is_high() ? "high" : "low" ).is_error() ) {
-            return;
+        auto const state = result.value();
+        auto const print_result = stream.print( "pin is {}\n", state.is_high() ? "high" : "low" );
+        if ( print_result.is_error() ) {
+            trap_fatal_error( print_result.error() );
         } // if
     }     // for
 }
@@ -96,9 +107,12 @@ void state( Transmitter transmitter, Input_Pin pin, Delayer delay ) noexcept
 {
     auto stream = Output_Stream{ std::move( transmitter ) };
 
-    if ( stream.initialize().is_error() ) {
-        return;
-    } // if
+    {
+        auto const result = stream.initialize();
+        if ( result.is_error() ) {
+            trap_fatal_error( result.error() );
+        } // if
+    }
 
     state( stream, std::move( pin ), std::move( delay ) );
 }
@@ -121,7 +135,11 @@ void toggle( Output_Stream & stream, Output_Pin pin, Delayer delay ) noexcept
     {
         auto const result = pin.initialize();
         if ( result.is_error() ) {
-            static_cast<void>( stream.print( "pin initialization error: {}\n", result.error() ) );
+            auto const print_result = stream.print(
+                "pin initialization error: {}\n", result.error() );
+            if ( print_result.is_error() ) {
+                trap_fatal_error( print_result.error() );
+            } // if
 
             return;
         } // if
@@ -132,7 +150,10 @@ void toggle( Output_Stream & stream, Output_Pin pin, Delayer delay ) noexcept
 
         auto const result = pin.toggle();
         if ( result.is_error() ) {
-            static_cast<void>( stream.print( "pin toggle error: {}\n", result.error() ) );
+            auto const print_result = stream.print( "pin toggle error: {}\n", result.error() );
+            if ( print_result.is_error() ) {
+                trap_fatal_error( print_result.error() );
+            } // if
 
             return;
         } // if
@@ -161,9 +182,12 @@ void toggle( Transmitter transmitter, Output_Pin pin, Delayer delay ) noexcept
 {
     auto stream = Output_Stream{ std::move( transmitter ) };
 
-    if ( stream.initialize().is_error() ) {
-        return;
-    } // if
+    {
+        auto const result = stream.initialize();
+        if ( result.is_error() ) {
+            trap_fatal_error( result.error() );
+        } // if
+    }
 
     toggle( stream, std::move( pin ), std::move( delay ) );
 }

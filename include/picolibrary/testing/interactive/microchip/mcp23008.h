@@ -26,6 +26,7 @@
 #include <cstdint>
 
 #include "picolibrary/error.h"
+#include "picolibrary/fatal_error.h"
 #include "picolibrary/i2c.h"
 #include "picolibrary/microchip/mcp23008.h"
 #include "picolibrary/testing/interactive/gpio.h"
@@ -65,15 +66,21 @@ void state( Transmitter transmitter, Controller controller, I2C::Address address
 
     auto stream = Output_Stream{ std::move( transmitter ) };
 
-    if ( stream.initialize().is_error() ) {
-        return;
-    } // if
+    {
+        auto const result = stream.initialize();
+        if ( result.is_error() ) {
+            trap_fatal_error( result.error() );
+        } // if
+    }
 
     {
         auto const result = controller.initialize();
         if ( result.is_error() ) {
-            static_cast<void>(
-                stream.print( "controller initialization error: {}\n", result.error() ) );
+            auto const print_result = stream.print(
+                "controller initialization error: {}\n", result.error() );
+            if ( print_result.is_error() ) {
+                trap_fatal_error( print_result.error() );
+            } // if
 
             return;
         } // if
@@ -85,7 +92,11 @@ void state( Transmitter transmitter, Controller controller, I2C::Address address
         auto result = ::picolibrary::Microchip::MCP23008::make_driver(
             &nop, controller, address, Generic_Error::NONRESPONSIVE_DEVICE );
         if ( result.is_error() ) {
-            static_cast<void>( stream.print( "driver construction error: {}\n", result.error() ) );
+            auto const print_result = stream.print(
+                "driver construction error: {}\n", result.error() );
+            if ( print_result.is_error() ) {
+                trap_fatal_error( print_result.error() );
+            } // if
 
             return;
         } // if
@@ -130,15 +141,21 @@ void toggle( Transmitter transmitter, Controller controller, I2C::Address addres
 
     auto stream = Output_Stream{ std::move( transmitter ) };
 
-    if ( stream.initialize().is_error() ) {
-        return;
-    } // if
+    {
+        auto const result = stream.initialize();
+        if ( result.is_error() ) {
+            trap_fatal_error( result.error() );
+        } // if
+    }
 
     {
         auto const result = controller.initialize();
         if ( result.is_error() ) {
-            static_cast<void>(
-                stream.print( "controller initialization error: {}\n", result.error() ) );
+            auto const print_result = stream.print(
+                "controller initialization error: {}\n", result.error() );
+            if ( print_result.is_error() ) {
+                trap_fatal_error( print_result.error() );
+            } // if
 
             return;
         } // if
@@ -150,7 +167,11 @@ void toggle( Transmitter transmitter, Controller controller, I2C::Address addres
         auto result = ::picolibrary::Microchip::MCP23008::make_driver(
             &nop, controller, address, Generic_Error::NONRESPONSIVE_DEVICE );
         if ( result.is_error() ) {
-            static_cast<void>( stream.print( "driver construction error: {}\n", result.error() ) );
+            auto const print_result = stream.print(
+                "driver construction error: {}\n", result.error() );
+            if ( print_result.is_error() ) {
+                trap_fatal_error( print_result.error() );
+            } // if
 
             return;
         } // if
