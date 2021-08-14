@@ -303,23 +303,27 @@ TEST( pingOperation, readError )
  *        std::uint8_t>::ping( picolibrary::I2C::Operation ) properly handles a stop
  *        condition transmission error.
  */
-TEST( pingOperation, stopError )
+TEST( pingOperationDeathTest, stopError )
 {
-    auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
-    auto controller              = Mock_Controller{};
+    EXPECT_DEATH(
+        ( {
+            auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
+            auto controller              = Mock_Controller{};
 
-    auto const device = Device{ bus_multiplexer_aligner.AsStdFunction(),
-                                controller,
-                                random<Address>(),
-                                random<Mock_Error>() };
+            auto const device = Device{ bus_multiplexer_aligner.AsStdFunction(),
+                                        controller,
+                                        random<Address>(),
+                                        random<Mock_Error>() };
 
-    EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, read( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( controller, stop() ).WillOnce( Return( random<Mock_Error>() ) );
+            EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, read( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
+            EXPECT_CALL( controller, stop() ).WillOnce( Return( random<Mock_Error>() ) );
 
-    EXPECT_FALSE( device.ping( random<Operation>() ).is_error() );
+            static_cast<void>( device.ping( random<Operation>() ) );
+        } ),
+        "" );
 }
 
 /**
@@ -503,23 +507,27 @@ TEST( ping, readError )
  * \brief Verify picolibrary::I2C::Device<Bus_Multiplexer_Aligner, Controller,
  *        std::uint8_t>::ping() properly handles a stop condition transmission error.
  */
-TEST( ping, stopError )
+TEST( pingDeathTest, stopError )
 {
-    auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
-    auto controller              = Mock_Controller{};
+    EXPECT_DEATH(
+        ( {
+            auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
+            auto controller              = Mock_Controller{};
 
-    auto const device = Device{ bus_multiplexer_aligner.AsStdFunction(),
-                                controller,
-                                random<Address>(),
-                                random<Mock_Error>() };
+            auto const device = Device{ bus_multiplexer_aligner.AsStdFunction(),
+                                        controller,
+                                        random<Address>(),
+                                        random<Mock_Error>() };
 
-    EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, start() ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, address( _, _ ) ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, read( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( controller, stop() ).WillRepeatedly( Return( random<Mock_Error>() ) );
+            EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, start() ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, address( _, _ ) ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, read( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
+            EXPECT_CALL( controller, stop() ).WillRepeatedly( Return( random<Mock_Error>() ) );
 
-    EXPECT_FALSE( device.ping().is_error() );
+            static_cast<void>( device.ping() );
+        } ),
+        "" );
 }
 
 /**
@@ -839,25 +847,29 @@ TEST( readRegister, readError )
  *        std::uint8_t>::read( std::uint8_t ) properly handles a stop condition
  *        transmission error.
  */
-TEST( readRegister, stopError )
+TEST( readRegisterDeathTest, stopError )
 {
-    auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
-    auto controller              = Mock_Controller{};
+    EXPECT_DEATH(
+        ( {
+            auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
+            auto controller              = Mock_Controller{};
 
-    auto const device = Device{ bus_multiplexer_aligner.AsStdFunction(),
-                                controller,
-                                random<Address>(),
-                                random<Mock_Error>() };
+            auto const device = Device{ bus_multiplexer_aligner.AsStdFunction(),
+                                        controller,
+                                        random<Address>(),
+                                        random<Mock_Error>() };
 
-    EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, address( _, _ ) ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, write( A<std::uint8_t>() ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, repeated_start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, read( _ ) ).WillOnce( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( controller, stop() ).WillOnce( Return( random<Mock_Error>() ) );
+            EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, address( _, _ ) ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, write( A<std::uint8_t>() ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, repeated_start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, read( _ ) ).WillOnce( Return( random<std::uint8_t>() ) );
+            EXPECT_CALL( controller, stop() ).WillOnce( Return( random<Mock_Error>() ) );
 
-    EXPECT_FALSE( device.read( random<std::uint8_t>() ).is_error() );
+            static_cast<void>( device.read( random<std::uint8_t>() ) );
+        } ),
+        "" );
 }
 
 /**
@@ -1195,29 +1207,33 @@ TEST( readRegisterBlock, readError )
  *        std::uint8_t>::read( std::uint8_t, std::uint8_t *, std::uint8_t * ) properly
  *        handles a stop condition transmission error.
  */
-TEST( readRegisterBlock, stopError )
+TEST( readRegisterBlockDeathTest, stopError )
 {
-    auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
-    auto controller              = Mock_Controller{};
+    EXPECT_DEATH(
+        ( {
+            auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
+            auto controller              = Mock_Controller{};
 
-    auto const device = Device{ bus_multiplexer_aligner.AsStdFunction(),
-                                controller,
-                                random<Address>(),
-                                random<Mock_Error>() };
+            auto const device = Device{ bus_multiplexer_aligner.AsStdFunction(),
+                                        controller,
+                                        random<Address>(),
+                                        random<Mock_Error>() };
 
-    auto const size = random<std::uint_fast8_t>( 1 );
+            auto const size = random<std::uint_fast8_t>( 1 );
 
-    EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, address( _, _ ) ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, write( A<std::uint8_t>() ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, repeated_start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, read( A<std::vector<std::uint8_t>>(), _ ) )
-        .WillOnce( Return( random_container<std::vector<std::uint8_t>>( size ) ) );
-    EXPECT_CALL( controller, stop() ).WillOnce( Return( random<Mock_Error>() ) );
+            EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, address( _, _ ) ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, write( A<std::uint8_t>() ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, repeated_start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, read( A<std::vector<std::uint8_t>>(), _ ) )
+                .WillOnce( Return( random_container<std::vector<std::uint8_t>>( size ) ) );
+            EXPECT_CALL( controller, stop() ).WillOnce( Return( random<Mock_Error>() ) );
 
-    auto data = std::vector<std::uint8_t>( size );
-    EXPECT_FALSE( device.read( random<std::uint8_t>(), &*data.begin(), &*data.end() ).is_error() );
+            auto data = std::vector<std::uint8_t>( size );
+            static_cast<void>( device.read( random<std::uint8_t>(), &*data.begin(), &*data.end() ) );
+        } ),
+        "" );
 }
 
 /**
@@ -1482,23 +1498,28 @@ TEST( writeRegister, nonresponsiveDeviceErrorWriteData )
  *        std::uint8_t>::write( std::uint8_t, std::uint8_t ) properly handles a stop
  *        condition transmission error.
  */
-TEST( writeRegister, stopError )
+TEST( writeRegisterDeathTest, stopError )
 {
-    auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
-    auto controller              = Mock_Controller{};
+    EXPECT_DEATH(
+        ( {
+            auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
+            auto controller              = Mock_Controller{};
 
-    auto device = Device{ bus_multiplexer_aligner.AsStdFunction(),
-                          controller,
-                          random<Address>(),
-                          random<Mock_Error>() };
+            auto device = Device{ bus_multiplexer_aligner.AsStdFunction(),
+                                  controller,
+                                  random<Address>(),
+                                  random<Mock_Error>() };
 
-    EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, write( A<std::uint8_t>() ) ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, stop() ).WillOnce( Return( random<Mock_Error>() ) );
+            EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, write( A<std::uint8_t>() ) )
+                .WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, stop() ).WillOnce( Return( random<Mock_Error>() ) );
 
-    EXPECT_FALSE( device.write( random<std::uint8_t>(), random<std::uint8_t>() ).is_error() );
+            static_cast<void>( device.write( random<std::uint8_t>(), random<std::uint8_t>() ) );
+        } ),
+        "" );
 }
 
 /**
@@ -1763,26 +1784,30 @@ TEST( writeRegisterBlock, nonresponsiveDeviceErrorWriteData )
  *        std::uint8_t>::write( std::uint8_t, std::uint8_t const *, std::uint8_t const * )
  *        properly handles a stop condition transmission error.
  */
-TEST( writeRegisterBlock, stopError )
+TEST( writeRegisterBlockDeathTest, stopError )
 {
-    auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
-    auto controller              = Mock_Controller{};
+    EXPECT_DEATH(
+        ( {
+            auto bus_multiplexer_aligner = MockFunction<Result<Void, Error_Code>()>{};
+            auto controller              = Mock_Controller{};
 
-    auto device = Device{ bus_multiplexer_aligner.AsStdFunction(),
-                          controller,
-                          random<Address>(),
-                          random<Mock_Error>() };
+            auto device = Device{ bus_multiplexer_aligner.AsStdFunction(),
+                                  controller,
+                                  random<Address>(),
+                                  random<Mock_Error>() };
 
-    EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, write( A<std::uint8_t>() ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, write( A<std::vector<std::uint8_t>>() ) )
-        .WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, stop() ).WillOnce( Return( random<Mock_Error>() ) );
+            EXPECT_CALL( bus_multiplexer_aligner, Call() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, write( A<std::uint8_t>() ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, write( A<std::vector<std::uint8_t>>() ) )
+                .WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, stop() ).WillOnce( Return( random<Mock_Error>() ) );
 
-    auto const data = random_container<std::vector<std::uint8_t>>();
-    auto const result = device.write( random<std::uint8_t>(), &*data.begin(), &*data.end() );
+            auto const data = random_container<std::vector<std::uint8_t>>();
+            static_cast<void>( device.write( random<std::uint8_t>(), &*data.begin(), &*data.end() ) );
+        } ),
+        "" );
 }
 
 /**

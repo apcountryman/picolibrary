@@ -119,17 +119,67 @@ TEST( constructorMove, worksProperly )
  * \brief Verify picolibrary::I2C::Bus_Control_Guard::~Bus_Control_Guard() properly
  *        handles a stop condition transmission error.
  */
-TEST( destructor, stopError )
+TEST( destructorDeathTest, stopError )
 {
-    auto controller = Mock_Controller{};
+    EXPECT_DEATH(
+        {
+            auto controller = Mock_Controller{};
 
-    EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
-    auto const result = make_bus_control_guard( controller );
+            auto const result = make_bus_control_guard( controller );
 
-    EXPECT_FALSE( result.is_error() );
+            EXPECT_FALSE( result.is_error() );
 
-    EXPECT_CALL( controller, stop() ).WillOnce( Return( random<Mock_Error>() ) );
+            EXPECT_CALL( controller, stop() ).WillOnce( Return( random<Mock_Error>() ) );
+        },
+        "" );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::Bus_Control_Guard::operator=(
+ *        picolibrary::I2C::Bus_Control_Guard && ) properly handles a stop condition
+ *        transmission error.
+ */
+TEST( assignmentOperatorMoveDeathTest, stopError )
+{
+    EXPECT_DEATH(
+        {
+            auto controller = Mock_Controller{};
+
+            EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+            auto expression = Bus_Control_Guard{};
+            auto object     = make_bus_control_guard( controller );
+
+            EXPECT_FALSE( object.is_error() );
+
+            EXPECT_CALL( controller, stop() ).WillOnce( Return( random<Mock_Error>() ) );
+
+            object.value() = std::move( expression );
+        },
+        "" );
+
+    EXPECT_DEATH(
+        {
+            auto controller_expression = Mock_Controller{};
+            auto controller_object     = Mock_Controller{};
+
+            EXPECT_CALL( controller_expression, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller_object, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+            auto expression = make_bus_control_guard( controller_expression );
+            auto object     = make_bus_control_guard( controller_object );
+
+            EXPECT_FALSE( expression.is_error() );
+            EXPECT_FALSE( object.is_error() );
+
+            EXPECT_CALL( controller_expression, stop() ).Times( 0 );
+            EXPECT_CALL( controller_object, stop() ).WillOnce( Return( random<Mock_Error>() ) );
+
+            object.value() = std::move( expression ).value();
+        },
+        "" );
 }
 
 /**

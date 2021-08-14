@@ -112,16 +112,20 @@ TEST( ping, readError )
  * \brief Verify picolibrary::I2C::ping() properly handles a stop condition transmission
  *        error.
  */
-TEST( ping, stopError )
+TEST( pingDeathTest, stopError )
 {
-    auto controller = Mock_Controller{};
+    EXPECT_DEATH(
+        {
+            auto controller = Mock_Controller{};
 
-    EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, read( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( controller, stop() ).WillOnce( Return( random<Mock_Error>() ) );
+            EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, read( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
+            EXPECT_CALL( controller, stop() ).WillOnce( Return( random<Mock_Error>() ) );
 
-    EXPECT_FALSE( ping( controller, random<Address>(), random<Operation>() ).is_error() );
+            static_cast<void>( ping( controller, random<Address>(), random<Operation>() ) );
+        },
+        "" );
 }
 
 /**
@@ -225,18 +229,22 @@ TEST( scan, readError )
  * \brief Verify picolibrary::I2C::scan() properly handles a stop condition transmission
  *        error.
  */
-TEST( scan, stopError )
+TEST( scanDeathTest, stopError )
 {
-    auto controller = Mock_Controller{};
-    auto functor    = MockFunction<Result<Void, Error_Code>( Address, Operation )>{};
+    EXPECT_DEATH(
+        ( {
+            auto controller = Mock_Controller{};
+            auto functor = MockFunction<Result<Void, Error_Code>( Address, Operation )>{};
 
-    EXPECT_CALL( controller, start() ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, address( _, _ ) ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( controller, read( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( controller, stop() ).WillRepeatedly( Return( random<Mock_Error>() ) );
-    EXPECT_CALL( functor, Call( _, _ ) ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, start() ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, address( _, _ ) ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, read( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
+            EXPECT_CALL( controller, stop() ).WillRepeatedly( Return( random<Mock_Error>() ) );
+            EXPECT_CALL( functor, Call( _, _ ) ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
 
-    EXPECT_FALSE( scan( controller, functor.AsStdFunction() ).is_error() );
+            static_cast<void>( scan( controller, functor.AsStdFunction() ) );
+        } ),
+        "" );
 }
 
 /**

@@ -28,6 +28,7 @@
 
 #include "picolibrary/algorithm.h"
 #include "picolibrary/error.h"
+#include "picolibrary/fatal_error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/void.h"
 
@@ -675,9 +676,7 @@ class Controller : public Basic_Controller {
  * \tparam[in] Controller The type of I2C controller that is used to interact with the
  *             bus.
  *
- * \warning Stop condition transmission failures are ignored. A controller wrapper class
- *          can be used to add stop condition transmission failure error handling to the
- *          controller's stop condition transmission function.
+ * \warning Stop condition transmission failure is treated as a fatal error.
  */
 template<typename Controller>
 class Bus_Control_Guard;
@@ -790,8 +789,11 @@ class Bus_Control_Guard {
     constexpr void stop() noexcept
     {
         if ( m_controller ) {
-            static_cast<void>( m_controller->stop() );
-        } // if
+            auto result = m_controller->stop();
+            if ( result.is_error() ) {
+                trap_fatal_error();
+            } // if
+        }     // if
     }
 };
 
