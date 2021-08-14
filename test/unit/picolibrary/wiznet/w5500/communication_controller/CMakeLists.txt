@@ -26,6 +26,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     target_link_libraries(
         test-unit-picolibrary-wiznet-w5500-communication_controller
         picolibrary
+        picolibrary-fatal_error
     )
     add_test(
         NAME    test-unit-picolibrary-wiznet-w5500-communication_controller

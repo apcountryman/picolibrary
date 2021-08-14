@@ -126,3 +126,16 @@ target_link_libraries(
     picolibrary
     ${PICOLIBRARY_LINK_LIBRARIES}
 )
+
+add_library(
+    picolibrary-fatal_error STATIC
+    "picolibrary/fatal_error.cc"
+)
+target_include_directories(
+    picolibrary-fatal_error
+    PUBLIC "${PROJECT_SOURCE_DIR}/include"
+)
+target_link_libraries(
+    picolibrary-fatal_error
+    picolibrary
+)

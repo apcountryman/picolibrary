@@ -26,6 +26,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     target_link_libraries(
         test-unit-picolibrary-asynchronous_serial-unbuffered_output_stream_buffer
         picolibrary
+        picolibrary-fatal_error
     )
     add_test(
         NAME    test-unit-picolibrary-asynchronous_serial-unbuffered_output_stream_buffer

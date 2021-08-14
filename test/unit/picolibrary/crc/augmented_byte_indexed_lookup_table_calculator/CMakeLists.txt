@@ -26,6 +26,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     target_link_libraries(
         test-unit-picolibrary-crc-augmented_byte_indexed_lookup_table_calculator
         picolibrary
+        picolibrary-fatal_error
     )
     add_test(
         NAME    test-unit-picolibrary-crc-augmented_byte_indexed_lookup_table_calculator
