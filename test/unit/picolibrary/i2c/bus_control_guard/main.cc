@@ -145,6 +145,23 @@ TEST( assignmentOperatorMoveDeathTest, stopError )
 {
     EXPECT_DEATH(
         {
+            auto controller = Mock_Controller{};
+
+            EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+            auto expression = Bus_Control_Guard{};
+            auto object     = make_bus_control_guard( controller );
+
+            EXPECT_FALSE( object.is_error() );
+
+            EXPECT_CALL( controller, stop() ).WillOnce( Return( random<Mock_Error>() ) );
+
+            object.value() = std::move( expression );
+        },
+        "" );
+
+    EXPECT_DEATH(
+        {
             auto controller_expression = Mock_Controller{};
             auto controller_object     = Mock_Controller{};
 
