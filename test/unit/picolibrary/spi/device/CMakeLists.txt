@@ -25,6 +25,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     target_link_libraries(
         test-unit-picolibrary-spi-device
         picolibrary
+        picolibrary-fatal_error
     )
     add_test(
         NAME    test-unit-picolibrary-spi-device

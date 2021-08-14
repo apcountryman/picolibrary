@@ -26,6 +26,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     target_link_libraries(
         test-unit-picolibrary-microchip-mcp3008-blocking_single_sample_converter
         picolibrary
+        picolibrary-fatal_error
     )
     add_test(
         NAME    test-unit-picolibrary-microchip-mcp3008-blocking_single_sample_converter

@@ -28,6 +28,20 @@ target_link_libraries(
 )
 ```
 
+The `picolibrary` static library does not provide implementations for the
+`picolibrary::trap_fatal_error()` overload set.
+Library users can either provide application specific implementations for this overload
+set, or link with the `picolibrary-fatal_error` static library to use the implementations
+it provides.
+See `include/picolibrary/fatal_error.h` for more information.
+```cmake
+target_link_libraries(
+    foo
+    picolibrary
+    picolibrary-fatal_error
+)
+```
+
 ## Usage (Development)
 This repository's Git `pre-commit` hook script is the simplest way to configure, build,
 and test this project during development.

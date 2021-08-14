@@ -37,6 +37,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     target_link_libraries(
         test-unit-picolibrary-i2c
         picolibrary
+        picolibrary-fatal_error
     )
     add_test(
         NAME    test-unit-picolibrary-i2c
