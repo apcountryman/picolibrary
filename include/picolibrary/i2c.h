@@ -791,7 +791,7 @@ class Bus_Control_Guard {
         if ( m_controller ) {
             auto result = m_controller->stop();
             if ( result.is_error() ) {
-                trap_fatal_error();
+                trap_fatal_error( result.error() );
             } // if
         }     // if
     }
