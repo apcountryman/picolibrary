@@ -33,8 +33,10 @@ void trap_fatal_error() noexcept
     std::abort();
 }
 
-void trap_fatal_error( Error_Code const & ) noexcept
+void trap_fatal_error( Error_Code const & fatal_error ) noexcept
 {
+    static_cast<void>( fatal_error );
+
     std::abort();
 }
 
