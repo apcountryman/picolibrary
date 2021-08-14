@@ -109,26 +109,6 @@ TEST( ping, readError )
 }
 
 /**
- * \brief Verify picolibrary::I2C::ping() properly handles a stop condition transmission
- *        error.
- */
-TEST( pingDeathTest, stopError )
-{
-    EXPECT_DEATH(
-        {
-            auto controller = Mock_Controller{};
-
-            EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-            EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-            EXPECT_CALL( controller, read( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
-            EXPECT_CALL( controller, stop() ).WillOnce( Return( random<Mock_Error>() ) );
-
-            static_cast<void>( ping( controller, random<Address>(), random<Operation>() ) );
-        },
-        "" );
-}
-
-/**
  * \brief Verify picolibrary::I2C::ping() works properly.
  */
 TEST( ping, worksProperly )
@@ -223,28 +203,6 @@ TEST( scan, readError )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
-}
-
-/**
- * \brief Verify picolibrary::I2C::scan() properly handles a stop condition transmission
- *        error.
- */
-TEST( scanDeathTest, stopError )
-{
-    EXPECT_DEATH(
-        ( {
-            auto controller = Mock_Controller{};
-            auto functor = MockFunction<Result<Void, Error_Code>( Address, Operation )>{};
-
-            EXPECT_CALL( controller, start() ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
-            EXPECT_CALL( controller, address( _, _ ) ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
-            EXPECT_CALL( controller, read( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
-            EXPECT_CALL( controller, stop() ).WillRepeatedly( Return( random<Mock_Error>() ) );
-            EXPECT_CALL( functor, Call( _, _ ) ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
-
-            static_cast<void>( scan( controller, functor.AsStdFunction() ) );
-        } ),
-        "" );
 }
 
 /**
