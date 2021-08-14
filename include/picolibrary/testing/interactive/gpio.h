@@ -132,6 +132,8 @@ void state( Transmitter transmitter, Input_Pin pin, Delayer delay ) noexcept
 template<typename Output_Pin, typename Delayer>
 void toggle( Output_Stream & stream, Output_Pin pin, Delayer delay ) noexcept
 {
+    // #lizard forgives the length
+
     {
         auto const result = pin.initialize();
         if ( result.is_error() ) {
