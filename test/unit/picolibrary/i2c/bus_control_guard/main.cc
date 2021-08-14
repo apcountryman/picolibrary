@@ -119,17 +119,21 @@ TEST( constructorMove, worksProperly )
  * \brief Verify picolibrary::I2C::Bus_Control_Guard::~Bus_Control_Guard() properly
  *        handles a stop condition transmission error.
  */
-TEST( destructor, stopError )
+TEST( destructorDeathTest, stopError )
 {
-    auto controller = Mock_Controller{};
+    EXPECT_DEATH(
+        {
+            auto controller = Mock_Controller{};
 
-    EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( controller, start() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
-    auto const result = make_bus_control_guard( controller );
+            auto const result = make_bus_control_guard( controller );
 
-    EXPECT_FALSE( result.is_error() );
+            EXPECT_FALSE( result.is_error() );
 
-    EXPECT_CALL( controller, stop() ).WillOnce( Return( random<Mock_Error>() ) );
+            EXPECT_CALL( controller, stop() ).WillOnce( Return( random<Mock_Error>() ) );
+        },
+        "" );
 }
 
 /**
