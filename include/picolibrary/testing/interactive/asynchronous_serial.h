@@ -23,6 +23,8 @@
 #ifndef PICOLIBRARY_TESTING_INTERACTIVE_ASYNCHRONOUS_SERIAL_H
 #define PICOLIBRARY_TESTING_INTERACTIVE_ASYNCHRONOUS_SERIAL_H
 
+#include "picolibrary/fatal_error.h"
+
 /**
  * \brief Asynchronous serial interactive testing facilities.
  */
@@ -38,15 +40,18 @@ namespace picolibrary::Testing::Interactive::Asynchronous_Serial {
 template<typename Transmitter>
 void hello_world( Transmitter transmitter ) noexcept
 {
-    if ( transmitter.initialize().is_error() ) {
-        return;
-    } // if
-
+    {
+        auto const result = transmitter.initialize();
+        if ( result.is_error() ) {
+            trap_fatal_error( result.error() );
+        } // if
+    }
     auto const * string = "Hello, world!\n";
 
     while ( auto const character = *string++ ) {
-        if ( transmitter.transmit( character ).is_error() ) {
-            return;
+        auto const result = transmitter.transmit( character );
+        if ( result.is_error() ) {
+            trap_fatal_error( result.error() );
         } // if
     }     // while
 }
