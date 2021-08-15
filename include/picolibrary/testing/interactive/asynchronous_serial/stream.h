@@ -54,9 +54,9 @@ void hello_world( Transmitter transmitter ) noexcept
     }
 
     {
-        auto const result = stream.put( "Hello, world!\n" );
-        if ( result.is_error() ) {
-            trap_fatal_error( result.error() );
+        auto const put_result = stream.put( "Hello, world!\n" );
+        if ( put_result.is_error() ) {
+            trap_fatal_error( put_result.error() );
         } // if
     }
 }
