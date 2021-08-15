@@ -25,6 +25,7 @@
 
 #include <utility>
 
+#include "picolibrary/fatal_error.h"
 #include "picolibrary/format.h"
 #include "picolibrary/i2c.h"
 
@@ -53,15 +54,21 @@ void scan( Transmitter transmitter, Controller controller ) noexcept
 
     auto stream = Output_Stream{ std::move( transmitter ) };
 
-    if ( stream.initialize().is_error() ) {
-        return;
-    } // if
+    {
+        auto const result = stream.initialize();
+        if ( result.is_error() ) {
+            trap_fatal_error( result.error() );
+        } // if
+    }
 
     {
         auto const result = controller.initialize();
         if ( result.is_error() ) {
-            static_cast<void>(
-                stream.print( "controller initialization error: {}\n", result.error() ) );
+            auto const print_result = stream.print(
+                "controller initialization error: {}\n", result.error() );
+            if ( print_result.is_error() ) {
+                trap_fatal_error( print_result.error() );
+            } // if
 
             return;
         } // if
@@ -80,14 +87,20 @@ void scan( Transmitter transmitter, Controller controller ) noexcept
                     operation == ::picolibrary::I2C::Operation::READ ? 'R' : 'W' );
             } );
         if ( result.is_error() ) {
-            static_cast<void>( stream.print( "scan error: {}\n", result.error() ) );
+            auto const print_result = stream.print( "scan error: {}\n", result.error() );
+            if ( print_result.is_error() ) {
+                trap_fatal_error( print_result.error() );
+            } // if
 
             return;
         } // if
 
         if ( not devices_found ) {
-            static_cast<void>( stream.put( "no devices found\n" ) );
-        } // if
+            auto const put_result = stream.put( "no devices found\n" );
+            if ( put_result.is_error() ) {
+                trap_fatal_error( put_result.error() );
+            } // if
+        }     // if
     }
 }
 

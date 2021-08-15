@@ -26,6 +26,7 @@
 #include <utility>
 
 #include "picolibrary/error.h"
+#include "picolibrary/fatal_error.h"
 #include "picolibrary/microchip/mcp3008.h"
 #include "picolibrary/testing/interactive/adc.h"
 
@@ -72,15 +73,21 @@ void sample(
 
     auto stream = Output_Stream{ std::move( transmitter ) };
 
-    if ( stream.initialize().is_error() ) {
-        return;
-    } // if
+    {
+        auto const result = stream.initialize();
+        if ( result.is_error() ) {
+            trap_fatal_error( result.error() );
+        } // if
+    }
 
     {
         auto const result = controller.initialize();
         if ( result.is_error() ) {
-            static_cast<void>(
-                stream.print( "controller initialization error: {}\n", result.error() ) );
+            auto const print_result = stream.print(
+                "controller initialization error: {}\n", result.error() );
+            if ( print_result.is_error() ) {
+                trap_fatal_error( print_result.error() );
+            } // if
 
             return;
         } // if
@@ -93,7 +100,11 @@ void sample(
     {
         auto const result = mcp3008.initialize();
         if ( result.is_error() ) {
-            static_cast<void>( stream.print( "MCP3008 initialization error: {}\n", result.error() ) );
+            auto const print_result = stream.print(
+                "MCP3008 initialization error: {}\n", result.error() );
+            if ( print_result.is_error() ) {
+                trap_fatal_error( print_result.error() );
+            } // if
 
             return;
         } // if

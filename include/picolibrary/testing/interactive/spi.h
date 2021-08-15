@@ -26,6 +26,7 @@
 #include <cstdint>
 #include <utility>
 
+#include "picolibrary/fatal_error.h"
 #include "picolibrary/format.h"
 
 /**
@@ -59,15 +60,21 @@ void echo( Transmitter transmitter, Controller controller, typename Controller::
 
     auto stream = Output_Stream{ std::move( transmitter ) };
 
-    if ( stream.initialize().is_error() ) {
-        return;
-    } // if
+    {
+        auto const result = stream.initialize();
+        if ( result.is_error() ) {
+            trap_fatal_error( result.error() );
+        } // if
+    }
 
     {
         auto const result = controller.initialize();
         if ( result.is_error() ) {
-            static_cast<void>(
-                stream.print( "controller initialization error: {}\n", result.error() ) );
+            auto const print_result = stream.print(
+                "controller initialization error: {}\n", result.error() );
+            if ( print_result.is_error() ) {
+                trap_fatal_error( print_result.error() );
+            } // if
 
             return;
         } // if
@@ -76,8 +83,11 @@ void echo( Transmitter transmitter, Controller controller, typename Controller::
     {
         auto const result = controller.configure( configuration );
         if ( result.is_error() ) {
-            static_cast<void>(
-                stream.print( "controller configuration error: {}\n", result.error() ) );
+            auto const print_result = stream.print(
+                "controller configuration error: {}\n", result.error() );
+            if ( print_result.is_error() ) {
+                trap_fatal_error( print_result.error() );
+            } // if
 
             return;
         } // if
@@ -88,22 +98,27 @@ void echo( Transmitter transmitter, Controller controller, typename Controller::
 
         auto const result = controller.exchange( value );
         if ( result.is_error() ) {
-            static_cast<void>( stream.print( "data exchange error: {}\n", result.error() ) );
+            auto const print_result = stream.print( "data exchange error: {}\n", result.error() );
+            if ( print_result.is_error() ) {
+                trap_fatal_error( print_result.error() );
+            } // if
 
             return;
         } // if
 
-        if ( stream
-                 .print(
-                     "exchange( {} ) -> {}\n",
-                     Format::Hexadecimal{ value },
-                     Format::Hexadecimal{ result.value() } )
-                 .is_error() ) {
-            return;
+        auto const print_result = stream.print(
+            "exchange( {} ) -> {}\n",
+            Format::Hexadecimal{ value },
+            Format::Hexadecimal{ result.value() } );
+        if ( print_result.is_error() ) {
+            trap_fatal_error( print_result.error() );
         } // if
 
         if ( result.value() != value ) {
-            static_cast<void>( stream.put( "echo error\n" ) );
+            auto const put_result = stream.put( "echo error\n" );
+            if ( put_result.is_error() ) {
+                trap_fatal_error( put_result.error() );
+            } // if
 
             return;
         } // if

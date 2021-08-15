@@ -25,6 +25,7 @@
 
 #include <utility>
 
+#include "picolibrary/fatal_error.h"
 #include "picolibrary/format.h"
 #include "picolibrary/stream.h"
 
@@ -54,34 +55,43 @@ void sample_blocking_single_sample_converter( Output_Stream & stream, Blocking_S
     {
         auto const result = adc.initialize();
         if ( result.is_error() ) {
-            static_cast<void>( stream.print( "ADC initialization error: {}\n", result.error() ) );
+            auto const print_result = stream.print(
+                "ADC initialization error: {}\n", result.error() );
+            if ( print_result.is_error() ) {
+                trap_fatal_error( print_result.error() );
+            } // if
 
             return;
         } // if
     }
 
-    if ( stream
-             .print(
-                 "ADC sample range: [ {}, {} ]\n",
-                 Format::Decimal{ Blocking_Single_Sample_Converter::Sample::MIN },
-                 Format::Decimal{ Blocking_Single_Sample_Converter::Sample::MAX } )
-             .is_error() ) {
-        return;
-    } // if
+    {
+        auto const print_result = stream.print(
+            "ADC sample range: [ {}, {} ]\n",
+            Format::Decimal{ Blocking_Single_Sample_Converter::Sample::MIN },
+            Format::Decimal{ Blocking_Single_Sample_Converter::Sample::MAX } );
+        if ( print_result.is_error() ) {
+            trap_fatal_error( print_result.error() );
+        } // if
+    }
 
     for ( ;; ) {
         delay();
 
         auto const result = adc.sample();
         if ( result.is_error() ) {
-            static_cast<void>( stream.print( "ADC sampling error: {}\n", result.error() ) );
+            auto const print_result = stream.print( "ADC sampling error: {}\n", result.error() );
+            if ( print_result.is_error() ) {
+                trap_fatal_error( print_result.error() );
+            } // if
 
             return;
         } // if
 
-        auto const sample = result.value();
-        if ( stream.print( "{}\n", Format::Decimal{ sample.value() } ).is_error() ) {
-            return;
+        auto const sample       = result.value();
+        auto const print_result = stream.print( "{}\n", Format::Decimal{ sample.value() } );
+        if ( print_result.is_error() ) {
+            trap_fatal_error( print_result.error() );
         } // if
     }     // for
 }
@@ -109,9 +119,12 @@ void sample_blocking_single_sample_converter( Transmitter transmitter, Blocking_
 {
     auto stream = Output_Stream{ std::move( transmitter ) };
 
-    if ( stream.initialize().is_error() ) {
-        return;
-    } // if
+    {
+        auto const result = stream.initialize();
+        if ( result.is_error() ) {
+            trap_fatal_error( result.error() );
+        } // if
+    }
 
     sample_blocking_single_sample_converter( stream, std::move( adc ), std::move( delay ) );
 }

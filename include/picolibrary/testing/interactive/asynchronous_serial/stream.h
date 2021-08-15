@@ -25,6 +25,8 @@
 
 #include <utility>
 
+#include "picolibrary/fatal_error.h"
+
 /**
  * \brief Asynchronous serial stream interactive testing facilities.
  */
@@ -44,11 +46,19 @@ void hello_world( Transmitter transmitter ) noexcept
 {
     auto stream = Output_Stream{ std::move( transmitter ) };
 
-    if ( stream.initialize().is_error() ) {
-        return;
-    } // if
+    {
+        auto const result = stream.initialize();
+        if ( result.is_error() ) {
+            trap_fatal_error( result.error() );
+        } // if
+    }
 
-    static_cast<void>( stream.put( "Hello, world!\n" ) );
+    {
+        auto const put_result = stream.put( "Hello, world!\n" );
+        if ( put_result.is_error() ) {
+            trap_fatal_error( put_result.error() );
+        } // if
+    }
 }
 
 } // namespace picolibrary::Testing::Interactive::Asynchronous_Serial::Stream
