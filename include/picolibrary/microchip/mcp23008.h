@@ -141,13 +141,13 @@ struct IOCON {
      * \brief Field size.
      */
     struct Size {
-        static constexpr auto RESERVED0 = std::uint_fast8_t{ 1 }; ///< Reserved.
+        static constexpr auto RESERVED0 = std::uint_fast8_t{ 1 }; ///< RESERVED0.
         static constexpr auto INTPOL    = std::uint_fast8_t{ 1 }; ///< INTPOL.
         static constexpr auto ODR       = std::uint_fast8_t{ 1 }; ///< ODR.
-        static constexpr auto RESERVED3 = std::uint_fast8_t{ 1 }; ///< Reserved.
+        static constexpr auto RESERVED3 = std::uint_fast8_t{ 1 }; ///< RESERVED3.
         static constexpr auto DISSLW    = std::uint_fast8_t{ 1 }; ///< DISSLW.
         static constexpr auto SEQOP     = std::uint_fast8_t{ 1 }; ///< SEQOP.
-        static constexpr auto RESERVED6 = std::uint_fast8_t{ 2 }; ///< Reserved.
+        static constexpr auto RESERVED6 = std::uint_fast8_t{ 2 }; ///< RESERVED6.
 
         static constexpr auto INTERRUPT_MODE = INTPOL + ODR; ///< Interrupt mode.
     };
@@ -156,13 +156,13 @@ struct IOCON {
      * \brief Field bit positions.
      */
     struct Bit {
-        static constexpr auto RESERVED0 = std::uint_fast8_t{}; ///< Reserved.
+        static constexpr auto RESERVED0 = std::uint_fast8_t{}; ///< RESERVED0.
         static constexpr auto INTPOL = std::uint_fast8_t{ RESERVED0 + Size::RESERVED0 }; ///< INTPOL.
         static constexpr auto ODR = std::uint_fast8_t{ INTPOL + Size::INTPOL }; ///< ODR.
-        static constexpr auto RESERVED3 = std::uint_fast8_t{ ODR + Size::ODR }; ///< Reserved.
+        static constexpr auto RESERVED3 = std::uint_fast8_t{ ODR + Size::ODR }; ///< RESERVED3.
         static constexpr auto DISSLW = std::uint_fast8_t{ RESERVED3 + Size::RESERVED3 }; ///< DISSLW.
         static constexpr auto SEQOP = std::uint_fast8_t{ DISSLW + Size::DISSLW }; ///< SEQOP.
-        static constexpr auto RESERVED6 = std::uint_fast8_t{ SEQOP + Size::SEQOP }; ///< Reserved.
+        static constexpr auto RESERVED6 = std::uint_fast8_t{ SEQOP + Size::SEQOP }; ///< RESERVED6.
 
         static constexpr auto INTERRUPT_MODE = INTPOL; ///< Interrupt mode.
     };
@@ -171,13 +171,13 @@ struct IOCON {
      * \brief Field bit masks.
      */
     struct Mask {
-        static constexpr auto RESERVED0 = mask<std::uint8_t>( Size::RESERVED0, Bit::RESERVED0 ); ///< Reserved.
+        static constexpr auto RESERVED0 = mask<std::uint8_t>( Size::RESERVED0, Bit::RESERVED0 ); ///< RESERVED0.
         static constexpr auto INTPOL = mask<std::uint8_t>( Size::INTPOL, Bit::INTPOL ); ///< INTPOL.
         static constexpr auto ODR = mask<std::uint8_t>( Size::ODR, Bit::ODR ); ///< ODR.
-        static constexpr auto RESERVED3 = mask<std::uint8_t>( Size::RESERVED3, Bit::RESERVED3 ); ///< Reserved.
+        static constexpr auto RESERVED3 = mask<std::uint8_t>( Size::RESERVED3, Bit::RESERVED3 ); ///< RESERVED3.
         static constexpr auto DISSLW = mask<std::uint8_t>( Size::DISSLW, Bit::DISSLW ); ///< DISSLW.
         static constexpr auto SEQOP = mask<std::uint8_t>( Size::SEQOP, Bit::SEQOP ); ///< SEQOP.
-        static constexpr auto RESERVED6 = mask<std::uint8_t>( Size::RESERVED6, Bit::RESERVED6 ); ///< Reserved.
+        static constexpr auto RESERVED6 = mask<std::uint8_t>( Size::RESERVED6, Bit::RESERVED6 ); ///< RESERVED6.
 
         static constexpr auto INTERRUPT_MODE = mask<std::uint8_t>( Size::INTERRUPT_MODE, Bit::INTERRUPT_MODE ); ///< Interrupt mode.
     };
