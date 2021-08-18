@@ -24,6 +24,7 @@
 #define PICOLIBRARY_FIXED_SIZE_ARRAY_H
 
 #include <cstddef>
+#include <type_traits>
 
 #include "picolibrary/algorithm.h"
 #include "picolibrary/iterator.h"
@@ -387,6 +388,33 @@ class Fixed_Size_Array {
     {
         return N;
     }
+};
+
+/**
+ * \brief Get the size of a fixed size array.
+ *
+ * \tparam T The fixed size array type whose size is to be gotten.
+ */
+template<typename T>
+struct fixed_size_array_size {
+};
+
+/**
+ * \brief Get the size of a fixed size array.
+ *
+ * \tparam T The fixed size array type whose size is to be gotten.
+ */
+template<typename T>
+constexpr auto fixed_size_array_size_v = fixed_size_array_size<T>::value;
+
+/**
+ * \brief Get the size of a fixed size array.
+ *
+ * \tparam T The array element type.
+ * \tparam N The number of elements in the array.
+ */
+template<typename T, std::size_t N>
+struct fixed_size_array_size<Fixed_Size_Array<T, N>> : std::integral_constant<std::size_t, N> {
 };
 
 /**
