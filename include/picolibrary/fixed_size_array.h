@@ -393,6 +393,8 @@ class Fixed_Size_Array {
 /**
  * \brief Get the size of a fixed size array.
  *
+ * \relatedalso picolibrary::Fixed_Size_Array
+ *
  * \tparam T The fixed size array type whose size is to be gotten.
  */
 template<typename T>
@@ -402,6 +404,8 @@ struct fixed_size_array_size {
 /**
  * \brief Get the size of a fixed size array.
  *
+ * \relatedalso picolibrary::Fixed_Size_Array
+ *
  * \tparam T The fixed size array type whose size is to be gotten.
  */
 template<typename T>
@@ -409,6 +413,8 @@ constexpr auto fixed_size_array_size_v = fixed_size_array_size<T>::value;
 
 /**
  * \brief Get the size of a fixed size array.
+ *
+ * \relatedalso picolibrary::Fixed_Size_Array
  *
  * \tparam T The array element type.
  * \tparam N The number of elements in the array.
