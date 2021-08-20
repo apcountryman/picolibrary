@@ -38,6 +38,7 @@ set(
     "picolibrary/fixed_size_array.cc"
     "picolibrary/format.cc"
     "picolibrary/gpio.cc"
+    "picolibrary/hsm.cc"
     "picolibrary/i2c.cc"
     "picolibrary/indicator.cc"
     "picolibrary/interrupt_guard.cc"
