@@ -147,8 +147,8 @@ class HSM {
      * pseudo-event has been handled. The entry pseudo-event can be identified and acted
      * upon as follows:
      * \code
-     * if ( event.category() == &Pseudo_Event_Category::instance()) {
-     *     if ( event.id() == Pseudo_Event::ENTRY ) {
+     * if ( &event.category() == &Pseudo_Event_Category::instance()) {
+     *     if ( static_cast<Pseudo_Event>( event.id()) == Pseudo_Event::ENTRY ) {
      *         // execute entry actions
      *
      *         return hsm.event_handled( event );
@@ -170,8 +170,8 @@ class HSM {
      * pseudo-event has been handled. The exit pseudo-event can be identified and acted
      * upon as follows:
      * \code
-     * if ( event.category() == &Pseudo_Event_Category::instance()) {
-     *     if ( event.id() == Pseudo_Event::EXIT ) {
+     * if ( &event.category() == &Pseudo_Event_Category::instance()) {
+     *     if ( static_cast<Pseudo_Event>( event.id()) == Pseudo_Event::EXIT ) {
      *         // execute exit actions
      *
      *         return hsm.event_handled( event );
@@ -192,8 +192,8 @@ class HSM {
      * nested initial transition pseudo-event. The nested initial transition pseudo-event
      * can be identified and acted upon as follows:
      * \code
-     * if ( event.category() == &Pseudo_Event_Category::instance()) {
-     *     if ( event.id() == Pseudo_Event::NESTED_INITIAL_TRANSITION ) {
+     * if ( &event.category() == &Pseudo_Event_Category::instance()) {
+     *     if ( static_cast<Pseudo_Event>( event.id()) == Pseudo_Event::NESTED_INITIAL_TRANSITION ) {
      *         // execute any actions associated with the nested initial transition
      *
      *         return hsm.transition_to( target_state );
@@ -232,16 +232,16 @@ class HSM {
      * Summary:
      * \code
      * // entry actions, omit block if the state has no entry actions
-     * if ( event.category() == &Pseudo_Event_Category::instance()) {
+     * if ( &event.category() == &Pseudo_Event_Category::instance()) {
      *     // entry actions, omit block if the state has no entry actions
-     *     if ( event.id() == Pseudo_Event::ENTRY ) {
+     *     if ( static_cast<Pseudo_Event>( event.id()) == Pseudo_Event::ENTRY ) {
      *         // execute entry actions
      *
      *         return hsm.event_handled( event );
      *     } // if
      *
      *     // exit actions, omit block if the state has no exit actions
-     *     if ( event.id() == Pseudo_Event::EXIT ) {
+     *     if ( static_cast<Pseudo_Event>( event.id()) == Pseudo_Event::EXIT ) {
      *         // execute exit actions
      *
      *         return hsm.event_handled( event );
@@ -249,7 +249,7 @@ class HSM {
      *
      *     // nested initial transition, omit block if the state does not have a nested
      *     // initial transition
-     *     if ( event.id() == Pseudo_Event::NESTED_INITIAL_TRANSITION ) {
+     *     if ( static_cast<Pseudo_Event>( event.id()) == Pseudo_Event::NESTED_INITIAL_TRANSITION ) {
      *         // execute any actions associated with the nested initial transition
      *
      *         return hsm.transition_to( target_state );
