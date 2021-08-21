@@ -38,12 +38,6 @@ namespace picolibrary {
 class HSM {
   public:
     /**
-     * \brief Destructor.
-     */
-    ~HSM() noexcept = default;
-
-  protected:
-    /**
      * \brief Pseudo-event.
      */
     enum class Pseudo_Event : Event_ID {
@@ -288,55 +282,6 @@ class HSM {
     }
 
     /**
-     * \brief Constructor.
-     */
-    constexpr HSM() noexcept = default;
-
-    /**
-     * \brief Constructor.
-     *
-     * \param[in] initial_pseudostate The state event handler for the initial pseudostate.
-     *            The state event handler for the initial pseudostate must trigger the
-     *            initial state transition by calling picolibrary::HSM::transition_to().
-     */
-    constexpr HSM( State_Event_Handler_Reference initial_pseudostate ) noexcept :
-        m_current_state{ &initial_pseudostate }
-    {
-    }
-
-    /**
-     * \brief Constructor.
-     *
-     * \param[in] source The source of the move.
-     */
-    constexpr HSM( HSM && source ) noexcept = default;
-
-    /**
-     * \brief Constructor.
-     *
-     * \param[in] original The original to copy.
-     */
-    constexpr HSM( HSM const & original ) noexcept = default;
-
-    /**
-     * \brief Assignment operator.
-     *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
-     */
-    constexpr auto operator=( HSM && expression ) noexcept -> HSM & = default;
-
-    /**
-     * \brief Assignment operator.
-     *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
-     */
-    constexpr auto operator=( HSM const & expression ) noexcept -> HSM & = default;
-
-    /**
      * \brief Report that an event has been handled.
      *
      * \param[in] event The event that has been handled.
@@ -384,6 +329,61 @@ class HSM {
 
         return Event_Handling_Result::STATE_TRANSITION_TRIGGERED;
     }
+
+    /**
+     * \brief Destructor.
+     */
+    ~HSM() noexcept = default;
+
+  protected:
+    /**
+     * \brief Constructor.
+     */
+    constexpr HSM() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] initial_pseudostate The state event handler for the initial pseudostate.
+     *            The state event handler for the initial pseudostate must trigger the
+     *            initial state transition by calling picolibrary::HSM::transition_to().
+     */
+    constexpr HSM( State_Event_Handler_Reference initial_pseudostate ) noexcept :
+        m_current_state{ &initial_pseudostate }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr HSM( HSM && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr HSM( HSM const & original ) noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( HSM && expression ) noexcept -> HSM & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( HSM const & expression ) noexcept -> HSM & = default;
 
     /**
      * \brief Execute the HSM's topmost initial transition and any resulting nested
