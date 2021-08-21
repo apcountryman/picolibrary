@@ -394,6 +394,8 @@ class HSM {
      */
     void execute_topmost_initial_transition( Event const & event ) noexcept
     {
+        // #lizard forgives the length
+
         if ( ( *m_current_state )( *this, event ) != Event_Handling_Result::STATE_TRANSITION_TRIGGERED ) {
             trap_fatal_error();
         } // if
