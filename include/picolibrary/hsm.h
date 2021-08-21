@@ -426,14 +426,14 @@ class HSM {
                 } // if
             }     // for
 
-            while ( --i ) {
-                switch ( ( *path[ i ] )( *this, Entry::instance() ) ) {
+            do {
+                switch ( ( *path[ --i ] )( *this, Entry::instance() ) ) {
                     case Event_Handling_Result::EVENT_HANDLED: break;
                     case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE:
                         break;
                     default: trap_fatal_error();
                 } // switch
-            }     // while
+            } while ( i );
 
             switch ( ( *path[ i ] )( *this, Nested_Initial_Transition::instance() ) ) {
                 case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE: return;
