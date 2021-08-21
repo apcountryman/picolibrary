@@ -440,6 +440,7 @@ class HSM {
                 case Event_Handling_Result::STATE_TRANSITION_TRIGGERED:
                     main_source_state = main_target_state;
                     main_target_state = m_target_state;
+                    break;
                 default: trap_fatal_error();
             } // switch
         }     // for
