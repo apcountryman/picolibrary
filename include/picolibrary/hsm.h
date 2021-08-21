@@ -23,10 +23,12 @@
 #ifndef PICOLIBRARY_HSM_H
 #define PICOLIBRARY_HSM_H
 
+#include <cstddef>
 #include <type_traits>
 
 #include "picolibrary/event.h"
 #include "picolibrary/fatal_error.h"
+#include "picolibrary/fixed_size_array.h"
 
 namespace picolibrary {
 
@@ -384,6 +386,64 @@ class HSM {
     }
 
     /**
+     * \brief Execute the HSM's topmost initial transition and any resulting nested
+     *        initial transitions.
+     *
+     * \param[in] event The event to pass to the initial pseudostate's event handler to
+     *            trigger the topmost initial transition.
+     */
+    void execute_topmost_initial_transition( Event const & event ) noexcept
+    {
+        if ( ( *m_current_state )( *this, event ) != Event_Handling_Result::STATE_TRANSITION_TRIGGERED ) {
+            trap_fatal_error();
+        } // if
+
+        auto main_source_state = top;
+        auto main_target_state = m_target_state;
+        for ( ;; ) {
+            m_current_state = main_target_state;
+
+            Path path;
+            path[ 0 ] = main_target_state;
+
+            if ( ( *main_target_state )( *this, Discovery::instance() )
+                 != Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE ) {
+                trap_fatal_error();
+            } // if
+            auto i = std::size_t{ 1 };
+            for ( ; m_superstate != main_source_state; ++i ) {
+                if ( i >= path.size() ) {
+                    trap_fatal_error();
+                } // if
+
+                path[ i ] = m_superstate;
+
+                if ( ( *m_superstate )( *this, Discovery::instance() )
+                     != Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE ) {
+                    trap_fatal_error();
+                } // if
+            }     // for
+
+            while ( --i ) {
+                switch ( ( *path[ i ] )( *this, Entry::instance() ) ) {
+                    case Event_Handling_Result::EVENT_HANDLED: break;
+                    case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE:
+                        break;
+                    default: trap_fatal_error();
+                } // switch
+            }     // while
+
+            switch ( ( *path[ i ] )( *this, Nested_Initial_Transition::instance() ) ) {
+                case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE: return;
+                case Event_Handling_Result::STATE_TRANSITION_TRIGGERED:
+                    main_source_state = main_target_state;
+                    main_target_state = m_target_state;
+                default: trap_fatal_error();
+            } // switch
+        }     // for
+    }
+
+    /**
      * \brief Get the state event handler for the current state.
      *
      * \return The state event handler for the current state.
@@ -479,7 +539,7 @@ class HSM {
          *
          * \return A reference to the entry pseudo-event instance.
          */
-        static constexpr auto const & instance() noexcept
+        static constexpr auto instance() noexcept -> Entry const &
         {
             return INSTANCE;
         }
@@ -522,7 +582,7 @@ class HSM {
          *
          * \return A reference to the exit pseudo-event instance.
          */
-        static constexpr auto const & instance() noexcept
+        static constexpr auto instance() noexcept -> Exit const &
         {
             return INSTANCE;
         }
@@ -565,7 +625,7 @@ class HSM {
          *
          * \return A reference to the nested initial transition pseudo-event instance.
          */
-        static constexpr auto const & instance() noexcept
+        static constexpr auto instance() noexcept -> Nested_Initial_Transition const &
         {
             return INSTANCE;
         }
@@ -598,6 +658,16 @@ class HSM {
          */
         ~Nested_Initial_Transition() noexcept = default;
     };
+
+    /**
+     * \brief Max state depth (not including the implicit "top" superstate).
+     */
+    static constexpr auto MAX_STATE_DEPTH = std::size_t{ 8 };
+
+    /**
+     * \brief State path.
+     */
+    using Path = Fixed_Size_Array<State_Event_Handler_Pointer, MAX_STATE_DEPTH>;
 
     /**
      * \brief The state event handler for the current state.
