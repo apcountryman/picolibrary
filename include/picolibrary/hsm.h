@@ -405,37 +405,18 @@ class HSM {
         for ( ;; ) {
             m_current_state = main_target_state;
 
-            Path path;
-            path[ 0 ] = main_target_state;
+            auto const path = Path{ *this, *main_target_state, *main_source_state };
 
-            if ( ( *main_target_state )( *this, Discovery::instance() )
-                 != Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE ) {
-                trap_fatal_error();
-            } // if
-            auto i = std::size_t{ 1 };
-            for ( ; m_superstate != main_source_state; ++i ) {
-                if ( i >= path.size() ) {
-                    trap_fatal_error();
-                } // if
-
-                path[ i ] = m_superstate;
-
-                if ( ( *m_superstate )( *this, Discovery::instance() )
-                     != Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE ) {
-                    trap_fatal_error();
-                } // if
-            }     // for
-
-            do {
-                switch ( ( *path[ --i ] )( *this, Entry::instance() ) ) {
+            for ( auto rbegin = path.rbegin(); rbegin != path.rend(); ++rbegin ) {
+                switch ( ( *rbegin )( *this, Entry::instance() ) ) {
                     case Event_Handling_Result::EVENT_HANDLED: break;
                     case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE:
                         break;
                     default: trap_fatal_error();
                 } // switch
-            } while ( i );
+            }     // for
 
-            switch ( ( *path[ i ] )( *this, Nested_Initial_Transition::instance() ) ) {
+            switch ( ( *main_target_state )( *this, Nested_Initial_Transition::instance() ) ) {
                 case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE: return;
                 case Event_Handling_Result::STATE_TRANSITION_TRIGGERED:
                     main_source_state = main_target_state;
@@ -663,14 +644,265 @@ class HSM {
     };
 
     /**
-     * \brief Max state depth (not including the implicit "top" superstate).
-     */
-    static constexpr auto MAX_STATE_DEPTH = std::size_t{ 8 };
-
-    /**
      * \brief State path.
      */
-    using Path = Fixed_Size_Array<State_Event_Handler_Pointer, MAX_STATE_DEPTH>;
+    class Path {
+      public:
+        /**
+         * \brief Max state depth (not including the implicit "top" superstate).
+         */
+        static constexpr auto MAX_STATE_DEPTH = std::size_t{ 8 };
+
+        /**
+         * \brief Path storage.
+         */
+        using Storage = Fixed_Size_Array<State_Event_Handler_Pointer, MAX_STATE_DEPTH>;
+
+        /**
+         * \brief Path element type.
+         */
+        using Value = Storage::Value;
+
+        /**
+         * \brief The number of elements in the path.
+         */
+        using Size = Storage::Size;
+
+        /**
+         * \brief A reference to a const path element.
+         */
+        using Const_Reference = Storage::Const_Reference;
+
+        /**
+         * \brief A const path iterator.
+         */
+        using Const_Iterator = Storage::Const_Iterator;
+
+        /**
+         * \brief A const path reverse iterator.
+         */
+        using Const_Reverse_Iterator = Storage::Const_Reverse_Iterator;
+
+        Path() = delete;
+
+        /**
+         * \brief Constructor.
+         *
+         * \param[in] hsm The HSM the path is being constructed from.
+         * \param[in] begin The state event handler for the state at the beginning of
+         *            the path.
+         * \param[in] end The state event handler for the state at the end of the
+         *            path.
+         *
+         * If end is a superstate of begin, the path will cover the range [begin,end)
+         * and will be considered to be complete. If end is not a superstate of begin,
+         * the path will cover the range [begin,top) and will not be considered to be
+         * complete.
+         */
+        Path( HSM & hsm, State_Event_Handler_Reference begin, State_Event_Handler_Reference end ) noexcept
+        {
+            m_storage[ 0 ] = &begin;
+            if ( ( begin )( hsm, Discovery::instance() )
+                 != Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE ) {
+                trap_fatal_error();
+            } // if
+            for ( ; hsm.m_superstate != top; ++m_size ) {
+                if ( m_size >= m_storage.size() ) {
+                    trap_fatal_error();
+                } // if
+
+                if ( hsm.m_superstate == &end ) {
+                    m_is_complete = true;
+                    return;
+                } // if
+
+                m_storage[ m_size ] = hsm.m_superstate;
+
+                if ( ( *hsm.m_superstate )( hsm, Discovery::instance() )
+                     != Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE ) {
+                    trap_fatal_error();
+                } // if
+            }     // for
+        }
+
+        Path( Path && ) = delete;
+
+        Path( Path const & ) = delete;
+
+        ~Path() noexcept = default;
+
+        auto operator=( Path && ) = delete;
+
+        auto operator=( Path const & ) = delete;
+
+        /**
+         * \brief Check if the path is complete.
+         *
+         * \return true if the path is complete.
+         * \return false if the path is not complete.
+         */
+        auto is_complete() const noexcept
+        {
+            return m_is_complete;
+        }
+
+        /**
+         * \brief Access the first element of the path.
+         *
+         * \warning Calling this function on an empty path results in undefined behavior.
+         *
+         * \return The first element of the path.
+         */
+        auto front() const noexcept -> Const_Reference
+        {
+            return *begin();
+        }
+
+        /**
+         * \brief Access the last element of the path.
+         *
+         * \warning Calling this function on an empty path results in undefined behavior.
+         *
+         * \return The last element of the path.
+         */
+        auto back() const noexcept -> Const_Reference
+        {
+            return *( end() - 1 );
+        }
+
+        /**
+         * \brief Get an iterator to the first element of the path.
+         *
+         * \return An iterator to the last element of the path.
+         */
+        auto begin() const noexcept -> Const_Iterator
+        {
+            return &m_storage[ 0 ];
+        }
+
+        /**
+         * \brief Get an iterator to the first element of the path.
+         *
+         * \return An iterator to the last element of the path.
+         */
+        auto cbegin() const noexcept -> Const_Iterator
+        {
+            return &m_storage[ 0 ];
+        }
+
+        /**
+         * \brief Get an iterator to the element following the last element of the path.
+         *
+         * \warning Attempting to access the element following the last element of a path
+         *          results in undefined behavior.
+         *
+         * \return An iterator to the element following the last element of the path.
+         */
+        auto end() const noexcept -> Const_Iterator
+        {
+            return begin() + size();
+        }
+
+        /**
+         * \brief Get an iterator to the element following the last element of the path.
+         *
+         * \warning Attempting to access the element following the last element of a path
+         *          results in undefined behavior.
+         *
+         * \return An iterator to the element following the last element of the path.
+         */
+        auto cend() const noexcept -> Const_Iterator
+        {
+            return begin() + size();
+        }
+
+        /**
+         * \brief Get an iterator to the first element of the reversed path.
+         *
+         * \return An iterator to the first element of the reversed path.
+         */
+        auto rbegin() const noexcept -> Const_Reverse_Iterator
+        {
+            return Const_Reverse_Iterator{ end() };
+        }
+
+        /**
+         * \brief Get an iterator to the first element of the reversed path.
+         *
+         * \return An iterator to the first element of the reversed path.
+         */
+        auto crbegin() const noexcept -> Const_Reverse_Iterator
+        {
+            return Const_Reverse_Iterator{ end() };
+        }
+
+        /**
+         * \brief Get an iterator to the element following the last element of the
+         *        reversed path.
+         *
+         * \warning Attempting to access the element following the last element of a
+         *          reversed path results in undefined behavior.
+         *
+         * \return An iterator to the element following the last element of the reversed
+         *         path.
+         */
+        auto rend() const noexcept -> Const_Reverse_Iterator
+        {
+            return Const_Reverse_Iterator{ begin() };
+        }
+
+        /**
+         * \brief Get an iterator to the element following the last element of the
+         *        reversed path.
+         *
+         * \warning Attempting to access the element following the last element of a
+         *          reversed path results in undefined behavior.
+         *
+         * \return An iterator to the element following the last element of the reversed
+         *         path.
+         */
+        auto crend() const noexcept -> Const_Reverse_Iterator
+        {
+            return Const_Reverse_Iterator{ begin() };
+        }
+
+        /**
+         * \brief Check if the path is empty.
+         *
+         * \return true if the path is empty.
+         * \return false if the path is not empty.
+         */
+        [[nodiscard]] auto empty() const noexcept
+        {
+            return not size();
+        }
+
+        /**
+         * \brief Get the number of elements in the path.
+         *
+         * \return The number of elements in the path.
+         */
+        auto size() const noexcept -> Size
+        {
+            return m_size;
+        }
+
+      private:
+        /**
+         * \brief The path storage.
+         */
+        Storage m_storage;
+
+        /**
+         * \brief The path size.
+         */
+        Size m_size{ 1 };
+
+        /**
+         * \brief The path state.
+         */
+        bool m_is_complete{};
+    };
 
     /**
      * \brief The state event handler for the current state.
