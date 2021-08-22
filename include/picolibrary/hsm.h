@@ -710,6 +710,8 @@ class HSM {
          */
         void discover( HSM & hsm, State_Event_Handler_Reference begin, State_Event_Handler_Reference end ) noexcept
         {
+            // #lizard forgives the length
+
             m_is_complete  = end == top;
             m_storage[ 0 ] = &begin;
             m_size         = 1;
@@ -957,6 +959,9 @@ class HSM {
      */
     void transition( State_Event_Handler_Pointer main_source_state, State_Event_Handler_Pointer main_target_state ) noexcept
     {
+        // #lizard forgives the length
+        // #lizard forgives the complexity
+
         for ( ;; ) {
             m_current_state = main_target_state;
 
