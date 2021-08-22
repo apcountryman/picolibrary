@@ -1009,7 +1009,7 @@ class HSM {
 
                 if ( not source_path.is_complete() ) {
                     for ( auto rbegin = target_path.rbegin(); rbegin != target_path.rend(); ++rbegin ) {
-                        switch ( ( *rbegin )( *this, Exit::instance() ) ) {
+                        switch ( ( *rbegin )( *this, Entry::instance() ) ) {
                             case Event_Handling_Result::EVENT_HANDLED: break;
                             case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE:
                                 break;
