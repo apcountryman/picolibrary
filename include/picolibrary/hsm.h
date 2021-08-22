@@ -398,7 +398,9 @@ class HSM {
             trap_fatal_error();
         } // if
 
-        transition( top, m_target_state );
+        m_current_state = top;
+
+        transition_from( top );
     }
 
     /**
@@ -409,16 +411,16 @@ class HSM {
      */
     void dispatch( Event const & event ) noexcept
     {
-        auto current_state = m_current_state;
+        auto state = m_current_state;
         for ( ;; ) {
-            switch ( ( *current_state )( *this, event ) ) {
+            switch ( ( *state )( *this, event ) ) {
                 case Event_Handling_Result::EVENT_IGNORED: return;
                 case Event_Handling_Result::EVENT_HANDLED: return;
                 case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE:
-                    current_state = m_superstate;
+                    state = m_superstate;
                     break;
                 case Event_Handling_Result::STATE_TRANSITION_TRIGGERED:
-                    transition( m_current_state, m_target_state );
+                    transition_from( state );
                     return;
             } // switch
         }     // for
@@ -954,26 +956,41 @@ class HSM {
     /**
      * \brief Execute a state transition and any associated nested initial transitions.
      *
-     * \param[in] main_source_state The main source state of the state transition.
-     * \param[in] main_target_state The main target state of the state transition.
+     * \param[in] source_state The source state of the state transition.
      */
-    void transition( State_Event_Handler_Pointer main_source_state, State_Event_Handler_Pointer main_target_state ) noexcept
+    void transition_from( State_Event_Handler_Pointer source_state ) noexcept
     {
         // #lizard forgives the length
         // #lizard forgives the complexity
 
-        for ( ;; ) {
-            m_current_state = main_target_state;
+        auto current_state = m_current_state;
+        auto target_state  = m_target_state;
 
-            if ( main_target_state == main_source_state ) {
-                switch ( ( *main_source_state )( *this, Exit::instance() ) ) {
+        for ( ;; ) {
+            if ( current_state != source_state ) {
+                auto current_path = Path{};
+
+                current_path.discover( *this, *current_state, *source_state );
+
+                for ( auto begin = current_path.begin(); begin != current_path.end(); ++begin ) {
+                    switch ( ( *begin )( *this, Exit::instance() ) ) {
+                        case Event_Handling_Result::EVENT_HANDLED: break;
+                        case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE:
+                            break;
+                        default: trap_fatal_error();
+                    } // switch
+                }     // for
+            }         // if
+
+            if ( target_state == source_state ) {
+                switch ( ( *source_state )( *this, Exit::instance() ) ) {
                     case Event_Handling_Result::EVENT_HANDLED: break;
                     case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE:
                         break;
                     default: trap_fatal_error();
                 } // switch
 
-                switch ( ( *main_target_state )( *this, Entry::instance() ) ) {
+                switch ( ( *target_state )( *this, Entry::instance() ) ) {
                     case Event_Handling_Result::EVENT_HANDLED: break;
                     case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE:
                         break;
@@ -983,10 +1000,10 @@ class HSM {
                 auto target_path = Path{};
                 auto source_path = Path{};
 
-                target_path.discover( *this, *main_target_state, *main_source_state );
+                target_path.discover( *this, *target_state, *source_state );
 
                 if ( not target_path.is_complete() ) {
-                    source_path.discover( *this, *main_source_state, *main_target_state );
+                    source_path.discover( *this, *source_state, *target_state );
                 } // if
 
                 if ( not source_path.is_complete() and not target_path.is_complete() ) {
@@ -1019,11 +1036,14 @@ class HSM {
                 }         // if
             }             // else
 
-            switch ( ( *main_target_state )( *this, Nested_Initial_Transition::instance() ) ) {
+            current_state   = target_state;
+            m_current_state = target_state;
+
+            switch ( ( *current_state )( *this, Nested_Initial_Transition::instance() ) ) {
                 case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE: return;
                 case Event_Handling_Result::STATE_TRANSITION_TRIGGERED:
-                    main_source_state = main_target_state;
-                    main_target_state = m_target_state;
+                    source_state = target_state;
+                    target_state = m_target_state;
                     break;
                 default: trap_fatal_error();
             } // switch
