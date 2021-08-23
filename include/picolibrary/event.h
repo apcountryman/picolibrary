@@ -225,6 +225,62 @@ class Event {
 };
 
 /**
+ * \brief Simple event (event that contains no information beyond its identity).
+ */
+class Simple_Event final : public Event {
+  public:
+    Simple_Event() = delete;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] category The event's category.
+     * \param[in] id The event's ID.
+     */
+    constexpr Simple_Event( Event_Category const & category, Event_ID id ) noexcept :
+        Event{ category, id }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Simple_Event( Simple_Event && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Simple_Event( Simple_Event const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    virtual ~Simple_Event() noexcept override final = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Simple_Event && expression ) noexcept -> Simple_Event & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Simple_Event const & expression ) noexcept -> Simple_Event & = default;
+};
+
+/**
  * \brief Event type tag.
  *
  * \tparam T The event type.
