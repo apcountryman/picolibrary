@@ -801,6 +801,61 @@ class HSM {
     }
 
     /**
+     * \brief Execute a state's entry actions.
+     *
+     * \param[in] state The state event handler for the state whose entry actions are to
+     *            be executed.
+     */
+    void enter( State_Event_Handler_Reference state ) noexcept
+    {
+        switch ( ( state )( *this, ENTRY ) ) {
+            case Event_Handling_Result::EVENT_HANDLED: return;
+            case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE: return;
+            default: trap_fatal_error();
+        } // switch
+    }
+
+    /**
+     * \brief Execute entry actions for all states in a state path.
+     *
+     * \param[in] path The state path containing the state event handlers for the states
+     *            whose entry actions are to be executed.
+     */
+    void enter( Path const & path ) noexcept
+    {
+        for_each( path.rbegin(), path.rend(), [ this ]( auto state ) noexcept {
+            enter( *state );
+        } );
+    }
+
+    /**
+     * \brief Execute a state's exit actions.
+     *
+     * \param[in] state The state event handler for the state whose exit actions are to be
+     *            executed.
+     */
+    void exit( State_Event_Handler_Reference state ) noexcept
+    {
+        switch ( ( state )( *this, EXIT ) ) {
+            case Event_Handling_Result::EVENT_HANDLED: return;
+            case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE: return;
+            default: trap_fatal_error();
+        } // switch
+    }
+
+    /**
+     * \brief Execute exit actions for all states in a state path.
+     *
+     * \param[in] path The state path containing the state event handlers for the states
+     *            whose exit actions are to be executed.
+     */
+    void exit( Path const & path ) noexcept
+    {
+        for_each(
+            path.rbegin(), path.rend(), [ this ]( auto state ) noexcept { exit( *state ); } );
+    }
+
+    /**
      * \brief Execute a state transition and any associated nested initial transitions.
      *
      * \param[in] source_state The source state of the state transition.
@@ -818,30 +873,12 @@ class HSM {
 
                 current_path.discover( *this, *current_state, *source_state );
 
-                for_each( current_path.begin(), current_path.end(), [ this ]( auto state ) noexcept {
-                    switch ( ( *state )( *this, EXIT ) ) {
-                        case Event_Handling_Result::EVENT_HANDLED: break;
-                        case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE:
-                            break;
-                        default: trap_fatal_error();
-                    } // switch
-                } );
+                exit( current_path );
             } // if
 
             if ( target_state == source_state ) {
-                switch ( ( *source_state )( *this, EXIT ) ) {
-                    case Event_Handling_Result::EVENT_HANDLED: break;
-                    case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE:
-                        break;
-                    default: trap_fatal_error();
-                } // switch
-
-                switch ( ( *target_state )( *this, ENTRY ) ) {
-                    case Event_Handling_Result::EVENT_HANDLED: break;
-                    case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE:
-                        break;
-                    default: trap_fatal_error();
-                } // switch
+                exit( *source_state );
+                enter( *target_state );
             } else {
                 auto target_path = Path{};
                 auto source_path = Path{};
@@ -860,25 +897,11 @@ class HSM {
                 }     // if
 
                 if ( not target_path.is_complete() ) {
-                    for_each( source_path.begin(), source_path.end(), [ this ]( auto state ) noexcept {
-                        switch ( ( *state )( *this, EXIT ) ) {
-                            case Event_Handling_Result::EVENT_HANDLED: break;
-                            case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE:
-                                break;
-                            default: trap_fatal_error();
-                        } // switch
-                    } );
+                    exit( source_path );
                 } // if
 
                 if ( not source_path.is_complete() ) {
-                    for_each( target_path.rbegin(), target_path.rend(), [ this ]( auto state ) noexcept {
-                        switch ( ( *state )( *this, ENTRY ) ) {
-                            case Event_Handling_Result::EVENT_HANDLED: break;
-                            case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE:
-                                break;
-                            default: trap_fatal_error();
-                        } // switch
-                    } );
+                    enter( target_path );
                 } // if
             }     // else
 
