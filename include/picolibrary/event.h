@@ -268,7 +268,7 @@ class Simple_Event final : public Event {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Simple_Event && expression ) noexcept -> Simple_Event & = default;
+    auto operator=( Simple_Event && expression ) noexcept -> Simple_Event & = default;
 
     /**
      * \brief Assignment operator.
@@ -277,7 +277,7 @@ class Simple_Event final : public Event {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Simple_Event const & expression ) noexcept -> Simple_Event & = default;
+    auto operator=( Simple_Event const & expression ) noexcept -> Simple_Event & = default;
 };
 
 /**
