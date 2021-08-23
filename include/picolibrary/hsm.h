@@ -462,6 +462,17 @@ class HSM {
     /**
      * \brief State path.
      */
+    class Path;
+
+    /**
+     * \brief Remove the state event handlers for the superstates that are common to a
+     *        pair of paths.
+     *
+     * \param[in] first The first of the two paths.
+     * \param[in] second The second of the two paths.
+     */
+    static void remove_common_superstates( Path & first, Path & second ) noexcept;
+
     class Path {
       public:
         /**
@@ -483,11 +494,6 @@ class HSM {
          * \brief The number of elements in the path.
          */
         using Size = Storage::Size;
-
-        /**
-         * \brief A reference to a const path element.
-         */
-        using Const_Reference = Storage::Const_Reference;
 
         /**
          * \brief A const path iterator.
@@ -558,18 +564,6 @@ class HSM {
         }
 
         /**
-         * \brief Remove an element from the end of the path.
-         */
-        void pop() noexcept
-        {
-            if ( empty() ) {
-                trap_fatal_error();
-            } // if
-
-            --m_size;
-        }
-
-        /**
          * \brief Check if the path is complete.
          *
          * \return true if the path is complete.
@@ -578,18 +572,6 @@ class HSM {
         auto is_complete() const noexcept -> bool
         {
             return m_is_complete;
-        }
-
-        /**
-         * \brief Access the last element of the path.
-         *
-         * \warning Calling this function on an empty path results in undefined behavior.
-         *
-         * \return The last element of the path.
-         */
-        auto back() const noexcept -> Const_Reference
-        {
-            return *( end() - 1 );
         }
 
         /**
@@ -640,17 +622,6 @@ class HSM {
             return Const_Reverse_Iterator{ begin() };
         }
 
-        /**
-         * \brief Check if the path is empty.
-         *
-         * \return true if the path is empty.
-         * \return false if the path is not empty.
-         */
-        [[nodiscard]] auto empty() const noexcept -> bool
-        {
-            return not m_size;
-        }
-
       private:
         /**
          * \brief The path storage.
@@ -666,6 +637,26 @@ class HSM {
          * \brief The path state.
          */
         bool m_is_complete{};
+
+        friend void HSM::remove_common_superstates( Path & first, Path & second ) noexcept;
+
+        /**
+         * \brief Remove an element from the end of the path.
+         */
+        void pop() noexcept
+        {
+            --m_size;
+        }
+
+        /**
+         * \brief Access the last element of the path.
+         *
+         * \return The last element of the path.
+         */
+        auto back() const noexcept
+        {
+            return *( end() - 1 );
+        }
     };
 
     /**
@@ -809,11 +800,8 @@ class HSM {
                 } // if
 
                 if ( not source_path.is_complete() and not target_path.is_complete() ) {
-                    while ( source_path.back() == target_path.back() ) {
-                        source_path.pop();
-                        target_path.pop();
-                    } // while
-                }     // if
+                    remove_common_superstates( source_path, target_path );
+                } // if
 
                 if ( not target_path.is_complete() ) {
                     exit( source_path );
@@ -838,6 +826,14 @@ class HSM {
         }     // for
     }
 };
+
+inline void HSM::remove_common_superstates( Path & first, Path & second ) noexcept
+{
+    while ( first.back() == second.back() ) {
+        first.pop();
+        second.pop();
+    } // while
+}
 
 } // namespace picolibrary
 
