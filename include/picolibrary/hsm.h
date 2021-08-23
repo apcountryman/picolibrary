@@ -26,6 +26,7 @@
 #include <cstddef>
 #include <type_traits>
 
+#include "picolibrary/algorithm.h"
 #include "picolibrary/event.h"
 #include "picolibrary/fatal_error.h"
 #include "picolibrary/fixed_size_array.h"
@@ -807,7 +808,6 @@ class HSM {
     void transition_from( State_Event_Handler_Pointer source_state ) noexcept
     {
         // #lizard forgives the length
-        // #lizard forgives the complexity
 
         auto current_state = m_current_state;
         auto target_state  = m_target_state;
@@ -818,15 +818,15 @@ class HSM {
 
                 current_path.discover( *this, *current_state, *source_state );
 
-                for ( auto begin = current_path.begin(); begin != current_path.end(); ++begin ) {
-                    switch ( ( *begin )( *this, EXIT ) ) {
+                for_each( current_path.begin(), current_path.end(), [ this ]( auto state ) noexcept {
+                    switch ( ( *state )( *this, EXIT ) ) {
                         case Event_Handling_Result::EVENT_HANDLED: break;
                         case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE:
                             break;
                         default: trap_fatal_error();
                     } // switch
-                }     // for
-            }         // if
+                } );
+            } // if
 
             if ( target_state == source_state ) {
                 switch ( ( *source_state )( *this, EXIT ) ) {
@@ -860,27 +860,27 @@ class HSM {
                 }     // if
 
                 if ( not target_path.is_complete() ) {
-                    for ( auto begin = source_path.begin(); begin != source_path.end(); ++begin ) {
-                        switch ( ( *begin )( *this, EXIT ) ) {
+                    for_each( source_path.begin(), source_path.end(), [ this ]( auto state ) noexcept {
+                        switch ( ( *state )( *this, EXIT ) ) {
                             case Event_Handling_Result::EVENT_HANDLED: break;
                             case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE:
                                 break;
                             default: trap_fatal_error();
                         } // switch
-                    }     // for
-                }         // if
+                    } );
+                } // if
 
                 if ( not source_path.is_complete() ) {
-                    for ( auto rbegin = target_path.rbegin(); rbegin != target_path.rend(); ++rbegin ) {
-                        switch ( ( *rbegin )( *this, ENTRY ) ) {
+                    for_each( target_path.rbegin(), target_path.rend(), [ this ]( auto state ) noexcept {
+                        switch ( ( *state )( *this, ENTRY ) ) {
                             case Event_Handling_Result::EVENT_HANDLED: break;
                             case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE:
                                 break;
                             default: trap_fatal_error();
                         } // switch
-                    }     // for
-                }         // if
-            }             // else
+                    } );
+                } // if
+            }     // else
 
             current_state   = target_state;
             m_current_state = target_state;
