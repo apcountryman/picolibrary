@@ -449,24 +449,13 @@ class HSM {
      * \return false if state is neither the state event handler for the current state nor
      *         one of its superstates.
      */
-    auto is_in( State_Event_Handler_Reference state ) noexcept -> bool
+    auto is_in( State_Event_Handler_Reference state ) noexcept
     {
-        auto current_state = m_current_state;
-        for ( ;; ) {
-            if ( current_state == state ) {
-                return true;
-            } // if
+        Path path;
 
-            switch ( ( *current_state )( *this, DISCOVERY ) ) {
-                case Event_Handling_Result::EVENT_IGNORED: return false;
-                case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE:
-                    current_state = m_current_state;
-                    break;
-                case Event_Handling_Result::EVENT_HANDLED: [[fallthrough]];
-                case Event_Handling_Result::STATE_TRANSITION_TRIGGERED: [[fallthrough]];
-                default: trap_fatal_error();
-            } // switch
-        }     // for
+        path.discover( *this, *m_current_state, state );
+
+        return path.is_complete();
     }
 
   private:
@@ -586,7 +575,7 @@ class HSM {
          * \return true if the path is complete.
          * \return false if the path is not complete.
          */
-        auto is_complete() const noexcept
+        auto is_complete() const noexcept -> bool
         {
             return m_is_complete;
         }
