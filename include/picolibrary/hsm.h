@@ -57,7 +57,7 @@ class HSM {
          *
          * \return A reference to the pseudo-event category instance.
          */
-        static constexpr auto const & instance() noexcept
+        static constexpr auto instance() noexcept -> Pseudo_Event_Category const &
         {
             return INSTANCE;
         }
@@ -456,7 +456,7 @@ class HSM {
                 return true;
             } // if
 
-            switch ( ( *current_state )( *this, Discovery::instance() ) ) {
+            switch ( ( *current_state )( *this, DISCOVERY ) ) {
                 case Event_Handling_Result::EVENT_IGNORED: return false;
                 case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE:
                     current_state = m_current_state;
@@ -469,179 +469,6 @@ class HSM {
     }
 
   private:
-    /**
-     * \brief Discovery pseudo-event.
-     */
-    class Discovery final : public Event {
-      public:
-        /**
-         * \brief Get a reference to the discovery pseudo-event instance.
-         *
-         * \return A reference to the discovery pseudo-event instance.
-         */
-        static constexpr auto instance() noexcept -> Discovery const &
-        {
-            return INSTANCE;
-        }
-
-        Discovery( Discovery && ) = delete;
-
-        Discovery( Discovery const & ) = delete;
-
-        auto operator=( Discovery && ) = delete;
-
-        auto operator=( Discovery const & ) = delete;
-
-      private:
-        /**
-         * \brief The discovery pseudo-event instance.
-         */
-        static Discovery const INSTANCE;
-
-        /**
-         * \brief Constructor.
-         */
-        constexpr Discovery() noexcept :
-            Event{ Pseudo_Event_Category::instance(), static_cast<Event_ID>( Pseudo_Event::DISCOVERY ) }
-        {
-        }
-
-        /**
-         * \brief Destructor.
-         */
-        ~Discovery() noexcept = default;
-    };
-
-    /**
-     * \brief Entry pseudo-event.
-     */
-    class Entry final : public Event {
-      public:
-        /**
-         * \brief Get a reference to the entry pseudo-event instance.
-         *
-         * \return A reference to the entry pseudo-event instance.
-         */
-        static constexpr auto instance() noexcept -> Entry const &
-        {
-            return INSTANCE;
-        }
-
-        Entry( Entry && ) = delete;
-
-        Entry( Entry const & ) = delete;
-
-        auto operator=( Entry && ) = delete;
-
-        auto operator=( Entry const & ) = delete;
-
-      private:
-        /**
-         * \brief The entry pseudo-event instance.
-         */
-        static Entry const INSTANCE;
-
-        /**
-         * \brief Constructor.
-         */
-        constexpr Entry() noexcept :
-            Event{ Pseudo_Event_Category::instance(), static_cast<Event_ID>( Pseudo_Event::ENTRY ) }
-        {
-        }
-
-        /**
-         * \brief Destructor.
-         */
-        ~Entry() noexcept = default;
-    };
-
-    /**
-     * \brief Exit pseudo-event.
-     */
-    class Exit final : public Event {
-      public:
-        /**
-         * \brief Get a reference to the exit pseudo-event instance.
-         *
-         * \return A reference to the exit pseudo-event instance.
-         */
-        static constexpr auto instance() noexcept -> Exit const &
-        {
-            return INSTANCE;
-        }
-
-        Exit( Exit && ) = delete;
-
-        Exit( Exit const & ) = delete;
-
-        auto operator=( Exit && ) = delete;
-
-        auto operator=( Exit const & ) = delete;
-
-      private:
-        /**
-         * \brief The exit pseudo-event instance.
-         */
-        static Exit const INSTANCE;
-
-        /**
-         * \brief Constructor.
-         */
-        constexpr Exit() noexcept :
-            Event{ Pseudo_Event_Category::instance(), static_cast<Event_ID>( Pseudo_Event::EXIT ) }
-        {
-        }
-
-        /**
-         * \brief Destructor.
-         */
-        ~Exit() noexcept = default;
-    };
-
-    /**
-     * \brief Nested initial transition pseudo-event.
-     */
-    class Nested_Initial_Transition final : public Event {
-      public:
-        /**
-         * \brief Get a reference to the nested initial transition pseudo-event instance.
-         *
-         * \return A reference to the nested initial transition pseudo-event instance.
-         */
-        static constexpr auto instance() noexcept -> Nested_Initial_Transition const &
-        {
-            return INSTANCE;
-        }
-
-        Nested_Initial_Transition( Nested_Initial_Transition && ) = delete;
-
-        Nested_Initial_Transition( Nested_Initial_Transition const & ) = delete;
-
-        auto operator=( Nested_Initial_Transition && ) = delete;
-
-        auto operator=( Nested_Initial_Transition const & ) = delete;
-
-      private:
-        /**
-         * \brief The nested initial transition pseudo-event instance.
-         */
-        static Nested_Initial_Transition const INSTANCE;
-
-        /**
-         * \brief Constructor.
-         */
-        constexpr Nested_Initial_Transition() noexcept :
-            Event{ Pseudo_Event_Category::instance(),
-                   static_cast<Event_ID>( Pseudo_Event::NESTED_INITIAL_TRANSITION ) }
-        {
-        }
-
-        /**
-         * \brief Destructor.
-         */
-        ~Nested_Initial_Transition() noexcept = default;
-    };
-
     /**
      * \brief State path.
      */
@@ -718,8 +545,7 @@ class HSM {
             m_storage[ 0 ] = &begin;
             m_size         = 1;
 
-            if ( ( begin )( hsm, Discovery::instance() )
-                 != Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE ) {
+            if ( ( begin )( hsm, DISCOVERY ) != Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE ) {
                 trap_fatal_error();
             } // if
             for ( ; hsm.m_superstate != top; ++m_size ) {
@@ -734,7 +560,7 @@ class HSM {
 
                 m_storage[ m_size ] = hsm.m_superstate;
 
-                if ( ( *hsm.m_superstate )( hsm, Discovery::instance() )
+                if ( ( *hsm.m_superstate )( hsm, DISCOVERY )
                      != Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE ) {
                     trap_fatal_error();
                 } // if
@@ -923,6 +749,26 @@ class HSM {
     };
 
     /**
+     * \brief Discovery pseudo-event.
+     */
+    static Simple_Event const DISCOVERY;
+
+    /**
+     * \brief Entry pseudo-event.
+     */
+    static Simple_Event const ENTRY;
+
+    /**
+     * \brief Exit pseudo-event.
+     */
+    static Simple_Event const EXIT;
+
+    /**
+     * \brief Nested initial transition pseudo-event.
+     */
+    static Simple_Event const NESTED_INITIAL_TRANSITION;
+
+    /**
      * \brief The state event handler for the current state.
      */
     State_Event_Handler_Pointer m_current_state{};
@@ -973,7 +819,7 @@ class HSM {
                 current_path.discover( *this, *current_state, *source_state );
 
                 for ( auto begin = current_path.begin(); begin != current_path.end(); ++begin ) {
-                    switch ( ( *begin )( *this, Exit::instance() ) ) {
+                    switch ( ( *begin )( *this, EXIT ) ) {
                         case Event_Handling_Result::EVENT_HANDLED: break;
                         case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE:
                             break;
@@ -983,14 +829,14 @@ class HSM {
             }         // if
 
             if ( target_state == source_state ) {
-                switch ( ( *source_state )( *this, Exit::instance() ) ) {
+                switch ( ( *source_state )( *this, EXIT ) ) {
                     case Event_Handling_Result::EVENT_HANDLED: break;
                     case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE:
                         break;
                     default: trap_fatal_error();
                 } // switch
 
-                switch ( ( *target_state )( *this, Entry::instance() ) ) {
+                switch ( ( *target_state )( *this, ENTRY ) ) {
                     case Event_Handling_Result::EVENT_HANDLED: break;
                     case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE:
                         break;
@@ -1015,7 +861,7 @@ class HSM {
 
                 if ( not target_path.is_complete() ) {
                     for ( auto begin = source_path.begin(); begin != source_path.end(); ++begin ) {
-                        switch ( ( *begin )( *this, Exit::instance() ) ) {
+                        switch ( ( *begin )( *this, EXIT ) ) {
                             case Event_Handling_Result::EVENT_HANDLED: break;
                             case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE:
                                 break;
@@ -1026,7 +872,7 @@ class HSM {
 
                 if ( not source_path.is_complete() ) {
                     for ( auto rbegin = target_path.rbegin(); rbegin != target_path.rend(); ++rbegin ) {
-                        switch ( ( *rbegin )( *this, Entry::instance() ) ) {
+                        switch ( ( *rbegin )( *this, ENTRY ) ) {
                             case Event_Handling_Result::EVENT_HANDLED: break;
                             case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE:
                                 break;
@@ -1039,7 +885,7 @@ class HSM {
             current_state   = target_state;
             m_current_state = target_state;
 
-            switch ( ( *current_state )( *this, Nested_Initial_Transition::instance() ) ) {
+            switch ( ( *current_state )( *this, NESTED_INITIAL_TRANSITION ) ) {
                 case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE: return;
                 case Event_Handling_Result::STATE_TRANSITION_TRIGGERED:
                     source_state = target_state;
