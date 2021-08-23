@@ -167,6 +167,32 @@ auto equal( Iterator_1 begin_1, Iterator_1 end_1, Iterator_2 begin_2, Iterator_2
  *
  * \tparam Iterator Range iterator.
  * \tparam Functor A unary functor that takes the iterated over type by value or const
+ *         reference, and returns nothing. Illustrative signatures:
+ * \code
+ * void functor( auto value ) noexcept;
+ *
+ * void functor( auto const & value ) noexcept;
+ * \endcode
+ *
+ * \param[in] begin The beginning of the range to apply the functor to.
+ * \param[in] end The end of the range to apply the functor to.
+ * \param[in] functor The functor to apply to the range.
+ *
+ * \return The functor.
+ */
+template<typename Iterator, typename Functor>
+constexpr auto for_each( Iterator begin, Iterator end, Functor functor ) noexcept
+{
+    for ( ; begin != end; ++begin ) { functor( *begin ); } // for
+
+    return functor;
+}
+
+/**
+ * \brief Apply a functor to a range.
+ *
+ * \tparam Iterator Range iterator.
+ * \tparam Functor A unary functor that takes the iterated over type by value or const
  *         reference, and returns either picolibrary::Result<picolibrary::Void,
  *         picolibrary::Error_Code> or picolibrary::Result<picolibrary::Void,
  *         picolibrary::Void>. If an error is returned by the functor, iteration halts,

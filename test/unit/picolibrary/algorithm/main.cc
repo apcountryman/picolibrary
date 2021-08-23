@@ -190,6 +190,20 @@ TEST( forEach, worksProperly )
     {
         auto const in_sequence = InSequence{};
 
+        auto functor = MockFunction<void( std::uint_fast8_t const & )>{};
+
+        auto const values = random_container<std::vector<std::uint_fast8_t>>();
+
+        for ( auto const & value : values ) {
+            EXPECT_CALL( functor, Call( Ref( value ) ) );
+        } // for
+
+        ::picolibrary::for_each( values.begin(), values.end(), functor.AsStdFunction() );
+    }
+
+    {
+        auto const in_sequence = InSequence{};
+
         auto functor = MockFunction<Result<Void, Error_Code>( std::uint_fast8_t const & )>{};
 
         auto const values = random_container<std::vector<std::uint_fast8_t>>();
