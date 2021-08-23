@@ -581,18 +581,6 @@ class HSM {
         }
 
         /**
-         * \brief Access the first element of the path.
-         *
-         * \warning Calling this function on an empty path results in undefined behavior.
-         *
-         * \return The first element of the path.
-         */
-        auto front() const noexcept -> Const_Reference
-        {
-            return *begin();
-        }
-
-        /**
          * \brief Access the last element of the path.
          *
          * \warning Calling this function on an empty path results in undefined behavior.
@@ -615,16 +603,6 @@ class HSM {
         }
 
         /**
-         * \brief Get an iterator to the first element of the path.
-         *
-         * \return An iterator to the last element of the path.
-         */
-        auto cbegin() const noexcept -> Const_Iterator
-        {
-            return &m_storage[ 0 ];
-        }
-
-        /**
          * \brief Get an iterator to the element following the last element of the path.
          *
          * \warning Attempting to access the element following the last element of a path
@@ -634,20 +612,7 @@ class HSM {
          */
         auto end() const noexcept -> Const_Iterator
         {
-            return begin() + size();
-        }
-
-        /**
-         * \brief Get an iterator to the element following the last element of the path.
-         *
-         * \warning Attempting to access the element following the last element of a path
-         *          results in undefined behavior.
-         *
-         * \return An iterator to the element following the last element of the path.
-         */
-        auto cend() const noexcept -> Const_Iterator
-        {
-            return begin() + size();
+            return begin() + m_size;
         }
 
         /**
@@ -656,16 +621,6 @@ class HSM {
          * \return An iterator to the first element of the reversed path.
          */
         auto rbegin() const noexcept -> Const_Reverse_Iterator
-        {
-            return Const_Reverse_Iterator{ end() };
-        }
-
-        /**
-         * \brief Get an iterator to the first element of the reversed path.
-         *
-         * \return An iterator to the first element of the reversed path.
-         */
-        auto crbegin() const noexcept -> Const_Reverse_Iterator
         {
             return Const_Reverse_Iterator{ end() };
         }
@@ -686,21 +641,6 @@ class HSM {
         }
 
         /**
-         * \brief Get an iterator to the element following the last element of the
-         *        reversed path.
-         *
-         * \warning Attempting to access the element following the last element of a
-         *          reversed path results in undefined behavior.
-         *
-         * \return An iterator to the element following the last element of the reversed
-         *         path.
-         */
-        auto crend() const noexcept -> Const_Reverse_Iterator
-        {
-            return Const_Reverse_Iterator{ begin() };
-        }
-
-        /**
          * \brief Check if the path is empty.
          *
          * \return true if the path is empty.
@@ -708,17 +648,7 @@ class HSM {
          */
         [[nodiscard]] auto empty() const noexcept -> bool
         {
-            return not size();
-        }
-
-        /**
-         * \brief Get the number of elements in the path.
-         *
-         * \return The number of elements in the path.
-         */
-        auto size() const noexcept -> Size
-        {
-            return m_size;
+            return not m_size;
         }
 
       private:
