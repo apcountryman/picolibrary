@@ -506,11 +506,6 @@ class HSM {
         using Storage = Fixed_Size_Array<State_Event_Handler_Pointer, MAX_STATE_DEPTH>;
 
         /**
-         * \brief The number of elements in the path.
-         */
-        using Size = Storage::Size;
-
-        /**
          * \brief A const path iterator.
          */
         using Const_Iterator = Storage::Const_Iterator;
@@ -544,11 +539,10 @@ class HSM {
          * \param[in] end The state event handler for the state at the end of the path.
          *
          * If end is top, the path will cover the range [begin,top) and will be be
+         * considered to be complete. If end is a superstate of begin, the path will cover
+         * the range [begin,end) and will be considered to be complete. If end is not a
+         * superstate of begin, the path will cover the range [begin,top) and will not be
          * considered to be complete.
-         * If end is a superstate of begin, the path will cover the range [begin,end) and
-         * will be considered to be complete. If end is not a superstate of begin, the
-         * path will cover the range [begin,top) and will not be considered to be
-         * complete.
          */
         void discover( HSM & hsm, State_Event_Handler_Reference begin, State_Event_Handler_Reference end ) noexcept
         {
@@ -649,7 +643,7 @@ class HSM {
         /**
          * \brief The path size.
          */
-        Size m_size{ 0 };
+        Storage::Size m_size{ 0 };
 
         /**
          * \brief The path state.
