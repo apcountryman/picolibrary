@@ -24,6 +24,7 @@
 #define PICOLIBRARY_HSM_H
 
 #include <cstddef>
+#include <cstdint>
 #include <type_traits>
 
 #include "picolibrary/algorithm.h"
@@ -45,7 +46,7 @@ class HSM {
         DISCOVERY, ///< Discovering state hierarchy, defer event handling to superstate.
         ENTRY,     ///< State entered, execute entry actions.
         EXIT,      ///< State exited, execute exit actions.
-        NESTED_INITIAL_TRANSITION, ///< State entered, entry actions executed, execute nested initial transition and associated actions.
+        NESTED_INITIAL_TRANSITION, ///< State entered, entry actions executed, execute nested initial transition (and any associated actions).
     };
 
     /**
@@ -73,9 +74,9 @@ class HSM {
 
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
         /**
-         * \brief Get the name of the event category.
+         * \brief Get the name of the pseudo-event category.
          *
-         * \return The name of the event category.
+         * \return The name of the pseudo-event category.
          */
         virtual auto name() const noexcept -> char const * override final
         {
@@ -85,11 +86,11 @@ class HSM {
 
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
         /**
-         * \brief Get an event ID's description.
+         * \brief Get a pseudo-event's description.
          *
-         * \param[in] id The event ID whose description is to be got.
+         * \param[in] id The ID of the pseudo-event whose description is to be got.
          *
-         * \return The event ID's description.
+         * \return The pseudo-event's description.
          */
         virtual auto event_description( Event_ID id ) const noexcept -> char const * override final
         {
@@ -124,6 +125,11 @@ class HSM {
 
     /**
      * \brief Event handling result.
+     *
+     * \warning State event handlers should never construct event handling results
+     *          directory. Use picolibrary::HSM::event_handled(),
+     *          picolibrary::HSM::transition_to(), or
+     *          picolibrary::HSM::defer_event_handling_to() instead.
      */
     enum class Event_Handling_Result : std::uint_fast8_t {
         EVENT_IGNORED,                         ///< Event ignored.
@@ -155,7 +161,7 @@ class HSM {
      * handling of the entry pseudo-event to the state event handler for the state's
      * superstate as follows:
      * \code
-     * return hsm.defer_event_handling_to( foo );
+     * return hsm.defer_event_handling_to( superstate, event );
      * \endcode
      *
      * Exit actions:
@@ -178,7 +184,7 @@ class HSM {
      * handling of the exit pseudo-event to the state event handler for the state's
      * superstate as follows:
      * \code
-     * return hsm.defer_event_handling_to( foo, event );
+     * return hsm.defer_event_handling_to( superstate, event );
      * \endcode
      *
      * Nested Initial transition:
@@ -191,42 +197,42 @@ class HSM {
      *     if ( static_cast<Pseudo_Event>( event.id()) == Pseudo_Event::NESTED_INITIAL_TRANSITION ) {
      *         // execute any actions associated with the nested initial transition
      *
-     *         return hsm.transition_to( target_state );
+     *         return hsm.transition_to( target_state, event );
      *     } // if
      * } // if
      * \endcode
      *
      * If a state does not have a nested initial transition, the state's event handler
-     * must defer handling of the nested initial transition pseudo-event as follows:
+     * must defer handling of the nested initial transition pseudo-event to the state
+     * event handler for the state's superstate as follows:
      * \code
-     * return hsm.defer_event_handling_to( target_state, event );
+     * return hsm.defer_event_handling_to( superstate, event );
      * \endcode
      *
-     * Event handling:
-     * If a state handles an event, the state's event handler must report report that the
-     * event has been handled as follows:
+     * Event Handling:
+     * If a state handles an event, the state's event handler must report that the event
+     * has been handled as follows:
      * \code
      * return hsm.event_handled( event );
      * \endcode
      *
-     * Event handling deferral:
-     * If the state does not explicitly handle an event, the state's event handler must
-     * defer handling of the event to state event handler for the state's superstate as
-     * follows:
+     * Event Handling Deferral:
+     * If a state does not explicitly handle an event, the state's event handler must
+     * defer handling of the event to the state event handler for the state's superstate
+     * as follows:
      * \code
      * return hsm.defer_event_handling_to( superstate, event );
      * \endcode
      *
      * If the state is a highest level state (a state that has no explicit superstate),
-     * the state's event handler must defer handling of the event to the implicit "top"
-     * superstate as follows:
+     * the state's event handler must defer handling of the event to the state event
+     * handler for the implicit "top" superstate as follows:
      * \code
      * return hsm.defer_event_handling_to( top, event );
      * \endcode
      *
      * Summary:
      * \code
-     * // entry actions, omit block if the state has no entry actions
      * if ( &event.category() == &Pseudo_Event_Category::instance()) {
      *     // entry actions, omit block if the state has no entry actions
      *     if ( static_cast<Pseudo_Event>( event.id()) == Pseudo_Event::ENTRY ) {
@@ -247,7 +253,7 @@ class HSM {
      *     if ( static_cast<Pseudo_Event>( event.id()) == Pseudo_Event::NESTED_INITIAL_TRANSITION ) {
      *         // execute any actions associated with the nested initial transition
      *
-     *         return hsm.transition_to( target_state );
+     *         return hsm.transition_to( target_state, event );
      *     } // if
      * } // if
      *
@@ -300,7 +306,7 @@ class HSM {
      * \brief Defer handling of an event to the superstate.
      *
      * \param[in] superstate The state event handler for the superstate.
-     * \param[in] event The event whose handling is being deferred.
+     * \param[in] event The event whose handling is to be deferred.
      *
      * \return Event handling deferred to superstate event handling result.
      */
@@ -318,7 +324,7 @@ class HSM {
      *
      * \param[in] target_state The state event handler for the target of the state
      *            transition.
-     * \param[in] trigger The event that triggered the state transition.
+     * \param[in] trigger The event that is triggering the state transition.
      *
      * \return State transition triggered event handling result.
      */
@@ -350,7 +356,7 @@ class HSM {
      *            initial state transition by calling picolibrary::HSM::transition_to().
      */
     constexpr HSM( State_Event_Handler_Reference initial_pseudostate ) noexcept :
-        m_current_state{ &initial_pseudostate }
+        m_initial_pseudostate{ &initial_pseudostate }
     {
     }
 
@@ -390,12 +396,17 @@ class HSM {
      * \brief Execute the HSM's topmost initial transition and any resulting nested
      *        initial transitions.
      *
+     * \attention This function must be called before picolibrary::HSM::dispatch() is
+     *            called.
+     *
+     * \warning This function must not be called more than once.
+     *
      * \param[in] event The event to pass to the initial pseudostate's event handler to
      *            trigger the topmost initial transition.
      */
     void execute_topmost_initial_transition( Event const & event ) noexcept
     {
-        if ( ( *m_current_state )( *this, event ) != Event_Handling_Result::STATE_TRANSITION_TRIGGERED ) {
+        if ( ( *m_initial_pseudostate )( *this, event ) != Event_Handling_Result::STATE_TRANSITION_TRIGGERED ) {
             trap_fatal_error();
         } // if
 
@@ -406,6 +417,9 @@ class HSM {
 
     /**
      * \brief Dispatch an event to the event handler for the currently active state.
+     *
+     * \attention picolibrary::HSM::execute_topmost_initial_transition() must be called
+     *            before this function is called.
      *
      * \param[in] event The event to dispatch to the event handler for the currently
      *            active state.
@@ -423,14 +437,15 @@ class HSM {
                 case Event_Handling_Result::STATE_TRANSITION_TRIGGERED:
                     transition_from( state );
                     return;
+                default: trap_fatal_error();
             } // switch
         }     // for
     }
 
     /**
-     * \brief Get the state event handler for the current state.
+     * \brief Get the state event handler for the currently active state.
      *
-     * \return The state event handler for the current state.
+     * \return The state event handler for the currently active state.
      */
     constexpr auto current_state() const noexcept
     {
@@ -438,16 +453,16 @@ class HSM {
     }
 
     /**
-     * \brief Check if a state event handler is the state event handler for the current
-     *        state or one of its superstates.
+     * \brief Check if a state event handler is the state event handler for the currently
+     *        active state or one of its superstates.
      *
      * \param[in] state The state event handler to check if it is the state event handler
-     *            for the current state or one of its superstates.
+     *            for the currently active state or one of its superstates.
      *
-     * \return true if state is the state event handler for the current state or one of
-     *         its superstates.
-     * \return false if state is neither the state event handler for the current state nor
+     * \return true if state is the state event handler for the currently active state or
      *         one of its superstates.
+     * \return false if state is neither the state event handler for the currently active
+     *         state nor one of its superstates.
      */
     auto is_in( State_Event_Handler_Reference state ) noexcept
     {
@@ -484,11 +499,6 @@ class HSM {
          * \brief Path storage.
          */
         using Storage = Fixed_Size_Array<State_Event_Handler_Pointer, MAX_STATE_DEPTH>;
-
-        /**
-         * \brief Path element type.
-         */
-        using Value = Storage::Value;
 
         /**
          * \brief The number of elements in the path.
@@ -528,6 +538,8 @@ class HSM {
          *            path.
          * \param[in] end The state event handler for the state at the end of the path.
          *
+         * If end is top, the path will cover the range [begin,top) and will be be
+         * considered to be complete.
          * If end is a superstate of begin, the path will cover the range [begin,end) and
          * will be considered to be complete. If end is not a superstate of begin, the
          * path will cover the range [begin,top) and will not be considered to be
@@ -577,7 +589,7 @@ class HSM {
         /**
          * \brief Get an iterator to the first element of the path.
          *
-         * \return An iterator to the last element of the path.
+         * \return An iterator to the first element of the path.
          */
         auto begin() const noexcept -> Const_Iterator
         {
@@ -680,15 +692,20 @@ class HSM {
     static Simple_Event const NESTED_INITIAL_TRANSITION;
 
     /**
-     * \brief The state event handler for the current state.
+     * \brief The state event handler for the currently active state.
      */
     State_Event_Handler_Pointer m_current_state{};
 
     union {
         /**
+         * \brief The state event handler for the initial pseudostate.
+         */
+        State_Event_Handler_Pointer m_initial_pseudostate{};
+
+        /**
          * \brief The state event handler for a superstate.
          */
-        State_Event_Handler_Pointer m_superstate{};
+        State_Event_Handler_Pointer m_superstate;
 
         /**
          * \brief The state event handler for the target of a state transition.
@@ -818,7 +835,7 @@ class HSM {
             switch ( ( *current_state )( *this, NESTED_INITIAL_TRANSITION ) ) {
                 case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE: return;
                 case Event_Handling_Result::STATE_TRANSITION_TRIGGERED:
-                    source_state = target_state;
+                    source_state = current_state;
                     target_state = m_target_state;
                     break;
                 default: trap_fatal_error();
