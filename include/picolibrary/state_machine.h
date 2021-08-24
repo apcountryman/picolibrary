@@ -212,21 +212,31 @@ class HSM {
      * return hsm.defer_event_handling_to( superstate, event );
      * \endcode
      *
-     * Event Handling:
-     * If a state handles an event, the state's event handler must report that the event
-     * has been handled as follows:
+     * Application Event Handling:
+     * A state may take any of the following three actions when handling an application
+     * event:
+     * - Handle the event
+     * - Trigger a state transition in response to the event
+     * - Defer handling of the event to the state's superstate
+     *
+     * If the state handles the event, the state's event handler must report that the
+     * event has been handled as follows:
      * \code
      * return hsm.event_handled( event );
      * \endcode
      *
-     * Event Handling Deferral:
-     * If a state does not explicitly handle an event, the state's event handler must
-     * defer handling of the event to the state event handler for the state's superstate
-     * as follows:
+     * If the state triggers a state transition in response to the event, the state's
+     * event handler must trigger a state transition as follows:
+     * \code
+     * return hsm.transition_to( target_state, event );
+     * \endcode
+     *
+     * If the state neither handles the event nor triggers a state transition in response
+     * to the event, the state's event handler must defer handling of the event to the
+     * state event handler for the state's superstate as follows:
      * \code
      * return hsm.defer_event_handling_to( superstate, event );
      * \endcode
-     *
      * If the state is a highest level state (a state that has no explicit superstate),
      * the state's event handler must defer handling of the event to the state event
      * handler for the implicit "top" superstate as follows:
@@ -259,6 +269,8 @@ class HSM {
      *         return hsm.transition_to( target_state, event );
      *     } // if
      * } // if
+     *
+     * // handle application events
      *
      * return hsm.defer_event_handling_to( superstate, event );
      * \endcode
