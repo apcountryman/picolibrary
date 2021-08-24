@@ -17,12 +17,11 @@
 
 /**
  * \file
- * \brief picolibrary::HSM implementation.
+ * \brief picolibrary::State_Machine implementation.
  */
 
-#include "picolibrary/hsm.h"
-
 #include "picolibrary/event.h"
+#include "picolibrary/state_machine.h"
 
 namespace picolibrary {
 

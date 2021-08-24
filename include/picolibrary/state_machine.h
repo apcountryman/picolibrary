@@ -17,11 +17,11 @@
 
 /**
  * \file
- * \brief picolibrary::HSM interface.
+ * \brief picolibrary::State_Machine interface.
  */
 
-#ifndef PICOLIBRARY_HSM_H
-#define PICOLIBRARY_HSM_H
+#ifndef PICOLIBRARY_STATE_MACHINE_H
+#define PICOLIBRARY_STATE_MACHINE_H
 
 #include <cstddef>
 #include <cstdint>
@@ -855,4 +855,4 @@ inline void HSM::remove_common_superstates( Path & first, Path & second ) noexce
 
 } // namespace picolibrary
 
-#endif // PICOLIBRARY_HSM_H
+#endif // PICOLIBRARY_STATE_MACHINE_H
