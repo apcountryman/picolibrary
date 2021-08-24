@@ -141,6 +141,9 @@ class HSM {
     /**
      * \brief State event handler.
      *
+     * \param[in] hsm The HSM.
+     * \param[in] event The event to handle.
+     *
      * Entry actions:
      * If a state has entry actions, the state's event handler must execute the state's
      * entry actions when it is passed the entry pseudo-event. Once the state's entry
@@ -314,7 +317,7 @@ class HSM {
     {
         static_cast<void>( event );
 
-        m_superstate = superstate;
+        m_superstate = &superstate;
 
         return Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE;
     }
@@ -332,7 +335,7 @@ class HSM {
     {
         static_cast<void>( trigger );
 
-        m_target_state = target_state;
+        m_target_state = &target_state;
 
         return Event_Handling_Result::STATE_TRANSITION_TRIGGERED;
     }
@@ -393,8 +396,8 @@ class HSM {
     constexpr auto operator=( HSM const & expression ) noexcept -> HSM & = default;
 
     /**
-     * \brief Execute the HSM's topmost initial transition and any resulting nested
-     *        initial transitions.
+     * \brief Execute the topmost initial transition and any resulting nested initial
+     *        transitions.
      *
      * \attention This function must be called before picolibrary::HSM::dispatch() is
      *            called.
@@ -462,7 +465,7 @@ class HSM {
      * \return true if state is the state event handler for the currently active state or
      *         one of its superstates.
      * \return false if state is neither the state event handler for the currently active
-     *         state nor one of its superstates.
+     *         state nor any of its superstates.
      */
     auto is_in( State_Event_Handler_Reference state ) noexcept
     {
@@ -482,6 +485,8 @@ class HSM {
     /**
      * \brief Remove the state event handlers for the superstates that are common to a
      *        pair of paths.
+     *
+     * \relatedalso picolibrary::HSM::Path
      *
      * \param[in] first The first of the two paths.
      * \param[in] second The second of the two paths.
@@ -547,8 +552,6 @@ class HSM {
          */
         void discover( HSM & hsm, State_Event_Handler_Reference begin, State_Event_Handler_Reference end ) noexcept
         {
-            // #lizard forgives the length
-
             m_is_complete  = end == top;
             m_storage[ 0 ] = &begin;
             m_size         = 1;
@@ -594,7 +597,7 @@ class HSM {
          */
         auto begin() const noexcept -> Const_Iterator
         {
-            return &m_storage[ 0 ];
+            return m_storage.begin();
         }
 
         /**
