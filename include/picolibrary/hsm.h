@@ -556,23 +556,24 @@ class HSM {
             if ( ( begin )( hsm, DISCOVERY ) != Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE ) {
                 trap_fatal_error();
             } // if
-            for ( ; hsm.m_superstate != top; ++m_size ) {
-                if ( m_size >= m_storage.size() ) {
-                    trap_fatal_error();
-                } // if
-
+            while ( hsm.m_superstate != top ) {
                 if ( hsm.m_superstate == &end ) {
                     m_is_complete = true;
                     return;
                 } // if
 
+                if ( m_size >= m_storage.size() ) {
+                    trap_fatal_error();
+                } // if
+
                 m_storage[ m_size ] = hsm.m_superstate;
+                ++m_size;
 
                 if ( ( *hsm.m_superstate )( hsm, DISCOVERY )
                      != Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE ) {
                     trap_fatal_error();
                 } // if
-            }     // for
+            }     // while
         }
 
         /**
