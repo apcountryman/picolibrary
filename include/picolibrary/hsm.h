@@ -780,7 +780,7 @@ class HSM {
     void exit( Path const & path ) noexcept
     {
         for_each(
-            path.rbegin(), path.rend(), [ this ]( auto state ) noexcept { exit( *state ); } );
+            path.begin(), path.end(), [ this ]( auto state ) noexcept { exit( *state ); } );
     }
 
     /**
