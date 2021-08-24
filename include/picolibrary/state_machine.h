@@ -552,6 +552,8 @@ class HSM {
          */
         void discover( HSM & hsm, State_Event_Handler_Reference begin, State_Event_Handler_Reference end ) noexcept
         {
+            // #lizard forgives the length
+
             m_is_complete  = end == top;
             m_storage[ 0 ] = &begin;
             m_size         = 1;
