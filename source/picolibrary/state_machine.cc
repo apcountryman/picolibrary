@@ -20,8 +20,9 @@
  * \brief picolibrary::State_Machine implementation.
  */
 
-#include "picolibrary/event.h"
 #include "picolibrary/state_machine.h"
+
+#include "picolibrary/event.h"
 
 namespace picolibrary {
 
