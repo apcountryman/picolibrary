@@ -47,6 +47,7 @@ set(
     "picolibrary/microchip/mcp3008.cc"
     "picolibrary/result.cc"
     "picolibrary/spi.cc"
+    "picolibrary/state_machine.cc"
     "picolibrary/stream.cc"
     "picolibrary/utility.cc"
     "picolibrary/void.cc"
