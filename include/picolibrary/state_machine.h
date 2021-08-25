@@ -78,7 +78,7 @@ class State_Machine {
          */
         virtual auto name() const noexcept -> char const * override final
         {
-            return "::picolibrary::HSM::Pseudo_Event";
+            return "::picolibrary::State_Machine::Pseudo_Event";
         }
 #endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
 
@@ -246,7 +246,7 @@ class State_Machine {
      *
      * \return Event handled event handling result.
      */
-    constexpr auto event_handled( Event const & event ) const noexcept -> Event_Handling_Result
+    constexpr auto event_handled( Event const & event ) const noexcept
     {
         static_cast<void>( event );
 
@@ -339,7 +339,7 @@ class State_Machine {
             trap_fatal_error();
         } // if
 
-        enter( *m_current_state );
+        enter( *m_target_state );
 
         m_current_state = m_target_state;
     }
@@ -389,7 +389,7 @@ class State_Machine {
      */
     constexpr auto is_in( State_Event_Handler_Reference state ) noexcept
     {
-        return m_current_state == state;
+        return m_current_state == &state;
     }
 
   private:
