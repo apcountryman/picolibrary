@@ -26,6 +26,14 @@
 
 namespace picolibrary {
 
+State_Machine::Pseudo_Event_Category const State_Machine::Pseudo_Event_Category::INSTANCE{};
+
+Simple_Event const State_Machine::ENTRY{ Pseudo_Event_Category::instance(),
+                                         static_cast<Event_ID>( Pseudo_Event::ENTRY ) };
+
+Simple_Event const State_Machine::EXIT{ Pseudo_Event_Category::instance(),
+                                        static_cast<Event_ID>( Pseudo_Event::EXIT ) };
+
 HSM::Pseudo_Event_Category const HSM::Pseudo_Event_Category::INSTANCE{};
 
 Simple_Event const HSM::DISCOVERY{ Pseudo_Event_Category::instance(),
