@@ -711,7 +711,7 @@ class HSM {
      *
      * \return Event ignored event handling result.
      */
-    static constexpr auto top( HSM & hsm, Event const & event ) noexcept -> Event_Handling_Result
+    static constexpr auto top( HSM & hsm, Event const & event ) noexcept
     {
         return hsm.event_ignored( event );
     }
@@ -723,7 +723,7 @@ class HSM {
      *
      * \return Event handled event handling result.
      */
-    constexpr auto event_handled( Event const & event ) const noexcept -> Event_Handling_Result
+    constexpr auto event_handled( Event const & event ) const noexcept
     {
         static_cast<void>( event );
 
