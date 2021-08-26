@@ -438,7 +438,7 @@ struct fixed_size_array_size<Fixed_Size_Array<T, N>> : std::integral_constant<st
  * \return false if lhs is not equal to rhs.
  */
 template<typename T, std::size_t N>
-auto operator==( Fixed_Size_Array<T, N> const & lhs, Fixed_Size_Array<T, N> const & rhs ) noexcept
+constexpr auto operator==( Fixed_Size_Array<T, N> const & lhs, Fixed_Size_Array<T, N> const & rhs ) noexcept
 {
     return equal( lhs.begin(), lhs.end(), rhs.begin() );
 }
@@ -458,7 +458,7 @@ auto operator==( Fixed_Size_Array<T, N> const & lhs, Fixed_Size_Array<T, N> cons
  * \return false if lhs is equal to rhs.
  */
 template<typename T, std::size_t N>
-auto operator!=( Fixed_Size_Array<T, N> const & lhs, Fixed_Size_Array<T, N> const & rhs ) noexcept
+constexpr auto operator!=( Fixed_Size_Array<T, N> const & lhs, Fixed_Size_Array<T, N> const & rhs ) noexcept
 {
     return not( lhs == rhs );
 }
