@@ -23,10 +23,21 @@
 #ifndef PICOLIBRARY_IP_H
 #define PICOLIBRARY_IP_H
 
+#include <cstdint>
+
 /**
  * \brief Internet Protocol (IP) facilities.
  */
 namespace picolibrary::IP {
+
+/**
+ * \brief IP version.
+ */
+enum class Version : std::uint_fast8_t {
+    UNSPECIFIED = 0, ///< Unspecified.
+    _4          = 4, ///< IPv4.
+};
+
 } // namespace picolibrary::IP
 
 #endif // PICOLIBRARY_IP_H
