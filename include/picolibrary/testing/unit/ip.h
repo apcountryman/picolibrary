@@ -23,6 +23,24 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_IP_H
 #define PICOLIBRARY_TESTING_UNIT_IP_H
 
+#include "picolibrary/ip.h"
+#include "picolibrary/testing/unit/random.h"
+
+namespace picolibrary::Testing::Unit {
+
+/**
+ * \brief Generate a pseudo-random IP version.
+ *
+ * \brief A pseudo-random IP version.
+ */
+template<>
+inline auto random<IP::Version>()
+{
+    return random<bool>() ? IP::Version::UNSPECIFIED : IP::Version::_4;
+}
+
+} // namespace picolibrary::Testing::Unit
+
 /**
  * \brief Internet Protocol (IP) unit testing facilities.
  */
