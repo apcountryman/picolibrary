@@ -58,6 +58,9 @@ add_subdirectory( indicator )
 # build the picolibrary::IP unit tests
 add_subdirectory( ip )
 
+# build the picolibrary::IPv4 unit tests
+add_subdirectory( ipv4 )
+
 # build the picolibrary::Microchip unit tests
 add_subdirectory( microchip )
 
