@@ -94,6 +94,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
         "picolibrary/testing/unit/gpio.cc"
         "picolibrary/testing/unit/i2c.cc"
         "picolibrary/testing/unit/indicator.cc"
+        "picolibrary/testing/unit/ip.cc"
         "picolibrary/testing/unit/microchip.cc"
         "picolibrary/testing/unit/microchip/mcp23008.cc"
         "picolibrary/testing/unit/microchip/mcp3008.cc"
