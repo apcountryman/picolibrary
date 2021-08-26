@@ -57,7 +57,7 @@ struct Discard_Functor {
  * \return false if the two ranges are not equal.
  */
 template<typename Iterator_1, typename Iterator_2>
-auto equal( Iterator_1 begin_1, Iterator_1 end_1, Iterator_2 begin_2 ) noexcept -> bool
+constexpr auto equal( Iterator_1 begin_1, Iterator_1 end_1, Iterator_2 begin_2 ) noexcept -> bool
 {
     for ( ; begin_1 != end_1; ++begin_1, ++begin_2 ) {
         if ( *begin_1 != *begin_2 ) {
@@ -83,7 +83,7 @@ auto equal( Iterator_1 begin_1, Iterator_1 end_1, Iterator_2 begin_2 ) noexcept 
  * \return false if the two ranges are not equal.
  */
 template<typename Iterator_1, typename Iterator_2>
-auto equal( Iterator_1 begin_1, Iterator_1 end_1, Iterator_2 begin_2, Iterator_2 end_2 ) noexcept
+constexpr auto equal( Iterator_1 begin_1, Iterator_1 end_1, Iterator_2 begin_2, Iterator_2 end_2 ) noexcept
     -> bool
 {
     if ( ( end_2 - begin_2 ) != ( end_1 - begin_1 ) ) {
@@ -116,7 +116,7 @@ auto equal( Iterator_1 begin_1, Iterator_1 end_1, Iterator_2 begin_2, Iterator_2
  * \return false if the two ranges are not equal.
  */
 template<typename Iterator_1, typename Iterator_2, typename Predicate>
-auto equal( Iterator_1 begin_1, Iterator_1 end_1, Iterator_2 begin_2, Predicate predicate ) noexcept
+constexpr auto equal( Iterator_1 begin_1, Iterator_1 end_1, Iterator_2 begin_2, Predicate predicate ) noexcept
     -> bool
 {
     for ( ; begin_1 != end_1; ++begin_1, ++begin_2 ) {
@@ -152,7 +152,7 @@ auto equal( Iterator_1 begin_1, Iterator_1 end_1, Iterator_2 begin_2, Predicate 
  * \return false if the two ranges are not equal.
  */
 template<typename Iterator_1, typename Iterator_2, typename Predicate>
-auto equal( Iterator_1 begin_1, Iterator_1 end_1, Iterator_2 begin_2, Iterator_2 end_2, Predicate predicate ) noexcept
+constexpr auto equal( Iterator_1 begin_1, Iterator_1 end_1, Iterator_2 begin_2, Iterator_2 end_2, Predicate predicate ) noexcept
     -> bool
 {
     if ( ( end_2 - begin_2 ) != ( end_1 - begin_1 ) ) {
