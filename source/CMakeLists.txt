@@ -41,6 +41,7 @@ set(
     "picolibrary/i2c.cc"
     "picolibrary/indicator.cc"
     "picolibrary/interrupt_guard.cc"
+    "picolibrary/ip.cc"
     "picolibrary/iterator.cc"
     "picolibrary/microchip.cc"
     "picolibrary/microchip/mcp23008.cc"
