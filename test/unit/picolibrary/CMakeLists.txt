@@ -55,6 +55,9 @@ add_subdirectory( i2c )
 # build the picolibrary::Indicator unit tests
 add_subdirectory( indicator )
 
+# build the picolibrary::IP unit tests
+add_subdirectory( ip )
+
 # build the picolibrary::Microchip unit tests
 add_subdirectory( microchip )
 
