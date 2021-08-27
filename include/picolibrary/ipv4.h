@@ -56,7 +56,7 @@ class Address {
     /**
      * \brief Get the minimum valid address.
      *
-     * \return the minimum valid address.
+     * \return The minimum valid address.
      */
     static constexpr auto min() noexcept
     {
@@ -66,7 +66,7 @@ class Address {
     /**
      * \brief Get the maximum valid address.
      *
-     * \return the maximum valid address.
+     * \return The maximum valid address.
      */
     static constexpr auto max() noexcept
     {

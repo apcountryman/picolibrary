@@ -88,7 +88,7 @@ constexpr auto LOOPBACK_AS_BYTE_ARRAY = Address::Byte_Array{ 127, 0, 0, 1 };
 
 constexpr auto LOOPBACK_AS_UNSIGNED_INTEGER = convert_byte_array_to_unsigned_integer( LOOPBACK_AS_BYTE_ARRAY );
 
-inline auto dot_decimal( Address::Byte_Array const & byte_array )
+auto dot_decimal( Address::Byte_Array const & byte_array )
 {
     auto stream = std::ostringstream{};
 

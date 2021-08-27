@@ -23,8 +23,6 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_IPV4_H
 #define PICOLIBRARY_TESTING_UNIT_IPV4_H
 
-#include <limits>
-
 #include "picolibrary/ipv4.h"
 #include "picolibrary/testing/unit/random.h"
 
