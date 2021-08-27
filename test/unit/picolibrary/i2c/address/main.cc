@@ -169,7 +169,7 @@ TEST( equalityOperator, worksProperly )
  * \brief Verify picolibrary::I2C::operator!=( picolibrary::I2C::Address,
  *        picolibrary::I2C::Address ) works properly.
  */
-TEST( inqualityOperator, worksProperly )
+TEST( inequalityOperator, worksProperly )
 {
     {
         auto const lhs = random_numeric_address();
