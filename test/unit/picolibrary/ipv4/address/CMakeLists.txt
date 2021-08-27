@@ -13,8 +13,22 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/ipv4/CMakeLists.txt
-# Description: picolibrary::IPv4 unit tests CMake rules.
+# File: test/unit/picolibrary/ipv4/address/CMakeLists.txt
+# Description: picolibrary::IPv4::Address unit tests CMake rules.
 
 # build the picolibrary::IPv4::Address unit tests
-add_subdirectory( address )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+    add_executable(
+        test-unit-picolibrary-ipv4-address
+        main.cc
+    )
+    target_link_libraries(
+        test-unit-picolibrary-ipv4-address
+        picolibrary
+        picolibrary-fatal_error
+    )
+    add_test(
+        NAME    test-unit-picolibrary-ipv4-address
+        COMMAND test-unit-picolibrary-ipv4-address --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
