@@ -23,6 +23,55 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_IPV4_H
 #define PICOLIBRARY_TESTING_UNIT_IPV4_H
 
+#include "picolibrary/ipv4.h"
+#include "picolibrary/testing/unit/random.h"
+
+namespace picolibrary::Testing::Unit {
+
+/**
+ * \brief Generate a pseudo-random IPv4 address within the specified range.
+ *
+ * \param[in] min The lower bound of the allowable range.
+ * \param[in] max The upper bound of the allowable range.
+ *
+ * \return A pseudo-random IPv4 address in the range [min,max].
+ */
+template<>
+inline auto random<IPv4::Address>( IPv4::Address min, IPv4::Address max )
+{
+    return IPv4::Address{ random<IPv4::Address::Unsigned_Integer>(
+        min.as_unsigned_integer(), max.as_unsigned_integer() ) };
+}
+
+/**
+ * \brief Generate a pseudo-random IPv4 address greater than or equal to a minimum
+ *        address.
+ *
+ * \param[in] min The lower bound of the allowable range.
+ *
+ * \return A pseudo-random IPv4 address in the range
+ *         [min,picolibrary::IPv4::Address::max()].
+ */
+template<>
+inline auto random<IPv4::Address>( IPv4::Address min )
+{
+    return random<IPv4::Address>( min, IPv4::Address::max() );
+}
+
+/**
+ * \brief Generate a pseudo-random IPv4 address.
+ *
+ * \return A pseudo-random IPv4 address in the range
+ *         [picolibrary::IPv4::Address::min(),picolibrary::IPv4::Address::max()].
+ */
+template<>
+inline auto random<IPv4::Address>()
+{
+    return random<IPv4::Address>( IPv4::Address::min(), IPv4::Address::max() );
+}
+
+} // namespace picolibrary::Testing::Unit
+
 /**
  * \brief Internet Protocol version 4 (IPv4) unit testing facilities.
  */
