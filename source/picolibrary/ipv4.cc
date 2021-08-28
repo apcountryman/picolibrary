@@ -20,6 +20,8 @@
  * \brief picolibrary::IPv4 implementation.
  */
 
+#include <type_traits>
+
 #include "picolibrary/ipv4.h"
 
 namespace picolibrary::IPv4 {
