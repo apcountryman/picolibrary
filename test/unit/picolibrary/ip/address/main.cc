@@ -182,24 +182,26 @@ TEST( constructorCopy, worksProperly )
 
         auto const address = Address{ original };
 
-        EXPECT_EQ( original.version(), address.version() );
-        EXPECT_EQ( original.is_unspecified(), address.is_unspecified() );
-        EXPECT_EQ( original.is_ipv4(), address.is_ipv4() );
-        EXPECT_EQ( original.is_any(), address.is_any() );
-        EXPECT_EQ( original.is_loopback(), address.is_loopback() );
+        EXPECT_EQ( address.version(), Version::UNSPECIFIED );
+        EXPECT_TRUE( address.is_unspecified() );
+        EXPECT_FALSE( address.is_ipv4() );
+        EXPECT_TRUE( address.is_any() );
+        EXPECT_FALSE( address.is_loopback() );
     }
 
     {
-        auto const original = Address{ random<IPv4_Address>() };
+        auto const original_ipv4_address = random<IPv4_Address>();
+
+        auto const original = Address{ original_ipv4_address };
 
         auto const address = Address{ original };
 
-        EXPECT_EQ( original.version(), address.version() );
-        EXPECT_EQ( original.is_unspecified(), address.is_unspecified() );
-        EXPECT_EQ( original.is_ipv4(), address.is_ipv4() );
-        EXPECT_EQ( original.is_any(), address.is_any() );
-        EXPECT_EQ( original.is_loopback(), address.is_loopback() );
-        EXPECT_EQ( original.ipv4(), address.ipv4() );
+        EXPECT_EQ( address.version(), Version::_4 );
+        EXPECT_FALSE( address.is_unspecified() );
+        EXPECT_TRUE( address.is_ipv4() );
+        EXPECT_EQ( address.is_any(), original_ipv4_address.is_any() );
+        EXPECT_EQ( address.is_loopback(), original_ipv4_address.is_loopback() );
+        EXPECT_EQ( address.ipv4(), original_ipv4_address );
     }
 }
 
