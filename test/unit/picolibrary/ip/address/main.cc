@@ -295,6 +295,71 @@ TEST( assignmentOperatorMove, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::IP::Address::operator=( picolibrary::IP::Address const & )
+ *        works properly.
+ */
+TEST( assignmentOperatorCopy, worksProperly )
+{
+    {
+        auto const expression = Address{};
+        auto       object     = Address{};
+
+        object = expression;
+
+        EXPECT_EQ( object.version(), Version::UNSPECIFIED );
+        EXPECT_TRUE( object.is_unspecified() );
+        EXPECT_FALSE( object.is_ipv4() );
+        EXPECT_TRUE( object.is_any() );
+        EXPECT_FALSE( object.is_loopback() );
+    }
+
+    {
+        auto const expression_ipv4_address = random<IPv4_Address>();
+
+        auto const expression = Address{ expression_ipv4_address };
+        auto       object     = Address{ random<IPv4_Address>() };
+
+        object = expression;
+
+        EXPECT_EQ( object.version(), Version::_4 );
+        EXPECT_FALSE( object.is_unspecified() );
+        EXPECT_TRUE( object.is_ipv4() );
+        EXPECT_EQ( object.is_any(), expression_ipv4_address.is_any() );
+        EXPECT_EQ( object.is_loopback(), expression_ipv4_address.is_loopback() );
+        EXPECT_EQ( object.ipv4(), expression_ipv4_address );
+    }
+
+    {
+        auto const expression_ipv4_address = random<IPv4_Address>();
+
+        auto const expression = Address{ expression_ipv4_address };
+        auto       object     = Address{};
+
+        object = expression;
+
+        EXPECT_EQ( object.version(), Version::_4 );
+        EXPECT_FALSE( object.is_unspecified() );
+        EXPECT_TRUE( object.is_ipv4() );
+        EXPECT_EQ( object.is_any(), expression_ipv4_address.is_any() );
+        EXPECT_EQ( object.is_loopback(), expression_ipv4_address.is_loopback() );
+        EXPECT_EQ( object.ipv4(), expression_ipv4_address );
+    }
+
+    {
+        auto const expression = Address{};
+        auto       object     = Address{ random<IPv4_Address>() };
+
+        object = expression;
+
+        EXPECT_EQ( object.version(), Version::UNSPECIFIED );
+        EXPECT_TRUE( object.is_unspecified() );
+        EXPECT_FALSE( object.is_ipv4() );
+        EXPECT_TRUE( object.is_any() );
+        EXPECT_FALSE( object.is_loopback() );
+    }
+}
+
+/**
  * \brief Verify picolibrary::IP::operator==( picolibrary::IP::Address const &,
  *        picolibrary::IP::Address const & ) works properly.
  */
