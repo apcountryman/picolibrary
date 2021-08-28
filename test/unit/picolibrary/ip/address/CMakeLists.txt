@@ -13,8 +13,22 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/ip/CMakeLists.txt
-# Description: picolibrary::IP unit tests CMake rules.
+# File: test/unit/picolibrary/ip/address/CMakeLists.txt
+# Description: picolibrary::IP::Address unit tests CMake rules.
 
 # build the picolibrary::IP::Address unit tests
-add_subdirectory( address )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+    add_executable(
+        test-unit-picolibrary-ip-address
+        main.cc
+    )
+    target_link_libraries(
+        test-unit-picolibrary-ip-address
+        picolibrary
+        picolibrary-fatal_error
+    )
+    add_test(
+        NAME    test-unit-picolibrary-ip-address
+        COMMAND test-unit-picolibrary-ip-address --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
