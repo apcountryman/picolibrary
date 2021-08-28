@@ -24,6 +24,8 @@
 #define PICOLIBRARY_TESTING_UNIT_IP_H
 
 #include "picolibrary/ip.h"
+#include "picolibrary/ipv4.h"
+#include "picolibrary/testing/unit/ipv4.h"
 #include "picolibrary/testing/unit/random.h"
 
 namespace picolibrary::Testing::Unit {
@@ -37,6 +39,21 @@ template<>
 inline auto random<IP::Version>()
 {
     return random<bool>() ? IP::Version::UNSPECIFIED : IP::Version::_4;
+}
+
+/**
+ * \brief Generate a pseudo-random IP address.
+ *
+ * \return A pseudo-random IP address.
+ */
+template<>
+inline auto random<IP::Address>()
+{
+    switch ( random<IP::Version>() ) {
+        case IP::Version::_4:
+            return IP::Address{ random<::picolibrary::IPv4::Address>() };
+        default: return IP::Address{};
+    } // switch
 }
 
 } // namespace picolibrary::Testing::Unit
