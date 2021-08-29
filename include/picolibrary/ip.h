@@ -370,6 +370,13 @@ constexpr auto operator>=( Address const & lhs, Address const & rhs ) noexcept
     return not( lhs < rhs );
 }
 
+/**
+ * \brief Protocol.
+ */
+enum class Protocol : std::uint8_t {
+    TCP = 6, ///< TCP.
+};
+
 } // namespace picolibrary::IP
 
 namespace picolibrary {
