@@ -374,7 +374,7 @@ constexpr auto operator>=( Address const & lhs, Address const & rhs ) noexcept
  * \brief Protocol.
  */
 enum class Protocol : std::uint8_t {
-    TCP = 7, ///< TCP.
+    TCP = 6, ///< TCP.
 };
 
 } // namespace picolibrary::IP
