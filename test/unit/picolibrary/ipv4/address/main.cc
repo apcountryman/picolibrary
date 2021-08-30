@@ -129,7 +129,7 @@ TEST( loopback, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::IPv4::Address() works properly.
+ * \brief Verify picolibrary::IPv4::Address::Address() works properly.
  */
 TEST( constructorDefault, worksProperly )
 {
@@ -142,8 +142,8 @@ TEST( constructorDefault, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::IPv4::Address( picolibrary::IPv4::Address::Byte_Array const
- *        & ) works properly.
+ * \brief Verify picolibrary::IPv4::Address::Address(
+ *        picolibrary::IPv4::Address::Byte_Array const & ) works properly.
  */
 TEST( constructorByteArray, worksProperly )
 {
@@ -159,8 +159,8 @@ TEST( constructorByteArray, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::IPv4::Address( picolibrary::IPv4::Address::Unsigned_Integer
- *        ) works properly.
+ * \brief Verify picolibrary::IPv4::Address::Address(
+ *        picolibrary::IPv4::Address::Unsigned_Integer) works properly.
  */
 TEST( constructorUnsignedInteger, worksProperly )
 {
