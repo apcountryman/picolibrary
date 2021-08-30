@@ -13,11 +13,5 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/ip/CMakeLists.txt
-# Description: picolibrary::IP unit tests CMake rules.
-
-# build the picolibrary::IP::Address unit tests
-add_subdirectory( address )
-
-# build the picolibrary::IP::TCP unit tests
-add_subdirectory( tcp )
+# File: test/unit/picolibrary/ip/tcp/CMakeLists.txt
+# Description: picolibrary::IP::TCP unit tests CMake rules.
