@@ -13,8 +13,22 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/ip/tcp/CMakeLists.txt
-# Description: picolibrary::IP::TCP unit tests CMake rules.
+# File: test/unit/picolibrary/ip/tcp/endpoint/CMakeLists.txt
+# Description: picolibrary::IP::TCP::Endpoint unit tests CMake rules.
 
 # build the picolibrary::IP::TCP::Endpoint unit tests
-add_subdirectory( endpoint )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+    add_executable(
+        test-unit-picolibrary-ip-tcp-endpoint
+        main.cc
+    )
+    target_link_libraries(
+        test-unit-picolibrary-ip-tcp-endpoint
+        picolibrary
+        picolibrary-fatal_error
+    )
+    add_test(
+        NAME    test-unit-picolibrary-ip-tcp-endpoint
+        COMMAND test-unit-picolibrary-ip-tcp-endpoint --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )

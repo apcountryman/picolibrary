@@ -23,6 +23,27 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_IP_TCP_H
 #define PICOLIBRARY_TESTING_UNIT_IP_TCP_H
 
+#include "picolibrary/ip.h"
+#include "picolibrary/ip/tcp.h"
+#include "picolibrary/testing/unit/ip.h"
+#include "picolibrary/testing/unit/random.h"
+
+namespace picolibrary::Testing::Unit {
+
+/**
+ * \brief Generate a pseudo-random TCP over IP endpoint.
+ *
+ * \brief A pseudo-random TCP over IP endpoint.
+ */
+template<>
+inline auto random<::picolibrary::IP::TCP::Endpoint>()
+{
+    return ::picolibrary::IP::TCP::Endpoint{ random<::picolibrary::IP::Address>(),
+                                             random<::picolibrary::IP::TCP::Port>() };
+}
+
+} // namespace picolibrary::Testing::Unit
+
 /**
  * \brief Transmission Control Protocol (TCP) over IP unit testing facilities.
  */
