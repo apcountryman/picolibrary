@@ -287,7 +287,7 @@ class Output_Formatter<IP::TCP::Endpoint> {
      * \brief Write the picolibrary::IP::TCP::Endpoint to the stream.
      *
      * \param[in] stream The stream to write the picolibrary::IP::TCP::Endpoint to.
-     * \param[in] address The picolibrary::IP::TCP::Endpoint to write to the stream.
+     * \param[in] endpoint The picolibrary::IP::TCP::Endpoint to write to the stream.
      *
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
