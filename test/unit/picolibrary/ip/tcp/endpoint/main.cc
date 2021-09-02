@@ -55,7 +55,7 @@ auto unspecified_address_with_port( Port port )
 {
     auto stream = std::ostringstream{};
 
-    stream << ':' << port;
+    stream << "ANY:" << port;
 
     return stream.str();
 }
@@ -321,7 +321,7 @@ TEST( outputFormatter, printError )
 
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.print( "{}", Endpoint{ random<IPv4_Address>(), random<Port>() } );
+    auto const result = stream.print( "{}", Endpoint{ random<Address>(), random<Port>() } );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
