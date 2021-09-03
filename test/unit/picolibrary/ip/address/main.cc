@@ -560,7 +560,8 @@ TEST( outputFormatter, printError )
 
         EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
 
-        auto const result = stream.print( "{}", Address{ random<IPv4_Address>( { { 0, 0, 0, 1 } } ) } );
+        auto const result = stream.print(
+            "{}", Address{ random<IPv4_Address>( { { 0, 0, 0, 1 } } ) } );
 
         EXPECT_TRUE( result.is_error() );
         EXPECT_EQ( result.error(), error );
