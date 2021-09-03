@@ -432,6 +432,10 @@ class Output_Formatter<IP::Address> {
      */
     auto print( Output_Stream & stream, IP::Address const & address ) noexcept -> Result<Void, Error_Code>
     {
+        if ( address.is_any() ) {
+            return stream.put( "ANY" );
+        } // if
+
         switch ( address.version() ) {
             case IP::Version::_4: return stream.print( "{}", address.ipv4() );
             default: return {};

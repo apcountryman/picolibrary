@@ -536,20 +536,40 @@ TEST( outputFormatter, invalidFormatString )
  */
 TEST( outputFormatter, printError )
 {
-    auto stream = Mock_Output_Stream{};
+    {
+        auto stream = Mock_Output_Stream{};
 
-    auto const error = random<Mock_Error>();
+        auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
+        EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.print( "{}", Address{ random<IPv4_Address>() } );
+        auto const result = stream.print( "{}", Address{} );
 
-    EXPECT_TRUE( result.is_error() );
-    EXPECT_EQ( result.error(), error );
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), error );
 
-    EXPECT_FALSE( stream.end_of_file_reached() );
-    EXPECT_FALSE( stream.io_error_present() );
-    EXPECT_TRUE( stream.fatal_error_present() );
+        EXPECT_FALSE( stream.end_of_file_reached() );
+        EXPECT_FALSE( stream.io_error_present() );
+        EXPECT_TRUE( stream.fatal_error_present() );
+    }
+
+    {
+        auto stream = Mock_Output_Stream{};
+
+        auto const error = random<Mock_Error>();
+
+        EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
+
+        auto const result = stream.print(
+            "{}", Address{ random<IPv4_Address>( { { 0, 0, 0, 1 } } ) } );
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), error );
+
+        EXPECT_FALSE( stream.end_of_file_reached() );
+        EXPECT_FALSE( stream.io_error_present() );
+        EXPECT_TRUE( stream.fatal_error_present() );
+    }
 }
 
 /**
@@ -562,13 +582,13 @@ TEST( outputFormatter, worksProperly )
 
         EXPECT_FALSE( stream.print( "{}", Address{} ).is_error() );
 
-        EXPECT_EQ( stream.string(), "" );
+        EXPECT_EQ( stream.string(), "ANY" );
     }
 
     {
         auto stream = Output_String_Stream{};
 
-        auto const ipv4_address = random<IPv4_Address>();
+        auto const ipv4_address = random<IPv4_Address>( { { 0, 0, 0, 1 } } );
 
         EXPECT_FALSE( stream.print( "{}", Address{ ipv4_address } ).is_error() );
 
