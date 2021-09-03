@@ -350,7 +350,7 @@ TEST( outputFormatter, worksProperly )
     {
         auto stream = Output_String_Stream{};
 
-        auto const ipv4_address = random<IPv4_Address>();
+        auto const ipv4_address = random<IPv4_Address>( { { 0, 0, 0, 1 } } );
         auto const port         = random<Port>();
 
         EXPECT_FALSE( stream.print( "{}", Endpoint{ ipv4_address, port } ).is_error() );
