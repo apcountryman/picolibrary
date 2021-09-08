@@ -374,17 +374,17 @@ constexpr auto operator!=( Error_Code const & lhs, Error_Code const & rhs ) noex
  * \relatedalso picolibrary::Generic_Error_Category
  */
 enum class Generic_Error : Error_ID {
-    INVALID_ARGUMENT,                ///< Invalid argument.
-    UNSUPPORTED_OPERATION,           ///< Unsupported operation.
-    OPERATION_TIMEOUT,               ///< Operation timeout.
-    IO_STREAM_DEGRADED,              ///< I/O stream degraded.
-    INVALID_FORMAT,                  ///< Invalid format string.
-    NONRESPONSIVE_DEVICE,            ///< Nonresponsive device.
     ARBITRATION_LOST,                ///< Arbitration lost.
-    LOGIC_ERROR,                     ///< Logic error.
     BUS_ERROR,                       ///< Bus error.
     CIRCULAR_BUFFER_WOULD_OVERFLOW,  ///< Circular buffer would overflow.
     CIRCULAR_BUFFER_WOULD_UNDERFLOW, ///< Circular buffer would underflow.
+    INVALID_ARGUMENT,                ///< Invalid argument.
+    INVALID_FORMAT,                  ///< Invalid format string.
+    IO_STREAM_DEGRADED,              ///< I/O stream degraded.
+    LOGIC_ERROR,                     ///< Logic error.
+    NONRESPONSIVE_DEVICE,            ///< Nonresponsive device.
+    OPERATION_TIMEOUT,               ///< Operation timeout.
+    UNSUPPORTED_OPERATION,           ///< Unsupported operation.
 };
 
 /**
@@ -439,19 +439,19 @@ class Generic_Error_Category final : public Error_Category {
     virtual auto error_description( Error_ID id ) const noexcept -> char const * override final
     {
         switch ( static_cast<Generic_Error>( id ) ) {
-            case Generic_Error::INVALID_ARGUMENT: return "INVALID_ARGUMENT";
-            case Generic_Error::UNSUPPORTED_OPERATION: return "UNSUPPORTED_OPERATION";
-            case Generic_Error::OPERATION_TIMEOUT: return "OPERATION_TIMEOUT";
-            case Generic_Error::IO_STREAM_DEGRADED: return "IO_STREAM_DEGRADED";
-            case Generic_Error::INVALID_FORMAT: return "INVALID_FORMAT";
-            case Generic_Error::NONRESPONSIVE_DEVICE: return "NONRESPONSIVE_DEVICE";
             case Generic_Error::ARBITRATION_LOST: return "ARBITRATION_LOST";
-            case Generic_Error::LOGIC_ERROR: return "LOGIC_ERROR";
             case Generic_Error::BUS_ERROR: return "BUS_ERROR";
             case Generic_Error::CIRCULAR_BUFFER_WOULD_OVERFLOW:
                 return "CIRCULAR_BUFFER_WOULD_OVERFLOW";
             case Generic_Error::CIRCULAR_BUFFER_WOULD_UNDERFLOW:
                 return "CIRCULAR_BUFFER_WOULD_UNDERFLOW";
+            case Generic_Error::INVALID_ARGUMENT: return "INVALID_ARGUMENT";
+            case Generic_Error::INVALID_FORMAT: return "INVALID_FORMAT";
+            case Generic_Error::IO_STREAM_DEGRADED: return "IO_STREAM_DEGRADED";
+            case Generic_Error::LOGIC_ERROR: return "LOGIC_ERROR";
+            case Generic_Error::NONRESPONSIVE_DEVICE: return "NONRESPONSIVE_DEVICE";
+            case Generic_Error::OPERATION_TIMEOUT: return "OPERATION_TIMEOUT";
+            case Generic_Error::UNSUPPORTED_OPERATION: return "UNSUPPORTED_OPERATION";
         } // switch
 
         return "UNKNOWN";
