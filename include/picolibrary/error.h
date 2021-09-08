@@ -443,6 +443,8 @@ class Generic_Error_Category final : public Error_Category {
      */
     virtual auto error_description( Error_ID id ) const noexcept -> char const * override final
     {
+        // #lizard forgives the length
+
         switch ( static_cast<Generic_Error>( id ) ) {
             case Generic_Error::ARBITRATION_LOST: return "ARBITRATION_LOST";
             case Generic_Error::BUS_ERROR: return "BUS_ERROR";
