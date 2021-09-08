@@ -32,6 +32,7 @@
 #include "picolibrary/ipv4.h"
 #include "picolibrary/testing/unit/error.h"
 #include "picolibrary/testing/unit/ip.h"
+#include "picolibrary/testing/unit/ip/tcp.h"
 #include "picolibrary/testing/unit/random.h"
 #include "picolibrary/testing/unit/stream.h"
 
@@ -55,7 +56,7 @@ auto unspecified_address_with_port( Port port )
 {
     auto stream = std::ostringstream{};
 
-    stream << "ANY:" << port;
+    stream << "ANY:" << port.as_unsigned_integer();
 
     return stream.str();
 }
@@ -67,7 +68,8 @@ auto dot_decimal_with_port( IPv4_Address const & address, Port port )
     stream << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 0 ] ) << '.'
            << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 1 ] ) << '.'
            << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 2 ] ) << '.'
-           << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 3 ] ) << ':' << port;
+           << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 3 ] ) << ':'
+           << port.as_unsigned_integer();
 
     return stream.str();
 }

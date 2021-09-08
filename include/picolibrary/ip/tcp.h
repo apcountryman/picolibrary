@@ -40,7 +40,197 @@ namespace picolibrary::IP::TCP {
 /**
  * \brief Port number.
  */
-using Port = std::uint16_t;
+class Port {
+  public:
+    /**
+     * \brief Port number unsigned integer representation.
+     */
+    using Unsigned_Integer = std::uint16_t;
+
+    /**
+     * \brief Get the port number that is used to represent any port number (0).
+     *
+     * \return The port number that is used to represent any port number.
+     */
+    static constexpr auto any() noexcept
+    {
+        return Port{};
+    }
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Port() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] port The port number in its unsigned integer representation.
+     */
+    constexpr Port( Unsigned_Integer port ) noexcept : m_port{ port }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Port( Port && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Port( Port const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Port() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Port && expression ) noexcept -> Port & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Port const & expression ) noexcept -> Port & = default;
+
+    /**
+     * \brief Check if the port number represents any port number (0).
+     *
+     * \return true if the port number represents any port number.
+     * \return false if the port number does not represent any port number.
+     */
+    constexpr auto is_any() const noexcept
+    {
+        return not m_port;
+    }
+
+    /**
+     * \brief Get the port number in its unsigned integer representation.
+     *
+     * \return The port number in its unsigned integer representation.
+     */
+    constexpr auto as_unsigned_integer() const noexcept
+    {
+        return m_port;
+    }
+
+  private:
+    /**
+     * \brief The port number in its unsigned integer representation.
+     */
+    Unsigned_Integer m_port{};
+};
+
+/**
+ * \brief Equality operator.
+ *
+ * \relatedalso picolibrary::IP::TCP::Port
+ *
+ * \param[in] lhs The left hand side of the comparison.
+ * \param[in] rhs The right hand side of the comparison.
+ *
+ * \return true if lhs is equal to rhs.
+ * \return false if lhs is not equal to rhs.
+ */
+constexpr auto operator==( Port lhs, Port rhs ) noexcept
+{
+    return lhs.as_unsigned_integer() == rhs.as_unsigned_integer();
+}
+
+/**
+ * \brief Inequality operator.
+ *
+ * \relatedalso picolibrary::IP::TCP::Port
+ *
+ * \param[in] lhs The left hand side of the comparison.
+ * \param[in] rhs The right hand side of the comparison.
+ *
+ * \return true if lhs is not equal to rhs.
+ * \return false if lhs is equal to rhs.
+ */
+constexpr auto operator!=( Port lhs, Port rhs ) noexcept
+{
+    return not( lhs == rhs );
+}
+
+/**
+ * \brief Less than operator.
+ *
+ * \relatedalso picolibrary::IP::TCP::Port
+ *
+ * \param[in] lhs The left hand side of the comparison.
+ * \param[in] rhs The right hand side of the comparison.
+ *
+ * \return true if lhs is less than rhs.
+ * \return false if lhs is not less than rhs.
+ */
+constexpr auto operator<( Port lhs, Port rhs ) noexcept
+{
+    return lhs.as_unsigned_integer() < rhs.as_unsigned_integer();
+}
+
+/**
+ * \brief Greater than operator.
+ *
+ * \relatedalso picolibrary::IP::TCP::Port
+ *
+ * \param[in] lhs The left hand side of the comparison.
+ * \param[in] rhs The right hand side of the comparison.
+ *
+ * \return true if lhs is greater than rhs.
+ * \return false if lhs is not greater than rhs.
+ */
+constexpr auto operator>( Port lhs, Port rhs ) noexcept
+{
+    return rhs < lhs;
+}
+
+/**
+ * \brief Less than or equal to operator.
+ *
+ * \relatedalso picolibrary::IP::TCP::Port
+ *
+ * \param[in] lhs The left hand side of the comparison.
+ * \param[in] rhs The right hand side of the comparison.
+ *
+ * \return true if lhs is less than or equal to rhs.
+ * \return false if lhs is not less than or equal to rhs.
+ */
+constexpr auto operator<=( Port lhs, Port rhs ) noexcept
+{
+    return not( lhs > rhs );
+}
+
+/**
+ * \brief Greater than or equal to operator.
+ *
+ * \relatedalso picolibrary::IP::TCP::Port
+ *
+ * \param[in] lhs The left hand side of the comparison.
+ * \param[in] rhs The right hand side of the comparison.
+ *
+ * \return true if lhs is greater than or equal to rhs.
+ * \return false if lhs is not greater than or equal to rhs.
+ */
+constexpr auto operator>=( Port lhs, Port rhs ) noexcept
+{
+    return not( lhs < rhs );
+}
 
 /**
  * \brief Endpoint.
@@ -244,6 +434,61 @@ constexpr auto operator>=( Endpoint const & lhs, Endpoint const & rhs ) noexcept
 namespace picolibrary {
 
 /**
+ * \brief picolibrary::IP::TCP::Port output formatter.
+ *
+ * picolibrary::IP::TCP::Port only supports the default format specification ("{}").
+ */
+template<>
+class Output_Formatter<IP::TCP::Port> {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Output_Formatter() noexcept = default;
+
+    Output_Formatter( Output_Formatter && ) = delete;
+
+    Output_Formatter( Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Output_Formatter() noexcept = default;
+
+    auto operator=( Output_Formatter && ) = delete;
+
+    auto operator=( Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Parse the format specification for the picolibrary::IP::TCP::Port to be
+     *        formatted.
+     *
+     * \param[in] format The format specification for the picolibrary::IP::TCP::Port to be
+     *            formatted.
+     *
+     * \return format.
+     */
+    constexpr auto parse( char const * format ) noexcept -> Result<char const *, Void>
+    {
+        return format;
+    }
+
+    /**
+     * \brief Write the picolibrary::IP::TCP::Port to the stream.
+     *
+     * \param[in] stream The stream to write the picolibrary::IP::TCP::Port to.
+     * \param[in] endpoint The picolibrary::IP::TCP::Port to write to the stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto print( Output_Stream & stream, IP::TCP::Port port ) noexcept -> Result<Void, Error_Code>
+    {
+        return stream.print( "{}", Format::Decimal{ port.as_unsigned_integer() } );
+    }
+};
+
+/**
  * \brief picolibrary::IP::TCP::Endpoint output formatter.
  *
  * picolibrary::IP::TCP::Endpoint only supports the default format specification ("{}").
@@ -295,7 +540,7 @@ class Output_Formatter<IP::TCP::Endpoint> {
     auto print( Output_Stream & stream, IP::TCP::Endpoint const & endpoint ) noexcept
         -> Result<Void, Error_Code>
     {
-        return stream.print( "{}:{}", endpoint.address(), Format::Decimal{ endpoint.port() } );
+        return stream.print( "{}:{}", endpoint.address(), endpoint.port() );
     }
 };
 
