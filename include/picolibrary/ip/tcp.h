@@ -508,10 +508,8 @@ class Client_Concept {
      *         support connecting to a remote endpoint without having first bound the
      *         socket to a local endpoint and the socket has not been bound to a local
      *         endpoint, but no ephemeral ports are available.
-     * \return picolibrary::Generic_Error::WOULD_BLOCK or
-     *         picolibrary::Generic_Error::OPERATION_TIMEOUT if the socket is in a
-     *         non-blocking mode, and connecting to the remote endpoint cannot succeed
-     *         immediately.
+     * \return picolibrary::Generic_Error::WOULD_BLOCK if the socket is in a non-blocking
+     *         mode, and connecting to the remote endpoint cannot succeed immediately.
      * \return picolibrary::Generic_Error::OPERATION_TIMEOUT if connecting to the remote
      *         endpoint timed out.
      * \return An error code if connecting to the remote endpoint failed for any other

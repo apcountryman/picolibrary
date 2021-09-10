@@ -218,11 +218,12 @@ class Mock_Client {
         }
 
         /**
-         * \brief Check how much data has yet to be transmitted to the remote endpoint.
+         * \brief Get the amount of data that has yet to be transmitted to the remote
+         *        endpoint.
          *
          * \return The amount of data that has yet to be transmitted to the remote
          *         endpoint if getting the amount of data that has yet to be transmitted
-         *         succeeded..
+         *         to the remote endpoint succeeded.
          * \return An error code if getting the amount of data that has yet to be
          *         transmitted to the remote endpoint failed.
          */
