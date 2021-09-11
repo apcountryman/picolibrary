@@ -648,6 +648,178 @@ class Client_Concept {
     auto close() noexcept -> Result<Void, Error_Code>;
 };
 
+/**
+ * \brief Server socket concept.
+ */
+class Server_Concept {
+  public:
+    /**
+     * \brief The unsigned integral type used to report transmit/receive buffer
+     *        information.
+     */
+    using Size = std::size_t;
+
+    /**
+     * \brief Constructor.
+     */
+    Server_Concept() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Server_Concept( Server_Concept && source ) noexcept = default;
+
+    Server_Concept( Server_Concept const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Server_Concept() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Server_Concept && expression ) noexcept -> Server_Concept & = default;
+
+    auto operator=( Server_Concept const & ) = delete;
+
+    /**
+     * \brief Check if the socket is connected to a remote endpoint.
+     *
+     * \return true if getting the socket's connection state succeeded and the socket is
+     *         connected to a remote endpoint.
+     * \return false if getting the socket's connection state succeeded and the socket is
+     *         not connected to a remote endpoint.
+     * \return An error code if getting the socket's connection state failed. If getting
+     *         the socket's connection state cannot fail, return picolibrary::Result<bool,
+     *         picolibrary::Void>.
+     */
+    auto is_connected() const noexcept -> Result<bool, Error_Code>;
+
+    /**
+     * \brief Get the connection's remote endpoint.
+     *
+     * \return The connection's remote endpoint if getting the connection's remote
+     *         endpoint succeeded.
+     * \return An error code if getting the connection's remote endpoint failed. If
+     *         getting the connection's remote endpoint cannot fail, return
+     *         picolibrary::Result<picolibrary::IP::TCP::Endpoint, picolibrary::Void>.
+     */
+    auto remote_endpoint() const noexcept -> Result<Endpoint, Error_Code>;
+
+    /**
+     * \brief Get the connection's local endpoint.
+     *
+     * \return The connection's local endpoint if getting the connection's local endpoint
+     *         succeeded.
+     * \return An error code if getting the connection's local endpoint failed. If getting
+     *         the connection's local endpoint cannot fail, return
+     *         picolibrary::Result<picolibrary::IP::TCP::Endpoint, picolibrary::Void>.
+     */
+    auto local_endpoint() const noexcept -> Result<Endpoint, Error_Code>;
+
+    /**
+     * \brief Get the amount of data that has yet to be transmitted to the remote
+     *        endpoint.
+     *
+     * \return The amount of data that has yet to be transmitted to the remote endpoint if
+     *         getting the amount of data that has yet to be transmitted to the remote
+     *         endpoint succeeded.
+     * \return An error code if getting the amount of data that has yet to be transmitted
+     *         to the remote endpoint failed. If getting the amount of data that has yet
+     *         to be transmitted to the remote endpoint cannot fail, return
+     *         picolibrary::Result<Size, picolibrary::Void>.
+     */
+    auto outstanding() const noexcept -> Result<Size, Error_Code>;
+
+    /**
+     * \brief Transmit data to the remote endpoint.
+     *
+     * \param[in] begin The beginning of the block of data to write to the socket's
+     *            transmit buffer.
+     * \param[in] end The end of the block of data to write to the socket's transmit
+     *            buffer.
+     *
+     * \return The end of the data that was written to the socket's transmit buffer if
+     *         writing data to the socket's transmit buffer succeeded.
+     * \return picolibrary::Generic_Error::CONNECTION_LOST if the socket is not connected
+     *         to a remote endpoint.
+     * \return picolibrary::Generic_Error::WOULD_BLOCK or
+     *         picolibrary::Generic_Error::OPERATION_TIMEOUT if the socket is in a
+     *         non-blocking mode, and no data could be written to the socket's transmit
+     *         buffer without blocking.
+     * \return picolibrary::Generic_Error::OPERATION_TIMEOUT if a timeout occurred before
+     *         any data could be written to the socket's transmit buffer.
+     * \return An error code if writing data to the socket's transmit buffer failed for
+     *         any other reason.
+     */
+    auto transmit( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+        -> Result<std::uint8_t const *, Error_Code>;
+
+    /**
+     * \brief Get the amount of data that is immediately available to be received from the
+     *        remote endpoint.
+     *
+     * \return The amount of data that is immediately available to be received from the
+     *         remote endpoint if getting the amount of data that is immediately available
+     *         to be received from the remote endpoint succeeded.
+     * \return An error code if getting the amount of data that is immediately available
+     *         to be received from the remote endpoint failed. If getting the amount of
+     *         data that is immediately available to be received from the remote endpoint
+     *         cannot fail, return picolibrary::Result<Size, picolibrary::Void>.
+     */
+    auto available() const noexcept -> Result<Size, Error_Code>;
+
+    /**
+     * \brief Receive data from the remote endpoint.
+     *
+     * \param[out] begin The beginning of the block of data read from the socket's receive
+     *             buffer.
+     * \param[out] end The end of the block of data read from the socket's receive buffer.
+     *
+     * \return The end of the data that was read from the socket's receive buffer if
+     *         reading data from the socket's receive buffer succeeded.
+     * \return picolibrary::Generic_Error::CONNECTION_LOST if the socket is not connected
+     *         to a remote endpoint.
+     * \return picolibrary::Generic_Error::WOULD_BLOCK or
+     *         picolibrary::Generic_Error::OPERATION_TIMEOUT if the socket is in a
+     *         non-blocking mode, and no data could be read from the socket's receive
+     *         buffer without blocking.
+     * \return picolibrary::Generic_Error::OPERATION_TIMEOUT if a timeout occurred before
+     *         any data could be read from the socket's receive buffer.
+     * \return An error code if reading data from the socket's receive buffer failed for
+     *         any other reason.
+     */
+    auto receive( std::uint8_t * begin, std::uint8_t * end ) noexcept
+        -> Result<std::uint8_t *, Error_Code>;
+
+    /**
+     * \brief Disable further data transmission and reception.
+     *
+     * \return Nothing if disabling further data transmission and reception succeeded.
+     * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not connected to
+     *         a remote endpoint.
+     * \return An error code if disabling further data transmission and reception failed
+     *         for any other reason.
+     */
+    auto shutdown() noexcept -> Result<Void, Error_Code>;
+
+    /**
+     * \brief Close the socket.
+     *
+     * \return Nothing if closing the socket succeeded.
+     * \return An error code if closing the socket failed. If closing the socket cannot
+     *         fail, return picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     */
+    auto close() noexcept -> Result<Void, Error_Code>;
+};
+
 } // namespace picolibrary::IP::TCP
 
 namespace picolibrary {
