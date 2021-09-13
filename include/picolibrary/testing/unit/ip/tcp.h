@@ -705,6 +705,209 @@ class Mock_Server {
     MOCK_METHOD( (Result<Void, Error_Code>), close, () );
 };
 
+/**
+ * \brief Mock acceptor socket.
+ */
+class Mock_Acceptor {
+  public:
+    /**
+     * \brief Endpoint.
+     */
+    using Endpoint = ::picolibrary::IP::TCP::Endpoint;
+
+    /**
+     * \brief The type of server socket produced by the acceptor socket.
+     */
+    using Server = Mock_Server::Handle;
+
+    /**
+     * \brief Movable mock acceptor socket handle.
+     */
+    class Handle {
+      public:
+        /**
+         * \brief The type of server socket produced by the acceptor socket.
+         */
+        using Server = Mock_Server::Handle;
+
+        /**
+         * \brief Constructor.
+         */
+        Handle() noexcept = default;
+
+        /**
+         * \brief Constructor.
+         *
+         * \param[in] mock_acceptor The mock acceptor socket.
+         */
+        Handle( Mock_Acceptor & mock_acceptor ) noexcept :
+            m_mock_acceptor{ &mock_acceptor }
+        {
+        }
+
+        /**
+         * \brief Constructor.
+         *
+         * \param[in] source The source of the move.
+         */
+        Handle( Handle && source ) noexcept : m_mock_acceptor{ source.m_mock_acceptor }
+        {
+            source.m_mock_acceptor = nullptr;
+        }
+
+        Handle( Handle const & ) = delete;
+
+        /**
+         * \brief Destructor.
+         */
+        ~Handle() noexcept = default;
+
+        /**
+         * \brief Assignment operator.
+         *
+         * \param[in] expression The expression to be assigned.
+         *
+         * \return The assigned to object.
+         */
+        auto & operator=( Handle && expression ) noexcept
+        {
+            if ( &expression != this ) {
+                m_mock_acceptor = expression.m_mock_acceptor;
+
+                expression.m_mock_acceptor = nullptr;
+            } // if
+
+            return *this;
+        }
+
+        /**
+         * \brief Get the mock acceptor socket.
+         *
+         * \return The mock acceptor socket.
+         */
+        auto & mock() noexcept
+        {
+            return *m_mock_acceptor;
+        }
+
+        /**
+         * \brief Bind the socket to a specific local endpoint.
+         *
+         * \param[in] endpoint The local endpoint to bind the socket to.
+         *
+         * \return Nothing if binding the socket to the local endpoint succeeded.
+         * \return An error code if binding the socket to the local endpoint failed.
+         */
+        auto bind( Endpoint const & endpoint = Endpoint{} )
+        {
+            return m_mock_acceptor->bind( endpoint );
+        }
+
+        /**
+         * \brief Listen for incoming connection requests.
+         *
+         * \param[in] backlog The maximum number of simultaneously connected clients.
+         *
+         * \return Nothing if listening for incoming connection requests succeeded.
+         * \return An error code if listening for incoming connection requests failed.
+         */
+        auto listen( std::uint_fast8_t backlog )
+        {
+            return m_mock_acceptor->listen( backlog );
+        }
+
+        /**
+         * \brief Check if the socket is listening for incoming connection requests.
+         *
+         * \return true if getting the socket's listening state succeeded and the socket
+         *         is listening for incoming connection requests.
+         * \return false if getting the socket's listening state succeeded and the socket
+         *         is not listening for incoming connection requests.
+         * \return An error code if getting the socket's listening state failed.
+         */
+        auto is_listening() const
+        {
+            return m_mock_acceptor->is_listening();
+        }
+
+        /**
+         * \brief Get the endpoint on which the socket is listening for incoming
+         *        connection requests.
+         *
+         * \return The endpoint on which the socket is listening for incoming connection
+         *         requests if getting the endpoint on which the socket is listening for
+         *         incoming connection requests succeeded.
+         * \return An error code if getting the endpoint on which the socket is listening
+         *         for incoming connection requests failed.
+         */
+        auto endpoint() const
+        {
+            return m_mock_acceptor->endpoint();
+        }
+
+        /**
+         * \brief Accept an incoming connection request.
+         *
+         * \return A server socket for handling the connection if accepting an incoming
+         *         connection request succeeded.
+         * \return An error code if accepting an incoming connection request failed.
+         */
+        auto accept()
+        {
+            return m_mock_acceptor->accept();
+        }
+
+        /**
+         * \brief Close the socket.
+         *
+         * \return Nothing if closing the socket succeeded.
+         * \return An error code if closing the socket failed.
+         */
+        auto close()
+        {
+            return m_mock_acceptor->close();
+        }
+
+      private:
+        /**
+         * \brief The mock acceptor socket.
+         */
+        Mock_Acceptor * m_mock_acceptor{};
+    };
+
+    /**
+     * \brief Constructor.
+     */
+    Mock_Acceptor() = default;
+
+    Mock_Acceptor( Mock_Acceptor && ) = delete;
+
+    Mock_Acceptor( Mock_Acceptor const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Mock_Acceptor() noexcept = default;
+
+    auto operator=( Mock_Acceptor && ) = delete;
+
+    auto operator=( Mock_Acceptor const & ) = delete;
+
+    MOCK_METHOD( (Result<Void, Error_Code>), bind, () );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), bind, (Endpoint const &));
+
+    MOCK_METHOD( (Result<Void, Error_Code>), listen, ( std::uint_fast8_t ) );
+
+    MOCK_METHOD( (Result<bool, Error_Code>), is_listening, (), ( const ) );
+
+    MOCK_METHOD( (Result<Endpoint, Error_Code>), endpoint, (), ( const ) );
+
+    MOCK_METHOD( (Result<Server, Error_Code>), accept, () );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), close, () );
+};
+
 } // namespace picolibrary::Testing::Unit::IP::TCP
 
 #endif // PICOLIBRARY_TESTING_UNIT_IP_TCP_H

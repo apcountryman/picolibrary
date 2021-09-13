@@ -820,6 +820,147 @@ class Server_Concept {
     auto close() noexcept -> Result<Void, Error_Code>;
 };
 
+/**
+ * \brief Acceptor socket concept.
+ */
+class Acceptor_Concept {
+  public:
+    /**
+     * \brief The type of server socket produced by the acceptor socket.
+     */
+    using Server = Server_Concept;
+
+    /**
+     * \brief Constructor.
+     */
+    Acceptor_Concept() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Acceptor_Concept( Acceptor_Concept && source ) noexcept = default;
+
+    Acceptor_Concept( Acceptor_Concept const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Acceptor_Concept() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Acceptor_Concept && expression ) noexcept -> Acceptor_Concept & = default;
+
+    auto operator=( Acceptor_Concept const & ) = delete;
+
+    /**
+     * \brief Bind the socket to a specific local endpoint.
+     *
+     * \param[in] endpoint The local endpoint to bind the socket to.
+     *
+     * \return Nothing if binding the socket to the local endpoint succeeded.
+     * \return picolibrary::Generic_Error::INVALID_ARGUMENT if endpoint is not a valid
+     *         local endpoint.
+     * \return picolibrary::Generic_Error::LOGIC_ERROR if the socket has already been
+     *         bound to a local endpoint.
+     * \return picolibrary::Generic_Error::ENDPOINT_IN_USE if endpoint is already in use.
+     * \return picolibrary::Generic_Error::EPHEMERAL_PORTS_EXHAUSTED if an ephemeral port
+     *         was requested and no ephemeral ports are available.
+     * \return An error code if binding the socket to the local endpoint failed for any
+     *         other reason.
+     */
+    auto bind( Endpoint const & endpoint = Endpoint{} ) noexcept -> Result<Void, Error_Code>;
+
+    /**
+     * \brief Listen for incoming connection requests.
+     *
+     * \param[in] backlog The maximum number of simultaneously connected clients.
+     *
+     * \attention Implementations may interpret the backlog argument differently.
+     *
+     * \return Nothing if listening for incoming connection requests succeeded.
+     * \return picolibrary::Generic_Error::LOGIC_ERROR if the socket is not in a state
+     *         that allows it to listen for incoming connection requests.
+     * \return picolibrary::Generic_Error::LOGIC_ERROR if the socket is already listening
+     *         for incoming connection requests.
+     * \return picolibrary::Generic_Error::LOGIC_ERROR if the socket does not support
+     *         listening for incoming connection requests without having first bound the
+     *         socket to a local endpoint.
+     * \return picolibrary::Generic_Error::EPHEMERAL_PORTS_EXAUSTED if the socket does
+     *         support listening for incoming connection requests without having first
+     *         bound the socket to a local endpoint and the socket has not been bound to a
+     *         local endpoint, but no ephemeral ports are available.
+     * \return picolibrary::Generic_Error::INSUFFICIENT_SOCKETS_AVAILABLE if insufficient
+     *         sockets are available to support the requested backlog.
+     * \return An error code if listening for incoming connection requests failed for any
+     *         other reason.
+     */
+    auto listen( std::uint_fast8_t backlog ) noexcept -> Result<Void, Error_Code>;
+
+    /**
+     * \brief Check if the socket is listening for incoming connection requests.
+     *
+     * \return true if getting the socket's listening state succeeded and the socket is
+     *         listening for incoming connection requests.
+     * \return false if getting the socket's listening state succeeded and the socket is
+     *         not listening for incoming connection requests.
+     * \return An error code if getting the socket's listening state failed. If getting
+     *         the socket's listening state cannot fail, return picolibrary::Result<bool,
+     *         picolibrary::Void>.
+     */
+    auto is_listening() const noexcept -> Result<bool, Error_Code>;
+
+    /**
+     * \brief Get the endpoint on which the socket is listening for incoming connection
+     *        requests.
+     *
+     * \return The endpoint on which the socket is listening for incoming connection
+     *         requests if getting the endpoint on which the socket is listening for
+     *         incoming connections succeeded.
+     * \return An error code if getting the endpoint on which the socket is listening for
+     *         incoming connection requests failed. If getting the endpoint on which the
+     *         socket is listening for incoming connection requests cannot fail, return
+     *         picolibrary::Result<picolibrary::IP::TCP::Endpoint, picolibrary::Void>.
+     */
+    auto endpoint() const noexcept -> Result<Endpoint, Error_Code>;
+
+    /**
+     * \brief Accept an incoming connection request.
+     *
+     * \return A server socket for handling the connection if accepting an incoming
+     *         connection request succeeded.
+     * \return picolibrary::Generic_Error::LOGIC_ERROR if the socket is not listening for
+     *         incoming connections.
+     * \return picolibrary::Generic_Error::WOULD_BLOCK or
+     *         picolibrary::Generic_Error::OPERATION_TIMEOUT if the socket is in a
+     *         non-blocking mode, and an incoming connection request could not be accepted
+     *         without blocking.
+     * \return picolibrary::Generic_Error::OPERATION_TIMEOUT if a timeout occurred before
+     *         an incoming connection request could be accepted.
+     * \return picolibrary::Generic_Error::NO_SOCKETS_AVAILABLE if a server socket for
+     *         handling the connection could not be allocated.
+     * \return An error code if accepting an incoming connection request failed for any
+     *         other reason.
+     */
+    auto accept() noexcept -> Result<Server, Error_Code>;
+
+    /**
+     * \brief Close the socket.
+     *
+     * \return Nothing if closing the socket succeeded.
+     * \return An error code if closing the socket failed. If closing the socket cannot
+     *         fail, return picolibrary::Result<picolibrary::Void, picolibrary::Void>.
+     */
+    auto close() noexcept -> Result<Void, Error_Code>;
+};
+
 } // namespace picolibrary::IP::TCP
 
 namespace picolibrary {
