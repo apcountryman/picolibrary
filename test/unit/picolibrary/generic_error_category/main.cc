@@ -59,6 +59,8 @@ TEST( errorDescription, worksProperly )
         { Generic_Error::CONNECTION_LOST, "CONNECTION_LOST" },
         { Generic_Error::ENDPOINT_IN_USE, "ENDPOINT_IN_USE" },
         { Generic_Error::EPHEMERAL_PORTS_EXHAUSTED, "EPHEMERAL_PORTS_EXHAUSTED" },
+        { Generic_Error::INSUFFICIENT_SOCKETS_AVAILABLE,
+          "INSUFFICIENT_SOCKETS_AVAILABLE" },
         { Generic_Error::INVALID_ARGUMENT, "INVALID_ARGUMENT" },
         { Generic_Error::INVALID_FORMAT, "INVALID_FORMAT" },
         { Generic_Error::IO_STREAM_DEGRADED, "IO_STREAM_DEGRADED" },
