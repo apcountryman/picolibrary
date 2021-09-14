@@ -892,7 +892,8 @@ class Acceptor_Concept {
      *         for incoming connection requests.
      * \return picolibrary::Generic_Error::LOGIC_ERROR if the socket does not support
      *         listening for incoming connection requests without having first bound the
-     *         socket to a local endpoint.
+     *         socket to a local endpoint, and the socket has not been bound to a local
+     *         endpoint.
      * \return picolibrary::Generic_Error::EPHEMERAL_PORTS_EXAUSTED if the socket does
      *         support listening for incoming connection requests without having first
      *         bound the socket to a local endpoint and the socket has not been bound to a
@@ -923,13 +924,13 @@ class Acceptor_Concept {
      *
      * \return The endpoint on which the socket is listening for incoming connection
      *         requests if getting the endpoint on which the socket is listening for
-     *         incoming connections succeeded.
+     *         incoming connection requests succeeded.
      * \return An error code if getting the endpoint on which the socket is listening for
      *         incoming connection requests failed. If getting the endpoint on which the
      *         socket is listening for incoming connection requests cannot fail, return
      *         picolibrary::Result<picolibrary::IP::TCP::Endpoint, picolibrary::Void>.
      */
-    auto endpoint() const noexcept -> Result<Endpoint, Error_Code>;
+    auto local_endpoint() const noexcept -> Result<Endpoint, Error_Code>;
 
     /**
      * \brief Accept an incoming connection request.

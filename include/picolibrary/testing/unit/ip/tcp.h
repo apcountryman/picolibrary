@@ -840,9 +840,9 @@ class Mock_Acceptor {
          * \return An error code if getting the endpoint on which the socket is listening
          *         for incoming connection requests failed.
          */
-        auto endpoint() const
+        auto local_endpoint() const
         {
-            return m_mock_acceptor->endpoint();
+            return m_mock_acceptor->local_endpoint();
         }
 
         /**
@@ -901,7 +901,7 @@ class Mock_Acceptor {
 
     MOCK_METHOD( (Result<bool, Error_Code>), is_listening, (), ( const ) );
 
-    MOCK_METHOD( (Result<Endpoint, Error_Code>), endpoint, (), ( const ) );
+    MOCK_METHOD( (Result<Endpoint, Error_Code>), local_endpoint, (), ( const ) );
 
     MOCK_METHOD( (Result<Server, Error_Code>), accept, () );
 
