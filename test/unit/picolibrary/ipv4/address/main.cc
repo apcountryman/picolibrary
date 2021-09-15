@@ -88,6 +88,10 @@ constexpr auto LOOPBACK_AS_BYTE_ARRAY = Address::Byte_Array{ 127, 0, 0, 1 };
 
 constexpr auto LOOPBACK_AS_UNSIGNED_INTEGER = convert_byte_array_to_unsigned_integer( LOOPBACK_AS_BYTE_ARRAY );
 
+constexpr auto BROADCAST_AS_BYTE_ARRAY = Address::Byte_Array{ 255, 255, 255, 255 };
+
+constexpr auto BROADCAST_AS_UNSIGNED_INTEGER = convert_byte_array_to_unsigned_integer( BROADCAST_AS_BYTE_ARRAY );
+
 auto dot_decimal( Address::Byte_Array const & byte_array )
 {
     auto stream = std::ostringstream{};
@@ -126,6 +130,19 @@ TEST( loopback, worksProperly )
     EXPECT_TRUE( address.is_loopback() );
     EXPECT_EQ( address.as_byte_array(), LOOPBACK_AS_BYTE_ARRAY );
     EXPECT_EQ( address.as_unsigned_integer(), LOOPBACK_AS_UNSIGNED_INTEGER );
+}
+
+/**
+ * \brief Verify picolibrary::IPv4::Address::broadcast() works properly.
+ */
+TEST( broadcast, worksProperly )
+{
+    auto const address = Address::broadcast();
+
+    EXPECT_FALSE( address.is_any() );
+    EXPECT_FALSE( address.is_loopback() );
+    EXPECT_EQ( address.as_byte_array(), BROADCAST_AS_BYTE_ARRAY );
+    EXPECT_EQ( address.as_unsigned_integer(), BROADCAST_AS_UNSIGNED_INTEGER );
 }
 
 /**

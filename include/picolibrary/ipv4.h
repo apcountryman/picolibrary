@@ -94,6 +94,16 @@ class Address {
     }
 
     /**
+     * \brief Get the local network broadcast address (255.255.255.255)
+     *
+     * \return The local network broadcast address.
+     */
+    static constexpr auto broadcast() noexcept
+    {
+        return Address{ { 255, 255, 255, 255 } };
+    }
+
+    /**
      * \brief Constructor.
      *
      * A default constructed address will represent any address (0.0.0.0).
