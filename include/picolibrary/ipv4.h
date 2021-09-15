@@ -194,6 +194,17 @@ class Address {
     }
 
     /**
+     * \brief Check if the address is a multicast address (224.0.0.0-239.255.255.255).
+     *
+     * \return true if the address is a multicast address.
+     * \return false if the address is not a multicast address.
+     */
+    constexpr auto is_multicast() const noexcept
+    {
+        return as_byte_array()[ 0 ] >= 224 and as_byte_array()[ 0 ] <= 239;
+    }
+
+    /**
      * \brief Get the address in its byte array representation.
      *
      * \return The address in its byte array representation.

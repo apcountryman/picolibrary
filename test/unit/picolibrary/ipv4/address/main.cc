@@ -115,6 +115,7 @@ TEST( any, worksProperly )
 
     EXPECT_TRUE( address.is_any() );
     EXPECT_FALSE( address.is_loopback() );
+    EXPECT_FALSE( address.is_multicast() );
     EXPECT_EQ( address.as_byte_array(), ANY_AS_BYTE_ARRAY );
     EXPECT_EQ( address.as_unsigned_integer(), ANY_AS_UNSIGNED_INTEGER );
 }
@@ -128,6 +129,7 @@ TEST( loopback, worksProperly )
 
     EXPECT_FALSE( address.is_any() );
     EXPECT_TRUE( address.is_loopback() );
+    EXPECT_FALSE( address.is_multicast() );
     EXPECT_EQ( address.as_byte_array(), LOOPBACK_AS_BYTE_ARRAY );
     EXPECT_EQ( address.as_unsigned_integer(), LOOPBACK_AS_UNSIGNED_INTEGER );
 }
@@ -141,6 +143,7 @@ TEST( broadcast, worksProperly )
 
     EXPECT_FALSE( address.is_any() );
     EXPECT_FALSE( address.is_loopback() );
+    EXPECT_FALSE( address.is_multicast() );
     EXPECT_EQ( address.as_byte_array(), BROADCAST_AS_BYTE_ARRAY );
     EXPECT_EQ( address.as_unsigned_integer(), BROADCAST_AS_UNSIGNED_INTEGER );
 }
@@ -154,6 +157,7 @@ TEST( constructorDefault, worksProperly )
 
     EXPECT_TRUE( address.is_any() );
     EXPECT_FALSE( address.is_loopback() );
+    EXPECT_FALSE( address.is_multicast() );
     EXPECT_EQ( address.as_byte_array(), ANY_AS_BYTE_ARRAY );
     EXPECT_EQ( address.as_unsigned_integer(), ANY_AS_UNSIGNED_INTEGER );
 }
@@ -171,6 +175,7 @@ TEST( constructorByteArray, worksProperly )
 
     EXPECT_EQ( address.is_any(), byte_array == ANY_AS_BYTE_ARRAY );
     EXPECT_EQ( address.is_loopback(), byte_array == LOOPBACK_AS_BYTE_ARRAY );
+    EXPECT_EQ( address.is_multicast(), byte_array[ 0 ] >= 224 and byte_array[ 0 ] <= 239 );
     EXPECT_EQ( address.as_byte_array(), byte_array );
     EXPECT_EQ( address.as_unsigned_integer(), unsigned_integer );
 }
@@ -188,6 +193,7 @@ TEST( constructorUnsignedInteger, worksProperly )
 
     EXPECT_EQ( address.is_any(), byte_array == ANY_AS_BYTE_ARRAY );
     EXPECT_EQ( address.is_loopback(), byte_array == LOOPBACK_AS_BYTE_ARRAY );
+    EXPECT_EQ( address.is_multicast(), byte_array[ 0 ] >= 224 and byte_array[ 0 ] <= 239 );
     EXPECT_EQ( address.as_byte_array(), byte_array );
     EXPECT_EQ( address.as_unsigned_integer(), unsigned_integer );
 }
