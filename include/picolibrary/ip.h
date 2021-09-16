@@ -229,6 +229,20 @@ class Address {
     }
 
     /**
+     * \brief Check if the stored address is a multicast address.
+     *
+     * \return true if the stored address is a multicast address.
+     * \return false if the stored address is not a multicast address.
+     */
+    constexpr auto is_multicast() const noexcept -> bool
+    {
+        switch ( m_version ) {
+            case Version::_4: return m_ipv4_address.is_multicast();
+            default: return false;
+        } // switch
+    }
+
+    /**
      * \brief Get the stored IPv4 address.
      *
      * \warning Calling this function on an address that does not store an IPv4 address
