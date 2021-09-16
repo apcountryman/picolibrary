@@ -76,6 +76,7 @@ TEST( constructorDefault, worksProperly )
     EXPECT_FALSE( address.is_ipv4() );
     EXPECT_TRUE( address.is_any() );
     EXPECT_FALSE( address.is_loopback() );
+    EXPECT_FALSE( address.is_multicast() );
 }
 
 /**
@@ -94,6 +95,7 @@ TEST( constructorIPv4Address, worksProperly )
         EXPECT_TRUE( address.is_ipv4() );
         EXPECT_TRUE( address.is_any() );
         EXPECT_FALSE( address.is_loopback() );
+        EXPECT_FALSE( address.is_multicast() );
         EXPECT_EQ( address.ipv4(), ipv4_address );
     }
 
@@ -107,6 +109,7 @@ TEST( constructorIPv4Address, worksProperly )
         EXPECT_TRUE( address.is_ipv4() );
         EXPECT_FALSE( address.is_any() );
         EXPECT_TRUE( address.is_loopback() );
+        EXPECT_FALSE( address.is_multicast() );
         EXPECT_EQ( address.ipv4(), ipv4_address );
     }
 
@@ -120,6 +123,7 @@ TEST( constructorIPv4Address, worksProperly )
         EXPECT_TRUE( address.is_ipv4() );
         EXPECT_EQ( address.is_any(), ipv4_address.is_any() );
         EXPECT_EQ( address.is_loopback(), ipv4_address.is_loopback() );
+        EXPECT_EQ( address.is_multicast(), ipv4_address.is_multicast() );
         EXPECT_EQ( address.ipv4(), ipv4_address );
     }
 }
@@ -140,12 +144,14 @@ TEST( constructorMove, worksProperly )
         EXPECT_FALSE( address.is_ipv4() );
         EXPECT_TRUE( address.is_any() );
         EXPECT_FALSE( address.is_loopback() );
+        EXPECT_FALSE( address.is_multicast() );
 
         EXPECT_EQ( source.version(), address.version() );
         EXPECT_EQ( source.is_unspecified(), address.is_unspecified() );
         EXPECT_EQ( source.is_ipv4(), address.is_ipv4() );
         EXPECT_EQ( source.is_any(), address.is_any() );
         EXPECT_EQ( source.is_loopback(), address.is_loopback() );
+        EXPECT_EQ( source.is_multicast(), address.is_multicast() );
     }
 
     {
@@ -160,6 +166,7 @@ TEST( constructorMove, worksProperly )
         EXPECT_TRUE( address.is_ipv4() );
         EXPECT_EQ( address.is_any(), source_ipv4_address.is_any() );
         EXPECT_EQ( address.is_loopback(), source_ipv4_address.is_loopback() );
+        EXPECT_EQ( address.is_multicast(), source_ipv4_address.is_multicast() );
         EXPECT_EQ( address.ipv4(), source_ipv4_address );
 
         EXPECT_EQ( source.version(), address.version() );
@@ -167,6 +174,7 @@ TEST( constructorMove, worksProperly )
         EXPECT_EQ( source.is_ipv4(), address.is_ipv4() );
         EXPECT_EQ( source.is_any(), address.is_any() );
         EXPECT_EQ( source.is_loopback(), address.is_loopback() );
+        EXPECT_EQ( source.is_multicast(), address.is_multicast() );
         EXPECT_EQ( source.ipv4(), address.ipv4() );
     }
 }
@@ -187,6 +195,7 @@ TEST( constructorCopy, worksProperly )
         EXPECT_FALSE( address.is_ipv4() );
         EXPECT_TRUE( address.is_any() );
         EXPECT_FALSE( address.is_loopback() );
+        EXPECT_FALSE( address.is_multicast() );
     }
 
     {
@@ -201,6 +210,7 @@ TEST( constructorCopy, worksProperly )
         EXPECT_TRUE( address.is_ipv4() );
         EXPECT_EQ( address.is_any(), original_ipv4_address.is_any() );
         EXPECT_EQ( address.is_loopback(), original_ipv4_address.is_loopback() );
+        EXPECT_EQ( address.is_multicast(), original_ipv4_address.is_multicast() );
         EXPECT_EQ( address.ipv4(), original_ipv4_address );
     }
 }
@@ -222,12 +232,14 @@ TEST( assignmentOperatorMove, worksProperly )
         EXPECT_FALSE( object.is_ipv4() );
         EXPECT_TRUE( object.is_any() );
         EXPECT_FALSE( object.is_loopback() );
+        EXPECT_FALSE( object.is_multicast() );
 
         EXPECT_EQ( expression.version(), object.version() );
         EXPECT_EQ( expression.is_unspecified(), object.is_unspecified() );
         EXPECT_EQ( expression.is_ipv4(), object.is_ipv4() );
         EXPECT_EQ( expression.is_any(), object.is_any() );
         EXPECT_EQ( expression.is_loopback(), object.is_loopback() );
+        EXPECT_EQ( expression.is_multicast(), object.is_multicast() );
     }
 
     {
@@ -243,6 +255,7 @@ TEST( assignmentOperatorMove, worksProperly )
         EXPECT_TRUE( object.is_ipv4() );
         EXPECT_EQ( object.is_any(), expression_ipv4_address.is_any() );
         EXPECT_EQ( object.is_loopback(), expression_ipv4_address.is_loopback() );
+        EXPECT_EQ( object.is_multicast(), expression_ipv4_address.is_multicast() );
         EXPECT_EQ( object.ipv4(), expression_ipv4_address );
 
         EXPECT_EQ( expression.version(), object.version() );
@@ -250,6 +263,7 @@ TEST( assignmentOperatorMove, worksProperly )
         EXPECT_EQ( expression.is_ipv4(), object.is_ipv4() );
         EXPECT_EQ( expression.is_any(), object.is_any() );
         EXPECT_EQ( expression.is_loopback(), object.is_loopback() );
+        EXPECT_EQ( expression.is_multicast(), object.is_multicast() );
         EXPECT_EQ( expression.ipv4(), object.ipv4() );
     }
 
@@ -266,6 +280,7 @@ TEST( assignmentOperatorMove, worksProperly )
         EXPECT_TRUE( object.is_ipv4() );
         EXPECT_EQ( object.is_any(), expression_ipv4_address.is_any() );
         EXPECT_EQ( object.is_loopback(), expression_ipv4_address.is_loopback() );
+        EXPECT_EQ( object.is_multicast(), expression_ipv4_address.is_multicast() );
         EXPECT_EQ( object.ipv4(), expression_ipv4_address );
 
         EXPECT_EQ( expression.version(), object.version() );
@@ -273,6 +288,7 @@ TEST( assignmentOperatorMove, worksProperly )
         EXPECT_EQ( expression.is_ipv4(), object.is_ipv4() );
         EXPECT_EQ( expression.is_any(), object.is_any() );
         EXPECT_EQ( expression.is_loopback(), object.is_loopback() );
+        EXPECT_EQ( expression.is_multicast(), object.is_multicast() );
         EXPECT_EQ( expression.ipv4(), object.ipv4() );
     }
 
@@ -287,12 +303,14 @@ TEST( assignmentOperatorMove, worksProperly )
         EXPECT_FALSE( object.is_ipv4() );
         EXPECT_TRUE( object.is_any() );
         EXPECT_FALSE( object.is_loopback() );
+        EXPECT_FALSE( object.is_multicast() );
 
         EXPECT_EQ( expression.version(), object.version() );
         EXPECT_EQ( expression.is_unspecified(), object.is_unspecified() );
         EXPECT_EQ( expression.is_ipv4(), object.is_ipv4() );
         EXPECT_EQ( expression.is_any(), object.is_any() );
         EXPECT_EQ( expression.is_loopback(), object.is_loopback() );
+        EXPECT_EQ( expression.is_multicast(), object.is_multicast() );
     }
 }
 
@@ -313,6 +331,7 @@ TEST( assignmentOperatorCopy, worksProperly )
         EXPECT_FALSE( object.is_ipv4() );
         EXPECT_TRUE( object.is_any() );
         EXPECT_FALSE( object.is_loopback() );
+        EXPECT_FALSE( object.is_multicast() );
     }
 
     {
@@ -328,6 +347,7 @@ TEST( assignmentOperatorCopy, worksProperly )
         EXPECT_TRUE( object.is_ipv4() );
         EXPECT_EQ( object.is_any(), expression_ipv4_address.is_any() );
         EXPECT_EQ( object.is_loopback(), expression_ipv4_address.is_loopback() );
+        EXPECT_EQ( object.is_multicast(), expression_ipv4_address.is_multicast() );
         EXPECT_EQ( object.ipv4(), expression_ipv4_address );
     }
 
@@ -344,6 +364,7 @@ TEST( assignmentOperatorCopy, worksProperly )
         EXPECT_TRUE( object.is_ipv4() );
         EXPECT_EQ( object.is_any(), expression_ipv4_address.is_any() );
         EXPECT_EQ( object.is_loopback(), expression_ipv4_address.is_loopback() );
+        EXPECT_EQ( object.is_multicast(), expression_ipv4_address.is_multicast() );
         EXPECT_EQ( object.ipv4(), expression_ipv4_address );
     }
 
@@ -358,6 +379,7 @@ TEST( assignmentOperatorCopy, worksProperly )
         EXPECT_FALSE( object.is_ipv4() );
         EXPECT_TRUE( object.is_any() );
         EXPECT_FALSE( object.is_loopback() );
+        EXPECT_FALSE( object.is_multicast() );
     }
 }
 
