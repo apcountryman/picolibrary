@@ -38,17 +38,6 @@
 namespace picolibrary::Testing::Unit {
 
 /**
- * \brief Generate a pseudo-random TCP over IP port number.
- *
- * \return A pseudo-random TCP over IP port number.
- */
-template<>
-inline auto random<::picolibrary::IP::TCP::Port>()
-{
-    return ::picolibrary::IP::TCP::Port{ random<::picolibrary::IP::TCP::Port::Unsigned_Integer>() };
-}
-
-/**
  * \brief Generate a pseudo-random TCP over IP endpoint.
  *
  * \brief A pseudo-random TCP over IP endpoint.

@@ -17,7 +17,7 @@
 
 /**
  * \file
- * \brief picolibrary::IP::TCP::Port unit test program.
+ * \brief picolibrary::IP::Port unit test program.
  */
 
 #include <sstream>
@@ -27,7 +27,7 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/error.h"
-#include "picolibrary/ip/tcp.h"
+#include "picolibrary/ip.h"
 #include "picolibrary/testing/unit/error.h"
 #include "picolibrary/testing/unit/random.h"
 #include "picolibrary/testing/unit/stream.h"
@@ -35,7 +35,7 @@
 namespace {
 
 using ::picolibrary::Generic_Error;
-using ::picolibrary::IP::TCP::Port;
+using ::picolibrary::IP::Port;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::Mock_Output_Stream;
 using ::picolibrary::Testing::Unit::Output_String_Stream;
@@ -66,7 +66,7 @@ auto decimal( Port::Unsigned_Integer unsigned_integer )
 } // namespace
 
 /**
- * \brief Verify picolibrary::IP::TCP::Port::any() works properly.
+ * \brief Verify picolibrary::IP::Port::any() works properly.
  */
 TEST( any, worksProperly )
 {
@@ -77,7 +77,7 @@ TEST( any, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::IP::TCP::Port::Port() works properly.
+ * \brief Verify picolibrary::IP::Port::Port() works properly.
  */
 TEST( constructorDefault, worksProperly )
 {
@@ -88,8 +88,8 @@ TEST( constructorDefault, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::IP::TCP::Port::Port(
- *        picolibrary::IP::TCP::Port::Unsigned_Integer ) works properly.
+ * \brief Verify picolibrary::IP::Port::Port( picolibrary::IP::Port::Unsigned_Integer )
+ *        works properly.
  */
 TEST( constructorUnsignedInteger, worksProperly )
 {
@@ -102,8 +102,8 @@ TEST( constructorUnsignedInteger, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::IP::TCP::operator==( picolibrary::IP::TCP::Port,
- *        picolibrary::IP::TCP::Port ) works properly.
+ * \brief Verify picolibrary::IP::operator==( picolibrary::IP::Port, picolibrary::IP::Port
+ *        ) works properly.
  */
 TEST( equalityOperator, worksProperly )
 {
@@ -122,8 +122,8 @@ TEST( equalityOperator, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::IP::TCP::operator!=( picolibrary::IP::TCP::Port,
- *        picolibrary::IP::TCP::Port ) works properly.
+ * \brief Verify picolibrary::IP::operator!=( picolibrary::IP::Port, picolibrary::IP::Port
+ *        ) works properly.
  */
 TEST( inequalityOperator, worksProperly )
 {
@@ -142,8 +142,8 @@ TEST( inequalityOperator, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::IP::TCP::operator<( picolibrary::IP::TCP::Port,
- *        picolibrary::IP::TCP::Port ) works properly.
+ * \brief Verify picolibrary::IP::operator<( picolibrary::IP::Port, picolibrary::IP::Port
+ *        ) works properly.
  */
 TEST( lessThanOperator, worksProperly )
 {
@@ -163,8 +163,8 @@ TEST( lessThanOperator, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::IP::TCP::operator>( picolibrary::IP::TCP::Port,
- *        picolibrary::IP::TCP::Port ) works properly.
+ * \brief Verify picolibrary::IP::operator>( picolibrary::IP::Port, picolibrary::IP::Port
+ *        ) works properly.
  */
 TEST( greaterThanOperator, worksProperly )
 {
@@ -184,8 +184,8 @@ TEST( greaterThanOperator, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::IP::TCP::operator<=( picolibrary::IP::TCP::Port,
- *        picolibrary::IP::TCP::Port ) works properly.
+ * \brief Verify picolibrary::IP::operator<=( picolibrary::IP::Port, picolibrary::IP::Port
+ *        ) works properly.
  */
 TEST( lessThanOrEqualToOperator, worksProperly )
 {
@@ -205,8 +205,8 @@ TEST( lessThanOrEqualToOperator, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::IP::TCP::operator>=( picolibrary::IP::TCP::Port,
- *        picolibrary::IP::TCP::Port ) works properly.
+ * \brief Verify picolibrary::IP::operator>=( picolibrary::IP::Port, picolibrary::IP::Port
+ *        ) works properly.
  */
 TEST( greaterThanOrEqualToOperator, worksProperly )
 {
@@ -226,8 +226,8 @@ TEST( greaterThanOrEqualToOperator, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::IP::TCP::Port> properly
- *        handles an invalid format string.
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::IP::Port> properly handles an
+ *        invalid format string.
  */
 TEST( outputFormatter, invalidFormatString )
 {
@@ -247,8 +247,8 @@ TEST( outputFormatter, invalidFormatString )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::IP::TCP::Port> properly
- *        handles a print error.
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::IP::Port> properly handles a
+ *        print error.
  */
 TEST( outputFormatter, printError )
 {
@@ -269,7 +269,7 @@ TEST( outputFormatter, printError )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::IP::TCP::Port> works properly.
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::IP::Port> works properly.
  */
 TEST( outputFormatter, worksProperly )
 {
@@ -283,7 +283,7 @@ TEST( outputFormatter, worksProperly )
 }
 
 /**
- * \brief Execute the picolibrary::IP::TCP::Port unit tests.
+ * \brief Execute the picolibrary::IP::Port unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
  * \param[in] argv The array  of arguments to pass to testing::InitGoogleMock().
