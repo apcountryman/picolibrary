@@ -18,6 +18,3 @@
 
 # build the picolibrary::IP::TCP::Endpoint unit tests
 add_subdirectory( endpoint )
-
-# build the picolibrary::IP::TCP::Port unit tests
-add_subdirectory( port )

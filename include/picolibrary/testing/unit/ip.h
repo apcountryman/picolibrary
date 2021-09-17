@@ -56,6 +56,17 @@ inline auto random<IP::Address>()
     } // switch
 }
 
+/**
+ * \brief Generate a pseudo-random IP port number.
+ *
+ * \return A pseudo-random IP port number.
+ */
+template<>
+inline auto random<::picolibrary::IP::Port>()
+{
+    return ::picolibrary::IP::Port{ random<::picolibrary::IP::Port::Unsigned_Integer>() };
+}
+
 } // namespace picolibrary::Testing::Unit
 
 /**

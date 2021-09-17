@@ -13,22 +13,22 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/ip/tcp/port/CMakeLists.txt
-# Description: picolibrary::IP::TCP::Port unit tests CMake rules.
+# File: test/unit/picolibrary/ip/port/CMakeLists.txt
+# Description: picolibrary::IP::Port unit tests CMake rules.
 
-# build the picolibrary::IP::TCP::Port unit tests
+# build the picolibrary::IP::Port unit tests
 if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     add_executable(
-        test-unit-picolibrary-ip-tcp-port
+        test-unit-picolibrary-ip-port
         main.cc
     )
     target_link_libraries(
-        test-unit-picolibrary-ip-tcp-port
+        test-unit-picolibrary-ip-port
         picolibrary
         picolibrary-fatal_error
     )
     add_test(
-        NAME    test-unit-picolibrary-ip-tcp-port
-        COMMAND test-unit-picolibrary-ip-tcp-port --gtest_color=yes
+        NAME    test-unit-picolibrary-ip-port
+        COMMAND test-unit-picolibrary-ip-port --gtest_color=yes
     )
 endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
