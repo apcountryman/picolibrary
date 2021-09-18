@@ -28,28 +28,9 @@
 
 #include "gmock/gmock.h"
 #include "picolibrary/error.h"
-#include "picolibrary/ip.h"
 #include "picolibrary/ip/tcp.h"
 #include "picolibrary/result.h"
-#include "picolibrary/testing/unit/ip.h"
-#include "picolibrary/testing/unit/random.h"
 #include "picolibrary/void.h"
-
-namespace picolibrary::Testing::Unit {
-
-/**
- * \brief Generate a pseudo-random TCP over IP endpoint.
- *
- * \brief A pseudo-random TCP over IP endpoint.
- */
-template<>
-inline auto random<::picolibrary::IP::TCP::Endpoint>()
-{
-    return ::picolibrary::IP::TCP::Endpoint{ random<::picolibrary::IP::Address>(),
-                                             random<::picolibrary::IP::TCP::Port>() };
-}
-
-} // namespace picolibrary::Testing::Unit
 
 /**
  * \brief Transmission Control Protocol (TCP) over IP unit testing facilities.

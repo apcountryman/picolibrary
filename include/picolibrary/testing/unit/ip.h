@@ -67,6 +67,18 @@ inline auto random<::picolibrary::IP::Port>()
     return ::picolibrary::IP::Port{ random<::picolibrary::IP::Port::Unsigned_Integer>() };
 }
 
+/**
+ * \brief Generate a pseudo-random IP endpoint.
+ *
+ * \brief A pseudo-random IP endpoint.
+ */
+template<>
+inline auto random<::picolibrary::IP::Endpoint>()
+{
+    return ::picolibrary::IP::Endpoint{ random<::picolibrary::IP::Address>(),
+                                        random<::picolibrary::IP::Port>() };
+}
+
 } // namespace picolibrary::Testing::Unit
 
 /**

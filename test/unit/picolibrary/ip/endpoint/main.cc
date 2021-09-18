@@ -17,7 +17,7 @@
 
 /**
  * \file
- * \brief picolibrary::IP::TCP::Endpoint unit test program.
+ * \brief picolibrary::IP::Endpoint unit test program.
  */
 
 #include <cstdint>
@@ -28,11 +28,9 @@
 #include "gtest/gtest.h"
 #include "picolibrary/error.h"
 #include "picolibrary/ip.h"
-#include "picolibrary/ip/tcp.h"
 #include "picolibrary/ipv4.h"
 #include "picolibrary/testing/unit/error.h"
 #include "picolibrary/testing/unit/ip.h"
-#include "picolibrary/testing/unit/ip/tcp.h"
 #include "picolibrary/testing/unit/random.h"
 #include "picolibrary/testing/unit/stream.h"
 
@@ -40,8 +38,8 @@ namespace {
 
 using ::picolibrary::Generic_Error;
 using ::picolibrary::IP::Address;
-using ::picolibrary::IP::TCP::Endpoint;
-using ::picolibrary::IP::TCP::Port;
+using ::picolibrary::IP::Endpoint;
+using ::picolibrary::IP::Port;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::Mock_Output_Stream;
 using ::picolibrary::Testing::Unit::Output_String_Stream;
@@ -77,7 +75,7 @@ auto dot_decimal_with_port( IPv4_Address const & address, Port port )
 } // namespace
 
 /**
- * \brief Verify picolibrary::IP::TCP::Endpoint::Endpoint() works properly.
+ * \brief Verify picolibrary::IP::Endpoint::Endpoint() works properly.
  */
 TEST( constructorDefault, worksProperly )
 {
@@ -88,8 +86,8 @@ TEST( constructorDefault, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::IP::TCP::Endpoint::Endpoint( picolibrary::IP::TCP::Port )
- *        works properly.
+ * \brief Verify picolibrary::IP::Endpoint::Endpoint( picolibrary::IP::Port ) works
+ *        properly.
  */
 TEST( constructorPort, worksProperly )
 {
@@ -102,8 +100,8 @@ TEST( constructorPort, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::IP::TCP::Endpoint::Endpoint( picolibrary::IP::Address const
- *        &, picolibrary::IP::TCP::Port ) works properly.
+ * \brief Verify picolibrary::IP::Endpoint::Endpoint( picolibrary::IP::Address const &,
+ *        picolibrary::IP::Port ) works properly.
  */
 TEST( constructorAddressPort, worksProperly )
 {
@@ -117,8 +115,8 @@ TEST( constructorAddressPort, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::IP::TCP::operator==( picolibrary::IP::TCP::Endpoint const &,
- *        picolibrary::IP::TCP::Endpoint const & ) works properly.
+ * \brief Verify picolibrary::IP::operator==( picolibrary::IP::Endpoint const &,
+ *        picolibrary::IP::Endpoint const & ) works properly.
  */
 TEST( equalityOperator, worksProperly )
 {
@@ -146,8 +144,8 @@ TEST( equalityOperator, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::IP::TCP::operator!=( picolibrary::IP::TCP::Endpoint const &,
- *        picolibrary::IP::TCP::Endpoint const & ) works properly.
+ * \brief Verify picolibrary::IP::operator!=( picolibrary::IP::Endpoint const &,
+ *        picolibrary::IP::Endpoint const & ) works properly.
  */
 TEST( inequalityOperator, worksProperly )
 {
@@ -175,8 +173,8 @@ TEST( inequalityOperator, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::IP::TCP::operator<( picolibrary::IP::TCP::Endpoint const &,
- *        picolibrary::IP::TCP::Endpoint const & ) works properly.
+ * \brief Verify picolibrary::IP::operator<( picolibrary::IP::Endpoint const &,
+ *        picolibrary::IP::Endpoint const & ) works properly.
  */
 TEST( lessThanOperator, worksProperly )
 {
@@ -204,8 +202,8 @@ TEST( lessThanOperator, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::IP::TCP::operator>( picolibrary::IP::TCP::Endpoint const &,
- *        picolibrary::IP::TCP::Endpoint const & ) works properly.
+ * \brief Verify picolibrary::IP::operator>( picolibrary::IP::Endpoint const &,
+ *        picolibrary::IP::Endpoint const & ) works properly.
  */
 TEST( greaterThanOperator, worksProperly )
 {
@@ -233,8 +231,8 @@ TEST( greaterThanOperator, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::IP::TCP::operator<=( picolibrary::IP::TCP::Endpoint const &,
- *        picolibrary::IP::TCP::Endpoint const & ) works properly.
+ * \brief Verify picolibrary::IP::operator<=( picolibrary::IP::Endpoint const &,
+ *        picolibrary::IP::Endpoint const & ) works properly.
  */
 TEST( lessThanOrEqualToOperator, worksProperly )
 {
@@ -262,8 +260,8 @@ TEST( lessThanOrEqualToOperator, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::IP::TCP::operator>=( picolibrary::IP::TCP::Endpoint const &,
- *        picolibrary::IP::TCP::Endpoint const & ) works properly.
+ * \brief Verify picolibrary::IP::operator>=( picolibrary::IP::Endpoint const &,
+ *        picolibrary::IP::Endpoint const & ) works properly.
  */
 TEST( greaterThanOrEqualToOperator, worksProperly )
 {
@@ -291,8 +289,8 @@ TEST( greaterThanOrEqualToOperator, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::IP::TCP::Endpoint> properly
- *        handles an invalid format string.
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::IP::Endpoint> properly handles
+ *        an invalid format string.
  */
 TEST( outputFormatter, invalidFormatString )
 {
@@ -312,8 +310,8 @@ TEST( outputFormatter, invalidFormatString )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::IP::TCP::Endpoint> properly
- *        handles a print error.
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::IP::Endpoint> properly handles
+ *        a print error.
  */
 TEST( outputFormatter, printError )
 {
@@ -334,8 +332,7 @@ TEST( outputFormatter, printError )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::IP::TCP::Endpoint> works
- *        properly.
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::IP::Endpoint> works properly.
  */
 TEST( outputFormatter, worksProperly )
 {
@@ -362,7 +359,7 @@ TEST( outputFormatter, worksProperly )
 }
 
 /**
- * \brief Execute the picolibrary::IP::TCP::Endpoint unit tests.
+ * \brief Execute the picolibrary::IP::Endpoint unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
  * \param[in] argv The array  of arguments to pass to testing::InitGoogleMock().

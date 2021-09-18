@@ -19,6 +19,9 @@
 # build the picolibrary::IP::Address unit tests
 add_subdirectory( address )
 
+# build the picolibrary::IP::Endpoint unit tests
+add_subdirectory( endpoint )
+
 # build the picolibrary::IP::Port unit tests
 add_subdirectory( port )
 
