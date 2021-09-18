@@ -82,7 +82,7 @@ TEST( constructorDefault, worksProperly )
     auto const endpoint = Endpoint{};
 
     EXPECT_EQ( endpoint.address(), Address{} );
-    EXPECT_EQ( endpoint.port(), 0 );
+    EXPECT_EQ( endpoint.port(), Port{} );
 }
 
 /**
