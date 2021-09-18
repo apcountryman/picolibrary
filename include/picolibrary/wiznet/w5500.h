@@ -1610,6 +1610,10 @@ struct Interrupt {
     static constexpr auto PPPOE_CONNECTION_CLOSED = IR::Mask::PPPOE; ///< PPPoE connection closed.
     static constexpr auto ICMP_DESTINATION_PORT_UNREACHABLE_PACKET_RECEIVED = IR::Mask::UNREACH; ///< ICMP destination port unreachable packet received.
     static constexpr auto IP_ADDRESS_CONFLICT = IR::Mask::CONFLICT; ///< IP address conflict.
+
+    static constexpr auto ALL = IR::Type{ WOL_UDP_MAGIC_PACKET_RECEIVED | PPPOE_CONNECTION_CLOSED
+                                          | ICMP_DESTINATION_PORT_UNREACHABLE_PACKET_RECEIVED
+                                          | IP_ADDRESS_CONFLICT }; ///< All.
 };
 
 /**
