@@ -1790,10 +1790,10 @@ struct Socket_Interrupt {
  * \tparam Controller_Type The type of SPI controller used to communicate with the W5500.
  * \tparam Device_Selector_Type The type of SPI device selector used to select and
  *         deselect the W5500.
- * \tparam Communication_Controller_Type The type of communication controller
- *         implementation used by the driver. The default communication controller
- *         implementation should be used unless a mock implementation is begin injected to
- *         support unit testing of this driver.
+ * \tparam Communication_Controller The type of communication controller implementation
+ *         used by the driver. The default communication controller implementation should
+ *         be used unless a mock implementation is begin injected to support unit testing
+ *         of this driver.
  */
 template<typename Controller_Type, typename Device_Selector_Type, typename Communication_Controller = ::picolibrary::WIZnet::W5500::Communication_Controller<Controller_Type, Device_Selector_Type>>
 class Driver : public Communication_Controller {
