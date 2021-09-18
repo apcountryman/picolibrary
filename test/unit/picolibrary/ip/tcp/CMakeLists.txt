@@ -15,6 +15,3 @@
 
 # File: test/unit/picolibrary/ip/tcp/CMakeLists.txt
 # Description: picolibrary::IP::TCP unit tests CMake rules.
-
-# build the picolibrary::IP::TCP::Endpoint unit tests
-add_subdirectory( endpoint )
