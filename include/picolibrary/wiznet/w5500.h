@@ -1786,6 +1786,9 @@ struct Socket_Interrupt {
     static constexpr auto DATA_RECEIVED     = SN_IR::Mask::RECV;   ///< Data received.
     static constexpr auto TIMEOUT   = SN_IR::Mask::TIMEOUT; ///< ARP/TCP timeout occurred.
     static constexpr auto DATA_SENT = SN_IR::Mask::SEND_OK; ///< SEND command completed.
+
+    static constexpr auto ALL = SN_IR::Type{ PEER_CONNECTED | PEER_DISCONNECTED
+                                             | DATA_RECEIVED | TIMEOUT | DATA_SENT }; ///< All.
 };
 
 /**
