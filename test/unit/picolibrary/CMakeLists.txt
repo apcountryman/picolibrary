@@ -61,6 +61,9 @@ add_subdirectory( ip )
 # build the picolibrary::IPv4 unit tests
 add_subdirectory( ipv4 )
 
+# build the picolibrary::MAC_Address unit tests
+add_subdirectory( mac_address )
+
 # build the picolibrary::Microchip unit tests
 add_subdirectory( microchip )
 
