@@ -13,14 +13,22 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/wiznet/w5500/CMakeLists.txt
-# Description: picolibrary::WIZnet::W5500 unit tests CMake rules.
-
-# build the picolibrary::WIZnet::W5500::Communication_Controller unit tests
-add_subdirectory( communication_controller )
-
-# build the picolibrary::WIZnet::W5500::Driver unit tests
-add_subdirectory( driver )
+# File: test/unit/picolibrary/wiznet/w5500/network_stack/CMakeLists.txt
+# Description: picolibrary::WIZnet::W5500::Network_Stack unit tests CMake rules.
 
 # build the picolibrary::WIZnet::W5500::Network_Stack unit tests
-add_subdirectory( network_stack )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+    add_executable(
+        test-unit-picolibrary-wiznet-w5500-network_stack
+        main.cc
+    )
+    target_link_libraries(
+        test-unit-picolibrary-wiznet-w5500-network_stack
+        picolibrary
+        picolibrary-fatal_error
+    )
+    add_test(
+        NAME    test-unit-picolibrary-wiznet-w5500-network_stack
+        COMMAND test-unit-picolibrary-wiznet-w5500-network_stack --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
