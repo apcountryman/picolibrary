@@ -45,9 +45,7 @@ namespace picolibrary::Testing::Unit {
 template<>
 inline auto random<WIZnet::W5500::Socket_ID>()
 {
-    return static_cast<WIZnet::W5500::Socket_ID>( random<std::uint8_t>(
-        static_cast<std::uint8_t>( WIZnet::W5500::Socket_ID::_0 ),
-        static_cast<std::uint8_t>( WIZnet::W5500::Socket_ID::_7 ) ) );
+    return static_cast<WIZnet::W5500::Socket_ID>( random<std::uint8_t>( 0, 7 ) << 5 );
 }
 
 /**
