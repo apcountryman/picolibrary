@@ -63,6 +63,17 @@ inline auto random<WIZnet::W5500::Region>()
         static_cast<std::uint8_t>( WIZnet::W5500::Region::RX_BUFFER ) ) );
 }
 
+/**
+ * \brief Generate a pseudo-random WIZnet W5500 PHY mode.
+ *
+ * \return A pseudo-randomly generated WIZnet W5500 PHY mode.
+ */
+template<>
+inline auto random<WIZnet::W5500::PHY_Mode>()
+{
+    return static_cast<WIZnet::W5500::PHY_Mode>( random<std::uint8_t>( 0b0000, 0b1111 ) << 3 );
+}
+
 } // namespace picolibrary::Testing::Unit
 
 /**
