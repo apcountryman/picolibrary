@@ -56,9 +56,7 @@ inline auto random<WIZnet::W5500::Socket_ID>()
 template<>
 inline auto random<WIZnet::W5500::Region>()
 {
-    return static_cast<WIZnet::W5500::Region>( random<std::uint8_t>(
-        static_cast<std::uint8_t>( WIZnet::W5500::Region::REGISTERS ),
-        static_cast<std::uint8_t>( WIZnet::W5500::Region::RX_BUFFER ) ) );
+    return static_cast<WIZnet::W5500::Region>( random<std::uint8_t>( 0b01, 0b11 ) << 3 );
 }
 
 /**
