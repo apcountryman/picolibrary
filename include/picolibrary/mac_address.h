@@ -392,6 +392,8 @@ class Output_Formatter<MAC_Address> {
      */
     auto print( Output_Stream & stream, MAC_Address const & address ) noexcept -> Result<Void, Error_Code>
     {
+        // #lizard forgives the length
+
         constexpr auto address_bytes = fixed_size_array_size_v<MAC_Address::Byte_Array>;
         constexpr auto byte_nibbles = std::numeric_limits<MAC_Address::Byte_Array::Value>::digits / 4;
         constexpr auto address_nibbles = address_bytes * byte_nibbles;
