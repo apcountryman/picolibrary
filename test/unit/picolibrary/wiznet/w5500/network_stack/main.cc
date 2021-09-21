@@ -42,6 +42,7 @@ using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::WIZnet::W5500::Mock_Driver;
 using ::picolibrary::WIZnet::W5500::Link_Mode;
+using ::picolibrary::WIZnet::W5500::Link_Speed;
 using ::picolibrary::WIZnet::W5500::Link_Status;
 using ::picolibrary::WIZnet::W5500::Network_Stack;
 using ::picolibrary::WIZnet::W5500::PHY_Mode;
@@ -264,6 +265,48 @@ TEST( linkMode, worksProperly )
 
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), link_mode );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::link_speed() properly handles
+ *        a PHYCFGR read error.
+ */
+TEST( linkSpeed, phycfgrReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_phycfgr() ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.link_speed();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::link_speed() works properly.
+ */
+TEST( linkSpeed, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const link_speed = random<Link_Speed>();
+
+    EXPECT_CALL( driver, read_phycfgr() )
+        .WillOnce( Return( static_cast<std::uint8_t>(
+            static_cast<std::uint8_t>( link_speed ) | ( random<std::uint8_t>( 0b0'0'000'0, 0b1'1'111'1 ) << 2 )
+            | random<std::uint8_t>( 0b0, 0b1 ) << 0 ) ) );
+
+    auto const result = network_stack.link_speed();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), link_speed );
 }
 
 /**

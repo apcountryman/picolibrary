@@ -174,6 +174,22 @@ class Network_Stack {
         return static_cast<Link_Mode>( result.value() & PHYCFGR::Mask::DPX );
     }
 
+    /**
+     * \brief Get the link speed.
+     *
+     * \return The link speed if getting the link speed succeeded.
+     * \return An error code if getting the link speed failed.
+     */
+    auto link_speed() const noexcept -> Result<Link_Speed, Error_Code>
+    {
+        auto result = m_driver->read_phycfgr();
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return static_cast<Link_Speed>( result.value() & PHYCFGR::Mask::SPD );
+    }
+
   private:
     /**
      * \brief The driver for the W5500 the network stack utilizes.
