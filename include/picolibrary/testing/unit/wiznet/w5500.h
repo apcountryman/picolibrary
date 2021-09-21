@@ -45,9 +45,7 @@ namespace picolibrary::Testing::Unit {
 template<>
 inline auto random<WIZnet::W5500::Socket_ID>()
 {
-    return static_cast<WIZnet::W5500::Socket_ID>( random<std::uint8_t>(
-        static_cast<std::uint8_t>( WIZnet::W5500::Socket_ID::_0 ),
-        static_cast<std::uint8_t>( WIZnet::W5500::Socket_ID::_7 ) ) );
+    return static_cast<WIZnet::W5500::Socket_ID>( random<std::uint8_t>( 0, 7 ) << 5 );
 }
 
 /**
@@ -58,9 +56,51 @@ inline auto random<WIZnet::W5500::Socket_ID>()
 template<>
 inline auto random<WIZnet::W5500::Region>()
 {
-    return static_cast<WIZnet::W5500::Region>( random<std::uint8_t>(
-        static_cast<std::uint8_t>( WIZnet::W5500::Region::REGISTERS ),
-        static_cast<std::uint8_t>( WIZnet::W5500::Region::RX_BUFFER ) ) );
+    return static_cast<WIZnet::W5500::Region>( random<std::uint8_t>( 0b01, 0b11 ) << 3 );
+}
+
+/**
+ * \brief Generate a pseudo-random WIZnet W5500 PHY mode.
+ *
+ * \return A pseudo-randomly generated WIZnet W5500 PHY mode.
+ */
+template<>
+inline auto random<WIZnet::W5500::PHY_Mode>()
+{
+    return static_cast<WIZnet::W5500::PHY_Mode>( random<std::uint8_t>( 0b0000, 0b1111 ) << 3 );
+}
+
+/**
+ * \brief Generate a pseudo-random WIZnet W5500 link status.
+ *
+ * \return A pseudo-randomly generated WIZnet W5500 link status.
+ */
+template<>
+inline auto random<WIZnet::W5500::Link_Status>()
+{
+    return random<bool>() ? WIZnet::W5500::Link_Status::DOWN : WIZnet::W5500::Link_Status::UP;
+}
+
+/**
+ * \brief Generate a pseudo-random WIZnet W5500 link mode.
+ *
+ * \return A pseudo-randomly generated WIZnet W5500 link mode.
+ */
+template<>
+inline auto random<WIZnet::W5500::Link_Mode>()
+{
+    return random<bool>() ? WIZnet::W5500::Link_Mode::HALF_DUPLEX : WIZnet::W5500::Link_Mode::FULL_DUPLEX;
+}
+
+/**
+ * \brief Generate a pseudo-random WIZnet W5500 link speed.
+ *
+ * \return A pseudo-randomly generated WIZnet W5500 link speed.
+ */
+template<>
+inline auto random<WIZnet::W5500::Link_Speed>()
+{
+    return random<bool>() ? WIZnet::W5500::Link_Speed::_10_MBPS : WIZnet::W5500::Link_Speed::_100_MBPS;
 }
 
 } // namespace picolibrary::Testing::Unit
