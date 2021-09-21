@@ -72,6 +72,17 @@ inline auto random<WIZnet::W5500::Ping_Blocking>()
 }
 
 /**
+ * \brief Generate a pseudo-random WIZnet W5500 ARP forcing configuration.
+ *
+ * \return A pseudo-randomly generated WIZnet W5500 ARP forcing configuration.
+ */
+template<>
+inline auto random<WIZnet::W5500::ARP_Forcing>()
+{
+    return random<bool>() ? WIZnet::W5500::ARP_Forcing::DISABLED : WIZnet::W5500::ARP_Forcing::ENABLED;
+}
+
+/**
  * \brief Generate a pseudo-random WIZnet W5500 PHY mode.
  *
  * \return A pseudo-randomly generated WIZnet W5500 PHY mode.
