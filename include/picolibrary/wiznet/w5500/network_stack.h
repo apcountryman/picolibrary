@@ -91,7 +91,7 @@ class Network_Stack {
     /**
      * \brief Configure the PHY.
      *
-     * \param[in] phy_mode The desired PHY mode configuration.
+     * \param[in] phy_mode The desired PHY mode.
      *
      * \return Nothing if PHY configuration succeeded.
      * \return An error code if PHY configuration failed.
@@ -122,6 +122,22 @@ class Network_Stack {
         }
 
         return {};
+    }
+
+    /**
+     * \brief Get the PHY mode.
+     *
+     * \return The PHY mode if getting the PHY mode succeeded.
+     * \return An error code if getting the PHY mode failed.
+     */
+    auto phy_mode() const noexcept -> Result<PHY_Mode, Error_Code>
+    {
+        auto result = m_driver->read_phycfgr();
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return static_cast<PHY_Mode>( result.value() & ( PHYCFGR::Mask::OPMD | PHYCFGR::Mask::OPMDC ) );
     }
 
   private:

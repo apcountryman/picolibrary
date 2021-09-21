@@ -51,9 +51,9 @@ using ::testing::Return;
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_phy() properly
- *        handles a PHY configuration error.
+ *        handles a PHYCFGR write error when writing the PHY configuration.
  */
-TEST( configurePhy, phyConfigurationError )
+TEST( configurePhy, phycfgrWriteErrorPhyConfiguration )
 {
     auto driver = Mock_Driver{};
 
@@ -71,9 +71,9 @@ TEST( configurePhy, phyConfigurationError )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_phy() properly
- *        handles a PHY reset entry error.
+ *        handles a PHYCFGR write error when entering PHY reset.
  */
-TEST( configurePhy, phyResetEntryError )
+TEST( configurePhy, phycfgrWrtieErrorEnterReset )
 {
     auto driver = Mock_Driver{};
 
@@ -93,9 +93,9 @@ TEST( configurePhy, phyResetEntryError )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_phy() properly
- *        handles a PHY reset exit error.
+ *        handles a PHYCFGR write error when exiting PHY reset.
  */
-TEST( configurePhy, phyResetExitError )
+TEST( configurePhy, phycfgrWriteErrorExitReset )
 {
     auto driver = Mock_Driver{};
 
@@ -136,6 +136,48 @@ TEST( configurePhy, worksProperly )
         .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( network_stack.configure_phy( phy_mode ).is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::phy_mode() properly handles a
+ *        PHYCFGR read error.
+ */
+TEST( phyMode, phycfgrReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_phycfgr() ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.phy_mode();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::phy_mode() works properly.
+ */
+TEST( phyMode, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const phy_mode = random<PHY_Mode>();
+
+    EXPECT_CALL( driver, read_phycfgr() )
+        .WillOnce( Return( static_cast<std::uint8_t>(
+            static_cast<std::uint8_t>( phy_mode ) | ( random<std::uint8_t>( 0b0, 0b1 ) << 7 )
+            | ( random<std::uint8_t>( 0b000, 0b111 ) << 0 ) ) ) );
+
+    auto const result = network_stack.phy_mode();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), phy_mode );
 }
 
 /**
