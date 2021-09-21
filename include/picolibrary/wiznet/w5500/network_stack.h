@@ -98,6 +98,8 @@ class Network_Stack {
      */
     auto configure_phy( PHY_Mode phy_mode ) noexcept -> Result<Void, Error_Code>
     {
+        // #lizard forgives the length
+
         {
             auto result = m_driver->write_phycfgr(
                 static_cast<PHYCFGR::Type>( phy_mode ) | PHYCFGR::Mask::RST );
