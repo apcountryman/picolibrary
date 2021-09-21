@@ -92,6 +92,17 @@ inline auto random<WIZnet::W5500::Link_Mode>()
     return random<bool>() ? WIZnet::W5500::Link_Mode::HALF_DUPLEX : WIZnet::W5500::Link_Mode::FULL_DUPLEX;
 }
 
+/**
+ * \brief Generate a pseudo-random WIZnet W5500 link speed.
+ *
+ * \return A pseudo-randomly generated WIZnet W5500 link speed.
+ */
+template<>
+inline auto random<WIZnet::W5500::Link_Speed>()
+{
+    return random<bool>() ? WIZnet::W5500::Link_Speed::_10_MBPS : WIZnet::W5500::Link_Speed::_100_MBPS;
+}
+
 } // namespace picolibrary::Testing::Unit
 
 /**
