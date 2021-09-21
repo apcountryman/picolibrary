@@ -41,6 +41,7 @@ using ::picolibrary::Void;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::WIZnet::W5500::Mock_Driver;
+using ::picolibrary::WIZnet::W5500::Link_Status;
 using ::picolibrary::WIZnet::W5500::Network_Stack;
 using ::picolibrary::WIZnet::W5500::PHY_Mode;
 using ::testing::_;
@@ -172,12 +173,54 @@ TEST( phyMode, worksProperly )
     EXPECT_CALL( driver, read_phycfgr() )
         .WillOnce( Return( static_cast<std::uint8_t>(
             static_cast<std::uint8_t>( phy_mode ) | ( random<std::uint8_t>( 0b0, 0b1 ) << 7 )
-            | ( random<std::uint8_t>( 0b000, 0b111 ) << 0 ) ) ) );
+            | ( random<std::uint8_t>( 0b0'0'0, 0b1'1'1 ) << 0 ) ) ) );
 
     auto const result = network_stack.phy_mode();
 
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), phy_mode );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::link_status() properly handles
+ *        a PHYCFGR read error.
+ */
+TEST( linkStatus, phycfgrReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_phycfgr() ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.link_status();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::link_status() works properly.
+ */
+TEST( linkStatus, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const link_status = random<Link_Status>();
+
+    EXPECT_CALL( driver, read_phycfgr() )
+        .WillOnce( Return( static_cast<std::uint8_t>(
+            static_cast<std::uint8_t>( link_status )
+            | ( random<std::uint8_t>( 0b0'0'000'0'0, 0b1'1'111'1'1 ) << 1 ) ) ) );
+
+    auto const result = network_stack.link_status();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), link_status );
 }
 
 /**

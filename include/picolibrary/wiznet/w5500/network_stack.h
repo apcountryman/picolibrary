@@ -142,6 +142,22 @@ class Network_Stack {
         return static_cast<PHY_Mode>( result.value() & ( PHYCFGR::Mask::OPMD | PHYCFGR::Mask::OPMDC ) );
     }
 
+    /**
+     * \brief Get the link status.
+     *
+     * \return The link status if getting the link status succeeded.
+     * \return An error code if getting the link status failed.
+     */
+    auto link_status() const noexcept -> Result<Link_Status, Error_Code>
+    {
+        auto result = m_driver->read_phycfgr();
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return static_cast<Link_Status>( result.value() & PHYCFGR::Mask::LNK );
+    }
+
   private:
     /**
      * \brief The driver for the W5500 the network stack utilizes.
