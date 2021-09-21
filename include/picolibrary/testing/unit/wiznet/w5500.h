@@ -81,6 +81,17 @@ inline auto random<WIZnet::W5500::Link_Status>()
     return random<bool>() ? WIZnet::W5500::Link_Status::DOWN : WIZnet::W5500::Link_Status::UP;
 }
 
+/**
+ * \brief Generate a pseudo-random WIZnet W5500 link mode.
+ *
+ * \return A pseudo-randomly generated WIZnet W5500 link mode.
+ */
+template<>
+inline auto random<WIZnet::W5500::Link_Mode>()
+{
+    return random<bool>() ? WIZnet::W5500::Link_Mode::HALF_DUPLEX : WIZnet::W5500::Link_Mode::FULL_DUPLEX;
+}
+
 } // namespace picolibrary::Testing::Unit
 
 /**
