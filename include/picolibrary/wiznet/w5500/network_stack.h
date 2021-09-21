@@ -23,6 +23,11 @@
 #ifndef PICOLIBRARY_WIZNET_W5500_NETWORK_STACK_H
 #define PICOLIBRARY_WIZNET_W5500_NETWORK_STACK_H
 
+#include "picolibrary/error.h"
+#include "picolibrary/result.h"
+#include "picolibrary/void.h"
+#include "picolibrary/wiznet/w5500.h"
+
 namespace picolibrary::WIZnet::W5500 {
 
 /**
@@ -81,6 +86,42 @@ class Network_Stack {
         } // if
 
         return *this;
+    }
+
+    /**
+     * \brief Configure the PHY.
+     *
+     * \param[in] phy_mode The desired PHY mode configuration.
+     *
+     * \return Nothing if PHY configuration succeeded.
+     * \return An error code if PHY configuration failed.
+     */
+    auto configure_phy( PHY_Mode phy_mode ) noexcept -> Result<Void, Error_Code>
+    {
+        {
+            auto result = m_driver->write_phycfgr(
+                static_cast<PHYCFGR::Type>( phy_mode ) | PHYCFGR::Mask::RST );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        {
+            auto result = m_driver->write_phycfgr( static_cast<PHYCFGR::Type>( phy_mode ) );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        {
+            auto result = m_driver->write_phycfgr(
+                static_cast<PHYCFGR::Type>( phy_mode ) | PHYCFGR::Mask::RST );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        return {};
     }
 
   private:
