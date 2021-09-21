@@ -70,6 +70,17 @@ inline auto random<WIZnet::W5500::PHY_Mode>()
     return static_cast<WIZnet::W5500::PHY_Mode>( random<std::uint8_t>( 0b0000, 0b1111 ) << 3 );
 }
 
+/**
+ * \brief Generate a pseudo-random WIZnet W5500 link status.
+ *
+ * \return A pseudo-randomly generated WIZnet W5500 link status.
+ */
+template<>
+inline auto random<WIZnet::W5500::Link_Status>()
+{
+    return random<bool>() ? WIZnet::W5500::Link_Status::DOWN : WIZnet::W5500::Link_Status::UP;
+}
+
 } // namespace picolibrary::Testing::Unit
 
 /**
