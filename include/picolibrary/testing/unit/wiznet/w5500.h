@@ -126,6 +126,17 @@ inline auto random<WIZnet::W5500::Link_Speed>()
     return random<bool>() ? WIZnet::W5500::Link_Speed::_10_MBPS : WIZnet::W5500::Link_Speed::_100_MBPS;
 }
 
+/**
+ * \brief Generate a pseudo-random WIZnet W5500 socket buffer size.
+ *
+ * \brief A pseudo-randomly generated WIZnet W5500 socket buffer size.
+ */
+template<>
+inline auto random<WIZnet::W5500::Buffer_Size>()
+{
+    return static_cast<WIZnet::W5500::Buffer_Size>( ( 1 << random<std::uint8_t>( 0, 5 ) ) >> 1 );
+}
+
 } // namespace picolibrary::Testing::Unit
 
 /**
