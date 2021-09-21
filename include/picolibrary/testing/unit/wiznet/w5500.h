@@ -60,6 +60,18 @@ inline auto random<WIZnet::W5500::Region>()
 }
 
 /**
+ * \brief Generate a pseudo-random WIZnet W5500 ping blocking configuration.
+ *
+ * \return A pseudo-randomly generated WIZnet W5500 ping blocking configuration.
+ */
+template<>
+inline auto random<WIZnet::W5500::Ping_Blocking>()
+{
+    return random<bool>() ? WIZnet::W5500::Ping_Blocking::DISABLED
+                          : WIZnet::W5500::Ping_Blocking::ENABLED;
+}
+
+/**
  * \brief Generate a pseudo-random WIZnet W5500 PHY mode.
  *
  * \return A pseudo-randomly generated WIZnet W5500 PHY mode.
