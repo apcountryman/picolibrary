@@ -844,6 +844,46 @@ TEST( configureSocketBuffers, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::socket_buffer_size() properly
+ *        handles an SN_RXBUF_SIZE register read error.
+ */
+TEST( socketBufferSize, snrxbufsizeReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto const network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_rxbuf_size( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.socket_buffer_size();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::socket_buffer_size() works
+ *        properly.
+ */
+TEST( socketBufferSize, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto const network_stack = Network_Stack{ driver };
+
+    auto const sn_rxbuf_size = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, read_sn_rxbuf_size( Socket_ID::_0 ) ).WillOnce( Return( sn_rxbuf_size ) );
+
+    auto const result = network_stack.socket_buffer_size();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), static_cast<Buffer_Size>( sn_rxbuf_size ) );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Network_Stack unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().

@@ -368,6 +368,22 @@ class Network_Stack {
         return {};
     }
 
+    /**
+     * \brief Get the socket buffer size.
+     *
+     * \return The socket buffer size if getting the socket buffer size succeeded.
+     * \return An error code if getting the socket buffer size failed.
+     */
+    auto socket_buffer_size() const noexcept -> Result<Buffer_Size, Error_Code>
+    {
+        auto result = m_driver->read_sn_rxbuf_size( Socket_ID::_0 );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return static_cast<Buffer_Size>( result.value() );
+    }
+
   private:
     /**
      * \brief The driver for the W5500 the network stack utilizes.
