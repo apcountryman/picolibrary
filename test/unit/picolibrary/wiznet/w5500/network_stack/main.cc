@@ -46,6 +46,7 @@ using ::picolibrary::WIZnet::W5500::Link_Speed;
 using ::picolibrary::WIZnet::W5500::Link_Status;
 using ::picolibrary::WIZnet::W5500::Network_Stack;
 using ::picolibrary::WIZnet::W5500::PHY_Mode;
+using ::picolibrary::WIZnet::W5500::Ping_Blocking;
 using ::testing::_;
 using ::testing::InSequence;
 using ::testing::Return;
@@ -307,6 +308,67 @@ TEST( linkSpeed, worksProperly )
 
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), link_speed );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_ping_blocking()
+ *        properly handles a MR read error.
+ */
+TEST( configurePingBlocking, mrReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_mr() ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.configure_ping_blocking( random<Ping_Blocking>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_ping_blocking()
+ *        properly handles a MR write error.
+ */
+TEST( configurePingBlocking, mrWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_mr() ).WillOnce( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, write_mr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.configure_ping_blocking( random<Ping_Blocking>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_ping_blocking()
+ *        works properly.
+ */
+TEST( configurePingBlocking, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const mr                          = random<std::uint8_t>();
+    auto const ping_blocking_configuration = random<Ping_Blocking>();
+
+    EXPECT_CALL( driver, read_mr() ).WillOnce( Return( mr ) );
+    EXPECT_CALL( driver, write_mr( ( mr & 0b1'1'1'0'1'1'1'1 ) | static_cast<std::uint8_t>( ping_blocking_configuration ) ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( network_stack.configure_ping_blocking( ping_blocking_configuration ).is_error() );
 }
 
 /**

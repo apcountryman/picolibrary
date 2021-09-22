@@ -23,6 +23,8 @@
 #ifndef PICOLIBRARY_WIZNET_W5500_NETWORK_STACK_H
 #define PICOLIBRARY_WIZNET_W5500_NETWORK_STACK_H
 
+#include <cstdint>
+
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/void.h"
@@ -102,14 +104,14 @@ class Network_Stack {
 
         {
             auto result = m_driver->write_phycfgr(
-                static_cast<PHYCFGR::Type>( phy_mode ) | PHYCFGR::Mask::RST );
+                static_cast<std::uint8_t>( phy_mode ) | PHYCFGR::Mask::RST );
             if ( result.is_error() ) {
                 return result.error();
             } // if
         }
 
         {
-            auto result = m_driver->write_phycfgr( static_cast<PHYCFGR::Type>( phy_mode ) );
+            auto result = m_driver->write_phycfgr( static_cast<std::uint8_t>( phy_mode ) );
             if ( result.is_error() ) {
                 return result.error();
             } // if
@@ -117,7 +119,7 @@ class Network_Stack {
 
         {
             auto result = m_driver->write_phycfgr(
-                static_cast<PHYCFGR::Type>( phy_mode ) | PHYCFGR::Mask::RST );
+                static_cast<std::uint8_t>( phy_mode ) | PHYCFGR::Mask::RST );
             if ( result.is_error() ) {
                 return result.error();
             } // if
@@ -188,6 +190,27 @@ class Network_Stack {
         } // if
 
         return static_cast<Link_Speed>( result.value() & PHYCFGR::Mask::SPD );
+    }
+
+    /**
+     * \brief Configure ping blocking.
+     *
+     * \param[in] ping_blocking_configuration The desired ping blocking configuration.
+     *
+     * \return Nothing if ping blocking configuration succeeded.
+     * \return An error code if ping blocking configuration failed.
+     */
+    auto configure_ping_blocking( Ping_Blocking ping_blocking_configuration ) noexcept
+        -> Result<Void, Error_Code>
+    {
+        auto result = m_driver->read_mr();
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return m_driver->write_mr(
+            ( result.value() & ~MR::Mask::PB )
+            | static_cast<std::uint8_t>( ping_blocking_configuration ) );
     }
 
   private:
