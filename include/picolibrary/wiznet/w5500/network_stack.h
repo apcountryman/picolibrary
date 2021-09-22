@@ -297,6 +297,17 @@ class Network_Stack {
         return {};
     }
 
+    /**
+     * \brief Get the retry time (RTR register value).
+     *
+     * \return The retry time if getting the retry time succeeded.
+     * \return An error code if getting the retry time failed.
+     */
+    auto retry_time() const noexcept
+    {
+        return m_driver->read_rtr();
+    }
+
   private:
     /**
      * \brief The driver for the W5500 the network stack utilizes.

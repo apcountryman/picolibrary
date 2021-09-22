@@ -151,7 +151,7 @@ TEST( phyMode, phycfgrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver };
 
     auto const error = random<Mock_Error>();
 
@@ -170,7 +170,7 @@ TEST( phyMode, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver };
 
     auto const phycfgr = random<std::uint8_t>();
 
@@ -190,7 +190,7 @@ TEST( linkStatus, phycfgrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver };
 
     auto const error = random<Mock_Error>();
 
@@ -209,7 +209,7 @@ TEST( linkStatus, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver };
 
     auto const phycfgr = random<std::uint8_t>();
 
@@ -229,7 +229,7 @@ TEST( linkMode, phycfgrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver };
 
     auto const error = random<Mock_Error>();
 
@@ -248,7 +248,7 @@ TEST( linkMode, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver };
 
     auto const phycfgr = random<std::uint8_t>();
 
@@ -268,7 +268,7 @@ TEST( linkSpeed, phycfgrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver };
 
     auto const error = random<Mock_Error>();
 
@@ -287,7 +287,7 @@ TEST( linkSpeed, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver };
 
     auto const phycfgr = random<std::uint8_t>();
 
@@ -368,7 +368,7 @@ TEST( pingBlockingConfiguration, mrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver };
 
     auto const error = random<Mock_Error>();
 
@@ -388,7 +388,7 @@ TEST( pingBlockingConfiguration, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver };
 
     auto const mr = random<std::uint8_t>();
 
@@ -449,7 +449,7 @@ TEST( arpForcingConfiguration, mrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver };
 
     auto const error = random<Mock_Error>();
 
@@ -469,7 +469,7 @@ TEST( arpForcingConfiguration, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver };
 
     auto const mr = random<std::uint8_t>();
 
@@ -543,6 +543,45 @@ TEST( configureRetransmission, worksProperly )
     EXPECT_CALL( driver, write_rcr( retry_count ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( network_stack.configure_retransmission( retry_time, retry_count ).is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::retry_time() properly handles
+ *        an RTR register read error.
+ */
+TEST( retryTime, rtrReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto const network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_rtr() ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.retry_time();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::retry_time() works properly.
+ */
+TEST( retryTime, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto const network_stack = Network_Stack{ driver };
+
+    auto const rtr = random<std::uint16_t>();
+
+    EXPECT_CALL( driver, read_rtr() ).WillOnce( Return( rtr ) );
+
+    auto const result = network_stack.retry_time();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), rtr );
 }
 
 /**
