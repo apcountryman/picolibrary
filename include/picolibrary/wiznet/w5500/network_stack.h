@@ -100,8 +100,6 @@ class Network_Stack {
      */
     auto configure_phy( PHY_Mode phy_mode ) noexcept -> Result<Void, Error_Code>
     {
-        // #lizard forgives the length
-
         {
             auto result = m_driver->write_phycfgr(
                 static_cast<std::uint8_t>( phy_mode ) | PHYCFGR::Mask::RST );
@@ -117,15 +115,7 @@ class Network_Stack {
             } // if
         }
 
-        {
-            auto result = m_driver->write_phycfgr(
-                static_cast<std::uint8_t>( phy_mode ) | PHYCFGR::Mask::RST );
-            if ( result.is_error() ) {
-                return result.error();
-            } // if
-        }
-
-        return {};
+        return m_driver->write_phycfgr( static_cast<std::uint8_t>( phy_mode ) | PHYCFGR::Mask::RST );
     }
 
     /**
@@ -287,14 +277,7 @@ class Network_Stack {
             } // if
         }
 
-        {
-            auto result = m_driver->write_rcr( retry_count );
-            if ( result.is_error() ) {
-                return result.error();
-            } // if
-        }
-
-        return {};
+        return m_driver->write_rcr( retry_count );
     }
 
     /**
