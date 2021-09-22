@@ -55,7 +55,7 @@ using ::testing::Return;
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_phy() properly
- *        handles a PHYCFGR write error when writing the PHY configuration.
+ *        handles a PHYCFGR register write error when writing the PHY configuration.
  */
 TEST( configurePhy, phycfgrWriteErrorPhyConfiguration )
 {
@@ -75,7 +75,7 @@ TEST( configurePhy, phycfgrWriteErrorPhyConfiguration )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_phy() properly
- *        handles a PHYCFGR write error when entering PHY reset.
+ *        handles a PHYCFGR register write error when entering PHY reset.
  */
 TEST( configurePhy, phycfgrWrtieErrorEnterReset )
 {
@@ -97,7 +97,7 @@ TEST( configurePhy, phycfgrWrtieErrorEnterReset )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_phy() properly
- *        handles a PHYCFGR write error when exiting PHY reset.
+ *        handles a PHYCFGR register write error when exiting PHY reset.
  */
 TEST( configurePhy, phycfgrWriteErrorExitReset )
 {
@@ -144,7 +144,7 @@ TEST( configurePhy, worksProperly )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::phy_mode() properly handles a
- *        PHYCFGR read error.
+ *        PHYCFGR register read error.
  */
 TEST( phyMode, phycfgrReadError )
 {
@@ -171,22 +171,19 @@ TEST( phyMode, worksProperly )
 
     auto network_stack = Network_Stack{ driver };
 
-    auto const phy_mode = random<PHY_Mode>();
+    auto const phycfgr = random<std::uint8_t>();
 
-    EXPECT_CALL( driver, read_phycfgr() )
-        .WillOnce( Return( static_cast<std::uint8_t>(
-            static_cast<std::uint8_t>( phy_mode ) | ( random<std::uint8_t>( 0b0, 0b1 ) << 7 )
-            | ( random<std::uint8_t>( 0b0'0'0, 0b1'1'1 ) << 0 ) ) ) );
+    EXPECT_CALL( driver, read_phycfgr() ).WillOnce( Return( phycfgr ) );
 
     auto const result = network_stack.phy_mode();
 
     EXPECT_TRUE( result.is_value() );
-    EXPECT_EQ( result.value(), phy_mode );
+    EXPECT_EQ( result.value(), static_cast<PHY_Mode>( phycfgr & 0b0'1'111'0'0'0 ) );
 }
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::link_status() properly handles
- *        a PHYCFGR read error.
+ *        a PHYCFGR register read error.
  */
 TEST( linkStatus, phycfgrReadError )
 {
@@ -213,22 +210,19 @@ TEST( linkStatus, worksProperly )
 
     auto network_stack = Network_Stack{ driver };
 
-    auto const link_status = random<Link_Status>();
+    auto const phycfgr = random<std::uint8_t>();
 
-    EXPECT_CALL( driver, read_phycfgr() )
-        .WillOnce( Return( static_cast<std::uint8_t>(
-            static_cast<std::uint8_t>( link_status )
-            | ( random<std::uint8_t>( 0b0'0'000'0'0, 0b1'1'111'1'1 ) << 1 ) ) ) );
+    EXPECT_CALL( driver, read_phycfgr() ).WillOnce( Return( phycfgr ) );
 
     auto const result = network_stack.link_status();
 
     EXPECT_TRUE( result.is_value() );
-    EXPECT_EQ( result.value(), link_status );
+    EXPECT_EQ( result.value(), static_cast<Link_Status>( phycfgr & 0b0'0'000'0'0'1 ) );
 }
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::link_mode() properly handles a
- *        PHYCFGR read error.
+ *        PHYCFGR register read error.
  */
 TEST( linkMode, phycfgrReadError )
 {
@@ -255,22 +249,19 @@ TEST( linkMode, worksProperly )
 
     auto network_stack = Network_Stack{ driver };
 
-    auto const link_mode = random<Link_Mode>();
+    auto const phycfgr = random<std::uint8_t>();
 
-    EXPECT_CALL( driver, read_phycfgr() )
-        .WillOnce( Return( static_cast<std::uint8_t>(
-            static_cast<std::uint8_t>( link_mode ) | ( random<std::uint8_t>( 0b0'0'000, 0b1'1'111 ) << 3 )
-            | random<std::uint8_t>( 0b0'0, 0b1'1 ) << 0 ) ) );
+    EXPECT_CALL( driver, read_phycfgr() ).WillOnce( Return( phycfgr ) );
 
     auto const result = network_stack.link_mode();
 
     EXPECT_TRUE( result.is_value() );
-    EXPECT_EQ( result.value(), link_mode );
+    EXPECT_EQ( result.value(), static_cast<Link_Mode>( phycfgr & 0b0'0'000'1'0'0 ) );
 }
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::link_speed() properly handles
- *        a PHYCFGR read error.
+ *        a PHYCFGR register read error.
  */
 TEST( linkSpeed, phycfgrReadError )
 {
@@ -297,22 +288,19 @@ TEST( linkSpeed, worksProperly )
 
     auto network_stack = Network_Stack{ driver };
 
-    auto const link_speed = random<Link_Speed>();
+    auto const phycfgr = random<std::uint8_t>();
 
-    EXPECT_CALL( driver, read_phycfgr() )
-        .WillOnce( Return( static_cast<std::uint8_t>(
-            static_cast<std::uint8_t>( link_speed ) | ( random<std::uint8_t>( 0b0'0'000'0, 0b1'1'111'1 ) << 2 )
-            | random<std::uint8_t>( 0b0, 0b1 ) << 0 ) ) );
+    EXPECT_CALL( driver, read_phycfgr() ).WillOnce( Return( phycfgr ) );
 
     auto const result = network_stack.link_speed();
 
     EXPECT_TRUE( result.is_value() );
-    EXPECT_EQ( result.value(), link_speed );
+    EXPECT_EQ( result.value(), static_cast<Link_Speed>( phycfgr & 0b0'0'000'0'1'0 ) );
 }
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_ping_blocking()
- *        properly handles a MR read error.
+ *        properly handles an MR register read error.
  */
 TEST( configurePingBlocking, mrReadError )
 {
@@ -332,7 +320,7 @@ TEST( configurePingBlocking, mrReadError )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_ping_blocking()
- *        properly handles a MR write error.
+ *        properly handles an MR register write error.
  */
 TEST( configurePingBlocking, mrWriteError )
 {
@@ -369,6 +357,46 @@ TEST( configurePingBlocking, worksProperly )
         .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( network_stack.configure_ping_blocking( ping_blocking_configuration ).is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::ping_blocking_configuration()
+ *        properly handles an MR register read error.
+ */
+TEST( pingBlockingConfiguration, mrReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_mr() ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.ping_blocking_configuration();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::ping_blocking_configuration()
+ *        works properly.
+ */
+TEST( pingBlockingConfiguration, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const mr = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, read_mr() ).WillOnce( Return( mr ) );
+
+    auto const result = network_stack.ping_blocking_configuration();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), static_cast<Ping_Blocking>( mr & 0b0'0'0'1'0'0'0'0 ) );
 }
 
 /**

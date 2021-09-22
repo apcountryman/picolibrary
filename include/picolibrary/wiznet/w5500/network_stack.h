@@ -213,6 +213,23 @@ class Network_Stack {
             | static_cast<std::uint8_t>( ping_blocking_configuration ) );
     }
 
+    /**
+     * \brief Get the ping blocking configuration.
+     *
+     * \return The ping blocking configuration if getting the ping blocking configuration
+     *         succeeded.
+     * \return An error code if getting the ping blocking configuration failed.
+     */
+    auto ping_blocking_configuration() const noexcept -> Result<Ping_Blocking, Error_Code>
+    {
+        auto result = m_driver->read_mr();
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return static_cast<Ping_Blocking>( result.value() & MR::Mask::PB );
+    }
+
   private:
     /**
      * \brief The driver for the W5500 the network stack utilizes.
