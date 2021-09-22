@@ -317,6 +317,8 @@ class Network_Stack {
      */
     auto configure_socket_buffers( Buffer_Size buffer_size ) noexcept -> Result<Void, Error_Code>
     {
+        // #lizard forgives the length
+
         auto available_sockets = std::uint8_t{};
 
         switch ( buffer_size ) {
