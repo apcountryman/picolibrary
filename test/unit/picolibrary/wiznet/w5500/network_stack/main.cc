@@ -442,6 +442,46 @@ TEST( configureARPForcing, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::arp_forcing_configuration()
+ *        properly handles an MR register read error.
+ */
+TEST( arpForcingConfiguration, mrReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_mr() ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.arp_forcing_configuration();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::arp_forcing_configuration()
+ *        works properly.
+ */
+TEST( arpForcingConfiguration, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const mr = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, read_mr() ).WillOnce( Return( mr ) );
+
+    auto const result = network_stack.arp_forcing_configuration();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), static_cast<ARP_Forcing>( mr & 0b0'0'0'0'0'0'1'0 ) );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Network_Stack unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
