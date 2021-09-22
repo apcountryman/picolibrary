@@ -41,6 +41,7 @@ using ::picolibrary::Void;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::WIZnet::W5500::Mock_Driver;
+using ::picolibrary::WIZnet::W5500::ARP_Forcing;
 using ::picolibrary::WIZnet::W5500::Link_Mode;
 using ::picolibrary::WIZnet::W5500::Link_Speed;
 using ::picolibrary::WIZnet::W5500::Link_Status;
@@ -397,6 +398,47 @@ TEST( pingBlockingConfiguration, worksProperly )
 
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), static_cast<Ping_Blocking>( mr & 0b0'0'0'1'0'0'0'0 ) );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_arp_forcing()
+ *        properly handles an MR register write error.
+ */
+TEST( configureARPForcing, mrWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_mr() ).WillOnce( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, write_mr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.configure_arp_forcing( random<ARP_Forcing>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_arp_forcing() works
+ *        properly.
+ */
+TEST( configureARPForcing, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const mr                        = random<std::uint8_t>();
+    auto const arp_forcing_configuration = random<ARP_Forcing>();
+
+    EXPECT_CALL( driver, read_mr() ).WillOnce( Return( mr ) );
+    EXPECT_CALL( driver, write_mr( ( mr & 0b1'1'1'1'1'1'0'1 ) | static_cast<std::uint8_t>( arp_forcing_configuration ) ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( network_stack.configure_arp_forcing( arp_forcing_configuration ).is_error() );
 }
 
 /**

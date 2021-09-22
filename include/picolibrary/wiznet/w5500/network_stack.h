@@ -230,6 +230,27 @@ class Network_Stack {
         return static_cast<Ping_Blocking>( result.value() & MR::Mask::PB );
     }
 
+    /**
+     * \brief Configure ARP forcing.
+     *
+     * \param[in] arp_forcing_configuration The desired ARP forcing configuration.
+     *
+     * \return Nothing if ARP forcing configuration succeeded.
+     * \return An error code if ARP forcing configuration failed.
+     */
+    auto configure_arp_forcing( ARP_Forcing arp_forcing_configuration ) noexcept
+        -> Result<Void, Error_Code>
+    {
+        auto result = m_driver->read_mr();
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return m_driver->write_mr(
+            ( result.value() & ~MR::Mask::FARP )
+            | static_cast<std::uint8_t>( arp_forcing_configuration ) );
+    }
+
   private:
     /**
      * \brief The driver for the W5500 the network stack utilizes.
