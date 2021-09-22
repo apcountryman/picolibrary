@@ -302,6 +302,72 @@ class Network_Stack {
         return m_driver->read_rcr();
     }
 
+    /**
+     * \brief Configure socket buffers.
+     *
+     * \param[in] buffer_size The desired socket buffer size. Must be at least 2 KiB. The
+     *            socket buffer size will determine the number of available sockets (2 KiB
+     *            -> 8 sockets, 4 KiB -> 4 sockets, 8 KiB -> 2 sockets, 16 KiB -> 1
+     *            socket).
+     *
+     * \return Nothing if socket buffers configuration succeeded.
+     * \return picolibrary::Generic_Error::INVALID_ARGUMENT if buffer_size is less than 2
+     *         KiB or buffer_size is not a valid socket buffer size.
+     * \return An error code if socket buffers configuration failed for any other reason.
+     */
+    auto configure_socket_buffers( Buffer_Size buffer_size ) noexcept -> Result<Void, Error_Code>
+    {
+        auto available_sockets = std::uint8_t{};
+
+        switch ( buffer_size ) {
+            case Buffer_Size::_2_KIB: available_sockets = 16 / 2; break;
+            case Buffer_Size::_4_KIB: available_sockets = 16 / 4; break;
+            case Buffer_Size::_8_KIB: available_sockets = 16 / 8; break;
+            case Buffer_Size::_16_KIB: available_sockets = 16 / 16; break;
+            default: return Generic_Error::INVALID_ARGUMENT;
+        } // switch
+
+        for ( auto socket = std::uint8_t{}; socket < available_sockets; ++socket ) {
+            {
+                auto result = m_driver->write_sn_rxbuf_size(
+                    static_cast<Socket_ID>( socket ), static_cast<std::uint8_t>( buffer_size ) );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+
+            {
+                auto result = m_driver->write_sn_txbuf_size(
+                    static_cast<Socket_ID>( socket ), static_cast<std::uint8_t>( buffer_size ) );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+        } // for
+
+        for ( auto socket = available_sockets; socket < SOCKETS; ++socket ) {
+            {
+                auto result = m_driver->write_sn_rxbuf_size(
+                    static_cast<Socket_ID>( socket ),
+                    static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+
+            {
+                auto result = m_driver->write_sn_txbuf_size(
+                    static_cast<Socket_ID>( socket ),
+                    static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+        } // for
+
+        return {};
+    }
+
   private:
     /**
      * \brief The driver for the W5500 the network stack utilizes.

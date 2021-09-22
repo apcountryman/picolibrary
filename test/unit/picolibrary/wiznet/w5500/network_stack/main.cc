@@ -36,18 +36,21 @@
 namespace {
 
 using ::picolibrary::Error_Code;
+using ::picolibrary::Generic_Error;
 using ::picolibrary::Result;
 using ::picolibrary::Void;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::WIZnet::W5500::Mock_Driver;
 using ::picolibrary::WIZnet::W5500::ARP_Forcing;
+using ::picolibrary::WIZnet::W5500::Buffer_Size;
 using ::picolibrary::WIZnet::W5500::Link_Mode;
 using ::picolibrary::WIZnet::W5500::Link_Speed;
 using ::picolibrary::WIZnet::W5500::Link_Status;
 using ::picolibrary::WIZnet::W5500::Network_Stack;
 using ::picolibrary::WIZnet::W5500::PHY_Mode;
 using ::picolibrary::WIZnet::W5500::Ping_Blocking;
+using ::picolibrary::WIZnet::W5500::Socket_ID;
 using ::testing::_;
 using ::testing::InSequence;
 using ::testing::Return;
@@ -621,6 +624,223 @@ TEST( retryCount, worksProperly )
 
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), rcr );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_socket_buffers()
+ *        properly handles an insufficient socket buffer size.
+ */
+TEST( configureSocketBuffers, insufficientBufferSize )
+{
+    Buffer_Size const insufficient_buffer_sizes[]{
+        Buffer_Size::_0_KIB,
+        Buffer_Size::_1_KIB,
+    };
+
+    for ( auto const insufficient_buffer_size : insufficient_buffer_sizes ) {
+        auto driver = Mock_Driver{};
+
+        auto network_stack = Network_Stack{ driver };
+
+        EXPECT_CALL( driver, write_sn_txbuf_size( _, _ ) ).Times( 0 );
+        EXPECT_CALL( driver, write_sn_rxbuf_size( _, _ ) ).Times( 0 );
+
+        auto const result = network_stack.configure_socket_buffers( insufficient_buffer_size );
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), Generic_Error::INVALID_ARGUMENT );
+    } // for
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_socket_buffers()
+ *        properly handles an invalid socket buffer size.
+ */
+TEST( configureSocketBuffers, invalidBufferSize )
+{
+    Buffer_Size const invalid_buffer_sizes[]{
+        static_cast<Buffer_Size>( 3 ),
+        static_cast<Buffer_Size>( random<std::uint8_t>( 5, 7 ) ),
+        static_cast<Buffer_Size>( random<std::uint8_t>( 9, 15 ) ),
+        static_cast<Buffer_Size>( random<std::uint8_t>( 17 ) ),
+    };
+
+    for ( auto const invalid_buffer_size : invalid_buffer_sizes ) {
+        auto driver = Mock_Driver{};
+
+        auto network_stack = Network_Stack{ driver };
+
+        EXPECT_CALL( driver, write_sn_txbuf_size( _, _ ) ).Times( 0 );
+        EXPECT_CALL( driver, write_sn_rxbuf_size( _, _ ) ).Times( 0 );
+
+        auto const result = network_stack.configure_socket_buffers( invalid_buffer_size );
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), Generic_Error::INVALID_ARGUMENT );
+    } // for
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_socket_buffers()
+ *        properly handles an SN_RXBUF_SIZE register write error when configuring the
+ *        socket buffer size of an available socket.
+ */
+TEST( configureSocketBuffers, writeSNRXBUFSIZEErrorAvailableSocket )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_rxbuf_size( _, _ ) ).WillOnce( Return( error ) );
+    EXPECT_CALL( driver, write_sn_txbuf_size( _, _ ) ).Times( 0 );
+
+    auto const result = network_stack.configure_socket_buffers(
+        random<Buffer_Size>( Buffer_Size::_2_KIB ) );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_socket_buffers()
+ *        properly handles an SN_TXBUF_SIZE register write error when configuring the
+ *        socket buffer size of an available socket.
+ */
+TEST( configureSocketBuffers, writeSNTXBUFSIZEErrorAvailableSocket )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_rxbuf_size( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_txbuf_size( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.configure_socket_buffers(
+        random<Buffer_Size>( Buffer_Size::_2_KIB ) );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_socket_buffers()
+ *        properly handles an SN_RXBUF_SIZE register write error when configuring the
+ *        socket buffer size of an unused socket.
+ */
+TEST( configureSocketBuffers, writeSNRXBUFSIZEErrorUnusedSocket )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const buffer_size = random<Buffer_Size>( Buffer_Size::_4_KIB );
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_rxbuf_size( _, static_cast<std::uint8_t>( buffer_size ) ) )
+        .WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_txbuf_size( _, static_cast<std::uint8_t>( buffer_size ) ) )
+        .WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_CALL( driver, write_sn_rxbuf_size( _, static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) ) )
+        .WillOnce( Return( error ) );
+    EXPECT_CALL( driver, write_sn_txbuf_size( _, static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) ) )
+        .Times( 0 );
+
+    auto const result = network_stack.configure_socket_buffers( buffer_size );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_socket_buffers()
+ *        properly handles an SN_TXBUF_SIZE register write error when configuring the
+ *        socket buffer size of an unused socket.
+ */
+TEST( configureSocketBuffers, writeSNTXBUFSIZEErrorUnusedSocket )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const buffer_size = random<Buffer_Size>( Buffer_Size::_4_KIB );
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_rxbuf_size( _, static_cast<std::uint8_t>( buffer_size ) ) )
+        .WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_txbuf_size( _, static_cast<std::uint8_t>( buffer_size ) ) )
+        .WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_CALL( driver, write_sn_rxbuf_size( _, static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_txbuf_size( _, static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) ) )
+        .WillOnce( Return( error ) );
+
+    auto const result = network_stack.configure_socket_buffers( buffer_size );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_socket_buffers()
+ *        works properly.
+ */
+TEST( configureSocketBuffers, worksProperly )
+{
+    struct {
+        Buffer_Size  buffer_size;
+        std::uint8_t available_sockets;
+    } const configurations[]{
+        { Buffer_Size::_2_KIB, 8 },
+        { Buffer_Size::_4_KIB, 4 },
+        { Buffer_Size::_8_KIB, 2 },
+        { Buffer_Size::_16_KIB, 1 },
+    };
+
+    for ( auto const configuration : configurations ) {
+        auto const in_sequence = InSequence{};
+
+        auto driver = Mock_Driver{};
+
+        auto network_stack = Network_Stack{ driver };
+
+        for ( auto socket = std::uint8_t{}; socket < configuration.available_sockets; ++socket ) {
+            EXPECT_CALL(
+                driver,
+                write_sn_rxbuf_size(
+                    static_cast<Socket_ID>( socket ),
+                    static_cast<std::uint8_t>( configuration.buffer_size ) ) )
+                .WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL(
+                driver,
+                write_sn_txbuf_size(
+                    static_cast<Socket_ID>( socket ),
+                    static_cast<std::uint8_t>( configuration.buffer_size ) ) )
+                .WillOnce( Return( Result<Void, Error_Code>{} ) );
+        } // for
+
+        for ( auto socket = configuration.available_sockets; socket < 8; ++socket ) {
+            EXPECT_CALL(
+                driver,
+                write_sn_rxbuf_size(
+                    static_cast<Socket_ID>( socket ), static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) ) )
+                .WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL(
+                driver,
+                write_sn_txbuf_size(
+                    static_cast<Socket_ID>( socket ), static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) ) )
+                .WillOnce( Return( Result<Void, Error_Code>{} ) );
+        } // for
+
+        EXPECT_FALSE( network_stack.configure_socket_buffers( configuration.buffer_size ).is_error() );
+    } // for
 }
 
 /**
