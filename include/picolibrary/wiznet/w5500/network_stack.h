@@ -268,6 +268,35 @@ class Network_Stack {
         return static_cast<ARP_Forcing>( result.value() & MR::Mask::FARP );
     }
 
+    /**
+     * \brief Configure retransmission.
+     *
+     * \param[in] retry_time The desired retry time (value written to the RTR register).
+     * \param[in] retry_count The desired retry count (value written to the RCR register).
+     *
+     * \return Nothing if retransmission configuration succeeded.
+     * \return An error code if retransmission configuration failed.
+     */
+    auto configure_retransmission( std::uint16_t retry_time, std::uint8_t retry_count ) noexcept
+        -> Result<Void, Error_Code>
+    {
+        {
+            auto result = m_driver->write_rtr( retry_time );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        {
+            auto result = m_driver->write_rcr( retry_count );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        return {};
+    }
+
   private:
     /**
      * \brief The driver for the W5500 the network stack utilizes.

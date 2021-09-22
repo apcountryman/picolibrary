@@ -482,6 +482,70 @@ TEST( arpForcingConfiguration, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_retransmission()
+ *        properly handles an RTR register write error.
+ */
+TEST( configureRetransmission, rtrWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_rtr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.configure_retransmission(
+        random<std::uint16_t>(), random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_retransmission()
+ *        properly handles an RCR register write error.
+ */
+TEST( configureRetransmission, rcrWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_rtr( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_rcr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.configure_retransmission(
+        random<std::uint16_t>(), random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_retransmission()
+ *        works properly.
+ */
+TEST( configureRetransmission, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const retry_time  = random<std::uint16_t>();
+    auto const retry_count = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, write_rtr( retry_time ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_rcr( retry_count ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( network_stack.configure_retransmission( retry_time, retry_count ).is_error() );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Network_Stack unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
