@@ -585,6 +585,45 @@ TEST( retryTime, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::retry_count() properly handles
+ *        an RCR register read error.
+ */
+TEST( retryCount, rcrReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto const network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_rcr() ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.retry_count();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::retry_count() works properly.
+ */
+TEST( retryCount, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto const network_stack = Network_Stack{ driver };
+
+    auto const rcr = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, read_rcr() ).WillOnce( Return( rcr ) );
+
+    auto const result = network_stack.retry_count();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), rcr );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Network_Stack unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().

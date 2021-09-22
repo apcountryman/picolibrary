@@ -308,6 +308,17 @@ class Network_Stack {
         return m_driver->read_rtr();
     }
 
+    /**
+     * \brief Get the retry count (RCR register value).
+     *
+     * \return The retry count if getting the retry count succeeded.
+     * \return An error code if getting the retry count failed.
+     */
+    auto retry_count() const noexcept
+    {
+        return m_driver->read_rcr();
+    }
+
   private:
     /**
      * \brief The driver for the W5500 the network stack utilizes.
