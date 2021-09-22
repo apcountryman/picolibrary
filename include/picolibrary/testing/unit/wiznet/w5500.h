@@ -25,6 +25,7 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <cstdlib>
 #include <vector>
 
 #include "gmock/gmock.h"
@@ -127,14 +128,59 @@ inline auto random<WIZnet::W5500::Link_Speed>()
 }
 
 /**
+ * \brief Generate a pseudo-random WIZnet W5500 socket buffer size within the specified
+ *        range.
+ *
+ * \param[in] min The lower bound of the allowable range.
+ * \param[in] max The upper bound of the allowable range.
+ *
+ * \return A pseudo-random WIZnet W5500 socket buffer size in the range [min,max].
+ */
+template<>
+inline auto random<WIZnet::W5500::Buffer_Size>( WIZnet::W5500::Buffer_Size min, WIZnet::W5500::Buffer_Size max )
+{
+    auto const shift = []( WIZnet::W5500::Buffer_Size buffer_size ) -> std::uint8_t {
+        switch ( buffer_size ) {
+            case WIZnet::W5500::Buffer_Size::_0_KIB: return 0;
+            case WIZnet::W5500::Buffer_Size::_1_KIB: return 1;
+            case WIZnet::W5500::Buffer_Size::_2_KIB: return 2;
+            case WIZnet::W5500::Buffer_Size::_4_KIB: return 3;
+            case WIZnet::W5500::Buffer_Size::_8_KIB: return 4;
+            case WIZnet::W5500::Buffer_Size::_16_KIB: return 5;
+            default: std::abort();
+        } // switch
+    };
+
+    return static_cast<WIZnet::W5500::Buffer_Size>(
+        ( 1 << random<std::uint8_t>( shift( min ), shift( max ) ) ) >> 1 );
+}
+
+/**
+ * \brief Generate a pseudo-random WIZnet W5500 socket buffer size greater than or equal
+ *        to a minimum socket buffer size.
+ *
+ * \param[in] min The lower bound of the allowable range.
+ *
+ * \return A pseudo-random WIZnet W5500 socket buffer size in the range
+ *         [min,picolibrary::WIZnet::W5500::Buffer_Size::_16_KIB].
+ */
+template<>
+inline auto random<WIZnet::W5500::Buffer_Size>( WIZnet::W5500::Buffer_Size min )
+{
+    return random<WIZnet::W5500::Buffer_Size>( min, WIZnet::W5500::Buffer_Size::_16_KIB );
+}
+
+/**
  * \brief Generate a pseudo-random WIZnet W5500 socket buffer size.
  *
- * \brief A pseudo-randomly generated WIZnet W5500 socket buffer size.
+ * \return A pseudo-random WIZnet W5500 socket buffer size in the range
+ *         [picolibrary::WIZnet::W5500::Buffer_Size::_0_KIB,picolibrary::WIZnet::W5500::Buffer_Size::_16_KIB].
  */
 template<>
 inline auto random<WIZnet::W5500::Buffer_Size>()
 {
-    return static_cast<WIZnet::W5500::Buffer_Size>( ( 1 << random<std::uint8_t>( 0, 5 ) ) >> 1 );
+    return random<WIZnet::W5500::Buffer_Size>(
+        WIZnet::W5500::Buffer_Size::_0_KIB, WIZnet::W5500::Buffer_Size::_16_KIB );
 }
 
 } // namespace picolibrary::Testing::Unit
