@@ -102,6 +102,11 @@ enum class Socket_ID : std::uint8_t {
 };
 
 /**
+ * \brief Supported sockets.
+ */
+constexpr auto SOCKETS = std::uint_fast8_t{ 8 };
+
+/**
  * \brief Region.
  */
 enum class Region : std::uint8_t {
