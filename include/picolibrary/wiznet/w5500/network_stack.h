@@ -446,6 +446,36 @@ class Network_Stack {
         return IPv4::Address{ result.value() };
     }
 
+    /**
+     * \brief Configure the W5500's gateway IP address.
+     *
+     * \param[in] address The desired gateway IP address.
+     *
+     * \return Nothing if W5500 gateway IP address configuration succeeded.
+     * \return An error code if W5500 gateway IP address configuration failed.
+     */
+    auto configure_gateway_ip_address( IPv4::Address const & address ) noexcept
+    {
+        return m_driver->write_gar( address.as_byte_array() );
+    }
+
+    /**
+     * \brief Get the W5500's gateway IP address.
+     *
+     * \return The W5500's gateway IP address if getting the W5500's gateway IP address
+     *         succeeded.
+     * \return An error code if getting the W5500's gateway IP address failed.
+     */
+    auto gateway_ip_address() const noexcept -> Result<IPv4::Address, Error_Code>
+    {
+        auto result = m_driver->read_gar();
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return IPv4::Address{ result.value() };
+    }
+
   private:
     /**
      * \brief The driver for the W5500 the network stack utilizes.

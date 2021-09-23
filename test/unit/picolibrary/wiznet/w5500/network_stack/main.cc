@@ -1057,6 +1057,83 @@ TEST( ipAddress, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_gateway_ip_address()
+ *        properly handles a GAR register write error.
+ */
+TEST( configureGatewayIPAddress, garWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_gar( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.configure_gateway_ip_address( random<IPv4_Address>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_gateway_ip_address()
+ *        works properly.
+ */
+TEST( configureGatewayIPAddress, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const address = random<IPv4_Address>();
+
+    EXPECT_CALL( driver, write_gar( address.as_byte_array() ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( network_stack.configure_gateway_ip_address( address ).is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::gateway_ip_address() properly
+ *        handles a GAR register read error.
+ */
+TEST( gatewayIPAddress, garReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto const network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_gar() ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.gateway_ip_address();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::gateway_ip_address() works
+ *        properly.
+ */
+TEST( gatewayIPAddress, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto const network_stack = Network_Stack{ driver };
+
+    auto const gar = random_fixed_size_array<std::uint8_t, 4>();
+
+    EXPECT_CALL( driver, read_gar() ).WillOnce( Return( gar ) );
+
+    auto const result = network_stack.gateway_ip_address();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value().as_byte_array(), gar );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Network_Stack unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
