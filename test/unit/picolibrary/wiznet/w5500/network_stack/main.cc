@@ -20,11 +20,14 @@
  * \brief picolibrary::WIZnet::W5500::Network_Stack unit test program.
  */
 
+#include <algorithm>
+#include <cstddef>
 #include <cstdint>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/error.h"
+#include "picolibrary/fixed_size_array.h"
 #include "picolibrary/mac_address.h"
 #include "picolibrary/result.h"
 #include "picolibrary/testing/unit/error.h"
@@ -38,6 +41,7 @@
 namespace {
 
 using ::picolibrary::Error_Code;
+using ::picolibrary::Fixed_Size_Array;
 using ::picolibrary::Generic_Error;
 using ::picolibrary::MAC_Address;
 using ::picolibrary::Result;
@@ -57,6 +61,16 @@ using ::picolibrary::WIZnet::W5500::Socket_ID;
 using ::testing::_;
 using ::testing::InSequence;
 using ::testing::Return;
+
+template<typename T, std::size_t N>
+auto random_fixed_size_array()
+{
+    Fixed_Size_Array<T, N> array;
+
+    std::generate( array.begin(), array.end(), []() { return random<T>(); } );
+
+    return array;
+}
 
 } // namespace
 
@@ -921,6 +935,45 @@ TEST( configureMACAddress, worksProperly )
     EXPECT_CALL( driver, write_shar( address.as_byte_array() ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( network_stack.configure_mac_address( address ).is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::mac_address() properly handles
+ *        a SHAR register read error.
+ */
+TEST( macAddress, sharReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto const network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_shar() ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.mac_address();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::mac_address() works properly.
+ */
+TEST( macAddress, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto const network_stack = Network_Stack{ driver };
+
+    auto const shar = random_fixed_size_array<std::uint8_t, 6>();
+
+    EXPECT_CALL( driver, read_shar() ).WillOnce( Return( shar ) );
+
+    auto const result = network_stack.mac_address();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value().as_byte_array(), shar );
 }
 
 /**

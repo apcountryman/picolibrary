@@ -392,12 +392,28 @@ class Network_Stack {
      *
      * \param[in] address The desired MAC address.
      *
-     * \return Nothing if MAC address configuration succeeded.
-     * \return An error code if MAC address configuration failed.
+     * \return Nothing if W5500 MAC address configuration succeeded.
+     * \return An error code if W5500 MAC address configuration failed.
      */
     auto configure_mac_address( MAC_Address const & address ) noexcept
     {
         return m_driver->write_shar( address.as_byte_array() );
+    }
+
+    /**
+     * \brief Get the W5500's MAC address.
+     *
+     * \return The W5500's MAC address if getting the W5500's MAC address succeeded.
+     * \return An error code if getting the W5500's MAC address failed.
+     */
+    auto mac_address() const noexcept -> Result<MAC_Address, Error_Code>
+    {
+        auto result = m_driver->read_shar();
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return MAC_Address{ result.value() };
     }
 
   private:
