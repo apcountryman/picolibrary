@@ -650,6 +650,14 @@ class Network_Stack {
         return m_driver->read_sir();
     }
 
+    /**
+     * \brief Execute periodic housekeeping actions.
+     */
+    auto service() noexcept -> Result<Void, Error_Code>
+    {
+        return {};
+    }
+
   private:
     /**
      * \brief The driver for the W5500 the network stack utilizes.

@@ -1661,6 +1661,18 @@ TEST( socketInterruptContext, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::service() works properly.
+ */
+TEST( service, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    EXPECT_FALSE( network_stack.service().is_error() );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Network_Stack unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
