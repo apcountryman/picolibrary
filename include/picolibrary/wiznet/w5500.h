@@ -1662,6 +1662,11 @@ enum class Link_Speed : std::uint8_t {
 };
 
 /**
+ * \brief WIZnet W5500 chip version.
+ */
+constexpr auto VERSION = VERSIONR::Type{ 0x04 };
+
+/**
  * \brief WIZnet W5500 socket buffer size.
  */
 enum class Buffer_Size : std::uint8_t {
