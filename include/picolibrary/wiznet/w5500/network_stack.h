@@ -591,6 +591,17 @@ class Network_Stack {
         return m_driver->read_imr();
     }
 
+    /**
+     * \brief Get the interrupt context (a mask identifying active interrupts).
+     *
+     * \return The interrupt context if getting the interrupt context succeeded.
+     * \return An error code if getting the interrupt context failed.
+     */
+    auto interrupt_context() const noexcept
+    {
+        return m_driver->read_ir();
+    }
+
   private:
     /**
      * \brief The driver for the W5500 the network stack utilizes.
