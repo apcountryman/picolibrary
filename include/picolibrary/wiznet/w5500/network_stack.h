@@ -26,6 +26,7 @@
 #include <cstdint>
 
 #include "picolibrary/error.h"
+#include "picolibrary/ipv4.h"
 #include "picolibrary/mac_address.h"
 #include "picolibrary/result.h"
 #include "picolibrary/void.h"
@@ -414,6 +415,35 @@ class Network_Stack {
         } // if
 
         return MAC_Address{ result.value() };
+    }
+
+    /**
+     * \brief Configure the W5500's IP address.
+     *
+     * \param[in] address The desired IP address.
+     *
+     * \return Nothing if W5500 IP address configuration succeeded.
+     * \return An error code if W5500 IP address configuration failed.
+     */
+    auto configure_ip_address( IPv4::Address const & address ) noexcept
+    {
+        return m_driver->write_sipr( address.as_byte_array() );
+    }
+
+    /**
+     * \brief Get the W5500's IP address.
+     *
+     * \return The W5500's IP address if getting the W5500's IP address succeeded.
+     * \return An error code if getting the W5500's IP address failed.
+     */
+    auto ip_address() const noexcept -> Result<IPv4::Address, Error_Code>
+    {
+        auto result = m_driver->read_sipr();
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return IPv4::Address{ result.value() };
     }
 
   private:

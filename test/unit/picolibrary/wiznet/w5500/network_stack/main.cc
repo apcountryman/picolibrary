@@ -28,9 +28,11 @@
 #include "gtest/gtest.h"
 #include "picolibrary/error.h"
 #include "picolibrary/fixed_size_array.h"
+#include "picolibrary/ipv4.h"
 #include "picolibrary/mac_address.h"
 #include "picolibrary/result.h"
 #include "picolibrary/testing/unit/error.h"
+#include "picolibrary/testing/unit/ipv4.h"
 #include "picolibrary/testing/unit/mac_address.h"
 #include "picolibrary/testing/unit/random.h"
 #include "picolibrary/testing/unit/wiznet/w5500.h"
@@ -61,6 +63,8 @@ using ::picolibrary::WIZnet::W5500::Socket_ID;
 using ::testing::_;
 using ::testing::InSequence;
 using ::testing::Return;
+
+using IPv4_Address = ::picolibrary::IPv4::Address;
 
 template<typename T, std::size_t N>
 auto random_fixed_size_array()
@@ -974,6 +978,82 @@ TEST( macAddress, worksProperly )
 
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value().as_byte_array(), shar );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_ip_address()
+ *        properly handles a SIPR register write error.
+ */
+TEST( configureIPAddress, siprWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sipr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.configure_ip_address( random<IPv4_Address>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_ip_address() works
+ *        properly.
+ */
+TEST( configureIPAddress, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const address = random<IPv4_Address>();
+
+    EXPECT_CALL( driver, write_sipr( address.as_byte_array() ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( network_stack.configure_ip_address( address ).is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::ip_address() properly handles
+ *        a SIPR register read error.
+ */
+TEST( ipAddress, siprReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto const network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.ip_address();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::ip_address() works properly.
+ */
+TEST( ipAddress, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto const network_stack = Network_Stack{ driver };
+
+    auto const sipr = random_fixed_size_array<std::uint8_t, 4>();
+
+    EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( sipr ) );
+
+    auto const result = network_stack.ip_address();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value().as_byte_array(), sipr );
 }
 
 /**
