@@ -476,6 +476,35 @@ class Network_Stack {
         return IPv4::Address{ result.value() };
     }
 
+    /**
+     * \brief Configure the W5500's subnet mask.
+     *
+     * \param[in] subnet_mask The desired subnet mask.
+     *
+     * \return Nothing if W5500 subnet mask configuration succeeded.
+     * \return An error code if W5500 subnet mask configuration failed.
+     */
+    auto configure_subnet_mask( IPv4::Address const & subnet_mask ) noexcept
+    {
+        return m_driver->write_subr( subnet_mask.as_byte_array() );
+    }
+
+    /**
+     * \brief Get the W5500's subnet mask.
+     *
+     * \return The W5500's subnet mask if getting the W5500's subnet mask succeeded.
+     * \return An error code if getting the W5500's subnet mask failed.
+     */
+    auto subnet_mask() const noexcept -> Result<IPv4::Address, Error_Code>
+    {
+        auto result = m_driver->read_subr();
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return IPv4::Address{ result.value() };
+    }
+
   private:
     /**
      * \brief The driver for the W5500 the network stack utilizes.

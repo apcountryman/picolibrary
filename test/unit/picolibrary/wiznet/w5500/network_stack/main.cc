@@ -1134,6 +1134,83 @@ TEST( gatewayIPAddress, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_subnet_mask()
+ *        properly handles a SUBR register write error.
+ */
+TEST( configureSubnetMask, subrWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_subr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.configure_subnet_mask( random<IPv4_Address>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_subnet_mask() works
+ *        properly.
+ */
+TEST( configureSubnetMask, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const subnet_mask = random<IPv4_Address>();
+
+    EXPECT_CALL( driver, write_subr( subnet_mask.as_byte_array() ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( network_stack.configure_subnet_mask( subnet_mask ).is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::subnet_mask() properly handles
+ *        a SUBR register read error.
+ */
+TEST( subnetMask, subrReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto const network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_subr() ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.subnet_mask();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::subnet_mask() works properly.
+ */
+TEST( subnetMask, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto const network_stack = Network_Stack{ driver };
+
+    auto const subr = random_fixed_size_array<std::uint8_t, 4>();
+
+    EXPECT_CALL( driver, read_subr() ).WillOnce( Return( subr ) );
+
+    auto const result = network_stack.subnet_mask();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value().as_byte_array(), subr );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Network_Stack unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
