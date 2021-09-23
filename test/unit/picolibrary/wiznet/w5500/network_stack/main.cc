@@ -1292,6 +1292,201 @@ TEST( interruptAssertWaitTime, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::enable_interrupts() properly
+ *        handles an IMR register read error.
+ */
+TEST( enableInterrupts, imrReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_imr() ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.enable_interrupts( random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::enable_interrupts() properly
+ *        handles an IMR register write error.
+ */
+TEST( enableInterrupts, imrWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_imr() ).WillOnce( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, write_imr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.enable_interrupts( random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::enable_interrupts() works
+ *        properly.
+ */
+TEST( enableInterrupts, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const imr  = random<std::uint8_t>();
+    auto const mask = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, read_imr() ).WillOnce( Return( imr ) );
+    EXPECT_CALL( driver, write_imr( imr | mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( network_stack.enable_interrupts( mask ).is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::disable_interrupts(
+ *        std::uint8_t ) properly handles an IMR register read error.
+ */
+TEST( disableInterrupts, imrReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_imr() ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.disable_interrupts( random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::disable_interrupts(
+ *        std::uint8_t ) properly handles an IMR register write error.
+ */
+TEST( disableInterrupts, imrWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_imr() ).WillOnce( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, write_imr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.disable_interrupts( random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::disable_interrupts(
+ *        std::uint8_t ) works properly.
+ */
+TEST( disableInterrupts, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const imr  = random<std::uint8_t>();
+    auto const mask = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, read_imr() ).WillOnce( Return( imr ) );
+    EXPECT_CALL( driver, write_imr( imr & ~mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( network_stack.disable_interrupts( mask ).is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::disable_interrupts() properly
+ *        handles an IMR register write error.
+ */
+TEST( disableAllInterrupts, imrWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_imr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.disable_interrupts();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::disable_interrupts() works
+ *        properly.
+ */
+TEST( disableAllInterrupts, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    EXPECT_CALL( driver, write_imr( 0 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( network_stack.disable_interrupts().is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::enabled_interrupts() properly
+ *        handles an IMR register read error.
+ */
+TEST( enabledInterrupts, imrReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_imr() ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.enabled_interrupts();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::enabled_interrupts() works
+ *        properly.
+ */
+TEST( enabledInterrupts, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const imr = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, read_imr() ).WillOnce( Return( imr ) );
+
+    auto const result = network_stack.enabled_interrupts();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), imr );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Network_Stack unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().

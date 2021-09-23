@@ -531,6 +531,66 @@ class Network_Stack {
         return m_driver->read_intlevel();
     }
 
+    /**
+     * \brief Enable interrupts.
+     *
+     * \param[in] mask The mask identifying the interrupts to enable.
+     *
+     * \return Nothing if enabling interrupts succeeded.
+     * \return An error code if enabling interrupts failed.
+     */
+    auto enable_interrupts( std::uint8_t mask ) noexcept -> Result<Void, Error_Code>
+    {
+        auto result = m_driver->read_imr();
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return m_driver->write_imr( result.value() | mask );
+    }
+
+    /**
+     * \brief Disable interrupts.
+     *
+     * \param[in] mask The mask identifying the interrupts to disable.
+     *
+     * \return Nothing if disabling interrupts succeeded.
+     * \return An error code if disabling interrupts failed.
+     */
+    auto disable_interrupts( std::uint8_t mask ) noexcept -> Result<Void, Error_Code>
+    {
+        auto result = m_driver->read_imr();
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return m_driver->write_imr( result.value() & ~mask );
+    }
+
+    /**
+     * \brief Disable all interrupts.
+     *
+     * \return Nothing if disabling all interrupts succeeded.
+     * \return An error code if disabling all interrupts failed.
+     */
+    auto disable_interrupts() noexcept
+    {
+        return m_driver->write_imr( 0 );
+    }
+
+    /**
+     * \brief Get a mask identifying the interrupts that are enabled.
+     *
+     * \return A mask identifying the interrupts that are enabled if getting a mask
+     *         identifying the interrupts that are enabled succeeded.
+     * \return An error code if getting a mask identifying the interrupts that are enabled
+     *         failed.
+     */
+    auto enabled_interrupts() const noexcept
+    {
+        return m_driver->read_imr();
+    }
+
   private:
     /**
      * \brief The driver for the W5500 the network stack utilizes.
