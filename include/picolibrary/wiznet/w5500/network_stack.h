@@ -505,6 +505,32 @@ class Network_Stack {
         return IPv4::Address{ result.value() };
     }
 
+    /**
+     * \brief Configure the W5500's interrupt assert wait time.
+     *
+     * \param[in] interrupt_assert_wait_time The desired interrupt assert wait time
+     *            (value written to the INTLEVEL register).
+     *
+     * \return Nothing if W5500 interrupt assert wait time configuration succeeded.
+     * \return An error code if W5500 interrupt assert wait time configuration failed.
+     */
+    auto configure_interrupt_assert_wait_time( std::uint16_t interrupt_assert_wait_time ) noexcept
+    {
+        return m_driver->write_intlevel( interrupt_assert_wait_time );
+    }
+
+    /**
+     * \brief Get the W5500's interrupt assert wait time (INTLEVEL register value).
+     *
+     * \return The W5500's interrupt assert wait time if getting the W5500's interrupt
+     *         assert wait time succeeded.
+     * \return An error code if getting the W5500's interrupt assert wait time failed.
+     */
+    auto interrupt_assert_wait_time() const noexcept
+    {
+        return m_driver->read_intlevel();
+    }
+
   private:
     /**
      * \brief The driver for the W5500 the network stack utilizes.

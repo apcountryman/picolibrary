@@ -1211,6 +1211,87 @@ TEST( subnetMask, worksProperly )
 }
 
 /**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::configure_interrupt_assert_wait_time()
+ *        properly handles an INTLEVEL register write error.
+ */
+TEST( configureInterruptAssertWaitTime, intlevelWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_intlevel( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.configure_interrupt_assert_wait_time( random<std::uint16_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::configure_interrupt_assert_wait_time()
+ *        works properly.
+ */
+TEST( configureInterruptAssertWaitTime, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const interrupt_assert_wait_time = random<std::uint16_t>();
+
+    EXPECT_CALL( driver, write_intlevel( interrupt_assert_wait_time ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE(
+        network_stack.configure_interrupt_assert_wait_time( interrupt_assert_wait_time ).is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::interrupt_assert_wait_time()
+ *        properly handles an INTLEVEL register read error.
+ */
+TEST( interruptAssertWaitTime, intlevelReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto const network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_intlevel() ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.interrupt_assert_wait_time();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::interrupt_assert_wait_time()
+ *        works properly.
+ */
+TEST( interruptAssertWaitTime, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto const network_stack = Network_Stack{ driver };
+
+    auto const intlevel = random<std::uint16_t>();
+
+    EXPECT_CALL( driver, read_intlevel() ).WillOnce( Return( intlevel ) );
+
+    auto const result = network_stack.interrupt_assert_wait_time();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), intlevel );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Network_Stack unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
