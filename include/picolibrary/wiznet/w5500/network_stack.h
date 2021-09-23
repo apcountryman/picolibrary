@@ -602,6 +602,20 @@ class Network_Stack {
         return m_driver->read_ir();
     }
 
+    /**
+     * \brief Get a mask identifying the sockets for which interrupts are enabled (SIMR
+     *        register value).
+     *
+     * \return A mask identifying the sockets for which interrupts are enabled if getting
+     *         a mask identifying the sockets for which interrupts are enabled succeeded.
+     * \return An error code if getting a mask identifying the sockets for which interrupt
+     *         are enabled failed.
+     */
+    auto enabled_socket_interrupts() const noexcept
+    {
+        return m_driver->read_simr();
+    }
+
   private:
     /**
      * \brief The driver for the W5500 the network stack utilizes.

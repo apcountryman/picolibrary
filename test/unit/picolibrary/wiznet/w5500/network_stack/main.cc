@@ -1527,6 +1527,46 @@ TEST( interruptContext, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::enabled_socket_interrupts()
+ *        properly handles an SIMR register read error.
+ */
+TEST( enabledSocketInterrupts, simrReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto const network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_simr() ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.enabled_socket_interrupts();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::enabled_socket_interrupts()
+ *        works properly.
+ */
+TEST( enabledSocketInterrupts, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto const network_stack = Network_Stack{ driver };
+
+    auto const simr = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, read_simr() ).WillOnce( Return( simr ) );
+
+    auto const result = network_stack.enabled_socket_interrupts();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), simr );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Network_Stack unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
