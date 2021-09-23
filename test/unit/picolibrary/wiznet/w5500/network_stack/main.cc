@@ -25,8 +25,10 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/error.h"
+#include "picolibrary/mac_address.h"
 #include "picolibrary/result.h"
 #include "picolibrary/testing/unit/error.h"
+#include "picolibrary/testing/unit/mac_address.h"
 #include "picolibrary/testing/unit/random.h"
 #include "picolibrary/testing/unit/wiznet/w5500.h"
 #include "picolibrary/void.h"
@@ -37,6 +39,7 @@ namespace {
 
 using ::picolibrary::Error_Code;
 using ::picolibrary::Generic_Error;
+using ::picolibrary::MAC_Address;
 using ::picolibrary::Result;
 using ::picolibrary::Void;
 using ::picolibrary::Testing::Unit::Mock_Error;
@@ -881,6 +884,43 @@ TEST( socketBufferSize, worksProperly )
 
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), static_cast<Buffer_Size>( sn_rxbuf_size ) );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_mac_address()
+ *        properly handles a SHAR register write error.
+ */
+TEST( configureMACAddress, sharWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_shar( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.configure_mac_address( random<MAC_Address>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_mac_address() works
+ *        properly.
+ */
+TEST( configureMACAddress, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const address = random<MAC_Address>();
+
+    EXPECT_CALL( driver, write_shar( address.as_byte_array() ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( network_stack.configure_mac_address( address ).is_error() );
 }
 
 /**

@@ -26,6 +26,7 @@
 #include <cstdint>
 
 #include "picolibrary/error.h"
+#include "picolibrary/mac_address.h"
 #include "picolibrary/result.h"
 #include "picolibrary/void.h"
 #include "picolibrary/wiznet/w5500.h"
@@ -384,6 +385,19 @@ class Network_Stack {
         } // if
 
         return static_cast<Buffer_Size>( result.value() );
+    }
+
+    /**
+     * \brief Configure the W5500's MAC address.
+     *
+     * \param[in] address The desired MAC address.
+     *
+     * \return Nothing if MAC address configuration succeeded.
+     * \return An error code if MAC address configuration failed.
+     */
+    auto configure_mac_address( MAC_Address const & address ) noexcept
+    {
+        return m_driver->write_shar( address.as_byte_array() );
     }
 
   private:
