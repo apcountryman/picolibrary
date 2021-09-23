@@ -1528,7 +1528,7 @@ TEST( interruptContext, worksProperly )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::enabled_socket_interrupts()
- *        properly handles an SIMR register read error.
+ *        properly handles a SIMR register read error.
  */
 TEST( enabledSocketInterrupts, simrReadError )
 {
@@ -1564,6 +1564,46 @@ TEST( enabledSocketInterrupts, worksProperly )
 
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), simr );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::socket_interrupt_context()
+ * properly handles a SIR register read error.
+ */
+TEST( socketInterruptContext, sirReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto const network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sir() ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.socket_interrupt_context();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::socket_interrupt_context()
+ *        works properly.
+ */
+TEST( socketInterruptContext, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto const network_stack = Network_Stack{ driver };
+
+    auto const sir = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, read_sir() ).WillOnce( Return( sir ) );
+
+    auto const result = network_stack.socket_interrupt_context();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), sir );
 }
 
 /**

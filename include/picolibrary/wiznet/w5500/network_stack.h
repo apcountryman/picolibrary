@@ -592,7 +592,7 @@ class Network_Stack {
     }
 
     /**
-     * \brief Get the interrupt context (a mask identifying active interrupts).
+     * \brief Get the interrupt context (IR register value).
      *
      * \return The interrupt context if getting the interrupt context succeeded.
      * \return An error code if getting the interrupt context failed.
@@ -614,6 +614,18 @@ class Network_Stack {
     auto enabled_socket_interrupts() const noexcept
     {
         return m_driver->read_simr();
+    }
+
+    /**
+     * \brief Get the socket interrupt context (SIR register value).
+     *
+     * \return The socket interrupt context if getting the socket interrupt context
+     *         succeeded.
+     * \return An error code if getting the socket interrupt context failed.
+     */
+    auto socket_interrupt_context() const noexcept
+    {
+        return m_driver->read_sir();
     }
 
   private:
