@@ -93,6 +93,28 @@ class Network_Stack {
     }
 
     /**
+     * \brief Check if the W5500 is responsive by reading the VERSIONR register.
+     *
+     * \return Nothing if the W5500 is responsive.
+     * \return picolibrary::Generic_Error::NONRESPONSIVE_DEVICE if the W5500 is not
+     *         responsive.
+     * \return An error code if the check failed for any other reason.
+     */
+    auto ping_w5500() const noexcept -> Result<Void, Error_Code>
+    {
+        auto result = m_driver->read_versionr();
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        if ( result.value() != VERSION ) {
+            return Generic_Error::NONRESPONSIVE_DEVICE;
+        } // if
+
+        return {};
+    }
+
+    /**
      * \brief Configure the PHY.
      *
      * \param[in] phy_mode The desired PHY mode.

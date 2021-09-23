@@ -79,6 +79,60 @@ auto random_fixed_size_array()
 } // namespace
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::ping_w5500() properly handles
+ *        a VERSIONR register read error.
+ */
+TEST( pingW5500, versionrReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto const network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_versionr() ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.ping_w5500();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::ping_w5500() properly handles
+ *        an incorrect version error.
+ */
+TEST( pingW5500, incorrectVersionError )
+{
+    auto driver = Mock_Driver{};
+
+    auto const network_stack = Network_Stack{ driver };
+
+    EXPECT_CALL( driver, read_versionr() )
+        .WillOnce( Return(
+            random<bool>() ? random<std::uint8_t>( 0x00, 0x03 ) : random<std::uint8_t>( 0x05 ) ) );
+
+    auto const result = network_stack.ping_w5500();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), Generic_Error::NONRESPONSIVE_DEVICE );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::ping_w5500() works properly.
+ */
+TEST( pingW5500, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto const network_stack = Network_Stack{ driver };
+
+    EXPECT_CALL( driver, read_versionr() ).WillOnce( Return( static_cast<std::uint8_t>( 0x04 ) ) );
+
+    EXPECT_FALSE( network_stack.ping_w5500().is_error() );
+}
+
+/**
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_phy() properly
  *        handles a PHYCFGR register write error when writing the PHY configuration.
  */
