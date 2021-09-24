@@ -480,6 +480,26 @@ TEST( pingBlockingConfiguration, worksProperly )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_arp_forcing()
+ *        properly handles an MR register read error.
+ */
+TEST( configureARPForcing, mrReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_mr() ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.configure_arp_forcing( random<ARP_Forcing>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_arp_forcing()
  *        properly handles an MR register write error.
  */
 TEST( configureARPForcing, mrWriteError )
