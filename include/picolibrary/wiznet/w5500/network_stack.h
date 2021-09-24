@@ -38,7 +38,7 @@ namespace picolibrary::WIZnet::W5500 {
  * \brief WIZnet W5500 IP network stack.
  *
  * \tparam Driver The W5500 driver implementation. The default W5500 driver implementation
- *         should be used unless a mock W5500 driver implementation us being injected to
+ *         should be used unless a mock W5500 driver implementation is being injected to
  *         support unit testing of this network stack.
  */
 template<typename Driver>

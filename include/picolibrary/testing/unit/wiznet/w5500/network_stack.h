@@ -67,10 +67,10 @@ class Mock_Network_Stack {
     MOCK_METHOD( (Result<::picolibrary::WIZnet::W5500::Link_Mode, Error_Code>), link_mode, (), ( const ) );
     MOCK_METHOD( (Result<::picolibrary::WIZnet::W5500::Link_Speed, Error_Code>), link_speed, (), ( const ) );
 
-    MOCK_METHOD( (Result<Void, Error_Code>), configure_pin_blocking, ( ::picolibrary::WIZnet::W5500::Ping_Blocking ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), configure_ping_blocking, ( ::picolibrary::WIZnet::W5500::Ping_Blocking ) );
     MOCK_METHOD( (Result<::picolibrary::WIZnet::W5500::Ping_Blocking, Error_Code>), ping_blocking_configuration, (), ( const ) );
 
-    MOCK_METHOD( (Result<Void, Error_Code>), configure_pin_blocking, ( ::picolibrary::WIZnet::W5500::ARP_Forcing ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), configure_arp_forcing, ( ::picolibrary::WIZnet::W5500::ARP_Forcing ) );
     MOCK_METHOD( (Result<::picolibrary::WIZnet::W5500::ARP_Forcing, Error_Code>), arp_forcing_configuration, (), ( const ) );
 
     MOCK_METHOD( (Result<Void, Error_Code>), configure_retransmission, ( std::uint16_t, std::uint8_t ) );

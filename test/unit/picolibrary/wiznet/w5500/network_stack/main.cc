@@ -100,9 +100,9 @@ TEST( pingW5500, versionrReadError )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::ping_w5500() properly handles
- *        an incorrect version error.
+ *        an incorrect chip version.
  */
-TEST( pingW5500, incorrectVersionError )
+TEST( pingW5500, incorrectChipVersion )
 {
     auto driver = Mock_Driver{};
 
@@ -136,7 +136,7 @@ TEST( pingW5500, worksProperly )
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_phy() properly
  *        handles a PHYCFGR register write error when writing the PHY configuration.
  */
-TEST( configurePhy, phycfgrWriteErrorPhyConfiguration )
+TEST( configurePHY, phycfgrWriteErrorPHYConfiguration )
 {
     auto driver = Mock_Driver{};
 
@@ -156,7 +156,7 @@ TEST( configurePhy, phycfgrWriteErrorPhyConfiguration )
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_phy() properly
  *        handles a PHYCFGR register write error when entering PHY reset.
  */
-TEST( configurePhy, phycfgrWrtieErrorEnterReset )
+TEST( configurePHY, phycfgrWriteErrorEnterPHYReset )
 {
     auto driver = Mock_Driver{};
 
@@ -178,7 +178,7 @@ TEST( configurePhy, phycfgrWrtieErrorEnterReset )
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_phy() properly
  *        handles a PHYCFGR register write error when exiting PHY reset.
  */
-TEST( configurePhy, phycfgrWriteErrorExitReset )
+TEST( configurePHY, phycfgrWriteErrorExitPHYReset )
 {
     auto driver = Mock_Driver{};
 
@@ -201,7 +201,7 @@ TEST( configurePhy, phycfgrWriteErrorExitReset )
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_phy() works
  *        properly.
  */
-TEST( configurePhy, worksProperly )
+TEST( configurePHY, worksProperly )
 {
     auto const in_sequence = InSequence{};
 
@@ -211,11 +211,11 @@ TEST( configurePhy, worksProperly )
 
     auto const phy_mode = random<PHY_Mode>();
 
-    EXPECT_CALL( driver, write_phycfgr( static_cast<std::uint8_t>( phy_mode ) | 0b1'0'000'000 ) )
+    EXPECT_CALL( driver, write_phycfgr( static_cast<std::uint8_t>( phy_mode ) | 0b1'0'000'0'0'0 ) )
         .WillOnce( Return( Result<Void, Error_Code>{} ) );
     EXPECT_CALL( driver, write_phycfgr( static_cast<std::uint8_t>( phy_mode ) ) )
         .WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( driver, write_phycfgr( static_cast<std::uint8_t>( phy_mode ) | 0b1'0'000'000 ) )
+    EXPECT_CALL( driver, write_phycfgr( static_cast<std::uint8_t>( phy_mode ) | 0b1'0'000'0'0'0 ) )
         .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( network_stack.configure_phy( phy_mode ).is_error() );
