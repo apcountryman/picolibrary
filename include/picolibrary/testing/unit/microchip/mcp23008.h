@@ -56,9 +56,8 @@ inline auto random<Microchip::MCP23008::Sequential_Operation_Mode>()
 template<>
 inline auto random<Microchip::MCP23008::SDA_Slew_Rate_Control>()
 {
-    return static_cast<Microchip::MCP23008::SDA_Slew_Rate_Control>( random<std::uint8_t>(
-        static_cast<std::uint8_t>( Microchip::MCP23008::SDA_Slew_Rate_Control::ENABLED ),
-        static_cast<std::uint8_t>( Microchip::MCP23008::SDA_Slew_Rate_Control::DISABLED ) ) );
+    return random<bool>() ? Microchip::MCP23008::SDA_Slew_Rate_Control::DISABLED
+                          : Microchip::MCP23008::SDA_Slew_Rate_Control::ENABLED;
 }
 
 /**
