@@ -666,8 +666,8 @@ class Network_Stack {
      * \param[in] max The upper bound of the ephemeral port range.
      *
      * \return Nothing if enabling TCP ephemeral port allocation succeeded.
-     * \return picolibrary::Generic_Error::LOGIC_ERROR if TCP ephemeral port allocation
-     *         has already been enabled.
+     * \return picolibrary::Generic_Error::LOGIC_ERROR if TCP ephemeral port allocation is
+     *         already enabled.
      * \return picolibrary::Generic_Error::INVALID_ARGUMENT if min is greater than max.
      * \return picolibrary::Generic_Error::INVALID_ARGUMENT if min is the port number that
      *         is used to represent any port number (0).
