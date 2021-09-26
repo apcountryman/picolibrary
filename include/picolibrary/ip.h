@@ -395,6 +395,26 @@ class Port {
     using Unsigned_Integer = std::uint16_t;
 
     /**
+     * \brief Get the minimum valid port number.
+     *
+     * \return The minimum valid port number.
+     */
+    static constexpr auto min() noexcept
+    {
+        return Port{ std::numeric_limits<Unsigned_Integer>::min() };
+    }
+
+    /**
+     * \brief Get the maximum valid port number.
+     *
+     * \return The maximum valid port number.
+     */
+    static constexpr auto max() noexcept
+    {
+        return Port{ std::numeric_limits<Unsigned_Integer>::max() };
+    }
+
+    /**
      * \brief Get the port number that is used to represent any port number (0).
      *
      * \return The port number that is used to represent any port number.
