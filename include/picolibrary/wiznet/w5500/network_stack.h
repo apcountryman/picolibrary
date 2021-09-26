@@ -26,6 +26,7 @@
 #include <cstdint>
 
 #include "picolibrary/error.h"
+#include "picolibrary/ip/tcp.h"
 #include "picolibrary/ipv4.h"
 #include "picolibrary/mac_address.h"
 #include "picolibrary/result.h"
@@ -658,11 +659,49 @@ class Network_Stack {
         return {};
     }
 
+    /**
+     * \brief Enable TCP ephemeral port allocation.
+     *
+     * \param[in] min The lower bound of the ephemeral port range.
+     * \param[in] max The upper bound of the ephemeral port range.
+     *
+     * \return Nothing if enabling TCP ephemeral port allocation succeeded.
+     * \return picolibrary::Generic_Error::LOGIC_ERROR if TCP ephemeral port allocation is
+     *         already enabled.
+     * \return picolibrary::Generic_Error::INVALID_ARGUMENT if min is greater than max.
+     * \return picolibrary::Generic_Error::INVALID_ARGUMENT if min is the port number that
+     *         is used to represent any port number (0).
+     */
+    auto enable_tcp_ephemeral_port_allocation( IP::TCP::Port min, IP::TCP::Port max ) noexcept
+        -> Result<Void, Error_Code>
+    {
+        if ( m_tcp_ephemeral_port_allocation_enabled ) {
+            return Generic_Error::LOGIC_ERROR;
+        } // if
+
+        if ( not( min <= max ) ) {
+            return Generic_Error::INVALID_ARGUMENT;
+        } // if
+
+        if ( min.is_any() ) {
+            return Generic_Error::INVALID_ARGUMENT;
+        } // if
+
+        m_tcp_ephemeral_port_allocation_enabled = true;
+
+        return {};
+    }
+
   private:
     /**
      * \brief The driver for the W5500 the network stack utilizes.
      */
     Driver * m_driver{};
+
+    /**
+     * \brief The TCP ephemeral port allocation enable state.
+     */
+    bool m_tcp_ephemeral_port_allocation_enabled{};
 };
 
 } // namespace picolibrary::WIZnet::W5500
