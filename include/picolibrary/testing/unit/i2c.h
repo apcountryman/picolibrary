@@ -98,9 +98,7 @@ inline auto random<I2C::Operation>()
 template<>
 inline auto random<I2C::Response>()
 {
-    return static_cast<I2C::Response>( random<std::uint_fast8_t>(
-        static_cast<std::uint_fast8_t>( I2C::Response::ACK ),
-        static_cast<std::uint_fast8_t>( I2C::Response::NACK ) ) );
+    return random<bool>() ? I2C::Response::ACK : I2C::Response::NACK;
 }
 
 } // namespace picolibrary::Testing::Unit
