@@ -87,9 +87,7 @@ inline auto random<I2C::Address>()
 template<>
 inline auto random<I2C::Operation>()
 {
-    return static_cast<I2C::Operation>( random<std::uint_fast8_t>(
-        static_cast<std::uint_fast8_t>( I2C::Operation::WRITE ),
-        static_cast<std::uint_fast8_t>( I2C::Operation::READ ) ) );
+    return random<bool>() ? I2C::Operation::WRITE : I2C::Operation::READ;
 }
 
 /**
