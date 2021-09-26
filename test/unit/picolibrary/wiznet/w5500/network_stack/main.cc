@@ -1695,6 +1695,25 @@ TEST( service, worksProperly )
 /**
  * \brief Verify
  *        picolibrary::WIZnet::W5500::Network_Stack::enable_tcp_ephemeral_port_allocation()
+ *        properly handles TCP ephemeral port allocation already having been enabled.
+ */
+TEST( enableTCPEphemeralPortAllocation, alreadyEnabled )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    EXPECT_FALSE( network_stack.enable_tcp_ephemeral_port_allocation().is_error() );
+
+    auto result = network_stack.enable_tcp_ephemeral_port_allocation();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), Generic_Error::LOGIC_ERROR );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::enable_tcp_ephemeral_port_allocation()
  *        properly handles an invalid port range.
  */
 TEST( enableTCPEphemeralPortAllocation, invalidPortRange )
@@ -1736,32 +1755,6 @@ TEST( enableTCPEphemeralPortAllocation, worksProperly )
         auto const max = random<std::uint16_t>( min );
 
         EXPECT_FALSE( network_stack.enable_tcp_ephemeral_port_allocation( min, max ).is_error() );
-    }
-}
-
-/**
- * \brief Verify
- *        picolibrary::WIZnet::W5500::Network_Stack::disable_tcp_ephemeral_port_allocation()
- *        works properly.
- */
-TEST( disableTCPEphemeralPortAllocation, worksProperly )
-{
-    {
-        auto driver = Mock_Driver{};
-
-        auto network_stack = Network_Stack{ driver };
-
-        network_stack.disable_tcp_ephemeral_port_allocation();
-    }
-
-    {
-        auto driver = Mock_Driver{};
-
-        auto network_stack = Network_Stack{ driver };
-
-        EXPECT_FALSE( network_stack.enable_tcp_ephemeral_port_allocation().is_error() );
-
-        network_stack.disable_tcp_ephemeral_port_allocation();
     }
 }
 

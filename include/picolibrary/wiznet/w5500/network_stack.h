@@ -666,24 +666,25 @@ class Network_Stack {
      * \param[in] max The upper bound of the ephemeral port range.
      *
      * \return Nothing if enabling TCP ephemeral port allocation succeeded.
+     * \return picolibrary::Generic_Error::LOGIC_ERROR if TCP ephemeral port allocation
+     *         has already been enabled.
      * \return picolibrary::Generic_Error::INVALID_ARGUMENT if min is not less than or
      *         equal to max.
      */
     auto enable_tcp_ephemeral_port_allocation( IP::TCP::Port min = 49152, IP::TCP::Port max = 65535 ) noexcept
         -> Result<Void, Error_Code>
     {
+        if ( m_tcp_ephemeral_port_allocation_enabled ) {
+            return Generic_Error::LOGIC_ERROR;
+        } // if
+
         if ( not( min <= max ) ) {
             return Generic_Error::INVALID_ARGUMENT;
         } // if
 
-        return {};
-    }
+        m_tcp_ephemeral_port_allocation_enabled = true;
 
-    /**
-     * \brief Disable TCP ephemeral port allocation.
-     */
-    void disable_tcp_ephemeral_port_allocation() noexcept
-    {
+        return {};
     }
 
   private:
@@ -691,6 +692,11 @@ class Network_Stack {
      * \brief The driver for the W5500 the network stack utilizes.
      */
     Driver * m_driver{};
+
+    /**
+     * \brief The TCP ephemeral port allocation enable state.
+     */
+    bool m_tcp_ephemeral_port_allocation_enabled{};
 };
 
 } // namespace picolibrary::WIZnet::W5500
