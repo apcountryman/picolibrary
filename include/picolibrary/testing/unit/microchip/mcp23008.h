@@ -43,9 +43,8 @@ namespace picolibrary::Testing::Unit {
 template<>
 inline auto random<Microchip::MCP23008::Sequential_Operation_Mode>()
 {
-    return static_cast<Microchip::MCP23008::Sequential_Operation_Mode>( random<std::uint8_t>(
-        static_cast<std::uint8_t>( Microchip::MCP23008::Sequential_Operation_Mode::ENABLED ),
-        static_cast<std::uint8_t>( Microchip::MCP23008::Sequential_Operation_Mode::DISABLED ) ) );
+    return random<bool>() ? Microchip::MCP23008::Sequential_Operation_Mode::DISABLED
+                          : Microchip::MCP23008::Sequential_Operation_Mode::ENABLED;
 }
 
 /**
