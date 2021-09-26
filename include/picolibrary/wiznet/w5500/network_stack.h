@@ -668,8 +668,7 @@ class Network_Stack {
      * \return Nothing if enabling TCP ephemeral port allocation succeeded.
      * \return picolibrary::Generic_Error::LOGIC_ERROR if TCP ephemeral port allocation
      *         has already been enabled.
-     * \return picolibrary::Generic_Error::INVALID_ARGUMENT if min is not less than or
-     *         equal to max.
+     * \return picolibrary::Generic_Error::INVALID_ARGUMENT if min is greater than max.
      */
     auto enable_tcp_ephemeral_port_allocation( IP::TCP::Port min, IP::TCP::Port max ) noexcept
         -> Result<Void, Error_Code>
