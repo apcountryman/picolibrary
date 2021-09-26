@@ -68,9 +68,7 @@ inline auto random<Microchip::MCP23008::SDA_Slew_Rate_Control>()
 template<>
 inline auto random<Microchip::MCP23008::Interrupt_Mode>()
 {
-    return static_cast<Microchip::MCP23008::Interrupt_Mode>( random<std::uint8_t>(
-        static_cast<std::uint8_t>( Microchip::MCP23008::Interrupt_Mode::PUSH_PULL_ACTIVE_LOW ),
-        static_cast<std::uint8_t>( Microchip::MCP23008::Interrupt_Mode::OPEN_DRAIN ) ) );
+    return static_cast<Microchip::MCP23008::Interrupt_Mode>( random<std::uint8_t>( 0b00, 0b10 ) << 1 );
 }
 
 } // namespace picolibrary::Testing::Unit
