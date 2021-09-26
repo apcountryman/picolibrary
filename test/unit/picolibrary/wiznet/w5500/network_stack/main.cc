@@ -1693,6 +1693,79 @@ TEST( service, worksProperly )
 }
 
 /**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::enable_tcp_ephemeral_port_allocation()
+ *        properly handles an invalid port range.
+ */
+TEST( enableTCPEphemeralPortAllocation, invalidPortRange )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const min = random<std::uint16_t>( 1 );
+    auto const max = random<std::uint16_t>( 0, min - 1 );
+
+    auto const result = network_stack.enable_tcp_ephemeral_port_allocation( min, max );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), Generic_Error::INVALID_ARGUMENT );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::enable_tcp_ephemeral_port_allocation()
+ *        works properly.
+ */
+TEST( enableTCPEphemeralPortAllocation, worksProperly )
+{
+    {
+        auto driver = Mock_Driver{};
+
+        auto network_stack = Network_Stack{ driver };
+
+        EXPECT_FALSE( network_stack.enable_tcp_ephemeral_port_allocation().is_error() );
+    }
+
+    {
+        auto driver = Mock_Driver{};
+
+        auto network_stack = Network_Stack{ driver };
+
+        auto const min = random<std::uint16_t>();
+        auto const max = random<std::uint16_t>( min );
+
+        EXPECT_FALSE( network_stack.enable_tcp_ephemeral_port_allocation( min, max ).is_error() );
+    }
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::disable_tcp_ephemeral_port_allocation()
+ *        works properly.
+ */
+TEST( disableTCPEphemeralPortAllocation, worksProperly )
+{
+    {
+        auto driver = Mock_Driver{};
+
+        auto network_stack = Network_Stack{ driver };
+
+        network_stack.disable_tcp_ephemeral_port_allocation();
+    }
+
+    {
+        auto driver = Mock_Driver{};
+
+        auto network_stack = Network_Stack{ driver };
+
+        EXPECT_FALSE( network_stack.enable_tcp_ephemeral_port_allocation().is_error() );
+
+        network_stack.disable_tcp_ephemeral_port_allocation();
+    }
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Network_Stack unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().

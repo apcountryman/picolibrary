@@ -26,6 +26,7 @@
 #include <cstdint>
 
 #include "picolibrary/error.h"
+#include "picolibrary/ip/tcp.h"
 #include "picolibrary/ipv4.h"
 #include "picolibrary/mac_address.h"
 #include "picolibrary/result.h"
@@ -656,6 +657,33 @@ class Network_Stack {
     auto service() noexcept -> Result<Void, Error_Code>
     {
         return {};
+    }
+
+    /**
+     * \brief Enable TCP ephemeral port allocation.
+     *
+     * \param[in] min The lower bound of the ephemeral port range.
+     * \param[in] max The upper bound of the ephemeral port range.
+     *
+     * \return Nothing if enabling TCP ephemeral port allocation succeeded.
+     * \return picolibrary::Generic_Error::INVALID_ARGUMENT if min is not less than or
+     *         equal to max.
+     */
+    auto enable_tcp_ephemeral_port_allocation( IP::TCP::Port min = 49152, IP::TCP::Port max = 65535 ) noexcept
+        -> Result<Void, Error_Code>
+    {
+        if ( not( min <= max ) ) {
+            return Generic_Error::INVALID_ARGUMENT;
+        } // if
+
+        return {};
+    }
+
+    /**
+     * \brief Disable TCP ephemeral port allocation.
+     */
+    void disable_tcp_ephemeral_port_allocation() noexcept
+    {
     }
 
   private:
