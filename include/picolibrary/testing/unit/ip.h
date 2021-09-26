@@ -57,14 +57,44 @@ inline auto random<IP::Address>()
 }
 
 /**
+ * \brief Generate a pseudo-random IP port number within the specified range.
+ *
+ * \param[in] min The lower bound of the allowable range.
+ * \param[in] max The upper bound of the allowable range.
+ *
+ * \return A pseudo-random IP port number in the range [min,max].
+ */
+template<>
+inline auto random<IP::Port>( IP::Port min, IP::Port max )
+{
+    return IP::Port{ random<IP::Port::Unsigned_Integer>(
+        min.as_unsigned_integer(), max.as_unsigned_integer() ) };
+}
+
+/**
+ * \brief Generate a pseudo-random IP port number greater than or equal to a minimum port
+ *        number.
+ *
+ * \param[in] min The lower bound of the allowable range.
+ *
+ * \return A pseudo-random IP port number in the range [min,picolibrary::IP::Port::max()].
+ */
+template<>
+inline auto random<IP::Port>( IP::Port min )
+{
+    return random<IP::Port>( min, IP::Port::max() );
+}
+
+/**
  * \brief Generate a pseudo-random IP port number.
  *
- * \return A pseudo-random IP port number.
+ * \return A pseudo-random IP port number in the range
+ *         [picolibrary::IP::Port::min(),picolibrary::IP::Port::max()].
  */
 template<>
 inline auto random<::picolibrary::IP::Port>()
 {
-    return ::picolibrary::IP::Port{ random<::picolibrary::IP::Port::Unsigned_Integer>() };
+    return random<IP::Port>( IP::Port::min(), IP::Port::max() );
 }
 
 /**
