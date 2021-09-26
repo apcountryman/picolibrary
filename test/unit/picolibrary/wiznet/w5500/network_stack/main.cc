@@ -1703,9 +1703,12 @@ TEST( enableTCPEphemeralPortAllocation, alreadyEnabled )
 
     auto network_stack = Network_Stack{ driver };
 
-    EXPECT_FALSE( network_stack.enable_tcp_ephemeral_port_allocation().is_error() );
+    auto const min = random<std::uint16_t>();
+    auto const max = random<std::uint16_t>( min );
 
-    auto result = network_stack.enable_tcp_ephemeral_port_allocation();
+    EXPECT_FALSE( network_stack.enable_tcp_ephemeral_port_allocation( min, max ).is_error() );
+
+    auto result = network_stack.enable_tcp_ephemeral_port_allocation( min, max );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::LOGIC_ERROR );
@@ -1738,24 +1741,14 @@ TEST( enableTCPEphemeralPortAllocation, invalidPortRange )
  */
 TEST( enableTCPEphemeralPortAllocation, worksProperly )
 {
-    {
-        auto driver = Mock_Driver{};
+    auto driver = Mock_Driver{};
 
-        auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver };
 
-        EXPECT_FALSE( network_stack.enable_tcp_ephemeral_port_allocation().is_error() );
-    }
+    auto const min = random<std::uint16_t>();
+    auto const max = random<std::uint16_t>( min );
 
-    {
-        auto driver = Mock_Driver{};
-
-        auto network_stack = Network_Stack{ driver };
-
-        auto const min = random<std::uint16_t>();
-        auto const max = random<std::uint16_t>( min );
-
-        EXPECT_FALSE( network_stack.enable_tcp_ephemeral_port_allocation( min, max ).is_error() );
-    }
+    EXPECT_FALSE( network_stack.enable_tcp_ephemeral_port_allocation( min, max ).is_error() );
 }
 
 /**

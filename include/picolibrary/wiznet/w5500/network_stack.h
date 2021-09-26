@@ -671,7 +671,7 @@ class Network_Stack {
      * \return picolibrary::Generic_Error::INVALID_ARGUMENT if min is not less than or
      *         equal to max.
      */
-    auto enable_tcp_ephemeral_port_allocation( IP::TCP::Port min = 49152, IP::TCP::Port max = 65535 ) noexcept
+    auto enable_tcp_ephemeral_port_allocation( IP::TCP::Port min, IP::TCP::Port max ) noexcept
         -> Result<Void, Error_Code>
     {
         if ( m_tcp_ephemeral_port_allocation_enabled ) {
