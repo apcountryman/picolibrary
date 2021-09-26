@@ -28,10 +28,12 @@
 #include "gtest/gtest.h"
 #include "picolibrary/error.h"
 #include "picolibrary/fixed_size_array.h"
+#include "picolibrary/ip/tcp.h"
 #include "picolibrary/ipv4.h"
 #include "picolibrary/mac_address.h"
 #include "picolibrary/result.h"
 #include "picolibrary/testing/unit/error.h"
+#include "picolibrary/testing/unit/ip.h"
 #include "picolibrary/testing/unit/ipv4.h"
 #include "picolibrary/testing/unit/mac_address.h"
 #include "picolibrary/testing/unit/random.h"
@@ -65,6 +67,7 @@ using ::testing::InSequence;
 using ::testing::Return;
 
 using IPv4_Address = ::picolibrary::IPv4::Address;
+using TCP_Port     = ::picolibrary::IP::TCP::Port;
 
 template<typename T, std::size_t N>
 auto random_fixed_size_array()
@@ -1703,8 +1706,8 @@ TEST( enableTCPEphemeralPortAllocation, alreadyEnabled )
 
     auto network_stack = Network_Stack{ driver };
 
-    auto const min = random<std::uint16_t>();
-    auto const max = random<std::uint16_t>( min );
+    auto const min = random<TCP_Port>( 1 );
+    auto const max = random<TCP_Port>( min );
 
     EXPECT_FALSE( network_stack.enable_tcp_ephemeral_port_allocation( min, max ).is_error() );
 
@@ -1725,10 +1728,28 @@ TEST( enableTCPEphemeralPortAllocation, invalidPortRange )
 
     auto network_stack = Network_Stack{ driver };
 
-    auto const min = random<std::uint16_t>( 1 );
-    auto const max = random<std::uint16_t>( 0, min - 1 );
+    auto const min = random<TCP_Port>( 1 );
+    auto const max = random<TCP_Port>( 0, min.as_unsigned_integer() - 1 );
 
     auto const result = network_stack.enable_tcp_ephemeral_port_allocation( min, max );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), Generic_Error::INVALID_ARGUMENT );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::enable_tcp_ephemeral_port_allocation()
+ *        properly handles an invalid port range bound.
+ */
+TEST( enableTCPEphemeralPortAllocation, invalidPortRangeBound )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const result = network_stack.enable_tcp_ephemeral_port_allocation(
+        0, random<TCP_Port>( 0 ) );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::INVALID_ARGUMENT );
@@ -1745,8 +1766,8 @@ TEST( enableTCPEphemeralPortAllocation, worksProperly )
 
     auto network_stack = Network_Stack{ driver };
 
-    auto const min = random<std::uint16_t>();
-    auto const max = random<std::uint16_t>( min );
+    auto const min = random<TCP_Port>( 1 );
+    auto const max = random<TCP_Port>( min );
 
     EXPECT_FALSE( network_stack.enable_tcp_ephemeral_port_allocation( min, max ).is_error() );
 }
