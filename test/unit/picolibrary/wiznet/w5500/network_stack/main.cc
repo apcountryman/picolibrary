@@ -1604,6 +1604,76 @@ TEST( interruptContext, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::enable_socket_interrupts()
+ *        properly handles a SIMR register write error.
+ */
+TEST( enableSocketInterrupts, simrWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_simr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.enable_socket_interrupts();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::enable_socket_interrupts()
+ *        works properly.
+ */
+TEST( enableSocketInterrupts, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    EXPECT_CALL( driver, write_simr( 0xFF ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( network_stack.enable_socket_interrupts().is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::disable_socket_interrupts()
+ *        properly handles a SIMR register write error.
+ */
+TEST( disableSocketInterrupts, simrWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_simr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.disable_socket_interrupts();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::disable_socket_interrupts()
+ *        works properly.
+ */
+TEST( disableSocketInterrupts, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    EXPECT_CALL( driver, write_simr( 0x00 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( network_stack.disable_socket_interrupts().is_error() );
+}
+
+/**
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::enabled_socket_interrupts()
  *        properly handles a SIMR register read error.
  */
