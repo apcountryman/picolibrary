@@ -61,6 +61,19 @@ class Network_Stack {
          */
         ~TCP_Socket() noexcept = default;
 
+        /**
+         * \brief Get a mask identifying the interrupts that are enabled.
+         *
+         * \return A mask identifying the interrupts that are enabled if getting a mask
+         *         identifying the interrupts that are enabled succeeded.
+         * \return An error code if getting a mask identifying the interrupts that are
+         *         enabled failed.
+         */
+        auto enabled_interrupts() const noexcept
+        {
+            return m_driver->read_sn_imr( m_socket_id );
+        }
+
       protected:
         /**
          * \brief Constructor.
@@ -73,10 +86,10 @@ class Network_Stack {
          * \param[in] network_stack The network stack the socket is associated with.
          * \param[in] socket_id The socket's socket ID.
          */
-        constexpr TCP_Socket( Network_Stack & network_stack, Socket_ID socket_id ) noexcept
+        constexpr TCP_Socket( Network_Stack & network_stack, Socket_ID socket_id ) noexcept :
+            m_driver{ network_stack.m_driver },
+            m_socket_id{ socket_id }
         {
-            static_cast<void>( network_stack );
-            static_cast<void>( socket_id );
         }
 
         /**
@@ -94,6 +107,17 @@ class Network_Stack {
          * \return The assigned to object.
          */
         constexpr auto operator=( TCP_Socket && expression ) noexcept -> TCP_Socket & = default;
+
+      private:
+        /**
+         * \brief The driver for the W5500 the network stack utilizes.
+         */
+        Driver * m_driver{};
+
+        /**
+         * \brief The socket's socket ID.
+         */
+        Socket_ID m_socket_id{};
     };
 
     /**
