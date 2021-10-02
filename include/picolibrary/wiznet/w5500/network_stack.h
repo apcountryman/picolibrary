@@ -626,6 +626,28 @@ class Network_Stack {
     }
 
     /**
+     * \brief Enable socket interrupts.
+     *
+     * \return Nothing if enabling socket interrupts succeeded.
+     * \return An error code if enabling socket interrupts failed.
+     */
+    auto enable_socket_interrupts() noexcept
+    {
+        return m_driver->write_simr( 0xFF );
+    }
+
+    /**
+     * \brief Disable socket interrupts.
+     *
+     * \return Nothing if disabling socket interrupts succeeded.
+     * \return An error code if disabling socket interrupts failed.
+     */
+    auto disable_socket_interrupts() noexcept
+    {
+        return m_driver->write_simr( 0x00 );
+    }
+
+    /**
      * \brief Get a mask identifying the sockets for which interrupts are enabled (SIMR
      *        register value).
      *
