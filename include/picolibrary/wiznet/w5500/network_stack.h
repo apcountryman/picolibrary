@@ -72,6 +72,18 @@ class Network_Stack {
         }
 
         /**
+         * \brief Get the socket's interrupt mask (mask to be used when checking the SIR
+         *        register.
+         *
+         * \return The socket's interrupt mask.
+         */
+        auto socket_interrupt_mask() const noexcept
+        {
+            return static_cast<std::uint8_t>(
+                1 << ( static_cast<std::uint8_t>( m_socket_id ) >> Control_Byte::Bit::SOCKET ) );
+        }
+
+        /**
          * \brief Get a mask identifying the interrupts that are enabled.
          *
          * \return A mask identifying the interrupts that are enabled if getting a mask
