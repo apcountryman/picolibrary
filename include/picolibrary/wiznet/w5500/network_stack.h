@@ -96,6 +96,17 @@ class Network_Stack {
             return m_driver->read_sn_imr( m_socket_id );
         }
 
+        /**
+         * \brief Get the interrupt context (SN_IR register value).
+         *
+         * \return The interrupt context if getting the interrupt context succeeded.
+         * \return An error code if getting the interrupt context failed.
+         */
+        auto interrupt_context() const noexcept
+        {
+            return m_driver->read_sn_ir( m_socket_id );
+        }
+
       protected:
         /**
          * \brief Constructor.
