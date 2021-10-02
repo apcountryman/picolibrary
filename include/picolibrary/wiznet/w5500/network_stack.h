@@ -46,6 +46,57 @@ template<typename Driver>
 class Network_Stack {
   public:
     /**
+     * \brief TCP over IP socket.
+     */
+    class TCP_Socket {
+      public:
+        /**
+         * \brief The unsigned integral type used to report transmit/receive buffer
+         *        information.
+         */
+        using Size = std::uint16_t;
+
+        /**
+         * \brief Constructor.
+         */
+        ~TCP_Socket() noexcept = default;
+
+      protected:
+        /**
+         * \brief Constructor.
+         */
+        constexpr TCP_Socket() noexcept = default;
+
+        /**
+         * \brief Constructor.
+         *
+         * \param[in] network_stack The network stack the socket is associated with.
+         * \param[in] socket_id The socket's socket ID.
+         */
+        constexpr TCP_Socket( Network_Stack & network_stack, Socket_ID socket_id ) noexcept
+        {
+            static_cast<void>( network_stack );
+            static_cast<void>( socket_id );
+        }
+
+        /**
+         * \brief Constructor.
+         *
+         * \param[in] source The source of the move.
+         */
+        constexpr TCP_Socket( TCP_Socket && source ) noexcept = default;
+
+        /**
+         * \brief Assignment operator.
+         *
+         * \param[in] expression The expression to be assigned.
+         *
+         * \return The assigned to object.
+         */
+        constexpr auto operator=( TCP_Socket && expression ) noexcept -> TCP_Socket & = default;
+    };
+
+    /**
      * \brief Constructor.
      */
     constexpr Network_Stack() noexcept = default;
