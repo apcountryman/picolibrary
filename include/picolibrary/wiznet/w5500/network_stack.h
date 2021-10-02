@@ -125,6 +125,18 @@ class Network_Stack {
             return static_cast<No_Delayed_ACK>( result.value() & SN_MR::Mask::ND );
         }
 
+        /**
+         * \brief Get the socket's maximum segment size.
+         *
+         * \return The socket's maximum segment size if getting the socket's maximum
+         *         segment size succeeded.
+         * \return An error code if getting the socket's maximum segment size failed.
+         */
+        auto maximum_segment_size() const noexcept
+        {
+            return m_driver->read_sn_mssr( m_socket_id );
+        }
+
       protected:
         /**
          * \brief Constructor.
