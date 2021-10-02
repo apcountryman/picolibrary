@@ -36,6 +36,7 @@ using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::WIZnet::W5500::Mock_Driver;
 using ::picolibrary::WIZnet::W5500::Network_Stack;
+using ::picolibrary::WIZnet::W5500::No_Delayed_ACK;
 using ::picolibrary::WIZnet::W5500::Socket_ID;
 using ::testing::_;
 using ::testing::Return;
@@ -198,6 +199,54 @@ TEST( interruptContext, worksProperly )
 
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), sn_ir );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::no_delayed_ack_configuration()
+ *        properly handles an SN_MR register read error.
+ */
+TEST( noDelayedACKConfiguration, mrReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const socket = Socket{ network_stack, random<Socket_ID>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_mr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = socket.no_delayed_ack_configuration();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::no_delayed_ack_configuration()
+ *        works properly.
+ */
+TEST( noDelayedACKConfiguration, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const socket_id = random<Socket_ID>();
+
+    auto const socket = Socket{ network_stack, socket_id };
+
+    auto const sn_mr = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, read_sn_mr( socket_id ) ).WillOnce( Return( sn_mr ) );
+
+    auto const result = socket.no_delayed_ack_configuration();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), static_cast<No_Delayed_ACK>( sn_mr & 0b0'0'1'0'0000 ) );
 }
 
 /**
