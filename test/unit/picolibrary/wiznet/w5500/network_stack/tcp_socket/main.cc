@@ -299,8 +299,8 @@ TEST( maximumSegmentSize, worksProperly )
 
 /**
  * \brief Verify
- *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::time_to_live()
- *        properly handles an SN_TTL register read error.
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::time_to_live() properly
+ *        handles an SN_TTL register read error.
  */
 TEST( timeToLive, snttlReadError )
 {
@@ -322,8 +322,8 @@ TEST( timeToLive, snttlReadError )
 
 /**
  * \brief Verify
- *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::time_to_live()
- *        works properly.
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::time_to_live() works
+ *        properly.
  */
 TEST( timeToLive, worksProperly )
 {
@@ -343,6 +343,54 @@ TEST( timeToLive, worksProperly )
 
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), sn_ttl );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::keepalive_period()
+ *        properly handles an SN_KPALVTR register read error.
+ */
+TEST( keepalivePeriod, snkpalvtrReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const socket = Socket{ network_stack, random<Socket_ID>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_kpalvtr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = socket.keepalive_period();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::keepalive_period() works
+ *        properly.
+ */
+TEST( keepalivePeriod, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const socket_id = random<Socket_ID>();
+
+    auto const socket = Socket{ network_stack, socket_id };
+
+    auto const sn_kpalvtr = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, read_sn_kpalvtr( socket_id ) ).WillOnce( Return( sn_kpalvtr ) );
+
+    auto const result = socket.keepalive_period();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), sn_kpalvtr );
 }
 
 /**
