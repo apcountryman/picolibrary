@@ -298,6 +298,54 @@ TEST( maximumSegmentSize, worksProperly )
 }
 
 /**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::time_to_live()
+ *        properly handles an SN_TTL register read error.
+ */
+TEST( timeToLive, snttlReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const socket = Socket{ network_stack, random<Socket_ID>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_ttl( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = socket.time_to_live();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::time_to_live()
+ *        works properly.
+ */
+TEST( timeToLive, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const socket_id = random<Socket_ID>();
+
+    auto const socket = Socket{ network_stack, socket_id };
+
+    auto const sn_ttl = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, read_sn_ttl( socket_id ) ).WillOnce( Return( sn_ttl ) );
+
+    auto const result = socket.time_to_live();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), sn_ttl );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
