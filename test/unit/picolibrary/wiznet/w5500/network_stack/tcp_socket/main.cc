@@ -52,6 +52,24 @@ class Socket : public Network_Stack<Mock_Driver>::TCP_Socket {
 
 /**
  * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::socket_id() works
+ *        properly.
+ */
+TEST( socketID, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const socket_id = random<Socket_ID>();
+
+    auto const socket = Socket{ network_stack, socket_id };
+
+    EXPECT_EQ( socket.socket_id(), socket_id );
+}
+
+/**
+ * \brief Verify
  *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::enabled_interrupts()
  *        properly handles an SN_IMR register read error.
  */

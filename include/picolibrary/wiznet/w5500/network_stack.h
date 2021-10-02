@@ -62,6 +62,16 @@ class Network_Stack {
         ~TCP_Socket() noexcept = default;
 
         /**
+         * \brief Get the socket's socket ID.
+         *
+         * \return The socket's socket ID.
+         */
+        auto socket_id() const noexcept
+        {
+            return m_socket_id;
+        }
+
+        /**
          * \brief Get a mask identifying the interrupts that are enabled.
          *
          * \return A mask identifying the interrupts that are enabled if getting a mask
