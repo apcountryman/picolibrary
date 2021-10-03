@@ -187,6 +187,38 @@ class Network_Stack {
             } // switch
         }
 
+        /**
+         * \brief Get the connection's remote endpoint.
+         *
+         * \return The connection's remote endpoint if getting the connection's remote
+         *         endpoint succeeded.
+         * \return An error code if getting the connection's remote endpoint failed.
+         */
+        auto remote_endpoint() const noexcept -> Result<IP::TCP::Endpoint, Error_Code>
+        {
+            SN_DIPR::Type sn_dipr;
+            {
+                auto result = m_driver->read_sn_dipr( m_socket_id );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+
+                sn_dipr = result.value();
+            }
+
+            SN_DPORT::Type sn_dport;
+            {
+                auto result = m_driver->read_sn_dport( m_socket_id );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+
+                sn_dport = result.value();
+            }
+
+            return IP::TCP::Endpoint{ IPv4::Address{ sn_dipr }, IP::TCP::Port{ sn_dport } };
+        }
+
       protected:
         /**
          * \brief Constructor.
