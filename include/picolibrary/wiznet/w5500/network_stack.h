@@ -219,6 +219,38 @@ class Network_Stack {
             return IP::TCP::Endpoint{ IPv4::Address{ sn_dipr }, IP::TCP::Port{ sn_dport } };
         }
 
+        /**
+         * \brief Get the connection's local endpoint.
+         *
+         * \return The connection's local endpoint if getting the connection's local
+         *         endpoint succeeded.
+         * \return An error code if getting the connection's local endpoint failed.
+         */
+        auto local_endpoint() const noexcept -> Result<IP::TCP::Endpoint, Error_Code>
+        {
+            SIPR::Type sipr;
+            {
+                auto result = m_driver->read_sipr();
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+
+                sipr = result.value();
+            }
+
+            SN_PORT::Type sn_port;
+            {
+                auto result = m_driver->read_sn_port( m_socket_id );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+
+                sn_port = result.value();
+            }
+
+            return IP::TCP::Endpoint{ IPv4::Address{ sipr }, IP::TCP::Port{ sn_port } };
+        }
+
       protected:
         /**
          * \brief Constructor.
