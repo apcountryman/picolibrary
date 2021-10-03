@@ -394,6 +394,69 @@ TEST( keepalivePeriod, worksProperly )
 }
 
 /**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::is_connected() properly
+ *        handles an SN_SR register read error.
+ */
+TEST( isConnected, snsrReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver };
+
+    auto const socket = Socket{ network_stack, random<Socket_ID>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = socket.is_connected();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::is_connected() works
+ *        properly.
+ */
+TEST( isConnected, worksProperly )
+{
+    struct {
+        std::uint8_t sn_sr;
+        bool         is_connected;
+    } const test_cases[]{
+        // clang-format off
+
+        { random<std::uint8_t>( 0x00, 0x16 ), false },
+        {                       0x17,         true  },
+        { random<std::uint8_t>( 0x18, 0x1B ), false },
+        {                       0x1C,         true  },
+        { random<std::uint8_t>( 0x1D, 0xFF ), false },
+
+        // clang-format on
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver = Mock_Driver{};
+
+        auto network_stack = Network_Stack{ driver };
+
+        auto const socket_id = random<Socket_ID>();
+
+        auto const socket = Socket{ network_stack, socket_id };
+
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( test_case.sn_sr ) );
+
+        auto const result = socket.is_connected();
+
+        EXPECT_TRUE( result.is_value() );
+        EXPECT_EQ( result.value(), test_case.is_connected );
+    } // for
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().

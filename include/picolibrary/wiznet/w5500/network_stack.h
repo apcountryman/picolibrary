@@ -164,6 +164,29 @@ class Network_Stack {
             return m_driver->read_sn_kpalvtr( m_socket_id );
         }
 
+        /**
+         * \brief Check if the socket is connected to a remote endpoint.
+         *
+         * \return true if getting the socket's connection state succeeded and the socket
+         *         is connected to a remote endpoint.
+         * \return false if getting the socket's connection state succeeded and the socket
+         *         is not connected to a remote endpoint.
+         * \return An error code if getting the socket's connection state failed.
+         */
+        auto is_connected() const noexcept -> Result<bool, Error_Code>
+        {
+            auto result = m_driver->read_sn_sr( m_socket_id );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            switch ( static_cast<Socket_Status>( result.value() ) ) {
+                case Socket_Status::ESTABLISHED: [[fallthrough]];
+                case Socket_Status::CLOSE_WAIT: return true;
+                default: return false;
+            } // switch
+        }
+
       protected:
         /**
          * \brief Constructor.
