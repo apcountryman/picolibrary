@@ -1775,7 +1775,7 @@ enum class Socket_Status : std::uint8_t {
     CLOSED        = 0x00, ///< Closed.
     OPENED_TCP    = 0x13, ///< Opened (TCP).
     LISTEN        = 0x14, ///< Waiting for connection request from remote endpoint.
-    ESTABLISED    = 0x17, ///< Established.
+    ESTABLISHED   = 0x17, ///< Established.
     CLOSE_WAIT    = 0x1C, ///< Waiting for connection termination request from local user.
     OPENED_UDP    = 0x22, ///< Opened (UDP).
     OPENED_MACRAW = 0x42, ///< Opened (MACRAW).
