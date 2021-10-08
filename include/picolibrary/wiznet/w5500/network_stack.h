@@ -302,7 +302,16 @@ class Network_Stack {
          *
          * \param[in] source The source of the move.
          */
-        constexpr TCP_Socket( TCP_Socket && source ) noexcept = default;
+        constexpr TCP_Socket( TCP_Socket && source ) noexcept :
+            m_driver{ source.m_driver },
+            m_network_stack{ source.m_network_stack },
+            m_socket_id{ source.m_socket_id }
+        {
+            source.m_driver        = nullptr;
+            source.m_network_stack = nullptr;
+        }
+
+        TCP_Socket( TCP_Socket const & ) = delete;
 
         /**
          * \brief Assignment operator.
@@ -311,7 +320,21 @@ class Network_Stack {
          *
          * \return The assigned to object.
          */
-        constexpr auto operator=( TCP_Socket && expression ) noexcept -> TCP_Socket & = default;
+        constexpr auto & operator=( TCP_Socket && expression ) noexcept
+        {
+            if ( &expression != this ) {
+                m_driver        = expression.m_driver;
+                m_network_stack = expression.m_network_stack;
+                m_socket_id     = expression.m_socket_id;
+
+                expression.m_driver        = nullptr;
+                expression.m_network_stack = nullptr;
+            } // if
+
+            return *this;
+        }
+
+        auto operator=( TCP_Socket const & ) = delete;
 
       private:
         /**
