@@ -224,16 +224,16 @@ class Driver : public Device {
      *            configuration that meets the MCP3008's communication requirements.
      * \param[in] device_selector The SPI device selector used to select and deselect the
      *            MCP3008.
-     * \param[in] nonresponsive The error code to return when getting a sample fails due
-     *            to the MCP3008 being nonresponsive.
+     * \param[in] nonresponsive_device_error The error code to return when getting a
+     *            sample fails due to the MCP3008 being nonresponsive.
      */
     constexpr Driver(
         Controller &                       controller,
         typename Controller::Configuration configuration,
         Device_Selector                    device_selector,
-        Error_Code                         nonresponsive ) noexcept :
+        Error_Code                         nonresponsive_device_error ) noexcept :
         Device{ controller, configuration, std::move( device_selector ) },
-        m_nonresponsive{ nonresponsive }
+        m_nonresponsive_device_error{ nonresponsive_device_error }
     {
     }
 
@@ -265,12 +265,27 @@ class Driver : public Device {
     using Device::initialize;
 
     /**
+     * \brief Get the error code that is returned when getting a sample fails due to the
+     *        MCP3008 being nonresponsive.
+     *
+     * \return The error code that is returned when getting a sample fails due to the
+     *         MCP3008 being nonresponsive.
+     */
+    constexpr auto const & nonresponsive_device_error() const noexcept
+    {
+        return m_nonresponsive_device_error;
+    }
+
+    /**
      * \brief Get a sample.
      *
      * \param[in] input The input to get the sample from.
      *
      * \return A sample if getting the sample succeeded.
-     * \return An error code if getting the sample failed.
+     * \return picolibrary::Microchip::MCP3008::Driver<Controller_Type,
+     *         Device_Selector_Type>::nonresponsive_device_error() if getting the sample
+     *         failed due to the MCP3008 being nonresponsive.
+     * \return An error code if getting the sample failed for any other reason.
      */
     auto sample( Input input ) noexcept -> Result<Sample, Error_Code>
     {
@@ -309,7 +324,7 @@ class Driver : public Device {
         }
 
         if ( data[ 1 ] & 0b100 ) {
-            return m_nonresponsive;
+            return m_nonresponsive_device_error;
         } // if
 
         return Sample{ ( static_cast<Sample::Value>( data[ 1 ] & 0b11 )
@@ -322,7 +337,7 @@ class Driver : public Device {
      * \brief The error code to return when getting a sample fails due to the MCP3008
      *        being nonresponsive.
      */
-    Error_Code m_nonresponsive{};
+    Error_Code m_nonresponsive_device_error{};
 };
 
 /**
