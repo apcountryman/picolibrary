@@ -306,8 +306,12 @@ class Network_Stack {
      * \brief Constructor.
      *
      * \param[in] driver The driver for the W5500 the network stack utilizes.
+     * \param[in] nonresponsive_device_error The error code to return when an operation
+     *            fails due to the W5500 being nonresponsive.
      */
-    constexpr Network_Stack( Driver & driver ) noexcept : m_driver{ &driver }
+    constexpr Network_Stack( Driver & driver, Error_Code const & nonresponsive_device_error ) noexcept :
+        m_driver{ &driver },
+        m_nonresponsive_device_error{ nonresponsive_device_error }
     {
     }
 
@@ -317,7 +321,8 @@ class Network_Stack {
      * \param[in] source The source of the move.
      */
     constexpr Network_Stack( Network_Stack && source ) noexcept :
-        m_driver{ source.m_driver }
+        m_driver{ source.m_driver },
+        m_nonresponsive_device_error{ source.m_nonresponsive_device_error }
     {
         source.m_driver = nullptr;
     }
@@ -337,7 +342,8 @@ class Network_Stack {
     auto & operator=( Network_Stack && expression ) noexcept
     {
         if ( &expression != this ) {
-            m_driver = expression.m_driver;
+            m_driver                     = expression.m_driver;
+            m_nonresponsive_device_error = expression.m_nonresponsive_device_error;
 
             expression.m_driver = nullptr;
         } // if
@@ -346,11 +352,20 @@ class Network_Stack {
     }
 
     /**
+     * \brief Get the error code that is returned when an operation fails due to the W5500
+     *        being nonresponsive.
+     */
+    constexpr auto const & nonresponsive_device_error() const noexcept
+    {
+        return m_nonresponsive_device_error;
+    }
+
+    /**
      * \brief Check if the W5500 is responsive by reading the VERSIONR register.
      *
      * \return Nothing if the W5500 is responsive.
-     * \return picolibrary::Generic_Error::NONRESPONSIVE_DEVICE if the W5500 is not
-     *         responsive.
+     * \return picolibrary::WIZnet::W5500::Network_Stack<Driver>::nonresponsive_device_error()
+     *         if the W5500 is nonresponsive.
      * \return An error code if the check failed for any other reason.
      */
     auto ping_w5500() const noexcept -> Result<Void, Error_Code>
@@ -361,7 +376,7 @@ class Network_Stack {
         } // if
 
         if ( result.value() != VERSION ) {
-            return Generic_Error::NONRESPONSIVE_DEVICE;
+            return m_nonresponsive_device_error;
         } // if
 
         return {};
@@ -971,6 +986,12 @@ class Network_Stack {
      * \brief The driver for the W5500 the network stack utilizes.
      */
     Driver * m_driver{};
+
+    /**
+     * \brief The error code to return when an operation fails due to the W5500 being
+     *        nonresponsive.
+     */
+    Error_Code m_nonresponsive_device_error{};
 
     /**
      * \brief The TCP ephemeral port allocation enable state.

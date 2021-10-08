@@ -82,6 +82,21 @@ auto random_fixed_size_array()
 } // namespace
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::Network_Stack( Driver &,
+ *        picolibrary::Error_Code const & ) works properly.
+ */
+TEST( constructor, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto const nonresponsive_device_error = random<Mock_Error>();
+
+    auto const network_stack = Network_Stack{ driver, nonresponsive_device_error };
+
+    EXPECT_EQ( network_stack.nonresponsive_device_error(), nonresponsive_device_error );
+}
+
+/**
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::ping_w5500() properly handles
  *        a VERSIONR register read error.
  */
@@ -89,7 +104,7 @@ TEST( pingW5500, versionrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -109,7 +124,9 @@ TEST( pingW5500, incorrectChipVersion )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const nonresponsive_device_error = random<Mock_Error>();
+
+    auto const network_stack = Network_Stack{ driver, nonresponsive_device_error };
 
     EXPECT_CALL( driver, read_versionr() )
         .WillOnce( Return(
@@ -118,7 +135,7 @@ TEST( pingW5500, incorrectChipVersion )
     auto const result = network_stack.ping_w5500();
 
     EXPECT_TRUE( result.is_error() );
-    EXPECT_EQ( result.error(), Generic_Error::NONRESPONSIVE_DEVICE );
+    EXPECT_EQ( result.error(), nonresponsive_device_error );
 }
 
 /**
@@ -128,7 +145,7 @@ TEST( pingW5500, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     EXPECT_CALL( driver, read_versionr() ).WillOnce( Return( static_cast<std::uint8_t>( 0x04 ) ) );
 
@@ -143,7 +160,7 @@ TEST( configurePHY, phycfgrWriteErrorPHYConfiguration )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -163,7 +180,7 @@ TEST( configurePHY, phycfgrWriteErrorEnterPHYReset )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -185,7 +202,7 @@ TEST( configurePHY, phycfgrWriteErrorExitPHYReset )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -210,7 +227,7 @@ TEST( configurePHY, worksProperly )
 
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const phy_mode = random<PHY_Mode>();
 
@@ -232,7 +249,7 @@ TEST( phyMode, phycfgrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -251,7 +268,7 @@ TEST( phyMode, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const phycfgr = random<std::uint8_t>();
 
@@ -271,7 +288,7 @@ TEST( linkStatus, phycfgrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -290,7 +307,7 @@ TEST( linkStatus, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const phycfgr = random<std::uint8_t>();
 
@@ -310,7 +327,7 @@ TEST( linkMode, phycfgrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -329,7 +346,7 @@ TEST( linkMode, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const phycfgr = random<std::uint8_t>();
 
@@ -349,7 +366,7 @@ TEST( linkSpeed, phycfgrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -368,7 +385,7 @@ TEST( linkSpeed, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const phycfgr = random<std::uint8_t>();
 
@@ -388,7 +405,7 @@ TEST( configurePingBlocking, mrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -408,7 +425,7 @@ TEST( configurePingBlocking, mrWriteError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -429,7 +446,7 @@ TEST( configurePingBlocking, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const mr                          = random<std::uint8_t>();
     auto const ping_blocking_configuration = random<Ping_Blocking>();
@@ -449,7 +466,7 @@ TEST( pingBlockingConfiguration, mrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -469,7 +486,7 @@ TEST( pingBlockingConfiguration, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const mr = random<std::uint8_t>();
 
@@ -489,7 +506,7 @@ TEST( configureARPForcing, mrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -509,7 +526,7 @@ TEST( configureARPForcing, mrWriteError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -530,7 +547,7 @@ TEST( configureARPForcing, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const mr                        = random<std::uint8_t>();
     auto const arp_forcing_configuration = random<ARP_Forcing>();
@@ -550,7 +567,7 @@ TEST( arpForcingConfiguration, mrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -570,7 +587,7 @@ TEST( arpForcingConfiguration, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const mr = random<std::uint8_t>();
 
@@ -590,7 +607,7 @@ TEST( configureRetransmission, rtrWriteError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -611,7 +628,7 @@ TEST( configureRetransmission, rcrWriteError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -635,7 +652,7 @@ TEST( configureRetransmission, worksProperly )
 
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const retry_time  = random<std::uint16_t>();
     auto const retry_count = random<std::uint8_t>();
@@ -654,7 +671,7 @@ TEST( retryTime, rtrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -673,7 +690,7 @@ TEST( retryTime, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const rtr = random<std::uint16_t>();
 
@@ -693,7 +710,7 @@ TEST( retryCount, rcrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -712,7 +729,7 @@ TEST( retryCount, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const rcr = random<std::uint8_t>();
 
@@ -738,7 +755,7 @@ TEST( configureSocketBuffers, insufficientBufferSize )
     for ( auto const insufficient_buffer_size : insufficient_buffer_sizes ) {
         auto driver = Mock_Driver{};
 
-        auto network_stack = Network_Stack{ driver };
+        auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
         EXPECT_CALL( driver, write_sn_txbuf_size( _, _ ) ).Times( 0 );
         EXPECT_CALL( driver, write_sn_rxbuf_size( _, _ ) ).Times( 0 );
@@ -766,7 +783,7 @@ TEST( configureSocketBuffers, invalidBufferSize )
     for ( auto const invalid_buffer_size : invalid_buffer_sizes ) {
         auto driver = Mock_Driver{};
 
-        auto network_stack = Network_Stack{ driver };
+        auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
         EXPECT_CALL( driver, write_sn_txbuf_size( _, _ ) ).Times( 0 );
         EXPECT_CALL( driver, write_sn_rxbuf_size( _, _ ) ).Times( 0 );
@@ -787,7 +804,7 @@ TEST( configureSocketBuffers, writeSNRXBUFSIZEErrorAvailableSocket )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -810,7 +827,7 @@ TEST( configureSocketBuffers, writeSNTXBUFSIZEErrorAvailableSocket )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -833,7 +850,7 @@ TEST( configureSocketBuffers, writeSNRXBUFSIZEErrorUnusedSocket )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const buffer_size = random<Buffer_Size>( Buffer_Size::_4_KIB );
 
@@ -864,7 +881,7 @@ TEST( configureSocketBuffers, writeSNTXBUFSIZEErrorUnusedSocket )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const buffer_size = random<Buffer_Size>( Buffer_Size::_4_KIB );
 
@@ -907,7 +924,7 @@ TEST( configureSocketBuffers, worksProperly )
 
         auto driver = Mock_Driver{};
 
-        auto network_stack = Network_Stack{ driver };
+        auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
         for ( auto socket = std::uint8_t{}; socket < configuration.available_sockets; ++socket ) {
             EXPECT_CALL(
@@ -949,7 +966,7 @@ TEST( socketBufferSize, snrxbufsizeReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -969,7 +986,7 @@ TEST( socketBufferSize, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const sn_rxbuf_size = random<std::uint8_t>();
 
@@ -989,7 +1006,7 @@ TEST( configureMACAddress, sharWriteError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -1009,7 +1026,7 @@ TEST( configureMACAddress, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const address = random<MAC_Address>();
 
@@ -1026,7 +1043,7 @@ TEST( macAddress, sharReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -1045,7 +1062,7 @@ TEST( macAddress, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const shar = random_fixed_size_array<std::uint8_t, 6>();
 
@@ -1065,7 +1082,7 @@ TEST( configureIPAddress, siprWriteError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -1085,7 +1102,7 @@ TEST( configureIPAddress, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const address = random<IPv4_Address>();
 
@@ -1102,7 +1119,7 @@ TEST( ipAddress, siprReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -1121,7 +1138,7 @@ TEST( ipAddress, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const sipr = random_fixed_size_array<std::uint8_t, 4>();
 
@@ -1141,7 +1158,7 @@ TEST( configureGatewayIPAddress, garWriteError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -1161,7 +1178,7 @@ TEST( configureGatewayIPAddress, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const address = random<IPv4_Address>();
 
@@ -1178,7 +1195,7 @@ TEST( gatewayIPAddress, garReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -1198,7 +1215,7 @@ TEST( gatewayIPAddress, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const gar = random_fixed_size_array<std::uint8_t, 4>();
 
@@ -1218,7 +1235,7 @@ TEST( configureSubnetMask, subrWriteError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -1238,7 +1255,7 @@ TEST( configureSubnetMask, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const subnet_mask = random<IPv4_Address>();
 
@@ -1256,7 +1273,7 @@ TEST( subnetMask, subrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -1275,7 +1292,7 @@ TEST( subnetMask, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const subr = random_fixed_size_array<std::uint8_t, 4>();
 
@@ -1296,7 +1313,7 @@ TEST( configureInterruptAssertWaitTime, intlevelWriteError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -1317,7 +1334,7 @@ TEST( configureInterruptAssertWaitTime, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const interrupt_assert_wait_time = random<std::uint16_t>();
 
@@ -1336,7 +1353,7 @@ TEST( interruptAssertWaitTime, intlevelReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -1356,7 +1373,7 @@ TEST( interruptAssertWaitTime, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const intlevel = random<std::uint16_t>();
 
@@ -1376,7 +1393,7 @@ TEST( enableInterrupts, imrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -1396,7 +1413,7 @@ TEST( enableInterrupts, imrWriteError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -1417,7 +1434,7 @@ TEST( enableInterrupts, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const imr  = random<std::uint8_t>();
     auto const mask = random<std::uint8_t>();
@@ -1436,7 +1453,7 @@ TEST( disableInterrupts, imrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -1456,7 +1473,7 @@ TEST( disableInterrupts, imrWriteError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -1477,7 +1494,7 @@ TEST( disableInterrupts, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const imr  = random<std::uint8_t>();
     auto const mask = random<std::uint8_t>();
@@ -1496,7 +1513,7 @@ TEST( disableAllInterrupts, imrWriteError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -1516,7 +1533,7 @@ TEST( disableAllInterrupts, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     EXPECT_CALL( driver, write_imr( 0 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
@@ -1531,7 +1548,7 @@ TEST( enabledInterrupts, imrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -1551,7 +1568,7 @@ TEST( enabledInterrupts, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const imr = random<std::uint8_t>();
 
@@ -1571,7 +1588,7 @@ TEST( interruptContext, irReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -1591,7 +1608,7 @@ TEST( interruptContext, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const ir = random<std::uint8_t>();
 
@@ -1611,7 +1628,7 @@ TEST( enableSocketInterrupts, simrWriteError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -1631,7 +1648,7 @@ TEST( enableSocketInterrupts, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     EXPECT_CALL( driver, write_simr( 0xFF ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
@@ -1646,7 +1663,7 @@ TEST( disableSocketInterrupts, simrWriteError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -1666,7 +1683,7 @@ TEST( disableSocketInterrupts, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     EXPECT_CALL( driver, write_simr( 0x00 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
@@ -1681,7 +1698,7 @@ TEST( enabledSocketInterrupts, simrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -1701,7 +1718,7 @@ TEST( enabledSocketInterrupts, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const simr = random<std::uint8_t>();
 
@@ -1721,7 +1738,7 @@ TEST( socketInterruptContext, sirReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const error = random<Mock_Error>();
 
@@ -1741,7 +1758,7 @@ TEST( socketInterruptContext, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto const network_stack = Network_Stack{ driver };
+    auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const sir = random<std::uint8_t>();
 
@@ -1760,7 +1777,7 @@ TEST( service, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     EXPECT_FALSE( network_stack.service().is_error() );
 }
@@ -1774,7 +1791,7 @@ TEST( enableTCPEphemeralPortAllocation, alreadyEnabled )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const min = random<TCP_Port>( 1 );
     auto const max = random<TCP_Port>( min );
@@ -1796,7 +1813,7 @@ TEST( enableTCPEphemeralPortAllocation, invalidPortRange )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const min = random<TCP_Port>( 1 );
     auto const max = random<TCP_Port>( 0, min.as_unsigned_integer() - 1 );
@@ -1816,7 +1833,7 @@ TEST( enableTCPEphemeralPortAllocation, invalidPortRangeBound )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const result = network_stack.enable_tcp_ephemeral_port_allocation(
         0, random<TCP_Port>( 0 ) );
@@ -1834,7 +1851,7 @@ TEST( enableTCPEphemeralPortAllocation, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const min = random<TCP_Port>( 1 );
     auto const max = random<TCP_Port>( min );
