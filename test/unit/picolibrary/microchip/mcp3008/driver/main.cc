@@ -59,7 +59,7 @@ using Driver =
 } // namespace
 
 /**
- * \brief Verify picolibrary::Microchip::MCP3008::Driver::Driver( Controller,
+ * \brief Verify picolibrary::Microchip::MCP3008::Driver::Driver( Controller &,
  *        Controller::Configuration, Device_Selector, picolibrary::Error_Code ) works
  *        properly.
  */
