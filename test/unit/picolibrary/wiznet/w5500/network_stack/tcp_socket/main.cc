@@ -74,7 +74,7 @@ TEST( socketID, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const socket_id = random<Socket_ID>();
 
@@ -111,7 +111,7 @@ TEST( socketInterruptMask, worksProperly )
     for ( auto const test_case : test_cases ) {
         auto driver = Mock_Driver{};
 
-        auto network_stack = Network_Stack{ driver };
+        auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
         auto const socket = Socket{ network_stack, test_case.socket_id };
 
@@ -128,7 +128,7 @@ TEST( enabledInterrupts, snimrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const socket = Socket{ network_stack, random<Socket_ID>() };
 
@@ -151,7 +151,7 @@ TEST( enabledInterrupts, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const socket_id = random<Socket_ID>();
 
@@ -176,7 +176,7 @@ TEST( interruptContext, snirReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const socket = Socket{ network_stack, random<Socket_ID>() };
 
@@ -199,7 +199,7 @@ TEST( interruptContext, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const socket_id = random<Socket_ID>();
 
@@ -224,7 +224,7 @@ TEST( noDelayedACKConfiguration, mrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const socket = Socket{ network_stack, random<Socket_ID>() };
 
@@ -247,7 +247,7 @@ TEST( noDelayedACKConfiguration, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const socket_id = random<Socket_ID>();
 
@@ -272,7 +272,7 @@ TEST( maximumSegmentSize, snmssrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const socket = Socket{ network_stack, random<Socket_ID>() };
 
@@ -295,7 +295,7 @@ TEST( maximumSegmentSize, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const socket_id = random<Socket_ID>();
 
@@ -320,7 +320,7 @@ TEST( timeToLive, snttlReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const socket = Socket{ network_stack, random<Socket_ID>() };
 
@@ -343,7 +343,7 @@ TEST( timeToLive, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const socket_id = random<Socket_ID>();
 
@@ -368,7 +368,7 @@ TEST( keepalivePeriod, snkpalvtrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const socket = Socket{ network_stack, random<Socket_ID>() };
 
@@ -391,7 +391,7 @@ TEST( keepalivePeriod, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const socket_id = random<Socket_ID>();
 
@@ -416,7 +416,7 @@ TEST( isConnected, snsrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const socket = Socket{ network_stack, random<Socket_ID>() };
 
@@ -455,7 +455,7 @@ TEST( isConnected, worksProperly )
     for ( auto const test_case : test_cases ) {
         auto driver = Mock_Driver{};
 
-        auto network_stack = Network_Stack{ driver };
+        auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
         auto const socket_id = random<Socket_ID>();
 
@@ -479,7 +479,7 @@ TEST( remoteEndpoint, sndiprReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const socket = Socket{ network_stack, random<Socket_ID>() };
 
@@ -502,7 +502,7 @@ TEST( remoteEndpoint, sndportReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const socket = Socket{ network_stack, random<Socket_ID>() };
 
@@ -526,7 +526,7 @@ TEST( remoteEndpoint, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const socket_id = random<Socket_ID>();
 
@@ -555,7 +555,7 @@ TEST( localEndpoint, siprReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const socket = Socket{ network_stack, random<Socket_ID>() };
 
@@ -578,7 +578,7 @@ TEST( localEndpoint, snportReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const socket = Socket{ network_stack, random<Socket_ID>() };
 
@@ -602,7 +602,7 @@ TEST( localEndpoint, worksProperly )
 {
     auto driver = Mock_Driver{};
 
-    auto network_stack = Network_Stack{ driver };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
     auto const socket_id = random<Socket_ID>();
 
