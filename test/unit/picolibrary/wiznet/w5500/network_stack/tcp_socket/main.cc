@@ -26,19 +26,26 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "picolibrary/error.h"
 #include "picolibrary/fixed_size_array.h"
+#include "picolibrary/result.h"
 #include "picolibrary/testing/unit/error.h"
 #include "picolibrary/testing/unit/random.h"
 #include "picolibrary/testing/unit/wiznet/w5500.h"
+#include "picolibrary/void.h"
 #include "picolibrary/wiznet/w5500.h"
 #include "picolibrary/wiznet/w5500/network_stack.h"
 
 namespace {
 
+using ::picolibrary::Error_Code;
 using ::picolibrary::Fixed_Size_Array;
+using ::picolibrary::Result;
+using ::picolibrary::Void;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::WIZnet::W5500::Mock_Driver;
+using ::picolibrary::WIZnet::W5500::Buffer_Size;
 using ::picolibrary::WIZnet::W5500::Network_Stack;
 using ::picolibrary::WIZnet::W5500::No_Delayed_ACK;
 using ::picolibrary::WIZnet::W5500::Socket_ID;
@@ -620,6 +627,135 @@ TEST( localEndpoint, worksProperly )
     EXPECT_TRUE( result.value().address().is_ipv4() );
     EXPECT_EQ( result.value().address().ipv4().as_byte_array(), sipr );
     EXPECT_EQ( result.value().port().as_unsigned_integer(), port );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::outstanding() properly
+ *        handles an SN_TX_FSR register read error.
+ */
+TEST( outstanding, sntxfsrReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    auto const socket = Socket{ network_stack, random<Socket_ID>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = socket.outstanding();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::outstanding() properly
+ *        handles a nonresponsive device error.
+ */
+TEST( outstanding, nonresponsiveDeviceError )
+{
+    struct {
+        Buffer_Size   buffer_size;
+        std::uint16_t sn_tx_fsr_max;
+    } const test_cases[]{
+        { Buffer_Size::_2_KIB, 2 * 1024 },
+        { Buffer_Size::_4_KIB, 4 * 1024 },
+        { Buffer_Size::_8_KIB, 8 * 1024 },
+        { Buffer_Size::_16_KIB, 16 * 1024 },
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver = Mock_Driver{};
+
+        auto const nonresponsive_device_error = random<Mock_Error>();
+
+        auto network_stack = Network_Stack{ driver, nonresponsive_device_error };
+
+        EXPECT_CALL( driver, write_sn_rxbuf_size( _, _ ) ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, write_sn_txbuf_size( _, _ ) ).WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+
+        EXPECT_FALSE( network_stack.configure_socket_buffers( test_case.buffer_size ).is_error() );
+
+        auto const socket = Socket{ network_stack, random<Socket_ID>() };
+
+        EXPECT_CALL( driver, read_sn_tx_fsr( _ ) )
+            .WillOnce( Return( random<std::uint16_t>( test_case.sn_tx_fsr_max + 1 ) ) );
+
+        auto const result = socket.outstanding();
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), nonresponsive_device_error );
+    } // for
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::outstanding() works
+ *        properly.
+ */
+TEST( outstanding, worksProperly )
+{
+    {
+        auto driver = Mock_Driver{};
+
+        auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+        auto const socket_id = random<Socket_ID>();
+
+        auto const socket = Socket{ network_stack, socket_id };
+
+        auto const sn_tx_fsr = random<std::uint16_t>( 0, 2 * 1024 );
+
+        EXPECT_CALL( driver, read_sn_tx_fsr( socket_id ) ).WillOnce( Return( sn_tx_fsr ) );
+
+        auto const result = socket.outstanding();
+
+        EXPECT_TRUE( result.is_value() );
+        EXPECT_EQ( result.value(), ( 2 * 1024 ) - sn_tx_fsr );
+    }
+
+    {
+        struct {
+            Buffer_Size   buffer_size;
+            std::uint16_t sn_tx_fsr_max;
+        } const test_cases[]{
+            { Buffer_Size::_2_KIB, 2 * 1024 },
+            { Buffer_Size::_4_KIB, 4 * 1024 },
+            { Buffer_Size::_8_KIB, 8 * 1024 },
+            { Buffer_Size::_16_KIB, 16 * 1024 },
+        };
+
+        for ( auto const test_case : test_cases ) {
+            auto driver = Mock_Driver{};
+
+            auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+            EXPECT_CALL( driver, write_sn_rxbuf_size( _, _ ) )
+                .WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, write_sn_txbuf_size( _, _ ) )
+                .WillRepeatedly( Return( Result<Void, Error_Code>{} ) );
+
+            EXPECT_FALSE( network_stack.configure_socket_buffers( test_case.buffer_size ).is_error() );
+
+            auto const socket_id = random<Socket_ID>();
+
+            auto const socket = Socket{ network_stack, socket_id };
+
+            auto const sn_tx_fsr = random<std::uint16_t>( 0, test_case.sn_tx_fsr_max );
+
+            EXPECT_CALL( driver, read_sn_tx_fsr( socket_id ) ).WillOnce( Return( sn_tx_fsr ) );
+
+            auto const result = socket.outstanding();
+
+            EXPECT_TRUE( result.is_value() );
+            EXPECT_EQ( result.value(), test_case.sn_tx_fsr_max - sn_tx_fsr );
+        } // for
+    }
 }
 
 /**

@@ -251,6 +251,33 @@ class Network_Stack {
             return IP::TCP::Endpoint{ IPv4::Address{ sipr }, IP::TCP::Port{ sn_port } };
         }
 
+        /**
+         * \brief Get the amount of data that has yet to be transmitted to the remote
+         *        endpoint.
+         *
+         * \return The amount of data that has yet to be transmitted to the remote
+         *         endpoint if getting the amount of data that has yet to be transmitted
+         *         to the remote endpoint succeeded.
+         * \return picolibrary::WIZnet::W5500::Network_Stack<Driver>::nonresponsive_device_error()
+         *         if the W5500 is nonresponsive.
+         * \return An error code if getting the amount of data that has yet to be
+         *         transmitted to the remote endpoint failed for any other reason.
+         */
+        auto outstanding() const noexcept -> Result<Size, Error_Code>
+        {
+            auto result = m_driver->read_sn_tx_fsr( m_socket_id );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            if ( result.value() > m_network_stack->m_cached_socket_buffer_size_bytes ) {
+                return m_network_stack->m_nonresponsive_device_error;
+            } // if
+
+            return static_cast<Size>(
+                m_network_stack->m_cached_socket_buffer_size_bytes - result.value() );
+        }
+
       protected:
         /**
          * \brief Constructor.
@@ -265,6 +292,7 @@ class Network_Stack {
          */
         constexpr TCP_Socket( Network_Stack & network_stack, Socket_ID socket_id ) noexcept :
             m_driver{ network_stack.m_driver },
+            m_network_stack{ &network_stack },
             m_socket_id{ socket_id }
         {
         }
@@ -290,6 +318,11 @@ class Network_Stack {
          * \brief The driver for the W5500 the network stack utilizes.
          */
         Driver * m_driver{};
+
+        /**
+         * \brief The network stack the socket is associated with.
+         */
+        Network_Stack * m_network_stack{};
 
         /**
          * \brief The socket's socket ID.
@@ -611,13 +644,26 @@ class Network_Stack {
     {
         // #lizard forgives the length
 
-        auto available_sockets = std::uint8_t{};
+        auto available_sockets        = std::uint8_t{};
+        auto socket_buffer_size_bytes = std::uint16_t{};
 
         switch ( buffer_size ) {
-            case Buffer_Size::_2_KIB: available_sockets = 16 / 2; break;
-            case Buffer_Size::_4_KIB: available_sockets = 16 / 4; break;
-            case Buffer_Size::_8_KIB: available_sockets = 16 / 8; break;
-            case Buffer_Size::_16_KIB: available_sockets = 16 / 16; break;
+            case Buffer_Size::_2_KIB:
+                available_sockets        = 16 / 2;
+                socket_buffer_size_bytes = 2 * 1024;
+                break;
+            case Buffer_Size::_4_KIB:
+                available_sockets        = 16 / 4;
+                socket_buffer_size_bytes = 4 * 1024;
+                break;
+            case Buffer_Size::_8_KIB:
+                available_sockets        = 16 / 8;
+                socket_buffer_size_bytes = 8 * 1024;
+                break;
+            case Buffer_Size::_16_KIB:
+                available_sockets        = 16 / 16;
+                socket_buffer_size_bytes = 16 * 1024;
+                break;
             default: return Generic_Error::INVALID_ARGUMENT;
         } // switch
 
@@ -658,6 +704,8 @@ class Network_Stack {
                 } // if
             }
         } // for
+
+        m_cached_socket_buffer_size_bytes = socket_buffer_size_bytes;
 
         return {};
     }
@@ -986,6 +1034,11 @@ class Network_Stack {
      * \brief The driver for the W5500 the network stack utilizes.
      */
     Driver * m_driver{};
+
+    /**
+     * \brief The cached socket buffer size, in bytes.
+     */
+    std::uint16_t m_cached_socket_buffer_size_bytes{ 2 * 1024 };
 
     /**
      * \brief The error code to return when an operation fails due to the W5500 being
