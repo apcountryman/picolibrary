@@ -59,6 +59,22 @@ using Driver =
 } // namespace
 
 /**
+ * \brief Verify picolibrary::Microchip::MCP3008::Driver::Driver( Controller,
+ *        Controller::Configuration, Device_Selector, picolibrary::Error_Code ) works
+ *        properly.
+ */
+TEST( constructor, worksProperly )
+{
+    auto controller = Mock_Controller{};
+
+    auto const nonresponsive_device_error = random<Mock_Error>();
+
+    auto const mcp3008 = Driver{ controller, {}, {}, nonresponsive_device_error };
+
+    EXPECT_EQ( mcp3008.nonresponsive_device_error(), nonresponsive_device_error );
+}
+
+/**
  * \brief Verify picolibrary::Microchip::MCP3008::Driver::sample() properly handles a
  *        configuration error.
  */
@@ -132,15 +148,15 @@ TEST( sample, dataExchangeError )
 
 /**
  * \brief Verify picolibrary::Microchip::MCP3008::Driver::sample() properly handles a
- *        nonresponsive device.
+ *        nonresponsive device error.
  */
-TEST( sample, nonresponsiveDevice )
+TEST( sample, nonresponsiveDeviceError )
 {
     auto controller = Mock_Controller{};
 
-    auto const nonresponsive = random<Mock_Error>();
+    auto const nonresponsive_device_error = random<Mock_Error>();
 
-    auto mcp3008 = Driver{ controller, {}, {}, nonresponsive };
+    auto mcp3008 = Driver{ controller, {}, {}, nonresponsive_device_error };
 
     auto device_selector        = Mock_Device_Selector{};
     auto device_selector_handle = device_selector.handle();
@@ -164,7 +180,7 @@ TEST( sample, nonresponsiveDevice )
     auto const result = mcp3008.sample( {} );
 
     EXPECT_TRUE( result.is_error() );
-    EXPECT_EQ( result.error(), nonresponsive );
+    EXPECT_EQ( result.error(), nonresponsive_device_error );
 }
 
 /**
