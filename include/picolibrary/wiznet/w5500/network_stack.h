@@ -278,6 +278,33 @@ class Network_Stack {
                 m_network_stack->m_cached_socket_buffer_size_bytes - result.value() );
         }
 
+        /**
+         * \brief Get the amount of data that is immediately available to be received from
+         *        the remote endpoint.
+         *
+         * \return The amount of data that is immediately available to be received from
+         *         the remote endpoint if getting the amount of data that is immediately
+         *         available to be received from the remote endpoint succeeded.
+         * \return picolibrary::WIZnet::W5500::Network_Stack<Driver>::nonresponsive_device_error()
+         *         if the W5500 is nonresponsive.
+         * \return An error code if getting the amount of data that is immediately
+         *         available to be received from the remote endpoint failed for any other
+         *         reason.
+         */
+        auto available() const noexcept -> Result<Size, Error_Code>
+        {
+            auto result = m_driver->read_sn_rx_rsr( m_socket_id );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            if ( result.value() > m_network_stack->m_cached_socket_buffer_size_bytes ) {
+                return m_network_stack->m_nonresponsive_device_error;
+            } // if
+
+            return result.value();
+        }
+
       protected:
         /**
          * \brief Constructor.
