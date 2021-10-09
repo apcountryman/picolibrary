@@ -171,7 +171,10 @@ class Network_Stack {
          *         is connected to a remote endpoint.
          * \return false if getting the socket's connection state succeeded and the socket
          *         is not connected to a remote endpoint.
-         * \return An error code if getting the socket's connection state failed.
+         * \return picolibrary::WIZnet::W5500::Network_Stack<Driver>::nonresponsive_device_error()
+         *         if the W5500 is nonresponsive.
+         * \return An error code if getting the socket's connection state failed for any
+         *         other reason.
          */
         auto is_connected() const noexcept -> Result<bool, Error_Code>
         {
@@ -181,9 +184,18 @@ class Network_Stack {
             } // if
 
             switch ( static_cast<Socket_Status>( result.value() ) ) {
-                case Socket_Status::ESTABLISHED: [[fallthrough]];
+                case Socket_Status::CLOSED: return false;
+                case Socket_Status::OPENED_TCP: return false;
+                case Socket_Status::LISTEN: return false;
+                case Socket_Status::ESTABLISHED: return true;
                 case Socket_Status::CLOSE_WAIT: return true;
-                default: return false;
+                case Socket_Status::SYN_SENT: return false;
+                case Socket_Status::SYN_RECEIVED: return false;
+                case Socket_Status::FIN_WAIT: return false;
+                case Socket_Status::CLOSING: return false;
+                case Socket_Status::TIME_WAIT: return false;
+                case Socket_Status::LAST_ACK: return false;
+                default: return m_network_stack->m_nonresponsive_device_error;
             } // switch
         }
 

@@ -433,6 +433,42 @@ TEST( isConnected, snsrReadError )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::is_connected()
+ *        properly handles a nonresponsive device error.
+ */
+TEST( isConnected, nonresponsiveDeviceError )
+{
+    struct {
+        std::uint8_t sn_sr;
+    } const test_cases[]{
+        // clang-format off
+
+        { random<std::uint8_t>( 0x01, 0x12 ) },
+        { 0x19                               },
+        { random<std::uint8_t>( 0x1E, 0xFF ) },
+
+        // clang-format on
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver = Mock_Driver{};
+
+        auto const nonresponsive_device_error = random<Mock_Error>();
+
+        auto network_stack = Network_Stack{ driver, nonresponsive_device_error };
+
+        auto const socket = Socket{ network_stack, random<Socket_ID>() };
+
+        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( test_case.sn_sr ) );
+
+        auto const result = socket.is_connected();
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), nonresponsive_device_error );
+    } // for
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::is_connected()
  *        works properly.
  */
 TEST( isConnected, worksProperly )
@@ -443,11 +479,17 @@ TEST( isConnected, worksProperly )
     } const test_cases[]{
         // clang-format off
 
-        { random<std::uint8_t>( 0x00, 0x16 ), false },
-        {                       0x17,         true  },
-        { random<std::uint8_t>( 0x18, 0x1B ), false },
-        {                       0x1C,         true  },
-        { random<std::uint8_t>( 0x1D, 0xFF ), false },
+        { 0x00, false },
+        { 0x13, false },
+        { 0x14, false },
+        { 0x15, false },
+        { 0x16, false },
+        { 0x17, true  },
+        { 0x18, false },
+        { 0x1A, false },
+        { 0x1B, false },
+        { 0x1C, true  },
+        { 0x1D, false },
 
         // clang-format on
     };
