@@ -291,6 +291,136 @@ class Network_Stack {
         }
 
         /**
+         * \brief Transmit data to the remote endpoint.
+         *
+         * \param[in] begin The beginning of the block of data to write to the socket's
+         *            transmit buffer.
+         * \param[in] end The end of the block of data to write to the socket's transmit
+         *            buffer.
+         *
+         * \return The end of the data that was written to the socket's transmit buffer if
+         *         writing data to the socket's transmit buffer succeeded.
+         * \return picolibrary::Generic_Error::CONNECTION_LOST if the socket is not
+         *         connected to a remote endpoint.
+         * \return picolibrary::Generic_Error::WOULD_BLOCK if no data could be written to
+         *         the socket's transmit buffer without blocking.
+         * \return picolibrary::WIZnet::W5500::Network_Stack<Driver>::nonresponsive_device_error()
+         *         if the W5500 is nonresponsive.
+         * \return An error code if writing data to the socket's transmit buffer failed
+         *         for any other reason.
+         */
+        auto transmit( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+            -> Result<std::uint8_t const *, Error_Code>
+        {
+            {
+                auto result = m_driver->read_sn_sr( m_socket_id );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+
+                switch ( static_cast<Socket_Status>( result.value() ) ) {
+                    case Socket_Status::CLOSED: return Generic_Error::CONNECTION_LOST;
+                    case Socket_Status::OPENED_TCP: return Generic_Error::CONNECTION_LOST;
+                    case Socket_Status::LISTEN: return Generic_Error::CONNECTION_LOST;
+                    case Socket_Status::ESTABLISHED: break;
+                    case Socket_Status::CLOSE_WAIT: break;
+                    case Socket_Status::SYN_SENT: return Generic_Error::CONNECTION_LOST;
+                    case Socket_Status::SYN_RECEIVED:
+                        return Generic_Error::CONNECTION_LOST;
+                    case Socket_Status::FIN_WAIT: return Generic_Error::CONNECTION_LOST;
+                    case Socket_Status::CLOSING: return Generic_Error::CONNECTION_LOST;
+                    case Socket_Status::TIME_WAIT: return Generic_Error::CONNECTION_LOST;
+                    case Socket_Status::LAST_ACK: return Generic_Error::CONNECTION_LOST;
+                    default: return m_network_stack->m_nonresponsive_device_error;
+                } // switch
+            }
+
+            if ( m_transmitting ) {
+                {
+                    auto result = m_driver->read_sn_ir( m_socket_id );
+                    if ( result.is_error() ) {
+                        return result.error();
+                    } // if
+
+                    if ( not( result.value() & Socket_Interrupt::DATA_SENT ) ) {
+                        return Generic_Error::WOULD_BLOCK;
+                    } // if
+                }
+
+                auto result = m_driver->write_sn_ir( m_socket_id, Socket_Interrupt::DATA_SENT );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+
+                m_transmitting = false;
+            } // if
+
+            if ( begin == end ) {
+                return end;
+            } // if
+
+            {
+                auto result = m_driver->read_sn_tx_fsr( m_socket_id );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+
+                if ( result.value() > m_network_stack->m_cached_socket_buffer_size_bytes ) {
+                    return m_network_stack->m_nonresponsive_device_error;
+                } // if
+
+                if ( end - begin > result.value() ) {
+                    end = begin + result.value();
+                } // if
+            }
+
+            SN_TX_WR::Type sn_tx_wr;
+            {
+                auto result = m_driver->read_sn_tx_wr( m_socket_id );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+
+                sn_tx_wr = result.value();
+            }
+
+            {
+                auto result = m_driver->write( m_socket_id, sn_tx_wr, begin, end );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+
+            {
+                auto result = m_driver->write_sn_tx_wr( m_socket_id, sn_tx_wr + ( end - begin ) );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+
+            {
+                auto result = m_driver->write_sn_cr(
+                    m_socket_id, static_cast<SN_CR::Type>( Command::SEND ) );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+
+            for ( ;; ) {
+                auto result = m_driver->read_sn_cr( m_socket_id );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+
+                switch ( static_cast<Command>( result.value() ) ) {
+                    case Command::NONE: m_transmitting = true; return end;
+                    case Command::SEND: break;
+                    default: return m_network_stack->m_nonresponsive_device_error;
+                } // switch
+            }     // for
+        }
+
+        /**
          * \brief Get the amount of data that is immediately available to be received from
          *        the remote endpoint.
          *
@@ -344,7 +474,8 @@ class Network_Stack {
         constexpr TCP_Socket( TCP_Socket && source ) noexcept :
             m_driver{ source.m_driver },
             m_network_stack{ source.m_network_stack },
-            m_socket_id{ source.m_socket_id }
+            m_socket_id{ source.m_socket_id },
+            m_transmitting{ source.m_transmitting }
         {
             source.m_driver        = nullptr;
             source.m_network_stack = nullptr;
@@ -365,6 +496,7 @@ class Network_Stack {
                 m_driver        = expression.m_driver;
                 m_network_stack = expression.m_network_stack;
                 m_socket_id     = expression.m_socket_id;
+                m_transmitting  = expression.m_transmitting;
 
                 expression.m_driver        = nullptr;
                 expression.m_network_stack = nullptr;
@@ -390,6 +522,11 @@ class Network_Stack {
          * \brief The socket's socket ID.
          */
         Socket_ID m_socket_id{};
+
+        /**
+         * \brief The socket's transmitting flag.
+         */
+        bool m_transmitting{};
     };
 
     /**
