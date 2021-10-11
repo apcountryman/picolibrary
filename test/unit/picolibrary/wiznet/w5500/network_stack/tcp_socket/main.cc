@@ -1508,6 +1508,216 @@ TEST( transmit, worksProperly )
 }
 
 /**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::transmit_keepalive()
+ *        properly handles an SN_SR register read error.
+ */
+TEST( transmitKeepalive, snsrReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    auto socket = Socket{ network_stack, random<Socket_ID>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = socket.transmit_keepalive();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::transmit_keepalive()
+ *        properly handles a nonresponsive device error when reading the SN_SR register.
+ */
+TEST( transmitKeepalive, nonresponsiveDeviceErrorSNSR )
+{
+    struct {
+        std::uint8_t sn_sr;
+    } const test_cases[]{
+        // clang-format off
+
+        { random<std::uint8_t>( 0x01, 0x12 ) },
+        { 0x19                               },
+        { random<std::uint8_t>( 0x1E, 0xFF ) },
+
+        // clang-format on
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver = Mock_Driver{};
+
+        auto const nonresponsive_device_error = random<Mock_Error>();
+
+        auto network_stack = Network_Stack{ driver, nonresponsive_device_error };
+
+        auto socket = Socket{ network_stack, random<Socket_ID>() };
+
+        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( test_case.sn_sr ) );
+
+        auto const result = socket.transmit_keepalive();
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), nonresponsive_device_error );
+    } // for
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::transmit_keepalive()
+ *        properly handles the socket not being connected to a remote endpoint.
+ */
+TEST( transmitKeepalive, notConnected )
+{
+    struct {
+        std::uint8_t sn_sr;
+    } const test_cases[]{
+        // clang-format off
+
+        { 0x00 },
+        { 0x13 },
+        { 0x14 },
+        { 0x15 },
+        { 0x16 },
+        { 0x18 },
+        { 0x1A },
+        { 0x1B },
+        { 0x1D },
+
+        // clang-format on
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver = Mock_Driver{};
+
+        auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+        auto socket = Socket{ network_stack, random<Socket_ID>() };
+
+        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( test_case.sn_sr ) );
+
+        auto const result = socket.transmit_keepalive();
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), Generic_Error::CONNECTION_LOST );
+    } // for
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::transmit_keepalive()
+ *        properly handles an SN_CR register write error.
+ */
+TEST( transmitKeepalive, sncrWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    auto socket = Socket{ network_stack, random<Socket_ID>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = socket.transmit_keepalive();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::transmit_keepalive()
+ *        properly handles an SN_CR register read error.
+ */
+TEST( transmitKeepalive, sncrReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    auto socket = Socket{ network_stack, random<Socket_ID>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = socket.transmit_keepalive();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::transmit_keepalive()
+ *        properly handles a nonresponsive device error when reading the SN_CR register.
+ */
+TEST( transmitKeepalive, nonresponsiveDeviceErrorSNCR )
+{
+    struct {
+        std::uint8_t sn_cr;
+    } const test_cases[]{
+        { random<std::uint8_t>( 0x01, 0x21 ) },
+        { random<std::uint8_t>( 0x23, 0xFF ) },
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver = Mock_Driver{};
+
+        auto const nonresponsive_device_error = random<Mock_Error>();
+
+        auto network_stack = Network_Stack{ driver, nonresponsive_device_error };
+
+        auto socket = Socket{ network_stack, random<Socket_ID>() };
+
+        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+        EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( test_case.sn_cr ) );
+
+        auto const result = socket.transmit_keepalive();
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), nonresponsive_device_error );
+    } // for
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::transmit_keepalive()
+ *        works properly.
+ */
+TEST( transmitKeepalive, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    auto const socket_id = random<Socket_ID>();
+
+    auto socket = Socket{ network_stack, socket_id };
+
+    EXPECT_CALL( driver, read_sn_sr( socket_id ) )
+        .WillOnce( Return( static_cast<std::uint8_t>( random<bool>() ? 0x17 : 0x1C ) ) );
+    EXPECT_CALL( driver, write_sn_cr( socket_id, 0x22 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x22 ) ) );
+    EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+
+    EXPECT_FALSE( socket.transmit_keepalive().is_error() );
+}
+
+/**
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::available()
  *        properly handles an SN_RX_RSR register read error.
  */

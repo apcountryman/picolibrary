@@ -424,6 +424,64 @@ class Network_Stack {
         }
 
         /**
+         * \brief Manually transmit a TCP keepalive packet to the remote endpoint.
+         *
+         * \return Nothing if the TCP keepalive packet was successfully transmitted.
+         * \return picolibrary::Generic_Error::CONNECTION_LOST if the socket is not
+         *         connected to a remote endpoint.
+         * \return picolibrary::WIZnet::W5500::Network_Stack<Driver>::nonresponsive_device_error()
+         *         if the W5500 is nonresponsive.
+         * \return An error code if TCP keepalive packet transmission failed for any other
+         *         reason.
+         */
+        auto transmit_keepalive() noexcept -> Result<Void, Error_Code>
+        {
+            {
+                auto result = m_driver->read_sn_sr( m_socket_id );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+
+                switch ( static_cast<Socket_Status>( result.value() ) ) {
+                    case Socket_Status::CLOSED: return Generic_Error::CONNECTION_LOST;
+                    case Socket_Status::OPENED_TCP: return Generic_Error::CONNECTION_LOST;
+                    case Socket_Status::LISTEN: return Generic_Error::CONNECTION_LOST;
+                    case Socket_Status::ESTABLISHED: break;
+                    case Socket_Status::CLOSE_WAIT: break;
+                    case Socket_Status::SYN_SENT: return Generic_Error::CONNECTION_LOST;
+                    case Socket_Status::SYN_RECEIVED:
+                        return Generic_Error::CONNECTION_LOST;
+                    case Socket_Status::FIN_WAIT: return Generic_Error::CONNECTION_LOST;
+                    case Socket_Status::CLOSING: return Generic_Error::CONNECTION_LOST;
+                    case Socket_Status::TIME_WAIT: return Generic_Error::CONNECTION_LOST;
+                    case Socket_Status::LAST_ACK: return Generic_Error::CONNECTION_LOST;
+                    default: return m_network_stack->m_nonresponsive_device_error;
+                } // switch
+            }
+
+            {
+                auto result = m_driver->write_sn_cr(
+                    m_socket_id, static_cast<SN_CR::Type>( Command::SEND_TCP_KEEPALIVE_PACKET ) );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+
+            for ( ;; ) {
+                auto result = m_driver->read_sn_cr( m_socket_id );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+
+                switch ( static_cast<Command>( result.value() ) ) {
+                    case Command::NONE: m_transmitting = true; return {};
+                    case Command::SEND_TCP_KEEPALIVE_PACKET: break;
+                    default: return m_network_stack->m_nonresponsive_device_error;
+                } // switch
+            }     // for
+        }
+
+        /**
          * \brief Get the amount of data that is immediately available to be received from
          *        the remote endpoint.
          *
