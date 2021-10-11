@@ -536,6 +536,9 @@ class Network_Stack {
         auto receive( std::uint8_t * begin, std::uint8_t * end ) noexcept
             -> Result<std::uint8_t *, Error_Code>
         {
+            // #lizard forgives the length
+            // #lizard forgives the complexity
+
             {
                 auto result = m_driver->read_sn_sr( m_socket_id );
                 if ( result.is_error() ) {
