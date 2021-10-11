@@ -1764,7 +1764,7 @@ enum class Command : std::uint8_t {
     CLOSE                        = 0x10, ///< Close.
     SEND                         = 0x20, ///< Send.
     SEND_UDP_DATAGRAM_MANUAL_MAC = 0x21, ///< Send a UDP datagram using a manually configured destination MAC address instead of one obtained by ARP.
-    SEND_TCP_KEEP_ALIVE_PACKET   = 0x22, ///< Send a TCP keep-alive packet.
+    SEND_TCP_KEEPALIVE_PACKET    = 0x22, ///< Send a TCP keepalive packet.
     RECEIVE                      = 0x40, ///< Receive.
 };
 
