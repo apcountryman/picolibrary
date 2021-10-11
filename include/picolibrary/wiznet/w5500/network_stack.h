@@ -436,6 +436,8 @@ class Network_Stack {
          */
         auto transmit_keepalive() noexcept -> Result<Void, Error_Code>
         {
+            // #lizard forgives the length
+
             {
                 auto result = m_driver->read_sn_sr( m_socket_id );
                 if ( result.is_error() ) {
