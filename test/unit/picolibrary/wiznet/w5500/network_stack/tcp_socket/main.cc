@@ -1003,6 +1003,28 @@ TEST( transmit, nonresponsiveDeviceErrorSNTXFSR )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::transmit()
+ *        properly handles a full transmit buffer.
+ */
+TEST( transmit, transmitBufferFull )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    auto socket = Socket{ network_stack, random<Socket_ID>() };
+
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+    EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( static_cast<std::uint16_t>( 0 ) ) );
+
+    auto const data = random_container<std::vector<std::uint8_t>>( random<std::uint_fast8_t>( 1 ) );
+    auto const result = socket.transmit( &*data.begin(), &*data.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), Generic_Error::WOULD_BLOCK );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::TCP_Socket::transmit()
  *        properly handles an SN_TX_WR register read error.
  */
 TEST( transmit, sntxwrReadError )
@@ -1016,7 +1038,7 @@ TEST( transmit, sntxwrReadError )
     auto const error = random<Mock_Error>();
 
     EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
-    EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( random<std::uint16_t>( 0, 2 * 1024 ) ) );
+    EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( random<std::uint16_t>( 1, 2 * 1024 ) ) );
     EXPECT_CALL( driver, read_sn_tx_wr( _ ) ).WillOnce( Return( error ) );
 
     auto const data = random_container<std::vector<std::uint8_t>>( random<std::uint_fast8_t>( 1 ) );
@@ -1041,7 +1063,7 @@ TEST( transmit, transmitBufferWriteError )
     auto const error = random<Mock_Error>();
 
     EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
-    EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( random<std::uint16_t>( 0, 2 * 1024 ) ) );
+    EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( random<std::uint16_t>( 1, 2 * 1024 ) ) );
     EXPECT_CALL( driver, read_sn_tx_wr( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
     EXPECT_CALL( driver, write( _, _, _ ) ).WillOnce( Return( error ) );
 
@@ -1067,7 +1089,7 @@ TEST( transmit, sntxwrWriteError )
     auto const error = random<Mock_Error>();
 
     EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
-    EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( random<std::uint16_t>( 0, 2 * 1024 ) ) );
+    EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( random<std::uint16_t>( 1, 2 * 1024 ) ) );
     EXPECT_CALL( driver, read_sn_tx_wr( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
     EXPECT_CALL( driver, write( _, _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     EXPECT_CALL( driver, write_sn_tx_wr( _, _ ) ).WillOnce( Return( error ) );
@@ -1094,7 +1116,7 @@ TEST( transmit, sncrWriteError )
     auto const error = random<Mock_Error>();
 
     EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
-    EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( random<std::uint16_t>( 0, 2 * 1024 ) ) );
+    EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( random<std::uint16_t>( 1, 2 * 1024 ) ) );
     EXPECT_CALL( driver, read_sn_tx_wr( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
     EXPECT_CALL( driver, write( _, _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     EXPECT_CALL( driver, write_sn_tx_wr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
@@ -1122,7 +1144,7 @@ TEST( transmit, sncrReadError )
     auto const error = random<Mock_Error>();
 
     EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
-    EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( random<std::uint16_t>( 0, 2 * 1024 ) ) );
+    EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( random<std::uint16_t>( 1, 2 * 1024 ) ) );
     EXPECT_CALL( driver, read_sn_tx_wr( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
     EXPECT_CALL( driver, write( _, _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     EXPECT_CALL( driver, write_sn_tx_wr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
@@ -1159,7 +1181,7 @@ TEST( transmit, nonresponsiveDeviceErrorSNCR )
         auto socket = Socket{ network_stack, random<Socket_ID>() };
 
         EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
-        EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( random<std::uint16_t>( 0, 2 * 1024 ) ) );
+        EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( random<std::uint16_t>( 1, 2 * 1024 ) ) );
         EXPECT_CALL( driver, read_sn_tx_wr( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
         EXPECT_CALL( driver, write( _, _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
         EXPECT_CALL( driver, write_sn_tx_wr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
@@ -1189,7 +1211,7 @@ TEST( transmit, snirReadError )
     auto const error = random<Mock_Error>();
 
     EXPECT_CALL( driver, read_sn_sr( _ ) ).WillRepeatedly( Return( static_cast<std::uint8_t>( 0x17 ) ) );
-    EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( random<std::uint16_t>( 0, 2 * 1024 ) ) );
+    EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( random<std::uint16_t>( 1, 2 * 1024 ) ) );
     EXPECT_CALL( driver, read_sn_tx_wr( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
     EXPECT_CALL( driver, write( _, _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     EXPECT_CALL( driver, write_sn_tx_wr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
@@ -1223,7 +1245,7 @@ TEST( transmit, transmissionNotComplete )
 
     {
         EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
-        EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( random<std::uint16_t>( 0, 2 * 1024 ) ) );
+        EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( random<std::uint16_t>( 1, 2 * 1024 ) ) );
         EXPECT_CALL( driver, read_sn_tx_wr( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
         EXPECT_CALL( driver, write( _, _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
         EXPECT_CALL( driver, write_sn_tx_wr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
@@ -1274,7 +1296,7 @@ TEST( transmit, snirWriteError )
     auto const error = random<Mock_Error>();
 
     EXPECT_CALL( driver, read_sn_sr( _ ) ).WillRepeatedly( Return( static_cast<std::uint8_t>( 0x17 ) ) );
-    EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( random<std::uint16_t>( 0, 2 * 1024 ) ) );
+    EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( random<std::uint16_t>( 1, 2 * 1024 ) ) );
     EXPECT_CALL( driver, read_sn_tx_wr( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
     EXPECT_CALL( driver, write( _, _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     EXPECT_CALL( driver, write_sn_tx_wr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );

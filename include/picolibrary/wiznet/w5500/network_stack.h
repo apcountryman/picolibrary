@@ -372,6 +372,10 @@ class Network_Stack {
                     return m_network_stack->m_nonresponsive_device_error;
                 } // if
 
+                if ( result.value() == 0 ) {
+                    return Generic_Error::WOULD_BLOCK;
+                } // if
+
                 if ( end - begin > result.value() ) {
                     end = begin + result.value();
                 } // if
