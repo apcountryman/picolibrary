@@ -57,7 +57,7 @@ class Network_Stack {
         using Size = std::uint16_t;
 
         /**
-         * \brief Constructor.
+         * \brief Destructor.
          */
         ~TCP_Socket() noexcept = default;
 
@@ -480,7 +480,7 @@ class Network_Stack {
                 } // if
 
                 switch ( static_cast<Command>( result.value() ) ) {
-                    case Command::NONE: m_transmitting = true; return {};
+                    case Command::NONE: return {};
                     case Command::SEND_TCP_KEEPALIVE_PACKET: break;
                     default: return m_network_stack->m_nonresponsive_device_error;
                 } // switch
@@ -624,7 +624,7 @@ class Network_Stack {
                 } // if
 
                 switch ( static_cast<Command>( result.value() ) ) {
-                    case Command::NONE: m_transmitting = true; return end;
+                    case Command::NONE: return end;
                     case Command::RECEIVE: break;
                     default: return m_network_stack->m_nonresponsive_device_error;
                 } // switch
@@ -684,7 +684,7 @@ class Network_Stack {
                 } // if
 
                 switch ( static_cast<Command>( result.value() ) ) {
-                    case Command::NONE: m_transmitting = true; return {};
+                    case Command::NONE: return {};
                     case Command::DISCONNECT: break;
                     default: return m_network_stack->m_nonresponsive_device_error;
                 } // switch
