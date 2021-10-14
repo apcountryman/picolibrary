@@ -1214,7 +1214,7 @@ TEST( transmit, snirReadError )
         auto const data = random_container<std::vector<std::uint8_t>>( random<std::uint_fast8_t>( 1 ) );
         EXPECT_FALSE( socket.transmit( &*data.begin(), &*data.end() ).is_error() );
     }
-    
+
     EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
     EXPECT_CALL( driver, read_sn_ir( _ ) ).WillOnce( Return( error ) );
 
@@ -1301,7 +1301,7 @@ TEST( transmit, snirWriteError )
         auto const data = random_container<std::vector<std::uint8_t>>( random<std::uint_fast8_t>( 1 ) );
         EXPECT_FALSE( socket.transmit( &*data.begin(), &*data.end() ).is_error() );
     }
-    
+
     EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
     EXPECT_CALL( driver, read_sn_ir( _ ) )
         .WillOnce( Return( static_cast<std::uint8_t>( random<std::uint8_t>() | 0b000'1'0'0'0'0 ) ) );
