@@ -192,8 +192,8 @@ class Client_Concept {
      *
      * \return The end of the data that was written to the socket's transmit buffer if
      *         writing data to the socket's transmit buffer succeeded.
-     * \return picolibrary::Generic_Error::CONNECTION_LOST if the socket is not connected
-     *         to a remote endpoint.
+     * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not connected to
+     *         a remote endpoint.
      * \return picolibrary::Generic_Error::WOULD_BLOCK or
      *         picolibrary::Generic_Error::OPERATION_TIMEOUT if the socket is in a
      *         non-blocking mode, and no data could be written to the socket's transmit
@@ -229,8 +229,8 @@ class Client_Concept {
      *
      * \return The end of the data that was read from the socket's receive buffer if
      *         reading data from the socket's receive buffer succeeded.
-     * \return picolibrary::Generic_Error::CONNECTION_LOST if the socket is not connected
-     *         to a remote endpoint.
+     * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not connected to
+     *         a remote endpoint.
      * \return picolibrary::Generic_Error::WOULD_BLOCK or
      *         picolibrary::Generic_Error::OPERATION_TIMEOUT if the socket is in a
      *         non-blocking mode, and no data could be read from the socket's receive
@@ -364,8 +364,8 @@ class Server_Concept {
      *
      * \return The end of the data that was written to the socket's transmit buffer if
      *         writing data to the socket's transmit buffer succeeded.
-     * \return picolibrary::Generic_Error::CONNECTION_LOST if the socket is not connected
-     *         to a remote endpoint.
+     * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not connected to
+     *         a remote endpoint.
      * \return picolibrary::Generic_Error::WOULD_BLOCK or
      *         picolibrary::Generic_Error::OPERATION_TIMEOUT if the socket is in a
      *         non-blocking mode, and no data could be written to the socket's transmit
@@ -401,8 +401,8 @@ class Server_Concept {
      *
      * \return The end of the data that was read from the socket's receive buffer if
      *         reading data from the socket's receive buffer succeeded.
-     * \return picolibrary::Generic_Error::CONNECTION_LOST if the socket is not connected
-     *         to a remote endpoint.
+     * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not connected to
+     *         a remote endpoint.
      * \return picolibrary::Generic_Error::WOULD_BLOCK or
      *         picolibrary::Generic_Error::OPERATION_TIMEOUT if the socket is in a
      *         non-blocking mode, and no data could be read from the socket's receive
