@@ -378,7 +378,6 @@ enum class Generic_Error : Error_ID {
     BUS_ERROR,                       ///< Bus error.
     CIRCULAR_BUFFER_WOULD_OVERFLOW,  ///< Circular buffer would overflow.
     CIRCULAR_BUFFER_WOULD_UNDERFLOW, ///< Circular buffer would underflow.
-    CONNECTION_LOST,                 ///< Connection lost.
     ENDPOINT_IN_USE,                 ///< Endpoint in use.
     EPHEMERAL_PORTS_EXHAUSTED,       ///< Ephemeral ports exhausted
     INSUFFICIENT_SOCKETS_AVAILABLE,  ///< Insufficient sockets available.
@@ -387,6 +386,7 @@ enum class Generic_Error : Error_ID {
     IO_STREAM_DEGRADED,              ///< I/O stream degraded.
     LOGIC_ERROR,                     ///< Logic error.
     NONRESPONSIVE_DEVICE,            ///< Nonresponsive device.
+    NOT_CONNECTED,                   ///< Not connected.
     NO_SOCKETS_AVAILABLE,            ///< No sockets available.
     OPERATION_TIMEOUT,               ///< Operation timeout.
     UNSUPPORTED_OPERATION,           ///< Unsupported operation.
@@ -453,7 +453,6 @@ class Generic_Error_Category final : public Error_Category {
                 return "CIRCULAR_BUFFER_WOULD_OVERFLOW";
             case Generic_Error::CIRCULAR_BUFFER_WOULD_UNDERFLOW:
                 return "CIRCULAR_BUFFER_WOULD_UNDERFLOW";
-            case Generic_Error::CONNECTION_LOST: return "CONNECTION_LOST";
             case Generic_Error::ENDPOINT_IN_USE: return "ENDPOINT_IN_USE";
             case Generic_Error::EPHEMERAL_PORTS_EXHAUSTED:
                 return "EPHEMERAL_PORTS_EXHAUSTED";
@@ -464,6 +463,7 @@ class Generic_Error_Category final : public Error_Category {
             case Generic_Error::IO_STREAM_DEGRADED: return "IO_STREAM_DEGRADED";
             case Generic_Error::LOGIC_ERROR: return "LOGIC_ERROR";
             case Generic_Error::NONRESPONSIVE_DEVICE: return "NONRESPONSIVE_DEVICE";
+            case Generic_Error::NOT_CONNECTED: return "NOT_CONNECTED";
             case Generic_Error::NO_SOCKETS_AVAILABLE: return "NO_SOCKETS_AVAILABLE";
             case Generic_Error::OPERATION_TIMEOUT: return "OPERATION_TIMEOUT";
             case Generic_Error::UNSUPPORTED_OPERATION: return "UNSUPPORTED_OPERATION";
