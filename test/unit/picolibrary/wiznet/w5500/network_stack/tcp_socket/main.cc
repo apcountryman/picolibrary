@@ -898,7 +898,7 @@ TEST( transmit, notConnected )
         auto const result = socket.transmit( &*data.begin(), &*data.end() );
 
         EXPECT_TRUE( result.is_error() );
-        EXPECT_EQ( result.error(), Generic_Error::CONNECTION_LOST );
+        EXPECT_EQ( result.error(), Generic_Error::NOT_CONNECTED );
     } // for
 }
 
@@ -1618,7 +1618,7 @@ TEST( transmitKeepalive, notConnected )
         auto const result = socket.transmit_keepalive();
 
         EXPECT_TRUE( result.is_error() );
-        EXPECT_EQ( result.error(), Generic_Error::CONNECTION_LOST );
+        EXPECT_EQ( result.error(), Generic_Error::NOT_CONNECTED );
     } // for
 }
 
@@ -1971,7 +1971,7 @@ TEST( receive, notConnected )
         auto const result = socket.receive( &*data.begin(), &*data.end() );
 
         EXPECT_TRUE( result.is_error() );
-        EXPECT_EQ( result.error(), Generic_Error::CONNECTION_LOST );
+        EXPECT_EQ( result.error(), Generic_Error::NOT_CONNECTED );
     } // for
 }
 
@@ -2501,7 +2501,7 @@ TEST( shutdown, notConnected )
         auto const result = socket.shutdown();
 
         EXPECT_TRUE( result.is_error() );
-        EXPECT_EQ( result.error(), Generic_Error::CONNECTION_LOST );
+        EXPECT_EQ( result.error(), Generic_Error::NOT_CONNECTED );
     } // for
 }
 

@@ -300,7 +300,7 @@ class Network_Stack {
          *
          * \return The end of the data that was written to the socket's transmit buffer if
          *         writing data to the socket's transmit buffer succeeded.
-         * \return picolibrary::Generic_Error::CONNECTION_LOST if the socket is not
+         * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not
          *         connected to a remote endpoint.
          * \return picolibrary::Generic_Error::WOULD_BLOCK if no data could be written to
          *         the socket's transmit buffer without blocking.
@@ -322,18 +322,17 @@ class Network_Stack {
                 } // if
 
                 switch ( static_cast<Socket_Status>( result.value() ) ) {
-                    case Socket_Status::CLOSED: return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::OPENED_TCP: return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::LISTEN: return Generic_Error::CONNECTION_LOST;
+                    case Socket_Status::CLOSED: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::OPENED_TCP: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::LISTEN: return Generic_Error::NOT_CONNECTED;
                     case Socket_Status::ESTABLISHED: break;
                     case Socket_Status::CLOSE_WAIT: break;
-                    case Socket_Status::SYN_SENT: return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::SYN_RECEIVED:
-                        return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::FIN_WAIT: return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::CLOSING: return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::TIME_WAIT: return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::LAST_ACK: return Generic_Error::CONNECTION_LOST;
+                    case Socket_Status::SYN_SENT: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::SYN_RECEIVED: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::FIN_WAIT: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::CLOSING: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::TIME_WAIT: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::LAST_ACK: return Generic_Error::NOT_CONNECTED;
                     default: return m_network_stack->m_nonresponsive_device_error;
                 } // switch
             }
@@ -431,7 +430,7 @@ class Network_Stack {
          * \brief Manually transmit a TCP keepalive packet to the remote endpoint.
          *
          * \return Nothing if the TCP keepalive packet was successfully transmitted.
-         * \return picolibrary::Generic_Error::CONNECTION_LOST if the socket is not
+         * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not
          *         connected to a remote endpoint.
          * \return picolibrary::WIZnet::W5500::Network_Stack<Driver>::nonresponsive_device_error()
          *         if the W5500 is nonresponsive.
@@ -449,18 +448,17 @@ class Network_Stack {
                 } // if
 
                 switch ( static_cast<Socket_Status>( result.value() ) ) {
-                    case Socket_Status::CLOSED: return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::OPENED_TCP: return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::LISTEN: return Generic_Error::CONNECTION_LOST;
+                    case Socket_Status::CLOSED: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::OPENED_TCP: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::LISTEN: return Generic_Error::NOT_CONNECTED;
                     case Socket_Status::ESTABLISHED: break;
                     case Socket_Status::CLOSE_WAIT: break;
-                    case Socket_Status::SYN_SENT: return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::SYN_RECEIVED:
-                        return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::FIN_WAIT: return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::CLOSING: return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::TIME_WAIT: return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::LAST_ACK: return Generic_Error::CONNECTION_LOST;
+                    case Socket_Status::SYN_SENT: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::SYN_RECEIVED: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::FIN_WAIT: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::CLOSING: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::TIME_WAIT: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::LAST_ACK: return Generic_Error::NOT_CONNECTED;
                     default: return m_network_stack->m_nonresponsive_device_error;
                 } // switch
             }
@@ -524,7 +522,7 @@ class Network_Stack {
          *
          * \return The end of the data that was read from the socket's receive buffer if
          *         reading data from the socket's receive buffer succeeded.
-         * \return picolibrary::Generic_Error::CONNECTION_LOST if the socket is not
+         * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not
          *         connected to a remote endpoint.
          * \return picolibrary::Generic_Error::WOULD_BLOCK if no data could be read from
          *         the socket's receive buffer without blocking.
@@ -546,18 +544,17 @@ class Network_Stack {
                 } // if
 
                 switch ( static_cast<Socket_Status>( result.value() ) ) {
-                    case Socket_Status::CLOSED: return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::OPENED_TCP: return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::LISTEN: return Generic_Error::CONNECTION_LOST;
+                    case Socket_Status::CLOSED: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::OPENED_TCP: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::LISTEN: return Generic_Error::NOT_CONNECTED;
                     case Socket_Status::ESTABLISHED: break;
                     case Socket_Status::CLOSE_WAIT: break;
-                    case Socket_Status::SYN_SENT: return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::SYN_RECEIVED:
-                        return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::FIN_WAIT: return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::CLOSING: return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::TIME_WAIT: return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::LAST_ACK: return Generic_Error::CONNECTION_LOST;
+                    case Socket_Status::SYN_SENT: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::SYN_RECEIVED: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::FIN_WAIT: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::CLOSING: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::TIME_WAIT: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::LAST_ACK: return Generic_Error::NOT_CONNECTED;
                     default: return m_network_stack->m_nonresponsive_device_error;
                 } // switch
             }
@@ -635,7 +632,7 @@ class Network_Stack {
          * \brief Disable further data transmission and reception.
          *
          * \return Nothing if disabling further data transmission and reception succeeded.
-         * \return picolibrary::Generic_Error::CONNECTION_LOST if the socket is not
+         * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not
          *         connected to a remote endpoint.
          * \return picolibrary::WIZnet::W5500::Network_Stack<Driver>::nonresponsive_device_error()
          *         if the W5500 is nonresponsive.
@@ -653,18 +650,17 @@ class Network_Stack {
                 } // if
 
                 switch ( static_cast<Socket_Status>( result.value() ) ) {
-                    case Socket_Status::CLOSED: return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::OPENED_TCP: return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::LISTEN: return Generic_Error::CONNECTION_LOST;
+                    case Socket_Status::CLOSED: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::OPENED_TCP: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::LISTEN: return Generic_Error::NOT_CONNECTED;
                     case Socket_Status::ESTABLISHED: break;
                     case Socket_Status::CLOSE_WAIT: break;
-                    case Socket_Status::SYN_SENT: return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::SYN_RECEIVED:
-                        return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::FIN_WAIT: return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::CLOSING: return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::TIME_WAIT: return Generic_Error::CONNECTION_LOST;
-                    case Socket_Status::LAST_ACK: return Generic_Error::CONNECTION_LOST;
+                    case Socket_Status::SYN_SENT: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::SYN_RECEIVED: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::FIN_WAIT: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::CLOSING: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::TIME_WAIT: return Generic_Error::NOT_CONNECTED;
+                    case Socket_Status::LAST_ACK: return Generic_Error::NOT_CONNECTED;
                     default: return m_network_stack->m_nonresponsive_device_error;
                 } // switch
             }
