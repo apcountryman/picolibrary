@@ -20,6 +20,8 @@
  * \brief picolibrary::WIZnet::W5500::Network_Stack::TCP_Client unit test program.
  */
 
+#include <cstdint>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/testing/unit/wiznet/w5500.h"
@@ -41,18 +43,19 @@ using TCP_Client = ::picolibrary::WIZnet::W5500::Network_Stack<Mock_Driver>::TCP
 TEST( constructor, worksProperly )
 {
     struct {
-        Socket_ID socket_id;
+        Socket_ID    socket_id;
+        std::uint8_t socket_interrupt_mask;
     } const test_cases[]{
         // clang-format off
 
-        { Socket_ID::_0 },
-        { Socket_ID::_1 },
-        { Socket_ID::_2 },
-        { Socket_ID::_3 },
-        { Socket_ID::_4 },
-        { Socket_ID::_5 },
-        { Socket_ID::_6 },
-        { Socket_ID::_7 },
+        { Socket_ID::_0, 0b0000'0001 },
+        { Socket_ID::_1, 0b0000'0010 },
+        { Socket_ID::_2, 0b0000'0100 },
+        { Socket_ID::_3, 0b0000'1000 },
+        { Socket_ID::_4, 0b0001'0000 },
+        { Socket_ID::_5, 0b0010'0000 },
+        { Socket_ID::_6, 0b0100'0000 },
+        { Socket_ID::_7, 0b1000'0000 },
 
         // clang-format on
     };
@@ -61,6 +64,7 @@ TEST( constructor, worksProperly )
         auto const client = TCP_Client{ test_case.socket_id };
 
         EXPECT_EQ( client.socket_id(), test_case.socket_id );
+        EXPECT_EQ( client.socket_interrupt_mask(), test_case.socket_interrupt_mask );
     } // for
 }
 

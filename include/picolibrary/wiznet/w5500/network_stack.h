@@ -105,6 +105,18 @@ class Network_Stack {
             return m_socket_id;
         }
 
+        /**
+         * \brief Get the socket's socket interrupt mask (mask to be used when checking
+         *        the network stack's socket interrupt context).
+         *
+         * \return The socket's socket interrupt mask.
+         */
+        constexpr auto socket_interrupt_mask() const noexcept
+        {
+            return static_cast<std::uint8_t>(
+                1 << ( static_cast<std::uint8_t>( m_socket_id ) >> Control_Byte::Bit::SOCKET ) );
+        }
+
       private:
         /**
          * \brief The socket's socket ID.
