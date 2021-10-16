@@ -171,6 +171,17 @@ class Network_Stack {
             return m_driver->write_sn_imr( m_socket_id, result.value() & ~mask );
         }
 
+        /**
+         * \brief Disable all interrupts.
+         *
+         * \return Nothing if disabling all interrupts succeeded.
+         * \return An error code if disabling all interrupts failed.
+         */
+        auto disable_interrupts() noexcept
+        {
+            return m_driver->write_sn_imr( m_socket_id, 0 );
+        }
+
       private:
         /**
          * \brief The driver for the W5500 the network stack utilizes.
