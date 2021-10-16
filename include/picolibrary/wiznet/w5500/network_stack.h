@@ -206,6 +206,29 @@ class Network_Stack {
             return m_driver->read_sn_ir( m_socket_id );
         }
 
+        /**
+         * \brief Configure the socket's no delayed ACK usage.
+         *
+         * \param[in] no_delayed_ack_configuration The desired no delayed ACK
+         *            configuration.
+         *
+         * \return Nothing if configuring the socket's no delayed ACK usage succeeded.
+         * \return An error code if configuring the socket's no delayed ACK usage failed.
+         */
+        auto configure_no_delayed_ack( No_Delayed_ACK no_delayed_ack_configuration ) noexcept
+            -> Result<Void, Error_Code>
+        {
+            auto result = m_driver->read_sn_mr( m_socket_id );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            return m_driver->write_sn_mr(
+                m_socket_id,
+                ( result.value() & ~SN_MR::Mask::ND )
+                    | static_cast<std::uint8_t>( no_delayed_ack_configuration ) );
+        }
+
       private:
         /**
          * \brief The driver for the W5500 the network stack utilizes.
