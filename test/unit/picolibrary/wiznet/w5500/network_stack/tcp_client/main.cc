@@ -433,6 +433,65 @@ TEST( configureNoDelayedAck, worksProperly )
 }
 
 /**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Client::no_delayed_ack_configuration()
+ *        properly handles an SN_MR register read error.
+ */
+TEST( noDelayedAckConfiguration, snmrReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto const client = Client{ driver, random<Socket_ID>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_mr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = client.no_delayed_ack_configuration();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Client::no_delayed_ack_configuration()
+ *        works properly.
+ */
+TEST( noDelayedAckConfiguration, worksProperly )
+{
+    struct {
+        std::uint8_t   sn_mr_nd;
+        No_Delayed_ACK no_delayed_ack_configuration;
+    } const test_cases[]{
+        // clang-format off
+
+        { 0b0'0'0'0'0000, No_Delayed_ACK::DISABLED },
+        { 0b0'0'1'0'0000, No_Delayed_ACK::ENABLED  },
+
+        // clang-format on
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver = Mock_Driver{};
+
+        auto const socket_id = random<Socket_ID>();
+
+        auto const client = Client{ driver, socket_id };
+
+        auto const sn_mr = static_cast<std::uint8_t>(
+            ( random<std::uint8_t>() & 0b1'1'0'1'1111 ) | test_case.sn_mr_nd );
+
+        EXPECT_CALL( driver, read_sn_mr( socket_id ) ).WillOnce( Return( sn_mr ) );
+
+        auto const result = client.no_delayed_ack_configuration();
+
+        EXPECT_TRUE( result.is_value() );
+        EXPECT_EQ( result.value(), test_case.no_delayed_ack_configuration );
+    } // for
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Network_Stack::TCP_Client unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
