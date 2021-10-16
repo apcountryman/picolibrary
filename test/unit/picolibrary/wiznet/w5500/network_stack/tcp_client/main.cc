@@ -22,7 +22,47 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "picolibrary/testing/unit/wiznet/w5500.h"
 #include "picolibrary/wiznet/w5500/network_stack.h"
+
+namespace {
+
+using ::picolibrary::Testing::Unit::WIZnet::W5500::Mock_Driver;
+using ::picolibrary::WIZnet::W5500::Socket_ID;
+
+using TCP_Client = ::picolibrary::WIZnet::W5500::Network_Stack<Mock_Driver>::TCP_Client;
+
+} // namespace
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::TCP_Client::TCP_Client(
+ *        picolibrary::WIZnet::W5500::Socket_ID ) works properly.
+ */
+TEST( constructor, worksProperly )
+{
+    struct {
+        Socket_ID socket_id;
+    } const test_cases[]{
+        // clang-format off
+
+        { Socket_ID::_0 },
+        { Socket_ID::_1 },
+        { Socket_ID::_2 },
+        { Socket_ID::_3 },
+        { Socket_ID::_4 },
+        { Socket_ID::_5 },
+        { Socket_ID::_6 },
+        { Socket_ID::_7 },
+
+        // clang-format on
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto const client = TCP_Client{ test_case.socket_id };
+
+        EXPECT_EQ( client.socket_id(), test_case.socket_id );
+    } // for
+}
 
 /**
  * \brief Execute the picolibrary::WIZnet::W5500::Network_Stack::TCP_Client unit tests.

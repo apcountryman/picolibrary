@@ -64,6 +64,15 @@ class Network_Stack {
         /**
          * \brief Constructor.
          *
+         * \param[in] socket_id The socket's socket ID.
+         */
+        constexpr TCP_Client( Socket_ID socket_id ) noexcept : m_socket_id{ socket_id }
+        {
+        }
+
+        /**
+         * \brief Constructor.
+         *
          * \param[in] source The source of the move.
          */
         constexpr TCP_Client( TCP_Client && source ) noexcept = default;
@@ -85,6 +94,22 @@ class Network_Stack {
         constexpr auto operator=( TCP_Client && expression ) noexcept -> TCP_Client & = default;
 
         auto operator=( TCP_Client const & ) = delete;
+
+        /**
+         * \brief Get the socket's socket ID.
+         *
+         * \return The socket's socket ID.
+         */
+        constexpr auto socket_id() const noexcept
+        {
+            return m_socket_id;
+        }
+
+      private:
+        /**
+         * \brief The socket's socket ID.
+         */
+        Socket_ID m_socket_id{};
     };
 
     /**
