@@ -64,9 +64,12 @@ class Network_Stack {
         /**
          * \brief Constructor.
          *
+         * \param[in] driver The driver for the W5500 the network stack utilizes.
          * \param[in] socket_id The socket's socket ID.
          */
-        constexpr TCP_Client( Socket_ID socket_id ) noexcept : m_socket_id{ socket_id }
+        constexpr TCP_Client( Driver & driver, Socket_ID socket_id ) noexcept :
+            m_driver{ &driver },
+            m_socket_id{ socket_id }
         {
         }
 
@@ -75,7 +78,12 @@ class Network_Stack {
          *
          * \param[in] source The source of the move.
          */
-        constexpr TCP_Client( TCP_Client && source ) noexcept = default;
+        constexpr TCP_Client( TCP_Client && source ) noexcept :
+            m_driver{ source.m_driver },
+            m_socket_id{ source.m_socket_id }
+        {
+            source.m_driver = nullptr;
+        }
 
         TCP_Client( TCP_Client const & ) = delete;
 
@@ -91,7 +99,17 @@ class Network_Stack {
          *
          * \return The assigned to object.
          */
-        constexpr auto operator=( TCP_Client && expression ) noexcept -> TCP_Client & = default;
+        constexpr auto & operator=( TCP_Client && expression ) noexcept
+        {
+            if ( &expression != this ) {
+                m_driver    = expression.m_driver;
+                m_socket_id = expression.m_socket_id;
+
+                expression.m_driver = nullptr;
+            } // if
+
+            return *this;
+        }
 
         auto operator=( TCP_Client const & ) = delete;
 
@@ -117,7 +135,30 @@ class Network_Stack {
                 1 << ( static_cast<std::uint8_t>( m_socket_id ) >> Control_Byte::Bit::SOCKET ) );
         }
 
+        /**
+         * \brief Enable interrupts.
+         *
+         * \param[in] mask The mask identifying the interrupts to enable.
+         *
+         * \return Nothing if enabling interrupts succeeded.
+         * \return An error code if enabling interrupts failed.
+         */
+        auto enable_interrupts( std::uint8_t mask ) noexcept -> Result<Void, Error_Code>
+        {
+            auto result = m_driver->read_sn_imr( m_socket_id );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            return m_driver->write_sn_imr( m_socket_id, result.value() | mask );
+        }
+
       private:
+        /**
+         * \brief The driver for the W5500 the network stack utilizes.
+         */
+        Driver * m_driver{};
+
         /**
          * \brief The socket's socket ID.
          */
