@@ -182,6 +182,19 @@ class Network_Stack {
             return m_driver->write_sn_imr( m_socket_id, 0 );
         }
 
+        /**
+         * \brief Get a mask identifying the interrupts that are enabled.
+         *
+         * \return A mask identifying the interrupts that are enabled if getting a mask
+         *         identifying the interrupts that are enabled succeeded.
+         * \return An error code if getting a mask identifying the interrupts that are
+         *         enabled failed.
+         */
+        auto enabled_interrupts() const noexcept
+        {
+            return m_driver->read_sn_imr( m_socket_id );
+        }
+
       private:
         /**
          * \brief The driver for the W5500 the network stack utilizes.
