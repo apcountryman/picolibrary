@@ -183,6 +183,18 @@ inline auto random<WIZnet::W5500::Buffer_Size>()
         WIZnet::W5500::Buffer_Size::_0_KIB, WIZnet::W5500::Buffer_Size::_16_KIB );
 }
 
+/**
+ * \brief Generate a pseudo-random WIZnet W5500 no delayed ACK configuration.
+ *
+ * \return A pseudo-randomly generated WIZnet W5500 no delayed ACK configuration.
+ */
+template<>
+inline auto random<WIZnet::W5500::No_Delayed_ACK>()
+{
+    return random<bool>() ? WIZnet::W5500::No_Delayed_ACK::DISABLED
+                          : WIZnet::W5500::No_Delayed_ACK::ENABLED;
+}
+
 } // namespace picolibrary::Testing::Unit
 
 /**
