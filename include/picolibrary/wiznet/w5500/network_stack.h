@@ -46,6 +46,48 @@ template<typename Driver>
 class Network_Stack {
   public:
     /**
+     * \brief TCP over IP client socket.
+     */
+    class TCP_Client {
+      public:
+        /**
+         * \brief The unsigned integral type used to report transmit/receive buffer
+         *        information.
+         */
+        using Size = std::uint16_t;
+
+        /**
+         * \brief Constructor.
+         */
+        constexpr TCP_Client() noexcept = default;
+
+        /**
+         * \brief Constructor.
+         *
+         * \param[in] source The source of the move.
+         */
+        constexpr TCP_Client( TCP_Client && source ) noexcept = default;
+
+        TCP_Client( TCP_Client const & ) = delete;
+
+        /**
+         * \brief Destructor.
+         */
+        ~TCP_Client() noexcept = default;
+
+        /**
+         * \brief Assignment operator.
+         *
+         * \param[in] expression The expression to be assigned.
+         *
+         * \return The assigned to object.
+         */
+        constexpr auto operator=( TCP_Client && expression ) noexcept -> TCP_Client & = default;
+
+        auto operator=( TCP_Client const & ) = delete;
+    };
+
+    /**
      * \brief Constructor.
      */
     constexpr Network_Stack() noexcept = default;
