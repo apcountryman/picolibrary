@@ -305,6 +305,50 @@ TEST( enabledInterrupts, worksProperly )
 }
 
 /**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Client::interrupt_context()
+ *        properly handles an SN_IR register read error.
+ */
+TEST( interruptContext, snirReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto const client = Client{ driver, random<Socket_ID>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_ir( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = client.interrupt_context();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Client::interrupt_context() works
+ *        properly.
+ */
+TEST( interruptContext, worksProperly )
+{
+    auto driver = Mock_Driver{};
+
+    auto const socket_id = random<Socket_ID>();
+
+    auto const client = Client{ driver, socket_id };
+
+    auto const sn_ir = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, read_sn_ir( socket_id ) ).WillOnce( Return( sn_ir ) );
+
+    auto const result = client.interrupt_context();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), sn_ir );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Network_Stack::TCP_Client unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
