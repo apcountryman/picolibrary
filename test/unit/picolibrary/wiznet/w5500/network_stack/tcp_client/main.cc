@@ -496,7 +496,7 @@ TEST( noDelayedAckConfiguration, worksProperly )
  *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Client::configure_maximum_segment_size()
  *        properly handles an SN_MSSR register write error.
  */
-TEST( configureMaximumSegmentSize, snimrWriteError )
+TEST( configureMaximumSegmentSize, snmssrWriteError )
 {
     auto driver = Mock_Driver{};
 
@@ -577,6 +577,49 @@ TEST( maximumSegmentSize, worksProperly )
 
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), sn_mssr );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Client::configure_time_to_live()
+ *        properly handles an SN_TTL register write error.
+ */
+TEST( configureTimeToLive, snttlWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto client = Client{ driver, random<Socket_ID>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_ttl( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = client.configure_time_to_live( random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Client::configure_time_to_live()
+ *        works properly.
+ */
+TEST( configureTimeToLive, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto driver = Mock_Driver{};
+
+    auto const socket_id = random<Socket_ID>();
+
+    auto client = Client{ driver, socket_id };
+
+    auto const time_to_live = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, write_sn_ttl( socket_id, time_to_live ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( client.configure_time_to_live( time_to_live ).is_error() );
 }
 
 /**
