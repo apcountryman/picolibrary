@@ -665,6 +665,50 @@ TEST( timeToLive, worksProperly )
 }
 
 /**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Client::configure_keepalive_period()
+ *        properly handles an SN_KPALVTR register write error.
+ */
+TEST( configureKeepalivePeriod, snkpalvtrWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto client = Client{ driver, random<Socket_ID>() };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = client.configure_keepalive_period( random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::Network_Stack::TCP_Client::configure_keepalive_period()
+ *        works properly.
+ */
+TEST( configureKeepalivePeriod, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto driver = Mock_Driver{};
+
+    auto const socket_id = random<Socket_ID>();
+
+    auto client = Client{ driver, socket_id };
+
+    auto const keepalive_period = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, write_sn_kpalvtr( socket_id, keepalive_period ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( client.configure_keepalive_period( keepalive_period ).is_error() );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::Network_Stack::TCP_Client unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
