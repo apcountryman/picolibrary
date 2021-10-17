@@ -78,7 +78,9 @@ TEST( constructor, worksProperly )
     for ( auto const test_case : test_cases ) {
         auto driver = Mock_Driver{};
 
-        auto const client = Client{ driver, test_case.socket_id };
+        auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+        auto const client = Client{ driver, test_case.socket_id, network_stack };
 
         EXPECT_EQ( client.socket_id(), test_case.socket_id );
         EXPECT_EQ( client.socket_interrupt_mask(), test_case.socket_interrupt_mask );
@@ -94,7 +96,9 @@ TEST( enableInterrupts, snimrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto client = Client{ driver, random<Socket_ID>() };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    auto client = Client{ driver, random<Socket_ID>(), network_stack };
 
     auto const error = random<Mock_Error>();
 
@@ -115,7 +119,9 @@ TEST( enableInterrupts, snimrWriteError )
 {
     auto driver = Mock_Driver{};
 
-    auto client = Client{ driver, random<Socket_ID>() };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    auto client = Client{ driver, random<Socket_ID>(), network_stack };
 
     auto const error = random<Mock_Error>();
 
@@ -139,9 +145,11 @@ TEST( enableInterrupts, worksProperly )
 
     auto driver = Mock_Driver{};
 
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
     auto const socket_id = random<Socket_ID>();
 
-    auto client = Client{ driver, socket_id };
+    auto client = Client{ driver, socket_id, network_stack };
 
     auto const sn_imr = random<std::uint8_t>();
     auto const mask   = random<std::uint8_t>();
@@ -161,7 +169,9 @@ TEST( disableInterrupts, snimrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto client = Client{ driver, random<Socket_ID>() };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    auto client = Client{ driver, random<Socket_ID>(), network_stack };
 
     auto const error = random<Mock_Error>();
 
@@ -182,7 +192,9 @@ TEST( disableInterrupts, snimrWriteError )
 {
     auto driver = Mock_Driver{};
 
-    auto client = Client{ driver, random<Socket_ID>() };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    auto client = Client{ driver, random<Socket_ID>(), network_stack };
 
     auto const error = random<Mock_Error>();
 
@@ -206,9 +218,11 @@ TEST( disableInterrupts, worksProperly )
 
     auto driver = Mock_Driver{};
 
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
     auto const socket_id = random<Socket_ID>();
 
-    auto client = Client{ driver, socket_id };
+    auto client = Client{ driver, socket_id, network_stack };
 
     auto const sn_imr = random<std::uint8_t>();
     auto const mask   = random<std::uint8_t>();
@@ -229,7 +243,9 @@ TEST( disableAllInterrupts, snimrWriteError )
 {
     auto driver = Mock_Driver{};
 
-    auto client = Client{ driver, random<Socket_ID>() };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    auto client = Client{ driver, random<Socket_ID>(), network_stack };
 
     auto const error = random<Mock_Error>();
 
@@ -252,9 +268,11 @@ TEST( disableAllInterrupts, worksProperly )
 
     auto driver = Mock_Driver{};
 
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
     auto const socket_id = random<Socket_ID>();
 
-    auto client = Client{ driver, socket_id };
+    auto client = Client{ driver, socket_id, network_stack };
 
     EXPECT_CALL( driver, write_sn_imr( socket_id, 0 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
 
@@ -270,7 +288,9 @@ TEST( enabledInterrupts, snimrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const client = Client{ driver, random<Socket_ID>() };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    auto const client = Client{ driver, random<Socket_ID>(), network_stack };
 
     auto const error = random<Mock_Error>();
 
@@ -291,9 +311,11 @@ TEST( enabledInterrupts, worksProperly )
 {
     auto driver = Mock_Driver{};
 
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
     auto const socket_id = random<Socket_ID>();
 
-    auto const client = Client{ driver, socket_id };
+    auto const client = Client{ driver, socket_id, network_stack };
 
     auto const sn_imr = random<std::uint8_t>();
 
@@ -314,7 +336,9 @@ TEST( interruptContext, snirReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const client = Client{ driver, random<Socket_ID>() };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    auto const client = Client{ driver, random<Socket_ID>(), network_stack };
 
     auto const error = random<Mock_Error>();
 
@@ -335,9 +359,11 @@ TEST( interruptContext, worksProperly )
 {
     auto driver = Mock_Driver{};
 
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
     auto const socket_id = random<Socket_ID>();
 
-    auto const client = Client{ driver, socket_id };
+    auto const client = Client{ driver, socket_id, network_stack };
 
     auto const sn_ir = random<std::uint8_t>();
 
@@ -358,7 +384,9 @@ TEST( configureNoDelayedAck, snmrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto client = Client{ driver, random<Socket_ID>() };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    auto client = Client{ driver, random<Socket_ID>(), network_stack };
 
     auto const error = random<Mock_Error>();
 
@@ -379,7 +407,9 @@ TEST( configureNoDelayedAck, snmrWriteError )
 {
     auto driver = Mock_Driver{};
 
-    auto client = Client{ driver, random<Socket_ID>() };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    auto client = Client{ driver, random<Socket_ID>(), network_stack };
 
     auto const error = random<Mock_Error>();
 
@@ -416,9 +446,11 @@ TEST( configureNoDelayedAck, worksProperly )
 
         auto driver = Mock_Driver{};
 
+        auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
         auto const socket_id = random<Socket_ID>();
 
-        auto client = Client{ driver, socket_id };
+        auto client = Client{ driver, socket_id, network_stack };
 
         auto const sn_mr = random<std::uint8_t>();
 
@@ -441,7 +473,9 @@ TEST( noDelayedAckConfiguration, snmrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const client = Client{ driver, random<Socket_ID>() };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    auto const client = Client{ driver, random<Socket_ID>(), network_stack };
 
     auto const error = random<Mock_Error>();
 
@@ -475,9 +509,11 @@ TEST( noDelayedAckConfiguration, worksProperly )
     for ( auto const test_case : test_cases ) {
         auto driver = Mock_Driver{};
 
+        auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
         auto const socket_id = random<Socket_ID>();
 
-        auto const client = Client{ driver, socket_id };
+        auto const client = Client{ driver, socket_id, network_stack };
 
         auto const sn_mr = static_cast<std::uint8_t>(
             ( random<std::uint8_t>() & 0b1'1'0'1'1111 ) | test_case.sn_mr_nd );
@@ -500,7 +536,9 @@ TEST( configureMaximumSegmentSize, snmssrWriteError )
 {
     auto driver = Mock_Driver{};
 
-    auto client = Client{ driver, random<Socket_ID>() };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    auto client = Client{ driver, random<Socket_ID>(), network_stack };
 
     auto const error = random<Mock_Error>();
 
@@ -523,9 +561,11 @@ TEST( configureMaximumSegmentSize, worksProperly )
 
     auto driver = Mock_Driver{};
 
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
     auto const socket_id = random<Socket_ID>();
 
-    auto client = Client{ driver, socket_id };
+    auto client = Client{ driver, socket_id, network_stack };
 
     auto const maximum_segment_size = random<std::uint16_t>();
 
@@ -544,7 +584,9 @@ TEST( maximumSegmentSize, snmssrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const client = Client{ driver, random<Socket_ID>() };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    auto const client = Client{ driver, random<Socket_ID>(), network_stack };
 
     auto const error = random<Mock_Error>();
 
@@ -565,9 +607,11 @@ TEST( maximumSegmentSize, worksProperly )
 {
     auto driver = Mock_Driver{};
 
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
     auto const socket_id = random<Socket_ID>();
 
-    auto const client = Client{ driver, socket_id };
+    auto const client = Client{ driver, socket_id, network_stack };
 
     auto const sn_mssr = random<std::uint16_t>();
 
@@ -588,7 +632,9 @@ TEST( configureTimeToLive, snttlWriteError )
 {
     auto driver = Mock_Driver{};
 
-    auto client = Client{ driver, random<Socket_ID>() };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    auto client = Client{ driver, random<Socket_ID>(), network_stack };
 
     auto const error = random<Mock_Error>();
 
@@ -611,9 +657,11 @@ TEST( configureTimeToLive, worksProperly )
 
     auto driver = Mock_Driver{};
 
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
     auto const socket_id = random<Socket_ID>();
 
-    auto client = Client{ driver, socket_id };
+    auto client = Client{ driver, socket_id, network_stack };
 
     auto const time_to_live = random<std::uint8_t>();
 
@@ -630,7 +678,9 @@ TEST( timeToLive, snttlReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const client = Client{ driver, random<Socket_ID>() };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    auto const client = Client{ driver, random<Socket_ID>(), network_stack };
 
     auto const error = random<Mock_Error>();
 
@@ -650,9 +700,11 @@ TEST( timeToLive, worksProperly )
 {
     auto driver = Mock_Driver{};
 
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
     auto const socket_id = random<Socket_ID>();
 
-    auto const client = Client{ driver, socket_id };
+    auto const client = Client{ driver, socket_id, network_stack };
 
     auto const sn_ttl = random<std::uint8_t>();
 
@@ -673,7 +725,9 @@ TEST( configureKeepalivePeriod, snkpalvtrWriteError )
 {
     auto driver = Mock_Driver{};
 
-    auto client = Client{ driver, random<Socket_ID>() };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    auto client = Client{ driver, random<Socket_ID>(), network_stack };
 
     auto const error = random<Mock_Error>();
 
@@ -696,9 +750,11 @@ TEST( configureKeepalivePeriod, worksProperly )
 
     auto driver = Mock_Driver{};
 
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
     auto const socket_id = random<Socket_ID>();
 
-    auto client = Client{ driver, socket_id };
+    auto client = Client{ driver, socket_id, network_stack };
 
     auto const keepalive_period = random<std::uint8_t>();
 
@@ -716,7 +772,9 @@ TEST( keepalivePeriod, snkpalvtrReadError )
 {
     auto driver = Mock_Driver{};
 
-    auto const client = Client{ driver, random<Socket_ID>() };
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    auto const client = Client{ driver, random<Socket_ID>(), network_stack };
 
     auto const error = random<Mock_Error>();
 
@@ -736,9 +794,11 @@ TEST( keepalivePeriod, worksProperly )
 {
     auto driver = Mock_Driver{};
 
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
     auto const socket_id = random<Socket_ID>();
 
-    auto const client = Client{ driver, socket_id };
+    auto const client = Client{ driver, socket_id, network_stack };
 
     auto const sn_kpalvtr = random<std::uint8_t>();
 

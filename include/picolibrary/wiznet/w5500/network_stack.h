@@ -64,12 +64,15 @@ class Network_Stack {
         /**
          * \brief Constructor.
          *
-         * \param[in] driver The driver for the W5500 the network stack utilizes.
+         * \param[in] driver The driver for the W5500 the network stack the socket is
+         *            associated with utilizes.
          * \param[in] socket_id The socket's socket ID.
+         * \param[in] network_stack The network stack the socket is associated with.
          */
-        constexpr TCP_Client( Driver & driver, Socket_ID socket_id ) noexcept :
+        constexpr TCP_Client( Driver & driver, Socket_ID socket_id, Network_Stack & network_stack ) noexcept :
             m_driver{ &driver },
-            m_socket_id{ socket_id }
+            m_socket_id{ socket_id },
+            m_network_stack{ &network_stack }
         {
         }
 
@@ -80,9 +83,11 @@ class Network_Stack {
          */
         constexpr TCP_Client( TCP_Client && source ) noexcept :
             m_driver{ source.m_driver },
-            m_socket_id{ source.m_socket_id }
+            m_socket_id{ source.m_socket_id },
+            m_network_stack{ source.m_network_stack }
         {
-            source.m_driver = nullptr;
+            source.m_driver        = nullptr;
+            source.m_network_stack = nullptr;
         }
 
         TCP_Client( TCP_Client const & ) = delete;
@@ -102,10 +107,12 @@ class Network_Stack {
         constexpr auto & operator=( TCP_Client && expression ) noexcept
         {
             if ( &expression != this ) {
-                m_driver    = expression.m_driver;
-                m_socket_id = expression.m_socket_id;
+                m_driver        = expression.m_driver;
+                m_socket_id     = expression.m_socket_id;
+                m_network_stack = expression.m_network_stack;
 
-                expression.m_driver = nullptr;
+                expression.m_driver        = nullptr;
+                expression.m_network_stack = nullptr;
             } // if
 
             return *this;
@@ -332,7 +339,8 @@ class Network_Stack {
 
       private:
         /**
-         * \brief The driver for the W5500 the network stack utilizes.
+         * \brief The driver for the W5500 the network stack the socket is associated with
+         *        utilizes.
          */
         Driver * m_driver{};
 
@@ -340,6 +348,11 @@ class Network_Stack {
          * \brief The socket's socket ID.
          */
         Socket_ID m_socket_id{};
+
+        /**
+         * \brief The network stack the socket is associated with.
+         */
+        Network_Stack * m_network_stack{};
     };
 
     /**
