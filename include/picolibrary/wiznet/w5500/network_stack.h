@@ -380,7 +380,8 @@ class Network_Stack {
      */
     constexpr Network_Stack( Network_Stack && source ) noexcept :
         m_driver{ source.m_driver },
-        m_nonresponsive_device_error{ source.m_nonresponsive_device_error }
+        m_nonresponsive_device_error{ source.m_nonresponsive_device_error },
+        m_tcp_ephemeral_port_allocation_enabled{ source.m_tcp_ephemeral_port_allocation_enabled }
     {
         source.m_driver = nullptr;
     }
@@ -402,6 +403,7 @@ class Network_Stack {
         if ( &expression != this ) {
             m_driver                     = expression.m_driver;
             m_nonresponsive_device_error = expression.m_nonresponsive_device_error;
+            m_tcp_ephemeral_port_allocation_enabled = expression.m_tcp_ephemeral_port_allocation_enabled;
 
             expression.m_driver = nullptr;
         } // if
