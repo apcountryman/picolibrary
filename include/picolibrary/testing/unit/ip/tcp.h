@@ -30,6 +30,7 @@
 #include "picolibrary/error.h"
 #include "picolibrary/ip/tcp.h"
 #include "picolibrary/result.h"
+#include "picolibrary/testing/unit/ip.h"
 #include "picolibrary/void.h"
 
 /**
