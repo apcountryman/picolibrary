@@ -360,6 +360,9 @@ class Network_Stack {
         auto bind( IP::TCP::Endpoint const & endpoint = IP::TCP::Endpoint{} ) noexcept
             -> Result<Void, Error_Code>
         {
+            // #lizard forgives the length
+            // #lizard forgives the complexity
+
             if ( m_state != State::CONSTRUCTED ) {
                 return Generic_Error::LOGIC_ERROR;
             } // if
