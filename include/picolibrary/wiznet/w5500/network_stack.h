@@ -26,6 +26,7 @@
 #include <cstdint>
 
 #include "picolibrary/error.h"
+#include "picolibrary/ip.h"
 #include "picolibrary/ip/tcp.h"
 #include "picolibrary/ipv4.h"
 #include "picolibrary/mac_address.h"
@@ -84,6 +85,7 @@ class Network_Stack {
         constexpr TCP_Client( TCP_Client && source ) noexcept :
             m_driver{ source.m_driver },
             m_socket_id{ source.m_socket_id },
+            m_state{ source.m_state },
             m_network_stack{ source.m_network_stack }
         {
             source.m_driver        = nullptr;
@@ -109,6 +111,7 @@ class Network_Stack {
             if ( &expression != this ) {
                 m_driver        = expression.m_driver;
                 m_socket_id     = expression.m_socket_id;
+                m_state         = expression.m_state;
                 m_network_stack = expression.m_network_stack;
 
                 expression.m_driver        = nullptr;
@@ -337,7 +340,139 @@ class Network_Stack {
             return m_driver->read_sn_kpalvtr( m_socket_id );
         }
 
+        /**
+         * \brief Bind the socket to a specific local endpoint.
+         *
+         * \param[in] endpoint The local endpoint to bind the socket to.
+         *
+         * \return Nothing if binding the socket to the local endpoint succeeded.
+         * \return picolibrary::Generic_Error::INVALID_ARGUMENT if endpoint is not a valid
+         *         local endpoint.
+         * \return picolibrary::Generic_Error::LOGIC_ERROR if the socket has already been
+         *         bound to a local endpoint.
+         * \return picolibrary::Generic_Error::ENDPOINT_IN_USE if endpoint is already in
+         *         use.
+         * \return picolibrary::Generic_Error::EPHEMERAL_PORTS_EXHAUSTED if an ephemeral
+         *         port was requested and no ephemeral ports are available.
+         * \return An error code if binding the socket to the local endpoint failed for
+         *         any other reason.
+         */
+        auto bind( IP::TCP::Endpoint const & endpoint = IP::TCP::Endpoint{} ) noexcept
+            -> Result<Void, Error_Code>
+        {
+            if ( m_state != State::CONSTRUCTED ) {
+                return Generic_Error::LOGIC_ERROR;
+            } // if
+
+            switch ( endpoint.address().version() ) {
+                case IP::Version::UNSPECIFIED: break;
+                case IP::Version::_4: break;
+                default: return Generic_Error::INVALID_ARGUMENT;
+            } // switch
+
+            if ( not endpoint.address().is_any() ) {
+                auto result = m_driver->read_sipr();
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+
+                if ( endpoint.address().ipv4().as_byte_array() != result.value() ) {
+                    return Generic_Error::INVALID_ARGUMENT;
+                } // if
+            }     // if
+
+            if ( endpoint.port().is_any() and not m_network_stack->m_tcp_ephemeral_port_allocation_enabled ) {
+                return Generic_Error::EPHEMERAL_PORTS_EXHAUSTED;
+            } // if
+
+            SN_PORT::Type used_ports[ SOCKETS ];
+
+            for ( auto socket = std::uint8_t{}; socket < m_network_stack->m_available_sockets; ++socket ) {
+                auto const socket_id = static_cast<Socket_ID>( socket << Control_Byte::Bit::SOCKET );
+
+                Protocol protocol;
+                {
+                    auto result = m_driver->read_sn_mr( socket_id );
+                    if ( result.is_error() ) {
+                        return result.error();
+                    } // if
+
+                    protocol = static_cast<Protocol>( result.value() & SN_MR::Mask::P );
+                }
+
+                SN_PORT::Type port;
+                {
+                    auto result = m_driver->read_sn_port( socket_id );
+                    if ( result.is_error() ) {
+                        return result.error();
+                    } // if
+
+                    port = result.value();
+                }
+
+                used_ports[ socket ] = protocol == Protocol::TCP ? port : 0;
+            } // for
+
+            auto const is_available = [ &used_ports, available_sockets = m_network_stack->m_available_sockets ](
+                                          SN_PORT::Type port ) noexcept -> bool {
+                for ( auto socket = std::uint8_t{}; socket < available_sockets; ++socket ) {
+                    if ( used_ports[ socket ] == port ) {
+                        return false;
+                    } // if
+                }     // for
+
+                return true;
+            };
+
+            SN_PORT::Type port;
+
+            if ( endpoint.port().is_any() ) {
+                port = 0;
+
+                auto const ephemeral_port_min = m_network_stack->m_tcp_ephemeral_port_min.as_unsigned_integer();
+                auto const ephemeral_port_max = m_network_stack->m_tcp_ephemeral_port_max.as_unsigned_integer();
+
+                for ( auto ephemeral_port = ephemeral_port_min; ephemeral_port <= ephemeral_port_max;
+                      ++ephemeral_port ) {
+                    if ( is_available( ephemeral_port ) ) {
+                        port = ephemeral_port;
+
+                        break;
+                    } // if
+                }     // for
+
+                if ( not port ) {
+                    return Generic_Error::EPHEMERAL_PORTS_EXHAUSTED;
+                } // if
+            } else {
+                if ( not is_available( endpoint.port().as_unsigned_integer() ) ) {
+                    return Generic_Error::ENDPOINT_IN_USE;
+                } // if
+
+                port = endpoint.port().as_unsigned_integer();
+            } // else
+
+            {
+                auto result = m_driver->write_sn_port( m_socket_id, port );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+
+            m_state = State::BOUND;
+
+            return {};
+        }
+
       private:
+        /**
+         * \brief Socket state.
+         */
+        enum class State : std::uint_fast8_t {
+            CONSTRUCTED, ///< Constructed.
+            BOUND,       ///< Bound.
+        };
+
         /**
          * \brief The driver for the W5500 the network stack the socket is associated with
          *        utilizes.
@@ -348,6 +483,11 @@ class Network_Stack {
          * \brief The socket's socket ID.
          */
         Socket_ID m_socket_id{};
+
+        /**
+         * \brief The socket's state.
+         */
+        State m_state{ State::CONSTRUCTED };
 
         /**
          * \brief The network stack the socket is associated with.
@@ -381,7 +521,10 @@ class Network_Stack {
     constexpr Network_Stack( Network_Stack && source ) noexcept :
         m_driver{ source.m_driver },
         m_nonresponsive_device_error{ source.m_nonresponsive_device_error },
-        m_tcp_ephemeral_port_allocation_enabled{ source.m_tcp_ephemeral_port_allocation_enabled }
+        m_available_sockets{ source.m_available_sockets },
+        m_tcp_ephemeral_port_allocation_enabled{ source.m_tcp_ephemeral_port_allocation_enabled },
+        m_tcp_ephemeral_port_min{ source.m_tcp_ephemeral_port_min },
+        m_tcp_ephemeral_port_max{ source.m_tcp_ephemeral_port_max }
     {
         source.m_driver = nullptr;
     }
@@ -403,7 +546,10 @@ class Network_Stack {
         if ( &expression != this ) {
             m_driver                     = expression.m_driver;
             m_nonresponsive_device_error = expression.m_nonresponsive_device_error;
+            m_available_sockets          = expression.m_available_sockets;
             m_tcp_ephemeral_port_allocation_enabled = expression.m_tcp_ephemeral_port_allocation_enabled;
+            m_tcp_ephemeral_port_min                = expression.m_tcp_ephemeral_port_min;
+            m_tcp_ephemeral_port_max                = expression.m_tcp_ephemeral_port_max;
 
             expression.m_driver = nullptr;
         } // if
@@ -718,6 +864,8 @@ class Network_Stack {
                 } // if
             }
         } // for
+
+        m_available_sockets = available_sockets;
 
         return {};
     }
@@ -1037,6 +1185,8 @@ class Network_Stack {
         } // if
 
         m_tcp_ephemeral_port_allocation_enabled = true;
+        m_tcp_ephemeral_port_min                = min;
+        m_tcp_ephemeral_port_max                = max;
 
         return {};
     }
@@ -1054,9 +1204,24 @@ class Network_Stack {
     Error_Code m_nonresponsive_device_error{};
 
     /**
+     * \brief The number of available sockets.
+     */
+    std::uint8_t m_available_sockets{ 16 / 2 };
+
+    /**
      * \brief The TCP ephemeral port allocation enable state.
      */
     bool m_tcp_ephemeral_port_allocation_enabled{};
+
+    /**
+     * \brief The lower bound of the TCP epheral port range.
+     */
+    IP::TCP::Port m_tcp_ephemeral_port_min{};
+
+    /**
+     * \brief The upper bound of the TCP epheral port range.
+     */
+    IP::TCP::Port m_tcp_ephemeral_port_max{};
 };
 
 } // namespace picolibrary::WIZnet::W5500
