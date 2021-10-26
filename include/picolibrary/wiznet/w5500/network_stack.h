@@ -467,6 +467,96 @@ class Network_Stack {
             return {};
         }
 
+        /**
+         * \brief Connect to a remote endpoint.
+         *
+         * \param[in] endpoint The remote endpoint to connect to.
+         *
+         * \return Nothing if connecting to the remote endpoint succeeded.
+         * \return picolibrary::Generic_Error::INVALID_ARGUMENT if endpoint is not a valid
+         *         remote endpoint.
+         * \return picolibrary::Generic_Error::LOGIC_ERROR if the socket is not in a state
+         *         that allows it to connect to a remote endpoint.
+         * \return picolibrary::Generic_Error::LOGIC_ERROR if the socket is already
+         *         connected to a remote endpoint.
+         * \return picolibrary::Generic_Error::LOGIC_ERROR if the socket has not been
+         *         bound to a local endpoint.
+         * \return picolibrary::Generic_Error::WOULD_BLOCK if connecting to the remote
+         *         endpoint cannot succeed immediately.
+         * \return picolibrary::Generic_Error::OPERATION_TIMEOUT if connecting to the
+         *         remote endpoint timed out.
+         * \return picolibrary::WIZnet::W5500::Network_Stack::nonresponsive_device_error()
+         *         if the W5500 is nonresponsive.
+         * \return An error code if connecting to the remote endpoint failed for any other
+         *         reason.
+         */
+        auto connect( IP::TCP::Endpoint const & endpoint ) noexcept -> Result<Void, Error_Code>
+        {
+            if ( m_state == State::BOUND ) {
+                if ( not endpoint.address().is_ipv4()
+                     or endpoint.address().ipv4().is_any() or endpoint.port().is_any() ) {
+                    return Generic_Error::INVALID_ARGUMENT;
+                } // if
+
+                {
+                    auto result = m_driver->write_dipr(
+                        m_socket_id, endpoint.address().ipv4().as_byte_array() );
+                    if ( result.is_error() ) {
+                        return result.error();
+                    } // if
+                }
+
+                {
+                    auto result = m_driver->write_dport(
+                        m_socket_id, endpoint.port().as_unsigned_integer() );
+                    if ( result.is_error() ) {
+                        return result.error();
+                    } // if
+                }
+
+                {
+                    auto result = m_driver->write_sn_cr(
+                        m_socket_id, static_cast<SN_CR::Type>( Command::CONNECT ) );
+                    if ( result.is_error() ) {
+                        return result.error();
+                    } // if
+                }
+
+                for ( ;; ) {
+                    auto result = m_driver->read_sn_cr( m_socket_id );
+                    if ( result.is_error() ) {
+                        return result.error();
+                    } // if
+
+                    if ( not result.value() ) {
+                        m_state = State::CONNECTING;
+
+                        return Generic_Error::WOULD_BLOCK;
+                    } // if
+                }     // for
+            }         // if
+
+            if ( m_state == State::CONNECTING ) {
+                auto result = m_driver->read_sn_sr( m_socket_id );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+
+                switch ( static_cast<Socket_Status>( result.value() ) ) {
+                    case Socket_Status::CLOSED:
+                        m_state = State::CLOSED;
+
+                        return Generic_Error::OPERATION_TIMEOUT;
+                    case Socket_Status::ESTABLISHED: [[fallthrough]];
+                    case Socket_Status::CLOSE_WAIT: m_state = State::CONNECTED; return {};
+                    case Socket_Status::SYN_SENT: return Generic_Error::WOULD_BLOCK;
+                    default: return m_network_stack->m_nonresponsive_device_error;
+                } // switch
+            }     // if
+
+            return Generic_Error::LOGIC_ERROR;
+        }
+
       private:
         /**
          * \brief Socket state.
@@ -474,6 +564,9 @@ class Network_Stack {
         enum class State : std::uint_fast8_t {
             CONSTRUCTED, ///< Constructed.
             BOUND,       ///< Bound.
+            CONNECTING,  ///< Connecting.
+            CONNECTED,   ///< Connected.
+            CLOSED,      ///< Closed.
         };
 
         /**
