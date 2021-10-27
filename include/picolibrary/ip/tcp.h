@@ -247,8 +247,8 @@ class Client_Concept {
      * \brief Disable further data transmission and reception.
      *
      * \return Nothing if disabling further data transmission and reception succeeded.
-     * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not connected to
-     *         a remote endpoint.
+     * \return picolibrary::Generic_Error::CONNECTION_LOST if the socket is not connected
+     *         to a remote endpoint.
      * \return An error code if disabling further data transmission and reception failed
      *         for any other reason.
      */
@@ -419,8 +419,8 @@ class Server_Concept {
      * \brief Disable further data transmission and reception.
      *
      * \return Nothing if disabling further data transmission and reception succeeded.
-     * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not connected to
-     *         a remote endpoint.
+     * \return picolibrary::Generic_Error::CONNECTION_LOST if the socket is not connected
+     *         to a remote endpoint.
      * \return An error code if disabling further data transmission and reception failed
      *         for any other reason.
      */
