@@ -76,6 +76,8 @@ class Network_Stack {
         source.m_driver = nullptr;
     }
 
+    Network_Stack( Network_Stack const & ) = delete;
+
     /**
      * \brief Destructor.
      */
@@ -100,6 +102,8 @@ class Network_Stack {
 
         return *this;
     }
+
+    auto operator=( Network_Stack const & ) = delete;
 
     /**
      * \brief Get the error code that is returned when an operation fails due to the W5500
