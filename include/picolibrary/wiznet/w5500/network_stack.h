@@ -108,6 +108,9 @@ class Network_Stack {
     /**
      * \brief Get the error code that is returned when an operation fails due to the W5500
      *        being nonresponsive.
+     *
+     * \return The error code that is returned when an operation fails due to the W5500
+     *         being nonresponsive.
      */
     constexpr auto const & nonresponsive_device_error() const noexcept
     {
