@@ -27,6 +27,6 @@
  * \brief WIZnet W5500 IP unit testing facilities.
  */
 namespace picolibrary::Testing::Unit::WIZnet::W5500::IP {
-} // namespace picolibrary::Testing::Unit::WIZnet::W550::IP
+} // namespace picolibrary::Testing::Unit::WIZnet::W5500::IP
 
 #endif // PICOLIBRARY_TESTING_UNIT_WIZNET_W5500_IP_H
