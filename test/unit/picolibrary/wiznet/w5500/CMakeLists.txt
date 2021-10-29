@@ -24,6 +24,3 @@ add_subdirectory( driver )
 
 # build the picolibrary::WIZnet::W5500::IP unit tests
 add_subdirectory( ip )
-
-# build the picolibrary::WIZnet::W5500::Network_Stack unit tests
-add_subdirectory( network_stack )
