@@ -14,9 +14,9 @@
 # permissions and limitations under the License.
 
 # File: test/unit/picolibrary/wiznet/w5500/network_stack/CMakeLists.txt
-# Description: picolibrary::WIZnet::W5500::Network_Stack unit tests CMake rules.
+# Description: picolibrary::WIZnet::W5500::IP::Network_Stack unit tests CMake rules.
 
-# build the picolibrary::WIZnet::W5500::Network_Stack unit tests
+# build the picolibrary::WIZnet::W5500::IP::Network_Stack unit tests
 if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     add_executable(
         test-unit-picolibrary-wiznet-w5500-network_stack

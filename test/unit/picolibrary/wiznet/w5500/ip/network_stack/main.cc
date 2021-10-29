@@ -17,7 +17,7 @@
 
 /**
  * \file
- * \brief picolibrary::WIZnet::W5500::Network_Stack unit test program.
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack unit test program.
  */
 
 #include <algorithm>
@@ -40,7 +40,7 @@
 #include "picolibrary/testing/unit/wiznet/w5500.h"
 #include "picolibrary/void.h"
 #include "picolibrary/wiznet/w5500.h"
-#include "picolibrary/wiznet/w5500/network_stack.h"
+#include "picolibrary/wiznet/w5500/ip.h"
 
 namespace {
 
@@ -58,10 +58,10 @@ using ::picolibrary::WIZnet::W5500::Buffer_Size;
 using ::picolibrary::WIZnet::W5500::Link_Mode;
 using ::picolibrary::WIZnet::W5500::Link_Speed;
 using ::picolibrary::WIZnet::W5500::Link_Status;
-using ::picolibrary::WIZnet::W5500::Network_Stack;
 using ::picolibrary::WIZnet::W5500::PHY_Mode;
 using ::picolibrary::WIZnet::W5500::Ping_Blocking;
 using ::picolibrary::WIZnet::W5500::Socket_ID;
+using ::picolibrary::WIZnet::W5500::IP::Network_Stack;
 using ::testing::_;
 using ::testing::InSequence;
 using ::testing::Return;
@@ -82,7 +82,7 @@ auto random_fixed_size_array()
 } // namespace
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::Network_Stack( Driver &,
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::Network_Stack( Driver &,
  *        picolibrary::Error_Code const & ) works properly.
  */
 TEST( constructor, worksProperly )
@@ -97,8 +97,8 @@ TEST( constructor, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::ping_w5500() properly handles
- *        a VERSIONR register read error.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::ping_w5500() properly
+ *        handles a VERSIONR register read error.
  */
 TEST( pingW5500, versionrReadError )
 {
@@ -117,8 +117,8 @@ TEST( pingW5500, versionrReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::ping_w5500() properly handles
- *        an incorrect chip version.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::ping_w5500() properly
+ *        handles an incorrect chip version.
  */
 TEST( pingW5500, incorrectChipVersion )
 {
@@ -139,7 +139,8 @@ TEST( pingW5500, incorrectChipVersion )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::ping_w5500() works properly.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::ping_w5500() works
+ *        properly.
  */
 TEST( pingW5500, worksProperly )
 {
@@ -153,7 +154,7 @@ TEST( pingW5500, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_phy() properly
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_phy() properly
  *        handles a PHYCFGR register write error when writing the PHY configuration.
  */
 TEST( configurePHY, phycfgrWriteErrorPHYConfiguration )
@@ -173,7 +174,7 @@ TEST( configurePHY, phycfgrWriteErrorPHYConfiguration )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_phy() properly
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_phy() properly
  *        handles a PHYCFGR register write error when entering PHY reset.
  */
 TEST( configurePHY, phycfgrWriteErrorEnterPHYReset )
@@ -195,7 +196,7 @@ TEST( configurePHY, phycfgrWriteErrorEnterPHYReset )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_phy() properly
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_phy() properly
  *        handles a PHYCFGR register write error when exiting PHY reset.
  */
 TEST( configurePHY, phycfgrWriteErrorExitPHYReset )
@@ -218,7 +219,7 @@ TEST( configurePHY, phycfgrWriteErrorExitPHYReset )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_phy() works
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_phy() works
  *        properly.
  */
 TEST( configurePHY, worksProperly )
@@ -242,8 +243,8 @@ TEST( configurePHY, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::phy_mode() properly handles a
- *        PHYCFGR register read error.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::phy_mode() properly
+ *        handles a PHYCFGR register read error.
  */
 TEST( phyMode, phycfgrReadError )
 {
@@ -262,7 +263,7 @@ TEST( phyMode, phycfgrReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::phy_mode() works properly.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::phy_mode() works properly.
  */
 TEST( phyMode, worksProperly )
 {
@@ -281,8 +282,8 @@ TEST( phyMode, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::link_status() properly handles
- *        a PHYCFGR register read error.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::link_status() properly
+ *        handles a PHYCFGR register read error.
  */
 TEST( linkStatus, phycfgrReadError )
 {
@@ -301,7 +302,8 @@ TEST( linkStatus, phycfgrReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::link_status() works properly.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::link_status() works
+ *        properly.
  */
 TEST( linkStatus, worksProperly )
 {
@@ -320,8 +322,8 @@ TEST( linkStatus, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::link_mode() properly handles a
- *        PHYCFGR register read error.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::link_mode() properly
+ *        handles a PHYCFGR register read error.
  */
 TEST( linkMode, phycfgrReadError )
 {
@@ -340,7 +342,8 @@ TEST( linkMode, phycfgrReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::link_mode() works properly.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::link_mode() works
+ *        properly.
  */
 TEST( linkMode, worksProperly )
 {
@@ -359,8 +362,8 @@ TEST( linkMode, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::link_speed() properly handles
- *        a PHYCFGR register read error.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::link_speed() properly
+ *        handles a PHYCFGR register read error.
  */
 TEST( linkSpeed, phycfgrReadError )
 {
@@ -379,7 +382,8 @@ TEST( linkSpeed, phycfgrReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::link_speed() works properly.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::link_speed() works
+ *        properly.
  */
 TEST( linkSpeed, worksProperly )
 {
@@ -398,7 +402,7 @@ TEST( linkSpeed, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_ping_blocking()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_ping_blocking()
  *        properly handles an MR register read error.
  */
 TEST( configurePingBlocking, mrReadError )
@@ -418,7 +422,7 @@ TEST( configurePingBlocking, mrReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_ping_blocking()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_ping_blocking()
  *        properly handles an MR register write error.
  */
 TEST( configurePingBlocking, mrWriteError )
@@ -439,7 +443,7 @@ TEST( configurePingBlocking, mrWriteError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_ping_blocking()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_ping_blocking()
  *        works properly.
  */
 TEST( configurePingBlocking, worksProperly )
@@ -459,7 +463,8 @@ TEST( configurePingBlocking, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::ping_blocking_configuration()
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::IP::Network_Stack::ping_blocking_configuration()
  *        properly handles an MR register read error.
  */
 TEST( pingBlockingConfiguration, mrReadError )
@@ -479,7 +484,8 @@ TEST( pingBlockingConfiguration, mrReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::ping_blocking_configuration()
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::IP::Network_Stack::ping_blocking_configuration()
  *        works properly.
  */
 TEST( pingBlockingConfiguration, worksProperly )
@@ -499,7 +505,7 @@ TEST( pingBlockingConfiguration, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_arp_forcing()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_arp_forcing()
  *        properly handles an MR register read error.
  */
 TEST( configureARPForcing, mrReadError )
@@ -519,7 +525,7 @@ TEST( configureARPForcing, mrReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_arp_forcing()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_arp_forcing()
  *        properly handles an MR register write error.
  */
 TEST( configureARPForcing, mrWriteError )
@@ -540,8 +546,8 @@ TEST( configureARPForcing, mrWriteError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_arp_forcing() works
- *        properly.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_arp_forcing()
+ *        works properly.
  */
 TEST( configureARPForcing, worksProperly )
 {
@@ -560,7 +566,8 @@ TEST( configureARPForcing, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::arp_forcing_configuration()
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::IP::Network_Stack::arp_forcing_configuration()
  *        properly handles an MR register read error.
  */
 TEST( arpForcingConfiguration, mrReadError )
@@ -580,8 +587,9 @@ TEST( arpForcingConfiguration, mrReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::arp_forcing_configuration()
- *        works properly.
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::IP::Network_Stack::arp_forcing_configuration() works
+ *        properly.
  */
 TEST( arpForcingConfiguration, worksProperly )
 {
@@ -600,7 +608,7 @@ TEST( arpForcingConfiguration, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_retransmission()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_retransmission()
  *        properly handles an RTR register write error.
  */
 TEST( configureRetransmission, rtrWriteError )
@@ -621,7 +629,7 @@ TEST( configureRetransmission, rtrWriteError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_retransmission()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_retransmission()
  *        properly handles an RCR register write error.
  */
 TEST( configureRetransmission, rcrWriteError )
@@ -643,7 +651,7 @@ TEST( configureRetransmission, rcrWriteError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_retransmission()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_retransmission()
  *        works properly.
  */
 TEST( configureRetransmission, worksProperly )
@@ -664,8 +672,8 @@ TEST( configureRetransmission, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::retry_time() properly handles
- *        an RTR register read error.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::retry_time() properly
+ *        handles an RTR register read error.
  */
 TEST( retryTime, rtrReadError )
 {
@@ -684,7 +692,8 @@ TEST( retryTime, rtrReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::retry_time() works properly.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::retry_time() works
+ *        properly.
  */
 TEST( retryTime, worksProperly )
 {
@@ -703,8 +712,8 @@ TEST( retryTime, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::retry_count() properly handles
- *        an RCR register read error.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::retry_count() properly
+ *        handles an RCR register read error.
  */
 TEST( retryCount, rcrReadError )
 {
@@ -723,7 +732,8 @@ TEST( retryCount, rcrReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::retry_count() works properly.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::retry_count() works
+ *        properly.
  */
 TEST( retryCount, worksProperly )
 {
@@ -742,7 +752,7 @@ TEST( retryCount, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_socket_buffers()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_socket_buffers()
  *        properly handles an insufficient socket buffer size.
  */
 TEST( configureSocketBuffers, insufficientBufferSize )
@@ -768,7 +778,7 @@ TEST( configureSocketBuffers, insufficientBufferSize )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_socket_buffers()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_socket_buffers()
  *        properly handles an invalid socket buffer size.
  */
 TEST( configureSocketBuffers, invalidBufferSize )
@@ -796,7 +806,7 @@ TEST( configureSocketBuffers, invalidBufferSize )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_socket_buffers()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_socket_buffers()
  *        properly handles an SN_RXBUF_SIZE register write error when configuring the
  *        socket buffer size of an available socket.
  */
@@ -819,7 +829,7 @@ TEST( configureSocketBuffers, writeSNRXBUFSIZEErrorAvailableSocket )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_socket_buffers()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_socket_buffers()
  *        properly handles an SN_TXBUF_SIZE register write error when configuring the
  *        socket buffer size of an available socket.
  */
@@ -842,7 +852,7 @@ TEST( configureSocketBuffers, writeSNTXBUFSIZEErrorAvailableSocket )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_socket_buffers()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_socket_buffers()
  *        properly handles an SN_RXBUF_SIZE register write error when configuring the
  *        socket buffer size of an unused socket.
  */
@@ -873,7 +883,7 @@ TEST( configureSocketBuffers, writeSNRXBUFSIZEErrorUnusedSocket )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_socket_buffers()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_socket_buffers()
  *        properly handles an SN_TXBUF_SIZE register write error when configuring the
  *        socket buffer size of an unused socket.
  */
@@ -904,7 +914,7 @@ TEST( configureSocketBuffers, writeSNTXBUFSIZEErrorUnusedSocket )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_socket_buffers()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_socket_buffers()
  *        works properly.
  */
 TEST( configureSocketBuffers, worksProperly )
@@ -959,8 +969,8 @@ TEST( configureSocketBuffers, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::socket_buffer_size() properly
- *        handles an SN_RXBUF_SIZE register read error.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::socket_buffer_size()
+ *        properly handles an SN_RXBUF_SIZE register read error.
  */
 TEST( socketBufferSize, snrxbufsizeReadError )
 {
@@ -979,7 +989,7 @@ TEST( socketBufferSize, snrxbufsizeReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::socket_buffer_size() works
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::socket_buffer_size() works
  *        properly.
  */
 TEST( socketBufferSize, worksProperly )
@@ -999,7 +1009,7 @@ TEST( socketBufferSize, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_mac_address()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_mac_address()
  *        properly handles a SHAR register write error.
  */
 TEST( configureMACAddress, sharWriteError )
@@ -1019,8 +1029,8 @@ TEST( configureMACAddress, sharWriteError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_mac_address() works
- *        properly.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_mac_address()
+ *        works properly.
  */
 TEST( configureMACAddress, worksProperly )
 {
@@ -1036,8 +1046,8 @@ TEST( configureMACAddress, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::mac_address() properly handles
- *        a SHAR register read error.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::mac_address() properly
+ *        handles a SHAR register read error.
  */
 TEST( macAddress, sharReadError )
 {
@@ -1056,7 +1066,8 @@ TEST( macAddress, sharReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::mac_address() works properly.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::mac_address() works
+ *        properly.
  */
 TEST( macAddress, worksProperly )
 {
@@ -1075,7 +1086,7 @@ TEST( macAddress, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_ip_address()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_ip_address()
  *        properly handles a SIPR register write error.
  */
 TEST( configureIPAddress, siprWriteError )
@@ -1095,8 +1106,8 @@ TEST( configureIPAddress, siprWriteError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_ip_address() works
- *        properly.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_ip_address()
+ *        works properly.
  */
 TEST( configureIPAddress, worksProperly )
 {
@@ -1112,8 +1123,8 @@ TEST( configureIPAddress, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::ip_address() properly handles
- *        a SIPR register read error.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::ip_address() properly
+ *        handles a SIPR register read error.
  */
 TEST( ipAddress, siprReadError )
 {
@@ -1132,7 +1143,8 @@ TEST( ipAddress, siprReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::ip_address() works properly.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::ip_address() works
+ *        properly.
  */
 TEST( ipAddress, worksProperly )
 {
@@ -1151,7 +1163,8 @@ TEST( ipAddress, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_gateway_ip_address()
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::IP::Network_Stack::configure_gateway_ip_address()
  *        properly handles a GAR register write error.
  */
 TEST( configureGatewayIPAddress, garWriteError )
@@ -1171,7 +1184,8 @@ TEST( configureGatewayIPAddress, garWriteError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_gateway_ip_address()
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::IP::Network_Stack::configure_gateway_ip_address()
  *        works properly.
  */
 TEST( configureGatewayIPAddress, worksProperly )
@@ -1188,8 +1202,8 @@ TEST( configureGatewayIPAddress, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::gateway_ip_address() properly
- *        handles a GAR register read error.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::gateway_ip_address()
+ *        properly handles a GAR register read error.
  */
 TEST( gatewayIPAddress, garReadError )
 {
@@ -1208,7 +1222,7 @@ TEST( gatewayIPAddress, garReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::gateway_ip_address() works
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::gateway_ip_address() works
  *        properly.
  */
 TEST( gatewayIPAddress, worksProperly )
@@ -1228,7 +1242,7 @@ TEST( gatewayIPAddress, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_subnet_mask()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_subnet_mask()
  *        properly handles a SUBR register write error.
  */
 TEST( configureSubnetMask, subrWriteError )
@@ -1248,8 +1262,8 @@ TEST( configureSubnetMask, subrWriteError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::configure_subnet_mask() works
- *        properly.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_subnet_mask()
+ *        works properly.
  */
 TEST( configureSubnetMask, worksProperly )
 {
@@ -1266,8 +1280,8 @@ TEST( configureSubnetMask, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::subnet_mask() properly handles
- *        a SUBR register read error.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::subnet_mask() properly
+ *        handles a SUBR register read error.
  */
 TEST( subnetMask, subrReadError )
 {
@@ -1286,7 +1300,8 @@ TEST( subnetMask, subrReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::subnet_mask() works properly.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::subnet_mask() works
+ *        properly.
  */
 TEST( subnetMask, worksProperly )
 {
@@ -1306,7 +1321,7 @@ TEST( subnetMask, worksProperly )
 
 /**
  * \brief Verify
- *        picolibrary::WIZnet::W5500::Network_Stack::configure_interrupt_assert_wait_time()
+ *        picolibrary::WIZnet::W5500::IP::Network_Stack::configure_interrupt_assert_wait_time()
  *        properly handles an INTLEVEL register write error.
  */
 TEST( configureInterruptAssertWaitTime, intlevelWriteError )
@@ -1327,7 +1342,7 @@ TEST( configureInterruptAssertWaitTime, intlevelWriteError )
 
 /**
  * \brief Verify
- *        picolibrary::WIZnet::W5500::Network_Stack::configure_interrupt_assert_wait_time()
+ *        picolibrary::WIZnet::W5500::IP::Network_Stack::configure_interrupt_assert_wait_time()
  *        works properly.
  */
 TEST( configureInterruptAssertWaitTime, worksProperly )
@@ -1346,7 +1361,8 @@ TEST( configureInterruptAssertWaitTime, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::interrupt_assert_wait_time()
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::IP::Network_Stack::interrupt_assert_wait_time()
  *        properly handles an INTLEVEL register read error.
  */
 TEST( interruptAssertWaitTime, intlevelReadError )
@@ -1366,7 +1382,8 @@ TEST( interruptAssertWaitTime, intlevelReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::interrupt_assert_wait_time()
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::IP::Network_Stack::interrupt_assert_wait_time()
  *        works properly.
  */
 TEST( interruptAssertWaitTime, worksProperly )
@@ -1386,8 +1403,8 @@ TEST( interruptAssertWaitTime, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::enable_interrupts() properly
- *        handles an IMR register read error.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::enable_interrupts()
+ *        properly handles an IMR register read error.
  */
 TEST( enableInterrupts, imrReadError )
 {
@@ -1406,8 +1423,8 @@ TEST( enableInterrupts, imrReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::enable_interrupts() properly
- *        handles an IMR register write error.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::enable_interrupts()
+ *        properly handles an IMR register write error.
  */
 TEST( enableInterrupts, imrWriteError )
 {
@@ -1427,7 +1444,7 @@ TEST( enableInterrupts, imrWriteError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::enable_interrupts() works
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::enable_interrupts() works
  *        properly.
  */
 TEST( enableInterrupts, worksProperly )
@@ -1446,7 +1463,7 @@ TEST( enableInterrupts, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::disable_interrupts(
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::disable_interrupts(
  *        std::uint8_t ) properly handles an IMR register read error.
  */
 TEST( disableInterrupts, imrReadError )
@@ -1466,7 +1483,7 @@ TEST( disableInterrupts, imrReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::disable_interrupts(
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::disable_interrupts(
  *        std::uint8_t ) properly handles an IMR register write error.
  */
 TEST( disableInterrupts, imrWriteError )
@@ -1487,7 +1504,7 @@ TEST( disableInterrupts, imrWriteError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::disable_interrupts(
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::disable_interrupts(
  *        std::uint8_t ) works properly.
  */
 TEST( disableInterrupts, worksProperly )
@@ -1506,8 +1523,8 @@ TEST( disableInterrupts, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::disable_interrupts() properly
- *        handles an IMR register write error.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::disable_interrupts()
+ *        properly handles an IMR register write error.
  */
 TEST( disableAllInterrupts, imrWriteError )
 {
@@ -1526,7 +1543,7 @@ TEST( disableAllInterrupts, imrWriteError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::disable_interrupts() works
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::disable_interrupts() works
  *        properly.
  */
 TEST( disableAllInterrupts, worksProperly )
@@ -1541,8 +1558,8 @@ TEST( disableAllInterrupts, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::enabled_interrupts() properly
- *        handles an IMR register read error.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::enabled_interrupts()
+ *        properly handles an IMR register read error.
  */
 TEST( enabledInterrupts, imrReadError )
 {
@@ -1561,7 +1578,7 @@ TEST( enabledInterrupts, imrReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::enabled_interrupts() works
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::enabled_interrupts() works
  *        properly.
  */
 TEST( enabledInterrupts, worksProperly )
@@ -1581,8 +1598,8 @@ TEST( enabledInterrupts, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::interrupt_context() properly
- *        handles an IR register read error.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::interrupt_context()
+ *        properly handles an IR register read error.
  */
 TEST( interruptContext, irReadError )
 {
@@ -1601,7 +1618,7 @@ TEST( interruptContext, irReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::interrupt_context() works
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::interrupt_context() works
  *        properly.
  */
 TEST( interruptContext, worksProperly )
@@ -1621,7 +1638,7 @@ TEST( interruptContext, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::enable_socket_interrupts()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::enable_socket_interrupts()
  *        properly handles a SIMR register write error.
  */
 TEST( enableSocketInterrupts, simrWriteError )
@@ -1641,7 +1658,7 @@ TEST( enableSocketInterrupts, simrWriteError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::enable_socket_interrupts()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::enable_socket_interrupts()
  *        works properly.
  */
 TEST( enableSocketInterrupts, worksProperly )
@@ -1656,7 +1673,8 @@ TEST( enableSocketInterrupts, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::disable_socket_interrupts()
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::IP::Network_Stack::disable_socket_interrupts()
  *        properly handles a SIMR register write error.
  */
 TEST( disableSocketInterrupts, simrWriteError )
@@ -1676,8 +1694,9 @@ TEST( disableSocketInterrupts, simrWriteError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::disable_socket_interrupts()
- *        works properly.
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::IP::Network_Stack::disable_socket_interrupts() works
+ *        properly.
  */
 TEST( disableSocketInterrupts, worksProperly )
 {
@@ -1691,7 +1710,8 @@ TEST( disableSocketInterrupts, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::enabled_socket_interrupts()
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::IP::Network_Stack::enabled_socket_interrupts()
  *        properly handles a SIMR register read error.
  */
 TEST( enabledSocketInterrupts, simrReadError )
@@ -1711,8 +1731,9 @@ TEST( enabledSocketInterrupts, simrReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::enabled_socket_interrupts()
- *        works properly.
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::IP::Network_Stack::enabled_socket_interrupts() works
+ *        properly.
  */
 TEST( enabledSocketInterrupts, worksProperly )
 {
@@ -1731,7 +1752,7 @@ TEST( enabledSocketInterrupts, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::socket_interrupt_context()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::socket_interrupt_context()
  * properly handles a SIR register read error.
  */
 TEST( socketInterruptContext, sirReadError )
@@ -1751,7 +1772,7 @@ TEST( socketInterruptContext, sirReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::socket_interrupt_context()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::socket_interrupt_context()
  *        works properly.
  */
 TEST( socketInterruptContext, worksProperly )
@@ -1771,7 +1792,7 @@ TEST( socketInterruptContext, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Network_Stack::service() works properly.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::service() works properly.
  */
 TEST( service, worksProperly )
 {
@@ -1784,7 +1805,7 @@ TEST( service, worksProperly )
 
 /**
  * \brief Verify
- *        picolibrary::WIZnet::W5500::Network_Stack::enable_tcp_ephemeral_port_allocation()
+ *        picolibrary::WIZnet::W5500::IP::Network_Stack::enable_tcp_ephemeral_port_allocation()
  *        properly handles TCP ephemeral port allocation already having been enabled.
  */
 TEST( enableTCPEphemeralPortAllocation, alreadyEnabled )
@@ -1806,7 +1827,7 @@ TEST( enableTCPEphemeralPortAllocation, alreadyEnabled )
 
 /**
  * \brief Verify
- *        picolibrary::WIZnet::W5500::Network_Stack::enable_tcp_ephemeral_port_allocation()
+ *        picolibrary::WIZnet::W5500::IP::Network_Stack::enable_tcp_ephemeral_port_allocation()
  *        properly handles an invalid port range.
  */
 TEST( enableTCPEphemeralPortAllocation, invalidPortRange )
@@ -1826,7 +1847,7 @@ TEST( enableTCPEphemeralPortAllocation, invalidPortRange )
 
 /**
  * \brief Verify
- *        picolibrary::WIZnet::W5500::Network_Stack::enable_tcp_ephemeral_port_allocation()
+ *        picolibrary::WIZnet::W5500::IP::Network_Stack::enable_tcp_ephemeral_port_allocation()
  *        properly handles an invalid port range bound.
  */
 TEST( enableTCPEphemeralPortAllocation, invalidPortRangeBound )
@@ -1844,7 +1865,7 @@ TEST( enableTCPEphemeralPortAllocation, invalidPortRangeBound )
 
 /**
  * \brief Verify
- *        picolibrary::WIZnet::W5500::Network_Stack::enable_tcp_ephemeral_port_allocation()
+ *        picolibrary::WIZnet::W5500::IP::Network_Stack::enable_tcp_ephemeral_port_allocation()
  *        works properly.
  */
 TEST( enableTCPEphemeralPortAllocation, worksProperly )
@@ -1860,7 +1881,7 @@ TEST( enableTCPEphemeralPortAllocation, worksProperly )
 }
 
 /**
- * \brief Execute the picolibrary::WIZnet::W5500::Network_Stack unit tests.
+ * \brief Execute the picolibrary::WIZnet::W5500::IP::Network_Stack unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
  * \param[in] argv The array  of arguments to pass to testing::InitGoogleMock().

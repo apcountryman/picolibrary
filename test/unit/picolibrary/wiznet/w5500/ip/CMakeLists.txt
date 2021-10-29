@@ -15,3 +15,6 @@
 
 # File: test/unit/picolibrary/wiznet/w5500/ip/CMakeLists.txt
 # Description: picolibrary::WIZnet::W5500::IP unit tests CMake rules.
+
+# build the picolibrary::WIZnet::W5500::IP::Network_Stack unit tests
+add_subdirectory( network_stack )

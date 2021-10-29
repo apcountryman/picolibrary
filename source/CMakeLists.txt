@@ -59,7 +59,6 @@ set(
     "picolibrary/wiznet.cc"
     "picolibrary/wiznet/w5500.cc"
     "picolibrary/wiznet/w5500/ip.cc"
-    "picolibrary/wiznet/w5500/network_stack.cc"
 )
 set( PICOLIBRARY_LINK_LIBRARIES )
 
@@ -114,7 +113,6 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
         "picolibrary/testing/unit/wiznet.cc"
         "picolibrary/testing/unit/wiznet/w5500.cc"
         "picolibrary/testing/unit/wiznet/w5500/ip.cc"
-        "picolibrary/testing/unit/wiznet/w5500/network_stack.cc"
     )
     list(
         APPEND PICOLIBRARY_LINK_LIBRARIES
