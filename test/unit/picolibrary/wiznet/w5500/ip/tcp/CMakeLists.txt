@@ -13,11 +13,5 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/wiznet/w5500/ip/CMakeLists.txt
-# Description: picolibrary::WIZnet::W5500::IP unit tests CMake rules.
-
-# build the picolibrary::WIZnet::W5500::IP::Network_Stack unit tests
-add_subdirectory( network_stack )
-
-# build the picolibrary::WIZnet::W5500::IP::TCP unit tests
-add_subdirectory( tcp )
+# File: test/unit/picolibrary/wiznet/w5500/ip/tcp/CMakeLists.txt
+# Description: picolibrary::WIZnet::W5500::IP::TCP unit tests CMake rules.
