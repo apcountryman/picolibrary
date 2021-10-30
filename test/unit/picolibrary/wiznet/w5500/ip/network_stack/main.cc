@@ -40,7 +40,7 @@
 #include "picolibrary/testing/unit/wiznet/w5500.h"
 #include "picolibrary/void.h"
 #include "picolibrary/wiznet/w5500.h"
-#include "picolibrary/wiznet/w5500/ip.h"
+#include "picolibrary/wiznet/w5500/ip/network_stack.h"
 
 namespace {
 
