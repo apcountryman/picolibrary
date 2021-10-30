@@ -27,6 +27,7 @@
 
 #include "gmock/gmock.h"
 #include "picolibrary/error.h"
+#include "picolibrary/ip/tcp.h"
 #include "picolibrary/ipv4.h"
 #include "picolibrary/mac_address.h"
 #include "picolibrary/result.h"
@@ -60,6 +61,8 @@ class Mock_Network_Stack {
     auto operator=( Mock_Network_Stack && ) = delete;
 
     auto operator=( Mock_Network_Stack const & ) = delete;
+
+    MOCK_METHOD( Error_Code const &, nonresponsive_device_error, (), ( const ) );
 
     MOCK_METHOD( (Result<Void, Error_Code>), ping_w5500, (), ( const ) );
 
@@ -104,10 +107,17 @@ class Mock_Network_Stack {
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), enabled_interrupts, (), ( const ) );
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), interrupt_context, (), ( const ) );
 
+    MOCK_METHOD( (Result<Void, Error_Code>), enable_socket_interrupts, () );
+    MOCK_METHOD( (Result<Void, Error_Code>), disable_socket_interrupts, () );
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), enabled_socket_interrupts, (), ( const ) );
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), socket_interrupt_context, (), ( const ) );
 
     MOCK_METHOD( (Result<Void, Error_Code>), service, () );
+
+    MOCK_METHOD(
+        (Result<Void, Error_Code>),
+        enable_tcp_ephemeral_port_allocation,
+        ( ::picolibrary::IP::TCP::Port, ::picolibrary::IP::TCP::Port ) );
 };
 
 } // namespace picolibrary::Testing::Unit::WIZnet::W5500::IP
