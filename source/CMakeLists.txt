@@ -114,6 +114,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
         "picolibrary/testing/unit/wiznet.cc"
         "picolibrary/testing/unit/wiznet/w5500.cc"
         "picolibrary/testing/unit/wiznet/w5500/ip.cc"
+        "picolibrary/testing/unit/wiznet/w5500/ip/tcp.cc"
     )
     list(
         APPEND PICOLIBRARY_LINK_LIBRARIES
