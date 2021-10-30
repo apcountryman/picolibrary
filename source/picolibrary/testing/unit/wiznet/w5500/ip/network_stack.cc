@@ -17,16 +17,7 @@
 
 /**
  * \file
- * \brief picolibrary::WIZnet::W5500::IP interface.
+ * \brief picolibrary::Testing::Unit::WIZnet::W5500::IP::Network_Stack implementation.
  */
 
-#ifndef PICOLIBRARY_WIZNET_W5500_IP_H
-#define PICOLIBRARY_WIZNET_W5500_IP_H
-
-/**
- * \brief WIZnet W5500 IP facilities namespace.
- */
-namespace picolibrary::WIZnet::W5500::IP {
-} // namespace picolibrary::WIZnet::W5500::IP
-
-#endif // PICOLIBRARY_WIZNET_W5500_IP_H
+#include "picolibrary/testing/unit/wiznet/w5500/ip/network_stack.h"
