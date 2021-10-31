@@ -20,9 +20,61 @@
  * \brief picolibrary::WIZnet::W5500::IP::TCP::Client unit test program.
  */
 
+#include <cstdint>
+#include <utility>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "picolibrary/testing/unit/wiznet/w5500.h"
+#include "picolibrary/testing/unit/wiznet/w5500/ip/network_stack.h"
 #include "picolibrary/wiznet/w5500/ip/tcp.h"
+
+namespace {
+
+using ::picolibrary::Testing::Unit::WIZnet::W5500::Mock_Driver;
+using ::picolibrary::Testing::Unit::WIZnet::W5500::IP::Mock_Network_Stack;
+using ::picolibrary::WIZnet::W5500::Socket_ID;
+using ::picolibrary::WIZnet::W5500::IP::TCP::Client;
+
+using State = Client<Mock_Driver, Mock_Network_Stack>::State;
+
+} // namespace
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::Client( Driver &,
+ *        picolibrary::WIZnet::W5500::Socket_ID, Network_Stack & ) works properly.
+ */
+TEST( constructor, worksProperly )
+{
+    struct {
+        Socket_ID    socket_id;
+        std::uint8_t socket_interrupt_mask;
+    } const test_cases[]{
+        // clang-format off
+
+        { Socket_ID::_0, 0b00000001 },
+        { Socket_ID::_1, 0b00000010 },
+        { Socket_ID::_2, 0b00000100 },
+        { Socket_ID::_3, 0b00001000 },
+        { Socket_ID::_4, 0b00010000 },
+        { Socket_ID::_5, 0b00100000 },
+        { Socket_ID::_6, 0b01000000 },
+        { Socket_ID::_7, 0b10000000 },
+
+        // clang-format on
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto const client = Client{ driver, test_case.socket_id, network_stack };
+
+        EXPECT_EQ( client.state(), State::INITIALIZED );
+        EXPECT_EQ( client.socket_id(), test_case.socket_id );
+        EXPECT_EQ( client.socket_interrupt_mask(), test_case.socket_interrupt_mask );
+    } // for
+}
 
 /**
  * \brief Execute the picolibrary::WIZnet::W5500::IP::TCP::Client unit tests.
