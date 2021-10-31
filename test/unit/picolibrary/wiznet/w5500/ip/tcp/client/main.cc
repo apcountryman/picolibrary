@@ -25,16 +25,29 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "picolibrary/error.h"
+#include "picolibrary/result.h"
+#include "picolibrary/testing/unit/error.h"
+#include "picolibrary/testing/unit/random.h"
 #include "picolibrary/testing/unit/wiznet/w5500.h"
 #include "picolibrary/testing/unit/wiznet/w5500/ip/network_stack.h"
+#include "picolibrary/void.h"
 #include "picolibrary/wiznet/w5500/ip/tcp.h"
 
 namespace {
 
+using ::picolibrary::Error_Code;
+using ::picolibrary::Result;
+using ::picolibrary::Void;
+using ::picolibrary::Testing::Unit::Mock_Error;
+using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::WIZnet::W5500::Mock_Driver;
 using ::picolibrary::Testing::Unit::WIZnet::W5500::IP::Mock_Network_Stack;
 using ::picolibrary::WIZnet::W5500::Socket_ID;
 using ::picolibrary::WIZnet::W5500::IP::TCP::Client;
+using ::testing::_;
+using ::testing::InSequence;
+using ::testing::Return;
 
 using State = Client<Mock_Driver, Mock_Network_Stack>::State;
 
@@ -74,6 +87,73 @@ TEST( constructor, worksProperly )
         EXPECT_EQ( client.socket_id(), test_case.socket_id );
         EXPECT_EQ( client.socket_interrupt_mask(), test_case.socket_interrupt_mask );
     } // for
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::enable_interrupts() properly
+ *        handles an SN_IMR register read error.
+ */
+TEST( enableInterrupts, snimrReadError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto client = Client{ driver, random<Socket_ID>(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_imr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = client.enable_interrupts( random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::enable_interrupts() properly
+ *        handles an SN_IMR register write error.
+ */
+TEST( enableInterrupts, snimrWriteError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto client = Client{ driver, random<Socket_ID>(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_imr( _ ) ).WillOnce( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, write_sn_imr( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = client.enable_interrupts( random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::enable_interrupts() works
+ *        properly.
+ */
+TEST( enableInterrupts, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_id = random<Socket_ID>();
+
+    auto client = Client{ driver, socket_id, network_stack };
+
+    auto const sn_imr = random<std::uint8_t>();
+    auto const mask   = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, read_sn_imr( socket_id ) ).WillOnce( Return( sn_imr ) );
+    EXPECT_CALL( driver, write_sn_imr( socket_id, sn_imr | mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( client.enable_interrupts( mask ).is_error() );
 }
 
 /**

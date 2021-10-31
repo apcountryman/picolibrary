@@ -25,6 +25,9 @@
 
 #include <cstdint>
 
+#include "picolibrary/error.h"
+#include "picolibrary/result.h"
+#include "picolibrary/void.h"
 #include "picolibrary/wiznet/w5500.h"
 
 /**
@@ -178,6 +181,24 @@ class Client {
     {
         return static_cast<std::uint8_t>(
             1 << ( static_cast<std::uint8_t>( m_socket_id ) >> Control_Byte::Bit::SOCKET ) );
+    }
+
+    /**
+     * \brief Enable interrupts.
+     *
+     * \param[in] mask The mask identifying the interrupts to enable.
+     *
+     * \return Nothing if enabling interrupts succeeded.
+     * \return An error code if enabling interrupts failed.
+     */
+    auto enable_interrupts( std::uint8_t mask ) noexcept -> Result<Void, Error_Code>
+    {
+        auto result = m_driver->read_sn_imr( m_socket_id );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return m_driver->write_sn_imr( m_socket_id, result.value() | mask );
     }
 
   private:
