@@ -219,6 +219,17 @@ class Client {
         return m_driver->write_sn_imr( m_socket_id, result.value() & ~mask );
     }
 
+    /**
+     * \brief Disable all interrupts.
+     *
+     * \return Nothing if disabling all interrupts succeeded.
+     * \return An error code if disabling all interrupts failed.
+     */
+    auto disable_interrupts() noexcept
+    {
+        return m_driver->write_sn_imr( m_socket_id, 0x00 );
+    }
+
   private:
     /**
      * \brief The socket's state.
