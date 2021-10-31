@@ -201,6 +201,24 @@ class Client {
         return m_driver->write_sn_imr( m_socket_id, result.value() | mask );
     }
 
+    /**
+     * \brief Disable interrupts.
+     *
+     * \param[in] mask The mask identifying the interrupts to disable.
+     *
+     * \return Nothing if disabling interrupts succeeded.
+     * \return An error code if disabling interrupts failed.
+     */
+    auto disable_interrupts( std::uint8_t mask ) noexcept -> Result<Void, Error_Code>
+    {
+        auto result = m_driver->read_sn_imr( m_socket_id );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return m_driver->write_sn_imr( m_socket_id, result.value() & ~mask );
+    }
+
   private:
     /**
      * \brief The socket's state.
