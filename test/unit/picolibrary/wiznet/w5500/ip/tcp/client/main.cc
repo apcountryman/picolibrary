@@ -43,6 +43,7 @@ using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::WIZnet::W5500::Mock_Driver;
 using ::picolibrary::Testing::Unit::WIZnet::W5500::IP::Mock_Network_Stack;
+using ::picolibrary::WIZnet::W5500::No_Delayed_ACK;
 using ::picolibrary::WIZnet::W5500::Socket_ID;
 using ::picolibrary::WIZnet::W5500::IP::TCP::Client;
 using ::testing::_;
@@ -264,8 +265,8 @@ TEST( disableAllInterrupts, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::enabled_interrupts() properly
- *        handles an SN_IMR read error.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::enabled_interrupts()
+ *        properly handles an SN_IMR read error.
  */
 TEST( enabledInterrupts, snimrReadError )
 {
@@ -285,7 +286,8 @@ TEST( enabledInterrupts, snimrReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::enabled_interrupts() works properly.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::enabled_interrupts() works
+ *        properly.
  */
 TEST( enabledInterrupts, worksProperly )
 {
@@ -307,8 +309,8 @@ TEST( enabledInterrupts, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::interrupt_context() properly handles
- *        an SN_IR read error.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::interrupt_context() properly
+ *        handles an SN_IR read error.
  */
 TEST( interruptContext, snirReadError )
 {
@@ -328,7 +330,8 @@ TEST( interruptContext, snirReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::interrupt_context() works properly.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::interrupt_context() works
+ *        properly.
  */
 TEST( interruptContext, worksProperly )
 {
@@ -347,6 +350,89 @@ TEST( interruptContext, worksProperly )
 
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), sn_ir );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::configure_no_delayed_ack()
+ *        properly handles an SN_MR register read error.
+ */
+TEST( configureNoDelayedAck, snmrReadError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto client = Client{ driver, random<Socket_ID>(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_mr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = client.configure_no_delayed_ack( random<No_Delayed_ACK>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::configure_no_delayed_ack()
+ *        properly handles an SN_MR register write error.
+ */
+TEST( configureNoDelayedAck, snmrWriteError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto client = Client{ driver, random<Socket_ID>(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_mr( _ ) ).WillOnce( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, write_sn_mr( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = client.configure_no_delayed_ack( random<No_Delayed_ACK>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::configure_no_delayed_ack()
+ *        works properly.
+ */
+TEST( configureNoDelayedAck, worksProperly )
+{
+    struct {
+        No_Delayed_ACK no_delayed_ack_configuration;
+        std::uint8_t   sn_mr_nd;
+    } const test_cases[]{
+        // clang-format off
+
+        { No_Delayed_ACK::DISABLED, 0b0'0'0'0'0000 },
+        { No_Delayed_ACK::ENABLED,  0b0'0'1'0'0000 },
+
+        // clang-format on
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto const in_sequence = InSequence{};
+
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto const socket_id = random<Socket_ID>();
+
+        auto client = Client{ driver, socket_id, network_stack };
+
+        auto const sn_mr = random<std::uint8_t>();
+
+        EXPECT_CALL( driver, read_sn_mr( socket_id ) ).WillOnce( Return( sn_mr ) );
+        EXPECT_CALL(
+            driver, write_sn_mr( socket_id, ( sn_mr & 0b1'1'0'1'1111 ) | test_case.sn_mr_nd ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+        EXPECT_FALSE(
+            client.configure_no_delayed_ack( test_case.no_delayed_ack_configuration ).is_error() );
+    } // for
 }
 
 /**
