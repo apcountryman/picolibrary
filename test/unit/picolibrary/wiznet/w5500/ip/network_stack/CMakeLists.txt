@@ -13,7 +13,7 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/wiznet/w5500/network_stack/CMakeLists.txt
+# File: test/unit/picolibrary/wiznet/w5500/ip/network_stack/CMakeLists.txt
 # Description: picolibrary::WIZnet::W5500::IP::Network_Stack unit tests CMake rules.
 
 # build the picolibrary::WIZnet::W5500::IP::Network_Stack unit tests
