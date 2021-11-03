@@ -497,6 +497,50 @@ TEST( noDelayedAckConfiguration, worksProperly )
 }
 
 /**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::IP::TCP::Client::configure_maximum_segment_size()
+ *        properly handles an SN_MSSR register write error.
+ */
+TEST( configureMaximumSegmentSize, mssrWriteError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto client = Client{ driver, random<Socket_ID>(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_mssr( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = client.configure_maximum_segment_size( random<std::uint16_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::IP::TCP::Client::configure_maximum_segment_size()
+ *        works properly.
+ */
+TEST( configureMaximumSegmentSize, worksProperly )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_id = random<Socket_ID>();
+
+    auto client = Client{ driver, socket_id, network_stack };
+
+    auto const maximum_segment_size = random<std::uint16_t>();
+
+    EXPECT_CALL( driver, write_sn_mssr( socket_id, maximum_segment_size ) )
+        .WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+    EXPECT_FALSE( client.configure_maximum_segment_size( maximum_segment_size ).is_error() );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::IP::TCP::Client unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().

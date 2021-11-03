@@ -294,6 +294,19 @@ class Client {
         return static_cast<No_Delayed_ACK>( result.value() & SN_MR::Mask::ND );
     }
 
+    /**
+     * \brief Configure the socket's maximum segment size.
+     *
+     * \param[in] maximum_segment_size The desired maximum segment size.
+     *
+     * \return Nothing if configuring the socket's maximum segment size succeeded.
+     * \return An error code if configuring the socket's maximum segment size failed.
+     */
+    auto configure_maximum_segment_size( std::uint16_t maximum_segment_size ) noexcept
+    {
+        return m_driver->write_sn_mssr( m_socket_id, maximum_segment_size );
+    }
+
   private:
     /**
      * \brief The socket's state.
