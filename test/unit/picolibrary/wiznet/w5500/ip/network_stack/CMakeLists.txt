@@ -19,16 +19,16 @@
 # build the picolibrary::WIZnet::W5500::IP::Network_Stack unit tests
 if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     add_executable(
-        test-unit-picolibrary-wiznet-w5500-network_stack
+        test-unit-picolibrary-wiznet-w5500-ip-network_stack
         main.cc
     )
     target_link_libraries(
-        test-unit-picolibrary-wiznet-w5500-network_stack
+        test-unit-picolibrary-wiznet-w5500-ip-network_stack
         picolibrary
         picolibrary-fatal_error
     )
     add_test(
-        NAME    test-unit-picolibrary-wiznet-w5500-network_stack
-        COMMAND test-unit-picolibrary-wiznet-w5500-network_stack --gtest_color=yes
+        NAME    test-unit-picolibrary-wiznet-w5500-ip-network_stack
+        COMMAND test-unit-picolibrary-wiznet-w5500-ip-network_stack --gtest_color=yes
     )
 endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
