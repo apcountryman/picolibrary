@@ -276,6 +276,24 @@ class Client {
                 | static_cast<std::uint8_t>( no_delayed_ack_configuration ) );
     }
 
+    /**
+     * \brief Get the socket's no delayed ACK configuration.
+     *
+     * \return The socket's no delayed ACK configuration if getting the socket's no
+     *         delayed ACK configuration succeeded.
+     *
+     * \return An error code if getting the socket's no delayed ACK configuration failed.
+     */
+    auto no_delayed_ack_configuration() const noexcept -> Result<No_Delayed_ACK, Error_Code>
+    {
+        auto result = m_driver->read_sn_mr( m_socket_id );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return static_cast<No_Delayed_ACK>( result.value() & SN_MR::Mask::ND );
+    }
+
   private:
     /**
      * \brief The socket's state.
