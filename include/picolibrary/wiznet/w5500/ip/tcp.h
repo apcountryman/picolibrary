@@ -349,6 +349,22 @@ class Client {
         return m_driver->read_sn_ttl( m_socket_id );
     }
 
+    /**
+     * \brief Configure the socket's keepalive packet transmission period (SN_KPALVTR
+     *        register value).
+     *
+     * \param[in] keepalive_period The desired keepalive packet transmission period.
+     *
+     * \return Nothing if configuring the socket's keepalive packet transmission period
+     *         succeeded.
+     * \return An error code if configuring the socket's keepalive packet transmission
+     *         period failed.
+     */
+    auto configure_keepalive_period( std::uint8_t keepalive_period ) noexcept
+    {
+        return m_driver->write_sn_kpalvtr( m_socket_id, keepalive_period );
+    }
+
   private:
     /**
      * \brief The socket's state.
