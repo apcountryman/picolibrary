@@ -365,6 +365,20 @@ class Client {
         return m_driver->write_sn_kpalvtr( m_socket_id, keepalive_period );
     }
 
+    /**
+     * \brief Get the socket's keepalive packet transmission period (SN_KPALVTR register
+     *        value).
+     *
+     * \return The socket's keepalive packet transmission period if getting the socket's
+     *         keepalive packet transmission period succeeded.
+     * \return An error code if getting the socket's keepalive packet transmission period
+     *         failed.
+     */
+    auto keepalive_period() const noexcept
+    {
+        return m_driver->read_sn_kpalvtr( m_socket_id );
+    }
+
   private:
     /**
      * \brief The socket's state.
