@@ -334,6 +334,21 @@ class Client {
         return m_driver->write_sn_ttl( m_socket_id, time_to_live );
     }
 
+    /**
+     * \brief Get the socket's IPv4 packet time to live field value.
+     *
+     * \param[in] time_to_live The desired IPv4 packet time to live field value.
+     *
+     * \return The socket's IPv4 packet time to live field value if getting the socket's
+     *         IPv4 packet time to live field value succeeded.
+     * \return An error code if getting the socket's IPv4 packet time to live field value
+     *         failed.
+     */
+    auto time_to_live() const noexcept
+    {
+        return m_driver->read_sn_ttl( m_socket_id );
+    }
+
   private:
     /**
      * \brief The socket's state.
