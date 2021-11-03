@@ -307,6 +307,18 @@ class Client {
         return m_driver->write_sn_mssr( m_socket_id, maximum_segment_size );
     }
 
+    /**
+     * \brief Get the socket's maximum segment size.
+     *
+     * \return The socket's maximum segment size if getting the socket's maximum segment
+     *         size succeeded.
+     * \return An error code if getting the socket's maximum segment size failed.
+     */
+    auto maximum_segment_size() const noexcept
+    {
+        return m_driver->read_sn_mssr( m_socket_id );
+    }
+
   private:
     /**
      * \brief The socket's state.
