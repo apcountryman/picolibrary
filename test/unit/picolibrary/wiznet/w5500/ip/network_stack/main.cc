@@ -921,8 +921,8 @@ TEST( configureSocketBuffers, writeSNTXBUFSIZEErrorUnusedSocket )
 TEST( configureSocketBuffers, worksProperly )
 {
     struct {
-        Buffer_Size  buffer_size;
-        std::uint8_t available_sockets;
+        Buffer_Size       buffer_size;
+        std::uint_fast8_t available_sockets;
     } const configurations[]{
         { Buffer_Size::_2_KIB, 8 },
         { Buffer_Size::_4_KIB, 4 },
@@ -937,31 +937,40 @@ TEST( configureSocketBuffers, worksProperly )
 
         auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
-        for ( auto socket = std::uint8_t{}; socket < configuration.available_sockets; ++socket ) {
+        Socket_ID const socket_id[]{
+            // clang-format off
+
+            Socket_ID::_0,
+            Socket_ID::_1,
+            Socket_ID::_2,
+            Socket_ID::_3,
+            Socket_ID::_4,
+            Socket_ID::_5,
+            Socket_ID::_6,
+            Socket_ID::_7,
+
+            // clang-format on
+        };
+
+        for ( auto socket = std::uint_fast8_t{}; socket < configuration.available_sockets; ++socket ) {
             EXPECT_CALL(
                 driver,
                 write_sn_rxbuf_size(
-                    static_cast<Socket_ID>( socket ),
-                    static_cast<std::uint8_t>( configuration.buffer_size ) ) )
+                    socket_id[ socket ], static_cast<std::uint8_t>( configuration.buffer_size ) ) )
                 .WillOnce( Return( Result<Void, Error_Code>{} ) );
             EXPECT_CALL(
                 driver,
                 write_sn_txbuf_size(
-                    static_cast<Socket_ID>( socket ),
-                    static_cast<std::uint8_t>( configuration.buffer_size ) ) )
+                    socket_id[ socket ], static_cast<std::uint8_t>( configuration.buffer_size ) ) )
                 .WillOnce( Return( Result<Void, Error_Code>{} ) );
         } // for
 
         for ( auto socket = configuration.available_sockets; socket < 8; ++socket ) {
             EXPECT_CALL(
-                driver,
-                write_sn_rxbuf_size(
-                    static_cast<Socket_ID>( socket ), static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) ) )
+                driver, write_sn_rxbuf_size( socket_id[ socket ], static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) ) )
                 .WillOnce( Return( Result<Void, Error_Code>{} ) );
             EXPECT_CALL(
-                driver,
-                write_sn_txbuf_size(
-                    static_cast<Socket_ID>( socket ), static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) ) )
+                driver, write_sn_txbuf_size( socket_id[ socket ], static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) ) )
                 .WillOnce( Return( Result<Void, Error_Code>{} ) );
         } // for
 

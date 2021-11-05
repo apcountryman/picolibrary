@@ -372,7 +372,7 @@ class Network_Stack {
     {
         // #lizard forgives the length
 
-        auto available_sockets = std::uint8_t{};
+        auto available_sockets = std::uint_fast8_t{};
 
         switch ( buffer_size ) {
             case Buffer_Size::_2_KIB: available_sockets = 16 / 2; break;
@@ -382,10 +382,12 @@ class Network_Stack {
             default: return Generic_Error::INVALID_ARGUMENT;
         } // switch
 
-        for ( auto socket = std::uint8_t{}; socket < available_sockets; ++socket ) {
+        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+            auto const socket_id = static_cast<Socket_ID>( socket << Control_Byte::Bit::SOCKET );
+
             {
                 auto result = m_driver->write_sn_rxbuf_size(
-                    static_cast<Socket_ID>( socket ), static_cast<std::uint8_t>( buffer_size ) );
+                    socket_id, static_cast<std::uint8_t>( buffer_size ) );
                 if ( result.is_error() ) {
                     return result.error();
                 } // if
@@ -393,7 +395,7 @@ class Network_Stack {
 
             {
                 auto result = m_driver->write_sn_txbuf_size(
-                    static_cast<Socket_ID>( socket ), static_cast<std::uint8_t>( buffer_size ) );
+                    socket_id, static_cast<std::uint8_t>( buffer_size ) );
                 if ( result.is_error() ) {
                     return result.error();
                 } // if
@@ -401,10 +403,11 @@ class Network_Stack {
         } // for
 
         for ( auto socket = available_sockets; socket < SOCKETS; ++socket ) {
+            auto const socket_id = static_cast<Socket_ID>( socket << Control_Byte::Bit::SOCKET );
+
             {
                 auto result = m_driver->write_sn_rxbuf_size(
-                    static_cast<Socket_ID>( socket ),
-                    static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) );
+                    socket_id, static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) );
                 if ( result.is_error() ) {
                     return result.error();
                 } // if
@@ -412,8 +415,7 @@ class Network_Stack {
 
             {
                 auto result = m_driver->write_sn_txbuf_size(
-                    static_cast<Socket_ID>( socket ),
-                    static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) );
+                    socket_id, static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) );
                 if ( result.is_error() ) {
                     return result.error();
                 } // if
