@@ -94,6 +94,8 @@ TEST( constructor, worksProperly )
     auto const network_stack = Network_Stack{ driver, nonresponsive_device_error };
 
     EXPECT_EQ( network_stack.nonresponsive_device_error(), nonresponsive_device_error );
+    EXPECT_EQ( network_stack.available_sockets(), 8 );
+    EXPECT_FALSE( network_stack.tcp_ephemeral_port_allocation_enabled() );
 }
 
 /**
@@ -920,8 +922,8 @@ TEST( configureSocketBuffers, writeSNTXBUFSIZEErrorUnusedSocket )
 TEST( configureSocketBuffers, worksProperly )
 {
     struct {
-        Buffer_Size  buffer_size;
-        std::uint8_t available_sockets;
+        Buffer_Size       buffer_size;
+        std::uint_fast8_t available_sockets;
     } const configurations[]{
         { Buffer_Size::_2_KIB, 8 },
         { Buffer_Size::_4_KIB, 4 },
@@ -936,35 +938,46 @@ TEST( configureSocketBuffers, worksProperly )
 
         auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
-        for ( auto socket = std::uint8_t{}; socket < configuration.available_sockets; ++socket ) {
+        Socket_ID const socket_id[]{
+            // clang-format off
+
+            Socket_ID::_0,
+            Socket_ID::_1,
+            Socket_ID::_2,
+            Socket_ID::_3,
+            Socket_ID::_4,
+            Socket_ID::_5,
+            Socket_ID::_6,
+            Socket_ID::_7,
+
+            // clang-format on
+        };
+
+        for ( auto socket = std::uint_fast8_t{}; socket < configuration.available_sockets; ++socket ) {
             EXPECT_CALL(
                 driver,
                 write_sn_rxbuf_size(
-                    static_cast<Socket_ID>( socket ),
-                    static_cast<std::uint8_t>( configuration.buffer_size ) ) )
+                    socket_id[ socket ], static_cast<std::uint8_t>( configuration.buffer_size ) ) )
                 .WillOnce( Return( Result<Void, Error_Code>{} ) );
             EXPECT_CALL(
                 driver,
                 write_sn_txbuf_size(
-                    static_cast<Socket_ID>( socket ),
-                    static_cast<std::uint8_t>( configuration.buffer_size ) ) )
+                    socket_id[ socket ], static_cast<std::uint8_t>( configuration.buffer_size ) ) )
                 .WillOnce( Return( Result<Void, Error_Code>{} ) );
         } // for
 
         for ( auto socket = configuration.available_sockets; socket < 8; ++socket ) {
             EXPECT_CALL(
-                driver,
-                write_sn_rxbuf_size(
-                    static_cast<Socket_ID>( socket ), static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) ) )
+                driver, write_sn_rxbuf_size( socket_id[ socket ], static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) ) )
                 .WillOnce( Return( Result<Void, Error_Code>{} ) );
             EXPECT_CALL(
-                driver,
-                write_sn_txbuf_size(
-                    static_cast<Socket_ID>( socket ), static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) ) )
+                driver, write_sn_txbuf_size( socket_id[ socket ], static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) ) )
                 .WillOnce( Return( Result<Void, Error_Code>{} ) );
         } // for
 
         EXPECT_FALSE( network_stack.configure_socket_buffers( configuration.buffer_size ).is_error() );
+
+        EXPECT_EQ( network_stack.available_sockets(), configuration.available_sockets );
     } // for
 }
 
@@ -1878,6 +1891,10 @@ TEST( enableTCPEphemeralPortAllocation, worksProperly )
     auto const max = random<TCP_Port>( min );
 
     EXPECT_FALSE( network_stack.enable_tcp_ephemeral_port_allocation( min, max ).is_error() );
+
+    EXPECT_TRUE( network_stack.tcp_ephemeral_port_allocation_enabled() );
+    EXPECT_EQ( network_stack.tcp_ephemeral_port_min(), min );
+    EXPECT_EQ( network_stack.tcp_ephemeral_port_max(), max );
 }
 
 /**

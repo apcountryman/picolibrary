@@ -71,7 +71,10 @@ class Network_Stack {
     constexpr Network_Stack( Network_Stack && source ) noexcept :
         m_driver{ source.m_driver },
         m_nonresponsive_device_error{ source.m_nonresponsive_device_error },
-        m_tcp_ephemeral_port_allocation_enabled{ source.m_tcp_ephemeral_port_allocation_enabled }
+        m_available_sockets{ source.m_available_sockets },
+        m_tcp_ephemeral_port_allocation_enabled{ source.m_tcp_ephemeral_port_allocation_enabled },
+        m_tcp_ephemeral_port_min{ source.m_tcp_ephemeral_port_min },
+        m_tcp_ephemeral_port_max{ source.m_tcp_ephemeral_port_max }
     {
         source.m_driver = nullptr;
     }
@@ -95,7 +98,10 @@ class Network_Stack {
         if ( &expression != this ) {
             m_driver                     = expression.m_driver;
             m_nonresponsive_device_error = expression.m_nonresponsive_device_error;
+            m_available_sockets          = expression.m_available_sockets;
             m_tcp_ephemeral_port_allocation_enabled = expression.m_tcp_ephemeral_port_allocation_enabled;
+            m_tcp_ephemeral_port_min                = expression.m_tcp_ephemeral_port_min;
+            m_tcp_ephemeral_port_max                = expression.m_tcp_ephemeral_port_max;
 
             expression.m_driver = nullptr;
         } // if
@@ -368,7 +374,7 @@ class Network_Stack {
     {
         // #lizard forgives the length
 
-        auto available_sockets = std::uint8_t{};
+        auto available_sockets = std::uint_fast8_t{};
 
         switch ( buffer_size ) {
             case Buffer_Size::_2_KIB: available_sockets = 16 / 2; break;
@@ -378,10 +384,12 @@ class Network_Stack {
             default: return Generic_Error::INVALID_ARGUMENT;
         } // switch
 
-        for ( auto socket = std::uint8_t{}; socket < available_sockets; ++socket ) {
+        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+            auto const socket_id = static_cast<Socket_ID>( socket << Control_Byte::Bit::SOCKET );
+
             {
                 auto result = m_driver->write_sn_rxbuf_size(
-                    static_cast<Socket_ID>( socket ), static_cast<std::uint8_t>( buffer_size ) );
+                    socket_id, static_cast<std::uint8_t>( buffer_size ) );
                 if ( result.is_error() ) {
                     return result.error();
                 } // if
@@ -389,7 +397,7 @@ class Network_Stack {
 
             {
                 auto result = m_driver->write_sn_txbuf_size(
-                    static_cast<Socket_ID>( socket ), static_cast<std::uint8_t>( buffer_size ) );
+                    socket_id, static_cast<std::uint8_t>( buffer_size ) );
                 if ( result.is_error() ) {
                     return result.error();
                 } // if
@@ -397,10 +405,11 @@ class Network_Stack {
         } // for
 
         for ( auto socket = available_sockets; socket < SOCKETS; ++socket ) {
+            auto const socket_id = static_cast<Socket_ID>( socket << Control_Byte::Bit::SOCKET );
+
             {
                 auto result = m_driver->write_sn_rxbuf_size(
-                    static_cast<Socket_ID>( socket ),
-                    static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) );
+                    socket_id, static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) );
                 if ( result.is_error() ) {
                     return result.error();
                 } // if
@@ -408,15 +417,26 @@ class Network_Stack {
 
             {
                 auto result = m_driver->write_sn_txbuf_size(
-                    static_cast<Socket_ID>( socket ),
-                    static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) );
+                    socket_id, static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) );
                 if ( result.is_error() ) {
                     return result.error();
                 } // if
             }
         } // for
 
+        m_available_sockets = available_sockets;
+
         return {};
+    }
+
+    /**
+     * \brief Get the number of available sockets.
+     *
+     * \return The number of available sockets.
+     */
+    auto available_sockets() const noexcept
+    {
+        return m_available_sockets;
     }
 
     /**
@@ -734,8 +754,41 @@ class Network_Stack {
         } // if
 
         m_tcp_ephemeral_port_allocation_enabled = true;
+        m_tcp_ephemeral_port_min                = min;
+        m_tcp_ephemeral_port_max                = max;
 
         return {};
+    }
+
+    /**
+     * \brief Check if TCP ephemeral port allocation is enabled.
+     *
+     * \return true if TCP ephemeral port allocation is enabled.
+     * \return false if TCP ephemeral port allocation is not enabled.
+     */
+    auto tcp_ephemeral_port_allocation_enabled() const noexcept
+    {
+        return m_tcp_ephemeral_port_allocation_enabled;
+    }
+
+    /**
+     * \brief Get the lower bound of the TCP ephemeral port range.
+     *
+     * \return The lower bound of the TCP ephemeral port range.
+     */
+    auto tcp_ephemeral_port_min() const noexcept
+    {
+        return m_tcp_ephemeral_port_min;
+    }
+
+    /**
+     * \brief Get the upper bound of the TCP ephemeral port range.
+     *
+     * \return The upper bound of the TCP ephemeral port range.
+     */
+    auto tcp_ephemeral_port_max() const noexcept
+    {
+        return m_tcp_ephemeral_port_max;
     }
 
   private:
@@ -751,9 +804,24 @@ class Network_Stack {
     Error_Code m_nonresponsive_device_error{};
 
     /**
+     * \brief The number of available sockets.
+     */
+    std::uint_fast8_t m_available_sockets{ 16 / 2 };
+
+    /**
      * \brief The TCP ephemeral port allocation enable state.
      */
     bool m_tcp_ephemeral_port_allocation_enabled{};
+
+    /**
+     * \brief The lower bound of the TCP ephemeral port range.
+     */
+    ::picolibrary::IP::TCP::Port m_tcp_ephemeral_port_min{};
+
+    /**
+     * \brief The upper bound of the TCP ephemeral port range.
+     */
+    ::picolibrary::IP::TCP::Port m_tcp_ephemeral_port_max{};
 };
 
 } // namespace picolibrary::WIZnet::W5500::IP
