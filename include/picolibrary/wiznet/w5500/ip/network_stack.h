@@ -71,6 +71,7 @@ class Network_Stack {
     constexpr Network_Stack( Network_Stack && source ) noexcept :
         m_driver{ source.m_driver },
         m_nonresponsive_device_error{ source.m_nonresponsive_device_error },
+        m_available_sockets{ source.m_available_sockets },
         m_tcp_ephemeral_port_allocation_enabled{ source.m_tcp_ephemeral_port_allocation_enabled },
         m_tcp_ephemeral_port_min{ source.m_tcp_ephemeral_port_min },
         m_tcp_ephemeral_port_max{ source.m_tcp_ephemeral_port_max }
@@ -97,6 +98,7 @@ class Network_Stack {
         if ( &expression != this ) {
             m_driver                     = expression.m_driver;
             m_nonresponsive_device_error = expression.m_nonresponsive_device_error;
+            m_available_sockets          = expression.m_available_sockets;
             m_tcp_ephemeral_port_allocation_enabled = expression.m_tcp_ephemeral_port_allocation_enabled;
             m_tcp_ephemeral_port_min                = expression.m_tcp_ephemeral_port_min;
             m_tcp_ephemeral_port_max                = expression.m_tcp_ephemeral_port_max;
@@ -422,7 +424,19 @@ class Network_Stack {
             }
         } // for
 
+        m_available_sockets = available_sockets;
+
         return {};
+    }
+
+    /**
+     * \brief Get the number of available sockets.
+     *
+     * \return The number of available sockets.
+     */
+    auto available_sockets() const noexcept
+    {
+        return m_available_sockets;
     }
 
     /**
@@ -788,6 +802,11 @@ class Network_Stack {
      *        nonresponsive.
      */
     Error_Code m_nonresponsive_device_error{};
+
+    /**
+     * \brief The number of available sockets.
+     */
+    std::uint_fast8_t m_available_sockets{ 16 / 2 };
 
     /**
      * \brief The TCP ephemeral port allocation enable state.
