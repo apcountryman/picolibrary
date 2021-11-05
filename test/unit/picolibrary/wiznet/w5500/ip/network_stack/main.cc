@@ -94,6 +94,7 @@ TEST( constructor, worksProperly )
     auto const network_stack = Network_Stack{ driver, nonresponsive_device_error };
 
     EXPECT_EQ( network_stack.nonresponsive_device_error(), nonresponsive_device_error );
+    EXPECT_EQ( network_stack.available_sockets(), 8 );
     EXPECT_FALSE( network_stack.tcp_ephemeral_port_allocation_enabled() );
 }
 
@@ -975,6 +976,8 @@ TEST( configureSocketBuffers, worksProperly )
         } // for
 
         EXPECT_FALSE( network_stack.configure_socket_buffers( configuration.buffer_size ).is_error() );
+
+        EXPECT_EQ( network_stack.available_sockets(), configuration.available_sockets );
     } // for
 }
 
