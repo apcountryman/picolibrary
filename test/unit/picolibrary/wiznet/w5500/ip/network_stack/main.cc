@@ -94,6 +94,7 @@ TEST( constructor, worksProperly )
     auto const network_stack = Network_Stack{ driver, nonresponsive_device_error };
 
     EXPECT_EQ( network_stack.nonresponsive_device_error(), nonresponsive_device_error );
+    EXPECT_FALSE( network_stack.tcp_ephemeral_port_allocation_enabled() );
 }
 
 /**
@@ -1878,6 +1879,10 @@ TEST( enableTCPEphemeralPortAllocation, worksProperly )
     auto const max = random<TCP_Port>( min );
 
     EXPECT_FALSE( network_stack.enable_tcp_ephemeral_port_allocation( min, max ).is_error() );
+
+    EXPECT_TRUE( network_stack.tcp_ephemeral_port_allocation_enabled() );
+    EXPECT_EQ( network_stack.tcp_ephemeral_port_min(), min );
+    EXPECT_EQ( network_stack.tcp_ephemeral_port_max(), max );
 }
 
 /**
