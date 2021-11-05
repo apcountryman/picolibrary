@@ -71,7 +71,9 @@ class Network_Stack {
     constexpr Network_Stack( Network_Stack && source ) noexcept :
         m_driver{ source.m_driver },
         m_nonresponsive_device_error{ source.m_nonresponsive_device_error },
-        m_tcp_ephemeral_port_allocation_enabled{ source.m_tcp_ephemeral_port_allocation_enabled }
+        m_tcp_ephemeral_port_allocation_enabled{ source.m_tcp_ephemeral_port_allocation_enabled },
+        m_tcp_ephemeral_port_min{ source.m_tcp_ephemeral_port_min },
+        m_tcp_ephemeral_port_max{ source.m_tcp_ephemeral_port_max }
     {
         source.m_driver = nullptr;
     }
@@ -96,6 +98,8 @@ class Network_Stack {
             m_driver                     = expression.m_driver;
             m_nonresponsive_device_error = expression.m_nonresponsive_device_error;
             m_tcp_ephemeral_port_allocation_enabled = expression.m_tcp_ephemeral_port_allocation_enabled;
+            m_tcp_ephemeral_port_min                = expression.m_tcp_ephemeral_port_min;
+            m_tcp_ephemeral_port_max                = expression.m_tcp_ephemeral_port_max;
 
             expression.m_driver = nullptr;
         } // if
@@ -734,8 +738,41 @@ class Network_Stack {
         } // if
 
         m_tcp_ephemeral_port_allocation_enabled = true;
+        m_tcp_ephemeral_port_min                = min;
+        m_tcp_ephemeral_port_max                = max;
 
         return {};
+    }
+
+    /**
+     * \brief Check if TCP ephemeral port allocation is enabled.
+     *
+     * \return true if TCP ephemeral port allocation is enabled.
+     * \return false if TCP ephemeral port allocation is not enabled.
+     */
+    auto tcp_ephemeral_port_allocation_enabled() const noexcept
+    {
+        return m_tcp_ephemeral_port_allocation_enabled;
+    }
+
+    /**
+     * \brief Get the lower bound of the TCP ephemeral port range.
+     *
+     * \return The lower bound of the TCP ephemeral port range.
+     */
+    auto tcp_ephemeral_port_min() const noexcept
+    {
+        return m_tcp_ephemeral_port_min;
+    }
+
+    /**
+     * \brief Get the upper bound of the TCP ephemeral port range.
+     *
+     * \return The upper bound of the TCP ephemeral port range.
+     */
+    auto tcp_ephemeral_port_max() const noexcept
+    {
+        return m_tcp_ephemeral_port_max;
     }
 
   private:
@@ -754,6 +791,16 @@ class Network_Stack {
      * \brief The TCP ephemeral port allocation enable state.
      */
     bool m_tcp_ephemeral_port_allocation_enabled{};
+
+    /**
+     * \brief The lower bound of the TCP ephemeral port range.
+     */
+    ::picolibrary::IP::TCP::Port m_tcp_ephemeral_port_min{};
+
+    /**
+     * \brief The upper bound of the TCP ephemeral port range.
+     */
+    ::picolibrary::IP::TCP::Port m_tcp_ephemeral_port_max{};
 };
 
 } // namespace picolibrary::WIZnet::W5500::IP
