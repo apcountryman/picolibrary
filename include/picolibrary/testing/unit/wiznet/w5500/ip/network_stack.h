@@ -81,6 +81,7 @@ class Mock_Network_Stack {
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), retry_count, (), ( const ) );
 
     MOCK_METHOD( (Result<Void, Error_Code>), configure_socket_buffers, ( ::picolibrary::WIZnet::W5500::Buffer_Size ) );
+    MOCK_METHOD( std::uint_fast8_t, available_sockets, (), ( const ) );
     MOCK_METHOD( (Result<::picolibrary::WIZnet::W5500::Buffer_Size, Error_Code>), socket_buffer_size, (), ( const ) );
 
     MOCK_METHOD( (Result<Void, Error_Code>), configure_mac_address, (MAC_Address const &));
@@ -115,6 +116,9 @@ class Mock_Network_Stack {
         (Result<Void, Error_Code>),
         enable_tcp_ephemeral_port_allocation,
         ( ::picolibrary::IP::TCP::Port, ::picolibrary::IP::TCP::Port ) );
+    MOCK_METHOD( bool, tcp_ephemeral_port_allocation_enabled, (), ( const ) );
+    MOCK_METHOD( ::picolibrary::IP::TCP::Port, tcp_ephemeral_port_min, (), ( const ) );
+    MOCK_METHOD( ::picolibrary::IP::TCP::Port, tcp_ephemeral_port_max, (), ( const ) );
 };
 
 } // namespace picolibrary::Testing::Unit::WIZnet::W5500::IP
