@@ -87,14 +87,14 @@ class Mock_Network_Stack {
     MOCK_METHOD( (Result<Void, Error_Code>), configure_mac_address, (MAC_Address const &));
     MOCK_METHOD( (Result<MAC_Address, Error_Code>), mac_address, (), ( const ) );
 
-    MOCK_METHOD( (Result<Void, Error_Code>), configure_ip_address, (IPv4::Address const &));
-    MOCK_METHOD( (Result<IPv4::Address, Error_Code>), ip_address, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), configure_ip_address, (::picolibrary::IPv4::Address const &));
+    MOCK_METHOD( (Result<::picolibrary::IPv4::Address, Error_Code>), ip_address, (), ( const ) );
 
-    MOCK_METHOD( (Result<Void, Error_Code>), configure_gateway_ip_address, (IPv4::Address const &));
-    MOCK_METHOD( (Result<IPv4::Address, Error_Code>), gateway_ip_address, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), configure_gateway_ip_address, (::picolibrary::IPv4::Address const &));
+    MOCK_METHOD( (Result<::picolibrary::IPv4::Address, Error_Code>), gateway_ip_address, (), ( const ) );
 
-    MOCK_METHOD( (Result<Void, Error_Code>), configure_subnet_mask, (IPv4::Address const &));
-    MOCK_METHOD( (Result<IPv4::Address, Error_Code>), subnet_mask, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), configure_subnet_mask, (::picolibrary::IPv4::Address const &));
+    MOCK_METHOD( (Result<::picolibrary::IPv4::Address, Error_Code>), subnet_mask, (), ( const ) );
 
     MOCK_METHOD( (Result<Void, Error_Code>), configure_interrupt_assert_wait_time, ( std::uint16_t ) );
     MOCK_METHOD( (Result<std::uint16_t, Error_Code>), interrupt_assert_wait_time, (), ( const ) );
