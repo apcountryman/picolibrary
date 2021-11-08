@@ -44,6 +44,7 @@ using ::picolibrary::Error_Code;
 using ::picolibrary::Generic_Error;
 using ::picolibrary::Result;
 using ::picolibrary::Void;
+using ::picolibrary::IP::TCP::Endpoint;
 using ::picolibrary::IP::TCP::Port;
 using ::picolibrary::IPv4::Address;
 using ::picolibrary::Testing::Unit::Mock_Error;
@@ -782,8 +783,15 @@ TEST( bind, invalidState )
     struct {
         State state;
     } const test_cases[]{
+        // clang-format off
+
         { State::UNINITIALIZED },
-        { State::BOUND },
+        { State::BOUND         },
+        { State::CONNECTING    },
+        { State::CONNECTED     },
+        { State::CLOSED        },
+
+        // clang-format on
     };
 
     for ( auto const test_case : test_cases ) {
@@ -1180,6 +1188,342 @@ TEST( bind, worksProperly )
         EXPECT_FALSE( client.bind( { address, port } ).is_error() );
 
         EXPECT_EQ( client.state(), State::BOUND );
+    }
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::connect() properly handles
+ *        an attempt to connect to a remote endpoint when the socket is not in a state
+ *        that allows it to connect to a remote endpoint.
+ */
+TEST( connect, invalidState )
+{
+    struct {
+        State state;
+    } const test_cases[]{
+        // clang-format off
+
+        { State::UNINITIALIZED },
+        { State::INITIALIZED   },
+        { State::CONNECTED     },
+        { State::CLOSED        },
+
+        // clang-format on
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto client = Client{ test_case.state, driver, random<Socket_ID>(), network_stack };
+
+        auto const result = client.connect( { random<Address>( 1 ), random<Port>( 1 ) } );
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), Generic_Error::LOGIC_ERROR );
+
+        EXPECT_EQ( client.state(), test_case.state );
+    } // for
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::connect() properly handles
+ *        an attempt to connect to an invalid endpoint
+ */
+TEST( connect, invalidEndpoint )
+{
+    struct {
+        Endpoint endpoint;
+    } const test_cases[]{
+        // clang-format off
+
+        { {                                         } },
+        { { Address{},            random<Port>( 1 ) } },
+        { { random<Address>( 1 ), Port{}            } },
+        { { Address{},            Port{}            } },
+
+        // clang-format on
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto client = Client{ State::BOUND, driver, random<Socket_ID>(), network_stack };
+
+        auto const result = client.connect( test_case.endpoint );
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), Generic_Error::INVALID_ARGUMENT );
+
+        EXPECT_EQ( client.state(), State::BOUND );
+    } // for
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::connect() properly handles
+ *        an SN_DIPR register write error.
+ */
+TEST( connect, sndiprWriteError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto client = Client{ State::BOUND, driver, random<Socket_ID>(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_dipr( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = client.connect( { random<Address>( 1 ), random<Port>( 1 ) } );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_EQ( client.state(), State::BOUND );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::connect() properly handles
+ *        an SN_DPORT register write error.
+ */
+TEST( connect, sndportWriteError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto client = Client{ State::BOUND, driver, random<Socket_ID>(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_dipr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dport( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = client.connect( { random<Address>( 1 ), random<Port>( 1 ) } );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_EQ( client.state(), State::BOUND );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::connect() properly handles
+ *        an SN_CR register write error.
+ */
+TEST( connect, sncrWriteError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto client = Client{ State::BOUND, driver, random<Socket_ID>(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_dipr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dport( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = client.connect( { random<Address>( 1 ), random<Port>( 1 ) } );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_EQ( client.state(), State::BOUND );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::connect() properly handles
+ *        an SN_CR register read error.
+ */
+TEST( connect, sncrReadError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto client = Client{ State::BOUND, driver, random<Socket_ID>(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_dipr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dport( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = client.connect( { random<Address>( 1 ), random<Port>( 1 ) } );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_EQ( client.state(), State::BOUND );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::connect() properly handles
+ *        an SN_SR register read error.
+ */
+TEST( connect, snsrReadError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto client = Client{ State::CONNECTING, driver, random<Socket_ID>(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = client.connect( { random<Address>( 1 ), random<Port>( 1 ) } );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_EQ( client.state(), State::CONNECTING );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::connect() properly handles
+ *        a connection timeout.
+ */
+TEST( connect, connectionTimeout )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto client = Client{ State::CONNECTING, driver, random<Socket_ID>(), network_stack };
+
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+
+    auto const result = client.connect( { random<Address>( 1 ), random<Port>( 1 ) } );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), Generic_Error::OPERATION_TIMEOUT );
+
+    EXPECT_EQ( client.state(), State::CLOSED );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::connect() properly handles a
+ *        nonresponsive device error.
+ */
+TEST( connect, nonresponsiveDeviceError )
+{
+    struct {
+        std::uint8_t sn_sr;
+    } const test_cases[]{
+        { random<std::uint8_t>( 0x01, 0x12 ) },
+        { 0x14 },
+        { 0x16 },
+        { random<std::uint8_t>( 0x18, 0x1B ) },
+        { random<std::uint8_t>( 0x1D ) },
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto client = Client{ State::CONNECTING, driver, random<Socket_ID>(), network_stack };
+
+        auto const error = random<Mock_Error>();
+
+        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( test_case.sn_sr ) );
+        EXPECT_CALL( network_stack, nonresponsive_device_error() ).WillOnce( Return( error ) );
+
+        auto const result = client.connect( { random<Address>( 1 ), random<Port>( 1 ) } );
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), error );
+
+        EXPECT_EQ( client.state(), State::CONNECTING );
+    } // for
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::connect() works properly.
+ */
+TEST( connect, worksProperly )
+{
+    {
+        auto const in_sequence = InSequence{};
+
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto const socket_id = random<Socket_ID>();
+
+        auto client = Client{ State::BOUND, driver, socket_id, network_stack };
+
+        auto const endpoint = Endpoint{ random<Address>( 1 ), random<Port>( 1 ) };
+
+        EXPECT_CALL( driver, write_sn_dipr( socket_id, endpoint.address().ipv4().as_byte_array() ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, write_sn_dport( socket_id, endpoint.port().as_unsigned_integer() ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, write_sn_cr( socket_id, 0x04 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
+        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+
+        auto const result = client.connect( endpoint );
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), Generic_Error::WOULD_BLOCK );
+
+        EXPECT_EQ( client.state(), State::CONNECTING );
+    }
+
+    {
+        struct {
+            std::uint8_t sn_sr;
+        } const test_cases[]{
+            { 0x13 },
+            { 0x15 },
+        };
+
+        for ( auto const test_case : test_cases ) {
+            auto const in_sequence = InSequence{};
+
+            auto driver        = Mock_Driver{};
+            auto network_stack = Mock_Network_Stack{};
+
+            auto const socket_id = random<Socket_ID>();
+
+            auto client = Client{ State::CONNECTING, driver, socket_id, network_stack };
+
+            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( test_case.sn_sr ) );
+
+            auto const result = client.connect( { random<Address>( 1 ), random<Port>( 1 ) } );
+
+            EXPECT_TRUE( result.is_error() );
+            EXPECT_EQ( result.error(), Generic_Error::WOULD_BLOCK );
+
+            EXPECT_EQ( client.state(), State::CONNECTING );
+        } // for
+    }
+
+    {
+        struct {
+            std::uint8_t sn_sr;
+        } const test_cases[]{
+            { 0x17 },
+            { 0x1C },
+        };
+
+        for ( auto const test_case : test_cases ) {
+            auto const in_sequence = InSequence{};
+
+            auto driver        = Mock_Driver{};
+            auto network_stack = Mock_Network_Stack{};
+
+            auto const socket_id = random<Socket_ID>();
+
+            auto client = Client{ State::CONNECTING, driver, socket_id, network_stack };
+
+            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( test_case.sn_sr ) );
+
+            EXPECT_FALSE( client.connect( { random<Address>( 1 ), random<Port>( 1 ) } ).is_error() );
+
+            EXPECT_EQ( client.state(), State::CONNECTED );
+        } // for
     }
 }
 
