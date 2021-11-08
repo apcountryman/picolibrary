@@ -804,6 +804,8 @@ TEST( bind, invalidState )
 
         EXPECT_TRUE( result.is_error() );
         EXPECT_EQ( result.error(), Generic_Error::LOGIC_ERROR );
+
+        EXPECT_EQ( client.state(), test_case.state );
     } // for
 }
 
@@ -826,6 +828,8 @@ TEST( bind, siprReadError )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
+
+    EXPECT_EQ( client.state(), State::INITIALIZED );
 }
 
 /**
@@ -847,6 +851,8 @@ TEST( bind, invalidEndpoint )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::INVALID_ARGUMENT );
+
+    EXPECT_EQ( client.state(), State::INITIALIZED );
 }
 
 /**
@@ -866,6 +872,8 @@ TEST( bind, ephemeralPortAllocationNotEnabled )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::EPHEMERAL_PORTS_EXHAUSTED );
+
+    EXPECT_EQ( client.state(), State::INITIALIZED );
 }
 
 /**
@@ -888,6 +896,8 @@ TEST( bind, snmrReadError )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
+
+    EXPECT_EQ( client.state(), State::INITIALIZED );
 }
 
 /**
@@ -911,6 +921,8 @@ TEST( bind, snportReadError )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
+
+    EXPECT_EQ( client.state(), State::INITIALIZED );
 }
 
 /**
@@ -939,6 +951,8 @@ TEST( bind, ephemeralPortsExhausted )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::EPHEMERAL_PORTS_EXHAUSTED );
+
+    EXPECT_EQ( client.state(), State::INITIALIZED );
 }
 
 /**
@@ -964,6 +978,8 @@ TEST( bind, endpointInUse )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::ENDPOINT_IN_USE );
+
+    EXPECT_EQ( client.state(), State::INITIALIZED );
 }
 
 /**
@@ -988,6 +1004,8 @@ TEST( bind, snportWriteError )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
+
+    EXPECT_EQ( client.state(), State::INITIALIZED );
 }
 
 /**
@@ -1013,6 +1031,8 @@ TEST( bind, sncrWriteError )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
+
+    EXPECT_EQ( client.state(), State::INITIALIZED );
 }
 
 /**
@@ -1039,6 +1059,8 @@ TEST( bind, sncrReadError )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
+
+    EXPECT_EQ( client.state(), State::INITIALIZED );
 }
 
 /**
@@ -1066,6 +1088,8 @@ TEST( bind, snsrReadError )
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
+
+    EXPECT_EQ( client.state(), State::INITIALIZED );
 }
 
 /**
@@ -1102,6 +1126,8 @@ TEST( bind, nonresponsiveDeviceError )
 
         EXPECT_TRUE( result.is_error() );
         EXPECT_EQ( result.error(), error );
+
+        EXPECT_EQ( client.state(), State::INITIALIZED );
     } // for
 }
 
