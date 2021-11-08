@@ -59,7 +59,7 @@ class Mock_Network_Stack {
 
     auto operator=( Mock_Network_Stack const & ) = delete;
 
-    MOCK_METHOD( Error_Code const &, nonresponsive_device_error, (), ( const ) );
+    MOCK_METHOD( Error_Code, nonresponsive_device_error, (), ( const ) );
 
     MOCK_METHOD( (Result<Void, Error_Code>), ping_w5500, (), ( const ) );
 
