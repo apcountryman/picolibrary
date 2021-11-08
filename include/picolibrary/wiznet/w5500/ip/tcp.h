@@ -638,6 +638,41 @@ class Client {
         return Generic_Error::LOGIC_ERROR;
     }
 
+    /**
+     * \brief Check if the socket is connected to a remote endpoint.
+     *
+     * \return true if getting the socket's connection state succeeded and the socket is
+     *         connected to a remote endpoint.
+     * \return false if getting the socket's connection state succeeded and the socket is
+     *         not connected to a remote endpoint.
+     * \return picolibrary::WIZnet::W5500::IP::Network_Stack::nonresponsive_device_error()
+     *         if the W5500 is nonresponsive.
+     * \return An error code if getting the socket's connection state failed for any other
+     *         reason.
+     */
+    auto is_connected() const noexcept -> Result<bool, Error_Code>
+    {
+        auto result = m_driver->read_sn_sr( m_socket_id );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        switch ( static_cast<Socket_Status>( result.value() ) ) {
+            case Socket_Status::CLOSED: return false;
+            case Socket_Status::OPENED_TCP: return false;
+            case Socket_Status::LISTEN: return false;
+            case Socket_Status::ESTABLISHED: return true;
+            case Socket_Status::CLOSE_WAIT: return true;
+            case Socket_Status::SYN_SENT: return false;
+            case Socket_Status::SYN_RECEIVED: return false;
+            case Socket_Status::FIN_WAIT: return true;
+            case Socket_Status::CLOSING: return true;
+            case Socket_Status::TIME_WAIT: return true;
+            case Socket_Status::LAST_ACK: return true;
+            default: return m_network_stack->nonresponsive_device_error();
+        } // switch
+    }
+
   private:
     /**
      * \brief The socket's state.

@@ -1694,6 +1694,103 @@ TEST( connect, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::is_connected() properly
+ *        handles an SN_SR register read error.
+ */
+TEST( isConnected, snsrReadError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const client = Client{ driver, random<Socket_ID>(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = client.is_connected();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::is_connected() properly
+ *        handles a nonresponsive device error.
+ */
+TEST( isConnected, nonresponsiveDeviceError )
+{
+    struct {
+        std::uint8_t sn_sr;
+    } const test_cases[]{
+        { random<std::uint8_t>( 0x01, 0x12 ) },
+        { 0x19 },
+        { random<std::uint8_t>( 0x1E ) },
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto const client = Client{ driver, random<Socket_ID>(), network_stack };
+
+        auto const error = random<Mock_Error>();
+
+        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( test_case.sn_sr ) );
+        EXPECT_CALL( network_stack, nonresponsive_device_error() ).WillOnce( Return( error ) );
+
+        auto const result = client.is_connected();
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), error );
+    } // for
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::is_connected() works
+ *        properly.
+ */
+TEST( isConnected, worksProperly )
+{
+    struct {
+        std::uint8_t sn_sr;
+        bool         is_connected;
+    } const test_cases[]{
+        // clang-format off
+
+        { 0x00, false },
+        { 0x13, false },
+        { 0x14, false },
+        { 0x15, false },
+        { 0x16, false },
+        { 0x17, true  },
+        { 0x18, true  },
+        { 0x1A, true  },
+        { 0x1B, true  },
+        { 0x1C, true  },
+        { 0x1D, true  },
+
+        // clang-format on
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto const socket_id = random<Socket_ID>();
+
+        auto const client = Client{ driver, socket_id, network_stack };
+
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( test_case.sn_sr ) );
+
+        auto const result = client.is_connected();
+
+        EXPECT_TRUE( result.is_value() );
+        EXPECT_EQ( result.value(), test_case.is_connected );
+    } // for
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::IP::TCP::Client unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
