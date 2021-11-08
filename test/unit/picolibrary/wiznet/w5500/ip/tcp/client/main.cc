@@ -991,6 +991,121 @@ TEST( bind, snportWriteError )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::bind() properly handles an
+ *        SN_CR register write error.
+ */
+TEST( bind, sncrWriteError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto client = Client{ driver, random<Socket_ID>(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( static_cast<std::uint16_t>( 0 ) ) );
+    EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = client.bind( random<Port>( 1 ) );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::bind() properly handles an
+ *        SN_CR register read error.
+ */
+TEST( bind, sncrReadError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto client = Client{ driver, random<Socket_ID>(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( static_cast<std::uint16_t>( 0 ) ) );
+    EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = client.bind( random<Port>( 1 ) );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::bind() properly handles an
+ *        SN_SR register read error.
+ */
+TEST( bind, snsrReadError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto client = Client{ driver, random<Socket_ID>(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( static_cast<std::uint16_t>( 0 ) ) );
+    EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = client.bind( random<Port>( 1 ) );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::bind() properly handles a
+ *        nonresponsive device error.
+ */
+TEST( bind, nonresponsiveDeviceError )
+{
+    struct {
+        std::uint8_t sn_sr;
+    } const test_cases[]{
+        { random<std::uint8_t>( 0x01, 0x12 ) },
+        { random<std::uint8_t>( 0x14 ) },
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto client = Client{ driver, random<Socket_ID>(), network_stack };
+
+        auto const error = random<Mock_Error>();
+
+        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+        EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
+        EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( static_cast<std::uint16_t>( 0 ) ) );
+        EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( test_case.sn_sr ) );
+        EXPECT_CALL( network_stack, nonresponsive_device_error() ).WillOnce( Return( error ) );
+
+        auto const result = client.bind( random<Port>( 1 ) );
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), error );
+    } // for
+}
+
+/**
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::bind() works properly.
  */
 TEST( bind, worksProperly )
@@ -1038,6 +1153,11 @@ TEST( bind, worksProperly )
                     Ge( ephemeral_port_min.as_unsigned_integer() ),
                     Le( ephemeral_port_max.as_unsigned_integer() ) ) ) )
             .WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, write_sn_cr( socket_id, 0x01 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
+        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x13 ) ) );
 
         EXPECT_FALSE( client.bind().is_error() );
 
@@ -1079,6 +1199,11 @@ TEST( bind, worksProperly )
                     Ge( ephemeral_port_min.as_unsigned_integer() ),
                     Le( ephemeral_port_max.as_unsigned_integer() ) ) ) )
             .WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, write_sn_cr( socket_id, 0x01 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
+        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x13 ) ) );
 
         EXPECT_FALSE( client.bind( Port{} ).is_error() );
 
@@ -1109,6 +1234,11 @@ TEST( bind, worksProperly )
         } // for
         EXPECT_CALL( driver, write_sn_port( socket_id, port.as_unsigned_integer() ) )
             .WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, write_sn_cr( socket_id, 0x01 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
+        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x13 ) ) );
 
         EXPECT_FALSE( client.bind( port ).is_error() );
 
@@ -1152,6 +1282,11 @@ TEST( bind, worksProperly )
                     Ge( ephemeral_port_min.as_unsigned_integer() ),
                     Le( ephemeral_port_max.as_unsigned_integer() ) ) ) )
             .WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, write_sn_cr( socket_id, 0x01 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
+        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x13 ) ) );
 
         EXPECT_FALSE( client.bind( { address, Port{} } ).is_error() );
 
@@ -1184,6 +1319,11 @@ TEST( bind, worksProperly )
         } // for
         EXPECT_CALL( driver, write_sn_port( socket_id, port.as_unsigned_integer() ) )
             .WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, write_sn_cr( socket_id, 0x01 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
+        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x13 ) ) );
 
         EXPECT_FALSE( client.bind( { address, port } ).is_error() );
 

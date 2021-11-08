@@ -512,9 +512,37 @@ class Client {
             } // if
         }
 
-        m_state = State::BOUND;
+        {
+            auto result = m_driver->write_sn_cr(
+                m_socket_id, static_cast<SN_CR::Type>( Command::OPEN ) );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
 
-        return {};
+        for ( ;; ) {
+            auto result = m_driver->read_sn_cr( m_socket_id );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            if ( not result.value() ) {
+                break;
+            } // if
+        }     // for
+
+        for ( ;; ) {
+            auto result = m_driver->read_sn_sr( m_socket_id );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            switch ( static_cast<Socket_Status>( result.value() ) ) {
+                case Socket_Status::CLOSED: break;
+                case Socket_Status::OPENED_TCP: m_state = State::BOUND; return {};
+                default: return m_network_stack->nonresponsive_device_error();
+            } // switch
+        }     // for
     }
 
     /**
