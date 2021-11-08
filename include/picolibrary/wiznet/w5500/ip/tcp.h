@@ -542,6 +542,9 @@ class Client {
      */
     auto connect( ::picolibrary::IP::TCP::Endpoint const & endpoint ) noexcept -> Result<Void, Error_Code>
     {
+        // #lizard forgives the length
+        // #lizard forgives the complexity
+
         if ( m_state == State::BOUND ) {
             if ( not endpoint.address().is_ipv4() or endpoint.address().ipv4().is_any()
                  or endpoint.port().is_any() ) {
