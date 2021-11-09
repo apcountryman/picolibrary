@@ -752,6 +752,8 @@ class Client {
      */
     auto outstanding() const noexcept -> Result<Size, Error_Code>
     {
+        // #lizard forgives the length
+
         Size buffer_size;
         {
             auto result = m_driver->read_sn_txbuf_size( m_socket_id );
