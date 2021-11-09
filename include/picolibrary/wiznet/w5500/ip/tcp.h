@@ -27,6 +27,7 @@
 
 #include "picolibrary/error.h"
 #include "picolibrary/ip/tcp.h"
+#include "picolibrary/ipv4.h"
 #include "picolibrary/result.h"
 #include "picolibrary/void.h"
 #include "picolibrary/wiznet/w5500.h"
@@ -671,6 +672,38 @@ class Client {
             case Socket_Status::LAST_ACK: return true;
             default: return m_network_stack->nonresponsive_device_error();
         } // switch
+    }
+
+    /**
+     * \brief Get the connection's remote endpoint.
+     *
+     * \return The connection's remote endpoint if getting the connection's remote
+     *         endpoint succeeded.
+     * \return An error code if getting the connection's remote endpoint failed.
+     */
+    auto remote_endpoint() const noexcept -> Result<::picolibrary::IP::TCP::Endpoint, Error_Code>
+    {
+        SN_DIPR::Type sn_dipr;
+        {
+            auto result = m_driver->read_sn_dipr( m_socket_id );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            sn_dipr = result.value();
+        }
+
+        SN_DPORT::Type sn_dport;
+        {
+            auto result = m_driver->read_sn_dport( m_socket_id );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            sn_dport = result.value();
+        }
+
+        return ::picolibrary::IP::TCP::Endpoint{ IPv4::Address{ sn_dipr }, sn_dport };
     }
 
   private:

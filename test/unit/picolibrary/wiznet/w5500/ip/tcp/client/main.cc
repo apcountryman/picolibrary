@@ -20,12 +20,15 @@
  * \brief picolibrary::WIZnet::W5500::IP::TCP::Client unit test program.
  */
 
+#include <algorithm>
+#include <cstddef>
 #include <cstdint>
 #include <utility>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/error.h"
+#include "picolibrary/fixed_size_array.h"
 #include "picolibrary/ip/tcp.h"
 #include "picolibrary/ipv4.h"
 #include "picolibrary/result.h"
@@ -41,6 +44,7 @@
 namespace {
 
 using ::picolibrary::Error_Code;
+using ::picolibrary::Fixed_Size_Array;
 using ::picolibrary::Generic_Error;
 using ::picolibrary::Result;
 using ::picolibrary::Void;
@@ -69,6 +73,16 @@ auto random_unique_addresses()
     auto const b = random<Address::Unsigned_Integer>();
 
     return std::pair<Address, Address>{ a, b != a ? b : b ^ random<Address::Unsigned_Integer>( 1 ) };
+}
+
+template<typename T, std::size_t N>
+auto random_fixed_size_array()
+{
+    Fixed_Size_Array<T, N> array;
+
+    std::generate( array.begin(), array.end(), []() { return random<T>(); } );
+
+    return array;
 }
 
 } // namespace
@@ -1788,6 +1802,76 @@ TEST( isConnected, worksProperly )
         EXPECT_TRUE( result.is_value() );
         EXPECT_EQ( result.value(), test_case.is_connected );
     } // for
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::remote_endpoint() properly
+ *        handles an SN_DIPR register read error.
+ */
+TEST( remoteEndpoint, sndiprReadError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const client = Client{ driver, random<Socket_ID>(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_dipr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = client.remote_endpoint();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::remote_endpoint() properly
+ *        handles an SN_DPORT register read error.
+ */
+TEST( remoteEndpoint, sndportReadError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const client = Client{ driver, random<Socket_ID>(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_dipr( _ ) ).WillOnce( Return( random_fixed_size_array<std::uint8_t, 4>() ) );
+    EXPECT_CALL( driver, read_sn_dport( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = client.remote_endpoint();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::remote_endpoint() works
+ *        properly.
+ */
+TEST( remoteEndpoint, worksProperly )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_id = random<Socket_ID>();
+
+    auto const client = Client{ driver, socket_id, network_stack };
+
+    auto const sn_dipr  = random_fixed_size_array<std::uint8_t, 4>();
+    auto const sn_dport = random<std::uint16_t>();
+
+    EXPECT_CALL( driver, read_sn_dipr( socket_id ) ).WillOnce( Return( sn_dipr ) );
+    EXPECT_CALL( driver, read_sn_dport( socket_id ) ).WillOnce( Return( sn_dport ) );
+
+    auto const result = client.remote_endpoint();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_TRUE( result.value().address().is_ipv4() );
+    EXPECT_EQ( result.value().address().ipv4().as_byte_array(), sn_dipr );
+    EXPECT_EQ( result.value().port().as_unsigned_integer(), sn_dport );
 }
 
 /**
