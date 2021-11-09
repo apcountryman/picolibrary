@@ -1945,6 +1945,149 @@ TEST( localEndpoint, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::outstanding() properly
+ *        handles an SN_TXBUF_SIZE register read error.
+ */
+TEST( outstanding, sntxbufsizeReadError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const client = Client{ driver, random<Socket_ID>(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_txbuf_size( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = client.outstanding();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::outstanding() properly
+ *        handles an invalid SN_TXBUF_SIZE register value nonresponsive device error.
+ */
+TEST( outstanding, sntxbufsizeNonresponsiveDeviceError )
+{
+    struct {
+        std::uint8_t sn_txbuf_size;
+    } const test_cases[]{
+        { 0 },
+        { 3 },
+        { random<std::uint8_t>( 5, 7 ) },
+        { random<std::uint8_t>( 9, 15 ) },
+        { random<std::uint8_t>( 17 ) },
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto const client = Client{ driver, random<Socket_ID>(), network_stack };
+
+        auto const error = random<Mock_Error>();
+
+        EXPECT_CALL( driver, read_sn_txbuf_size( _ ) ).WillOnce( Return( test_case.sn_txbuf_size ) );
+        EXPECT_CALL( network_stack, nonresponsive_device_error() ).WillOnce( Return( error ) );
+
+        auto const result = client.outstanding();
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), error );
+    } // for
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::outstanding() properly
+ *        handles an SN_TX_FSR register read error.
+ */
+TEST( outstanding, sntxfsrReadError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const client = Client{ driver, random<Socket_ID>(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_txbuf_size( _ ) )
+        .WillOnce( Return( static_cast<std::uint8_t>( 1 << random<std::uint_fast8_t>( 0, 4 ) ) ) );
+    EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = client.outstanding();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::outstanding() properly
+ *        handles an invalid SN_TX_FSR register value nonresponsive device error.
+ */
+TEST( outstanding, sntxfsrNonresponsiveDeviceError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const client = Client{ driver, random<Socket_ID>(), network_stack };
+
+    auto const sn_txbuf_size = static_cast<std::uint8_t>( 1 << random<std::uint_fast8_t>( 0, 4 ) );
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_txbuf_size( _ ) ).WillOnce( Return( sn_txbuf_size ) );
+    EXPECT_CALL( driver, read_sn_tx_fsr( _ ) )
+        .WillOnce( Return( random<std::uint16_t>( ( sn_txbuf_size * 1024 ) + 1 ) ) );
+    EXPECT_CALL( network_stack, nonresponsive_device_error() ).WillOnce( Return( error ) );
+
+    auto const result = client.outstanding();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::outstanding() works
+ *        properly.
+ */
+TEST( outstanding, worksProperly )
+{
+    struct {
+        std::uint8_t sn_txbuf_size;
+    } const test_cases[]{
+        // clang-format off
+
+        { 1 },
+        { 2 },
+        { 4 },
+        { 8 },
+        { 16 },
+
+        // clang-format on
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto const socket_id = random<Socket_ID>();
+
+        auto const client = Client{ driver, socket_id, network_stack };
+
+        auto const sn_tx_fsr = random<std::uint16_t>( 0, test_case.sn_txbuf_size * 1024 );
+
+        EXPECT_CALL( driver, read_sn_txbuf_size( socket_id ) ).WillOnce( Return( test_case.sn_txbuf_size ) );
+        EXPECT_CALL( driver, read_sn_tx_fsr( socket_id ) ).WillOnce( Return( sn_tx_fsr ) );
+
+        auto const result = client.outstanding();
+
+        EXPECT_TRUE( result.is_value() );
+        EXPECT_EQ( result.value(), ( test_case.sn_txbuf_size * 1024 ) - sn_tx_fsr );
+    } // for
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::IP::TCP::Client unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
