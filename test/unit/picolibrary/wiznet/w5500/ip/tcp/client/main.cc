@@ -1875,6 +1875,76 @@ TEST( remoteEndpoint, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::local_endpoint() properly
+ *        handles a SIPR register read error.
+ */
+TEST( localEndpoint, siprReadError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const client = Client{ driver, random<Socket_ID>(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( error ) );
+
+    auto const result = client.local_endpoint();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::local_endpoint() properly
+ *        handles an SN_PORT register read error.
+ */
+TEST( localEndpoint, snportReadError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const client = Client{ driver, random<Socket_ID>(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( random_fixed_size_array<std::uint8_t, 4>() ) );
+    EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = client.local_endpoint();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::local_endpoint() works
+ *        properly.
+ */
+TEST( localEndpoint, worksProperly )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_id = random<Socket_ID>();
+
+    auto const client = Client{ driver, socket_id, network_stack };
+
+    auto const sipr    = random_fixed_size_array<std::uint8_t, 4>();
+    auto const sn_port = random<std::uint16_t>();
+
+    EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( sipr ) );
+    EXPECT_CALL( driver, read_sn_port( socket_id ) ).WillOnce( Return( sn_port ) );
+
+    auto const result = client.local_endpoint();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_TRUE( result.value().address().is_ipv4() );
+    EXPECT_EQ( result.value().address().ipv4().as_byte_array(), sipr );
+    EXPECT_EQ( result.value().port().as_unsigned_integer(), sn_port );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::IP::TCP::Client unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().

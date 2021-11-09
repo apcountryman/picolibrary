@@ -706,6 +706,38 @@ class Client {
         return ::picolibrary::IP::TCP::Endpoint{ IPv4::Address{ sn_dipr }, sn_dport };
     }
 
+    /**
+     * \brief Get the connection's local endpoint.
+     *
+     * \return The connection's local endpoint if getting the connection's local endpoint
+     *         succeeded.
+     * \return An error code if getting the connection's local endpoint failed.
+     */
+    auto local_endpoint() const noexcept -> Result<::picolibrary::IP::TCP::Endpoint, Error_Code>
+    {
+        SN_DIPR::Type sn_dipr;
+        {
+            auto result = m_driver->read_sipr();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            sn_dipr = result.value();
+        }
+
+        SN_DPORT::Type sn_dport;
+        {
+            auto result = m_driver->read_sn_port( m_socket_id );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            sn_dport = result.value();
+        }
+
+        return ::picolibrary::IP::TCP::Endpoint{ IPv4::Address{ sn_dipr }, sn_dport };
+    }
+
   private:
     /**
      * \brief The socket's state.
