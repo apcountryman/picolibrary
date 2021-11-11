@@ -1779,10 +1779,10 @@ TEST( isConnected, worksProperly )
         { 0x16, false },
         { 0x17, true  },
         { 0x18, true  },
-        { 0x1A, true  },
-        { 0x1B, true  },
-        { 0x1C, true  },
-        { 0x1D, true  },
+        { 0x1A, false },
+        { 0x1B, false },
+        { 0x1C, false },
+        { 0x1D, false },
 
         // clang-format on
     };

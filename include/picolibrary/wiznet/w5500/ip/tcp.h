@@ -663,13 +663,13 @@ class Client {
             case Socket_Status::OPENED_TCP: return false;
             case Socket_Status::LISTEN: return false;
             case Socket_Status::ESTABLISHED: return true;
-            case Socket_Status::CLOSE_WAIT: return true;
+            case Socket_Status::CLOSE_WAIT: return false;
             case Socket_Status::SYN_SENT: return false;
             case Socket_Status::SYN_RECEIVED: return false;
             case Socket_Status::FIN_WAIT: return true;
-            case Socket_Status::CLOSING: return true;
-            case Socket_Status::TIME_WAIT: return true;
-            case Socket_Status::LAST_ACK: return true;
+            case Socket_Status::CLOSING: return false;
+            case Socket_Status::TIME_WAIT: return false;
+            case Socket_Status::LAST_ACK: return false;
             default: return m_network_stack->nonresponsive_device_error();
         } // switch
     }
