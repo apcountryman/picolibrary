@@ -68,6 +68,7 @@ class Client {
         BOUND,         ///< Bound.
         CONNECTING,    ///< Connecting.
         CONNECTED,     ///< Connected.
+        CLOSE_WAIT,    ///< Close wait.
         CLOSED,        ///< Closed.
     };
 
@@ -119,6 +120,7 @@ class Client {
         m_state{ source.m_state },
         m_driver{ source.m_driver },
         m_socket_id{ source.m_socket_id },
+        m_transmitting{ source.m_transmitting },
         m_network_stack{ source.m_network_stack }
     {
         source.m_state         = State::UNINITIALIZED;
@@ -146,6 +148,7 @@ class Client {
             m_state         = expression.m_state;
             m_driver        = expression.m_driver;
             m_socket_id     = expression.m_socket_id;
+            m_transmitting  = expression.m_transmitting;
             m_network_stack = expression.m_network_stack;
 
             expression.m_state         = State::UNINITIALIZED;
@@ -788,6 +791,166 @@ class Client {
         return static_cast<Size>( buffer_size - free_size );
     }
 
+    /**
+     * \brief Transmit data to the remote endpoint.
+     *
+     * \param[in] begin The beginning of the block of data to write to the socket's
+     *            transmit buffer.
+     * \param[in] end The end of the block of data to write to the socket's transmit
+     *            buffer.
+     *
+     * \return The end of the data that was written to the socket's transmit buffer if
+     *         writing data to the socket's transmit buffer succeeded.
+     * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not connected to
+     *         a remote endpoint.
+     * \return picolibrary::Generic_Error::WOULD_BLOCK if no data could be written to the
+     *         socket's transmit buffer without blocking.
+     * \return picolibrary::WIZnet::W5500::IP::Network_Stack::nonresponsive_device_error()
+     *         if the W5500 is nonresponsive.
+     * \return An error code if writing data to the socket's transmit buffer failed for
+     *         any other reason.
+     */
+    auto transmit( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+        -> Result<std::uint8_t const *, Error_Code>
+    {
+        switch ( m_state ) {
+            case State::CONNECTED: break;
+            default: return Generic_Error::NOT_CONNECTED;
+        } // switch
+
+        {
+            auto result = m_driver->read_sn_sr( m_socket_id );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            switch ( static_cast<Socket_Status>( result.value() ) ) {
+                case Socket_Status::CLOSED:
+                    m_state = State::CLOSED;
+                    return Generic_Error::NOT_CONNECTED;
+                case Socket_Status::ESTABLISHED: break;
+                case Socket_Status::CLOSE_WAIT:
+                    m_state = State::CLOSE_WAIT;
+                    return Generic_Error::NOT_CONNECTED;
+                default: return m_network_stack->nonresponsive_device_error();
+            } // switch
+        }
+
+        if ( m_transmitting ) {
+            {
+                {
+                    auto result = m_driver->read_sn_ir( m_socket_id );
+                    if ( result.is_error() ) {
+                        return result.error();
+                    } // if
+
+                    if ( not( result.value() & Socket_Interrupt::DATA_SENT ) ) {
+                        return Generic_Error::WOULD_BLOCK;
+                    } // if
+                }
+
+                {
+                    auto result = m_driver->write_sn_ir( m_socket_id, Socket_Interrupt::DATA_SENT );
+                    if ( result.is_error() ) {
+                        return result.error();
+                    } // if
+                }
+
+                m_transmitting = false;
+            }
+        } // if
+
+        if ( begin == end ) {
+            return end;
+        } // if
+
+        {
+            Size buffer_size;
+            {
+                auto result = m_driver->read_sn_txbuf_size( m_socket_id );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+
+                switch ( static_cast<Buffer_Size>( result.value() ) ) {
+                    case Buffer_Size::_1_KIB: buffer_size = 1 * 1024; break;
+                    case Buffer_Size::_2_KIB: buffer_size = 2 * 1024; break;
+                    case Buffer_Size::_4_KIB: buffer_size = 4 * 1024; break;
+                    case Buffer_Size::_8_KIB: buffer_size = 8 * 1024; break;
+                    case Buffer_Size::_16_KIB: buffer_size = 16 * 1024; break;
+                    default: return m_network_stack->nonresponsive_device_error();
+                } // switch
+            }
+
+            Size free_size;
+            {
+                auto result = m_driver->read_sn_tx_fsr( m_socket_id );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+
+                free_size = result.value();
+            }
+
+            if ( free_size > buffer_size ) {
+                return m_network_stack->nonresponsive_device_error();
+            } // if
+
+            if ( free_size == 0 ) {
+                return Generic_Error::WOULD_BLOCK;
+            } // if
+
+            if ( end - begin > free_size ) {
+                end = begin + free_size;
+            } // if
+        }
+
+        SN_TX_WR::Type sn_tx_wr;
+        {
+            auto result = m_driver->read_sn_tx_wr( m_socket_id );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            sn_tx_wr = result.value();
+        }
+
+        {
+            auto result = m_driver->write( m_socket_id, sn_tx_wr, begin, end );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        {
+            auto result = m_driver->write_sn_tx_wr( m_socket_id, sn_tx_wr + ( end - begin ) );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        {
+            auto result = m_driver->write_sn_cr(
+                m_socket_id, static_cast<SN_CR::Type>( Command::SEND ) );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        for ( ;; ) {
+            auto result = m_driver->read_sn_cr( m_socket_id );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            if ( not result.value() ) {
+                m_transmitting = true;
+
+                return end;
+            } // if
+        }     // for
+    }
+
   private:
     /**
      * \brief The socket's state.
@@ -803,6 +966,11 @@ class Client {
      * \brief The socket's socket ID.
      */
     Socket_ID m_socket_id{};
+
+    /**
+     * \brief The socket's transmitting flag.
+     */
+    bool m_transmitting{};
 
     /**
      * \brief The network stack the socket is associated with.
