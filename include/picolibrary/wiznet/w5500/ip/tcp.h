@@ -813,6 +813,9 @@ class Client {
     auto transmit( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
         -> Result<std::uint8_t const *, Error_Code>
     {
+        // #lizard forgives the length
+        // #lizard forgives the complexity
+
         switch ( m_state ) {
             case State::CONNECTED: break;
             default: return Generic_Error::NOT_CONNECTED;
