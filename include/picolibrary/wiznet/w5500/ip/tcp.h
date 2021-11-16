@@ -59,8 +59,6 @@ class Client {
 
     /**
      * \brief Socket state.
-     *
-     * \attention This type is only exposed to support unit testing.
      */
     enum class State : std::uint_fast8_t {
         UNINITIALIZED, ///< Uninitialized.
@@ -183,7 +181,6 @@ class Client {
 
     auto operator=( Client const & ) = delete;
 
-#ifdef PICOLIBRARY_ENABLE_UNIT_TESTING
     /**
      * \brief Get the socket's state.
      *
@@ -193,20 +190,6 @@ class Client {
     {
         return m_state;
     }
-#endif // PICOLIBRARY_ENABLE_UNIT_TESTING
-
-#ifdef PICOLIBRARY_ENABLE_UNIT_TESTING
-    /**
-     * \brief Check if data transmission is in progress.
-     *
-     * \return true if data transmission is in progress.
-     * \return false if data transmission is not in progress.
-     */
-    constexpr auto is_transmitting() const noexcept
-    {
-        return m_is_transmitting;
-    }
-#endif // PICOLIBRARY_ENABLE_UNIT_TESTING
 
     /**
      * \brief Get the socket's socket ID.
@@ -987,6 +970,17 @@ class Client {
                 return end;
             } // if
         }     // for
+    }
+
+    /**
+     * \brief Check if data transmission is in progress.
+     *
+     * \return true if data transmission is in progress.
+     * \return false if data transmission is not in progress.
+     */
+    constexpr auto is_transmitting() const noexcept
+    {
+        return m_is_transmitting;
     }
 
     /**
