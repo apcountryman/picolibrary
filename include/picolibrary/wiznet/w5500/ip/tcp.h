@@ -1098,6 +1098,8 @@ class Client {
      */
     auto available() const noexcept -> Result<Size, Error_Code>
     {
+        // #lizard forgives the length
+
         Size buffer_size;
         {
             auto result = m_driver->read_sn_rxbuf_size( m_socket_id );
