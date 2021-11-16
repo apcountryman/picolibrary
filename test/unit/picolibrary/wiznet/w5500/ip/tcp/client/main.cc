@@ -2117,7 +2117,9 @@ TEST( transmit, invalidState )
         auto driver        = Mock_Driver{};
         auto network_stack = Mock_Network_Stack{};
 
-        auto client = Client{ test_case.state, driver, random<Socket_ID>(), network_stack };
+        auto const is_transmitting = random<bool>();
+
+        auto client = Client{ test_case.state, driver, random<Socket_ID>(), is_transmitting, network_stack };
 
         auto const data   = random_container<std::vector<std::uint8_t>>();
         auto const result = client.transmit( &*data.begin(), &*data.end() );
@@ -2126,6 +2128,7 @@ TEST( transmit, invalidState )
         EXPECT_EQ( result.error(), Generic_Error::NOT_CONNECTED );
 
         EXPECT_EQ( client.state(), test_case.state );
+        EXPECT_EQ( client.is_transmitting(), is_transmitting );
     } // for
 }
 
@@ -2138,7 +2141,9 @@ TEST( transmit, snsrReadError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), network_stack };
+    auto const is_transmitting = random<bool>();
+
+    auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), is_transmitting, network_stack };
 
     auto const error = random<Mock_Error>();
 
@@ -2151,6 +2156,7 @@ TEST( transmit, snsrReadError )
     EXPECT_EQ( result.error(), error );
 
     EXPECT_EQ( client.state(), State::CONNECTED );
+    EXPECT_EQ( client.is_transmitting(), is_transmitting );
 }
 
 /**
@@ -2171,7 +2177,9 @@ TEST( transmit, invalidSNSRValue )
         auto driver        = Mock_Driver{};
         auto network_stack = Mock_Network_Stack{};
 
-        auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), network_stack };
+        auto const is_transmitting = random<bool>();
+
+        auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), is_transmitting, network_stack };
 
         auto const error = random<Mock_Error>();
 
@@ -2185,6 +2193,7 @@ TEST( transmit, invalidSNSRValue )
         EXPECT_EQ( result.error(), error );
 
         EXPECT_EQ( client.state(), State::CONNECTED );
+        EXPECT_EQ( client.is_transmitting(), is_transmitting );
     } // for
 }
 
@@ -2206,7 +2215,9 @@ TEST( transmit, connectionLost )
         auto driver        = Mock_Driver{};
         auto network_stack = Mock_Network_Stack{};
 
-        auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), network_stack };
+        auto const is_transmitting = random<bool>();
+
+        auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), is_transmitting, network_stack };
 
         EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( test_case.sn_sr ) );
 
@@ -2217,7 +2228,87 @@ TEST( transmit, connectionLost )
         EXPECT_EQ( result.error(), Generic_Error::NOT_CONNECTED );
 
         EXPECT_EQ( client.state(), test_case.end_state );
+        EXPECT_EQ( client.is_transmitting(), is_transmitting );
     } // for
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::transmit() properly handles
+ *        an SN_IR register read error.
+ */
+TEST( transmit, snirReadError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), true, network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+    EXPECT_CALL( driver, read_sn_ir( _ ) ).WillOnce( Return( error ) );
+
+    auto const data   = random_container<std::vector<std::uint8_t>>();
+    auto const result = client.transmit( &*data.begin(), &*data.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_EQ( client.state(), State::CONNECTED );
+    EXPECT_TRUE( client.is_transmitting() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::transmit() properly handles
+ *        an in-progress transmission that is not complete.
+ */
+TEST( transmit, transmissionNotComplete )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), true, network_stack };
+
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+    EXPECT_CALL( driver, read_sn_ir( _ ) )
+        .WillOnce( Return( static_cast<std::uint8_t>( random<std::uint8_t>() & 0b111'0'1'1'1'1 ) ) );
+
+    auto const data   = random_container<std::vector<std::uint8_t>>();
+    auto const result = client.transmit( &*data.begin(), &*data.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), Generic_Error::WOULD_BLOCK );
+
+    EXPECT_EQ( client.state(), State::CONNECTED );
+    EXPECT_TRUE( client.is_transmitting() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::transmit() properly handles
+ *        an SN_IR register write error.
+ */
+TEST( transmit, snirWriteError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), true, network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+    EXPECT_CALL( driver, read_sn_ir( _ ) )
+        .WillOnce( Return( static_cast<std::uint8_t>( random<std::uint8_t>() | 0b000'1'0'0'0'0 ) ) );
+    EXPECT_CALL( driver, write_sn_ir( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const data   = random_container<std::vector<std::uint8_t>>();
+    auto const result = client.transmit( &*data.begin(), &*data.end() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_EQ( client.state(), State::CONNECTED );
+    EXPECT_TRUE( client.is_transmitting() );
 }
 
 /**
@@ -2229,7 +2320,7 @@ TEST( transmit, sntxbufsizeReadError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), network_stack };
+    auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), false, network_stack };
 
     auto const error = random<Mock_Error>();
 
@@ -2243,6 +2334,7 @@ TEST( transmit, sntxbufsizeReadError )
     EXPECT_EQ( result.error(), error );
 
     EXPECT_EQ( client.state(), State::CONNECTED );
+    EXPECT_FALSE( client.is_transmitting() );
 }
 
 /**
@@ -2265,7 +2357,7 @@ TEST( transmit, invalidSNTXBUFSIZEValue )
         auto driver        = Mock_Driver{};
         auto network_stack = Mock_Network_Stack{};
 
-        auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), network_stack };
+        auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), false, network_stack };
 
         auto const error = random<Mock_Error>();
 
@@ -2280,6 +2372,7 @@ TEST( transmit, invalidSNTXBUFSIZEValue )
         EXPECT_EQ( result.error(), error );
 
         EXPECT_EQ( client.state(), State::CONNECTED );
+        EXPECT_FALSE( client.is_transmitting() );
     } // for
 }
 
@@ -2292,7 +2385,7 @@ TEST( transmit, sntxfsrReadError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), network_stack };
+    auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), false, network_stack };
 
     auto const error = random<Mock_Error>();
 
@@ -2308,6 +2401,7 @@ TEST( transmit, sntxfsrReadError )
     EXPECT_EQ( result.error(), error );
 
     EXPECT_EQ( client.state(), State::CONNECTED );
+    EXPECT_FALSE( client.is_transmitting() );
 }
 
 /**
@@ -2334,7 +2428,7 @@ TEST( transmit, invalidSNTXFSRValue )
         auto driver        = Mock_Driver{};
         auto network_stack = Mock_Network_Stack{};
 
-        auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), network_stack };
+        auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), false, network_stack };
 
         auto const error = random<Mock_Error>();
 
@@ -2351,6 +2445,7 @@ TEST( transmit, invalidSNTXFSRValue )
         EXPECT_EQ( result.error(), error );
 
         EXPECT_EQ( client.state(), State::CONNECTED );
+        EXPECT_FALSE( client.is_transmitting() );
     } // for
 }
 
@@ -2363,7 +2458,7 @@ TEST( transmit, transmitBufferFull )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), network_stack };
+    auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), false, network_stack };
 
     EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
     EXPECT_CALL( driver, read_sn_txbuf_size( _ ) )
@@ -2377,6 +2472,7 @@ TEST( transmit, transmitBufferFull )
     EXPECT_EQ( result.error(), Generic_Error::WOULD_BLOCK );
 
     EXPECT_EQ( client.state(), State::CONNECTED );
+    EXPECT_FALSE( client.is_transmitting() );
 }
 
 /**
@@ -2388,7 +2484,7 @@ TEST( transmit, sntxwrReadError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), network_stack };
+    auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), false, network_stack };
 
     auto const sn_txbuf_size = static_cast<std::uint8_t>( 1 << random<std::uint_fast8_t>( 0, 4 ) );
 
@@ -2406,6 +2502,7 @@ TEST( transmit, sntxwrReadError )
     EXPECT_EQ( result.error(), error );
 
     EXPECT_EQ( client.state(), State::CONNECTED );
+    EXPECT_FALSE( client.is_transmitting() );
 }
 
 /**
@@ -2417,7 +2514,7 @@ TEST( transmit, transmitBufferWriteError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), network_stack };
+    auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), false, network_stack };
 
     auto const sn_txbuf_size = static_cast<std::uint8_t>( 1 << random<std::uint_fast8_t>( 0, 4 ) );
 
@@ -2436,6 +2533,7 @@ TEST( transmit, transmitBufferWriteError )
     EXPECT_EQ( result.error(), error );
 
     EXPECT_EQ( client.state(), State::CONNECTED );
+    EXPECT_FALSE( client.is_transmitting() );
 }
 
 /**
@@ -2447,7 +2545,7 @@ TEST( transmit, sntxwrWriteError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), network_stack };
+    auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), false, network_stack };
 
     auto const sn_txbuf_size = static_cast<std::uint8_t>( 1 << random<std::uint_fast8_t>( 0, 4 ) );
 
@@ -2467,6 +2565,7 @@ TEST( transmit, sntxwrWriteError )
     EXPECT_EQ( result.error(), error );
 
     EXPECT_EQ( client.state(), State::CONNECTED );
+    EXPECT_FALSE( client.is_transmitting() );
 }
 
 /**
@@ -2478,7 +2577,7 @@ TEST( transmit, sncrWriteError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), network_stack };
+    auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), false, network_stack };
 
     auto const sn_txbuf_size = static_cast<std::uint8_t>( 1 << random<std::uint_fast8_t>( 0, 4 ) );
 
@@ -2499,6 +2598,7 @@ TEST( transmit, sncrWriteError )
     EXPECT_EQ( result.error(), error );
 
     EXPECT_EQ( client.state(), State::CONNECTED );
+    EXPECT_FALSE( client.is_transmitting() );
 }
 
 /**
@@ -2510,7 +2610,7 @@ TEST( transmit, sncrReadError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), network_stack };
+    auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), false, network_stack };
 
     auto const sn_txbuf_size = static_cast<std::uint8_t>( 1 << random<std::uint_fast8_t>( 0, 4 ) );
 
@@ -2532,161 +2632,11 @@ TEST( transmit, sncrReadError )
     EXPECT_EQ( result.error(), error );
 
     EXPECT_EQ( client.state(), State::CONNECTED );
-}
-
-/**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::transmit() properly handles
- *        an SN_IR register read error.
- */
-TEST( transmit, snirReadError )
-{
-    auto driver        = Mock_Driver{};
-    auto network_stack = Mock_Network_Stack{};
-
-    auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), network_stack };
-
-    {
-        auto const sn_txbuf_size = static_cast<std::uint8_t>( 1 << random<std::uint_fast8_t>( 0, 4 ) );
-
-        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
-        EXPECT_CALL( driver, read_sn_txbuf_size( _ ) ).WillOnce( Return( sn_txbuf_size ) );
-        EXPECT_CALL( driver, read_sn_tx_fsr( _ ) )
-            .WillOnce( Return( random<std::uint16_t>( 1, sn_txbuf_size * 1024 ) ) );
-        EXPECT_CALL( driver, read_sn_tx_wr( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-        EXPECT_CALL( driver, write( _, _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-        EXPECT_CALL( driver, write_sn_tx_wr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-        EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-        EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
-
-        auto const data = random_container<std::vector<std::uint8_t>>( random<std::uint_fast8_t>( 1 ) );
-        EXPECT_FALSE( client.transmit( &*data.begin(), &*data.end() ).is_error() );
-    }
-
-    {
-        auto const error = random<Mock_Error>();
-
-        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
-        EXPECT_CALL( driver, read_sn_ir( _ ) ).WillOnce( Return( error ) );
-
-        auto const data   = random_container<std::vector<std::uint8_t>>();
-        auto const result = client.transmit( &*data.begin(), &*data.end() );
-
-        EXPECT_TRUE( result.is_error() );
-        EXPECT_EQ( result.error(), error );
-    }
-
-    EXPECT_EQ( client.state(), State::CONNECTED );
-}
-
-/**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::transmit() properly handles
- *        an in-progress transmission that is not complete.
- */
-TEST( transmit, transmissionNotComplete )
-{
-    auto driver        = Mock_Driver{};
-    auto network_stack = Mock_Network_Stack{};
-
-    auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), network_stack };
-
-    {
-        auto const sn_txbuf_size = static_cast<std::uint8_t>( 1 << random<std::uint_fast8_t>( 0, 4 ) );
-
-        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
-        EXPECT_CALL( driver, read_sn_txbuf_size( _ ) ).WillOnce( Return( sn_txbuf_size ) );
-        EXPECT_CALL( driver, read_sn_tx_fsr( _ ) )
-            .WillOnce( Return( random<std::uint16_t>( 1, sn_txbuf_size * 1024 ) ) );
-        EXPECT_CALL( driver, read_sn_tx_wr( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-        EXPECT_CALL( driver, write( _, _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-        EXPECT_CALL( driver, write_sn_tx_wr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-        EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-        EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
-
-        auto const data = random_container<std::vector<std::uint8_t>>( random<std::uint_fast8_t>( 1 ) );
-        EXPECT_FALSE( client.transmit( &*data.begin(), &*data.end() ).is_error() );
-
-        EXPECT_EQ( client.state(), State::CONNECTED );
-    }
-
-    {
-        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
-        EXPECT_CALL( driver, read_sn_ir( _ ) )
-            .WillOnce( Return( static_cast<std::uint8_t>( random<std::uint8_t>() & 0b111'0'1'1'1'1 ) ) );
-
-        auto const data   = random_container<std::vector<std::uint8_t>>();
-        auto const result = client.transmit( &*data.begin(), &*data.end() );
-
-        EXPECT_TRUE( result.is_error() );
-        EXPECT_EQ( result.error(), Generic_Error::WOULD_BLOCK );
-
-        EXPECT_EQ( client.state(), State::CONNECTED );
-    }
-
-    {
-        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
-        EXPECT_CALL( driver, read_sn_ir( _ ) )
-            .WillOnce( Return( static_cast<std::uint8_t>( random<std::uint8_t>() & 0b111'0'1'1'1'1 ) ) );
-
-        auto const data   = random_container<std::vector<std::uint8_t>>();
-        auto const result = client.transmit( &*data.begin(), &*data.end() );
-
-        EXPECT_TRUE( result.is_error() );
-        EXPECT_EQ( result.error(), Generic_Error::WOULD_BLOCK );
-
-        EXPECT_EQ( client.state(), State::CONNECTED );
-    }
-}
-
-/**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::transmit() properly handles
- *        an SN_IR register write error.
- */
-TEST( transmit, snirWriteError )
-{
-    auto driver        = Mock_Driver{};
-    auto network_stack = Mock_Network_Stack{};
-
-    auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), network_stack };
-
-    {
-        auto const sn_txbuf_size = static_cast<std::uint8_t>( 1 << random<std::uint_fast8_t>( 0, 4 ) );
-
-        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
-        EXPECT_CALL( driver, read_sn_txbuf_size( _ ) ).WillOnce( Return( sn_txbuf_size ) );
-        EXPECT_CALL( driver, read_sn_tx_fsr( _ ) )
-            .WillOnce( Return( random<std::uint16_t>( 1, sn_txbuf_size * 1024 ) ) );
-        EXPECT_CALL( driver, read_sn_tx_wr( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-        EXPECT_CALL( driver, write( _, _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-        EXPECT_CALL( driver, write_sn_tx_wr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-        EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-        EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
-
-        auto const data = random_container<std::vector<std::uint8_t>>( random<std::uint_fast8_t>( 1 ) );
-        EXPECT_FALSE( client.transmit( &*data.begin(), &*data.end() ).is_error() );
-    }
-
-    {
-        auto const error = random<Mock_Error>();
-
-        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
-        EXPECT_CALL( driver, read_sn_ir( _ ) )
-            .WillOnce( Return( static_cast<std::uint8_t>( random<std::uint8_t>() | 0b000'1'0'0'0'0 ) ) );
-        EXPECT_CALL( driver, write_sn_ir( _, _ ) ).WillOnce( Return( error ) );
-
-        auto const data   = random_container<std::vector<std::uint8_t>>();
-        auto const result = client.transmit( &*data.begin(), &*data.end() );
-
-        EXPECT_TRUE( result.is_error() );
-        EXPECT_EQ( result.error(), error );
-    }
-
-    EXPECT_EQ( client.state(), State::CONNECTED );
+    EXPECT_FALSE( client.is_transmitting() );
 }
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::transmit() works properly.
- *
- * TODO
  */
 TEST( transmit, worksProperly )
 {
@@ -2698,31 +2648,44 @@ TEST( transmit, worksProperly )
 
         auto const socket_id = random<Socket_ID>();
 
-        auto client = Client{ State::CONNECTED, driver, socket_id, network_stack };
+        auto client = Client{ State::CONNECTED, driver, socket_id, false, network_stack };
 
-        {
-            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
 
-            auto const data   = std::vector<std::uint8_t>{};
-            auto const result = client.transmit( &*data.begin(), &*data.end() );
+        auto const data   = std::vector<std::uint8_t>{};
+        auto const result = client.transmit( &*data.begin(), &*data.end() );
 
-            EXPECT_TRUE( result.is_value() );
-            EXPECT_EQ( result.value(), &*data.begin() );
+        EXPECT_TRUE( result.is_value() );
+        EXPECT_EQ( result.value(), &*data.begin() );
 
-            EXPECT_EQ( client.state(), State::CONNECTED );
-        }
+        EXPECT_EQ( client.state(), State::CONNECTED );
+        EXPECT_FALSE( client.is_transmitting() );
+    }
 
-        {
-            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+    {
+        auto const in_sequence = InSequence{};
 
-            auto const data   = std::vector<std::uint8_t>{};
-            auto const result = client.transmit( &*data.begin(), &*data.end() );
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
 
-            EXPECT_TRUE( result.is_value() );
-            EXPECT_EQ( result.value(), &*data.begin() );
+        auto const socket_id = random<Socket_ID>();
 
-            EXPECT_EQ( client.state(), State::CONNECTED );
-        }
+        auto client = Client{ State::CONNECTED, driver, socket_id, true, network_stack };
+
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+        EXPECT_CALL( driver, read_sn_ir( socket_id ) )
+            .WillOnce( Return( static_cast<std::uint8_t>( random<std::uint8_t>() | 0b000'1'0'0'0'0 ) ) );
+        EXPECT_CALL( driver, write_sn_ir( socket_id, 0b000'1'0'0'0'0 ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+        auto const data   = std::vector<std::uint8_t>{};
+        auto const result = client.transmit( &*data.begin(), &*data.end() );
+
+        EXPECT_TRUE( result.is_value() );
+        EXPECT_EQ( result.value(), &*data.begin() );
+
+        EXPECT_EQ( client.state(), State::CONNECTED );
+        EXPECT_FALSE( client.is_transmitting() );
     }
 
     {
@@ -2730,8 +2693,15 @@ TEST( transmit, worksProperly )
             std::uint8_t  sn_txbuf_size;
             std::uint16_t sn_tx_fsr_max;
         } const test_cases[]{
-            { 1, 1 * 1024 }, { 2, 2 * 1024 },   { 4, 4 * 1024 },
-            { 8, 8 * 1024 }, { 16, 16 * 1024 },
+            // clang-format off
+
+            {  1,  1 * 1024 },
+            {  2,  2 * 1024 },
+            {  4,  4 * 1024 },
+            {  8,  8 * 1024 },
+            { 16, 16 * 1024 },
+
+            // clang-format on
         };
 
         for ( auto const test_case : test_cases ) {
@@ -2742,67 +2712,33 @@ TEST( transmit, worksProperly )
 
             auto const socket_id = random<Socket_ID>();
 
-            auto client = Client{ State::CONNECTED, driver, socket_id, network_stack };
+            auto client = Client{ State::CONNECTED, driver, socket_id, false, network_stack };
 
-            {
-                auto const data = random_container<std::vector<std::uint8_t>>(
-                    random<std::uint16_t>( 1, test_case.sn_tx_fsr_max ) );
-                auto const sn_tx_fsr = random<std::uint16_t>( data.size(), test_case.sn_tx_fsr_max );
-                auto const sn_tx_wr = random<std::uint16_t>();
+            auto const data = random_container<std::vector<std::uint8_t>>(
+                random<std::uint16_t>( 1, test_case.sn_tx_fsr_max ) );
+            auto const sn_tx_fsr = random<std::uint16_t>( data.size(), test_case.sn_tx_fsr_max );
+            auto const sn_tx_wr = random<std::uint16_t>();
 
-                EXPECT_CALL( driver, read_sn_sr( socket_id ) )
-                    .WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
-                EXPECT_CALL( driver, read_sn_txbuf_size( socket_id ) )
-                    .WillOnce( Return( test_case.sn_txbuf_size ) );
-                EXPECT_CALL( driver, read_sn_tx_fsr( socket_id ) ).WillOnce( Return( sn_tx_fsr ) );
-                EXPECT_CALL( driver, read_sn_tx_wr( socket_id ) ).WillOnce( Return( sn_tx_wr ) );
-                EXPECT_CALL( driver, write( socket_id, sn_tx_wr, data ) )
-                    .WillOnce( Return( Result<Void, Error_Code>{} ) );
-                EXPECT_CALL( driver, write_sn_tx_wr( socket_id, sn_tx_wr + data.size() ) )
-                    .WillOnce( Return( Result<Void, Error_Code>{} ) );
-                EXPECT_CALL( driver, write_sn_cr( socket_id, 0x20 ) )
-                    .WillOnce( Return( Result<Void, Error_Code>{} ) );
-                EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
-                EXPECT_CALL( driver, read_sn_cr( socket_id ) )
-                    .WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+            EXPECT_CALL( driver, read_sn_txbuf_size( socket_id ) )
+                .WillOnce( Return( test_case.sn_txbuf_size ) );
+            EXPECT_CALL( driver, read_sn_tx_fsr( socket_id ) ).WillOnce( Return( sn_tx_fsr ) );
+            EXPECT_CALL( driver, read_sn_tx_wr( socket_id ) ).WillOnce( Return( sn_tx_wr ) );
+            EXPECT_CALL( driver, write( socket_id, sn_tx_wr, data ) )
+                .WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, write_sn_tx_wr( socket_id, sn_tx_wr + data.size() ) )
+                .WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, write_sn_cr( socket_id, 0x20 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
+            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
 
-                auto const result = client.transmit( &*data.begin(), &*data.end() );
+            auto const result = client.transmit( &*data.begin(), &*data.end() );
 
-                EXPECT_TRUE( result.is_value() );
-                EXPECT_EQ( result.value(), &*data.end() );
+            EXPECT_TRUE( result.is_value() );
+            EXPECT_EQ( result.value(), &*data.end() );
 
-                EXPECT_EQ( client.state(), State::CONNECTED );
-            }
-
-            {
-                EXPECT_CALL( driver, read_sn_sr( socket_id ) )
-                    .WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
-                EXPECT_CALL( driver, read_sn_ir( socket_id ) )
-                    .WillOnce( Return( static_cast<std::uint8_t>( random<std::uint8_t>() | 0b000'1'0'0'0'0 ) ) );
-                EXPECT_CALL( driver, write_sn_ir( socket_id, 0b000'1'0'0'0'0 ) )
-                    .WillOnce( Return( Result<Void, Error_Code>{} ) );
-
-                auto const data   = std::vector<std::uint8_t>{};
-                auto const result = client.transmit( &*data.begin(), &*data.end() );
-
-                EXPECT_TRUE( result.is_value() );
-                EXPECT_EQ( result.value(), &*data.begin() );
-
-                EXPECT_EQ( client.state(), State::CONNECTED );
-            }
-
-            {
-                EXPECT_CALL( driver, read_sn_sr( socket_id ) )
-                    .WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
-
-                auto const data   = std::vector<std::uint8_t>{};
-                auto const result = client.transmit( &*data.begin(), &*data.end() );
-
-                EXPECT_TRUE( result.is_value() );
-                EXPECT_EQ( result.value(), &*data.begin() );
-
-                EXPECT_EQ( client.state(), State::CONNECTED );
-            }
+            EXPECT_EQ( client.state(), State::CONNECTED );
+            EXPECT_TRUE( client.is_transmitting() );
         } // for
     }
 
@@ -2811,8 +2747,15 @@ TEST( transmit, worksProperly )
             std::uint8_t  sn_txbuf_size;
             std::uint16_t sn_tx_fsr_max;
         } const test_cases[]{
-            { 1, 1 * 1024 }, { 2, 2 * 1024 },   { 4, 4 * 1024 },
-            { 8, 8 * 1024 }, { 16, 16 * 1024 },
+            // clang-format off
+
+            {  1,  1 * 1024 },
+            {  2,  2 * 1024 },
+            {  4,  4 * 1024 },
+            {  8,  8 * 1024 },
+            { 16, 16 * 1024 },
+
+            // clang-format on
         };
 
         for ( auto const test_case : test_cases ) {
@@ -2823,69 +2766,153 @@ TEST( transmit, worksProperly )
 
             auto const socket_id = random<Socket_ID>();
 
-            auto client = Client{ State::CONNECTED, driver, socket_id, network_stack };
+            auto client = Client{ State::CONNECTED, driver, socket_id, true, network_stack };
 
-            {
-                auto const sn_tx_fsr = random<std::uint16_t>( 1, test_case.sn_tx_fsr_max );
-                auto const data      = random_container<std::vector<std::uint8_t>>(
-                    random<std::uint16_t>( sn_tx_fsr + 1 ) );
-                auto const sn_tx_wr = random<std::uint16_t>();
+            auto const data = random_container<std::vector<std::uint8_t>>(
+                random<std::uint16_t>( 1, test_case.sn_tx_fsr_max ) );
+            auto const sn_tx_fsr = random<std::uint16_t>( data.size(), test_case.sn_tx_fsr_max );
+            auto const sn_tx_wr = random<std::uint16_t>();
 
-                EXPECT_CALL( driver, read_sn_sr( socket_id ) )
-                    .WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
-                EXPECT_CALL( driver, read_sn_txbuf_size( socket_id ) )
-                    .WillOnce( Return( test_case.sn_txbuf_size ) );
-                EXPECT_CALL( driver, read_sn_tx_fsr( socket_id ) ).WillOnce( Return( sn_tx_fsr ) );
-                EXPECT_CALL( driver, read_sn_tx_wr( socket_id ) ).WillOnce( Return( sn_tx_wr ) );
-                EXPECT_CALL(
-                    driver,
-                    write( socket_id, sn_tx_wr, std::vector<std::uint8_t>{ data.begin(), data.begin() + sn_tx_fsr } ) )
-                    .WillOnce( Return( Result<Void, Error_Code>{} ) );
-                EXPECT_CALL( driver, write_sn_tx_wr( socket_id, sn_tx_wr + sn_tx_fsr ) )
-                    .WillOnce( Return( Result<Void, Error_Code>{} ) );
-                EXPECT_CALL( driver, write_sn_cr( socket_id, 0x20 ) )
-                    .WillOnce( Return( Result<Void, Error_Code>{} ) );
-                EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
-                EXPECT_CALL( driver, read_sn_cr( socket_id ) )
-                    .WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+            EXPECT_CALL( driver, read_sn_ir( socket_id ) )
+                .WillOnce( Return( static_cast<std::uint8_t>( random<std::uint8_t>() | 0b000'1'0'0'0'0 ) ) );
+            EXPECT_CALL( driver, write_sn_ir( socket_id, 0b000'1'0'0'0'0 ) )
+                .WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, read_sn_txbuf_size( socket_id ) )
+                .WillOnce( Return( test_case.sn_txbuf_size ) );
+            EXPECT_CALL( driver, read_sn_tx_fsr( socket_id ) ).WillOnce( Return( sn_tx_fsr ) );
+            EXPECT_CALL( driver, read_sn_tx_wr( socket_id ) ).WillOnce( Return( sn_tx_wr ) );
+            EXPECT_CALL( driver, write( socket_id, sn_tx_wr, data ) )
+                .WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, write_sn_tx_wr( socket_id, sn_tx_wr + data.size() ) )
+                .WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, write_sn_cr( socket_id, 0x20 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
+            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
 
-                auto const result = client.transmit( &*data.begin(), &*data.end() );
+            auto const result = client.transmit( &*data.begin(), &*data.end() );
 
-                EXPECT_TRUE( result.is_value() );
-                EXPECT_EQ( result.value(), &*( data.begin() + sn_tx_fsr ) );
+            EXPECT_TRUE( result.is_value() );
+            EXPECT_EQ( result.value(), &*data.end() );
 
-                EXPECT_EQ( client.state(), State::CONNECTED );
-            }
+            EXPECT_EQ( client.state(), State::CONNECTED );
+            EXPECT_TRUE( client.is_transmitting() );
+        } // for
+    }
 
-            {
-                EXPECT_CALL( driver, read_sn_sr( socket_id ) )
-                    .WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
-                EXPECT_CALL( driver, read_sn_ir( socket_id ) )
-                    .WillOnce( Return( static_cast<std::uint8_t>( random<std::uint8_t>() | 0b000'1'0'0'0'0 ) ) );
-                EXPECT_CALL( driver, write_sn_ir( socket_id, 0b000'1'0'0'0'0 ) )
-                    .WillOnce( Return( Result<Void, Error_Code>{} ) );
+    {
+        struct {
+            std::uint8_t  sn_txbuf_size;
+            std::uint16_t sn_tx_fsr_max;
+        } const test_cases[]{
+            // clang-format off
 
-                auto const data   = std::vector<std::uint8_t>{};
-                auto const result = client.transmit( &*data.begin(), &*data.end() );
+            {  1,  1 * 1024 },
+            {  2,  2 * 1024 },
+            {  4,  4 * 1024 },
+            {  8,  8 * 1024 },
+            { 16, 16 * 1024 },
 
-                EXPECT_TRUE( result.is_value() );
-                EXPECT_EQ( result.value(), &*data.begin() );
+            // clang-format on
+        };
 
-                EXPECT_EQ( client.state(), State::CONNECTED );
-            }
+        for ( auto const test_case : test_cases ) {
+            auto const in_sequence = InSequence{};
 
-            {
-                EXPECT_CALL( driver, read_sn_sr( socket_id ) )
-                    .WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+            auto driver        = Mock_Driver{};
+            auto network_stack = Mock_Network_Stack{};
 
-                auto const data   = std::vector<std::uint8_t>{};
-                auto const result = client.transmit( &*data.begin(), &*data.end() );
+            auto const socket_id = random<Socket_ID>();
 
-                EXPECT_TRUE( result.is_value() );
-                EXPECT_EQ( result.value(), &*data.begin() );
+            auto client = Client{ State::CONNECTED, driver, socket_id, false, network_stack };
 
-                EXPECT_EQ( client.state(), State::CONNECTED );
-            }
+            auto const sn_tx_fsr = random<std::uint16_t>( 1, test_case.sn_tx_fsr_max );
+            auto const data      = random_container<std::vector<std::uint8_t>>(
+                random<std::uint16_t>( sn_tx_fsr + 1 ) );
+            auto const sn_tx_wr = random<std::uint16_t>();
+
+            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+            EXPECT_CALL( driver, read_sn_txbuf_size( socket_id ) )
+                .WillOnce( Return( test_case.sn_txbuf_size ) );
+            EXPECT_CALL( driver, read_sn_tx_fsr( socket_id ) ).WillOnce( Return( sn_tx_fsr ) );
+            EXPECT_CALL( driver, read_sn_tx_wr( socket_id ) ).WillOnce( Return( sn_tx_wr ) );
+            EXPECT_CALL(
+                driver,
+                write( socket_id, sn_tx_wr, std::vector<std::uint8_t>{ data.begin(), data.begin() + sn_tx_fsr } ) )
+                .WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, write_sn_tx_wr( socket_id, sn_tx_wr + sn_tx_fsr ) )
+                .WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, write_sn_cr( socket_id, 0x20 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
+            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+
+            auto const result = client.transmit( &*data.begin(), &*data.end() );
+
+            EXPECT_TRUE( result.is_value() );
+            EXPECT_EQ( result.value(), &*( data.begin() + sn_tx_fsr ) );
+
+            EXPECT_EQ( client.state(), State::CONNECTED );
+            EXPECT_TRUE( client.is_transmitting() );
+        } // for
+    }
+
+    {
+        struct {
+            std::uint8_t  sn_txbuf_size;
+            std::uint16_t sn_tx_fsr_max;
+        } const test_cases[]{
+            // clang-format off
+
+            {  1,  1 * 1024 },
+            {  2,  2 * 1024 },
+            {  4,  4 * 1024 },
+            {  8,  8 * 1024 },
+            { 16, 16 * 1024 },
+
+            // clang-format on
+        };
+
+        for ( auto const test_case : test_cases ) {
+            auto const in_sequence = InSequence{};
+
+            auto driver        = Mock_Driver{};
+            auto network_stack = Mock_Network_Stack{};
+
+            auto const socket_id = random<Socket_ID>();
+
+            auto client = Client{ State::CONNECTED, driver, socket_id, true, network_stack };
+
+            auto const sn_tx_fsr = random<std::uint16_t>( 1, test_case.sn_tx_fsr_max );
+            auto const data      = random_container<std::vector<std::uint8_t>>(
+                random<std::uint16_t>( sn_tx_fsr + 1 ) );
+            auto const sn_tx_wr = random<std::uint16_t>();
+
+            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+            EXPECT_CALL( driver, read_sn_ir( socket_id ) )
+                .WillOnce( Return( static_cast<std::uint8_t>( random<std::uint8_t>() | 0b000'1'0'0'0'0 ) ) );
+            EXPECT_CALL( driver, write_sn_ir( socket_id, 0b000'1'0'0'0'0 ) )
+                .WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, read_sn_txbuf_size( socket_id ) )
+                .WillOnce( Return( test_case.sn_txbuf_size ) );
+            EXPECT_CALL( driver, read_sn_tx_fsr( socket_id ) ).WillOnce( Return( sn_tx_fsr ) );
+            EXPECT_CALL( driver, read_sn_tx_wr( socket_id ) ).WillOnce( Return( sn_tx_wr ) );
+            EXPECT_CALL(
+                driver,
+                write( socket_id, sn_tx_wr, std::vector<std::uint8_t>{ data.begin(), data.begin() + sn_tx_fsr } ) )
+                .WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, write_sn_tx_wr( socket_id, sn_tx_wr + sn_tx_fsr ) )
+                .WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, write_sn_cr( socket_id, 0x20 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
+            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+
+            auto const result = client.transmit( &*data.begin(), &*data.end() );
+
+            EXPECT_TRUE( result.is_value() );
+            EXPECT_EQ( result.value(), &*( data.begin() + sn_tx_fsr ) );
+
+            EXPECT_EQ( client.state(), State::CONNECTED );
+            EXPECT_TRUE( client.is_transmitting() );
         } // for
     }
 }

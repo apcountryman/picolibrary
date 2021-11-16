@@ -111,6 +111,28 @@ class Client {
     }
 #endif // PICOLIBRARY_ENABLE_UNIT_TESTING
 
+#ifdef PICOLIBRARY_ENABLE_UNIT_TESTING
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] state The socket's initial state.
+     * \param[in] driver The driver for the W5500 the socket is associated with.
+     * \param[in] socket_id The socket's socket ID.
+     * \param[in] is_transmitting The socket's initial data transmission in progress
+     *            status.
+     * \param[in] network_stack The network stack the socket is associated with.
+     */
+    constexpr Client( State state, Driver & driver, Socket_ID socket_id, bool is_transmitting, Network_Stack & network_stack ) noexcept
+        :
+        m_state{ state },
+        m_driver{ &driver },
+        m_socket_id{ socket_id },
+        m_is_transmitting{ is_transmitting },
+        m_network_stack{ &network_stack }
+    {
+    }
+#endif // PICOLIBRARY_ENABLE_UNIT_TESTING
+
     /**
      * \brief Constructor.
      *
@@ -120,7 +142,7 @@ class Client {
         m_state{ source.m_state },
         m_driver{ source.m_driver },
         m_socket_id{ source.m_socket_id },
-        m_transmitting{ source.m_transmitting },
+        m_is_transmitting{ source.m_is_transmitting },
         m_network_stack{ source.m_network_stack }
     {
         source.m_state         = State::UNINITIALIZED;
@@ -145,11 +167,11 @@ class Client {
     constexpr auto & operator=( Client && expression ) noexcept
     {
         if ( &expression != this ) {
-            m_state         = expression.m_state;
-            m_driver        = expression.m_driver;
-            m_socket_id     = expression.m_socket_id;
-            m_transmitting  = expression.m_transmitting;
-            m_network_stack = expression.m_network_stack;
+            m_state           = expression.m_state;
+            m_driver          = expression.m_driver;
+            m_socket_id       = expression.m_socket_id;
+            m_is_transmitting = expression.m_is_transmitting;
+            m_network_stack   = expression.m_network_stack;
 
             expression.m_state         = State::UNINITIALIZED;
             expression.m_driver        = nullptr;
@@ -170,6 +192,19 @@ class Client {
     constexpr auto state() const noexcept
     {
         return m_state;
+    }
+#endif // PICOLIBRARY_ENABLE_UNIT_TESTING
+
+#ifdef PICOLIBRARY_ENABLE_UNIT_TESTING
+    /**
+     * \brief Check if data transmission is in progress.
+     *
+     * \return true if data transmission is in progress.
+     * \return false if data transmission is not in progress.
+     */
+    constexpr auto is_transmitting() const noexcept
+    {
+        return m_is_transmitting;
     }
 #endif // PICOLIBRARY_ENABLE_UNIT_TESTING
 
@@ -839,7 +874,7 @@ class Client {
             } // switch
         }
 
-        if ( m_transmitting ) {
+        if ( m_is_transmitting ) {
             {
                 {
                     auto result = m_driver->read_sn_ir( m_socket_id );
@@ -859,7 +894,7 @@ class Client {
                     } // if
                 }
 
-                m_transmitting = false;
+                m_is_transmitting = false;
             }
         } // if
 
@@ -947,7 +982,7 @@ class Client {
             } // if
 
             if ( not result.value() ) {
-                m_transmitting = true;
+                m_is_transmitting = true;
 
                 return end;
             } // if
@@ -1029,9 +1064,9 @@ class Client {
     Socket_ID m_socket_id{};
 
     /**
-     * \brief The socket's transmitting flag.
+     * \brief The socket's data transmission in progress status.
      */
-    bool m_transmitting{};
+    bool m_is_transmitting{};
 
     /**
      * \brief The network stack the socket is associated with.
