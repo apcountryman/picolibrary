@@ -389,6 +389,125 @@ TEST( interruptContext, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::clear_interrupts() properly
+ *        handles an SN_IR register write error.
+ */
+TEST( clearInterrupts, snirWriteError )
+{
+    {
+        struct {
+            bool is_transmitting;
+        } const test_cases[]{
+            { false },
+            { true },
+        };
+
+        for ( auto const test_case : test_cases ) {
+            auto driver        = Mock_Driver{};
+            auto network_stack = Mock_Network_Stack{};
+
+            auto client = Client{ driver, random<Socket_ID>(), test_case.is_transmitting, network_stack };
+
+            auto const error = random<Mock_Error>();
+
+            EXPECT_CALL( driver, write_sn_ir( _, _ ) ).WillOnce( Return( error ) );
+
+            auto const result = client.clear_interrupts();
+
+            EXPECT_TRUE( result.is_error() );
+            EXPECT_EQ( result.error(), error );
+
+            EXPECT_EQ( client.is_transmitting(), test_case.is_transmitting );
+        } // for
+    }
+
+    {
+        struct {
+            bool is_transmitting;
+        } const test_cases[]{
+            { false },
+            { true },
+        };
+
+        for ( auto const test_case : test_cases ) {
+            auto driver        = Mock_Driver{};
+            auto network_stack = Mock_Network_Stack{};
+
+            auto client = Client{ driver, random<Socket_ID>(), test_case.is_transmitting, network_stack };
+
+            auto const error = random<Mock_Error>();
+
+            EXPECT_CALL( driver, write_sn_ir( _, _ ) ).WillOnce( Return( error ) );
+
+            auto const result = client.clear_interrupts( random<std::uint8_t>() );
+
+            EXPECT_TRUE( result.is_error() );
+            EXPECT_EQ( result.error(), error );
+
+            EXPECT_EQ( client.is_transmitting(), test_case.is_transmitting );
+        } // for
+    }
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::clear_interrupts() works
+ *        properly.
+ */
+TEST( clearInterrupts, worksProperly )
+{
+    {
+        struct {
+            bool is_transmitting;
+        } const test_cases[]{
+            { false },
+            { true },
+        };
+
+        for ( auto const test_case : test_cases ) {
+            auto driver        = Mock_Driver{};
+            auto network_stack = Mock_Network_Stack{};
+
+            auto const socket_id = random<Socket_ID>();
+
+            auto client = Client{ driver, socket_id, test_case.is_transmitting, network_stack };
+
+            EXPECT_CALL( driver, write_sn_ir( socket_id, 0b000'1'1'1'1'1 ) )
+                .WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+            EXPECT_FALSE( client.clear_interrupts().is_error() );
+
+            EXPECT_FALSE( client.is_transmitting() );
+        } // for
+    }
+
+    {
+        struct {
+            bool is_transmitting;
+        } const test_cases[]{
+            { false },
+            { true },
+        };
+
+        for ( auto const test_case : test_cases ) {
+            auto driver        = Mock_Driver{};
+            auto network_stack = Mock_Network_Stack{};
+
+            auto const socket_id = random<Socket_ID>();
+
+            auto client = Client{ driver, socket_id, test_case.is_transmitting, network_stack };
+
+            auto const mask = random<std::uint8_t>();
+
+            EXPECT_CALL( driver, write_sn_ir( socket_id, mask ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+            EXPECT_FALSE( client.clear_interrupts( mask ).is_error() );
+
+            EXPECT_EQ( client.is_transmitting(), test_case.is_transmitting and not( mask & 0b000'1'0'0'0'0 ) );
+        } // for
+    }
+}
+
+/**
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::configure_no_delayed_ack()
  *        properly handles an SN_MR register read error.
  */

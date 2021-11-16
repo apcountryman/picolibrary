@@ -113,6 +113,26 @@ class Client {
     /**
      * \brief Constructor.
      *
+     * \param[in] driver The driver for the W5500 the socket is associated with.
+     * \param[in] socket_id The socket's socket ID.
+     * \param[in] is_transmitting The socket's initial data transmission in progress
+     *            status.
+     * \param[in] network_stack The network stack the socket is associated with.
+     */
+    constexpr Client( Driver & driver, Socket_ID socket_id, bool is_transmitting, Network_Stack & network_stack ) noexcept
+        :
+        m_driver{ &driver },
+        m_socket_id{ socket_id },
+        m_is_transmitting{ is_transmitting },
+        m_network_stack{ &network_stack }
+    {
+    }
+#endif // PICOLIBRARY_ENABLE_UNIT_TESTING
+
+#ifdef PICOLIBRARY_ENABLE_UNIT_TESTING
+    /**
+     * \brief Constructor.
+     *
      * \param[in] state The socket's initial state.
      * \param[in] driver The driver for the W5500 the socket is associated with.
      * \param[in] socket_id The socket's socket ID.
@@ -282,6 +302,29 @@ class Client {
     auto interrupt_context() const noexcept
     {
         return m_driver->read_sn_ir( m_socket_id );
+    }
+
+    /**
+     * \brief Clear interrupts.
+     *
+     * \param[in] mask The mask identifying the interrupts to clear.
+     *
+     * \return Nothing if clearing interrupts succeeded.
+     * \return An error code if clearing interrupts failed.
+     */
+    auto clear_interrupts( std::uint8_t mask = Socket_Interrupt::ALL ) noexcept
+        -> Result<Void, Error_Code>
+    {
+        auto result = m_driver->write_sn_ir( m_socket_id, mask );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        if ( mask & Socket_Interrupt::DATA_SENT ) {
+            m_is_transmitting = false;
+        } // if
+
+        return {};
     }
 
     /**
