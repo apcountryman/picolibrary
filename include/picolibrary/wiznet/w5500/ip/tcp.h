@@ -967,6 +967,8 @@ class Client {
      */
     auto transmit_keepalive() noexcept -> Result<Void, Error_Code>
     {
+        // #lizard forgives the length
+
         switch ( m_state ) {
             case State::CONNECTED: break;
             default: return Generic_Error::NOT_CONNECTED;
