@@ -1084,6 +1084,54 @@ class Client {
         }     // for
     }
 
+    /**
+     * \brief Get the amount of data that is immediately available to be received from the
+     *        remote endpoint.
+     *
+     * \return The amount of data that is immediately available to be received from the
+     *         remote endpoint if getting the amount of data that is immediately available
+     *         to be received from the remote endpoint succeeded.
+     * \return picolibrary::WIZnet::W5500::IP::Network_Stack::nonresponsive_device_error()
+     *         if the W5500 is nonresponsive.
+     * \return An error code if getting the amount of data that is immediately available
+     *         to be received from the remote endpoint failed for any other reason.
+     */
+    auto available() const noexcept -> Result<Size, Error_Code>
+    {
+        Size buffer_size;
+        {
+            auto result = m_driver->read_sn_rxbuf_size( m_socket_id );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            switch ( static_cast<Buffer_Size>( result.value() ) ) {
+                case Buffer_Size::_1_KIB: buffer_size = 1 * 1024; break;
+                case Buffer_Size::_2_KIB: buffer_size = 2 * 1024; break;
+                case Buffer_Size::_4_KIB: buffer_size = 4 * 1024; break;
+                case Buffer_Size::_8_KIB: buffer_size = 8 * 1024; break;
+                case Buffer_Size::_16_KIB: buffer_size = 16 * 1024; break;
+                default: return m_network_stack->nonresponsive_device_error();
+            } // switch
+        }
+
+        Size received_size;
+        {
+            auto result = m_driver->read_sn_rx_rsr( m_socket_id );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            received_size = result.value();
+        }
+
+        if ( received_size > buffer_size ) {
+            return m_network_stack->nonresponsive_device_error();
+        } // if
+
+        return received_size;
+    }
+
   private:
     /**
      * \brief The socket's state.
