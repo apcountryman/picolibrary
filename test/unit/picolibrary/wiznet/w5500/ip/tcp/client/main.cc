@@ -623,12 +623,8 @@ TEST( noDelayedAckConfiguration, worksProperly )
         std::uint8_t   sn_mr_nd;
         No_Delayed_ACK no_delayed_ack_configuration;
     } const test_cases[]{
-        // clang-format off
-
         { 0b0'0'0'0'0000, No_Delayed_ACK::DISABLED },
-        { 0b0'0'1'0'0000, No_Delayed_ACK::ENABLED  },
-
-        // clang-format on
+        { 0b0'0'1'0'0000, No_Delayed_ACK::ENABLED },
     };
 
     for ( auto const test_case : test_cases ) {
@@ -1230,10 +1226,10 @@ TEST( bind, snsrReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::bind() properly handles a
- *        nonresponsive device error.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::bind() properly handles an
+ *        invalid SN_SR register value.
  */
-TEST( bind, nonresponsiveDeviceError )
+TEST( bind, invalidSNSRValue )
 {
     struct {
         std::uint8_t sn_sr;
@@ -1707,19 +1703,23 @@ TEST( connect, connectionTimeout )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::connect() properly handles a
- *        nonresponsive device error.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::connect() properly handles
+ *        an invalid SN_SR register value.
  */
-TEST( connect, nonresponsiveDeviceError )
+TEST( connect, invalidSNSRValue )
 {
     struct {
         std::uint8_t sn_sr;
     } const test_cases[]{
+        // clang-format off
+
         { random<std::uint8_t>( 0x01, 0x12 ) },
-        { 0x14 },
-        { 0x16 },
+        {                       0x14         },
+        {                       0x16         },
         { random<std::uint8_t>( 0x18, 0x1B ) },
-        { random<std::uint8_t>( 0x1D ) },
+        { random<std::uint8_t>( 0x1D       ) },
+
+        // clang-format on
     };
 
     for ( auto const test_case : test_cases ) {
@@ -1854,16 +1854,20 @@ TEST( isConnected, snsrReadError )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::is_connected() properly
- *        handles a nonresponsive device error.
+ *        handles an invalid SN_SR register value.
  */
-TEST( isConnected, nonresponsiveDeviceError )
+TEST( isConnected, invalidSNSRValue )
 {
     struct {
         std::uint8_t sn_sr;
     } const test_cases[]{
+        // clang-format off
+
         { random<std::uint8_t>( 0x01, 0x12 ) },
-        { 0x19 },
-        { random<std::uint8_t>( 0x1E ) },
+        {                       0x19         },
+        { random<std::uint8_t>( 0x1E       ) },
+
+        // clang-format on
     };
 
     for ( auto const test_case : test_cases ) {
@@ -2091,9 +2095,9 @@ TEST( outstanding, sntxbufsizeReadError )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::outstanding() properly
- *        handles an invalid SN_TXBUF_SIZE register value nonresponsive device error.
+ *        handles an invalid SN_TXBUF_SIZE register value.
  */
-TEST( outstanding, sntxbufsizeNonresponsiveDeviceError )
+TEST( outstanding, invalidSNTXBUFSIZEValue )
 {
     struct {
         std::uint8_t sn_txbuf_size;
@@ -2148,9 +2152,9 @@ TEST( outstanding, sntxfsrReadError )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::outstanding() properly
- *        handles an invalid SN_TX_FSR register value nonresponsive device error.
+ *        handles an invalid SN_TX_FSR register value.
  */
-TEST( outstanding, sntxfsrNonresponsiveDeviceError )
+TEST( outstanding, invalidSNTXFSRValue )
 {
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
@@ -2182,10 +2186,10 @@ TEST( outstanding, worksProperly )
     } const test_cases[]{
         // clang-format off
 
-        { 1 },
-        { 2 },
-        { 4 },
-        { 8 },
+        {  1 },
+        {  2 },
+        {  4 },
+        {  8 },
         { 16 },
 
         // clang-format on
@@ -2288,9 +2292,13 @@ TEST( transmit, invalidSNSRValue )
     struct {
         std::uint8_t sn_sr;
     } const test_cases[]{
+        // clang-format off
+
         { random<std::uint8_t>( 0x01, 0x16 ) },
         { random<std::uint8_t>( 0x18, 0x1B ) },
-        { random<std::uint8_t>( 0x1D ) },
+        { random<std::uint8_t>( 0x1D       ) },
+
+        // clang-format on
     };
 
     for ( auto const test_case : test_cases ) {
@@ -2466,11 +2474,15 @@ TEST( transmit, invalidSNTXBUFSIZEValue )
     struct {
         std::uint8_t sn_txbuf_size;
     } const test_cases[]{
-        { 0 },
-        { 3 },
-        { random<std::uint8_t>( 5, 7 ) },
-        { random<std::uint8_t>( 9, 15 ) },
-        { random<std::uint8_t>( 17 ) },
+        // clang-format off
+
+        {                        0       },
+        {                        3       },
+        { random<std::uint8_t>(  5,  7 ) },
+        { random<std::uint8_t>(  9, 15 ) },
+        { random<std::uint8_t>( 17     ) },
+
+        // clang-format on
     };
 
     for ( auto const test_case : test_cases ) {
@@ -2607,7 +2619,6 @@ TEST( transmit, sntxwrReadError )
     auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), false, network_stack };
 
     auto const sn_txbuf_size = static_cast<std::uint8_t>( 1 << random<std::uint_fast8_t>( 0, 4 ) );
-
     auto const error = random<Mock_Error>();
 
     EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
@@ -2637,7 +2648,6 @@ TEST( transmit, transmitBufferWriteError )
     auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), false, network_stack };
 
     auto const sn_txbuf_size = static_cast<std::uint8_t>( 1 << random<std::uint_fast8_t>( 0, 4 ) );
-
     auto const error = random<Mock_Error>();
 
     EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
@@ -2668,7 +2678,6 @@ TEST( transmit, sntxwrWriteError )
     auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), false, network_stack };
 
     auto const sn_txbuf_size = static_cast<std::uint8_t>( 1 << random<std::uint_fast8_t>( 0, 4 ) );
-
     auto const error = random<Mock_Error>();
 
     EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
@@ -2700,7 +2709,6 @@ TEST( transmit, sncrWriteError )
     auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), false, network_stack };
 
     auto const sn_txbuf_size = static_cast<std::uint8_t>( 1 << random<std::uint_fast8_t>( 0, 4 ) );
-
     auto const error = random<Mock_Error>();
 
     EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
@@ -2733,7 +2741,6 @@ TEST( transmit, sncrReadError )
     auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), false, network_stack };
 
     auto const sn_txbuf_size = static_cast<std::uint8_t>( 1 << random<std::uint_fast8_t>( 0, 4 ) );
-
     auto const error = random<Mock_Error>();
 
     EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
@@ -3257,18 +3264,22 @@ TEST( available, snrxbufsizeReadError )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::available() properly handles
- *        an invalid SN_RXBUF_SIZE register value nonresponsive device error.
+ *        an invalid SN_RXBUF_SIZE register value.
  */
-TEST( available, snrxbufsizeNonresponsiveDeviceError )
+TEST( available, invalidSNRXBUFSIZEValue )
 {
     struct {
         std::uint8_t sn_rxbuf_size;
     } const test_cases[]{
-        { 0 },
-        { 3 },
-        { random<std::uint8_t>( 5, 7 ) },
-        { random<std::uint8_t>( 9, 15 ) },
-        { random<std::uint8_t>( 17 ) },
+        // clang-format off
+
+        {                        0       },
+        {                        3       },
+        { random<std::uint8_t>(  5,  7 ) },
+        { random<std::uint8_t>(  9, 15 ) },
+        { random<std::uint8_t>( 17     ) },
+
+        // clang-format on
     };
 
     for ( auto const test_case : test_cases ) {
@@ -3314,9 +3325,9 @@ TEST( available, snrxrsrReadError )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::available() properly handles
- *        an invalid SN_RX_RSR register value nonresponsive device error.
+ *        an invalid SN_RX_RSR register value.
  */
-TEST( available, snrxrsrNonresponsiveDeviceError )
+TEST( available, invalidSNRXRSRValue )
 {
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
@@ -3347,10 +3358,10 @@ TEST( available, worksProperly )
     } const test_cases[]{
         // clang-format off
 
-        { 1 },
-        { 2 },
-        { 4 },
-        { 8 },
+        {  1 },
+        {  2 },
+        {  4 },
+        {  8 },
         { 16 },
 
         // clang-format on
