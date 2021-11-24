@@ -921,8 +921,6 @@ TEST( bind, invalidState )
         { State::BOUND         },
         { State::CONNECTING    },
         { State::CONNECTED     },
-        { State::CLOSE_WAIT    },
-        { State::CLOSED        },
 
         // clang-format on
     };
@@ -1505,8 +1503,6 @@ TEST( connect, invalidState )
         { State::UNINITIALIZED },
         { State::INITIALIZED   },
         { State::CONNECTED     },
-        { State::CLOSE_WAIT    },
-        { State::CLOSED        },
 
         // clang-format on
     };
@@ -1699,7 +1695,7 @@ TEST( connect, connectionTimeout )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::OPERATION_TIMEOUT );
 
-    EXPECT_EQ( client.state(), State::CLOSED );
+    EXPECT_EQ( client.state(), State::CONNECTING );
 }
 
 /**
@@ -2231,8 +2227,6 @@ TEST( transmit, invalidState )
         { State::INITIALIZED   },
         { State::BOUND         },
         { State::CONNECTING,   },
-        { State::CLOSE_WAIT    },
-        { State::CLOSED        },
 
         // clang-format on
     };
@@ -2295,8 +2289,8 @@ TEST( transmit, invalidSNSRValue )
         // clang-format off
 
         { random<std::uint8_t>( 0x01, 0x16 ) },
-        { random<std::uint8_t>( 0x18, 0x1B ) },
-        { random<std::uint8_t>( 0x1D       ) },
+        {                       0x19         },
+        { random<std::uint8_t>( 0x1E       ) },
 
         // clang-format on
     };
@@ -2332,11 +2326,19 @@ TEST( transmit, invalidSNSRValue )
 TEST( transmit, connectionLost )
 {
     struct {
-        std::uint8_t sn_sr;
-        State        end_state;
+        std::uint8_t  sn_sr;
+        Generic_Error error;
     } const test_cases[]{
-        { 0x00, State::CLOSED },
-        { 0x1C, State::CLOSE_WAIT },
+        // clang-format off
+
+        { 0x00, Generic_Error::NOT_CONNECTED },
+        { 0x18, Generic_Error::WOULD_BLOCK   },
+        { 0x1A, Generic_Error::NOT_CONNECTED },
+        { 0x1B, Generic_Error::NOT_CONNECTED },
+        { 0x1C, Generic_Error::NOT_CONNECTED },
+        { 0x1D, Generic_Error::NOT_CONNECTED },
+
+        // clang-format on
     };
 
     for ( auto const test_case : test_cases ) {
@@ -2353,9 +2355,9 @@ TEST( transmit, connectionLost )
         auto const result = client.transmit( &*data.begin(), &*data.end() );
 
         EXPECT_TRUE( result.is_error() );
-        EXPECT_EQ( result.error(), Generic_Error::NOT_CONNECTED );
+        EXPECT_EQ( result.error(), test_case.error );
 
-        EXPECT_EQ( client.state(), test_case.end_state );
+        EXPECT_EQ( client.state(), State::CONNECTED );
         EXPECT_EQ( client.is_transmitting(), is_transmitting );
     } // for
 }
@@ -3060,8 +3062,6 @@ TEST( transmitKeepalive, invalidState )
         { State::INITIALIZED   },
         { State::BOUND         },
         { State::CONNECTING,   },
-        { State::CLOSE_WAIT    },
-        { State::CLOSED        },
 
         // clang-format on
     };
@@ -3114,8 +3114,8 @@ TEST( transmitKeepalive, invalidSNSRValue )
         std::uint8_t sn_sr;
     } const test_cases[]{
         { random<std::uint8_t>( 0x01, 0x16 ) },
-        { random<std::uint8_t>( 0x18, 0x1B ) },
-        { random<std::uint8_t>( 0x1D ) },
+        { 0x19 },
+        { random<std::uint8_t>( 0x1E ) },
     };
 
     for ( auto const test_case : test_cases ) {
@@ -3145,11 +3145,19 @@ TEST( transmitKeepalive, invalidSNSRValue )
 TEST( transmitKeepalive, connectionLost )
 {
     struct {
-        std::uint8_t sn_sr;
-        State        end_state;
+        std::uint8_t  sn_sr;
+        Generic_Error error;
     } const test_cases[]{
-        { 0x00, State::CLOSED },
-        { 0x1C, State::CLOSE_WAIT },
+        // clang-format off
+
+        { 0x00, Generic_Error::NOT_CONNECTED },
+        { 0x18, Generic_Error::WOULD_BLOCK   },
+        { 0x1A, Generic_Error::NOT_CONNECTED },
+        { 0x1B, Generic_Error::NOT_CONNECTED },
+        { 0x1C, Generic_Error::NOT_CONNECTED },
+        { 0x1D, Generic_Error::NOT_CONNECTED },
+
+        // clang-format on
     };
 
     for ( auto const test_case : test_cases ) {
@@ -3163,9 +3171,9 @@ TEST( transmitKeepalive, connectionLost )
         auto const result = client.transmit_keepalive();
 
         EXPECT_TRUE( result.is_error() );
-        EXPECT_EQ( result.error(), Generic_Error::NOT_CONNECTED );
+        EXPECT_EQ( result.error(), test_case.error );
 
-        EXPECT_EQ( client.state(), test_case.end_state );
+        EXPECT_EQ( client.state(), State::CONNECTED );
     } // for
 }
 

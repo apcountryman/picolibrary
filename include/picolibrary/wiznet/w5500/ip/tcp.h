@@ -66,8 +66,6 @@ class Client {
         BOUND,         ///< Bound.
         CONNECTING,    ///< Connecting.
         CONNECTED,     ///< Connected.
-        CLOSE_WAIT,    ///< Close wait.
-        CLOSED,        ///< Closed.
     };
 
     /**
@@ -689,9 +687,7 @@ class Client {
             } // if
 
             switch ( static_cast<Socket_Status>( result.value() ) ) {
-                case Socket_Status::CLOSED:
-                    m_state = State::CLOSED;
-                    return Generic_Error::OPERATION_TIMEOUT;
+                case Socket_Status::CLOSED: return Generic_Error::OPERATION_TIMEOUT;
                 case Socket_Status::ESTABLISHED: [[fallthrough]];
                 case Socket_Status::CLOSE_WAIT: m_state = State::CONNECTED; return {};
                 case Socket_Status::OPENED_TCP: [[fallthrough]];
@@ -889,13 +885,13 @@ class Client {
             } // if
 
             switch ( static_cast<Socket_Status>( result.value() ) ) {
-                case Socket_Status::CLOSED:
-                    m_state = State::CLOSED;
-                    return Generic_Error::NOT_CONNECTED;
+                case Socket_Status::CLOSED: return Generic_Error::NOT_CONNECTED;
                 case Socket_Status::ESTABLISHED: break;
-                case Socket_Status::CLOSE_WAIT:
-                    m_state = State::CLOSE_WAIT;
-                    return Generic_Error::NOT_CONNECTED;
+                case Socket_Status::FIN_WAIT: return Generic_Error::WOULD_BLOCK;
+                case Socket_Status::CLOSE_WAIT: return Generic_Error::NOT_CONNECTED;
+                case Socket_Status::CLOSING: return Generic_Error::NOT_CONNECTED;
+                case Socket_Status::TIME_WAIT: return Generic_Error::NOT_CONNECTED;
+                case Socket_Status::LAST_ACK: return Generic_Error::NOT_CONNECTED;
                 default: return m_network_stack->nonresponsive_device_error();
             } // switch
         }
@@ -1053,13 +1049,13 @@ class Client {
             } // if
 
             switch ( static_cast<Socket_Status>( result.value() ) ) {
-                case Socket_Status::CLOSED:
-                    m_state = State::CLOSED;
-                    return Generic_Error::NOT_CONNECTED;
+                case Socket_Status::CLOSED: return Generic_Error::NOT_CONNECTED;
                 case Socket_Status::ESTABLISHED: break;
-                case Socket_Status::CLOSE_WAIT:
-                    m_state = State::CLOSE_WAIT;
-                    return Generic_Error::NOT_CONNECTED;
+                case Socket_Status::FIN_WAIT: return Generic_Error::WOULD_BLOCK;
+                case Socket_Status::CLOSE_WAIT: return Generic_Error::NOT_CONNECTED;
+                case Socket_Status::CLOSING: return Generic_Error::NOT_CONNECTED;
+                case Socket_Status::TIME_WAIT: return Generic_Error::NOT_CONNECTED;
+                case Socket_Status::LAST_ACK: return Generic_Error::NOT_CONNECTED;
                 default: return m_network_stack->nonresponsive_device_error();
             } // switch
         }
