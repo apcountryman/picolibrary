@@ -1265,6 +1265,8 @@ class Client {
      */
     auto shutdown() noexcept -> Result<Void, Error_Code>
     {
+        // #lizard forgives the length
+
         if ( m_state != State::CONNECTED ) {
             return Generic_Error::NOT_CONNECTED;
         } // if
