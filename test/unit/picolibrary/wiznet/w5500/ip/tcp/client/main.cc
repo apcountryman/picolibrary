@@ -1128,7 +1128,7 @@ TEST( bind, snportWriteError )
 
     EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( static_cast<std::uint16_t>( 0 ) ) );
+    EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( std::uint16_t{ 0 } ) );
     EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( error ) );
 
     auto const result = client.bind( random<Port>( 1 ) );
@@ -1154,7 +1154,7 @@ TEST( bind, sncrWriteError )
 
     EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( static_cast<std::uint16_t>( 0 ) ) );
+    EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( std::uint16_t{ 0 } ) );
     EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( error ) );
 
@@ -1181,7 +1181,7 @@ TEST( bind, sncrReadError )
 
     EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( static_cast<std::uint16_t>( 0 ) ) );
+    EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( std::uint16_t{ 0 } ) );
     EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( error ) );
@@ -1209,10 +1209,10 @@ TEST( bind, snsrReadError )
 
     EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
-    EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( static_cast<std::uint16_t>( 0 ) ) );
+    EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( std::uint16_t{ 0 } ) );
     EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( uint8_t{ 0x00 } ) );
     EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( error ) );
 
     auto const result = client.bind( random<Port>( 1 ) );
@@ -1246,10 +1246,10 @@ TEST( bind, invalidSNSRValue )
 
         EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
         EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
-        EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( static_cast<std::uint16_t>( 0 ) ) );
+        EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( uint16_t{ 0 } ) );
         EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
         EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
-        EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+        EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( uint8_t{ 0x00 } ) );
         EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( test_case.sn_sr ) );
         EXPECT_CALL( network_stack, nonresponsive_device_error() ).WillOnce( Return( error ) );
 
@@ -1285,8 +1285,7 @@ TEST( bind, worksProperly )
 
         auto client = Client{ driver, socket_id, network_stack };
 
-        auto const available_sockets = static_cast<std::uint_fast8_t>(
-            random<std::uint_fast8_t>( 1, 8 ) );
+        auto const available_sockets  = random<std::uint_fast8_t>( 1, 8 );
         auto const ephemeral_port_min = random<Port>( 1 );
         auto const ephemeral_port_max = random<Port>( ephemeral_port_min );
         auto const reserved_ephemeral_port = random<Port>( ephemeral_port_min, ephemeral_port_max );
@@ -1312,9 +1311,9 @@ TEST( bind, worksProperly )
             .WillOnce( Return( Result<Void, Error_Code>{} ) );
         EXPECT_CALL( driver, write_sn_cr( socket_id, 0x01 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
         EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
-        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
-        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
-        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x13 ) ) );
+        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( uint8_t{ 0x00 } ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( uint8_t{ 0x00 } ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( uint8_t{ 0x13 } ) );
 
         EXPECT_FALSE( client.bind().is_error() );
 
@@ -1331,8 +1330,7 @@ TEST( bind, worksProperly )
 
         auto client = Client{ driver, socket_id, network_stack };
 
-        auto const available_sockets = static_cast<std::uint_fast8_t>(
-            random<std::uint_fast8_t>( 1, 8 ) );
+        auto const available_sockets  = random<std::uint_fast8_t>( 1, 8 );
         auto const ephemeral_port_min = random<Port>( 1 );
         auto const ephemeral_port_max = random<Port>( ephemeral_port_min );
         auto const reserved_ephemeral_port = random<Port>( ephemeral_port_min, ephemeral_port_max );
@@ -1358,9 +1356,9 @@ TEST( bind, worksProperly )
             .WillOnce( Return( Result<Void, Error_Code>{} ) );
         EXPECT_CALL( driver, write_sn_cr( socket_id, 0x01 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
         EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
-        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
-        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
-        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x13 ) ) );
+        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( uint8_t{ 0x00 } ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( uint8_t{ 0x00 } ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( uint8_t{ 0x13 } ) );
 
         EXPECT_FALSE( client.bind( Port{} ).is_error() );
 
@@ -1378,8 +1376,7 @@ TEST( bind, worksProperly )
         auto client = Client{ driver, socket_id, network_stack };
 
         auto const port              = random<Port>( 1 );
-        auto const available_sockets = static_cast<std::uint_fast8_t>(
-            random<std::uint_fast8_t>( 1, 8 ) );
+        auto const available_sockets = random<std::uint_fast8_t>( 1, 8 );
 
         EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( available_sockets ) );
         for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
@@ -1393,9 +1390,9 @@ TEST( bind, worksProperly )
             .WillOnce( Return( Result<Void, Error_Code>{} ) );
         EXPECT_CALL( driver, write_sn_cr( socket_id, 0x01 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
         EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
-        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
-        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
-        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x13 ) ) );
+        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( uint8_t{ 0x00 } ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( uint8_t{ 0x00 } ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( uint8_t{ 0x13 } ) );
 
         EXPECT_FALSE( client.bind( port ).is_error() );
 
@@ -1412,9 +1409,8 @@ TEST( bind, worksProperly )
 
         auto client = Client{ driver, socket_id, network_stack };
 
-        auto const address           = random<Address>( 1 );
-        auto const available_sockets = static_cast<std::uint_fast8_t>(
-            random<std::uint_fast8_t>( 1, 8 ) );
+        auto const address            = random<Address>( 1 );
+        auto const available_sockets  = random<std::uint_fast8_t>( 1, 8 );
         auto const ephemeral_port_min = random<Port>( 1 );
         auto const ephemeral_port_max = random<Port>( ephemeral_port_min );
         auto const reserved_ephemeral_port = random<Port>( ephemeral_port_min, ephemeral_port_max );
@@ -1441,9 +1437,9 @@ TEST( bind, worksProperly )
             .WillOnce( Return( Result<Void, Error_Code>{} ) );
         EXPECT_CALL( driver, write_sn_cr( socket_id, 0x01 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
         EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
-        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
-        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
-        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x13 ) ) );
+        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( uint8_t{ 0x00 } ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( uint8_t{ 0x00 } ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( uint8_t{ 0x13 } ) );
 
         EXPECT_FALSE( client.bind( { address, Port{} } ).is_error() );
 
@@ -1462,8 +1458,7 @@ TEST( bind, worksProperly )
 
         auto const address           = random<Address>( 1 );
         auto const port              = random<Port>( 1 );
-        auto const available_sockets = static_cast<std::uint_fast8_t>(
-            random<std::uint_fast8_t>( 1, 8 ) );
+        auto const available_sockets = random<std::uint_fast8_t>( 1, 8 );
 
         EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( address.as_byte_array() ) );
         EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( available_sockets ) );
@@ -1478,9 +1473,9 @@ TEST( bind, worksProperly )
             .WillOnce( Return( Result<Void, Error_Code>{} ) );
         EXPECT_CALL( driver, write_sn_cr( socket_id, 0x01 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
         EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
-        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
-        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
-        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x13 ) ) );
+        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( uint8_t{ 0x00 } ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( uint8_t{ 0x00 } ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( uint8_t{ 0x13 } ) );
 
         EXPECT_FALSE( client.bind( { address, port } ).is_error() );
 
@@ -1688,7 +1683,7 @@ TEST( connect, connectionTimeout )
 
     auto client = Client{ State::CONNECTING, driver, random<Socket_ID>(), network_stack };
 
-    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( uint8_t{ 0x00 } ) );
 
     auto const result = client.connect( { random<Address>( 1 ), random<Port>( 1 ) } );
 
@@ -1761,7 +1756,7 @@ TEST( connect, worksProperly )
             .WillOnce( Return( Result<Void, Error_Code>{} ) );
         EXPECT_CALL( driver, write_sn_cr( socket_id, 0x04 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
         EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
-        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( uint8_t{ 0x00 } ) );
 
         auto const result = client.connect( endpoint );
 
@@ -2375,7 +2370,7 @@ TEST( transmit, snirReadError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( uint8_t{ 0x17 } ) );
     EXPECT_CALL( driver, read_sn_ir( _ ) ).WillOnce( Return( error ) );
 
     auto const data   = random_container<std::vector<std::uint8_t>>();
@@ -2399,7 +2394,7 @@ TEST( transmit, transmissionNotComplete )
 
     auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), network_stack, true };
 
-    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( uint8_t{ 0x17 } ) );
     EXPECT_CALL( driver, read_sn_ir( _ ) )
         .WillOnce( Return( static_cast<std::uint8_t>( random<std::uint8_t>() & 0b111'0'1'1'1'1 ) ) );
 
@@ -2426,7 +2421,7 @@ TEST( transmit, snirWriteError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( uint8_t{ 0x17 } ) );
     EXPECT_CALL( driver, read_sn_ir( _ ) )
         .WillOnce( Return( static_cast<std::uint8_t>( random<std::uint8_t>() | 0b000'1'0'0'0'0 ) ) );
     EXPECT_CALL( driver, write_sn_ir( _, _ ) ).WillOnce( Return( error ) );
@@ -2454,7 +2449,7 @@ TEST( transmit, sntxbufsizeReadError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( uint8_t{ 0x17 } ) );
     EXPECT_CALL( driver, read_sn_txbuf_size( _ ) ).WillOnce( Return( error ) );
 
     auto const data = random_container<std::vector<std::uint8_t>>( random<std::uint_fast8_t>( 1 ) );
@@ -2495,7 +2490,7 @@ TEST( transmit, invalidSNTXBUFSIZEValue )
 
         auto const error = random<Mock_Error>();
 
-        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( uint8_t{ 0x17 } ) );
         EXPECT_CALL( driver, read_sn_txbuf_size( _ ) ).WillOnce( Return( test_case.sn_txbuf_size ) );
         EXPECT_CALL( network_stack, nonresponsive_device_error() ).WillOnce( Return( error ) );
 
@@ -2523,7 +2518,7 @@ TEST( transmit, sntxfsrReadError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( uint8_t{ 0x17 } ) );
     EXPECT_CALL( driver, read_sn_txbuf_size( _ ) )
         .WillOnce( Return( static_cast<std::uint8_t>( 1 << random<std::uint_fast8_t>( 0, 4 ) ) ) );
     EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( error ) );
@@ -2566,7 +2561,7 @@ TEST( transmit, invalidSNTXFSRValue )
 
         auto const error = random<Mock_Error>();
 
-        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( uint8_t{ 0x17 } ) );
         EXPECT_CALL( driver, read_sn_txbuf_size( _ ) ).WillOnce( Return( test_case.sn_txbuf_size ) );
         EXPECT_CALL( driver, read_sn_tx_fsr( _ ) )
             .WillOnce( Return( random<std::uint16_t>( ( test_case.sn_txbuf_size * 1024 ) + 1 ) ) );
@@ -2594,10 +2589,10 @@ TEST( transmit, transmitBufferFull )
 
     auto client = Client{ State::CONNECTED, driver, random<Socket_ID>(), network_stack, false };
 
-    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( uint8_t{ 0x17 } ) );
     EXPECT_CALL( driver, read_sn_txbuf_size( _ ) )
         .WillOnce( Return( static_cast<std::uint8_t>( 1 << random<std::uint_fast8_t>( 0, 4 ) ) ) );
-    EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( static_cast<std::uint16_t>( 0 ) ) );
+    EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( uint16_t{ 0 } ) );
 
     auto const data = random_container<std::vector<std::uint8_t>>( random<std::uint_fast8_t>( 1 ) );
     auto const result = client.transmit( &*data.begin(), &*data.end() );
@@ -2623,7 +2618,7 @@ TEST( transmit, sntxwrReadError )
     auto const sn_txbuf_size = static_cast<std::uint8_t>( 1 << random<std::uint_fast8_t>( 0, 4 ) );
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( uint8_t{ 0x17 } ) );
     EXPECT_CALL( driver, read_sn_txbuf_size( _ ) ).WillOnce( Return( sn_txbuf_size ) );
     EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( random<std::uint16_t>( 1, sn_txbuf_size * 1024 ) ) );
     EXPECT_CALL( driver, read_sn_tx_wr( _ ) ).WillOnce( Return( error ) );
@@ -2652,7 +2647,7 @@ TEST( transmit, transmitBufferWriteError )
     auto const sn_txbuf_size = static_cast<std::uint8_t>( 1 << random<std::uint_fast8_t>( 0, 4 ) );
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( uint8_t{ 0x17 } ) );
     EXPECT_CALL( driver, read_sn_txbuf_size( _ ) ).WillOnce( Return( sn_txbuf_size ) );
     EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( random<std::uint16_t>( 1, sn_txbuf_size * 1024 ) ) );
     EXPECT_CALL( driver, read_sn_tx_wr( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
@@ -2682,7 +2677,7 @@ TEST( transmit, sntxwrWriteError )
     auto const sn_txbuf_size = static_cast<std::uint8_t>( 1 << random<std::uint_fast8_t>( 0, 4 ) );
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( uint8_t{ 0x17 } ) );
     EXPECT_CALL( driver, read_sn_txbuf_size( _ ) ).WillOnce( Return( sn_txbuf_size ) );
     EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( random<std::uint16_t>( 1, sn_txbuf_size * 1024 ) ) );
     EXPECT_CALL( driver, read_sn_tx_wr( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
@@ -2713,7 +2708,7 @@ TEST( transmit, sncrWriteError )
     auto const sn_txbuf_size = static_cast<std::uint8_t>( 1 << random<std::uint_fast8_t>( 0, 4 ) );
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( uint8_t{ 0x17 } ) );
     EXPECT_CALL( driver, read_sn_txbuf_size( _ ) ).WillOnce( Return( sn_txbuf_size ) );
     EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( random<std::uint16_t>( 1, sn_txbuf_size * 1024 ) ) );
     EXPECT_CALL( driver, read_sn_tx_wr( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
@@ -2745,7 +2740,7 @@ TEST( transmit, sncrReadError )
     auto const sn_txbuf_size = static_cast<std::uint8_t>( 1 << random<std::uint_fast8_t>( 0, 4 ) );
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( uint8_t{ 0x17 } ) );
     EXPECT_CALL( driver, read_sn_txbuf_size( _ ) ).WillOnce( Return( sn_txbuf_size ) );
     EXPECT_CALL( driver, read_sn_tx_fsr( _ ) ).WillOnce( Return( random<std::uint16_t>( 1, sn_txbuf_size * 1024 ) ) );
     EXPECT_CALL( driver, read_sn_tx_wr( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
@@ -2779,7 +2774,7 @@ TEST( transmit, worksProperly )
 
         auto client = Client{ State::CONNECTED, driver, socket_id, network_stack, false };
 
-        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( uint8_t{ 0x17 } ) );
 
         auto const data   = std::vector<std::uint8_t>{};
         auto const result = client.transmit( &*data.begin(), &*data.end() );
@@ -2801,7 +2796,7 @@ TEST( transmit, worksProperly )
 
         auto client = Client{ State::CONNECTED, driver, socket_id, network_stack, true };
 
-        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( uint8_t{ 0x17 } ) );
         EXPECT_CALL( driver, read_sn_ir( socket_id ) )
             .WillOnce( Return( static_cast<std::uint8_t>( random<std::uint8_t>() | 0b000'1'0'0'0'0 ) ) );
         EXPECT_CALL( driver, write_sn_ir( socket_id, 0b000'1'0'0'0'0 ) )
@@ -2848,7 +2843,7 @@ TEST( transmit, worksProperly )
             auto const sn_tx_fsr = random<std::uint16_t>( data.size(), test_case.sn_tx_fsr_max );
             auto const sn_tx_wr = random<std::uint16_t>();
 
-            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( uint8_t{ 0x17 } ) );
             EXPECT_CALL( driver, read_sn_txbuf_size( socket_id ) )
                 .WillOnce( Return( test_case.sn_txbuf_size ) );
             EXPECT_CALL( driver, read_sn_tx_fsr( socket_id ) ).WillOnce( Return( sn_tx_fsr ) );
@@ -2859,7 +2854,7 @@ TEST( transmit, worksProperly )
                 .WillOnce( Return( Result<Void, Error_Code>{} ) );
             EXPECT_CALL( driver, write_sn_cr( socket_id, 0x20 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
             EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
-            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( uint8_t{ 0x00 } ) );
 
             auto const result = client.transmit( &*data.begin(), &*data.end() );
 
@@ -2902,7 +2897,7 @@ TEST( transmit, worksProperly )
             auto const sn_tx_fsr = random<std::uint16_t>( data.size(), test_case.sn_tx_fsr_max );
             auto const sn_tx_wr = random<std::uint16_t>();
 
-            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( uint8_t{ 0x17 } ) );
             EXPECT_CALL( driver, read_sn_ir( socket_id ) )
                 .WillOnce( Return( static_cast<std::uint8_t>( random<std::uint8_t>() | 0b000'1'0'0'0'0 ) ) );
             EXPECT_CALL( driver, write_sn_ir( socket_id, 0b000'1'0'0'0'0 ) )
@@ -2917,7 +2912,7 @@ TEST( transmit, worksProperly )
                 .WillOnce( Return( Result<Void, Error_Code>{} ) );
             EXPECT_CALL( driver, write_sn_cr( socket_id, 0x20 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
             EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
-            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( uint8_t{ 0x00 } ) );
 
             auto const result = client.transmit( &*data.begin(), &*data.end() );
 
@@ -2960,7 +2955,7 @@ TEST( transmit, worksProperly )
                 random<std::uint16_t>( sn_tx_fsr + 1 ) );
             auto const sn_tx_wr = random<std::uint16_t>();
 
-            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( uint8_t{ 0x17 } ) );
             EXPECT_CALL( driver, read_sn_txbuf_size( socket_id ) )
                 .WillOnce( Return( test_case.sn_txbuf_size ) );
             EXPECT_CALL( driver, read_sn_tx_fsr( socket_id ) ).WillOnce( Return( sn_tx_fsr ) );
@@ -2973,7 +2968,7 @@ TEST( transmit, worksProperly )
                 .WillOnce( Return( Result<Void, Error_Code>{} ) );
             EXPECT_CALL( driver, write_sn_cr( socket_id, 0x20 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
             EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
-            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( uint8_t{ 0x00 } ) );
 
             auto const result = client.transmit( &*data.begin(), &*data.end() );
 
@@ -3016,7 +3011,7 @@ TEST( transmit, worksProperly )
                 random<std::uint16_t>( sn_tx_fsr + 1 ) );
             auto const sn_tx_wr = random<std::uint16_t>();
 
-            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( uint8_t{ 0x17 } ) );
             EXPECT_CALL( driver, read_sn_ir( socket_id ) )
                 .WillOnce( Return( static_cast<std::uint8_t>( random<std::uint8_t>() | 0b000'1'0'0'0'0 ) ) );
             EXPECT_CALL( driver, write_sn_ir( socket_id, 0b000'1'0'0'0'0 ) )
@@ -3033,7 +3028,7 @@ TEST( transmit, worksProperly )
                 .WillOnce( Return( Result<Void, Error_Code>{} ) );
             EXPECT_CALL( driver, write_sn_cr( socket_id, 0x20 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
             EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
-            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( uint8_t{ 0x00 } ) );
 
             auto const result = client.transmit( &*data.begin(), &*data.end() );
 
@@ -3190,7 +3185,7 @@ TEST( transmitKeepalive, sncrWriteError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( uint8_t{ 0x17 } ) );
     EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( error ) );
 
     auto const result = client.transmit_keepalive();
@@ -3214,7 +3209,7 @@ TEST( transmitKeepalive, sncrReadError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( uint8_t{ 0x17 } ) );
     EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( error ) );
 
@@ -3241,10 +3236,10 @@ TEST( transmitKeepalive, worksProperly )
 
     auto client = Client{ State::CONNECTED, driver, socket_id, network_stack };
 
-    EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x17 ) ) );
+    EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( uint8_t{ 0x17 } ) );
     EXPECT_CALL( driver, write_sn_cr( socket_id, 0x22 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
     EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
-    EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+    EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( uint8_t{ 0x00 } ) );
 
     EXPECT_FALSE( client.transmit_keepalive().is_error() );
 }
@@ -3702,7 +3697,7 @@ TEST( receive, receiveBufferEmpty )
         EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( test_case.sn_sr ) );
         EXPECT_CALL( driver, read_sn_rxbuf_size( _ ) )
             .WillOnce( Return( static_cast<std::uint8_t>( 1 << random<std::uint_fast8_t>( 0, 4 ) ) ) );
-        EXPECT_CALL( driver, read_sn_rx_rsr( _ ) ).WillOnce( Return( static_cast<std::uint16_t>( 0 ) ) );
+        EXPECT_CALL( driver, read_sn_rx_rsr( _ ) ).WillOnce( Return( uint16_t{ 0 } ) );
 
         auto       data   = std::vector<std::uint8_t>( random<std::uint_fast8_t>() );
         auto const result = client.receive( &*data.begin(), &*data.end() );
@@ -3982,7 +3977,7 @@ TEST( receive, worksProperly )
                 .WillOnce( Return( Result<Void, Error_Code>{} ) );
             EXPECT_CALL( driver, write_sn_cr( socket_id, 0x40 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
             EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
-            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( uint8_t{ 0x00 } ) );
 
             auto const result = client.receive( &*data.begin(), &*data.end() );
 
@@ -4041,7 +4036,7 @@ TEST( receive, worksProperly )
                 .WillOnce( Return( Result<Void, Error_Code>{} ) );
             EXPECT_CALL( driver, write_sn_cr( socket_id, 0x40 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
             EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
-            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( 0x00 ) ) );
+            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( uint8_t{ 0x00 } ) );
 
             auto data = std::vector<std::uint8_t>( random<std::uint16_t>( sn_rx_rsr + 1 ) );
             auto const result = client.receive( &*data.begin(), &*data.end() );
