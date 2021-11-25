@@ -2814,16 +2814,15 @@ TEST( transmit, worksProperly )
 
     {
         struct {
-            std::uint8_t  sn_txbuf_size;
-            std::uint16_t sn_tx_fsr_max;
+            std::uint8_t sn_txbuf_size;
         } const test_cases[]{
             // clang-format off
 
-            {  1,  1 * 1024 },
-            {  2,  2 * 1024 },
-            {  4,  4 * 1024 },
-            {  8,  8 * 1024 },
-            { 16, 16 * 1024 },
+            {  1 },
+            {  2 },
+            {  4 },
+            {  8 },
+            { 16 },
 
             // clang-format on
         };
@@ -2838,10 +2837,11 @@ TEST( transmit, worksProperly )
 
             auto client = Client{ State::CONNECTED, driver, socket_id, network_stack, false };
 
+            auto const sn_tx_fsr_max = static_cast<std::uint16_t>( test_case.sn_txbuf_size * 1024 );
             auto const data = random_container<std::vector<std::uint8_t>>(
-                random<std::uint16_t>( 1, test_case.sn_tx_fsr_max ) );
-            auto const sn_tx_fsr = random<std::uint16_t>( data.size(), test_case.sn_tx_fsr_max );
-            auto const sn_tx_wr = random<std::uint16_t>();
+                random<std::uint16_t>( 1, sn_tx_fsr_max ) );
+            auto const sn_tx_fsr = random<std::uint16_t>( data.size(), sn_tx_fsr_max );
+            auto const sn_tx_wr  = random<std::uint16_t>();
 
             EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( uint8_t{ 0x17 } ) );
             EXPECT_CALL( driver, read_sn_txbuf_size( socket_id ) )
@@ -2868,16 +2868,15 @@ TEST( transmit, worksProperly )
 
     {
         struct {
-            std::uint8_t  sn_txbuf_size;
-            std::uint16_t sn_tx_fsr_max;
+            std::uint8_t sn_txbuf_size;
         } const test_cases[]{
             // clang-format off
 
-            {  1,  1 * 1024 },
-            {  2,  2 * 1024 },
-            {  4,  4 * 1024 },
-            {  8,  8 * 1024 },
-            { 16, 16 * 1024 },
+            {  1 },
+            {  2 },
+            {  4 },
+            {  8 },
+            { 16 },
 
             // clang-format on
         };
@@ -2892,10 +2891,11 @@ TEST( transmit, worksProperly )
 
             auto client = Client{ State::CONNECTED, driver, socket_id, network_stack, true };
 
+            auto const sn_tx_fsr_max = static_cast<std::uint16_t>( test_case.sn_txbuf_size * 1024 );
             auto const data = random_container<std::vector<std::uint8_t>>(
-                random<std::uint16_t>( 1, test_case.sn_tx_fsr_max ) );
-            auto const sn_tx_fsr = random<std::uint16_t>( data.size(), test_case.sn_tx_fsr_max );
-            auto const sn_tx_wr = random<std::uint16_t>();
+                random<std::uint16_t>( 1, sn_tx_fsr_max ) );
+            auto const sn_tx_fsr = random<std::uint16_t>( data.size(), sn_tx_fsr_max );
+            auto const sn_tx_wr  = random<std::uint16_t>();
 
             EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( uint8_t{ 0x17 } ) );
             EXPECT_CALL( driver, read_sn_ir( socket_id ) )
@@ -2926,16 +2926,15 @@ TEST( transmit, worksProperly )
 
     {
         struct {
-            std::uint8_t  sn_txbuf_size;
-            std::uint16_t sn_tx_fsr_max;
+            std::uint8_t sn_txbuf_size;
         } const test_cases[]{
             // clang-format off
 
-            {  1,  1 * 1024 },
-            {  2,  2 * 1024 },
-            {  4,  4 * 1024 },
-            {  8,  8 * 1024 },
-            { 16, 16 * 1024 },
+            {  1 },
+            {  2 },
+            {  4 },
+            {  8 },
+            { 16 },
 
             // clang-format on
         };
@@ -2950,7 +2949,7 @@ TEST( transmit, worksProperly )
 
             auto client = Client{ State::CONNECTED, driver, socket_id, network_stack, false };
 
-            auto const sn_tx_fsr = random<std::uint16_t>( 1, test_case.sn_tx_fsr_max );
+            auto const sn_tx_fsr = random<std::uint16_t>( 1, test_case.sn_txbuf_size * 1024 );
             auto const data      = random_container<std::vector<std::uint8_t>>(
                 random<std::uint16_t>( sn_tx_fsr + 1 ) );
             auto const sn_tx_wr = random<std::uint16_t>();
@@ -2982,16 +2981,15 @@ TEST( transmit, worksProperly )
 
     {
         struct {
-            std::uint8_t  sn_txbuf_size;
-            std::uint16_t sn_tx_fsr_max;
+            std::uint8_t sn_txbuf_size;
         } const test_cases[]{
             // clang-format off
 
-            {  1,  1 * 1024 },
-            {  2,  2 * 1024 },
-            {  4,  4 * 1024 },
-            {  8,  8 * 1024 },
-            { 16, 16 * 1024 },
+            {  1 },
+            {  2 },
+            {  4 },
+            {  8 },
+            { 16 },
 
             // clang-format on
         };
@@ -3006,7 +3004,7 @@ TEST( transmit, worksProperly )
 
             auto client = Client{ State::CONNECTED, driver, socket_id, network_stack, true };
 
-            auto const sn_tx_fsr = random<std::uint16_t>( 1, test_case.sn_tx_fsr_max );
+            auto const sn_tx_fsr = random<std::uint16_t>( 1, test_case.sn_txbuf_size * 1024 );
             auto const data      = random_container<std::vector<std::uint8_t>>(
                 random<std::uint16_t>( sn_tx_fsr + 1 ) );
             auto const sn_tx_wr = random<std::uint16_t>();
