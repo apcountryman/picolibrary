@@ -1130,6 +1130,144 @@ class Client {
         return received_size;
     }
 
+    /**
+     * \brief Receive data from the remote endpoint.
+     *
+     * \param[out] begin The beginning of the block of data read from the socket's receive
+     *             buffer.
+     * \param[out] end The end of the block of data read from the socket's receive buffer.
+     *
+     * \return The end of the data that was read from the socket's receive buffer if
+     *         reading data from the socket's receive buffer succeeded.
+     * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not connected to
+     *         a remote endpoint.
+     * \return picolibrary::Generic_Error::WOULD_BLOCK if no data could be read from the
+     *         socket's receive buffer without blocking.
+     * \return picolibrary::WIZnet::W5500::IP::Network_Stack::nonresponsive_device_error()
+     *         if the W5500 is nonresponsive.
+     * \return An error code if reading data from the socket's receive buffer failed for
+     *         any other reason.
+     */
+    auto receive( std::uint8_t * begin, std::uint8_t * end ) noexcept
+        -> Result<std::uint8_t *, Error_Code>
+    {
+        switch ( m_state ) {
+            case State::CONNECTED: break;
+            default: return Generic_Error::NOT_CONNECTED;
+        } // switch
+
+        auto close_wait = false;
+        {
+            auto result = m_driver->read_sn_sr( m_socket_id );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            switch ( static_cast<Socket_Status>( result.value() ) ) {
+                case Socket_Status::CLOSED: return Generic_Error::NOT_CONNECTED;
+                case Socket_Status::ESTABLISHED: break;
+                case Socket_Status::FIN_WAIT: return Generic_Error::WOULD_BLOCK;
+                case Socket_Status::CLOSE_WAIT: close_wait = true; break;
+                case Socket_Status::CLOSING: return Generic_Error::NOT_CONNECTED;
+                case Socket_Status::TIME_WAIT: return Generic_Error::NOT_CONNECTED;
+                case Socket_Status::LAST_ACK: return Generic_Error::NOT_CONNECTED;
+                default: return m_network_stack->nonresponsive_device_error();
+            } // switch
+        }
+
+        {
+            Size buffer_size;
+            {
+                auto result = m_driver->read_sn_rxbuf_size( m_socket_id );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+
+                switch ( static_cast<Buffer_Size>( result.value() ) ) {
+                    case Buffer_Size::_1_KIB: buffer_size = 1 * 1024; break;
+                    case Buffer_Size::_2_KIB: buffer_size = 2 * 1024; break;
+                    case Buffer_Size::_4_KIB: buffer_size = 4 * 1024; break;
+                    case Buffer_Size::_8_KIB: buffer_size = 8 * 1024; break;
+                    case Buffer_Size::_16_KIB: buffer_size = 16 * 1024; break;
+                    default: return m_network_stack->nonresponsive_device_error();
+                } // switch
+            }
+
+            Size received_size;
+            {
+                auto result = m_driver->read_sn_rx_rsr( m_socket_id );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+
+                received_size = result.value();
+            }
+
+            if ( received_size > buffer_size ) {
+                return m_network_stack->nonresponsive_device_error();
+            } // if
+
+            if ( received_size == 0 ) {
+                if ( close_wait ) {
+                    return Generic_Error::NOT_CONNECTED;
+                } else {
+                    return Generic_Error::WOULD_BLOCK;
+                } // else
+            }     // if
+
+            if ( begin == end ) {
+                return end;
+            } // if
+
+            if ( end - begin > received_size ) {
+                end = begin + received_size;
+            } // if
+        }
+
+        SN_RX_RD::Type sn_rx_rd;
+        {
+            auto result = m_driver->read_sn_rx_rd( m_socket_id );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            sn_rx_rd = result.value();
+        }
+
+        {
+            auto result = m_driver->read( m_socket_id, sn_rx_rd, begin, end );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        {
+            auto result = m_driver->write_sn_rx_rd( m_socket_id, sn_rx_rd + ( end - begin ) );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        {
+            auto result = m_driver->write_sn_cr(
+                m_socket_id, static_cast<SN_CR::Type>( Command::RECEIVE ) );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        for ( ;; ) {
+            auto result = m_driver->read_sn_cr( m_socket_id );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            if ( not result.value() ) {
+                return end;
+            } // if
+        }     // for
+    }
+
   private:
     /**
      * \brief The socket's state.
