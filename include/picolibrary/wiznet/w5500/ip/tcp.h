@@ -1151,6 +1151,9 @@ class Client {
     auto receive( std::uint8_t * begin, std::uint8_t * end ) noexcept
         -> Result<std::uint8_t *, Error_Code>
     {
+        // #lizard forgives the length
+        // #lizard forgives the complexity
+
         switch ( m_state ) {
             case State::CONNECTED: break;
             default: return Generic_Error::NOT_CONNECTED;
