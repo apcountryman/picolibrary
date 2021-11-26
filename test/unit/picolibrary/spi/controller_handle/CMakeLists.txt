@@ -13,20 +13,22 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/spi/CMakeLists.txt
-# Description: picolibrary::SPI unit tests CMake rules.
-
-# build the picolibrary::SPI::Controller unit tests
-add_subdirectory( controller )
+# File: test/unit/picolibrary/spi/controller_handle/CMakeLists.txt
+# Description: picolibrary::SPI::Controller_Handle unit tests CMake rules.
 
 # build the picolibrary::SPI::Controller_Handle unit tests
-add_subdirectory( controller_handle )
-
-# build the picolibrary::SPI::Device unit tests
-add_subdirectory( device )
-
-# build the picolibrary::SPI::Device_Selection_Guard unit tests
-add_subdirectory( device_selection_guard )
-
-# build the picolibrary::SPI::GPIO_Output_Pin_Device_Selector unit tests
-add_subdirectory( gpio_output_pin_device_selector )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+    add_executable(
+        test-unit-picolibrary-spi-controller_handle
+        main.cc
+    )
+    target_link_libraries(
+        test-unit-picolibrary-spi-controller_handle
+        picolibrary
+        picolibrary-fatal_error
+    )
+    add_test(
+        NAME    test-unit-picolibrary-spi-controller_handle
+        COMMAND test-unit-picolibrary-spi-controller_handle --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
