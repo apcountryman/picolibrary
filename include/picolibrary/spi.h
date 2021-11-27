@@ -354,6 +354,194 @@ class Controller : public Basic_Controller {
 };
 
 /**
+ * \brief SPI controller handle.
+ *
+ * \tparam Controller_Type The type of controller referenced by the handle.
+ */
+template<typename Controller_Type>
+class Controller_Handle {
+  public:
+    /**
+     * \brief The type of controller referenced by the handle.
+     */
+    using Controller = Controller_Type;
+
+    /**
+     * \brief Clock (frequency, polarity, and phase), and data exchange bit order
+     *        configuration.
+     */
+    using Configuration = typename Controller::Configuration;
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Controller_Handle() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] controller The controller referenced by the handle.
+     */
+    constexpr Controller_Handle( Controller & controller ) noexcept :
+        m_controller{ &controller }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Controller_Handle( Controller_Handle && source ) noexcept :
+        m_controller{ source.m_controller }
+    {
+        source.m_controller = nullptr;
+    }
+
+    Controller_Handle( Controller_Handle const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Controller_Handle() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto & operator=( Controller_Handle && expression ) noexcept
+    {
+        if ( &expression != this ) {
+            m_controller = expression.m_controller;
+
+            expression.m_controller = nullptr;
+        } // if
+
+        return *this;
+    }
+
+    auto operator=( Controller_Handle const & ) = delete;
+
+    /**
+     * \brief Initialize the controller's hardware (does nothing).
+     *
+     * \return Success.
+     */
+    constexpr auto initialize() noexcept -> Result<Void, Void>
+    {
+        return {};
+    }
+
+    /**
+     * \brief Configure the controller's clock, and data exchange bit order to meet a
+     *        specific device's communication requirements.
+     *
+     * \param[in] configuration The clock, and data exchange bit order configuration that
+     *            meets the device's communication requirements.
+     *
+     * \return Nothing if controller clock configuration succeeded.
+     * \return An error code if controller clock configuration failed.
+     */
+    constexpr auto configure( Configuration configuration ) noexcept
+    {
+        return m_controller->configure( configuration );
+    }
+
+    /**
+     * \brief Exchange data with a device.
+     *
+     * \param[in] data The data to transmit.
+     *
+     * \return The received data if data exchange succeeded.
+     * \return An error code if data exchange failed.
+     */
+    auto exchange( std::uint8_t data ) noexcept
+    {
+        return m_controller->exchange( data );
+    }
+
+    /**
+     * \brief Exchange a block of data with a device.
+     *
+     * \param[in] tx_begin The beginning of the block of data to transmit.
+     * \param[in] tx_end The end of the block of data to transmit.
+     * \param[out] rx_begin The beginning of the block of received data.
+     * \param[out] rx_end The end of the block of received data.
+     *
+     * \warning This function may not verify that the transmit and receive data blocks are
+     *          the same size.
+     *
+     * \return Nothing if data exchange succeeded.
+     * \return An error code if data exchange failed.
+     */
+    auto exchange( std::uint8_t const * tx_begin, std::uint8_t const * tx_end, std::uint8_t * rx_begin, std::uint8_t * rx_end ) noexcept
+    {
+        return m_controller->exchange( tx_begin, tx_end, rx_begin, rx_end );
+    }
+
+    /**
+     * \brief Receive data from a device.
+     *
+     * \return The received data if data reception succeeded.
+     * \return An error code if data reception failed.
+     */
+    auto receive() noexcept
+    {
+        return m_controller->receive();
+    }
+
+    /**
+     * \brief Receive a block of data from a device.
+     *
+     * \param[out] begin The beginning of the block of received data.
+     * \param[out] end The end of the block of received data.
+     *
+     * \return Nothing if data reception succeeded.
+     * \return An error code if data reception failed.
+     */
+    auto receive( std::uint8_t * begin, std::uint8_t * end ) noexcept
+    {
+        return m_controller->receive( begin, end );
+    }
+
+    /**
+     * \brief Transmit data to a device.
+     *
+     * \param[in] data The data to transmit.
+     *
+     * \return Nothing if data transmission succeeded.
+     * \return An error code if data transmission failed.
+     */
+    auto transmit( std::uint8_t data ) noexcept
+    {
+        return m_controller->transmit( data );
+    }
+
+    /**
+     * \brief Transmit a block of data to a device.
+     *
+     * \param[in] begin The beginning of the block of data to transmit.
+     * \param[in] end The end of the block of data to transmit.
+     *
+     * \return Nothing if data transmission succeeded.
+     * \return An error code if data transmission failed.
+     */
+    auto transmit( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+    {
+        return m_controller->transmit( begin, end );
+    }
+
+  private:
+    /**
+     * \brief The controller referenced by the handle.
+     */
+    Controller * m_controller{};
+};
+
+/**
  * \brief SPI device selector concept.
  */
 class Device_Selector_Concept {
