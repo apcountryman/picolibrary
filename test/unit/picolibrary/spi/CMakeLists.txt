@@ -19,9 +19,6 @@
 # build the picolibrary::SPI::Controller unit tests
 add_subdirectory( controller )
 
-# build the picolibrary::SPI::Controller_Handle unit tests
-add_subdirectory( controller_handle )
-
 # build the picolibrary::SPI::Device unit tests
 add_subdirectory( device )
 
