@@ -247,8 +247,8 @@ class Client_Concept {
      * \brief Disable further data transmission and reception.
      *
      * \return Nothing if disabling further data transmission and reception succeeded.
-     * \return picolibrary::Generic_Error::CONNECTION_LOST if the socket is not connected
-     *         to a remote endpoint.
+     * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not connected to
+     *         a remote endpoint.
      * \return An error code if disabling further data transmission and reception failed
      *         for any other reason.
      */
@@ -256,6 +256,45 @@ class Client_Concept {
 
     /**
      * \brief Close the socket.
+     *
+     * The following sequence of operations should be used to gracefully shutdown a socket
+     * that has finished sending and receiving data, or a socket that has reported that it
+     * is no longer connected to a remote endpoint before the socket is closed.
+     * \code
+     * {
+     *     auto result = socket.shutdown();
+     *     if ( result.is_error() ) {
+     *         if ( result.error() == picolibrary::Generic_Error::NOT_CONNECTED ) {
+     *             // connection lost, attempt graceful shutdown
+     *         } else {
+     *             // handle unexpected error
+     *         } // else
+     *     } // if
+     * }
+     *
+     * for ( ;; ) {
+     *     auto result = socket.receive( buffer.begin(), buffer.end() );
+     *     if ( result.is_error() ) {
+     *         if ( result.error() == picolibrary::Generic_Error::NOT_CONNECTED ) {
+     *             // shutdown complete
+     *             break;
+     *         } else if ( result.error() == picolibrary::Generic_Error::WOULD_BLOCK ) {
+     *             // shutdown not complete
+     *         } else if ( result.error() == picolibrary::Generic_Error::OPERATION_TIMEOUT ) {
+     *             // shutdown not complete
+     *         } else {
+     *             // handle unexpected error
+     *         } // else
+     *     } // if
+     * } // for
+     *
+     * {
+     *     auto result = socket.close();
+     *     if ( result.is_error() ) {
+     *         // handle unexpected error
+     *     } // if
+     * }
+     * \endcode
      *
      * \return Nothing if closing the socket succeeded.
      * \return An error code if closing the socket failed. If closing the socket cannot
@@ -419,8 +458,8 @@ class Server_Concept {
      * \brief Disable further data transmission and reception.
      *
      * \return Nothing if disabling further data transmission and reception succeeded.
-     * \return picolibrary::Generic_Error::CONNECTION_LOST if the socket is not connected
-     *         to a remote endpoint.
+     * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not connected to
+     *         a remote endpoint.
      * \return An error code if disabling further data transmission and reception failed
      *         for any other reason.
      */
@@ -428,6 +467,45 @@ class Server_Concept {
 
     /**
      * \brief Close the socket.
+     *
+     * The following sequence of operations should be used to gracefully shutdown a socket
+     * that has finished sending and receiving data, or a socket that has reported that it
+     * is no longer connected to a remote endpoint before the socket is closed.
+     * \code
+     * {
+     *     auto result = socket.shutdown();
+     *     if ( result.is_error() ) {
+     *         if ( result.error() == picolibrary::Generic_Error::NOT_CONNECTED ) {
+     *             // connection lost, attempt graceful shutdown
+     *         } else {
+     *             // handle unexpected error
+     *         } // else
+     *     } // if
+     * }
+     *
+     * for ( ;; ) {
+     *     auto result = socket.receive( buffer.begin(), buffer.end() );
+     *     if ( result.is_error() ) {
+     *         if ( result.error() == picolibrary::Generic_Error::NOT_CONNECTED ) {
+     *             // shutdown complete
+     *             break;
+     *         } else if ( result.error() == picolibrary::Generic_Error::WOULD_BLOCK ) {
+     *             // shutdown not complete
+     *         } else if ( result.error() == picolibrary::Generic_Error::OPERATION_TIMEOUT ) {
+     *             // shutdown not complete
+     *         } else {
+     *             // handle unexpected error
+     *         } // else
+     *     } // if
+     * } // for
+     *
+     * {
+     *     auto result = socket.close();
+     *     if ( result.is_error() ) {
+     *         // handle unexpected error
+     *     } // if
+     * }
+     * \endcode
      *
      * \return Nothing if closing the socket succeeded.
      * \return An error code if closing the socket failed. If closing the socket cannot
