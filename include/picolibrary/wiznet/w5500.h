@@ -1384,7 +1384,7 @@ struct SN_DHAR {
     /**
      * \brief Register reset value.
      */
-    static constexpr auto RESET = Type{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+    static constexpr auto RESET = Type{ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
 };
 
 /**
