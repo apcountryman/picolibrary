@@ -56,10 +56,13 @@ class Network_Stack {
      * \param[in] driver The driver for the W5500 the network stack utilizes.
      * \param[in] nonresponsive_device_error The error code to return when an operation
      *            fails due to the W5500 being nonresponsive.
+     * \param[in] reserve_socket_0 Reserve socket 0 for special use.
      */
-    constexpr Network_Stack( Driver & driver, Error_Code const & nonresponsive_device_error ) noexcept :
+    constexpr Network_Stack( Driver & driver, Error_Code const & nonresponsive_device_error, bool reserve_socket_0 = false ) noexcept
+        :
         m_driver{ &driver },
-        m_nonresponsive_device_error{ nonresponsive_device_error }
+        m_nonresponsive_device_error{ nonresponsive_device_error },
+        m_socket_0_reserved{ reserve_socket_0 }
     {
     }
 
@@ -72,6 +75,8 @@ class Network_Stack {
         m_driver{ source.m_driver },
         m_nonresponsive_device_error{ source.m_nonresponsive_device_error },
         m_available_sockets{ source.m_available_sockets },
+        m_socket_0_reserved{ source.m_socket_0_reserved },
+        m_socket_state{ source.m_socket_state },
         m_tcp_ephemeral_port_allocation_enabled{ source.m_tcp_ephemeral_port_allocation_enabled },
         m_tcp_ephemeral_port_min{ source.m_tcp_ephemeral_port_min },
         m_tcp_ephemeral_port_max{ source.m_tcp_ephemeral_port_max }
@@ -99,6 +104,8 @@ class Network_Stack {
             m_driver                     = expression.m_driver;
             m_nonresponsive_device_error = expression.m_nonresponsive_device_error;
             m_available_sockets          = expression.m_available_sockets;
+            m_socket_0_reserved          = expression.m_socket_0_reserved;
+            m_socket_state               = expression.m_socket_state;
             m_tcp_ephemeral_port_allocation_enabled = expression.m_tcp_ephemeral_port_allocation_enabled;
             m_tcp_ephemeral_port_min                = expression.m_tcp_ephemeral_port_min;
             m_tcp_ephemeral_port_max                = expression.m_tcp_ephemeral_port_max;
@@ -426,6 +433,14 @@ class Network_Stack {
 
         m_available_sockets = available_sockets;
 
+        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+            m_socket_state[ socket ] = Socket_State::AVAILABLE;
+        } // for
+
+        for ( auto socket = available_sockets; socket < SOCKETS; ++socket ) {
+            m_socket_state[ socket ] = Socket_State::UNAVAILABLE;
+        } // for
+
         return {};
     }
 
@@ -719,10 +734,200 @@ class Network_Stack {
 
     /**
      * \brief Execute periodic housekeeping actions.
+     *
+     * \attention This function should be executed each time a socket is deallocated to
+     *            avoid socket exhaustion.
+     *
+     * \return Nothing if periodic housekeeping actions execution succeeded.
+     * \return An error code if period housekeeping actions execution failed.
      */
     auto service() noexcept -> Result<Void, Error_Code>
     {
+        for ( auto socket = std::uint_fast8_t{}; socket < SOCKETS; ++socket ) {
+            if ( m_socket_state[ socket ] != Socket_State::AWAITING_SERVICE ) {
+                continue;
+            } // if
+
+            auto const socket_id = static_cast<Socket_ID>( socket << Control_Byte::Bit::SOCKET );
+
+            {
+                auto result = m_driver->write_sn_cr(
+                    socket_id, static_cast<SN_CR::Type>( Command::CLOSE ) );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+
+            for ( ;; ) {
+                auto result = m_driver->read_sn_cr( socket_id );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+
+                if ( not result.value() ) {
+                    break;
+                } // if
+            }     // for
+
+            {
+                auto result = m_driver->write_sn_ir( socket_id, Socket_Interrupt::ALL );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+
+            for ( ;; ) {
+                auto result = m_driver->read_sn_sr( socket_id );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+
+                if ( result.value() == static_cast<std::uint8_t>( Socket_Status::CLOSED ) ) {
+                    break;
+                } // if
+            }     // for
+
+            {
+                auto result = m_driver->write_sn_mr( socket_id, SN_MR::RESET );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+
+            {
+                auto result = m_driver->write_sn_port( socket_id, SN_PORT::RESET );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+
+            {
+                auto result = m_driver->write_sn_dhar( socket_id, SN_DHAR::RESET );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+
+            {
+                auto result = m_driver->write_sn_dipr( socket_id, SN_DIPR::RESET );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+
+            {
+                auto result = m_driver->write_sn_dport( socket_id, SN_DPORT::RESET );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+
+            {
+                auto result = m_driver->write_sn_mssr( socket_id, SN_MSSR::RESET );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+
+            {
+                auto result = m_driver->write_sn_tos( socket_id, SN_TOS::RESET );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+
+            {
+                auto result = m_driver->write_sn_ttl( socket_id, SN_TTL::RESET );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+
+            {
+                auto result = m_driver->write_sn_imr( socket_id, SN_IMR::RESET );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+
+            {
+                auto result = m_driver->write_sn_frag( socket_id, SN_FRAG::RESET );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+
+            {
+                auto result = m_driver->write_sn_kpalvtr( socket_id, SN_KPALVTR::RESET );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+
+            m_socket_state[ socket ] = Socket_State::AVAILABLE;
+        } // for
+
         return {};
+    }
+
+    /**
+     * \brief Allocate a socket.
+     *
+     * \return The allocated socket's socket ID if a socket was successfully allocated.
+     * \return picolibrary::Generic_Error::NO_SOCKETS_AVAILABLE if a socket was not
+     *         successfully allocated.
+     */
+    auto allocate_socket() noexcept -> Result<Socket_ID, Error_Code>
+    {
+        for ( auto socket = static_cast<std::uint_fast8_t>( m_socket_0_reserved ? 1 : 0 );
+              socket < SOCKETS;
+              ++socket ) {
+            if ( m_socket_state[ socket ] == Socket_State::AVAILABLE ) {
+                m_socket_state[ socket ] = Socket_State::ALLOCATED;
+
+                return static_cast<Socket_ID>( socket << Control_Byte::Bit::SOCKET );
+            } // if
+        }     // for
+
+        return Generic_Error::NO_SOCKETS_AVAILABLE;
+    }
+
+    /**
+     * \brief Allocate a specific socket.
+     *
+     * \param[in] socket_id The socket ID of the socket to allocate.
+     *
+     * \return socket_id if the socket was successfully allocated.
+     * \return picolibrary::Generic_Error::LOGIC_ERROR if the socket is not available for
+     *         allocation.
+     */
+    auto allocate_socket( Socket_ID socket_id ) noexcept -> Result<Socket_ID, Error_Code>
+    {
+        auto const socket = static_cast<std::uint_fast8_t>(
+            static_cast<std::uint_fast8_t>( socket_id ) >> Control_Byte::Bit::SOCKET );
+
+        if ( m_socket_state[ socket ] != Socket_State::AVAILABLE ) {
+            return Generic_Error::LOGIC_ERROR;
+        } // if
+
+        m_socket_state[ socket ] = Socket_State::ALLOCATED;
+
+        return socket_id;
+    }
+
+    /**
+     * \brief Deallocate a socket.
+     *
+     * \param[in] socket_id The socket ID of the socket to deallocate.
+     */
+    void deallocate_socket( Socket_ID socket_id ) noexcept
+    {
+        auto const socket = static_cast<std::uint_fast8_t>(
+            static_cast<std::uint_fast8_t>( socket_id ) >> Control_Byte::Bit::SOCKET );
+
+        if ( m_socket_state[ socket ] == Socket_State::ALLOCATED ) {
+            m_socket_state[ socket ] = Socket_State::AWAITING_SERVICE;
+        } // if
     }
 
     /**
@@ -793,6 +998,16 @@ class Network_Stack {
 
   private:
     /**
+     * \brief Socket state.
+     */
+    enum class Socket_State : std::uint_fast8_t {
+        AVAILABLE,        ///< Available for allocation.
+        ALLOCATED,        ///< Allocated.
+        AWAITING_SERVICE, ///< Awaiting post-deallocation service.
+        UNAVAILABLE,      ///< Unavailable.
+    };
+
+    /**
      * \brief The driver for the W5500 the network stack utilizes.
      */
     Driver * m_driver{};
@@ -807,6 +1022,16 @@ class Network_Stack {
      * \brief The number of available sockets.
      */
     std::uint_fast8_t m_available_sockets{ 16 / 2 };
+
+    /**
+     * \brief Socket 0 reserved state.
+     */
+    bool m_socket_0_reserved{};
+
+    /**
+     * \brief Sockets state.
+     */
+    Fixed_Size_Array<Socket_State, SOCKETS> m_socket_state{};
 
     /**
      * \brief The TCP ephemeral port allocation enable state.
