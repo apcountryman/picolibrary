@@ -743,6 +743,9 @@ class Network_Stack {
      */
     auto service() noexcept -> Result<Void, Error_Code>
     {
+        // #lizard forgives the length
+        // #lizard forgives the complexity
+
         for ( auto socket = std::uint_fast8_t{}; socket < SOCKETS; ++socket ) {
             if ( m_socket_state[ socket ] != Socket_State::AWAITING_SERVICE ) {
                 continue;
