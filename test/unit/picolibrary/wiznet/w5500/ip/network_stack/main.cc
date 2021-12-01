@@ -1805,15 +1805,589 @@ TEST( socketInterruptContext, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::service() works properly.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::service() properly handles
+ *        an SN_CR register write error.
  */
-TEST( service, worksProperly )
+TEST( service, sncrWriteError )
 {
     auto driver = Mock_Driver{};
 
     auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
-    EXPECT_FALSE( network_stack.service().is_error() );
+    {
+        auto const result = network_stack.allocate_socket();
+
+        EXPECT_TRUE( result.is_value() );
+
+        network_stack.deallocate_socket( result.value() );
+    }
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.service();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::service() properly handles
+ *        an SN_CR register read error.
+ */
+TEST( service, sncrReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    {
+        auto const result = network_stack.allocate_socket();
+
+        EXPECT_TRUE( result.is_value() );
+
+        network_stack.deallocate_socket( result.value() );
+    }
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.service();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::service() properly handles
+ *        an SN_IR register write error.
+ */
+TEST( service, snirWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    {
+        auto const result = network_stack.allocate_socket();
+
+        EXPECT_TRUE( result.is_value() );
+
+        network_stack.deallocate_socket( result.value() );
+    }
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, write_sn_ir( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.service();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::service() properly handles
+ *        an SN_SR register read error.
+ */
+TEST( service, snsrReadError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    {
+        auto const result = network_stack.allocate_socket();
+
+        EXPECT_TRUE( result.is_value() );
+
+        network_stack.deallocate_socket( result.value() );
+    }
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, write_sn_ir( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.service();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::service() properly handles
+ *        an SN_MR register write error.
+ */
+TEST( service, snmrWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    {
+        auto const result = network_stack.allocate_socket();
+
+        EXPECT_TRUE( result.is_value() );
+
+        network_stack.deallocate_socket( result.value() );
+    }
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, write_sn_ir( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, write_sn_mr( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.service();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::service() properly handles
+ *        an SN_PORT register write error.
+ */
+TEST( service, snportWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    {
+        auto const result = network_stack.allocate_socket();
+
+        EXPECT_TRUE( result.is_value() );
+
+        network_stack.deallocate_socket( result.value() );
+    }
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, write_sn_ir( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, write_sn_mr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.service();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::service() properly handles
+ *        an SN_DHAR register write error.
+ */
+TEST( service, sndharWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    {
+        auto const result = network_stack.allocate_socket();
+
+        EXPECT_TRUE( result.is_value() );
+
+        network_stack.deallocate_socket( result.value() );
+    }
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, write_sn_ir( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, write_sn_mr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dhar( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.service();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::service() properly handles
+ *        an SN_DIPR register write error.
+ */
+TEST( service, sndiprWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    {
+        auto const result = network_stack.allocate_socket();
+
+        EXPECT_TRUE( result.is_value() );
+
+        network_stack.deallocate_socket( result.value() );
+    }
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, write_sn_ir( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, write_sn_mr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dhar( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dipr( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.service();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::service() properly handles
+ *        an SN_DPORT register write error.
+ */
+TEST( service, sndportWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    {
+        auto const result = network_stack.allocate_socket();
+
+        EXPECT_TRUE( result.is_value() );
+
+        network_stack.deallocate_socket( result.value() );
+    }
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, write_sn_ir( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, write_sn_mr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dhar( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dipr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dport( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.service();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::service() properly handles
+ *        an SN_MSSR register write error.
+ */
+TEST( service, snmssrWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    {
+        auto const result = network_stack.allocate_socket();
+
+        EXPECT_TRUE( result.is_value() );
+
+        network_stack.deallocate_socket( result.value() );
+    }
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, write_sn_ir( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, write_sn_mr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dhar( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dipr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dport( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_mssr( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.service();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::service() properly handles
+ *        an SN_TOS register write error.
+ */
+TEST( service, sntosWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    {
+        auto const result = network_stack.allocate_socket();
+
+        EXPECT_TRUE( result.is_value() );
+
+        network_stack.deallocate_socket( result.value() );
+    }
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, write_sn_ir( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, write_sn_mr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dhar( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dipr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dport( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_mssr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_tos( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.service();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::service() properly handles
+ *        an SN_TTL register write error.
+ */
+TEST( service, snttlWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    {
+        auto const result = network_stack.allocate_socket();
+
+        EXPECT_TRUE( result.is_value() );
+
+        network_stack.deallocate_socket( result.value() );
+    }
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, write_sn_ir( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, write_sn_mr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dhar( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dipr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dport( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_mssr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_tos( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_ttl( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.service();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::service() properly handles
+ *        an SN_IMR register write error.
+ */
+TEST( service, snimrWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    {
+        auto const result = network_stack.allocate_socket();
+
+        EXPECT_TRUE( result.is_value() );
+
+        network_stack.deallocate_socket( result.value() );
+    }
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, write_sn_ir( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, write_sn_mr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dhar( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dipr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dport( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_mssr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_tos( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_ttl( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_imr( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.service();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::service() properly handles
+ *        an SN_FRAG register write error.
+ */
+TEST( service, snfragWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    {
+        auto const result = network_stack.allocate_socket();
+
+        EXPECT_TRUE( result.is_value() );
+
+        network_stack.deallocate_socket( result.value() );
+    }
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, write_sn_ir( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, write_sn_mr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dhar( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dipr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dport( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_mssr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_tos( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_ttl( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_imr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_frag( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.service();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::service() properly handles
+ *        an SN_KPALVTR register write error.
+ */
+TEST( service, snkpalvtrWriteError )
+{
+    auto driver = Mock_Driver{};
+
+    auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+    {
+        auto const result = network_stack.allocate_socket();
+
+        EXPECT_TRUE( result.is_value() );
+
+        network_stack.deallocate_socket( result.value() );
+    }
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, write_sn_ir( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, write_sn_mr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dhar( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dipr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_dport( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_mssr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_tos( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_ttl( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_imr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_frag( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = network_stack.service();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::service() works properly.
+ */
+TEST( service, worksProperly )
+{
+    {
+        auto driver = Mock_Driver{};
+
+        auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+        EXPECT_FALSE( network_stack.service().is_error() );
+    }
+
+    {
+        auto const in_sequence = InSequence{};
+
+        auto driver = Mock_Driver{};
+
+        auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
+
+        auto const socket_id = random<Socket_ID>();
+
+        {
+            auto const result = network_stack.allocate_socket( socket_id );
+
+            EXPECT_TRUE( result.is_value() );
+
+            network_stack.deallocate_socket( socket_id );
+        }
+
+        EXPECT_CALL( driver, write_sn_cr( socket_id, 0x10 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
+        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+        EXPECT_CALL( driver, write_sn_ir( socket_id, 0b000'1'1'1'1'1 ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+        EXPECT_CALL( driver, write_sn_mr( socket_id, 0x00 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, write_sn_port( socket_id, 0x0000 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL(
+            driver,
+            write_sn_dhar(
+                socket_id, Fixed_Size_Array<std::uint8_t, 6>{ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF } ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL(
+            driver, write_sn_dipr( socket_id, Fixed_Size_Array<std::uint8_t, 4>{ 0x00, 0x00, 0x00, 0x00 } ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, write_sn_dport( socket_id, 0x0000 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, write_sn_mssr( socket_id, 0x0000 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, write_sn_tos( socket_id, 0x00 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, write_sn_ttl( socket_id, 0x80 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, write_sn_imr( socket_id, 0xFF ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, write_sn_frag( socket_id, 0x4000 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, write_sn_kpalvtr( socket_id, 0x00 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+
+        EXPECT_FALSE( network_stack.service().is_error() );
+
+        EXPECT_FALSE( network_stack.service().is_error() );
+    }
 }
 
 /**
