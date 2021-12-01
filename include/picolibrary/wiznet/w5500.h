@@ -639,6 +639,11 @@ struct MR {
     static constexpr auto OFFSET = std::uint16_t{ 0x0000 };
 
     /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00 };
+
+    /**
      * \brief Field sizes.
      */
     struct Size {
@@ -694,6 +699,11 @@ struct GAR {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0001 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00, 0x00, 0x00, 0x00 };
 };
 
 /**
@@ -709,6 +719,11 @@ struct SUBR {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0005 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00, 0x00, 0x00, 0x00 };
 };
 
 /**
@@ -724,6 +739,11 @@ struct SHAR {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0009 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 };
 
 /**
@@ -739,6 +759,11 @@ struct SIPR {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x000F };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00, 0x00, 0x00, 0x00 };
 };
 
 /**
@@ -754,6 +779,11 @@ struct INTLEVEL {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0013 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x0000 };
 };
 
 /**
@@ -831,6 +861,11 @@ struct IMR {
     static constexpr auto OFFSET = std::uint16_t{ 0x0016 };
 
     /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00 };
+
+    /**
      * \brief Field sizes.
      */
     struct Size {
@@ -892,6 +927,11 @@ struct SIMR {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0018 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00 };
 };
 
 /**
@@ -907,6 +947,11 @@ struct RTR {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0019 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x07D0 };
 };
 
 /**
@@ -922,6 +967,11 @@ struct RCR {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x001B };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x08 };
 };
 
 /**
@@ -937,6 +987,11 @@ struct PTIMER {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x001C };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x28 };
 };
 
 /**
@@ -952,6 +1007,11 @@ struct PMAGIC {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x001D };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00 };
 };
 
 /**
@@ -967,6 +1027,11 @@ struct PHAR {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x001E };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 };
 
 /**
@@ -982,6 +1047,11 @@ struct PSID {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0024 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x0000 };
 };
 
 /**
@@ -997,6 +1067,11 @@ struct PMRU {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0026 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0xFFFF };
 };
 
 /**
@@ -1050,6 +1125,11 @@ struct PHYCFGR {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x002E };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0b1'0'111'0'0'0 };
 
     /**
      * \brief Field sizes.
@@ -1127,6 +1207,11 @@ struct SN_MR {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0000 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00 };
 
     /**
      * \brief Field sizes.
@@ -1275,6 +1360,11 @@ struct SN_PORT {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0004 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x0000 };
 };
 
 /**
@@ -1290,6 +1380,11 @@ struct SN_DHAR {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0006 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
 };
 
 /**
@@ -1305,6 +1400,11 @@ struct SN_DIPR {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x000C };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00, 0x00, 0x00, 0x00 };
 };
 
 /**
@@ -1320,6 +1420,11 @@ struct SN_DPORT {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0010 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x0000 };
 };
 
 /**
@@ -1335,6 +1440,11 @@ struct SN_MSSR {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0012 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x0000 };
 };
 
 /**
@@ -1350,6 +1460,11 @@ struct SN_TOS {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0015 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00 };
 };
 
 /**
@@ -1365,6 +1480,11 @@ struct SN_TTL {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x0016 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x80 };
 };
 
 /**
@@ -1380,6 +1500,11 @@ struct SN_RXBUF_SIZE {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x001E };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x02 };
 };
 
 /**
@@ -1395,6 +1520,11 @@ struct SN_TXBUF_SIZE {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x001F };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x02 };
 };
 
 /**
@@ -1509,6 +1639,11 @@ struct SN_IMR {
     static constexpr auto OFFSET = std::uint16_t{ 0x002C };
 
     /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0xFF };
+
+    /**
      * \brief Field sizes.
      */
     struct Size {
@@ -1558,6 +1693,11 @@ struct SN_FRAG {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x002D };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x4000 };
 };
 
 /**
@@ -1573,6 +1713,11 @@ struct SN_KPALVTR {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = std::uint16_t{ 0x002F };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00 };
 };
 
 /**
