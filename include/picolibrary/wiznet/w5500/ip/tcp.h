@@ -152,7 +152,12 @@ class Client {
     /**
      * \brief Destructor.
      */
-    ~Client() noexcept = default;
+    ~Client() noexcept
+    {
+        if ( m_state != State::UNINITIALIZED ) {
+            m_network_stack->deallocate_socket( m_socket_id );
+        } // if
+    }
 
     /**
      * \brief Assignment operator.
@@ -164,6 +169,10 @@ class Client {
     constexpr auto & operator=( Client && expression ) noexcept
     {
         if ( &expression != this ) {
+            if ( m_state != State::UNINITIALIZED ) {
+                m_network_stack->deallocate_socket( m_socket_id );
+            } // if
+
             m_state           = expression.m_state;
             m_driver          = expression.m_driver;
             m_socket_id       = expression.m_socket_id;
@@ -854,10 +863,9 @@ class Client {
         // #lizard forgives the length
         // #lizard forgives the complexity
 
-        switch ( m_state ) {
-            case State::CONNECTED: break;
-            default: return Generic_Error::NOT_CONNECTED;
-        } // switch
+        if ( m_state != State::CONNECTED ) {
+            return Generic_Error::NOT_CONNECTED;
+        } // if
 
         {
             auto result = m_driver->read_sn_sr( m_socket_id );
@@ -1018,10 +1026,9 @@ class Client {
     {
         // #lizard forgives the length
 
-        switch ( m_state ) {
-            case State::CONNECTED: break;
-            default: return Generic_Error::NOT_CONNECTED;
-        } // switch
+        if ( m_state != State::CONNECTED ) {
+            return Generic_Error::NOT_CONNECTED;
+        } // if
 
         {
             auto result = m_driver->read_sn_sr( m_socket_id );
@@ -1135,10 +1142,9 @@ class Client {
         // #lizard forgives the length
         // #lizard forgives the complexity
 
-        switch ( m_state ) {
-            case State::CONNECTED: break;
-            default: return Generic_Error::NOT_CONNECTED;
-        } // switch
+        if ( m_state != State::CONNECTED ) {
+            return Generic_Error::NOT_CONNECTED;
+        } // if
 
         auto close_wait = false;
         {
@@ -1307,6 +1313,22 @@ class Client {
                 return {};
             } // if
         }     // for
+    }
+
+    /**
+     * \brief Close the socket.
+     *
+     * \return Success.
+     */
+    auto close() noexcept -> Result<Void, Void>
+    {
+        if ( m_state != State::UNINITIALIZED ) {
+            m_network_stack->deallocate_socket( m_socket_id );
+
+            m_state = State::UNINITIALIZED;
+        } // if
+
+        return {};
     }
 
   private:
