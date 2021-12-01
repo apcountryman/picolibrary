@@ -342,7 +342,6 @@ class Client {
      *
      * \return The socket's no delayed ACK configuration if getting the socket's no
      *         delayed ACK configuration succeeded.
-     *
      * \return An error code if getting the socket's no delayed ACK configuration failed.
      */
     auto no_delayed_ack_configuration() const noexcept -> Result<No_Delayed_ACK, Error_Code>
@@ -455,8 +454,8 @@ class Client {
      * \return picolibrary::Generic_Error::ENDPOINT_IN_USE if endpoint is already in use.
      * \return picolibrary::Generic_Error::EPHEMERAL_PORTS_EXHAUSTED if an ephemeral port
      *         was requested and no ephemeral ports are available.
-     * \return An error code if bind the socket to the local endpoint failed for any other
-     *         reason.
+     * \return An error code if binding the socket to the local endpoint failed for any
+     *         other reason.
      */
     auto bind( ::picolibrary::IP::TCP::Endpoint const & endpoint = ::picolibrary::IP::TCP::Endpoint{} ) noexcept
         -> Result<Void, Error_Code>
