@@ -92,26 +92,6 @@ class Client {
     /**
      * \brief Constructor.
      *
-     * \param[in] driver The driver for the W5500 the socket is associated with.
-     * \param[in] socket_id The socket's socket ID.
-     * \param[in] network_stack The network stack the socket is associated with.
-     * \param[in] is_transmitting The socket's initial data transmission in progress
-     *            status.
-     */
-    constexpr Client( Driver & driver, Socket_ID socket_id, Network_Stack & network_stack, bool is_transmitting ) noexcept
-        :
-        m_driver{ &driver },
-        m_socket_id{ socket_id },
-        m_network_stack{ &network_stack },
-        m_is_transmitting{ is_transmitting }
-    {
-    }
-#endif // PICOLIBRARY_ENABLE_UNIT_TESTING
-
-#ifdef PICOLIBRARY_ENABLE_UNIT_TESTING
-    /**
-     * \brief Constructor.
-     *
      * \param[in] state The socket's initial state.
      * \param[in] driver The driver for the W5500 the socket is associated with.
      * \param[in] socket_id The socket's socket ID.

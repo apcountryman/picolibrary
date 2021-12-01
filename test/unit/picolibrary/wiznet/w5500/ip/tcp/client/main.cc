@@ -433,7 +433,9 @@ TEST( clearInterrupts, snirWriteError )
             auto driver        = Mock_Driver{};
             auto network_stack = Mock_Network_Stack{};
 
-            auto client = Client{ driver, random<Socket_ID>(), network_stack, test_case.is_transmitting };
+            auto client = Client{
+                State::INITIALIZED, driver, random<Socket_ID>(), network_stack, test_case.is_transmitting
+            };
 
             auto const error = random<Mock_Error>();
 
@@ -462,7 +464,9 @@ TEST( clearInterrupts, snirWriteError )
             auto driver        = Mock_Driver{};
             auto network_stack = Mock_Network_Stack{};
 
-            auto client = Client{ driver, random<Socket_ID>(), network_stack, test_case.is_transmitting };
+            auto client = Client{
+                State::INITIALIZED, driver, random<Socket_ID>(), network_stack, test_case.is_transmitting
+            };
 
             auto const error = random<Mock_Error>();
 
@@ -500,7 +504,9 @@ TEST( clearInterrupts, worksProperly )
 
             auto const socket_id = random<Socket_ID>();
 
-            auto client = Client{ driver, socket_id, network_stack, test_case.is_transmitting };
+            auto client = Client{
+                State::INITIALIZED, driver, socket_id, network_stack, test_case.is_transmitting
+            };
 
             EXPECT_CALL( driver, write_sn_ir( socket_id, 0b000'1'1'1'1'1 ) )
                 .WillOnce( Return( Result<Void, Error_Code>{} ) );
@@ -527,7 +533,9 @@ TEST( clearInterrupts, worksProperly )
 
             auto const socket_id = random<Socket_ID>();
 
-            auto client = Client{ driver, socket_id, network_stack, test_case.is_transmitting };
+            auto client = Client{
+                State::INITIALIZED, driver, socket_id, network_stack, test_case.is_transmitting
+            };
 
             auto const mask = random<std::uint8_t>();
 
