@@ -2349,13 +2349,12 @@ TEST( service, worksProperly )
 
         auto network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
-        Socket_ID socket_id;
+        auto const socket_id = random<Socket_ID>();
+
         {
-            auto const result = network_stack.allocate_socket();
+            auto const result = network_stack.allocate_socket( socket_id );
 
             EXPECT_TRUE( result.is_value() );
-
-            socket_id = result.value();
 
             network_stack.deallocate_socket( socket_id );
         }
