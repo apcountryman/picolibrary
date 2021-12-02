@@ -744,27 +744,27 @@ class Client {
      */
     auto local_endpoint() const noexcept -> Result<::picolibrary::IP::TCP::Endpoint, Error_Code>
     {
-        SN_DIPR::Type sn_dipr;
+        SIPR::Type sipr;
         {
             auto result = m_driver->read_sipr();
             if ( result.is_error() ) {
                 return result.error();
             } // if
 
-            sn_dipr = result.value();
+            sipr = result.value();
         }
 
-        SN_DPORT::Type sn_dport;
+        SN_PORT::Type sn_port;
         {
             auto result = m_driver->read_sn_port( m_socket_id );
             if ( result.is_error() ) {
                 return result.error();
             } // if
 
-            sn_dport = result.value();
+            sn_port = result.value();
         }
 
-        return ::picolibrary::IP::TCP::Endpoint{ IPv4::Address{ sn_dipr }, sn_dport };
+        return ::picolibrary::IP::TCP::Endpoint{ IPv4::Address{ sipr }, sn_port };
     }
 
     /**

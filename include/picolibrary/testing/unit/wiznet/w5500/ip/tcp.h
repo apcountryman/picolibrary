@@ -195,10 +195,10 @@ class Mock_Client {
         }
 
         /**
-         * \brief Disable interrupts.
+         * \brief Disable all interrupts.
          *
-         * \return Nothing if disabling interrupts succeeded.
-         * \return An error code if disabling interrupts failed.
+         * \return Nothing if disabling all interrupts succeeded.
+         * \return An error code if disabling all interrupts failed.
          */
         auto disable_interrupts()
         {
@@ -208,7 +208,8 @@ class Mock_Client {
         /**
          * \brief Get a mask identifying the interrupts that are enabled.
          *
-         * \return A mask identifying the interrupts that are enabled.
+         * \return A mask identifying the interrupts that are enabled if getting a mask
+         *         identifying the interrupts that are enabled succeeded.
          * \return An error code if getting a mask identifying the interrupts that are
          *         enabled failed.
          */
@@ -675,7 +676,7 @@ class Mock_Client {
             ++begin;
         } );
 
-        return begin + result.value().size();
+        return begin;
     }
 
     MOCK_METHOD( (Result<Void, Error_Code>), shutdown, () );

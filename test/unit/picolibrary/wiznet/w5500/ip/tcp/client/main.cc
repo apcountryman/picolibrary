@@ -686,10 +686,7 @@ TEST( noDelayedAckConfiguration, worksProperly )
 
         auto client = Client{ driver, socket_id, network_stack };
 
-        auto const sn_mr = static_cast<std::uint8_t>(
-            ( random<std::uint8_t>() & 0b1'1'0'1'1111 ) | test_case.sn_mr_nd );
-
-        EXPECT_CALL( driver, read_sn_mr( socket_id ) ).WillOnce( Return( sn_mr ) );
+        EXPECT_CALL( driver, read_sn_mr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( ( random<std::uint8_t>() & 0b1'1'0'1'1111 ) | test_case.sn_mr_nd ) ) );
 
         auto const result = client.no_delayed_ack_configuration();
 
@@ -750,7 +747,7 @@ TEST( configureMaximumSegmentSize, worksProperly )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::maximum_segment_size()
- *        properly handles an SN_MSSR register write error.
+ *        properly handles an SN_MSSR register read error.
  */
 TEST( maximumSegmentSize, mssrReadError )
 {
@@ -843,7 +840,7 @@ TEST( configureTimeToLive, worksProperly )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::time_to_live() properly
- *        handles an SN_TTL register write error.
+ *        handles an SN_TTL register read error.
  */
 TEST( timeToLive, ttlReadError )
 {
@@ -937,7 +934,7 @@ TEST( configureKeepalivePeriod, worksProperly )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::keepalive_period() properly
- *        handles an SN_KPALVTR register write error.
+ *        handles an SN_KPALVTR register read error.
  */
 TEST( keepalivePeriod, kpalvtrReadError )
 {
@@ -1333,8 +1330,12 @@ TEST( bind, invalidSNSRValue )
     struct {
         std::uint8_t sn_sr;
     } const test_cases[]{
+        // clang-format off
+
         { random<std::uint8_t>( 0x01, 0x12 ) },
-        { random<std::uint8_t>( 0x14 ) },
+        { random<std::uint8_t>( 0x14       ) },
+
+        // clang-format on
     };
 
     for ( auto const test_case : test_cases ) {
@@ -2250,11 +2251,15 @@ TEST( outstanding, invalidSNTXBUFSIZEValue )
     struct {
         std::uint8_t sn_txbuf_size;
     } const test_cases[]{
-        { 0 },
-        { 3 },
-        { random<std::uint8_t>( 5, 7 ) },
-        { random<std::uint8_t>( 9, 15 ) },
-        { random<std::uint8_t>( 17 ) },
+        // clang-format off
+
+        {                        0       },
+        {                        3       },
+        { random<std::uint8_t>(  5,  7 ) },
+        { random<std::uint8_t>(  9, 15 ) },
+        { random<std::uint8_t>( 17     ) },
+
+        // clang-format on
     };
 
     for ( auto const test_case : test_cases ) {
@@ -3321,9 +3326,13 @@ TEST( transmitKeepalive, invalidSNSRValue )
     struct {
         std::uint8_t sn_sr;
     } const test_cases[]{
+        // clang-format off
+
         { random<std::uint8_t>( 0x01, 0x16 ) },
-        { 0x19 },
-        { random<std::uint8_t>( 0x1E ) },
+        {                       0x19         },
+        { random<std::uint8_t>( 0x1E       ) },
+
+        // clang-format on
     };
 
     for ( auto const test_case : test_cases ) {
@@ -4102,7 +4111,7 @@ TEST( receive, sncrWriteError )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::receive() properly handles
- *        an SN_CR register write error.
+ *        an SN_CR register read error.
  */
 TEST( receive, sncrReadError )
 {
@@ -4392,9 +4401,13 @@ TEST( shutdown, invalidSNSRValue )
     struct {
         std::uint8_t sn_sr;
     } const test_cases[]{
+        //clang-format off
+
         { random<std::uint8_t>( 0x01, 0x16 ) },
-        { 0x19 },
-        { random<std::uint8_t>( 0x1E ) },
+        {                       0x19         },
+        { random<std::uint8_t>( 0x1E       ) },
+
+        // clang-format on
     };
 
     for ( auto const test_case : test_cases ) {
@@ -4593,7 +4606,7 @@ TEST( close, worksProperly )
 
             EXPECT_FALSE( client.close().is_error() );
 
-            EXPECT_CALL( network_stack, deallocate_socket( socket_id ) ).Times( 0 );
+            EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( 0 );
         } // for
     }
 }
