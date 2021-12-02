@@ -2315,25 +2315,40 @@ TEST( outstanding, sntxfsrReadError )
  */
 TEST( outstanding, invalidSNTXFSRValue )
 {
-    auto driver        = Mock_Driver{};
-    auto network_stack = Mock_Network_Stack{};
+    struct {
+        std::uint8_t sn_txbuf_size;
+    } const test_cases[]{
+        // clang-format off
 
-    auto const client = Client{ driver, random<Socket_ID>(), network_stack };
+        {  1 },
+        {  2 },
+        {  4 },
+        {  8 },
+        { 16 },
 
-    auto const sn_txbuf_size = static_cast<std::uint8_t>( 1 << random<std::uint_fast8_t>( 0, 4 ) );
-    auto const error = random<Mock_Error>();
+        // clang-format on
+    };
 
-    EXPECT_CALL( driver, read_sn_txbuf_size( _ ) ).WillOnce( Return( sn_txbuf_size ) );
-    EXPECT_CALL( driver, read_sn_tx_fsr( _ ) )
-        .WillOnce( Return( random<std::uint16_t>( ( sn_txbuf_size * 1024 ) + 1 ) ) );
-    EXPECT_CALL( network_stack, nonresponsive_device_error() ).WillOnce( Return( error ) );
+    for ( auto const test_case : test_cases ) {
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
 
-    auto const result = client.outstanding();
+        auto const client = Client{ driver, random<Socket_ID>(), network_stack };
 
-    EXPECT_TRUE( result.is_error() );
-    EXPECT_EQ( result.error(), error );
+        auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( driver, read_sn_txbuf_size( _ ) ).WillOnce( Return( test_case.sn_txbuf_size ) );
+        EXPECT_CALL( driver, read_sn_tx_fsr( _ ) )
+            .WillOnce( Return( random<std::uint16_t>( ( test_case.sn_txbuf_size * 1024 ) + 1 ) ) );
+        EXPECT_CALL( network_stack, nonresponsive_device_error() ).WillOnce( Return( error ) );
+
+        auto const result = client.outstanding();
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), error );
+
+        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    } // for
 }
 
 /**
