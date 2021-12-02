@@ -686,7 +686,9 @@ TEST( noDelayedAckConfiguration, worksProperly )
 
         auto client = Client{ driver, socket_id, network_stack };
 
-        EXPECT_CALL( driver, read_sn_mr( socket_id ) ).WillOnce( Return( static_cast<std::uint8_t>( ( random<std::uint8_t>() & 0b1'1'0'1'1111 ) | test_case.sn_mr_nd ) ) );
+        EXPECT_CALL( driver, read_sn_mr( socket_id ) )
+            .WillOnce( Return( static_cast<std::uint8_t>(
+                ( random<std::uint8_t>() & 0b1'1'0'1'1111 ) | test_case.sn_mr_nd ) ) );
 
         auto const result = client.no_delayed_ack_configuration();
 
@@ -4401,7 +4403,7 @@ TEST( shutdown, invalidSNSRValue )
     struct {
         std::uint8_t sn_sr;
     } const test_cases[]{
-        //clang-format off
+        // clang-format off
 
         { random<std::uint8_t>( 0x01, 0x16 ) },
         {                       0x19         },
