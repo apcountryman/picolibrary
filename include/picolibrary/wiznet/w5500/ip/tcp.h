@@ -695,7 +695,7 @@ class Client {
             case Socket_Status::CLOSE_WAIT: return false;
             case Socket_Status::SYN_SENT: return false;
             case Socket_Status::SYN_RECEIVED: return false;
-            case Socket_Status::FIN_WAIT: return true;
+            case Socket_Status::FIN_WAIT: return false;
             case Socket_Status::CLOSING: return false;
             case Socket_Status::TIME_WAIT: return false;
             case Socket_Status::LAST_ACK: return false;
@@ -855,7 +855,7 @@ class Client {
             switch ( static_cast<Socket_Status>( result.value() ) ) {
                 case Socket_Status::CLOSED: return Generic_Error::NOT_CONNECTED;
                 case Socket_Status::ESTABLISHED: break;
-                case Socket_Status::FIN_WAIT: return Generic_Error::WOULD_BLOCK;
+                case Socket_Status::FIN_WAIT: return Generic_Error::NOT_CONNECTED;
                 case Socket_Status::CLOSE_WAIT: return Generic_Error::NOT_CONNECTED;
                 case Socket_Status::CLOSING: return Generic_Error::NOT_CONNECTED;
                 case Socket_Status::TIME_WAIT: return Generic_Error::NOT_CONNECTED;
@@ -1018,7 +1018,7 @@ class Client {
             switch ( static_cast<Socket_Status>( result.value() ) ) {
                 case Socket_Status::CLOSED: return Generic_Error::NOT_CONNECTED;
                 case Socket_Status::ESTABLISHED: break;
-                case Socket_Status::FIN_WAIT: return Generic_Error::WOULD_BLOCK;
+                case Socket_Status::FIN_WAIT: return Generic_Error::NOT_CONNECTED;
                 case Socket_Status::CLOSE_WAIT: return Generic_Error::NOT_CONNECTED;
                 case Socket_Status::CLOSING: return Generic_Error::NOT_CONNECTED;
                 case Socket_Status::TIME_WAIT: return Generic_Error::NOT_CONNECTED;
@@ -1137,9 +1137,9 @@ class Client {
                 case Socket_Status::ESTABLISHED: break;
                 case Socket_Status::FIN_WAIT: return Generic_Error::WOULD_BLOCK;
                 case Socket_Status::CLOSE_WAIT: close_wait = true; break;
-                case Socket_Status::CLOSING: return Generic_Error::NOT_CONNECTED;
-                case Socket_Status::TIME_WAIT: return Generic_Error::NOT_CONNECTED;
-                case Socket_Status::LAST_ACK: return Generic_Error::NOT_CONNECTED;
+                case Socket_Status::CLOSING: return Generic_Error::WOULD_BLOCK;
+                case Socket_Status::TIME_WAIT: return Generic_Error::WOULD_BLOCK;
+                case Socket_Status::LAST_ACK: return Generic_Error::WOULD_BLOCK;
                 default: return m_network_stack->nonresponsive_device_error();
             } // switch
         }

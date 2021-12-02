@@ -2041,7 +2041,7 @@ TEST( isConnected, worksProperly )
         { 0x15, false },
         { 0x16, false },
         { 0x17, true  },
-        { 0x18, true  },
+        { 0x18, false },
         { 0x1A, false },
         { 0x1B, false },
         { 0x1C, false },
@@ -2514,17 +2514,16 @@ TEST( transmit, invalidSNSRValue )
 TEST( transmit, connectionLost )
 {
     struct {
-        std::uint8_t  sn_sr;
-        Generic_Error error;
+        std::uint8_t sn_sr;
     } const test_cases[]{
         // clang-format off
 
-        { 0x00, Generic_Error::NOT_CONNECTED },
-        { 0x18, Generic_Error::WOULD_BLOCK   },
-        { 0x1A, Generic_Error::NOT_CONNECTED },
-        { 0x1B, Generic_Error::NOT_CONNECTED },
-        { 0x1C, Generic_Error::NOT_CONNECTED },
-        { 0x1D, Generic_Error::NOT_CONNECTED },
+        { 0x00 },
+        { 0x18 },
+        { 0x1A },
+        { 0x1B },
+        { 0x1C },
+        { 0x1D },
 
         // clang-format on
     };
@@ -2543,7 +2542,7 @@ TEST( transmit, connectionLost )
         auto const result = client.transmit( &*data.begin(), &*data.end() );
 
         EXPECT_TRUE( result.is_error() );
-        EXPECT_EQ( result.error(), test_case.error );
+        EXPECT_EQ( result.error(), Generic_Error::NOT_CONNECTED );
 
         EXPECT_EQ( client.state(), State::CONNECTED );
         EXPECT_EQ( client.is_transmitting(), is_transmitting );
@@ -3381,17 +3380,16 @@ TEST( transmitKeepalive, invalidSNSRValue )
 TEST( transmitKeepalive, connectionLost )
 {
     struct {
-        std::uint8_t  sn_sr;
-        Generic_Error error;
+        std::uint8_t sn_sr;
     } const test_cases[]{
         // clang-format off
 
-        { 0x00, Generic_Error::NOT_CONNECTED },
-        { 0x18, Generic_Error::WOULD_BLOCK   },
-        { 0x1A, Generic_Error::NOT_CONNECTED },
-        { 0x1B, Generic_Error::NOT_CONNECTED },
-        { 0x1C, Generic_Error::NOT_CONNECTED },
-        { 0x1D, Generic_Error::NOT_CONNECTED },
+        { 0x00 },
+        { 0x18 },
+        { 0x1A },
+        { 0x1B },
+        { 0x1C },
+        { 0x1D },
 
         // clang-format on
     };
@@ -3407,7 +3405,7 @@ TEST( transmitKeepalive, connectionLost )
         auto const result = client.transmit_keepalive();
 
         EXPECT_TRUE( result.is_error() );
-        EXPECT_EQ( result.error(), test_case.error );
+        EXPECT_EQ( result.error(), Generic_Error::NOT_CONNECTED );
 
         EXPECT_EQ( client.state(), State::CONNECTED );
 
@@ -3773,9 +3771,9 @@ TEST( receive, invalidSNSRValue )
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::receive() properly handles
- *        connection loss.
+ *        connection loss and graceful shutdown.
  */
-TEST( receive, connectionLost )
+TEST( receive, connectionLostGracefulShutdown )
 {
     struct {
         std::uint8_t  sn_sr;
@@ -3785,9 +3783,9 @@ TEST( receive, connectionLost )
 
         { 0x00, Generic_Error::NOT_CONNECTED },
         { 0x18, Generic_Error::WOULD_BLOCK   },
-        { 0x1A, Generic_Error::NOT_CONNECTED },
-        { 0x1B, Generic_Error::NOT_CONNECTED },
-        { 0x1D, Generic_Error::NOT_CONNECTED },
+        { 0x1A, Generic_Error::WOULD_BLOCK   },
+        { 0x1B, Generic_Error::WOULD_BLOCK   },
+        { 0x1D, Generic_Error::WOULD_BLOCK   },
 
         // clang-format on
     };
