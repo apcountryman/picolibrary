@@ -32,6 +32,7 @@
 #include "picolibrary/result.h"
 #include "picolibrary/void.h"
 #include "picolibrary/wiznet/w5500.h"
+#include "picolibrary/wiznet/w5500/ip/tcp.h"
 
 namespace picolibrary::WIZnet::W5500::IP {
 
@@ -45,6 +46,12 @@ namespace picolibrary::WIZnet::W5500::IP {
 template<typename Driver>
 class Network_Stack {
   public:
+    /**
+     * \brief The type of TCP client socket that is used to interact with the network
+     *        stack.
+     */
+    using TCP_Client = TCP::Client<Driver, Network_Stack>;
+
     /**
      * \brief Constructor.
      */
@@ -997,6 +1004,75 @@ class Network_Stack {
     auto tcp_ephemeral_port_max() const noexcept
     {
         return m_tcp_ephemeral_port_max;
+    }
+
+    /**
+     * \brief Construct a TCP client socket.
+     *
+     * \return The constructed TCP client socket if TCP client socket construction
+     *         succeeded.
+     * \return picolibrary::Generic_Error::NO_SOCKETS_AVAILABLE if no sockets are
+     *         available.
+     * \return An error code if TCP client socket construction failed for any other
+     *         reason.
+     */
+    auto make_tcp_client() noexcept -> Result<TCP_Client, Error_Code>
+    {
+        Socket_ID socket_id;
+        {
+            auto result = allocate_socket();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            socket_id = result.value();
+        }
+
+        {
+            auto result = m_driver->write_sn_mr(
+                socket_id, static_cast<SN_MR::Type>( Protocol::TCP ) );
+            if ( result.is_error() ) {
+                deallocate_socket( socket_id );
+
+                return result.error();
+            } // if
+        }
+
+        return TCP_Client{ *m_driver, socket_id, *this };
+    }
+
+    /**
+     * \brief Construct a TCP client socket that uses a specific W5500 socket.
+     *
+     * \param[in] socket_id The socket ID of the W5500 socket to use.
+     *
+     * \return The constructed TCP client socket if TCP client socket construction
+     *         succeeded.
+     * \return picolibrary::Generic_Error::LOGIC_ERROR if the W5500 socket is not
+     *         available.
+     * \return An error code if TCP client socket construction failed for any other
+     *         reason.
+     */
+    auto make_tcp_client( Socket_ID socket_id ) noexcept -> Result<TCP_Client, Error_Code>
+    {
+        {
+            auto result = allocate_socket( socket_id );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }
+
+        {
+            auto result = m_driver->write_sn_mr(
+                socket_id, static_cast<SN_MR::Type>( Protocol::TCP ) );
+            if ( result.is_error() ) {
+                deallocate_socket( socket_id );
+
+                return result.error();
+            } // if
+        }
+
+        return TCP_Client{ *m_driver, socket_id, *this };
     }
 
   private:
