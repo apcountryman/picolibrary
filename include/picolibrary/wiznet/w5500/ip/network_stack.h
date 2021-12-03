@@ -1029,7 +1029,8 @@ class Network_Stack {
         }
 
         {
-            auto result = m_driver->write_sn_mr( static_cast<SN_MR::Type>( Protocol::TCP ) );
+            auto result = m_driver->write_sn_mr(
+                socket_id, static_cast<SN_MR::Type>( Protocol::TCP ) );
             if ( result.is_error() ) {
                 deallocate_socket( socket_id );
 
@@ -1062,7 +1063,8 @@ class Network_Stack {
         }
 
         {
-            auto result = m_driver->write_sn_mr( static_cast<SN_MR::Type>( Protocol::TCP ) );
+            auto result = m_driver->write_sn_mr(
+                socket_id, static_cast<SN_MR::Type>( Protocol::TCP ) );
             if ( result.is_error() ) {
                 deallocate_socket( socket_id );
 
