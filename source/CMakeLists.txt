@@ -24,7 +24,6 @@ configure_file(
 
 set(
     PICOLIBRARY_SOURCE_FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/picolibrary/version.cc"
     "picolibrary.cc"
     "picolibrary/adc.cc"
     "picolibrary/algorithm.cc"
@@ -157,4 +156,13 @@ target_include_directories(
 target_link_libraries(
     picolibrary-fatal_error
     picolibrary
+)
+
+add_library(
+    picolibrary-version STATIC
+    "${CMAKE_CURRENT_BINARY_DIR}/picolibrary/version.cc"
+)
+target_include_directories(
+    picolibrary-version
+    PUBLIC "${PROJECT_SOURCE_DIR}/include"
 )
