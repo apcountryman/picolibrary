@@ -911,7 +911,7 @@ class Network_Stack {
      * \return picolibrary::Generic_Error::LOGIC_ERROR if the socket is not available for
      *         allocation.
      */
-    auto allocate_socket( Socket_ID socket_id ) noexcept -> Result<Socket_ID, Error_Code>
+    auto allocate_socket( Socket_ID socket_id ) noexcept -> Result<Void, Error_Code>
     {
         auto const socket = static_cast<std::uint_fast8_t>(
             static_cast<std::uint_fast8_t>( socket_id ) >> Control_Byte::Bit::SOCKET );
@@ -922,7 +922,7 @@ class Network_Stack {
 
         m_socket_state[ socket ] = Socket_State::ALLOCATED;
 
-        return socket_id;
+        return {};
     }
 
     /**
