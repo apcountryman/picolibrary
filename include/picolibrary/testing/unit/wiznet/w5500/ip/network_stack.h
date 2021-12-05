@@ -31,6 +31,7 @@
 #include "picolibrary/ipv4.h"
 #include "picolibrary/mac_address.h"
 #include "picolibrary/result.h"
+#include "picolibrary/testing/unit/wiznet/w5500/ip/tcp.h"
 #include "picolibrary/void.h"
 #include "picolibrary/wiznet/w5500.h"
 
@@ -41,6 +42,12 @@ namespace picolibrary::Testing::Unit::WIZnet::W5500::IP {
  */
 class Mock_Network_Stack {
   public:
+    /**
+     * \brief The type of TCP client socket that is used to interact with the network
+     *        stack.
+     */
+    using TCP_Client = TCP::Mock_Client::Handle;
+
     /**
      * \brief Constructor.
      */
@@ -123,6 +130,9 @@ class Mock_Network_Stack {
     MOCK_METHOD( bool, tcp_ephemeral_port_allocation_enabled, (), ( const ) );
     MOCK_METHOD( ::picolibrary::IP::TCP::Port, tcp_ephemeral_port_min, (), ( const ) );
     MOCK_METHOD( ::picolibrary::IP::TCP::Port, tcp_ephemeral_port_max, (), ( const ) );
+
+    MOCK_METHOD( (Result<TCP_Client, Error_Code>), make_tcp_client, () );
+    MOCK_METHOD( (Result<TCP_Client, Error_Code>), make_tcp_client, ( ::picolibrary::WIZnet::W5500::Socket_ID ) );
 };
 
 } // namespace picolibrary::Testing::Unit::WIZnet::W5500::IP
