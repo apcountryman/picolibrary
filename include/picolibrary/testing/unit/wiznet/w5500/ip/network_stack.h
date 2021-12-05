@@ -113,10 +113,7 @@ class Mock_Network_Stack {
     MOCK_METHOD( (Result<Void, Error_Code>), service, () );
 
     MOCK_METHOD( (Result<::picolibrary::WIZnet::W5500::Socket_ID, Error_Code>), allocate_socket, () );
-    MOCK_METHOD(
-        (Result<::picolibrary::WIZnet::W5500::Socket_ID, Error_Code>),
-        allocate_socket,
-        ( ::picolibrary::WIZnet::W5500::Socket_ID ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), allocate_socket, ( ::picolibrary::WIZnet::W5500::Socket_ID ) );
     MOCK_METHOD( void, deallocate_socket, ( ::picolibrary::WIZnet::W5500::Socket_ID ) );
 
     MOCK_METHOD(
