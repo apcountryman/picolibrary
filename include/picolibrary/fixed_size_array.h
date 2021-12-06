@@ -28,7 +28,6 @@
 #include <type_traits>
 
 #include "picolibrary/algorithm.h"
-#include "picolibrary/iterator.h"
 
 namespace picolibrary {
 
