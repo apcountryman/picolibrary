@@ -26,8 +26,8 @@
 #include <cstdint>
 #include <limits>
 
+#include "picolibrary/array.h"
 #include "picolibrary/bit_manipulation.h"
-#include "picolibrary/fixed_size_array.h"
 
 /**
  * \brief Cyclic Redundancy Check (CRC) facilities.
@@ -135,7 +135,7 @@ constexpr auto NIBBLE_DIGITS = std::numeric_limits<std::uint8_t>::digits / 2;
 /**
  * \brief The pair of nibbles that make up a byte (most significant nibble first).
  */
-using Nibbles = Fixed_Size_Array<Nibble, std::numeric_limits<std::uint8_t>::digits / NIBBLE_DIGITS>;
+using Nibbles = Array<Nibble, std::numeric_limits<std::uint8_t>::digits / NIBBLE_DIGITS>;
 
 /**
  * \brief Convert a byte to a pair of nibbles (most significant nibble first).
@@ -160,8 +160,7 @@ constexpr auto convert_byte_to_nibbles( std::uint8_t byte ) noexcept
  * \tparam Register Calculation register type.
  */
 template<typename Register>
-using Augment =
-    Fixed_Size_Array<std::uint8_t, std::numeric_limits<Register>::digits / std::numeric_limits<std::uint8_t>::digits>;
+using Augment = Array<std::uint8_t, std::numeric_limits<Register>::digits / std::numeric_limits<std::uint8_t>::digits>;
 
 /**
  * \brief Calculation nibble indexed lookup table.
@@ -170,7 +169,7 @@ using Augment =
  */
 template<typename Register>
 using Nibble_Indexed_Lookup_Table =
-    Fixed_Size_Array<Register, ( ( std::numeric_limits<std::uint8_t>::max() + 1 ) >> NIBBLE_DIGITS )>;
+    Array<Register, ( ( std::numeric_limits<std::uint8_t>::max() + 1 ) >> NIBBLE_DIGITS )>;
 
 /**
  * \brief Generate a calculation nibble indexed lookup table.
@@ -213,7 +212,7 @@ static constexpr auto generate_nibble_indexed_lookup_table( Register polynomial 
  * \tparam Register Calculation register type.
  */
 template<typename Register>
-using Byte_Indexed_Lookup_Table = Fixed_Size_Array<Register, std::numeric_limits<std::uint8_t>::max() + 1>;
+using Byte_Indexed_Lookup_Table = Array<Register, std::numeric_limits<std::uint8_t>::max() + 1>;
 
 /**
  * \brief Generate a calculation byte indexed lookup table.

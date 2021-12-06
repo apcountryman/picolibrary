@@ -1110,7 +1110,7 @@ class Network_Stack {
     /**
      * \brief Sockets state.
      */
-    Fixed_Size_Array<Socket_State, SOCKETS> m_socket_state{};
+    Array<Socket_State, SOCKETS> m_socket_state{};
 
     /**
      * \brief The TCP ephemeral port allocation enable state.

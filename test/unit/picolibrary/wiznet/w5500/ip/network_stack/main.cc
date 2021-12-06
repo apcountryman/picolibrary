@@ -26,8 +26,8 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "picolibrary/array.h"
 #include "picolibrary/error.h"
-#include "picolibrary/fixed_size_array.h"
 #include "picolibrary/ip/tcp.h"
 #include "picolibrary/ipv4.h"
 #include "picolibrary/mac_address.h"
@@ -44,8 +44,8 @@
 
 namespace {
 
+using ::picolibrary::Array;
 using ::picolibrary::Error_Code;
-using ::picolibrary::Fixed_Size_Array;
 using ::picolibrary::Generic_Error;
 using ::picolibrary::MAC_Address;
 using ::picolibrary::Result;
@@ -70,9 +70,9 @@ using IPv4_Address = ::picolibrary::IPv4::Address;
 using TCP_Port     = ::picolibrary::IP::TCP::Port;
 
 template<typename T, std::size_t N>
-auto random_fixed_size_array()
+auto random_array()
 {
-    Fixed_Size_Array<T, N> array;
+    Array<T, N> array;
 
     std::generate( array.begin(), array.end(), []() { return random<T>(); } );
 
@@ -1088,7 +1088,7 @@ TEST( macAddress, worksProperly )
 
     auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
-    auto const shar = random_fixed_size_array<std::uint8_t, 6>();
+    auto const shar = random_array<std::uint8_t, 6>();
 
     EXPECT_CALL( driver, read_shar() ).WillOnce( Return( shar ) );
 
@@ -1165,7 +1165,7 @@ TEST( ipAddress, worksProperly )
 
     auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
-    auto const sipr = random_fixed_size_array<std::uint8_t, 4>();
+    auto const sipr = random_array<std::uint8_t, 4>();
 
     EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( sipr ) );
 
@@ -1244,7 +1244,7 @@ TEST( gatewayIPAddress, worksProperly )
 
     auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
-    auto const gar = random_fixed_size_array<std::uint8_t, 4>();
+    auto const gar = random_array<std::uint8_t, 4>();
 
     EXPECT_CALL( driver, read_gar() ).WillOnce( Return( gar ) );
 
@@ -1322,7 +1322,7 @@ TEST( subnetMask, worksProperly )
 
     auto const network_stack = Network_Stack{ driver, random<Mock_Error>() };
 
-    auto const subr = random_fixed_size_array<std::uint8_t, 4>();
+    auto const subr = random_array<std::uint8_t, 4>();
 
     EXPECT_CALL( driver, read_subr() ).WillOnce( Return( subr ) );
 
@@ -2369,12 +2369,9 @@ TEST( service, worksProperly )
         EXPECT_CALL( driver, write_sn_mr( socket_id, 0x00 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
         EXPECT_CALL( driver, write_sn_port( socket_id, 0x0000 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
         EXPECT_CALL(
-            driver,
-            write_sn_dhar(
-                socket_id, Fixed_Size_Array<std::uint8_t, 6>{ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF } ) )
+            driver, write_sn_dhar( socket_id, Array<std::uint8_t, 6>{ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF } ) )
             .WillOnce( Return( Result<Void, Error_Code>{} ) );
-        EXPECT_CALL(
-            driver, write_sn_dipr( socket_id, Fixed_Size_Array<std::uint8_t, 4>{ 0x00, 0x00, 0x00, 0x00 } ) )
+        EXPECT_CALL( driver, write_sn_dipr( socket_id, Array<std::uint8_t, 4>{ 0x00, 0x00, 0x00, 0x00 } ) )
             .WillOnce( Return( Result<Void, Error_Code>{} ) );
         EXPECT_CALL( driver, write_sn_dport( socket_id, 0x0000 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
         EXPECT_CALL( driver, write_sn_mssr( socket_id, 0x0000 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );

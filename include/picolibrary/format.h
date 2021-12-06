@@ -28,8 +28,8 @@
 #include <limits>
 #include <type_traits>
 
+#include "picolibrary/array.h"
 #include "picolibrary/error.h"
-#include "picolibrary/fixed_size_array.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
 #include "picolibrary/void.h"
@@ -327,7 +327,7 @@ class Output_Formatter<Format::Binary<Integer>> {
 
         constexpr auto bits = std::numeric_limits<U>::digits;
 
-        Fixed_Size_Array<char, 2 + bits> binary;
+        Array<char, 2 + bits> binary;
 
         auto i = binary.rbegin();
         for ( auto bit = 0; bit < bits; ++bit ) {
@@ -395,7 +395,7 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_signed
      */
     auto print( Output_Stream & stream, Integer value ) noexcept -> Result<Void, Error_Code>
     {
-        Fixed_Size_Array<char, 1 + std::numeric_limits<Integer>::digits10 + 1> decimal;
+        Array<char, 1 + std::numeric_limits<Integer>::digits10 + 1> decimal;
 
         auto is_negative = value < 0;
 
@@ -469,7 +469,7 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_unsign
      */
     auto print( Output_Stream & stream, Integer value ) noexcept -> Result<Void, Error_Code>
     {
-        Fixed_Size_Array<char, std::numeric_limits<Integer>::digits10 + 1> decimal;
+        Array<char, std::numeric_limits<Integer>::digits10 + 1> decimal;
 
         auto i = decimal.rbegin();
         do {
@@ -544,7 +544,7 @@ class Output_Formatter<Format::Hexadecimal<Integer>> {
 
         constexpr auto nibbles = std::numeric_limits<U>::digits / 4;
 
-        Fixed_Size_Array<char, 2 + nibbles> hexadecimal;
+        Array<char, 2 + nibbles> hexadecimal;
 
         auto i = hexadecimal.rbegin();
         for ( auto nibble = 0; nibble < nibbles; ++nibble ) {

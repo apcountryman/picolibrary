@@ -28,9 +28,9 @@
 #include <type_traits>
 
 #include "picolibrary/algorithm.h"
+#include "picolibrary/array.h"
 #include "picolibrary/event.h"
 #include "picolibrary/fatal_error.h"
-#include "picolibrary/fixed_size_array.h"
 
 namespace picolibrary {
 
@@ -928,7 +928,7 @@ class HSM {
         /**
          * \brief Path storage.
          */
-        using Storage = Fixed_Size_Array<State_Event_Handler_Pointer, MAX_STATE_DEPTH>;
+        using Storage = Array<State_Event_Handler_Pointer, MAX_STATE_DEPTH>;
 
         /**
          * \brief A const path iterator.

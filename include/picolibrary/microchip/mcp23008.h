@@ -26,9 +26,9 @@
 #include <cstdint>
 #include <utility>
 
+#include "picolibrary/array.h"
 #include "picolibrary/bit_manipulation.h"
 #include "picolibrary/error.h"
-#include "picolibrary/fixed_size_array.h"
 #include "picolibrary/gpio.h"
 #include "picolibrary/i2c.h"
 #include "picolibrary/result.h"
@@ -1102,7 +1102,7 @@ class Driver : public Device, public Register_Cache {
      */
     auto read_interrupt_context() const noexcept -> Result<Interrupt_Context, Error_Code>
     {
-        auto buffer = Fixed_Size_Array<std::uint8_t, 2>{};
+        auto buffer = Array<std::uint8_t, 2>{};
 
         auto result = this->read( INTF::ADDRESS, buffer.begin(), buffer.end() );
         if ( result.is_error() ) {

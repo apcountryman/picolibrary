@@ -17,11 +17,11 @@
 
 /**
  * \file
- * \brief picolibrary::Fixed_Size_Array interface.
+ * \brief picolibrary::Array interface.
  */
 
-#ifndef PICOLIBRARY_FIXED_SIZE_ARRAY_H
-#define PICOLIBRARY_FIXED_SIZE_ARRAY_H
+#ifndef PICOLIBRARY_ARRAY_H
+#define PICOLIBRARY_ARRAY_H
 
 #include <cstddef>
 #include <iterator>
@@ -32,13 +32,13 @@
 namespace picolibrary {
 
 /**
- * \brief Fixed size array.
+ * \brief Array.
  *
  * \tparam T The array element type.
  * \tparam N The number of elements in the array.
  */
 template<typename T, std::size_t N>
-class Fixed_Size_Array {
+class Array {
   public:
     /**
      * \brief The array element type.
@@ -391,42 +391,42 @@ class Fixed_Size_Array {
 };
 
 /**
- * \brief Get the size of a fixed size array.
+ * \brief Get the size of an array.
  *
- * \relatedalso picolibrary::Fixed_Size_Array
+ * \relatedalso picolibrary::Array
  *
- * \tparam T The fixed size array type whose size is to be gotten.
+ * \tparam T The array type whose size is to be gotten.
  */
 template<typename T>
-struct fixed_size_array_size {
+struct array_size {
 };
 
 /**
- * \brief Get the size of a fixed size array.
+ * \brief Get the size of an array.
  *
- * \relatedalso picolibrary::Fixed_Size_Array
+ * \relatedalso picolibrary::Array
  *
- * \tparam T The fixed size array type whose size is to be gotten.
+ * \tparam T The array type whose size is to be gotten.
  */
 template<typename T>
-constexpr auto fixed_size_array_size_v = fixed_size_array_size<T>::value;
+constexpr auto array_size_v = array_size<T>::value;
 
 /**
- * \brief Get the size of a fixed size array.
+ * \brief Get the size of an array.
  *
- * \relatedalso picolibrary::Fixed_Size_Array
+ * \relatedalso picolibrary::Array
  *
  * \tparam T The array element type.
  * \tparam N The number of elements in the array.
  */
 template<typename T, std::size_t N>
-struct fixed_size_array_size<Fixed_Size_Array<T, N>> : std::integral_constant<std::size_t, N> {
+struct array_size<Array<T, N>> : std::integral_constant<std::size_t, N> {
 };
 
 /**
  * \brief Equality operator.
  *
- * \relatedalso picolibrary::Fixed_Size_Array
+ * \relatedalso picolibrary::Array
  *
  * \tparam T The array element type.
  * \tparam N The number of elements in the array.
@@ -438,7 +438,7 @@ struct fixed_size_array_size<Fixed_Size_Array<T, N>> : std::integral_constant<st
  * \return false if lhs is not equal to rhs.
  */
 template<typename T, std::size_t N>
-constexpr auto operator==( Fixed_Size_Array<T, N> const & lhs, Fixed_Size_Array<T, N> const & rhs ) noexcept
+constexpr auto operator==( Array<T, N> const & lhs, Array<T, N> const & rhs ) noexcept
 {
     return equal( lhs.begin(), lhs.end(), rhs.begin() );
 }
@@ -446,7 +446,7 @@ constexpr auto operator==( Fixed_Size_Array<T, N> const & lhs, Fixed_Size_Array<
 /**
  * \brief Inequality operator.
  *
- * \relatedalso picolibrary::Fixed_Size_Array
+ * \relatedalso picolibrary::Array
  *
  * \tparam T The array element type.
  * \tparam N The number of elements in the array.
@@ -458,11 +458,11 @@ constexpr auto operator==( Fixed_Size_Array<T, N> const & lhs, Fixed_Size_Array<
  * \return false if lhs is equal to rhs.
  */
 template<typename T, std::size_t N>
-constexpr auto operator!=( Fixed_Size_Array<T, N> const & lhs, Fixed_Size_Array<T, N> const & rhs ) noexcept
+constexpr auto operator!=( Array<T, N> const & lhs, Array<T, N> const & rhs ) noexcept
 {
     return not( lhs == rhs );
 }
 
 } // namespace picolibrary
 
-#endif // PICOLIBRARY_FIXED_SIZE_ARRAY_H
+#endif // PICOLIBRARY_ARRAY_H
