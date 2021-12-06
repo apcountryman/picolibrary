@@ -24,6 +24,7 @@
 #define PICOLIBRARY_FIXED_SIZE_ARRAY_H
 
 #include <cstddef>
+#include <iterator>
 #include <type_traits>
 
 #include "picolibrary/algorithm.h"
@@ -88,12 +89,12 @@ class Fixed_Size_Array {
     /**
      * \brief An array reverse iterator.
      */
-    using Reverse_Iterator = ::picolibrary::Reverse_Iterator<Iterator>;
+    using Reverse_Iterator = std::reverse_iterator<Iterator>;
 
     /**
      * \brief An array const reverse iterator.
      */
-    using Const_Reverse_Iterator = ::picolibrary::Reverse_Iterator<Const_Iterator>;
+    using Const_Reverse_Iterator = std::reverse_iterator<Const_Iterator>;
 
     /**
      * \brief The underlying array.
