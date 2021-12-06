@@ -28,43 +28,6 @@
 #include <type_traits>
 
 namespace picolibrary {
-
-/**
- * \brief Input iterator category tag.
- */
-struct Input_Iterator_Tag {
-};
-
-/**
- * \brief Output iterator category tag.
- */
-struct Output_Iterator_Tag {
-};
-
-/**
- * \brief Forward iterator category tag.
- */
-struct Forward_Iterator_Tag : Input_Iterator_Tag {
-};
-
-/**
- * \brief Bidirectional iterator category tag.
- */
-struct Bidirectional_Iterator_Tag : Forward_Iterator_Tag {
-};
-
-/**
- * \brief Random access iterator category tag.
- */
-struct Random_Access_Iterator_Tag : Bidirectional_Iterator_Tag {
-};
-
-/**
- * \brief Contiguous iterator category tag.
- */
-struct Contiguous_Iterator_Tag : Random_Access_Iterator_Tag {
-};
-
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_ITERATOR_H
