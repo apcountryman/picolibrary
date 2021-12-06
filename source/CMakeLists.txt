@@ -44,7 +44,6 @@ set(
     "picolibrary/ip/network_stack.cc"
     "picolibrary/ip/tcp.cc"
     "picolibrary/ipv4.cc"
-    "picolibrary/iterator.cc"
     "picolibrary/mac_address.cc"
     "picolibrary/microchip.cc"
     "picolibrary/microchip/mcp23008.cc"
