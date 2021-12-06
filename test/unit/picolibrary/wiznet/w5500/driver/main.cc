@@ -28,8 +28,8 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "picolibrary/array.h"
 #include "picolibrary/error.h"
-#include "picolibrary/fixed_size_array.h"
 #include "picolibrary/result.h"
 #include "picolibrary/testing/unit/error.h"
 #include "picolibrary/testing/unit/random.h"
@@ -40,8 +40,8 @@
 
 namespace {
 
+using ::picolibrary::Array;
 using ::picolibrary::Error_Code;
-using ::picolibrary::Fixed_Size_Array;
 using ::picolibrary::Result;
 using ::picolibrary::Void;
 using ::picolibrary::Testing::Unit::Mock_Error;
@@ -68,9 +68,9 @@ inline auto convert_data_to_vector( std::uint16_t data )
 }
 
 template<typename T, std::size_t N>
-auto random_fixed_size_array()
+auto random_array()
 {
-    Fixed_Size_Array<T, N> array;
+    Array<T, N> array;
 
     std::generate( array.begin(), array.end(), []() { return random<T>(); } );
 
@@ -78,7 +78,7 @@ auto random_fixed_size_array()
 }
 
 template<typename T, std::size_t N>
-auto convert_fixed_size_array_to_vector( Fixed_Size_Array<T, N> const & array )
+auto convert_array_to_vector( Array<T, N> const & array )
 {
     return std::vector<T>( array.begin(), array.end() );
 }
@@ -97,7 +97,7 @@ auto random_unique_values()
 namespace picolibrary {
 
 template<typename T, std::size_t N>
-auto operator==( Fixed_Size_Array<T, N> const & lhs, std::vector<T> const & rhs )
+auto operator==( Array<T, N> const & lhs, std::vector<T> const & rhs )
 {
     return std::equal( lhs.begin(), lhs.end(), rhs.begin(), rhs.end() );
 }
@@ -218,7 +218,7 @@ TEST( writeGAR, writeError )
 
     EXPECT_CALL( w5500, write( _, A<std::vector<std::uint8_t>>() ) ).WillOnce( Return( error ) );
 
-    auto const result = w5500.write_gar( random_fixed_size_array<std::uint8_t, 4>() );
+    auto const result = w5500.write_gar( random_array<std::uint8_t, 4>() );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -231,9 +231,9 @@ TEST( writeGAR, worksProperly )
 {
     auto w5500 = Driver{};
 
-    auto const data = random_fixed_size_array<std::uint8_t, 4>();
+    auto const data = random_array<std::uint8_t, 4>();
 
-    EXPECT_CALL( w5500, write( 0x0001, convert_fixed_size_array_to_vector( data ) ) )
+    EXPECT_CALL( w5500, write( 0x0001, convert_array_to_vector( data ) ) )
         .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( w5500.write_gar( data ).is_error() );
@@ -286,7 +286,7 @@ TEST( writeSUBR, writeError )
 
     EXPECT_CALL( w5500, write( _, A<std::vector<std::uint8_t>>() ) ).WillOnce( Return( error ) );
 
-    auto const result = w5500.write_subr( random_fixed_size_array<std::uint8_t, 4>() );
+    auto const result = w5500.write_subr( random_array<std::uint8_t, 4>() );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -299,9 +299,9 @@ TEST( writeSUBR, worksProperly )
 {
     auto w5500 = Driver{};
 
-    auto const data = random_fixed_size_array<std::uint8_t, 4>();
+    auto const data = random_array<std::uint8_t, 4>();
 
-    EXPECT_CALL( w5500, write( 0x0005, convert_fixed_size_array_to_vector( data ) ) )
+    EXPECT_CALL( w5500, write( 0x0005, convert_array_to_vector( data ) ) )
         .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( w5500.write_subr( data ).is_error() );
@@ -354,7 +354,7 @@ TEST( writeSHAR, writeError )
 
     EXPECT_CALL( w5500, write( _, A<std::vector<std::uint8_t>>() ) ).WillOnce( Return( error ) );
 
-    auto const result = w5500.write_shar( random_fixed_size_array<std::uint8_t, 6>() );
+    auto const result = w5500.write_shar( random_array<std::uint8_t, 6>() );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -367,9 +367,9 @@ TEST( writeSHAR, worksProperly )
 {
     auto w5500 = Driver{};
 
-    auto const data = random_fixed_size_array<std::uint8_t, 6>();
+    auto const data = random_array<std::uint8_t, 6>();
 
-    EXPECT_CALL( w5500, write( 0x0009, convert_fixed_size_array_to_vector( data ) ) )
+    EXPECT_CALL( w5500, write( 0x0009, convert_array_to_vector( data ) ) )
         .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( w5500.write_shar( data ).is_error() );
@@ -422,7 +422,7 @@ TEST( writeSIPR, writeError )
 
     EXPECT_CALL( w5500, write( _, A<std::vector<std::uint8_t>>() ) ).WillOnce( Return( error ) );
 
-    auto const result = w5500.write_sipr( random_fixed_size_array<std::uint8_t, 4>() );
+    auto const result = w5500.write_sipr( random_array<std::uint8_t, 4>() );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -435,9 +435,9 @@ TEST( writeSIPR, worksProperly )
 {
     auto w5500 = Driver{};
 
-    auto const data = random_fixed_size_array<std::uint8_t, 4>();
+    auto const data = random_array<std::uint8_t, 4>();
 
-    EXPECT_CALL( w5500, write( 0x000F, convert_fixed_size_array_to_vector( data ) ) )
+    EXPECT_CALL( w5500, write( 0x000F, convert_array_to_vector( data ) ) )
         .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( w5500.write_sipr( data ).is_error() );
@@ -1063,7 +1063,7 @@ TEST( writePHAR, writeError )
 
     EXPECT_CALL( w5500, write( _, A<std::vector<std::uint8_t>>() ) ).WillOnce( Return( error ) );
 
-    auto const result = w5500.write_phar( random_fixed_size_array<std::uint8_t, 6>() );
+    auto const result = w5500.write_phar( random_array<std::uint8_t, 6>() );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -1076,9 +1076,9 @@ TEST( writePHAR, worksProperly )
 {
     auto w5500 = Driver{};
 
-    auto const data = random_fixed_size_array<std::uint8_t, 6>();
+    auto const data = random_array<std::uint8_t, 6>();
 
-    EXPECT_CALL( w5500, write( 0x001E, convert_fixed_size_array_to_vector( data ) ) )
+    EXPECT_CALL( w5500, write( 0x001E, convert_array_to_vector( data ) ) )
         .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( w5500.write_phar( data ).is_error() );
@@ -1757,8 +1757,7 @@ TEST( writeSNDHAR, writeError )
 
     EXPECT_CALL( w5500, write( _, _, _, A<std::vector<std::uint8_t>>() ) ).WillOnce( Return( error ) );
 
-    auto const result = w5500.write_sn_dhar(
-        random<Socket_ID>(), random_fixed_size_array<std::uint8_t, 6>() );
+    auto const result = w5500.write_sn_dhar( random<Socket_ID>(), random_array<std::uint8_t, 6>() );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -1772,9 +1771,9 @@ TEST( writeSNDHAR, worksProperly )
     auto w5500 = Driver{};
 
     auto const socket_id = random<Socket_ID>();
-    auto const data      = random_fixed_size_array<std::uint8_t, 6>();
+    auto const data      = random_array<std::uint8_t, 6>();
 
-    EXPECT_CALL( w5500, write( socket_id, Region::REGISTERS, 0x0006, convert_fixed_size_array_to_vector( data ) ) )
+    EXPECT_CALL( w5500, write( socket_id, Region::REGISTERS, 0x0006, convert_array_to_vector( data ) ) )
         .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( w5500.write_sn_dhar( socket_id, data ).is_error() );
@@ -1828,8 +1827,7 @@ TEST( writeSNDIPR, writeError )
 
     EXPECT_CALL( w5500, write( _, _, _, A<std::vector<std::uint8_t>>() ) ).WillOnce( Return( error ) );
 
-    auto const result = w5500.write_sn_dipr(
-        random<Socket_ID>(), random_fixed_size_array<std::uint8_t, 4>() );
+    auto const result = w5500.write_sn_dipr( random<Socket_ID>(), random_array<std::uint8_t, 4>() );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -1843,9 +1841,9 @@ TEST( writeSNDIPR, worksProperly )
     auto w5500 = Driver{};
 
     auto const socket_id = random<Socket_ID>();
-    auto const data      = random_fixed_size_array<std::uint8_t, 4>();
+    auto const data      = random_array<std::uint8_t, 4>();
 
-    EXPECT_CALL( w5500, write( socket_id, Region::REGISTERS, 0x000C, convert_fixed_size_array_to_vector( data ) ) )
+    EXPECT_CALL( w5500, write( socket_id, Region::REGISTERS, 0x000C, convert_array_to_vector( data ) ) )
         .WillOnce( Return( Result<Void, Error_Code>{} ) );
 
     EXPECT_FALSE( w5500.write_sn_dipr( socket_id, data ).is_error() );

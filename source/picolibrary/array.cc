@@ -17,7 +17,7 @@
 
 /**
  * \file
- * \brief picolibrary::Fixed_Size_Array implementation.
+ * \brief picolibrary::Array implementation.
  */
 
-#include "picolibrary/fixed_size_array.h"
+#include "picolibrary/array.h"

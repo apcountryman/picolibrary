@@ -27,8 +27,8 @@
 #include <limits>
 
 #include "picolibrary/adc.h"
+#include "picolibrary/array.h"
 #include "picolibrary/error.h"
-#include "picolibrary/fixed_size_array.h"
 #include "picolibrary/result.h"
 #include "picolibrary/spi.h"
 #include "picolibrary/void.h"
@@ -298,7 +298,7 @@ class Driver : public Device {
             } // if
         }
 
-        auto data = Fixed_Size_Array<std::uint8_t, 3>{
+        auto data = Array<std::uint8_t, 3>{
             0x01,
             static_cast<std::uint8_t>( input ),
             0x00,

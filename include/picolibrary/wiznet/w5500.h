@@ -27,9 +27,9 @@
 #include <limits>
 #include <utility>
 
+#include "picolibrary/array.h"
 #include "picolibrary/bit_manipulation.h"
 #include "picolibrary/error.h"
-#include "picolibrary/fixed_size_array.h"
 #include "picolibrary/result.h"
 #include "picolibrary/spi.h"
 #include "picolibrary/void.h"
@@ -571,7 +571,7 @@ class Communication_Controller : public Device {
     /**
      * \brief SPI communication frame.
      */
-    using Frame = Fixed_Size_Array<std::uint8_t, 3>;
+    using Frame = Array<std::uint8_t, 3>;
 
     /**
      * \brief Construct an SPI communication frame for accessing common register memory.
@@ -693,7 +693,7 @@ struct GAR {
     /**
      * \brief Register type.
      */
-    using Type = Fixed_Size_Array<std::uint8_t, 4>;
+    using Type = Array<std::uint8_t, 4>;
 
     /**
      * \brief Register offset.
@@ -713,7 +713,7 @@ struct SUBR {
     /**
      * \brief Register type.
      */
-    using Type = Fixed_Size_Array<std::uint8_t, 4>;
+    using Type = Array<std::uint8_t, 4>;
 
     /**
      * \brief Register offset.
@@ -733,7 +733,7 @@ struct SHAR {
     /**
      * \brief Register type.
      */
-    using Type = Fixed_Size_Array<std::uint8_t, 6>;
+    using Type = Array<std::uint8_t, 6>;
 
     /**
      * \brief Register offset.
@@ -753,7 +753,7 @@ struct SIPR {
     /**
      * \brief Register type.
      */
-    using Type = Fixed_Size_Array<std::uint8_t, 4>;
+    using Type = Array<std::uint8_t, 4>;
 
     /**
      * \brief Register offset.
@@ -1021,7 +1021,7 @@ struct PHAR {
     /**
      * \brief Register type.
      */
-    using Type = Fixed_Size_Array<std::uint8_t, 6>;
+    using Type = Array<std::uint8_t, 6>;
 
     /**
      * \brief Register offset.
@@ -1081,7 +1081,7 @@ struct UIPR {
     /**
      * \brief Register type.
      */
-    using Type = Fixed_Size_Array<std::uint8_t, 4>;
+    using Type = Array<std::uint8_t, 4>;
 
     /**
      * \brief Register offset.
@@ -1374,7 +1374,7 @@ struct SN_DHAR {
     /**
      * \brief Register type.
      */
-    using Type = Fixed_Size_Array<std::uint8_t, 6>;
+    using Type = Array<std::uint8_t, 6>;
 
     /**
      * \brief Register offset.
@@ -1394,7 +1394,7 @@ struct SN_DIPR {
     /**
      * \brief Register type.
      */
-    using Type = Fixed_Size_Array<std::uint8_t, 4>;
+    using Type = Array<std::uint8_t, 4>;
 
     /**
      * \brief Register offset.
@@ -3082,7 +3082,7 @@ class Driver : public Communication_Controller {
      */
     auto read( std::uint16_t offset, std::uint16_t ) const noexcept -> Result<std::uint16_t, Error_Code>
     {
-        Fixed_Size_Array<std::uint8_t, 2> buffer;
+        Array<std::uint8_t, 2> buffer;
 
         auto result = Communication_Controller::read( offset, buffer.begin(), buffer.end() );
         if ( result.is_error() ) {
@@ -3101,10 +3101,10 @@ class Driver : public Communication_Controller {
      * \return The data read from the register if the read succeeded.
      * \return An error code if the read failed.
      */
-    auto read( std::uint16_t offset, Fixed_Size_Array<std::uint8_t, 4> const & ) const noexcept
-        -> Result<Fixed_Size_Array<std::uint8_t, 4>, Error_Code>
+    auto read( std::uint16_t offset, Array<std::uint8_t, 4> const & ) const noexcept
+        -> Result<Array<std::uint8_t, 4>, Error_Code>
     {
-        Fixed_Size_Array<std::uint8_t, 4> buffer;
+        Array<std::uint8_t, 4> buffer;
 
         auto result = Communication_Controller::read( offset, buffer.begin(), buffer.end() );
         if ( result.is_error() ) {
@@ -3122,10 +3122,10 @@ class Driver : public Communication_Controller {
      * \return The data read from the register if the read succeeded.
      * \return An error code if the read failed.
      */
-    auto read( std::uint16_t offset, Fixed_Size_Array<std::uint8_t, 6> const & ) const noexcept
-        -> Result<Fixed_Size_Array<std::uint8_t, 6>, Error_Code>
+    auto read( std::uint16_t offset, Array<std::uint8_t, 6> const & ) const noexcept
+        -> Result<Array<std::uint8_t, 6>, Error_Code>
     {
-        Fixed_Size_Array<std::uint8_t, 6> buffer;
+        Array<std::uint8_t, 6> buffer;
 
         auto result = Communication_Controller::read( offset, buffer.begin(), buffer.end() );
         if ( result.is_error() ) {
@@ -3160,7 +3160,7 @@ class Driver : public Communication_Controller {
      */
     auto write( std::uint16_t offset, std::uint16_t data ) noexcept
     {
-        auto const buffer = Fixed_Size_Array<std::uint8_t, 2>{
+        auto const buffer = Array<std::uint8_t, 2>{
             static_cast<std::uint8_t>( data >> std::numeric_limits<std::uint8_t>::digits ),
             static_cast<std::uint8_t>( data ),
         };
@@ -3177,7 +3177,7 @@ class Driver : public Communication_Controller {
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto write( std::uint16_t offset, Fixed_Size_Array<std::uint8_t, 4> const & data ) noexcept
+    auto write( std::uint16_t offset, Array<std::uint8_t, 4> const & data ) noexcept
     {
         return Communication_Controller::write( offset, data.begin(), data.end() );
     }
@@ -3191,7 +3191,7 @@ class Driver : public Communication_Controller {
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto write( std::uint16_t offset, Fixed_Size_Array<std::uint8_t, 6> const & data ) noexcept
+    auto write( std::uint16_t offset, Array<std::uint8_t, 6> const & data ) noexcept
     {
         return Communication_Controller::write( offset, data.begin(), data.end() );
     }
@@ -3239,7 +3239,7 @@ class Driver : public Communication_Controller {
     auto read( Socket_ID socket_id, std::uint16_t offset, std::uint16_t ) const noexcept
         -> Result<std::uint16_t, Error_Code>
     {
-        Fixed_Size_Array<std::uint8_t, 2> buffer;
+        Array<std::uint8_t, 2> buffer;
 
         auto result = Communication_Controller::read(
             socket_id, Region::REGISTERS, offset, buffer.begin(), buffer.end() );
@@ -3260,10 +3260,10 @@ class Driver : public Communication_Controller {
      * \return The data read from the register if the read succeeded.
      * \return An error code if the read failed.
      */
-    auto read( Socket_ID socket_id, std::uint16_t offset, Fixed_Size_Array<std::uint8_t, 4> const & ) const noexcept
-        -> Result<Fixed_Size_Array<std::uint8_t, 4>, Error_Code>
+    auto read( Socket_ID socket_id, std::uint16_t offset, Array<std::uint8_t, 4> const & ) const noexcept
+        -> Result<Array<std::uint8_t, 4>, Error_Code>
     {
-        Fixed_Size_Array<std::uint8_t, 4> buffer;
+        Array<std::uint8_t, 4> buffer;
 
         auto result = Communication_Controller::read(
             socket_id, Region::REGISTERS, offset, buffer.begin(), buffer.end() );
@@ -3283,10 +3283,10 @@ class Driver : public Communication_Controller {
      * \return The data read from the register if the read succeeded.
      * \return An error code if the read failed.
      */
-    auto read( Socket_ID socket_id, std::uint16_t offset, Fixed_Size_Array<std::uint8_t, 6> const & ) const noexcept
-        -> Result<Fixed_Size_Array<std::uint8_t, 6>, Error_Code>
+    auto read( Socket_ID socket_id, std::uint16_t offset, Array<std::uint8_t, 6> const & ) const noexcept
+        -> Result<Array<std::uint8_t, 6>, Error_Code>
     {
-        Fixed_Size_Array<std::uint8_t, 6> buffer;
+        Array<std::uint8_t, 6> buffer;
 
         auto result = Communication_Controller::read(
             socket_id, Region::REGISTERS, offset, buffer.begin(), buffer.end() );
@@ -3380,7 +3380,7 @@ class Driver : public Communication_Controller {
      */
     auto write( Socket_ID socket_id, std::uint16_t offset, std::uint16_t data ) noexcept
     {
-        auto const buffer = Fixed_Size_Array<std::uint8_t, 2>{
+        auto const buffer = Array<std::uint8_t, 2>{
             static_cast<std::uint8_t>( data >> std::numeric_limits<std::uint8_t>::digits ),
             static_cast<std::uint8_t>( data ),
         };
@@ -3399,7 +3399,7 @@ class Driver : public Communication_Controller {
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto write( Socket_ID socket_id, std::uint16_t offset, Fixed_Size_Array<std::uint8_t, 4> const & data ) noexcept
+    auto write( Socket_ID socket_id, std::uint16_t offset, Array<std::uint8_t, 4> const & data ) noexcept
     {
         return Communication_Controller::write(
             socket_id, Region::REGISTERS, offset, data.begin(), data.end() );
@@ -3415,7 +3415,7 @@ class Driver : public Communication_Controller {
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto write( Socket_ID socket_id, std::uint16_t offset, Fixed_Size_Array<std::uint8_t, 6> const & data ) noexcept
+    auto write( Socket_ID socket_id, std::uint16_t offset, Array<std::uint8_t, 6> const & data ) noexcept
     {
         return Communication_Controller::write(
             socket_id, Region::REGISTERS, offset, data.begin(), data.end() );

@@ -26,9 +26,9 @@
 #include <cstdint>
 #include <limits>
 
+#include "picolibrary/array.h"
 #include "picolibrary/bit_manipulation.h"
 #include "picolibrary/error.h"
-#include "picolibrary/fixed_size_array.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
 #include "picolibrary/void.h"
@@ -43,7 +43,7 @@ class MAC_Address {
     /**
      * \brief Address byte array representation.
      */
-    using Byte_Array = Fixed_Size_Array<std::uint8_t, 6>;
+    using Byte_Array = Array<std::uint8_t, 6>;
 
     /**
      * \brief Address unsigned integer representation.
@@ -394,15 +394,15 @@ class Output_Formatter<MAC_Address> {
     {
         // #lizard forgives the length
 
-        constexpr auto address_bytes = fixed_size_array_size_v<MAC_Address::Byte_Array>;
+        constexpr auto address_bytes = array_size_v<MAC_Address::Byte_Array>;
         constexpr auto byte_nibbles = std::numeric_limits<MAC_Address::Byte_Array::Value>::digits / 4;
         constexpr auto address_nibbles = address_bytes * byte_nibbles;
 
-        Fixed_Size_Array<char, address_nibbles + ( address_bytes - 1 )> formatted_address;
+        Array<char, address_nibbles + ( address_bytes - 1 )> formatted_address;
 
         auto i = formatted_address.begin();
         for ( auto const byte : address.as_byte_array() ) {
-            Fixed_Size_Array<std::uint8_t, byte_nibbles> nibbles{
+            Array<std::uint8_t, byte_nibbles> nibbles{
                 static_cast<std::uint8_t>( byte >> 4 ),
                 static_cast<std::uint8_t>( byte & 0xF ),
             };

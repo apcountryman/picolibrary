@@ -28,8 +28,8 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "picolibrary/array.h"
 #include "picolibrary/error.h"
-#include "picolibrary/fixed_size_array.h"
 #include "picolibrary/ip/tcp.h"
 #include "picolibrary/ipv4.h"
 #include "picolibrary/result.h"
@@ -44,8 +44,8 @@
 
 namespace {
 
+using ::picolibrary::Array;
 using ::picolibrary::Error_Code;
-using ::picolibrary::Fixed_Size_Array;
 using ::picolibrary::Generic_Error;
 using ::picolibrary::Result;
 using ::picolibrary::Void;
@@ -79,9 +79,9 @@ auto random_unique_addresses()
 }
 
 template<typename T, std::size_t N>
-auto random_fixed_size_array()
+auto random_array()
 {
-    Fixed_Size_Array<T, N> array;
+    Array<T, N> array;
 
     std::generate( array.begin(), array.end(), []() { return random<T>(); } );
 
@@ -2105,7 +2105,7 @@ TEST( remoteEndpoint, sndportReadError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( driver, read_sn_dipr( _ ) ).WillOnce( Return( random_fixed_size_array<std::uint8_t, 4>() ) );
+    EXPECT_CALL( driver, read_sn_dipr( _ ) ).WillOnce( Return( random_array<std::uint8_t, 4>() ) );
     EXPECT_CALL( driver, read_sn_dport( _ ) ).WillOnce( Return( error ) );
 
     auto const result = client.remote_endpoint();
@@ -2129,7 +2129,7 @@ TEST( remoteEndpoint, worksProperly )
 
     auto const client = Client{ driver, socket_id, network_stack };
 
-    auto const sn_dipr  = random_fixed_size_array<std::uint8_t, 4>();
+    auto const sn_dipr  = random_array<std::uint8_t, 4>();
     auto const sn_dport = random<std::uint16_t>();
 
     EXPECT_CALL( driver, read_sn_dipr( socket_id ) ).WillOnce( Return( sn_dipr ) );
@@ -2181,7 +2181,7 @@ TEST( localEndpoint, snportReadError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( random_fixed_size_array<std::uint8_t, 4>() ) );
+    EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( random_array<std::uint8_t, 4>() ) );
     EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( error ) );
 
     auto const result = client.local_endpoint();
@@ -2205,7 +2205,7 @@ TEST( localEndpoint, worksProperly )
 
     auto const client = Client{ driver, socket_id, network_stack };
 
-    auto const sipr    = random_fixed_size_array<std::uint8_t, 4>();
+    auto const sipr    = random_array<std::uint8_t, 4>();
     auto const sn_port = random<std::uint16_t>();
 
     EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( sipr ) );

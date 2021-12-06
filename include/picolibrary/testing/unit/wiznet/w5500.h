@@ -421,17 +421,17 @@ class Mock_Driver : public Mock_Communication_Controller {
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_mr, (), ( const ) );
     MOCK_METHOD( (Result<Void, Error_Code>), write_mr, ( std::uint8_t ) );
 
-    MOCK_METHOD( (Result<Fixed_Size_Array<std::uint8_t, 4>, Error_Code>), read_gar, (), ( const ) );
-    MOCK_METHOD( (Result<Void, Error_Code>), write_gar, ( (Fixed_Size_Array<std::uint8_t, 4> const &)) );
+    MOCK_METHOD( (Result<Array<std::uint8_t, 4>, Error_Code>), read_gar, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_gar, ( (Array<std::uint8_t, 4> const &)) );
 
-    MOCK_METHOD( (Result<Fixed_Size_Array<std::uint8_t, 4>, Error_Code>), read_subr, (), ( const ) );
-    MOCK_METHOD( (Result<Void, Error_Code>), write_subr, ( (Fixed_Size_Array<std::uint8_t, 4> const &)) );
+    MOCK_METHOD( (Result<Array<std::uint8_t, 4>, Error_Code>), read_subr, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_subr, ( (Array<std::uint8_t, 4> const &)) );
 
-    MOCK_METHOD( (Result<Fixed_Size_Array<std::uint8_t, 6>, Error_Code>), read_shar, (), ( const ) );
-    MOCK_METHOD( (Result<Void, Error_Code>), write_shar, ( (Fixed_Size_Array<std::uint8_t, 6> const &)) );
+    MOCK_METHOD( (Result<Array<std::uint8_t, 6>, Error_Code>), read_shar, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_shar, ( (Array<std::uint8_t, 6> const &)) );
 
-    MOCK_METHOD( (Result<Fixed_Size_Array<std::uint8_t, 4>, Error_Code>), read_sipr, (), ( const ) );
-    MOCK_METHOD( (Result<Void, Error_Code>), write_sipr, ( (Fixed_Size_Array<std::uint8_t, 4> const &)) );
+    MOCK_METHOD( (Result<Array<std::uint8_t, 4>, Error_Code>), read_sipr, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_sipr, ( (Array<std::uint8_t, 4> const &)) );
 
     MOCK_METHOD( (Result<std::uint16_t, Error_Code>), read_intlevel, (), ( const ) );
     MOCK_METHOD( (Result<Void, Error_Code>), write_intlevel, ( std::uint16_t ) );
@@ -459,8 +459,8 @@ class Mock_Driver : public Mock_Communication_Controller {
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_pmagic, (), ( const ) );
     MOCK_METHOD( (Result<Void, Error_Code>), write_pmagic, ( std::uint8_t ) );
 
-    MOCK_METHOD( (Result<Fixed_Size_Array<std::uint8_t, 6>, Error_Code>), read_phar, (), ( const ) );
-    MOCK_METHOD( (Result<Void, Error_Code>), write_phar, ( (Fixed_Size_Array<std::uint8_t, 6> const &)) );
+    MOCK_METHOD( (Result<Array<std::uint8_t, 6>, Error_Code>), read_phar, (), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_phar, ( (Array<std::uint8_t, 6> const &)) );
 
     MOCK_METHOD( (Result<std::uint16_t, Error_Code>), read_psid, (), ( const ) );
     MOCK_METHOD( (Result<Void, Error_Code>), write_psid, ( std::uint16_t ) );
@@ -468,7 +468,7 @@ class Mock_Driver : public Mock_Communication_Controller {
     MOCK_METHOD( (Result<std::uint16_t, Error_Code>), read_pmru, (), ( const ) );
     MOCK_METHOD( (Result<Void, Error_Code>), write_pmru, ( std::uint16_t ) );
 
-    MOCK_METHOD( (Result<Fixed_Size_Array<std::uint8_t, 4>, Error_Code>), read_uipr, (), ( const ) );
+    MOCK_METHOD( (Result<Array<std::uint8_t, 4>, Error_Code>), read_uipr, (), ( const ) );
 
     MOCK_METHOD( (Result<std::uint16_t, Error_Code>), read_uportr, (), ( const ) );
 
@@ -491,11 +491,11 @@ class Mock_Driver : public Mock_Communication_Controller {
     MOCK_METHOD( (Result<std::uint16_t, Error_Code>), read_sn_port, ( Socket_ID ), ( const ) );
     MOCK_METHOD( (Result<Void, Error_Code>), write_sn_port, ( Socket_ID, std::uint16_t ) );
 
-    MOCK_METHOD( (Result<Fixed_Size_Array<std::uint8_t, 6>, Error_Code>), read_sn_dhar, ( Socket_ID ), ( const ) );
-    MOCK_METHOD( (Result<Void, Error_Code>), write_sn_dhar, ( Socket_ID, (Fixed_Size_Array<std::uint8_t, 6> const &)) );
+    MOCK_METHOD( (Result<Array<std::uint8_t, 6>, Error_Code>), read_sn_dhar, ( Socket_ID ), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_sn_dhar, ( Socket_ID, (Array<std::uint8_t, 6> const &)) );
 
-    MOCK_METHOD( (Result<Fixed_Size_Array<std::uint8_t, 4>, Error_Code>), read_sn_dipr, ( Socket_ID ), ( const ) );
-    MOCK_METHOD( (Result<Void, Error_Code>), write_sn_dipr, ( Socket_ID, (Fixed_Size_Array<std::uint8_t, 4> const &)) );
+    MOCK_METHOD( (Result<Array<std::uint8_t, 4>, Error_Code>), read_sn_dipr, ( Socket_ID ), ( const ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), write_sn_dipr, ( Socket_ID, (Array<std::uint8_t, 4> const &)) );
 
     MOCK_METHOD( (Result<std::uint16_t, Error_Code>), read_sn_dport, ( Socket_ID ), ( const ) );
     MOCK_METHOD( (Result<Void, Error_Code>), write_sn_dport, ( Socket_ID, std::uint16_t ) );

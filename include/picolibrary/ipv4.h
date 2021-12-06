@@ -26,8 +26,8 @@
 #include <cstdint>
 #include <limits>
 
+#include "picolibrary/array.h"
 #include "picolibrary/error.h"
-#include "picolibrary/fixed_size_array.h"
 #include "picolibrary/format.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
@@ -46,7 +46,7 @@ class Address {
     /**
      * \brief Address byte array representation.
      */
-    using Byte_Array = Fixed_Size_Array<std::uint8_t, 4>;
+    using Byte_Array = Array<std::uint8_t, 4>;
 
     /**
      * \brief Address unsigned integer representation.
