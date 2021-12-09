@@ -107,6 +107,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
         "picolibrary/testing/unit/microchip.cc"
         "picolibrary/testing/unit/microchip/mcp23008.cc"
         "picolibrary/testing/unit/microchip/mcp3008.cc"
+        "picolibrary/testing/unit/mock_handle.cc"
         "picolibrary/testing/unit/random.cc"
         "picolibrary/testing/unit/spi.cc"
         "picolibrary/testing/unit/stream.cc"
