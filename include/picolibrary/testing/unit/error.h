@@ -56,11 +56,6 @@ inline auto random<Mock_Error>()
  */
 class Mock_Error_Category : public Error_Category {
   public:
-    /**
-     * \brief Get a reference to the mock error category instance.
-     *
-     * \return A reference to the mock error category instance.
-     */
     static auto const & instance()
     {
         static auto category = Mock_Error_Category{};
@@ -68,18 +63,12 @@ class Mock_Error_Category : public Error_Category {
         return category;
     }
 
-    /**
-     * \brief Constructor.
-     */
     Mock_Error_Category() = default;
 
     Mock_Error_Category( Mock_Error_Category && ) = delete;
 
     Mock_Error_Category( Mock_Error_Category const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Mock_Error_Category() noexcept = default;
 
     auto operator=( Mock_Error_Category && ) = delete;

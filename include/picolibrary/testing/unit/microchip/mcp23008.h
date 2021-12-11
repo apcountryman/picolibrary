@@ -83,18 +83,12 @@ namespace picolibrary::Testing::Unit::Microchip::MCP23008 {
  */
 class Mock_Register_Cache {
   public:
-    /**
-     * \brief Constructor.
-     */
     Mock_Register_Cache() = default;
 
     Mock_Register_Cache( Mock_Register_Cache && ) = delete;
 
     Mock_Register_Cache( Mock_Register_Cache const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Mock_Register_Cache() noexcept = default;
 
     auto operator=( Mock_Register_Cache && ) = delete;
@@ -104,39 +98,30 @@ class Mock_Register_Cache {
     MOCK_METHOD( void, initialize, () );
 
     MOCK_METHOD( std::uint8_t, iodir, (), ( const ) );
-
     MOCK_METHOD( void, cache_iodir, ( std::uint8_t ) );
 
     MOCK_METHOD( std::uint8_t, ipol, (), ( const ) );
-
     MOCK_METHOD( void, cache_ipol, ( std::uint8_t ) );
 
     MOCK_METHOD( std::uint8_t, gpinten, (), ( const ) );
-
     MOCK_METHOD( void, cache_gpinten, ( std::uint8_t ) );
 
     MOCK_METHOD( std::uint8_t, defval, (), ( const ) );
-
     MOCK_METHOD( void, cache_defval, ( std::uint8_t ) );
 
     MOCK_METHOD( std::uint8_t, intcon, (), ( const ) );
-
     MOCK_METHOD( void, cache_intcon, ( std::uint8_t ) );
 
     MOCK_METHOD( std::uint8_t, iocon, (), ( const ) );
-
     MOCK_METHOD( void, cache_iocon, ( std::uint8_t ) );
 
     MOCK_METHOD( std::uint8_t, gppu, (), ( const ) );
-
     MOCK_METHOD( void, cache_gppu, ( std::uint8_t ) );
 
     MOCK_METHOD( std::uint8_t, gpio, (), ( const ) );
-
     MOCK_METHOD( void, cache_gpio, ( std::uint8_t ) );
 
     MOCK_METHOD( std::uint8_t, olat, (), ( const ) );
-
     MOCK_METHOD( void, cache_olat, ( std::uint8_t ) );
 };
 
@@ -145,18 +130,12 @@ class Mock_Register_Cache {
  */
 class Mock_Driver : public I2C::Mock_Device<std::uint8_t>, public Mock_Register_Cache {
   public:
-    /**
-     * \brief Constructor.
-     */
     Mock_Driver() = default;
 
     Mock_Driver( Mock_Driver && ) = delete;
 
     Mock_Driver( Mock_Driver const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Mock_Driver() noexcept = default;
 
     auto operator=( Mock_Driver && ) = delete;
@@ -164,31 +143,24 @@ class Mock_Driver : public I2C::Mock_Device<std::uint8_t>, public Mock_Register_
     auto operator=( Mock_Driver const & ) = delete;
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_iodir, (), ( const ) );
-
     MOCK_METHOD( (Result<Void, Error_Code>), write_iodir, ( std::uint8_t ) );
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_ipol, (), ( const ) );
-
     MOCK_METHOD( (Result<Void, Error_Code>), write_ipol, ( std::uint8_t ) );
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_gpinten, (), ( const ) );
-
     MOCK_METHOD( (Result<Void, Error_Code>), write_gpinten, ( std::uint8_t ) );
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_defval, (), ( const ) );
-
     MOCK_METHOD( (Result<Void, Error_Code>), write_defval, ( std::uint8_t ) );
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_intcon, (), ( const ) );
-
     MOCK_METHOD( (Result<Void, Error_Code>), write_intcon, ( std::uint8_t ) );
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_iocon, (), ( const ) );
-
     MOCK_METHOD( (Result<Void, Error_Code>), write_iocon, ( std::uint8_t ) );
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_gppu, (), ( const ) );
-
     MOCK_METHOD( (Result<Void, Error_Code>), write_gppu, ( std::uint8_t ) );
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_intf, (), ( const ) );
@@ -196,11 +168,9 @@ class Mock_Driver : public I2C::Mock_Device<std::uint8_t>, public Mock_Register_
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_intcap, (), ( const ) );
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_gpio, (), ( const ) );
-
     MOCK_METHOD( (Result<Void, Error_Code>), write_gpio, ( std::uint8_t ) );
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read_olat, (), ( const ) );
-
     MOCK_METHOD( (Result<Void, Error_Code>), write_olat, ( std::uint8_t ) );
 
     MOCK_METHOD(
@@ -218,26 +188,21 @@ class Mock_Driver : public I2C::Mock_Device<std::uint8_t>, public Mock_Register_
 
     MOCK_METHOD( (Result<Void, Error_Code>), configure_pin_as_internally_pulled_up_input, ( std::uint8_t ) );
 
-    MOCK_METHOD( (Result<Void, Error_Code>), configure_pin_as_open_drain_output, ( std::uint8_t ) );
-
-    MOCK_METHOD( (Result<Void, Error_Code>), configure_pin_as_push_pull_output, ( std::uint8_t ) );
-
     MOCK_METHOD( (Result<Void, Error_Code>), enable_pull_up, ( std::uint8_t ) );
-
     MOCK_METHOD( (Result<Void, Error_Code>), disable_pull_up, ( std::uint8_t ) );
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), state, ( std::uint8_t ), ( const ) );
 
-    MOCK_METHOD( (Result<Void, Error_Code>), transition_open_drain_output_to_high, ( std::uint8_t ) );
-
-    MOCK_METHOD( (Result<Void, Error_Code>), transition_push_pull_output_to_high, ( std::uint8_t ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), configure_pin_as_open_drain_output, ( std::uint8_t ) );
 
     MOCK_METHOD( (Result<Void, Error_Code>), transition_open_drain_output_to_low, ( std::uint8_t ) );
-
-    MOCK_METHOD( (Result<Void, Error_Code>), transition_push_pull_output_to_low, ( std::uint8_t ) );
-
+    MOCK_METHOD( (Result<Void, Error_Code>), transition_open_drain_output_to_high, ( std::uint8_t ) );
     MOCK_METHOD( (Result<Void, Error_Code>), toggle_open_drain_output, ( std::uint8_t ) );
 
+    MOCK_METHOD( (Result<Void, Error_Code>), configure_pin_as_push_pull_output, ( std::uint8_t ) );
+
+    MOCK_METHOD( (Result<Void, Error_Code>), transition_push_pull_output_to_high, ( std::uint8_t ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), transition_push_pull_output_to_low, ( std::uint8_t ) );
     MOCK_METHOD( (Result<Void, Error_Code>), toggle_push_pull_output, ( std::uint8_t ) );
 };
 

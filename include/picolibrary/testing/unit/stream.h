@@ -42,18 +42,12 @@ namespace picolibrary::Testing::Unit {
  */
 class Mock_Stream_Buffer : public Stream_Buffer {
   public:
-    /**
-     * \brief Constructor.
-     */
     Mock_Stream_Buffer() = default;
 
     Mock_Stream_Buffer( Mock_Stream_Buffer && ) = delete;
 
     Mock_Stream_Buffer( Mock_Stream_Buffer const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Mock_Stream_Buffer() noexcept = default;
 
     auto operator=( Mock_Stream_Buffer && ) = delete;
@@ -63,54 +57,21 @@ class Mock_Stream_Buffer : public Stream_Buffer {
     MOCK_METHOD( (Result<Void, Error_Code>), initialize, (), ( noexcept, override ) );
 
     MOCK_METHOD( (Result<Void, Error_Code>), put, (char), ( noexcept, override ) );
-
     MOCK_METHOD( (Result<Void, Error_Code>), put, ( std::string ) );
 
-    /**
-     * \brief Write a block of characters to the put area of the buffer.
-     *
-     * \param[in] begin The beginning of the block of characters to write to the put area
-     *            of the buffer.
-     * \param[in] end The end of the block of characters to write to the put area of the
-     *            buffer.
-     *
-     * \return Nothing if the write succeeded.
-     * \return An error code if the write failed.
-     */
     virtual auto put( char const * begin, char const * end ) noexcept -> Result<Void, Error_Code> override
     {
         return put( std::string{ begin, end } );
     }
 
-    /**
-     * \brief Write a null-terminated string to the put area of the buffer.
-     *
-     * \param[in] string The null-terminated string to write to the put area of the
-     *            buffer.
-     *
-     * \return Nothing if the write succeeded.
-     * \return An error code if the write failed.
-     */
     virtual auto put( char const * string ) noexcept -> Result<Void, Error_Code> override
     {
         return put( std::string{ string } );
     }
 
     MOCK_METHOD( (Result<Void, Error_Code>), put, ( std::uint8_t ), ( noexcept, override ) );
-
     MOCK_METHOD( (Result<Void, Error_Code>), put, (std::vector<std::uint8_t>));
 
-    /**
-     * \brief Write a block of unsigned bytes to the put area of the buffer.
-     *
-     * \param[in] begin The beginning of the block of unsigned bytes to write to the put
-     *            area of the buffer.
-     * \param[in] end The end of the block of unsigned bytes to write to the put area of
-     *            the buffer.
-     *
-     * \return Nothing if the write succeeded.
-     * \return An error code if the write failed.
-     */
     virtual auto put( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
         -> Result<Void, Error_Code> override
     {
@@ -118,20 +79,8 @@ class Mock_Stream_Buffer : public Stream_Buffer {
     }
 
     MOCK_METHOD( (Result<Void, Error_Code>), put, ( std::int8_t ), ( noexcept, override ) );
-
     MOCK_METHOD( (Result<Void, Error_Code>), put, (std::vector<std::int8_t>));
 
-    /**
-     * \brief Write a block of signed bytes to the put area of the buffer.
-     *
-     * \param[in] begin The beginning of the block of signed bytes to write to the put
-     *            area of the buffer.
-     * \param[in] end The end of the block of signed bytes to write to the put area of the
-     *            buffer.
-     *
-     * \return Nothing if the write succeeded.
-     * \return An error code if the write failed.
-     */
     virtual auto put( std::int8_t const * begin, std::int8_t const * end ) noexcept
         -> Result<Void, Error_Code> override
     {
@@ -149,11 +98,6 @@ class Mock_Stream_Buffer : public Stream_Buffer {
 template<typename T>
 class Mock_Output_Formatter {
   public:
-    /**
-     * \brief Get a reference to the active mock output formatter.
-     *
-     * \return A reference to the active mock output formatter.
-     */
     static auto & instance()
     {
         if ( not INSTANCE ) {
@@ -165,11 +109,6 @@ class Mock_Output_Formatter {
         return *INSTANCE;
     }
 
-    /**
-     * \brief Constructor.
-     *
-     * \pre There are no active instances of this class.
-     */
     Mock_Output_Formatter()
     {
         if ( INSTANCE ) {
@@ -186,9 +125,6 @@ class Mock_Output_Formatter {
 
     Mock_Output_Formatter( Mock_Output_Formatter const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Mock_Output_Formatter() noexcept
     {
         INSTANCE = nullptr;
@@ -203,9 +139,6 @@ class Mock_Output_Formatter {
     MOCK_METHOD( (Result<Void, Error_Code>), print, (Output_Stream &, T const &));
 
   private:
-    /**
-     * \brief The active mock output formatter.
-     */
     inline static auto INSTANCE = static_cast<Mock_Output_Formatter *>( nullptr );
 };
 
@@ -214,9 +147,6 @@ class Mock_Output_Formatter {
  */
 class Mock_Output_Stream : public Output_Stream {
   public:
-    /**
-     * \brief Constructor.
-     */
     Mock_Output_Stream()
     {
         set_buffer( &m_buffer );
@@ -226,28 +156,17 @@ class Mock_Output_Stream : public Output_Stream {
 
     Mock_Output_Stream( Mock_Output_Stream const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Mock_Output_Stream() noexcept = default;
 
     auto operator=( Mock_Output_Stream && ) = delete;
 
     auto operator=( Mock_Output_Stream const & ) = delete;
 
-    /**
-     * \brief Get the output stream's I/O stream device access buffer.
-     *
-     * \return The output stream's I/O stream device access buffer.
-     */
     auto & buffer() noexcept
     {
         return m_buffer;
     }
 
-    /**
-     * \brief Report an I/O error and/or a fatal error.
-     */
     void report_random_error()
     {
         auto const flags = random<std::uint_fast8_t>( 0b01, 0b11 );
@@ -262,9 +181,6 @@ class Mock_Output_Stream : public Output_Stream {
     }
 
   private:
-    /**
-     * \brief The output stream's I/O stream device access buffer.
-     */
     Mock_Stream_Buffer m_buffer{};
 };
 

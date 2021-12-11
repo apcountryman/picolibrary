@@ -30,6 +30,7 @@
 #include "gmock/gmock.h"
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
+#include "picolibrary/testing/unit/mock_handle.h"
 #include "picolibrary/void.h"
 
 /**
@@ -42,155 +43,57 @@ namespace picolibrary::Testing::Unit::SPI {
  */
 class Mock_Basic_Controller {
   public:
-    /**
-     * \brief Clock (frequency, polarity, and phase), and data exchange bit order
-     *        configuration.
-     */
     using Configuration = std::uint_fast16_t;
 
-    /**
-     * \brief Movable mock basic controller handle.
-     */
-    class Handle {
+    class Handle : public Mock_Handle<Mock_Basic_Controller> {
       public:
-        /**
-         * \brief Clock (frequency, polarity, and phase), and data exchange bit order
-         *        configuration.
-         */
-        using Configuration = std::uint_fast16_t;
+        using Configuration = Mock_Basic_Controller::Configuration;
 
-        /**
-         * \brief Constructor.
-         */
-        Handle() noexcept = default;
+        constexpr Handle() noexcept = default;
 
-        /**
-         * \brief Constructor.
-         *
-         * \param[in] mock_basic_controller The mock basic controller.
-         */
-        Handle( Mock_Basic_Controller & mock_basic_controller ) noexcept :
-            m_mock_basic_controller{ &mock_basic_controller }
+        constexpr Handle( Mock_Basic_Controller & mock ) noexcept :
+            Mock_Handle<Mock_Basic_Controller>{ mock }
         {
         }
 
-        /**
-         * \brief Constructor.
-         *
-         * \param[in] source The source of the move.
-         */
-        Handle( Handle && source ) noexcept :
-            m_mock_basic_controller{ source.m_mock_basic_controller }
-        {
-            source.m_mock_basic_controller = nullptr;
-        }
+        constexpr Handle( Handle && source ) noexcept = default;
 
         Handle( Handle const & ) = delete;
 
-        /**
-         * \brief Destructor.
-         */
         ~Handle() noexcept = default;
 
-        /**
-         * \brief Assignment operator.
-         *
-         * \param[in] expression The expression to be assigned.
-         *
-         * \return The assigned to object.
-         */
-        auto & operator=( Handle && expression ) noexcept
-        {
-            if ( &expression != this ) {
-                m_mock_basic_controller = expression.m_mock_basic_controller;
-
-                expression.m_mock_basic_controller = nullptr;
-            } // if
-
-            return *this;
-        }
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
 
         auto operator=( Handle const & ) = delete;
 
-        /**
-         * \brief Get the mock basic controller.
-         *
-         * \return The mock basic controller.
-         */
-        auto & mock() noexcept
-        {
-            return *m_mock_basic_controller;
-        }
-
-        /**
-         * \brief Initialize the controller's hardware.
-         *
-         * \return Nothing if controller hardware initialization succeeded.
-         * \return An error code if controller hardware initialization failed.
-         */
         auto initialize()
         {
-            return m_mock_basic_controller->initialize();
+            return mock().initialize();
         }
 
-        /**
-         * \brief Configure the controller's clock, and data exchange bit order to meet a
-         *        specific device's communication requirements.
-         *
-         * \param[in] configuration The clock, and data exchange bit order configuration
-         *            that meets the device's communication requirements.
-         *
-         * \return Nothing if controller clock configuration succeeded.
-         * \return An error code if controller clock configuration failed.
-         */
         auto configure( Configuration configuration )
         {
-            return m_mock_basic_controller->configure( configuration );
+            return mock().configure( configuration );
         }
 
-        /**
-         * \brief Exchange data with a device.
-         *
-         * \param[in] data The data to transmit.
-         *
-         * \return The received data if data exchange succeeded.
-         * \return An error code if data exchange failed.
-         */
         auto exchange( std::uint8_t data )
         {
-            return m_mock_basic_controller->exchange( data );
+            return mock().exchange( data );
         }
-
-      private:
-        /**
-         * \brief The mock basic controller.
-         */
-        Mock_Basic_Controller * m_mock_basic_controller{};
     };
 
-    /**
-     * \brief Constructor.
-     */
     Mock_Basic_Controller() = default;
 
     Mock_Basic_Controller( Mock_Basic_Controller && ) = delete;
 
     Mock_Basic_Controller( Mock_Basic_Controller const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Mock_Basic_Controller() noexcept = default;
 
     auto operator=( Mock_Basic_Controller && ) = delete;
 
     auto operator=( Mock_Basic_Controller const & ) = delete;
 
-    /**
-     * \brief Get a movable handle to the mock basic controller.
-     *
-     * \return A movable handle to the mock basic controller.
-     */
     auto handle() noexcept
     {
         return Handle{ *this };
@@ -206,255 +109,87 @@ class Mock_Basic_Controller {
 /**
  * \brief Mock SPI controller.
  */
-class Mock_Controller {
+class Mock_Controller : public Mock_Basic_Controller {
   public:
-    /**
-     * \brief Clock (frequency, polarity, and phase), and data exchange bit order
-     *        configuration.
-     */
-    using Configuration = std::uint_fast16_t;
-
-    /**
-     * \brief Movable mock controller handle.
-     */
-    class Handle {
+    class Handle : public Mock_Basic_Controller::Handle {
       public:
-        /**
-         * \brief Clock (frequency, polarity, and phase), and data exchange bit order
-         *        configuration.
-         */
-        using Configuration = std::uint_fast16_t;
+        constexpr Handle() noexcept = default;
 
-        /**
-         * \brief Constructor.
-         */
-        Handle() noexcept = default;
-
-        /**
-         * \brief Constructor.
-         *
-         * \param[in] mock_controller The mock controller.
-         */
-        Handle( Mock_Controller & mock_controller ) noexcept :
-            m_mock_controller{ &mock_controller }
+        constexpr Handle( Mock_Controller & mock ) noexcept :
+            Mock_Basic_Controller::Handle{ mock }
         {
         }
 
-        /**
-         * \brief Constructor.
-         *
-         * \param[in] source The source of the move.
-         */
-        Handle( Handle && source ) noexcept :
-            m_mock_controller{ source.m_mock_controller }
-        {
-            source.m_mock_controller = nullptr;
-        }
+        constexpr Handle( Handle && source ) noexcept = default;
 
         Handle( Handle const & ) = delete;
 
-        /**
-         * \brief Destructor.
-         */
         ~Handle() noexcept = default;
 
-        /**
-         * \brief Assignment operator.
-         *
-         * \param[in] expression The expression to be assigned.
-         *
-         * \return The assigned to object.
-         */
-        auto & operator=( Handle && expression ) noexcept
-        {
-            if ( &expression != this ) {
-                m_mock_controller = expression.m_mock_controller;
-
-                expression.m_mock_controller = nullptr;
-            } // if
-
-            return *this;
-        }
+        auto operator=( Handle && expression ) noexcept -> Handle & = default;
 
         auto operator=( Handle const & ) = delete;
 
-        /**
-         * \brief Get the mock controller.
-         *
-         * \return The mock controller.
-         */
         auto & mock() noexcept
         {
-            return *m_mock_controller;
+            return static_cast<Mock_Controller &>( Mock_Basic_Controller::Handle::mock() );
         }
 
-        /**
-         * \brief Initialize the controller's hardware.
-         *
-         * \return Nothing if controller hardware initialization succeeded.
-         * \return An error code if controller hardware initialization failed.
-         */
-        auto initialize()
+        auto const & mock() const noexcept
         {
-            return m_mock_controller->initialize();
+            return static_cast<Mock_Controller const &>( Mock_Basic_Controller::Handle::mock() );
         }
 
-        /**
-         * \brief Configure the controller's clock, and data exchange bit order to meet a
-         *        specific device's communication requirements.
-         *
-         * \param[in] configuration The clock, and data exchange bit order configuration
-         *            that meets the device's communication requirements.
-         *
-         * \return Nothing if controller clock configuration succeeded.
-         * \return An error code if controller clock configuration failed.
-         */
-        auto configure( Configuration configuration )
-        {
-            return m_mock_controller->configure( configuration );
-        }
+        using Mock_Basic_Controller::Handle::exchange;
 
-        /**
-         * \brief Exchange data with a device.
-         *
-         * \param[in] data The data to transmit.
-         *
-         * \return The received data if data exchange succeeded.
-         * \return An error code if data exchange failed.
-         */
-        auto exchange( std::uint8_t data )
-        {
-            return m_mock_controller->exchange( data );
-        }
-
-        /**
-         * \brief Exchange a block of of data with a device.
-         *
-         * \param[in] tx_begin The beginning of the block of data to transmit.
-         * \param[in] tx_end The end of the block of data to transmit.
-         * \param[out] rx_begin The beginning of the block of received data.
-         * \param[out] rx_end The end of the block of received data.
-         *
-         * \warning This function does not verify that the transmit and receive data
-         *          blocks are the same size.
-         *
-         * \return Nothing if data exchange succeeded.
-         * \return An error code if data exchange failed.
-         */
         auto exchange( std::uint8_t const * tx_begin, std::uint8_t const * tx_end, std::uint8_t * rx_begin, std::uint8_t * rx_end )
         {
-            return m_mock_controller->exchange( tx_begin, tx_end, rx_begin, rx_end );
+            return mock().exchange( tx_begin, tx_end, rx_begin, rx_end );
         }
 
-        /**
-         * \brief Receive data from a device.
-         *
-         * \return The received data if data reception succeeded.
-         * \return An error code if data reception failed.
-         */
         auto receive()
         {
-            return m_mock_controller->receive();
+            return mock().receive();
         }
 
-        /**
-         * \brief Receive a block of data from a device.
-         *
-         * \param[out] begin The beginning of the block of received data.
-         * \param[out] end The end of the block of received data.
-         *
-         * \return The received data if data reception succeeded.
-         * \return An error code if data reception failed.
-         */
         auto receive( std::uint8_t * begin, std::uint8_t * end )
         {
-            return m_mock_controller->receive( begin, end );
+            return mock().receive( begin, end );
         }
 
-        /**
-         * \brief Transmit data to a device.
-         *
-         * \param[in] data The data to transmit.
-         *
-         * \return Nothing if data transmission succeeded.
-         * \return An error code if data transmission failed.
-         */
         auto transmit( std::uint8_t data )
         {
-            return m_mock_controller->transmit( data );
+            return mock().transmit( data );
         }
 
-        /**
-         * \brief Transmit a block of data to a device.
-         *
-         * \param[in] begin The beginning of the block of data to transmit.
-         * \param[in] end The end of the block of data to transmit.
-         *
-         * \return Nothing if data transmission succeeded.
-         * \return An error code if data transmission failed.
-         */
         auto transmit( std::uint8_t const * begin, std::uint8_t const * end )
         {
-            return m_mock_controller->transmit( begin, end );
+            return mock().transmit( begin, end );
         }
-
-      private:
-        /**
-         * \brief The mock controller.
-         */
-        Mock_Controller * m_mock_controller{};
     };
 
-    /**
-     * \brief Constructor.
-     */
     Mock_Controller() = default;
 
     Mock_Controller( Mock_Controller && ) = delete;
 
     Mock_Controller( Mock_Controller const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Mock_Controller() noexcept = default;
 
     auto operator=( Mock_Controller && ) = delete;
 
     auto operator=( Mock_Controller const & ) = delete;
 
-    /**
-     * \brief Get a movable handle to the mock controller.
-     *
-     * \return A movable handle to the mock controller.
-     */
     auto handle() noexcept
     {
         return Handle{ *this };
     }
 
-    MOCK_METHOD( (Result<Void, Error_Code>), initialize, () );
-
-    MOCK_METHOD( (Result<Void, Error_Code>), configure, ( Configuration ) );
-
-    MOCK_METHOD( (Result<std::uint8_t, Error_Code>), exchange, ( std::uint8_t ) );
+    using Mock_Basic_Controller::exchange;
+    using Mock_Basic_Controller::gmock_exchange;
 
     MOCK_METHOD( (Result<std::vector<std::uint8_t>, Error_Code>), exchange, (std::vector<std::uint8_t>));
 
-    /**
-     * \brief Exchange a block of of data with a device.
-     *
-     * \param[in] tx_begin The beginning of the block of data to transmit.
-     * \param[in] tx_end The end of the block of data to transmit.
-     * \param[out] rx_begin The beginning of the block of received data.
-     * \param[out] rx_end The end of the block of received data.
-     *
-     * \warning This function does not verify that the transmit and receive data blocks
-     *          are the same size.
-     *
-     * \return Nothing if data exchange succeeded.
-     * \return An error code if data exchange failed.
-     */
     auto exchange( std::uint8_t const * tx_begin, std::uint8_t const * tx_end, std::uint8_t * rx_begin, std::uint8_t * rx_end )
         -> Result<Void, Error_Code>
     {
@@ -476,18 +211,8 @@ class Mock_Controller {
     }
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), receive, () );
-
     MOCK_METHOD( (Result<std::vector<std::uint8_t>, Error_Code>), receive, (std::vector<std::uint8_t>));
 
-    /**
-     * \brief Receive a block of data from a device.
-     *
-     * \param[out] begin The beginning of the block of received data.
-     * \param[out] end The end of the block of received data.
-     *
-     * \return The received data if data reception succeeded.
-     * \return An error code if data reception failed.
-     */
     auto receive( std::uint8_t * begin, std::uint8_t * end ) -> Result<Void, Error_Code>
     {
         static_cast<void>( end );
@@ -508,18 +233,8 @@ class Mock_Controller {
     }
 
     MOCK_METHOD( (Result<Void, Error_Code>), transmit, ( std::uint8_t ) );
-
     MOCK_METHOD( (Result<Void, Error_Code>), transmit, (std::vector<std::uint8_t>));
 
-    /**
-     * \brief Transmit a block of data to a device.
-     *
-     * \param[in] begin The beginning of the block of data to transmit.
-     * \param[in] end The end of the block of data to transmit.
-     *
-     * \return Nothing if data transmission succeeded.
-     * \return An error code if data transmission failed.
-     */
     auto transmit( std::uint8_t const * begin, std::uint8_t const * end ) -> Result<Void, Error_Code>
     {
         return transmit( std::vector<std::uint8_t>{ begin, end } );
@@ -531,137 +246,53 @@ class Mock_Controller {
  */
 class Mock_Device_Selector {
   public:
-    /**
-     * \brief Movable mock device selector handle.
-     */
-    class Handle {
+    class Handle : public Mock_Handle<Mock_Device_Selector> {
       public:
-        /**
-         * \brief Constructor.
-         */
-        Handle() noexcept = default;
+        constexpr Handle() noexcept = default;
 
-        /**
-         * \brief Constructor.
-         *
-         * \param[in] mock_device_selector The mock device selector.
-         */
-        Handle( Mock_Device_Selector & mock_device_selector ) noexcept :
-            m_mock_device_selector{ &mock_device_selector }
+        constexpr Handle( Mock_Device_Selector & mock ) noexcept :
+            Mock_Handle<Mock_Device_Selector>{ mock }
         {
         }
 
-        /**
-         * \brief Constructor.
-         *
-         * \param[in] source The source of the move.
-         */
-        Handle( Handle && source ) noexcept :
-            m_mock_device_selector{ source.m_mock_device_selector }
-        {
-            source.m_mock_device_selector = nullptr;
-        }
+        constexpr Handle( Handle && source ) noexcept = default;
 
         Handle( Handle const & ) = delete;
 
-        /**
-         * \brief Destructor.
-         */
         ~Handle() noexcept = default;
 
-        /**
-         * \brief Assignment operator.
-         *
-         * \param[in] expression The expression to be assigned.
-         *
-         * \return The assigned to object.
-         */
-        auto & operator=( Handle && expression ) noexcept
-        {
-            if ( &expression != this ) {
-                m_mock_device_selector = expression.m_mock_device_selector;
-
-                expression.m_mock_device_selector = nullptr;
-            } // if
-
-            return *this;
-        }
+        auto operator=( Handle && expression ) noexcept -> Handle & = default;
 
         auto operator=( Handle const & ) = delete;
 
-        /**
-         * \brief Get the mock device selector.
-         *
-         * \return The mock device selector.
-         */
-        auto & mock() noexcept
-        {
-            return *m_mock_device_selector;
-        }
-
-        /**
-         * \brief Initialize the device selector's hardware.
-         *
-         * \return Nothing if device selector hardware initialization succeeded.
-         * \return An error code if device selector hardware initialization failed.
-         */
         auto initialize()
         {
-            return m_mock_device_selector->initialize();
+            return mock().initialize();
         }
 
-        /**
-         * \brief Select the device.
-         *
-         * \return Nothing if device selection succeeded.
-         * \return An error code if device selection failed.
-         */
         auto select()
         {
-            return m_mock_device_selector->select();
+            return mock().select();
         }
 
-        /**
-         * \brief Deselect the device.
-         *
-         * \return Nothing if device deselection succeeded.
-         * \return An error code if device deselection failed.
-         */
         auto deselect()
         {
-            return m_mock_device_selector->deselect();
+            return mock().deselect();
         }
-
-      private:
-        /**
-         * \brief The mock device selector.
-         */
-        Mock_Device_Selector * m_mock_device_selector{};
     };
 
-    /**
-     * \brief Constructor.
-     */
     Mock_Device_Selector() = default;
 
     Mock_Device_Selector( Mock_Device_Selector && ) = delete;
 
     Mock_Device_Selector( Mock_Device_Selector const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Mock_Device_Selector() noexcept = default;
 
     auto operator=( Mock_Device_Selector && ) = delete;
 
     auto operator=( Mock_Device_Selector const & ) = delete;
 
-    /**
-     * \brief Get a movable handle to the mock device selector.
-     *
-     * \return A movable handle to the mock device selector.
-     */
     auto handle() noexcept
     {
         return Handle{ *this };
@@ -670,7 +301,6 @@ class Mock_Device_Selector {
     MOCK_METHOD( (Result<Void, Error_Code>), initialize, () );
 
     MOCK_METHOD( (Result<Void, Error_Code>), select, () );
-
     MOCK_METHOD( (Result<Void, Error_Code>), deselect, () );
 };
 
@@ -679,24 +309,12 @@ class Mock_Device_Selector {
  */
 class Mock_Device {
   public:
-    /**
-     * \brief The type of controller used to communicate with the device.
-     */
     using Controller = Mock_Controller;
 
-    /**
-     * \brief The type of device selector used to select and deselect the device.
-     */
     using Device_Selector = Mock_Device_Selector::Handle;
 
-    /**
-     * \brief Constructor.
-     */
     Mock_Device() = default;
 
-    /**
-     * \brief Constructor.
-     */
     Mock_Device( Controller &, Controller::Configuration, Device_Selector )
     {
     }
@@ -705,9 +323,6 @@ class Mock_Device {
 
     Mock_Device( Mock_Device const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Mock_Device() noexcept = default;
 
     auto operator=( Mock_Device && ) = delete;
@@ -721,23 +336,8 @@ class Mock_Device {
     MOCK_METHOD( Device_Selector &, device_selector, (), ( const ) );
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), exchange, ( std::uint8_t ), ( const ) );
-
     MOCK_METHOD( (Result<std::vector<std::uint8_t>, Error_Code>), exchange, (std::vector<std::uint8_t>), ( const ) );
 
-    /**
-     * \brief Exchange a block of data with the device.
-     *
-     * \param[in] tx_begin The beginning of the block of data to transmit.
-     * \param[in] tx_end The end of the block of data to transmit.
-     * \param[out] rx_begin The beginning of the block of received data.
-     * \param[out] rx_end The end of the block of received data.
-     *
-     * \warning This function does not verify that the transmit and receive data blocks
-     *          are the same size.
-     *
-     * \return Nothing if data exchange succeeded.
-     * \return An error code if data exchange failed.
-     */
     auto exchange( std::uint8_t const * tx_begin, std::uint8_t const * tx_end, std::uint8_t * rx_begin, std::uint8_t * rx_end ) const
         -> Result<Void, Error_Code>
     {
@@ -759,18 +359,8 @@ class Mock_Device {
     }
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), receive, (), ( const ) );
-
     MOCK_METHOD( (Result<std::vector<std::uint8_t>, Error_Code>), receive, (std::vector<std::uint8_t>), ( const ) );
 
-    /**
-     * \brief Receive a block of data from the device.
-     *
-     * \param[out] begin The beginning of the block of received data.
-     * \param[out] end The end of the block of received data.
-     *
-     * \return Nothing if data reception succeeded.
-     * \return An error code if data reception failed.
-     */
     auto receive( std::uint8_t * begin, std::uint8_t * end ) const -> Result<Void, Error_Code>
     {
         static_cast<void>( end );
@@ -791,18 +381,8 @@ class Mock_Device {
     }
 
     MOCK_METHOD( (Result<Void, Error_Code>), transmit, ( std::uint8_t ), ( const ) );
-
     MOCK_METHOD( (Result<Void, Error_Code>), transmit, (std::vector<std::uint8_t>), ( const ) );
 
-    /**
-     * \brief Transmit a block of data to the device.
-     *
-     * \param[in] begin The beginning of the block of data to transmit.
-     * \param[in] end The end of the block of data to transmit.
-     *
-     * \return Nothing if data transmission succeeded.
-     * \return An error code if data transmission failed.
-     */
     auto transmit( std::uint8_t const * begin, std::uint8_t const * end ) const
         -> Result<Void, Error_Code>
     {

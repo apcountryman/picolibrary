@@ -31,6 +31,7 @@
 #include "picolibrary/ip/tcp.h"
 #include "picolibrary/result.h"
 #include "picolibrary/testing/unit/ip.h"
+#include "picolibrary/testing/unit/mock_handle.h"
 #include "picolibrary/void.h"
 
 /**
@@ -43,257 +44,93 @@ namespace picolibrary::Testing::Unit::IP::TCP {
  */
 class Mock_Client {
   public:
-    /**
-     * \brief Endpoint.
-     */
-    using Endpoint = ::picolibrary::IP::TCP::Endpoint;
-
-    /**
-     * \brief The unsigned integral type used to report transmit/receive buffer
-     *        information.
-     */
     using Size = std::size_t;
 
-    /**
-     * \brief Movable mock client socket handle.
-     */
-    class Handle {
+    class Handle : public Mock_Handle<Mock_Client> {
       public:
-        /**
-         * \brief The unsigned integral type used to report transmit/receive buffer
-         *        information.
-         */
-        using Size = std::size_t;
+        using Size = Mock_Client::Size;
 
-        /**
-         * \brief Constructor.
-         */
-        Handle() noexcept = default;
+        constexpr Handle() noexcept = default;
 
-        /**
-         * \brief Constructor.
-         *
-         * \param[in] mock_client The mock client socket.
-         */
-        Handle( Mock_Client & mock_client ) noexcept : m_mock_client{ &mock_client }
+        constexpr Handle( Mock_Client & mock ) noexcept : Mock_Handle<Mock_Client>{ mock }
         {
         }
 
-        /**
-         * \brief Constructor.
-         *
-         * \param[in] source The source of the move.
-         */
-        Handle( Handle && source ) noexcept : m_mock_client{ source.m_mock_client }
-        {
-            source.m_mock_client = nullptr;
-        }
+        constexpr Handle( Handle && source ) noexcept = default;
 
         Handle( Handle const & ) = delete;
 
-        /**
-         * \brief Destructor.
-         */
         ~Handle() noexcept = default;
 
-        /**
-         * \brief Assignment operator.
-         *
-         * \param[in] expression The expression to be assigned.
-         *
-         * \return The assigned to object.
-         */
-        auto & operator=( Handle && expression ) noexcept
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
+
+        auto bind()
         {
-            if ( &expression != this ) {
-                m_mock_client = expression.m_mock_client;
-
-                expression.m_mock_client = nullptr;
-            } // if
-
-            return *this;
+            return mock().bind();
         }
 
-        /**
-         * \brief Get the mock client socket.
-         *
-         * \return The mock client socket.
-         */
-        auto & mock() noexcept
+        auto bind( ::picolibrary::IP::TCP::Endpoint const & endpoint )
         {
-            return *m_mock_client;
+            return mock().bind( endpoint );
         }
 
-        /**
-         * \brief Bind the socket to a specific local endpoint.
-         *
-         * \param[in] endpoint The local endpoint to bind the socket to.
-         *
-         * \return Nothing if binding the socket to the local endpoint succeeded.
-         * \return An error code if binding the socket to the local endpoint failed.
-         */
-        auto bind( Endpoint const & endpoint = Endpoint{} )
+        auto connect( ::picolibrary::IP::TCP::Endpoint const & endpoint )
         {
-            return m_mock_client->bind( endpoint );
+            return mock().connect( endpoint );
         }
 
-        /**
-         * \brief Connect to a remote endpoint.
-         *
-         * \param[in] endpoint The remote endpoint to connect to.
-         *
-         * \return Nothing if connecting to the remote endpoint succeeded.
-         * \return An error code if connecting to the remote endpoint failed.
-         */
-        auto connect( Endpoint const & endpoint )
-        {
-            return m_mock_client->connect( endpoint );
-        }
-
-        /**
-         * \brief Check if the socket is connected to a remote endpoint.
-         *
-         * \return true if getting the socket's connection state succeeded and the socket
-         *         is connected to a remote endpoint.
-         * \return false if getting the socket's connection state succeeded and the socket
-         *         is not connected to a remote endpoint.
-         * \return An error code if getting the socket's connection state failed.
-         */
         auto is_connected() const
         {
-            return m_mock_client->is_connected();
+            return mock().is_connected();
         }
 
-        /**
-         * \brief Get the connection's remote endpoint.
-         *
-         * \return The connection's remote endpoint if getting the connection's remote
-         *         endpoint succeeded.
-         * \return An error code if getting the connection's remote endpoint failed.
-         */
         auto remote_endpoint() const
         {
-            return m_mock_client->remote_endpoint();
+            return mock().remote_endpoint();
         }
 
-        /**
-         * \brief Get the connection's local endpoint.
-         *
-         * \return The connection's local endpoint if getting the connection's local
-         *         endpoint succeeded.
-         * \return An error code if getting the connection's local endpoint failed.
-         */
         auto local_endpoint() const
         {
-            return m_mock_client->local_endpoint();
+            return mock().local_endpoint();
         }
 
-        /**
-         * \brief Get the amount of data that has yet to be transmitted to the remote
-         *        endpoint.
-         *
-         * \return The amount of data that has yet to be transmitted to the remote
-         *         endpoint if getting the amount of data that has yet to be transmitted
-         *         to the remote endpoint succeeded.
-         * \return An error code if getting the amount of data that has yet to be
-         *         transmitted to the remote endpoint failed.
-         */
         auto outstanding() const
         {
-            return m_mock_client->outstanding();
+            return mock().outstanding();
         }
 
-        /**
-         * \brief Transmit data to the remote endpoint.
-         *
-         * \param[in] begin The beginning of the block of data to write to the socket's
-         *            transmit buffer.
-         * \param[in] end The end of the block of data to write to the socket's transmit
-         *            buffer.
-         *
-         * \return The end of the data that was written to the socket's transmit buffer if
-         *         writing data to the socket's transmit buffer succeeded.
-         * \return An error code if writing data to the socket's transmit buffer failed.
-         */
         auto transmit( std::uint8_t const * begin, std::uint8_t const * end )
         {
-            return m_mock_client->transmit( begin, end );
+            return mock().transmit( begin, end );
         }
 
-        /**
-         * \brief Get the amount of data that is immediately available to be received from
-         *        the remote endpoint.
-         *
-         * \return The amount of data that is immediately available to be received from
-         *         the remote endpoint if getting the amount of data that is immediately
-         *         available to be received from the remote endpoint succeeded.
-         * \return An error code if getting the amount of data that is immediately
-         *         available to be received from the remote endpoint failed.
-         */
         auto available() const
         {
-            return m_mock_client->available();
+            return mock().available();
         }
 
-        /**
-         * \brief Receive data from the remote endpoint.
-         *
-         * \param[out] begin The beginning of the block of data read from the socket's
-         *             receive buffer.
-         * \param[out] end The end of the block of data read from the socket's receive
-         *             buffer.
-         *
-         * \return The end of the data that was read from the socket's receive buffer if
-         *         reading data from the socket's receive buffer succeeded.
-         * \return An error code if reading data from the socket's receive buffer failed.
-         */
         auto receive( std::uint8_t * begin, std::uint8_t * end )
         {
-            return m_mock_client->receive( begin, end );
+            return mock().receive( begin, end );
         }
 
-        /**
-         * \brief Disable further data transmission and reception.
-         *
-         * \return Nothing if disabling further data transmission and reception succeeded.
-         * \return An error code if disabling further data transmission and reception
-         *         failed.
-         */
         auto shutdown()
         {
-            return m_mock_client->shutdown();
+            return mock().shutdown();
         }
 
-        /**
-         * \brief Close the socket.
-         *
-         * \return Nothing if closing the socket succeeded.
-         * \return An error code if closing the socket failed.
-         */
         auto close()
         {
-            return m_mock_client->close();
+            return mock().close();
         }
-
-      private:
-        /**
-         * \brief The mock client socket.
-         */
-        Mock_Client * m_mock_client{};
     };
 
-    /**
-     * \brief Constructor.
-     */
     Mock_Client() = default;
 
     Mock_Client( Mock_Client && ) = delete;
 
     Mock_Client( Mock_Client const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Mock_Client() noexcept = default;
 
     auto operator=( Mock_Client && ) = delete;
@@ -301,33 +138,18 @@ class Mock_Client {
     auto operator=( Mock_Client const & ) = delete;
 
     MOCK_METHOD( (Result<Void, Error_Code>), bind, () );
+    MOCK_METHOD( (Result<Void, Error_Code>), bind, (::picolibrary::IP::TCP::Endpoint const &));
 
-    MOCK_METHOD( (Result<Void, Error_Code>), bind, (Endpoint const &));
-
-    MOCK_METHOD( (Result<Void, Error_Code>), connect, (Endpoint const &));
+    MOCK_METHOD( (Result<Void, Error_Code>), connect, (::picolibrary::IP::TCP::Endpoint const &));
 
     MOCK_METHOD( (Result<bool, Error_Code>), is_connected, (), ( const ) );
 
-    MOCK_METHOD( (Result<Endpoint, Error_Code>), remote_endpoint, (), ( const ) );
-
-    MOCK_METHOD( (Result<Endpoint, Error_Code>), local_endpoint, (), ( const ) );
+    MOCK_METHOD( (Result<::picolibrary::IP::TCP::Endpoint, Error_Code>), remote_endpoint, (), ( const ) );
+    MOCK_METHOD( (Result<::picolibrary::IP::TCP::Endpoint, Error_Code>), local_endpoint, (), ( const ) );
 
     MOCK_METHOD( (Result<Size, Error_Code>), outstanding, (), ( const ) );
-
     MOCK_METHOD( (Result<std::uint8_t const *, Error_Code>), transmit, (std::vector<std::uint8_t>));
 
-    /**
-     * \brief Transmit data to the remote endpoint.
-     *
-     * \param[in] begin The beginning of the block of data to write to the socket's
-     *            transmit buffer.
-     * \param[in] end The end of the block of data to write to the socket's transmit
-     *            buffer.
-     *
-     * \return The end of the data that was written to the socket's transmit buffer if
-     *         writing data to the socket's transmit buffer succeeded.
-     * \return An error code if writing data to the socket's transmit buffer failed.
-     */
     auto transmit( std::uint8_t const * begin, std::uint8_t const * end )
         -> Result<std::uint8_t const *, Error_Code>
     {
@@ -335,20 +157,8 @@ class Mock_Client {
     }
 
     MOCK_METHOD( (Result<Size, Error_Code>), available, (), ( const ) );
-
     MOCK_METHOD( (Result<std::vector<std::uint8_t>, Error_Code>), receive, () );
 
-    /**
-     * \brief Receive data from the remote endpoint.
-     *
-     * \param[out] begin The beginning of the block of data read from the socket's receive
-     *             buffer.
-     * \param[out] end The end of the block of data read from the socket's receive buffer.
-     *
-     * \return The end of the data that was read from the socket's receive buffer if
-     *         reading data from the socket's receive buffer succeeded.
-     * \return An error code if reading data from the socket's receive buffer failed.
-     */
     auto receive( std::uint8_t * begin, std::uint8_t * end ) -> Result<std::uint8_t *, Error_Code>
     {
         static_cast<void>( end );
@@ -378,231 +188,78 @@ class Mock_Client {
  */
 class Mock_Server {
   public:
-    /**
-     * \brief Endpoint.
-     */
-    using Endpoint = ::picolibrary::IP::TCP::Endpoint;
-
-    /**
-     * \brief The unsigned integral type used to report transmit/receive buffer
-     *        information.
-     */
     using Size = std::size_t;
 
-    /**
-     * \brief Movable mock server socket handle.
-     */
-    class Handle {
+    class Handle : public Mock_Handle<Mock_Server> {
       public:
-        /**
-         * \brief The unsigned integral type used to report transmit/receive buffer
-         *        information.
-         */
-        using Size = std::size_t;
+        using Size = Mock_Server::Size;
 
-        /**
-         * \brief Constructor.
-         */
-        Handle() noexcept = default;
+        constexpr Handle() noexcept = default;
 
-        /**
-         * \brief Constructor.
-         *
-         * \param[in] mock_server The mock server socket.
-         */
-        Handle( Mock_Server & mock_server ) noexcept : m_mock_server{ &mock_server }
+        constexpr Handle( Mock_Server & mock ) noexcept : Mock_Handle<Mock_Server>{ mock }
         {
         }
 
-        /**
-         * \brief Constructor.
-         *
-         * \param[in] source The source of the move.
-         */
-        Handle( Handle && source ) noexcept : m_mock_server{ source.m_mock_server }
-        {
-            source.m_mock_server = nullptr;
-        }
+        constexpr Handle( Handle && source ) noexcept = default;
 
         Handle( Handle const & ) = delete;
 
-        /**
-         * \brief Destructor.
-         */
         ~Handle() noexcept = default;
 
-        /**
-         * \brief Assignment operator.
-         *
-         * \param[in] expression The expression to be assigned.
-         *
-         * \return The assigned to object.
-         */
-        auto & operator=( Handle && expression ) noexcept
-        {
-            if ( &expression != this ) {
-                m_mock_server = expression.m_mock_server;
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
 
-                expression.m_mock_server = nullptr;
-            } // if
-
-            return *this;
-        }
-
-        /**
-         * \brief Get the mock server socket.
-         *
-         * \return The mock server socket.
-         */
-        auto & mock() noexcept
-        {
-            return *m_mock_server;
-        }
-
-        /**
-         * \brief Check if the socket is connected to a remote endpoint.
-         *
-         * \return true if getting the socket's connection state succeeded and the socket
-         *         is connected to a remote endpoint.
-         * \return false if getting the socket's connection state succeeded and the socket
-         *         is not connected to a remote endpoint.
-         * \return An error code if getting the socket's connection state failed.
-         */
         auto is_connected() const
         {
-            return m_mock_server->is_connected();
+            return mock().is_connected();
         }
 
-        /**
-         * \brief Get the connection's remote endpoint.
-         *
-         * \return The connection's remote endpoint if getting the connection's remote
-         *         endpoint succeeded.
-         * \return An error code if getting the connection's remote endpoint failed.
-         */
         auto remote_endpoint() const
         {
-            return m_mock_server->remote_endpoint();
+            return mock().remote_endpoint();
         }
 
-        /**
-         * \brief Get the connection's local endpoint.
-         *
-         * \return The connection's local endpoint if getting the connection's local
-         *         endpoint succeeded.
-         * \return An error code if getting the connection's local endpoint failed.
-         */
         auto local_endpoint() const
         {
-            return m_mock_server->local_endpoint();
+            return mock().local_endpoint();
         }
 
-        /**
-         * \brief Get the amount of data that has yet to be transmitted to the remote
-         *        endpoint.
-         *
-         * \return The amount of data that has yet to be transmitted to the remote
-         *         endpoint if getting the amount of data that has yet to be transmitted
-         *         to the remote endpoint succeeded.
-         * \return An error code if getting the amount of data that has yet to be
-         *         transmitted to the remote endpoint failed.
-         */
         auto outstanding() const
         {
-            return m_mock_server->outstanding();
+            return mock().outstanding();
         }
 
-        /**
-         * \brief Transmit data to the remote endpoint.
-         *
-         * \param[in] begin The beginning of the block of data to write to the socket's
-         *            transmit buffer.
-         * \param[in] end The end of the block of data to write to the socket's transmit
-         *            buffer.
-         *
-         * \return The end of the data that was written to the socket's transmit buffer if
-         *         writing data to the socket's transmit buffer succeeded.
-         * \return An error code if writing data to the socket's transmit buffer failed.
-         */
         auto transmit( std::uint8_t const * begin, std::uint8_t const * end )
         {
-            return m_mock_server->transmit( begin, end );
+            return mock().transmit( begin, end );
         }
 
-        /**
-         * \brief Get the amount of data that is immediately available to be received from
-         *        the remote endpoint.
-         *
-         * \return The amount of data that is immediately available to be received from
-         *         the remote endpoint if getting the amount of data that is immediately
-         *         available to be received from the remote endpoint succeeded.
-         * \return An error code if getting the amount of data that is immediately
-         *         available to be received from the remote endpoint failed.
-         */
         auto available() const
         {
-            return m_mock_server->available();
+            return mock().available();
         }
 
-        /**
-         * \brief Receive data from the remote endpoint.
-         *
-         * \param[out] begin The beginning of the block of data read from the socket's
-         *             receive buffer.
-         * \param[out] end The end of the block of data read from the socket's receive
-         *             buffer.
-         *
-         * \return The end of the data that was read from the socket's receive buffer if
-         *         reading data from the socket's receive buffer succeeded.
-         * \return An error code if reading data from the socket's receive buffer failed.
-         */
         auto receive( std::uint8_t * begin, std::uint8_t * end )
         {
-            return m_mock_server->receive( begin, end );
+            return mock().receive( begin, end );
         }
 
-        /**
-         * \brief Disable further data transmission and reception.
-         *
-         * \return Nothing if disabling further data transmission and reception succeeded.
-         * \return An error code if disabling further data transmission and reception
-         *         failed.
-         */
         auto shutdown()
         {
-            return m_mock_server->shutdown();
+            return mock().shutdown();
         }
 
-        /**
-         * \brief Close the socket.
-         *
-         * \return Nothing if closing the socket succeeded.
-         * \return An error code if closing the socket failed.
-         */
         auto close()
         {
-            return m_mock_server->close();
+            return mock().close();
         }
-
-      private:
-        /**
-         * \brief The mock server socket.
-         */
-        Mock_Server * m_mock_server{};
     };
 
-    /**
-     * \brief Constructor.
-     */
     Mock_Server() = default;
 
     Mock_Server( Mock_Server && ) = delete;
 
     Mock_Server( Mock_Server const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Mock_Server() noexcept = default;
 
     auto operator=( Mock_Server && ) = delete;
@@ -611,26 +268,12 @@ class Mock_Server {
 
     MOCK_METHOD( (Result<bool, Error_Code>), is_connected, (), ( const ) );
 
-    MOCK_METHOD( (Result<Endpoint, Error_Code>), remote_endpoint, (), ( const ) );
-
-    MOCK_METHOD( (Result<Endpoint, Error_Code>), local_endpoint, (), ( const ) );
+    MOCK_METHOD( (Result<::picolibrary::IP::TCP::Endpoint, Error_Code>), remote_endpoint, (), ( const ) );
+    MOCK_METHOD( (Result<::picolibrary::IP::TCP::Endpoint, Error_Code>), local_endpoint, (), ( const ) );
 
     MOCK_METHOD( (Result<Size, Error_Code>), outstanding, (), ( const ) );
-
     MOCK_METHOD( (Result<std::uint8_t const *, Error_Code>), transmit, (std::vector<std::uint8_t>));
 
-    /**
-     * \brief Transmit data to the remote endpoint.
-     *
-     * \param[in] begin The beginning of the block of data to write to the socket's
-     *            transmit buffer.
-     * \param[in] end The end of the block of data to write to the socket's transmit
-     *            buffer.
-     *
-     * \return The end of the data that was written to the socket's transmit buffer if
-     *         writing data to the socket's transmit buffer succeeded.
-     * \return An error code if writing data to the socket's transmit buffer failed.
-     */
     auto transmit( std::uint8_t const * begin, std::uint8_t const * end )
         -> Result<std::uint8_t const *, Error_Code>
     {
@@ -638,20 +281,8 @@ class Mock_Server {
     }
 
     MOCK_METHOD( (Result<Size, Error_Code>), available, (), ( const ) );
-
     MOCK_METHOD( (Result<std::vector<std::uint8_t>, Error_Code>), receive, () );
 
-    /**
-     * \brief Receive data from the remote endpoint.
-     *
-     * \param[out] begin The beginning of the block of data read from the socket's receive
-     *             buffer.
-     * \param[out] end The end of the block of data read from the socket's receive buffer.
-     *
-     * \return The end of the data that was read from the socket's receive buffer if
-     *         reading data from the socket's receive buffer succeeded.
-     * \return An error code if reading data from the socket's receive buffer failed.
-     */
     auto receive( std::uint8_t * begin, std::uint8_t * end ) -> Result<std::uint8_t *, Error_Code>
     {
         static_cast<void>( end );
@@ -681,183 +312,69 @@ class Mock_Server {
  */
 class Mock_Acceptor {
   public:
-    /**
-     * \brief Endpoint.
-     */
-    using Endpoint = ::picolibrary::IP::TCP::Endpoint;
-
-    /**
-     * \brief The type of server socket produced by the acceptor socket.
-     */
     using Server = Mock_Server::Handle;
 
-    /**
-     * \brief Movable mock acceptor socket handle.
-     */
-    class Handle {
+    class Handle : public Mock_Handle<Mock_Acceptor> {
       public:
-        /**
-         * \brief The type of server socket produced by the acceptor socket.
-         */
-        using Server = Mock_Server::Handle;
+        using Server = Mock_Acceptor::Server;
 
-        /**
-         * \brief Constructor.
-         */
-        Handle() noexcept = default;
+        constexpr Handle() noexcept = default;
 
-        /**
-         * \brief Constructor.
-         *
-         * \param[in] mock_acceptor The mock acceptor socket.
-         */
-        Handle( Mock_Acceptor & mock_acceptor ) noexcept :
-            m_mock_acceptor{ &mock_acceptor }
+        constexpr Handle( Mock_Acceptor & mock ) noexcept :
+            Mock_Handle<Mock_Acceptor>{ mock }
         {
         }
 
-        /**
-         * \brief Constructor.
-         *
-         * \param[in] source The source of the move.
-         */
-        Handle( Handle && source ) noexcept : m_mock_acceptor{ source.m_mock_acceptor }
-        {
-            source.m_mock_acceptor = nullptr;
-        }
+        constexpr Handle( Handle && source ) noexcept = default;
 
         Handle( Handle const & ) = delete;
 
-        /**
-         * \brief Destructor.
-         */
         ~Handle() noexcept = default;
 
-        /**
-         * \brief Assignment operator.
-         *
-         * \param[in] expression The expression to be assigned.
-         *
-         * \return The assigned to object.
-         */
-        auto & operator=( Handle && expression ) noexcept
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
+
+        auto bind()
         {
-            if ( &expression != this ) {
-                m_mock_acceptor = expression.m_mock_acceptor;
-
-                expression.m_mock_acceptor = nullptr;
-            } // if
-
-            return *this;
+            return mock().bind();
         }
 
-        /**
-         * \brief Get the mock acceptor socket.
-         *
-         * \return The mock acceptor socket.
-         */
-        auto & mock() noexcept
+        auto bind( ::picolibrary::IP::TCP::Endpoint const & endpoint )
         {
-            return *m_mock_acceptor;
+            return mock().bind( endpoint );
         }
 
-        /**
-         * \brief Bind the socket to a specific local endpoint.
-         *
-         * \param[in] endpoint The local endpoint to bind the socket to.
-         *
-         * \return Nothing if binding the socket to the local endpoint succeeded.
-         * \return An error code if binding the socket to the local endpoint failed.
-         */
-        auto bind( Endpoint const & endpoint = Endpoint{} )
-        {
-            return m_mock_acceptor->bind( endpoint );
-        }
-
-        /**
-         * \brief Listen for incoming connection requests.
-         *
-         * \param[in] backlog The maximum number of simultaneously connected clients.
-         *
-         * \return Nothing if listening for incoming connection requests succeeded.
-         * \return An error code if listening for incoming connection requests failed.
-         */
         auto listen( std::uint_fast8_t backlog )
         {
-            return m_mock_acceptor->listen( backlog );
+            return mock().listen( backlog );
         }
 
-        /**
-         * \brief Check if the socket is listening for incoming connection requests.
-         *
-         * \return true if getting the socket's listening state succeeded and the socket
-         *         is listening for incoming connection requests.
-         * \return false if getting the socket's listening state succeeded and the socket
-         *         is not listening for incoming connection requests.
-         * \return An error code if getting the socket's listening state failed.
-         */
         auto is_listening() const
         {
-            return m_mock_acceptor->is_listening();
+            return mock().is_listening();
         }
 
-        /**
-         * \brief Get the endpoint on which the socket is listening for incoming
-         *        connection requests.
-         *
-         * \return The endpoint on which the socket is listening for incoming connection
-         *         requests if getting the endpoint on which the socket is listening for
-         *         incoming connection requests succeeded.
-         * \return An error code if getting the endpoint on which the socket is listening
-         *         for incoming connection requests failed.
-         */
         auto local_endpoint() const
         {
-            return m_mock_acceptor->local_endpoint();
+            return mock().local_endpoint();
         }
 
-        /**
-         * \brief Accept an incoming connection request.
-         *
-         * \return A server socket for handling the connection if accepting an incoming
-         *         connection request succeeded.
-         * \return An error code if accepting an incoming connection request failed.
-         */
         auto accept()
         {
-            return m_mock_acceptor->accept();
+            return mock().accept();
         }
 
-        /**
-         * \brief Close the socket.
-         *
-         * \return Nothing if closing the socket succeeded.
-         * \return An error code if closing the socket failed.
-         */
         auto close()
         {
-            return m_mock_acceptor->close();
+            return mock().close();
         }
-
-      private:
-        /**
-         * \brief The mock acceptor socket.
-         */
-        Mock_Acceptor * m_mock_acceptor{};
     };
 
-    /**
-     * \brief Constructor.
-     */
     Mock_Acceptor() = default;
 
     Mock_Acceptor( Mock_Acceptor && ) = delete;
 
     Mock_Acceptor( Mock_Acceptor const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Mock_Acceptor() noexcept = default;
 
     auto operator=( Mock_Acceptor && ) = delete;
@@ -865,14 +382,13 @@ class Mock_Acceptor {
     auto operator=( Mock_Acceptor const & ) = delete;
 
     MOCK_METHOD( (Result<Void, Error_Code>), bind, () );
-
-    MOCK_METHOD( (Result<Void, Error_Code>), bind, (Endpoint const &));
+    MOCK_METHOD( (Result<Void, Error_Code>), bind, (::picolibrary::IP::TCP::Endpoint const &));
 
     MOCK_METHOD( (Result<Void, Error_Code>), listen, ( std::uint_fast8_t ) );
 
     MOCK_METHOD( (Result<bool, Error_Code>), is_listening, (), ( const ) );
 
-    MOCK_METHOD( (Result<Endpoint, Error_Code>), local_endpoint, (), ( const ) );
+    MOCK_METHOD( (Result<::picolibrary::IP::TCP::Endpoint, Error_Code>), local_endpoint, (), ( const ) );
 
     MOCK_METHOD( (Result<Server, Error_Code>), accept, () );
 

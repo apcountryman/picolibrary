@@ -217,25 +217,9 @@ using Region = ::picolibrary::WIZnet::W5500::Region;
  */
 class Mock_Communication_Controller : public SPI::Mock_Device {
   public:
-    /**
-     * \brief The type of SPI controller used to communicate with the W5500.
-     */
-    using Controller = SPI::Mock_Controller;
-
-    /**
-     * \brief The type of SPI device selector used to select and deselect the W5500.
-     */
-    using Device_Selector = SPI::Mock_Device_Selector::Handle;
-
-    /**
-     * \brief Constructor.
-     */
     Mock_Communication_Controller() = default;
 
-    /**
-     * \brief Constructor.
-     */
-    Mock_Communication_Controller( Controller &, Controller::Configuration, Device_Selector )
+    Mock_Communication_Controller( SPI::Mock_Controller &, SPI::Mock_Controller::Configuration, SPI::Mock_Device_Selector::Handle )
     {
     }
 
@@ -243,9 +227,6 @@ class Mock_Communication_Controller : public SPI::Mock_Device {
 
     Mock_Communication_Controller( Mock_Communication_Controller const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Mock_Communication_Controller() noexcept = default;
 
     auto operator=( Mock_Communication_Controller && ) = delete;
@@ -253,23 +234,12 @@ class Mock_Communication_Controller : public SPI::Mock_Device {
     auto operator=( Mock_Communication_Controller const & ) = delete;
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read, ( std::uint16_t ), ( const ) );
-
     MOCK_METHOD(
         (Result<std::vector<std::uint8_t>, Error_Code>),
         read,
         (std::uint16_t, std::vector<std::uint8_t>),
         ( const ) );
 
-    /**
-     * \brief Read a block of common register memory.
-     *
-     * \param[in] offset The offset of the block of register memory to read.
-     * \param[in] begin The beginning of the data read from the block of register memory.
-     * \param[in] end The end of the data read from the block of register memory.
-     *
-     * \return Nothing if the read succeeded.
-     * \return An error code if the read failed.
-     */
     auto read( std::uint16_t offset, std::uint8_t * begin, std::uint8_t * end ) const
         -> Result<Void, Error_Code>
     {
@@ -291,48 +261,20 @@ class Mock_Communication_Controller : public SPI::Mock_Device {
     }
 
     MOCK_METHOD( (Result<Void, Error_Code>), write, ( std::uint16_t, std::uint8_t ) );
-
     MOCK_METHOD( (Result<Void, Error_Code>), write, (std::uint16_t, std::vector<std::uint8_t>));
 
-    /**
-     * \brief Write to a block of common register memory.
-     *
-     * \param[in] offset The offset of the block of register memory to write to.
-     * \param[in] begin The beginning of the data to write to the block of register
-     *            memory.
-     * \param[in] end The end of the data to write to the block of register memory.
-     *
-     * \return Nothing if the write succeeded.
-     * \return An error code if the write failed.
-     */
     auto write( std::uint16_t offset, std::uint8_t const * begin, std::uint8_t const * end )
     {
         return write( offset, std::vector<std::uint8_t>{ begin, end } );
     }
 
     MOCK_METHOD( (Result<std::uint8_t, Error_Code>), read, ( Socket_ID, Region, std::uint16_t ), ( const ) );
-
     MOCK_METHOD(
         (Result<std::vector<std::uint8_t>, Error_Code>),
         read,
         (Socket_ID, Region, std::uint16_t, std::vector<std::uint8_t>),
         ( const ) );
 
-    /**
-     * \brief Read a block of socket register or buffer memory.
-     *
-     * \param[in] socket_id The ID of the socket whose register or buffer memory will be
-     *            read.
-     * \param[in] region The memory region to read.
-     * \param[in] offset The offset of the block of register or buffer memory to read.
-     * \param[in] begin The beginning of the data read from the block of register or
-     *            buffer memory.
-     * \param[in] end The end of the data read from the block of register or buffer
-     *            memory.
-     *
-     * \return Nothing if the read succeeded.
-     * \return An error code if the read failed.
-     */
     auto read( Socket_ID socket_id, Region region, std::uint16_t offset, std::uint8_t * begin, std::uint8_t * end ) const
         -> Result<Void, Error_Code>
     {
@@ -354,24 +296,8 @@ class Mock_Communication_Controller : public SPI::Mock_Device {
     }
 
     MOCK_METHOD( (Result<Void, Error_Code>), write, ( Socket_ID, Region, std::uint16_t, std::uint8_t ) );
-
     MOCK_METHOD( (Result<Void, Error_Code>), write, (Socket_ID, Region, std::uint16_t, std::vector<std::uint8_t>));
 
-    /**
-     * \brief Write to a block of socket register or buffer memory.
-     *
-     * \param[in] socket_id The ID of the socket whose register or buffer memory will be
-     *            written to.
-     * \param[in] region The memory region to write to.
-     * \param[in] offset The offset of the block of register or buffer memory to write to.
-     * \param[in] begin The beginning of the data to write to the block of register or
-     *            buffer memory.
-     * \param[in] end The end of the data to write to the block of register or buffer
-     *            memory.
-     *
-     * \return Nothing if the write succeeded.
-     * \return An error code if the write failed.
-     */
     auto write( Socket_ID socket_id, Region region, std::uint16_t offset, std::uint8_t const * begin, std::uint8_t const * end )
     {
         return write( socket_id, region, offset, std::vector<std::uint8_t>{ begin, end } );
@@ -383,25 +309,9 @@ class Mock_Communication_Controller : public SPI::Mock_Device {
  */
 class Mock_Driver : public Mock_Communication_Controller {
   public:
-    /**
-     * \brief The type of SPI controller used to communicate with the W5500.
-     */
-    using Controller = SPI::Mock_Controller;
-
-    /**
-     * \brief The type of SPI device selector used to select and deselect the W5500.
-     */
-    using Device_Selector = SPI::Mock_Device_Selector::Handle;
-
-    /**
-     * \brief Constructor.
-     */
     Mock_Driver() = default;
 
-    /**
-     * \brief Constructor.
-     */
-    Mock_Driver( Controller &, Controller::Configuration, Device_Selector )
+    Mock_Driver( SPI::Mock_Controller &, SPI::Mock_Controller::Configuration, SPI::Mock_Device_Selector::Handle )
     {
     }
 
@@ -409,9 +319,6 @@ class Mock_Driver : public Mock_Communication_Controller {
 
     Mock_Driver( Mock_Driver const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Mock_Driver() noexcept = default;
 
     auto operator=( Mock_Driver && ) = delete;
@@ -544,17 +451,6 @@ class Mock_Driver : public Mock_Communication_Controller {
         (Socket_ID, std::uint16_t, std::vector<std::uint8_t>),
         ( const ) );
 
-    /**
-     * \brief Read data from a socket's receive buffer.
-     *
-     * \param[in] socket_id The ID of the socket whose receive buffer is to be read.
-     * \param[in] offset The offset of the buffer memory to read.
-     * \param[out] begin The beginning of the data read from the buffer.
-     * \param[out] end The end of the data read from the buffer.
-     *
-     * \return Nothing if the read succeeded.
-     * \return An error code if the read failed.
-     */
     auto read( Socket_ID socket_id, std::uint16_t offset, std::uint8_t * begin, std::uint8_t * end ) const
         -> Result<Void, Error_Code>
     {
@@ -577,18 +473,6 @@ class Mock_Driver : public Mock_Communication_Controller {
 
     MOCK_METHOD( (Result<Void, Error_Code>), write, (Socket_ID, std::uint16_t, std::vector<std::uint8_t>));
 
-    /**
-     * \brief Write data to a socket's transmit buffer.
-     *
-     * \param[in] socket_id The ID of the socket whose transmit buffer is to be written
-     *            to.
-     * \param[in] offset The offset of the buffer memory to write to.
-     * \param[in] begin The beginning of the data to write to the buffer.
-     * \param[in] end The end of the data to write to the buffer.
-     *
-     * \return Nothing if the write succeeded.
-     * \return An error code if the write failed.
-     */
     auto write( Socket_ID socket_id, std::uint16_t offset, std::uint8_t const * begin, std::uint8_t const * end )
     {
         return write( socket_id, offset, std::vector<std::uint8_t>{ begin, end } );

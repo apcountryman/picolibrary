@@ -27,6 +27,7 @@
 #include "picolibrary/error.h"
 #include "picolibrary/indicator.h"
 #include "picolibrary/result.h"
+#include "picolibrary/testing/unit/mock_handle.h"
 #include "picolibrary/testing/unit/random.h"
 #include "picolibrary/void.h"
 
@@ -56,165 +57,73 @@ namespace picolibrary::Testing::Unit::Indicator {
  */
 class Mock_Fixed_Intensity_Indicator {
   public:
-    /**
-     * \brief Movable mock fixed intensity indicator handle.
-     */
-    class Handle {
+    class Handle : public Mock_Handle<Mock_Fixed_Intensity_Indicator> {
       public:
-        /**
-         * \brief Constructor.
-         */
-        Handle() noexcept = default;
+        constexpr Handle() noexcept = default;
 
-        /**
-         * \brief Constructor.
-         *
-         * \param[in] mock_fixed_intensity_indicator The mock fixed intensity indicator.
-         */
-        Handle( Mock_Fixed_Intensity_Indicator & mock_fixed_intensity_indicator ) noexcept :
-            m_mock_fixed_intensity_indicator{ &mock_fixed_intensity_indicator }
+        constexpr Handle( Mock_Fixed_Intensity_Indicator & mock ) noexcept :
+            Mock_Handle<Mock_Fixed_Intensity_Indicator>{ mock }
         {
         }
 
-        /**
-         * \brief Constructor.
-         *
-         * \param[in] source The source of the move.
-         */
-        Handle( Handle && source ) noexcept :
-            m_mock_fixed_intensity_indicator{ source.m_mock_fixed_intensity_indicator }
-        {
-            source.m_mock_fixed_intensity_indicator = nullptr;
-        }
+        constexpr Handle( Handle && source ) noexcept = default;
 
         Handle( Handle const & ) = delete;
 
-        /**
-         * \brief Destructor.
-         */
         ~Handle() noexcept = default;
 
-        /**
-         * \brief Assignment operator.
-         *
-         * \param[in] expression The expression to be assigned.
-         *
-         * \return The assigned to object.
-         */
-        auto & operator=( Handle && expression ) noexcept
-        {
-            if ( &expression != this ) {
-                m_mock_fixed_intensity_indicator = expression.m_mock_fixed_intensity_indicator;
-
-                expression.m_mock_fixed_intensity_indicator = nullptr;
-            } // if
-
-            return *this;
-        }
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
 
         auto operator=( Handle const & ) = delete;
 
-        /**
-         * \brief Get the mock fixed intensity indicator.
-         *
-         * \return The mock fixed intensity indicator.
-         */
-        auto & mock() noexcept
+        auto initialize()
         {
-            return *m_mock_fixed_intensity_indicator;
+            return mock().initialize();
         }
 
-        /**
-         * \brief Initialize the indicator's hardware.
-         *
-         * \param[in] initial_indicator_state The initial state of the indicator.
-         *
-         * \return Nothing if indicator hardware initialization succeeded.
-         * \return An error code if indicator hardware initialization failed.
-         */
-        auto initialize(
-            ::picolibrary::Indicator::Initial_Indicator_State initial_indicator_state =
-                ::picolibrary::Indicator::Initial_Indicator_State::EXTINGUISHED )
+        auto initialize( ::picolibrary::Indicator::Initial_Indicator_State initial_indicator_state )
         {
-            return m_mock_fixed_intensity_indicator->initialize( initial_indicator_state );
+            return mock().initialize( initial_indicator_state );
         }
 
-        /**
-         * \brief Illuminate the indicator.
-         *
-         * \return Nothing if illuminating the indicator succeeded.
-         * \return An error code if illuminating the indicator failed.
-         */
         auto illuminate()
         {
-            return m_mock_fixed_intensity_indicator->illuminate();
+            return mock().illuminate();
         }
 
-        /**
-         * \brief Extinguish the indicator.
-         *
-         * \return Nothing if extinguishing the indicator succeeded.
-         * \return An error code if extinguishing the indicator failed.
-         */
         auto extinguish()
         {
-            return m_mock_fixed_intensity_indicator->extinguish();
+            return mock().extinguish();
         }
 
-        /**
-         * \brief Toggle the indicator.
-         *
-         * \return Nothing if toggling the indicator succeeded.
-         * \return An error code if toggling the indicator failed.
-         */
         auto toggle()
         {
-            return m_mock_fixed_intensity_indicator->toggle();
+            return mock().toggle();
         }
-
-      private:
-        /**
-         * \brief The mock fixed intensity indicator.
-         */
-        Mock_Fixed_Intensity_Indicator * m_mock_fixed_intensity_indicator{};
     };
 
-    /**
-     * \brief Constructor.
-     */
     Mock_Fixed_Intensity_Indicator() = default;
 
     Mock_Fixed_Intensity_Indicator( Mock_Fixed_Intensity_Indicator && ) = delete;
 
     Mock_Fixed_Intensity_Indicator( Mock_Fixed_Intensity_Indicator const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Mock_Fixed_Intensity_Indicator() noexcept = default;
 
     auto operator=( Mock_Fixed_Intensity_Indicator && ) = delete;
 
     auto operator=( Mock_Fixed_Intensity_Indicator const & ) = delete;
 
-    /**
-     * \brief Get a movable handle to the mock fixed intensity indicator.
-     *
-     * \return A movable handle to the mock fixed intensity indicator.
-     */
     auto handle() noexcept
     {
         return Handle{ *this };
     }
 
     MOCK_METHOD( (Result<Void, Error_Code>), initialize, () );
-
     MOCK_METHOD( (Result<Void, Error_Code>), initialize, ( ::picolibrary::Indicator::Initial_Indicator_State ) );
 
     MOCK_METHOD( (Result<Void, Error_Code>), illuminate, () );
-
     MOCK_METHOD( (Result<Void, Error_Code>), extinguish, () );
-
     MOCK_METHOD( (Result<Void, Error_Code>), toggle, () );
 };
 

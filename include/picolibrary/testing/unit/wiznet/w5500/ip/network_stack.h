@@ -42,24 +42,14 @@ namespace picolibrary::Testing::Unit::WIZnet::W5500::IP {
  */
 class Mock_Network_Stack {
   public:
-    /**
-     * \brief The type of TCP client socket that is used to interact with the network
-     *        stack.
-     */
     using TCP_Client = TCP::Mock_Client::Handle;
 
-    /**
-     * \brief Constructor.
-     */
     Mock_Network_Stack() = default;
 
     Mock_Network_Stack( Mock_Network_Stack && ) = delete;
 
     Mock_Network_Stack( Mock_Network_Stack const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Mock_Network_Stack() noexcept = default;
 
     auto operator=( Mock_Network_Stack && ) = delete;

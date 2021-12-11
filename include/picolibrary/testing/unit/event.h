@@ -38,11 +38,6 @@ namespace picolibrary::Testing::Unit {
  */
 class Mock_Event_Category : public Event_Category {
   public:
-    /**
-     * \brief Get a reference to the mock event category instance.
-     *
-     * \return A reference to the mock event category instance.
-     */
     static auto const & instance()
     {
         static auto category = Mock_Event_Category{};
@@ -50,18 +45,12 @@ class Mock_Event_Category : public Event_Category {
         return category;
     }
 
-    /**
-     * \brief Constructor.
-     */
     Mock_Event_Category() = default;
 
     Mock_Event_Category( Mock_Event_Category && ) = delete;
 
     Mock_Event_Category( Mock_Event_Category const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Mock_Event_Category() noexcept = default;
 
     auto operator=( Mock_Event_Category && ) = delete;

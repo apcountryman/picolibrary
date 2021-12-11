@@ -35,36 +35,18 @@ namespace picolibrary::Testing::Unit::IP {
  */
 class Mock_Network_Stack {
   public:
-    /**
-     * \brief The type of TCP client socket that is used to interact with the network
-     *        stack.
-     */
     using TCP_Client = TCP::Mock_Client::Handle;
 
-    /**
-     * \brief The type of TCP server socket that is used to interact with the network
-     *        stack.
-     */
     using TCP_Server = TCP::Mock_Server::Handle;
 
-    /**
-     * \brief The type of TCP acceptor socket that is used to interact with the network
-     *        stack.
-     */
     using TCP_Acceptor = TCP::Mock_Acceptor::Handle;
 
-    /**
-     * \brief Constructor.
-     */
     Mock_Network_Stack() = default;
 
     Mock_Network_Stack( Mock_Network_Stack && ) = delete;
 
     Mock_Network_Stack( Mock_Network_Stack const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Mock_Network_Stack() noexcept = default;
 
     auto operator=( Mock_Network_Stack && ) = delete;
