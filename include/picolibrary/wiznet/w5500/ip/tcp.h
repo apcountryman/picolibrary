@@ -1337,6 +1337,61 @@ class Client {
     bool m_is_transmitting{};
 };
 
+/**
+ * \brief WIZnet W5500 TCP over IP acceptor socket.
+ *
+ * \tparam Driver The W5500 driver implementation. The default W5500 driver implementation
+ *         should be used unless a mock W5500 driver implementation is being injected to
+ *         support unit testing of this acceptor socket.
+ * \tparam Network_Stack The W5500 IP network stack implementation. The default W5500 IP
+ *         network stack implementation should be used unless a mock W5500 IP network
+ *         stack implementation is being injected to support unit testing of this acceptor
+ *         socket.
+ */
+template<typename Driver, typename Network_Stack>
+class Acceptor {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Acceptor() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Acceptor( Acceptor && source ) noexcept
+    {
+        static_cast<void>( source );
+    }
+
+    Acceptor( Acceptor const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Acceptor() noexcept
+    {
+    }
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto & operator=( Acceptor && expression ) noexcept
+    {
+        static_cast<void>( expression );
+
+        return *this;
+    }
+
+    auto operator=( Acceptor const & ) = delete;
+};
+
 } // namespace picolibrary::WIZnet::W5500::IP::TCP
 
 #endif // PICOLIBRARY_WIZNET_W5500_IP_TCP_H
