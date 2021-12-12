@@ -62,7 +62,7 @@ class Mock_Basic_Transmitter {
 
         ~Handle() noexcept = default;
 
-        auto operator=( Handle && expression ) noexcept -> Handle & = default;
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
 
         auto operator=( Handle const & ) = delete;
 
@@ -124,7 +124,7 @@ class Mock_Transmitter : public Mock_Basic_Transmitter<Data_Type> {
 
         ~Handle() noexcept = default;
 
-        auto operator=( Handle && expression ) noexcept -> Handle & = default;
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
 
         auto operator=( Handle const & ) = delete;
 

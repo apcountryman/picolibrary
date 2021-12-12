@@ -72,7 +72,7 @@ class Mock_Client {
 
         ~Handle() noexcept = default;
 
-        auto operator=( Handle && expression ) noexcept -> Handle & = default;
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
 
         auto operator=( Handle const & ) = delete;
 

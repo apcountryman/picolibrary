@@ -126,7 +126,7 @@ class Mock_Controller : public Mock_Basic_Controller {
 
         ~Handle() noexcept = default;
 
-        auto operator=( Handle && expression ) noexcept -> Handle & = default;
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
 
         auto operator=( Handle const & ) = delete;
 
@@ -261,7 +261,7 @@ class Mock_Device_Selector {
 
         ~Handle() noexcept = default;
 
-        auto operator=( Handle && expression ) noexcept -> Handle & = default;
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
 
         auto operator=( Handle const & ) = delete;
 
