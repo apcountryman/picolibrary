@@ -83,24 +83,12 @@ namespace picolibrary::Testing::Unit::Microchip::MCP3008 {
  */
 class Mock_Driver {
   public:
-    /**
-     * \brief The type of SPI controller used to communicate with the MCP3008.
-     */
     using Controller = SPI::Mock_Controller;
 
-    /**
-     * \brief The type of SPI device selector used to select and deselect the MCP3008.
-     */
     using Device_Selector = SPI::Mock_Device_Selector::Handle;
 
-    /**
-     * \brief Constructor.
-     */
     Mock_Driver() = default;
 
-    /**
-     * \brief Constructor.
-     */
     Mock_Driver( Controller &, Controller::Configuration, Device_Selector, Error_Code )
     {
     }
@@ -109,9 +97,6 @@ class Mock_Driver {
 
     Mock_Driver( Mock_Driver const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Mock_Driver() noexcept = default;
 
     auto operator=( Mock_Driver && ) = delete;

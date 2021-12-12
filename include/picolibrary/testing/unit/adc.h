@@ -27,6 +27,7 @@
 #include "picolibrary/adc.h"
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
+#include "picolibrary/testing/unit/mock_handle.h"
 #include "picolibrary/void.h"
 
 /**
@@ -44,137 +45,52 @@ namespace picolibrary::Testing::Unit::ADC {
 template<typename Value_Type, Value_Type MIN_SAMPLE, Value_Type MAX_SAMPLE>
 class Mock_Blocking_Single_Sample_Converter {
   public:
-    /**
-     * \brief ADC sample.
-     */
     using Sample = ::picolibrary::ADC::Sample<Value_Type, MIN_SAMPLE, MAX_SAMPLE>;
 
-    /**
-     * \brief Movable mock blocking, single sample ADC handle.
-     */
-    class Handle {
+    class Handle : public Mock_Handle<Mock_Blocking_Single_Sample_Converter> {
       public:
-        /**
-         * \brief ADC sample.
-         */
-        using Sample = ::picolibrary::ADC::Sample<Value_Type, MIN_SAMPLE, MAX_SAMPLE>;
+        using Sample = Mock_Blocking_Single_Sample_Converter::Sample;
 
-        /**
-         * \brief Constructor.
-         */
-        Handle() noexcept = default;
+        constexpr Handle() noexcept = default;
 
-        /**
-         * \brief Constructor.
-         *
-         * \param[in] mock_blocking_single_sample_converter The mock blocking, single
-         *            sample ADC.
-         */
-        Handle( Mock_Blocking_Single_Sample_Converter & mock_blocking_single_sample_converter ) noexcept :
-            m_mock_blocking_single_sample_converter{ &mock_blocking_single_sample_converter }
+        constexpr Handle( Mock_Blocking_Single_Sample_Converter & mock ) noexcept :
+            Mock_Handle<Mock_Blocking_Single_Sample_Converter>{ mock }
         {
         }
 
-        /**
-         * \brief Constructor.
-         *
-         * \param[in] source The source of the move.
-         */
-        Handle( Handle && source ) noexcept :
-            m_mock_blocking_single_sample_converter{ source.m_mock_blocking_single_sample_converter }
-        {
-            source.m_mock_blocking_single_sample_converter = nullptr;
-        }
+        constexpr Handle( Handle && source ) noexcept = default;
 
         Handle( Handle const & ) = delete;
 
-        /**
-         * \brief Destructor.
-         */
         ~Handle() noexcept = default;
 
-        /**
-         * \brief Assignment operator.
-         *
-         * \param[in] expression The expression to be assigned.
-         *
-         * \return The assigned to object.
-         */
-        auto & operator=( Handle && expression ) noexcept
-        {
-            if ( &expression != this ) {
-                m_mock_blocking_single_sample_converter = expression.m_mock_blocking_single_sample_converter;
-
-                expression.m_mock_blocking_isngle_sample_converter = nullptr;
-            } // if
-
-            return *this;
-        }
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
 
         auto operator=( Handle const & ) = delete;
 
-        /**
-         * \brief Get the mock blocking single sample converter.
-         *
-         * \return The mock blocking single sample converter.
-         */
-        auto & mock() noexcept
-        {
-            return *m_mock_blocking_single_sample_converter;
-        }
-
-        /**
-         * \brief Initialize the ADC's hardware.
-         *
-         * \return Nothing if ADC hardware initialization succeeded.
-         * \return An error code if ADC hardware initialization failed.
-         */
         auto initialize()
         {
-            return m_mock_blocking_single_sample_converter->initialize();
+            return Mock_Handle<Mock_Blocking_Single_Sample_Converter>::mock().initialize();
         }
 
-        /**
-         * \brief Get a sample.
-         *
-         * \return A sample if getting the sample succeeded.
-         * \return An error code if getting the sample failed.
-         */
-        auto sample() noexcept
+        auto sample()
         {
-            return m_mock_blocking_single_sample_converter->sample();
+            return Mock_Handle<Mock_Blocking_Single_Sample_Converter>::mock().sample();
         }
-
-      private:
-        /**
-         * \brief The mock blocking, single sample ADC.
-         */
-        Mock_Blocking_Single_Sample_Converter * m_mock_blocking_single_sample_converter{};
     };
 
-    /**
-     * \brief Constructor.
-     */
     Mock_Blocking_Single_Sample_Converter() = default;
 
     Mock_Blocking_Single_Sample_Converter( Mock_Blocking_Single_Sample_Converter && ) = delete;
 
     Mock_Blocking_Single_Sample_Converter( Mock_Blocking_Single_Sample_Converter const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Mock_Blocking_Single_Sample_Converter() noexcept = default;
 
     auto operator=( Mock_Blocking_Single_Sample_Converter && ) = delete;
 
     auto operator=( Mock_Blocking_Single_Sample_Converter const & ) = delete;
 
-    /**
-     * \brief Get a movable handle to the mock blocking, single sample ADC.
-     *
-     * \return A movable handle to the mock blocking, single sample ADC.
-     */
     auto handle() noexcept
     {
         return Handle{ *this };
@@ -195,161 +111,62 @@ class Mock_Blocking_Single_Sample_Converter {
 template<typename Value_Type, Value_Type MIN_SAMPLE, Value_Type MAX_SAMPLE>
 class Mock_Non_Blocking_Single_Sample_Converter {
   public:
-    /**
-     * \brief ADC sample.
-     */
     using Sample = ::picolibrary::ADC::Sample<Value_Type, MIN_SAMPLE, MAX_SAMPLE>;
 
-    /**
-     * \brief Movable mock non-blocking, single sample ADC handle.
-     */
-    class Handle {
+    class Handle : public Mock_Handle<Mock_Non_Blocking_Single_Sample_Converter> {
       public:
-        /**
-         * \brief ADC sample.
-         */
-        using Sample = ::picolibrary::ADC::Sample<Value_Type, MIN_SAMPLE, MAX_SAMPLE>;
+        using Sample = Mock_Non_Blocking_Single_Sample_Converter::Sample;
 
-        /**
-         * \brief Constructor.
-         */
-        Handle() noexcept = default;
+        constexpr Handle() noexcept = default;
 
-        /**
-         * \brief Constructor.
-         *
-         * \param[in] mock_non_blocking_single_sample_converter The mock non-blocking,
-         *            single sample ADC.
-         */
-        Handle( Mock_Non_Blocking_Single_Sample_Converter & mock_non_blocking_single_sample_converter ) noexcept
-            :
-            m_mock_non_blocking_single_sample_converter{ &mock_non_blocking_single_sample_converter }
+        constexpr Handle( Mock_Non_Blocking_Single_Sample_Converter & mock ) noexcept :
+            Mock_Handle<Mock_Non_Blocking_Single_Sample_Converter>{ mock }
         {
         }
 
-        /**
-         * \brief Constructor.
-         *
-         * \param[in] source The source of the move.
-         */
-        Handle( Handle && source ) noexcept :
-            m_mock_non_blocking_single_sample_converter{ source.m_mock_non_blocking_single_sample_converter }
-        {
-            source.m_mock_non_blocking_single_sample_converter = nullptr;
-        }
+        constexpr Handle( Handle && source ) noexcept = default;
 
         Handle( Handle const & ) = delete;
 
-        /**
-         * \brief Destructor.
-         */
         ~Handle() noexcept = default;
 
-        /**
-         * \brief Assignment operator.
-         *
-         * \param[in] expression The expression to be assigned.
-         *
-         * \return The assigned to object.
-         */
-        auto & operator=( Handle && expression ) noexcept
-        {
-            if ( &expression != this ) {
-                m_mock_non_blocking_single_sample_converter = expression.m_mock_non_blocking_single_sample_converter;
-
-                expression.m_mock_non_blocking_isngle_sample_converter = nullptr;
-            } // if
-
-            return *this;
-        }
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
 
         auto operator=( Handle const & ) = delete;
 
-        /**
-         * \brief Get the mock non-blocking single sample converter.
-         *
-         * \return The mock non-blocking single sample converter.
-         */
-        auto & mock() noexcept
-        {
-            return *m_mock_non_blocking_single_sample_converter;
-        }
-
-        /**
-         * \brief Initialize the ADC's hardware.
-         *
-         * \return Nothing if ADC hardware initialization succeeded.
-         * \return An error code if ADC hardware initialization failed.
-         */
         auto initialize()
         {
-            return m_mock_non_blocking_single_sample_converter->initialize();
+            return Mock_Handle<Mock_Non_Blocking_Single_Sample_Converter>::mock().initialize();
         }
 
-        /**
-         * \brief Initiate a conversion.
-         *
-         * \return Nothing if initiation of the conversion succeeded.
-         * \return An error code if initiation of the conversion failed.
-         */
-        auto initiate_conversion() noexcept
+        auto initiate_conversion()
         {
-            return m_mock_non_blocking_single_sample_converter->initiate_conversion();
+            return Mock_Handle<Mock_Non_Blocking_Single_Sample_Converter>::mock().initiate_conversion();
         }
 
-        /**
-         * \brief Check if a sample is available.
-         *
-         * \return true if a sample is available.
-         * \return false if a sample is not available.
-         * \return An error code if the check failed.
-         */
-        auto sample_available() const noexcept
+        auto sample_available() const
         {
-            return m_mock_non_blocking_single_sample_converter->sample_available();
+            return Mock_Handle<Mock_Non_Blocking_Single_Sample_Converter>::mock().sample_available();
         }
 
-        /**
-         * \brief Get a sample.
-         *
-         * \return A sample if getting the sample succeeded.
-         * \return An error code if getting the sample failed.
-         */
-        auto sample() noexcept
+        auto sample()
         {
-            return m_mock_non_blocking_single_sample_converter->sample();
+            return Mock_Handle<Mock_Non_Blocking_Single_Sample_Converter>::mock().sample();
         }
-
-      private:
-        /**
-         * \brief The mock non-blocking, single sample ADC.
-         */
-        Mock_Non_Blocking_Single_Sample_Converter * m_mock_non_blocking_single_sample_converter{};
     };
 
-    /**
-     * \brief Constructor.
-     */
     Mock_Non_Blocking_Single_Sample_Converter() = default;
 
     Mock_Non_Blocking_Single_Sample_Converter( Mock_Non_Blocking_Single_Sample_Converter && ) = delete;
 
     Mock_Non_Blocking_Single_Sample_Converter( Mock_Non_Blocking_Single_Sample_Converter const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Mock_Non_Blocking_Single_Sample_Converter() noexcept = default;
 
     auto operator=( Mock_Non_Blocking_Single_Sample_Converter && ) = delete;
 
     auto operator=( Mock_Non_Blocking_Single_Sample_Converter const & ) = delete;
 
-    /**
-     * \brief Get a movable handle to the mock non-blocking, single sample ADC.
-     *
-     * \return A movable handle to the mock non-blocking, single sample ADC.
-     */
     auto handle() noexcept
     {
         return Handle{ *this };
@@ -358,9 +175,7 @@ class Mock_Non_Blocking_Single_Sample_Converter {
     MOCK_METHOD( (Result<Void, Error_Code>), initialize, () );
 
     MOCK_METHOD( (Result<Void, Error_Code>), initiate_conversion, () );
-
     MOCK_METHOD( (Result<bool, Error_Code>), sample_available, (), ( const ) );
-
     MOCK_METHOD( (Result<Sample, Error_Code>), sample, () );
 };
 
@@ -374,159 +189,62 @@ class Mock_Non_Blocking_Single_Sample_Converter {
 template<typename Value_Type, Value_Type MIN_SAMPLE, Value_Type MAX_SAMPLE>
 class Mock_Blocking_Free_Running_Converter {
   public:
-    /**
-     * \brief ADC sample.
-     */
     using Sample = ::picolibrary::ADC::Sample<Value_Type, MIN_SAMPLE, MAX_SAMPLE>;
 
-    /**
-     * \brief Movable mock blocking, free running ADC handle.
-     */
-    class Handle {
+    class Handle : public Mock_Handle<Mock_Blocking_Free_Running_Converter> {
       public:
-        /**
-         * \brief ADC sample.
-         */
-        using Sample = ::picolibrary::ADC::Sample<Value_Type, MIN_SAMPLE, MAX_SAMPLE>;
+        using Sample = Mock_Blocking_Free_Running_Converter::Sample;
 
-        /**
-         * \brief Constructor.
-         */
-        Handle() noexcept = default;
+        constexpr Handle() noexcept = default;
 
-        /**
-         * \brief Constructor.
-         *
-         * \param[in] mock_blocking_free_running_converter The mock blocking, free running
-         *            ADC.
-         */
-        Handle( Mock_Blocking_Free_Running_Converter & mock_blocking_free_running_converter ) noexcept :
-            m_mock_blocking_free_running_converter{ &mock_blocking_free_running_converter }
+        constexpr Handle( Mock_Blocking_Free_Running_Converter & mock ) noexcept :
+            Mock_Handle<Mock_Blocking_Free_Running_Converter>{ mock }
         {
         }
 
-        /**
-         * \brief Constructor.
-         *
-         * \param[in] source The source of the move.
-         */
-        Handle( Handle && source ) noexcept :
-            m_mock_blocking_free_running_converter{ source.m_mock_blocking_free_running_converter }
-        {
-            source.m_mock_blocking_free_running_converter = nullptr;
-        }
+        constexpr Handle( Handle && source ) noexcept = default;
 
         Handle( Handle const & ) = delete;
 
-        /**
-         * \brief Destructor.
-         */
         ~Handle() noexcept = default;
 
-        /**
-         * \brief Assignment operator.
-         *
-         * \param[in] expression The expression to be assigned.
-         *
-         * \return The assigned to object.
-         */
-        auto & operator=( Handle && expression ) noexcept
-        {
-            if ( &expression != this ) {
-                m_mock_blocking_free_running_converter = expression.m_mock_blocking_free_running_converter;
-
-                expression.m_mock_blocking_isngle_sample_converter = nullptr;
-            } // if
-
-            return *this;
-        }
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
 
         auto operator=( Handle const & ) = delete;
 
-        /**
-         * \brief Get the mock blocking, free running converter.
-         *
-         * \return The mock blocking, free running converter.
-         */
-        auto & mock() noexcept
-        {
-            return *m_mock_blocking_free_running_converter;
-        }
-
-        /**
-         * \brief Initialize the ADC's hardware.
-         *
-         * \return Nothing if ADC hardware initialization succeeded.
-         * \return An error code if ADC hardware initialization failed.
-         */
         auto initialize()
         {
-            return m_mock_blocking_free_running_converter->initialize();
+            return Mock_Handle<Mock_Blocking_Free_Running_Converter>::mock().initialize();
         }
 
-        /**
-         * \brief Start the ADC.
-         *
-         * \return Nothing if starting the ADC succeeded.
-         * \return An error code if starting the ADC failed.
-         */
         auto start_converter()
         {
-            return m_mock_blocking_free_running_converter->start_converter();
+            return Mock_Handle<Mock_Blocking_Free_Running_Converter>::mock().start_converter();
         }
 
-        /**
-         * \brief Stop the ADC.
-         *
-         * \return Nothing if stopping the ADC succeeded.
-         * \return An error code if stopping the ADC failed.
-         */
         auto stop_converter()
         {
-            return m_mock_blocking_free_running_converter->stop_converter();
+            return Mock_Handle<Mock_Blocking_Free_Running_Converter>::mock().stop_converter();
         }
 
-        /**
-         * \brief Get a sample.
-         *
-         * \return A sample if getting the sample succeeded.
-         * \return An error code if getting the sample failed.
-         */
-        auto sample() noexcept
+        auto sample()
         {
-            return m_mock_blocking_free_running_converter->sample();
+            return Mock_Handle<Mock_Blocking_Free_Running_Converter>::mock().sample();
         }
-
-      private:
-        /**
-         * \brief The mock blocking, free running ADC.
-         */
-        Mock_Blocking_Free_Running_Converter * m_mock_blocking_free_running_converter{};
     };
 
-    /**
-     * \brief Constructor.
-     */
     Mock_Blocking_Free_Running_Converter() = default;
 
     Mock_Blocking_Free_Running_Converter( Mock_Blocking_Free_Running_Converter && ) = delete;
 
     Mock_Blocking_Free_Running_Converter( Mock_Blocking_Free_Running_Converter const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Mock_Blocking_Free_Running_Converter() noexcept = default;
 
     auto operator=( Mock_Blocking_Free_Running_Converter && ) = delete;
 
     auto operator=( Mock_Blocking_Free_Running_Converter const & ) = delete;
 
-    /**
-     * \brief Get a movable handle to the mock blocking, free running ADC.
-     *
-     * \return A movable handle to the mock blocking, free running ADC.
-     */
     auto handle() noexcept
     {
         return Handle{ *this };
@@ -535,9 +253,7 @@ class Mock_Blocking_Free_Running_Converter {
     MOCK_METHOD( (Result<Void, Error_Code>), initialize, () );
 
     MOCK_METHOD( (Result<Void, Error_Code>), start_converter, () );
-
     MOCK_METHOD( (Result<Void, Error_Code>), stop_converter, () );
-
     MOCK_METHOD( (Result<Sample, Error_Code>), sample, () );
 };
 
@@ -551,171 +267,67 @@ class Mock_Blocking_Free_Running_Converter {
 template<typename Value_Type, Value_Type MIN_SAMPLE, Value_Type MAX_SAMPLE>
 class Mock_Non_Blocking_Free_Running_Converter {
   public:
-    /**
-     * \brief ADC sample.
-     */
     using Sample = ::picolibrary::ADC::Sample<Value_Type, MIN_SAMPLE, MAX_SAMPLE>;
 
-    /**
-     * \brief Movable mock non-blocking, free running ADC handle.
-     */
-    class Handle {
+    class Handle : public Mock_Handle<Mock_Non_Blocking_Free_Running_Converter> {
       public:
-        /**
-         * \brief ADC sample.
-         */
-        using Sample = ::picolibrary::ADC::Sample<Value_Type, MIN_SAMPLE, MAX_SAMPLE>;
+        using Sample = Mock_Non_Blocking_Free_Running_Converter::Sample;
 
-        /**
-         * \brief Constructor.
-         */
-        Handle() noexcept = default;
+        constexpr Handle() noexcept = default;
 
-        /**
-         * \brief Constructor.
-         *
-         * \param[in] mock_non_blocking_free_running_converter The mock non-blocking, free
-         *            running ADC.
-         */
-        Handle( Mock_Non_Blocking_Free_Running_Converter & mock_non_blocking_free_running_converter ) noexcept :
-            m_mock_non_blocking_free_running_converter{ &mock_non_blocking_free_running_converter }
+        constexpr Handle( Mock_Non_Blocking_Free_Running_Converter & mock ) noexcept :
+            Mock_Handle<Mock_Non_Blocking_Free_Running_Converter>{ mock }
         {
         }
 
-        /**
-         * \brief Constructor.
-         *
-         * \param[in] source The source of the move.
-         */
-        Handle( Handle && source ) noexcept :
-            m_mock_non_blocking_free_running_converter{ source.m_mock_non_blocking_free_running_converter }
-        {
-            source.m_mock_non_blocking_free_running_converter = nullptr;
-        }
+        constexpr Handle( Handle && source ) noexcept = default;
 
         Handle( Handle const & ) = delete;
 
-        /**
-         * \brief Destructor.
-         */
         ~Handle() noexcept = default;
 
-        /**
-         * \brief Assignment operator.
-         *
-         * \param[in] expression The expression to be assigned.
-         *
-         * \return The assigned to object.
-         */
-        auto & operator=( Handle && expression ) noexcept
-        {
-            if ( &expression != this ) {
-                m_mock_non_blocking_free_running_converter = expression.m_mock_non_blocking_free_running_converter;
-
-                expression.m_mock_non_blocking_isngle_sample_converter = nullptr;
-            } // if
-
-            return *this;
-        }
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
 
         auto operator=( Handle const & ) = delete;
 
-        /**
-         * \brief Get the mock non-blocking, free running converter.
-         *
-         * \return The mock non-blocking, free running converter.
-         */
-        auto & mock() noexcept
-        {
-            return *m_mock_non_blocking_free_running_converter;
-        }
-
-        /**
-         * \brief Initialize the ADC's hardware.
-         *
-         * \return Nothing if ADC hardware initialization succeeded.
-         * \return An error code if ADC hardware initialization failed.
-         */
         auto initialize()
         {
-            return m_mock_non_blocking_free_running_converter->initialize();
+            return Mock_Handle<Mock_Non_Blocking_Free_Running_Converter>::mock().initialize();
         }
 
-        /**
-         * \brief Start the ADC.
-         *
-         * \return Nothing if starting the ADC succeeded.
-         * \return An error code if starting the ADC failed.
-         */
         auto start_converter()
         {
-            return m_mock_non_blocking_free_running_converter->start_converter();
+            return Mock_Handle<Mock_Non_Blocking_Free_Running_Converter>::mock().start_converter();
         }
 
-        /**
-         * \brief Stop the ADC.
-         *
-         * \return Nothing if stopping the ADC succeeded.
-         * \return An error code if stopping the ADC failed.
-         */
         auto stop_converter()
         {
-            return m_mock_non_blocking_free_running_converter->stop_converter();
+            return Mock_Handle<Mock_Non_Blocking_Free_Running_Converter>::mock().stop_converter();
         }
 
-        /**
-         * \brief Check if a sample is available.
-         *
-         * \return true if a sample is available.
-         * \return false if a sample is not available.
-         * \return An error code if the check failed.
-         */
-        auto sample_available() const noexcept
+        auto sample_available() const
         {
-            return m_mock_non_blocking_free_running_converter->sample_available();
+            return Mock_Handle<Mock_Non_Blocking_Free_Running_Converter>::mock().sample_available();
         }
 
-        /**
-         * \brief Get a sample.
-         *
-         * \return A sample if getting the sample succeeded.
-         * \return An error code if getting the sample failed.
-         */
-        auto sample() noexcept
+        auto sample()
         {
-            return m_mock_non_blocking_free_running_converter->sample();
+            return Mock_Handle<Mock_Non_Blocking_Free_Running_Converter>::mock().sample();
         }
-
-      private:
-        /**
-         * \brief The mock non-blocking, free running ADC.
-         */
-        Mock_Non_Blocking_Free_Running_Converter * m_mock_non_blocking_free_running_converter{};
     };
 
-    /**
-     * \brief Constructor.
-     */
     Mock_Non_Blocking_Free_Running_Converter() = default;
 
     Mock_Non_Blocking_Free_Running_Converter( Mock_Non_Blocking_Free_Running_Converter && ) = delete;
 
     Mock_Non_Blocking_Free_Running_Converter( Mock_Non_Blocking_Free_Running_Converter const & ) = delete;
 
-    /**
-     * \brief Destructor.
-     */
     ~Mock_Non_Blocking_Free_Running_Converter() noexcept = default;
 
     auto operator=( Mock_Non_Blocking_Free_Running_Converter && ) = delete;
 
     auto operator=( Mock_Non_Blocking_Free_Running_Converter const & ) = delete;
 
-    /**
-     * \brief Get a movable handle to the mock non-blocking, free running ADC.
-     *
-     * \return A movable handle to the mock non-blocking, free running ADC.
-     */
     auto handle() noexcept
     {
         return Handle{ *this };
@@ -724,11 +336,8 @@ class Mock_Non_Blocking_Free_Running_Converter {
     MOCK_METHOD( (Result<Void, Error_Code>), initialize, () );
 
     MOCK_METHOD( (Result<Void, Error_Code>), start_converter, () );
-
     MOCK_METHOD( (Result<Void, Error_Code>), stop_converter, () );
-
     MOCK_METHOD( (Result<bool, Error_Code>), sample_available, (), ( const ) );
-
     MOCK_METHOD( (Result<Sample, Error_Code>), sample, () );
 };
 
