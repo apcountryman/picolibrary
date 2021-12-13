@@ -13,11 +13,22 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/wiznet/w5500/ip/tcp/CMakeLists.txt
-# Description: picolibrary::WIZnet::W5500::IP::TCP unit tests CMake rules.
+# File: test/unit/picolibrary/wiznet/w5500/ip/tcp/acceptor/CMakeLists.txt
+# Description: picolibrary::WIZnet::W5500::IP::TCP::Acceptor unit tests CMake rules.
 
 # build the picolibrary::WIZnet::W5500::IP::TCP::Acceptor unit tests
-add_subdirectory( acceptor )
-
-# build the picolibrary::WIZnet::W5500::IP::TCP::Client unit tests
-add_subdirectory( client )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+    add_executable(
+        test-unit-picolibrary-wiznet-w5500-ip-tcp-acceptor
+        main.cc
+    )
+    target_link_libraries(
+        test-unit-picolibrary-wiznet-w5500-ip-tcp-acceptor
+        picolibrary
+        picolibrary-fatal_error
+    )
+    add_test(
+        NAME    test-unit-picolibrary-wiznet-w5500-ip-tcp-acceptor
+        COMMAND test-unit-picolibrary-wiznet-w5500-ip-tcp-acceptor --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
