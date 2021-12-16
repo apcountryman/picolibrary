@@ -1497,8 +1497,8 @@ class Acceptor {
     {
         auto backlog = std::uint_fast8_t{};
 
-        for ( auto socket = std::uint_fast8_t{}; socket < SOCKETS; ++socket ) {
-            if ( m_server_socket_state[ socket ] != Server_Socket_State::UNAVAILABLE ) {
+        for ( auto const server_socket_state : m_server_socket_state ) {
+            if ( server_socket_state != Server_Socket_State::UNAVAILABLE ) {
                 ++backlog;
             } // if
         }     // for
