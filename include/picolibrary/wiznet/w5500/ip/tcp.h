@@ -25,6 +25,7 @@
 
 #include <cstdint>
 
+#include "picolibrary/algorithm.h"
 #include "picolibrary/error.h"
 #include "picolibrary/ip/tcp.h"
 #include "picolibrary/ipv4.h"
@@ -1352,6 +1353,16 @@ template<typename Driver, typename Network_Stack>
 class Acceptor {
   public:
     /**
+     * \brief Socket state.
+     */
+    enum class State : std::uint_fast8_t {
+        UNINITIALIZED, ///< Uninitialized.
+        INITIALIZED,   ///< Initialized.
+        BOUND,         ///< Bound.
+        LISTENING,     ///< Listening.
+    };
+
+    /**
      * \brief Constructor.
      */
     constexpr Acceptor() noexcept = default;
@@ -1359,11 +1370,52 @@ class Acceptor {
     /**
      * \brief Constructor.
      *
+     * \param[in] driver The driver for the W5500 the socket is associated with.
+     * \param[in] socket_id The socket's socket ID.
+     * \param[in] network_stack The network stack the socket is associated with.
+     */
+    constexpr Acceptor( Driver & driver, Socket_ID socket_id, Network_Stack & network_stack ) noexcept :
+        m_state{ State::INITIALIZED },
+        m_driver{ &driver },
+        m_server_socket_state{ server_socket_state( socket_id ) },
+        m_network_stack{ &network_stack }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] driver The driver for the W5500 the socket is associated with.
+     * \param[in] begin The beginning of the socket's socket IDs.
+     * \param[in] end The end of the socket's socket IDs.
+     * \param[in] network_stack The network stack the socket is associated with.
+     *
+     * \attention The range [begin,end) must not be empty.
+     */
+    constexpr Acceptor( Driver & driver, Socket_ID const * begin, Socket_ID const * end, Network_Stack & network_stack ) noexcept
+        :
+        m_state{ State::INITIALIZED },
+        m_driver{ &driver },
+        m_server_socket_state{ server_socket_state( begin, end ) },
+        m_network_stack{ &network_stack }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
      * \param[in] source The source of the move.
      */
-    constexpr Acceptor( Acceptor && source ) noexcept
+    constexpr Acceptor( Acceptor && source ) noexcept :
+        m_state{ source.m_state },
+        m_driver{ source.m_driver },
+        m_server_socket_state{ source.m_server_socket_state },
+        m_network_stack{ source.m_network_stack }
     {
-        static_cast<void>( source );
+        source.m_state               = State::UNINITIALIZED;
+        source.m_driver              = nullptr;
+        source.m_server_socket_state = {};
+        source.m_network_stack       = nullptr;
     }
 
     Acceptor( Acceptor const & ) = delete;
@@ -1373,6 +1425,7 @@ class Acceptor {
      */
     ~Acceptor() noexcept
     {
+        deallocate_sockets();
     }
 
     /**
@@ -1384,12 +1437,178 @@ class Acceptor {
      */
     constexpr auto & operator=( Acceptor && expression ) noexcept
     {
-        static_cast<void>( expression );
+        if ( &expression != this ) {
+            deallocate_sockets();
+
+            m_state               = expression.m_state;
+            m_driver              = expression.m_driver;
+            m_server_socket_state = expression.m_server_socket_state;
+            m_network_stack       = expression.m_network_stack;
+
+            expression.m_state               = State::UNINITIALIZED;
+            expression.m_driver              = nullptr;
+            expression.m_server_socket_state = {};
+            expression.m_network_stack       = nullptr;
+        } // if
 
         return *this;
     }
 
     auto operator=( Acceptor const & ) = delete;
+
+    /**
+     * \brief Get the socket's state.
+     *
+     * \return The socket's state.
+     */
+    constexpr auto state() const noexcept
+    {
+        return m_state;
+    }
+
+    /**
+     * \brief Get the socket's socket IDs.
+     *
+     * \attention Only the first picolibrary::WIZnet::W5500::IP::TCP::Acceptor::backlog()
+     *            entries in the socket ID array are valid.
+     *
+     * \return The socket's socket IDs.
+     */
+    constexpr auto socket_ids() const noexcept
+    {
+        auto socket_ids = Array<Socket_ID, SOCKETS>{};
+        auto i          = std::uint_fast8_t{};
+
+        for ( auto socket = std::uint_fast8_t{}; socket < SOCKETS; ++socket ) {
+            if ( m_server_socket_state[ socket ] != Server_Socket_State::UNAVAILABLE ) {
+                socket_ids[ i++ ] = static_cast<Socket_ID>( socket << Control_Byte::Bit::SOCKET );
+            } // if
+        }     // for
+
+        return socket_ids;
+    }
+
+    /**
+     * \brief Get the socket's backlog.
+     *
+     * \return The socket's backlog.
+     */
+    constexpr auto backlog() const noexcept
+    {
+        auto backlog = std::uint_fast8_t{};
+
+        for ( auto socket = std::uint_fast8_t{}; socket < SOCKETS; ++socket ) {
+            if ( m_server_socket_state[ socket ] != Server_Socket_State::UNAVAILABLE ) {
+                ++backlog;
+            } // if
+        }     // for
+
+        return backlog;
+    }
+
+    /**
+     * \brief Get the socket's socket interrupt mask (mask to be used when checking the
+     *        network stack's socket interrupt context).
+     *
+     * \return The socket's socket interrupt mask.
+     */
+    constexpr auto socket_interrupt_mask() const noexcept
+    {
+        auto mask = std::uint8_t{};
+
+        for ( auto socket = std::uint_fast8_t{}; socket < SOCKETS; ++socket ) {
+            if ( m_server_socket_state[ socket ] != Server_Socket_State::UNAVAILABLE ) {
+                mask |= 1 << socket;
+            } // if
+        }     // for
+
+        return mask;
+    }
+
+  private:
+    /**
+     * \brief Server socket state.
+     */
+    enum class Server_Socket_State : std::uint_fast8_t {
+        UNAVAILABLE,      ///< Unavailable.
+        AVAILABLE,        ///< Available for allocation.
+        ALLOCATED,        ///< Allocated.
+        AWAITING_SERVICE, ///< Awaiting post-deallocation service.
+    };
+
+    /**
+     * \brief Initialize the server socket state.
+     *
+     * \param[in] socket_id The socket's socket ID.
+     *
+     * \return The server socket state.
+     */
+    static auto server_socket_state( Socket_ID socket_id ) noexcept
+    {
+        auto server_socket_state = Array<Server_Socket_State, SOCKETS>{};
+
+        auto const socket = static_cast<std::uint_fast8_t>(
+            static_cast<std::uint_fast8_t>( socket_id ) >> Control_Byte::Bit::SOCKET );
+
+        server_socket_state[ socket ] = Server_Socket_State::AVAILABLE;
+
+        return server_socket_state;
+    }
+
+    /**
+     * \brief Initialize the server socket state.
+     *
+     * \param[in] begin The beginning of the socket's socket IDs.
+     * \param[in] end The end of the socket's socket IDs.
+     *
+     * \return The server socket state.
+     */
+    static auto server_socket_state( Socket_ID const * begin, Socket_ID const * end ) noexcept
+    {
+        auto server_socket_state = Array<Server_Socket_State, SOCKETS>{};
+
+        for_each( begin, end, [ &server_socket_state ]( auto socket_id ) noexcept {
+            auto const socket = static_cast<std::uint_fast8_t>(
+                static_cast<std::uint_fast8_t>( socket_id ) >> Control_Byte::Bit::SOCKET );
+
+            server_socket_state[ socket ] = Server_Socket_State::AVAILABLE;
+        } );
+
+        return server_socket_state;
+    }
+
+    /**
+     * \brief The socket's state.
+     */
+    State m_state{ State::UNINITIALIZED };
+
+    /**
+     * \brief The driver for the W5500 the socket is associated with.
+     */
+    Driver * m_driver{};
+
+    /**
+     * \brief Server sockets state.
+     */
+    Array<Server_Socket_State, SOCKETS> m_server_socket_state{};
+
+    /**
+     * \brief The network stack the socket is associated with.
+     */
+    Network_Stack * m_network_stack{};
+
+    /**
+     * \brief Deallocate sockets.
+     */
+    void deallocate_sockets() noexcept
+    {
+        for ( auto socket = std::uint_fast8_t{}; socket < SOCKETS; ++socket ) {
+            if ( m_server_socket_state[ socket ] != Server_Socket_State::UNAVAILABLE ) {
+                m_network_stack->deallocate_socket(
+                    static_cast<Socket_ID>( socket << Control_Byte::Bit::SOCKET ) );
+            } // if
+        }     // for
+    }
 };
 
 } // namespace picolibrary::WIZnet::W5500::IP::TCP
