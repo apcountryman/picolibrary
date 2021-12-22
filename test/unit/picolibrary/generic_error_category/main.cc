@@ -68,6 +68,7 @@ TEST( errorDescription, worksProperly )
         { Generic_Error::NOT_CONNECTED, "NOT_CONNECTED" },
         { Generic_Error::NO_SOCKETS_AVAILABLE, "NO_SOCKETS_AVAILABLE" },
         { Generic_Error::OPERATION_TIMEOUT, "OPERATION_TIMEOUT" },
+        { Generic_Error::OUT_OF_RANGE, "OUT_OF_RANGE" },
         { Generic_Error::UNSUPPORTED_OPERATION, "UNSUPPORTED_OPERATION" },
         { Generic_Error::WOULD_BLOCK, "WOULD_BLOCK" },
     };

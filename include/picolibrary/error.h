@@ -389,6 +389,7 @@ enum class Generic_Error : Error_ID {
     NOT_CONNECTED,                   ///< Not connected.
     NO_SOCKETS_AVAILABLE,            ///< No sockets available.
     OPERATION_TIMEOUT,               ///< Operation timeout.
+    OUT_OF_RANGE,                    ///< Out of range.
     UNSUPPORTED_OPERATION,           ///< Unsupported operation.
     WOULD_BLOCK,                     ///< Would block.
 };
@@ -466,6 +467,7 @@ class Generic_Error_Category final : public Error_Category {
             case Generic_Error::NOT_CONNECTED: return "NOT_CONNECTED";
             case Generic_Error::NO_SOCKETS_AVAILABLE: return "NO_SOCKETS_AVAILABLE";
             case Generic_Error::OPERATION_TIMEOUT: return "OPERATION_TIMEOUT";
+            case Generic_Error::OUT_OF_RANGE: return "OUT_OF_RANGE";
             case Generic_Error::UNSUPPORTED_OPERATION: return "UNSUPPORTED_OPERATION";
             case Generic_Error::WOULD_BLOCK: return "WOULD_BLOCK";
         } // switch
