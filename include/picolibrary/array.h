@@ -24,10 +24,13 @@
 #define PICOLIBRARY_ARRAY_H
 
 #include <cstddef>
+#include <functional>
 #include <iterator>
 #include <type_traits>
 
 #include "picolibrary/algorithm.h"
+#include "picolibrary/error.h"
+#include "picolibrary/result.h"
 
 namespace picolibrary {
 
@@ -136,6 +139,45 @@ class Array {
         } else {
             return data()[ 0 ];
         } // else
+    }
+
+    /**
+     * \brief Access the element at the specified position in the array.
+     *
+     * \param[in] position The position of the array element to access.
+     *
+     * \return The element at the specified position in the array if the specified
+     *         position is a valid position.
+     * \return picolibrary::Generic_Error::OUT_OF_RANGE if the specified position is not a
+     *         valid position.
+     */
+    constexpr auto at( Position position ) noexcept -> Result<std::reference_wrapper<Value>, Error_Code>
+    {
+        if ( position >= N ) {
+            return Generic_Error::OUT_OF_RANGE;
+        } // if
+
+        return data()[ position ];
+    }
+
+    /**
+     * \brief Access the element at the specified position in the array.
+     *
+     * \param[in] position The position of the array element to access.
+     *
+     * \return The element at the specified position in the array if the specified
+     *         position is a valid position.
+     * \return picolibrary::Generic_Error::OUT_OF_RANGE if the specified position is not a
+     *         valid position.
+     */
+    constexpr auto at( Position position ) const noexcept
+        -> Result<std::reference_wrapper<Value const>, Error_Code>
+    {
+        if ( position >= N ) {
+            return Generic_Error::OUT_OF_RANGE;
+        } // if
+
+        return data()[ position ];
     }
 
     /**
