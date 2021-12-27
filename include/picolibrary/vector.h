@@ -822,6 +822,8 @@ class Fixed_Capacity_Vector {
     constexpr auto insert( Const_Iterator position, Iterator begin, Iterator end ) noexcept
         -> Result<Iterator, Error_Code>
     {
+        // #lizard forgives the length
+
         auto const n = end - begin;
 
         if ( m_size + n > N ) {
@@ -862,6 +864,8 @@ class Fixed_Capacity_Vector {
     constexpr auto insert( Const_Iterator position, std::initializer_list<Value> initializer_list ) noexcept
         -> Result<Iterator, Error_Code>
     {
+        // #lizard forgives the length
+
         if ( m_size + initializer_list.size() > N ) {
             return Generic_Error::INSUFFICIENT_CAPACITY;
         } // if
