@@ -1378,6 +1378,7 @@ class Acceptor {
         m_state{ State::INITIALIZED },
         m_driver{ &driver },
         m_server_socket_state{ server_socket_state( socket_id ) },
+        m_socket_interrupt_mask{ socket_interrupt_mask( socket_id ) },
         m_network_stack{ &network_stack }
     {
     }
@@ -1397,6 +1398,7 @@ class Acceptor {
         m_state{ State::INITIALIZED },
         m_driver{ &driver },
         m_server_socket_state{ server_socket_state( begin, end ) },
+        m_socket_interrupt_mask{ socket_interrupt_mask( begin, end ) },
         m_network_stack{ &network_stack }
     {
     }
@@ -1410,12 +1412,14 @@ class Acceptor {
         m_state{ source.m_state },
         m_driver{ source.m_driver },
         m_server_socket_state{ source.m_server_socket_state },
+        m_socket_interrupt_mask{ source.m_socket_interrupt_mask },
         m_network_stack{ source.m_network_stack }
     {
-        source.m_state               = State::UNINITIALIZED;
-        source.m_driver              = nullptr;
-        source.m_server_socket_state = {};
-        source.m_network_stack       = nullptr;
+        source.m_state                 = State::UNINITIALIZED;
+        source.m_driver                = nullptr;
+        source.m_server_socket_state   = {};
+        source.m_socket_interrupt_mask = {};
+        source.m_network_stack         = nullptr;
     }
 
     Acceptor( Acceptor const & ) = delete;
@@ -1440,15 +1444,17 @@ class Acceptor {
         if ( &expression != this ) {
             deallocate_sockets();
 
-            m_state               = expression.m_state;
-            m_driver              = expression.m_driver;
-            m_server_socket_state = expression.m_server_socket_state;
-            m_network_stack       = expression.m_network_stack;
+            m_state                 = expression.m_state;
+            m_driver                = expression.m_driver;
+            m_server_socket_state   = expression.m_server_socket_state;
+            m_socket_interrupt_mask = expression.m_socket_interrupt_mask;
+            m_network_stack         = expression.m_network_stack;
 
-            expression.m_state               = State::UNINITIALIZED;
-            expression.m_driver              = nullptr;
-            expression.m_server_socket_state = {};
-            expression.m_network_stack       = nullptr;
+            expression.m_state                 = State::UNINITIALIZED;
+            expression.m_driver                = nullptr;
+            expression.m_server_socket_state   = {};
+            expression.m_socket_interrupt_mask = {};
+            expression.m_network_stack         = nullptr;
         } // if
 
         return *this;
@@ -1514,15 +1520,7 @@ class Acceptor {
      */
     constexpr auto socket_interrupt_mask() const noexcept
     {
-        auto mask = std::uint8_t{};
-
-        for ( auto socket = std::uint_fast8_t{}; socket < SOCKETS; ++socket ) {
-            if ( m_server_socket_state[ socket ] != Server_Socket_State::UNAVAILABLE ) {
-                mask |= 1 << socket;
-            } // if
-        }     // for
-
-        return mask;
+        return m_socket_interrupt_mask;
     }
 
   private:
@@ -1543,7 +1541,7 @@ class Acceptor {
      *
      * \return The server socket state.
      */
-    static auto server_socket_state( Socket_ID socket_id ) noexcept
+    static constexpr auto server_socket_state( Socket_ID socket_id ) noexcept
     {
         auto server_socket_state = Array<Server_Socket_State, SOCKETS>{};
 
@@ -1563,7 +1561,7 @@ class Acceptor {
      *
      * \return The server socket state.
      */
-    static auto server_socket_state( Socket_ID const * begin, Socket_ID const * end ) noexcept
+    static constexpr auto server_socket_state( Socket_ID const * begin, Socket_ID const * end ) noexcept
     {
         auto server_socket_state = Array<Server_Socket_State, SOCKETS>{};
 
@@ -1575,6 +1573,38 @@ class Acceptor {
         } );
 
         return server_socket_state;
+    }
+
+    /**
+     * \brief Initialize the socket interrupt mask.
+     *
+     * \param[in] socket_id The socket's socket ID.
+     *
+     * \return The socket interrupt mask.
+     */
+    static constexpr auto socket_interrupt_mask( Socket_ID socket_id ) noexcept
+    {
+        return static_cast<std::uint8_t>(
+            1 << ( static_cast<std::uint_fast8_t>( socket_id ) >> Control_Byte::Bit::SOCKET ) );
+    }
+
+    /**
+     * \brief Initialize the socket interrupt mask.
+     *
+     * \param[in] begin The beginning of the socket's socket IDs.
+     * \param[in] end The end of the socket's socket IDs.
+     *
+     * \return The socket interrupt mask.
+     */
+    static constexpr auto socket_interrupt_mask( Socket_ID const * begin, Socket_ID const * end ) noexcept
+    {
+        auto mask = std::uint8_t{};
+
+        ::picolibrary::for_each( begin, end, [ &mask ]( auto socket_id ) noexcept {
+            mask |= 1 << ( static_cast<std::uint_fast8_t>( socket_id ) >> Control_Byte::Bit::SOCKET );
+        } );
+
+        return mask;
     }
 
     /**
@@ -1591,6 +1621,12 @@ class Acceptor {
      * \brief Server sockets state.
      */
     Array<Server_Socket_State, SOCKETS> m_server_socket_state{};
+
+    /**
+     * \brief The socket's socket interrupt mask (mask to be used when checking the
+     *        network stack's interrupt constext.
+     */
+    std::uint8_t m_socket_interrupt_mask{};
 
     /**
      * \brief The network stack the socket is associated with.
