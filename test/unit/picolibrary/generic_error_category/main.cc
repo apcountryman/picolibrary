@@ -50,26 +50,29 @@ TEST( errorDescription, worksProperly )
         Generic_Error id;
         char const *  description;
     } const test_cases[]{
-        { Generic_Error::ARBITRATION_LOST, "ARBITRATION_LOST" },
-        { Generic_Error::BUS_ERROR, "BUS_ERROR" },
-        { Generic_Error::CIRCULAR_BUFFER_WOULD_OVERFLOW,
-          "CIRCULAR_BUFFER_WOULD_OVERFLOW" },
-        { Generic_Error::CIRCULAR_BUFFER_WOULD_UNDERFLOW,
-          "CIRCULAR_BUFFER_WOULD_UNDERFLOW" },
-        { Generic_Error::ENDPOINT_IN_USE, "ENDPOINT_IN_USE" },
-        { Generic_Error::EPHEMERAL_PORTS_EXHAUSTED, "EPHEMERAL_PORTS_EXHAUSTED" },
-        { Generic_Error::INSUFFICIENT_SOCKETS_AVAILABLE,
-          "INSUFFICIENT_SOCKETS_AVAILABLE" },
-        { Generic_Error::INVALID_ARGUMENT, "INVALID_ARGUMENT" },
-        { Generic_Error::INVALID_FORMAT, "INVALID_FORMAT" },
-        { Generic_Error::IO_STREAM_DEGRADED, "IO_STREAM_DEGRADED" },
-        { Generic_Error::LOGIC_ERROR, "LOGIC_ERROR" },
-        { Generic_Error::NONRESPONSIVE_DEVICE, "NONRESPONSIVE_DEVICE" },
-        { Generic_Error::NOT_CONNECTED, "NOT_CONNECTED" },
-        { Generic_Error::NO_SOCKETS_AVAILABLE, "NO_SOCKETS_AVAILABLE" },
-        { Generic_Error::OPERATION_TIMEOUT, "OPERATION_TIMEOUT" },
-        { Generic_Error::UNSUPPORTED_OPERATION, "UNSUPPORTED_OPERATION" },
-        { Generic_Error::WOULD_BLOCK, "WOULD_BLOCK" },
+        // clang-format off
+
+        { Generic_Error::ARBITRATION_LOST,                "ARBITRATION_LOST"                },
+        { Generic_Error::BUS_ERROR,                       "BUS_ERROR"                       },
+        { Generic_Error::CIRCULAR_BUFFER_WOULD_OVERFLOW,  "CIRCULAR_BUFFER_WOULD_OVERFLOW"  },
+        { Generic_Error::CIRCULAR_BUFFER_WOULD_UNDERFLOW, "CIRCULAR_BUFFER_WOULD_UNDERFLOW" },
+        { Generic_Error::ENDPOINT_IN_USE,                 "ENDPOINT_IN_USE"                 },
+        { Generic_Error::EPHEMERAL_PORTS_EXHAUSTED,       "EPHEMERAL_PORTS_EXHAUSTED"       },
+        { Generic_Error::INSUFFICIENT_CAPACITY,           "INSUFFICIENT_CAPACITY"           },
+        { Generic_Error::INSUFFICIENT_SOCKETS_AVAILABLE,  "INSUFFICIENT_SOCKETS_AVAILABLE"  },
+        { Generic_Error::INVALID_ARGUMENT,                "INVALID_ARGUMENT"                },
+        { Generic_Error::INVALID_FORMAT,                  "INVALID_FORMAT"                  },
+        { Generic_Error::IO_STREAM_DEGRADED,              "IO_STREAM_DEGRADED"              },
+        { Generic_Error::LOGIC_ERROR,                     "LOGIC_ERROR"                     },
+        { Generic_Error::NONRESPONSIVE_DEVICE,            "NONRESPONSIVE_DEVICE"            },
+        { Generic_Error::NOT_CONNECTED,                   "NOT_CONNECTED"                   },
+        { Generic_Error::NO_SOCKETS_AVAILABLE,            "NO_SOCKETS_AVAILABLE"            },
+        { Generic_Error::OPERATION_TIMEOUT,               "OPERATION_TIMEOUT"               },
+        { Generic_Error::OUT_OF_RANGE,                    "OUT_OF_RANGE"                    },
+        { Generic_Error::UNSUPPORTED_OPERATION,           "UNSUPPORTED_OPERATION"           },
+        { Generic_Error::WOULD_BLOCK,                     "WOULD_BLOCK"                     },
+
+        // clang-format on
     };
 
     for ( auto const test_case : test_cases ) {

@@ -53,6 +53,7 @@ set(
     "picolibrary/state_machine.cc"
     "picolibrary/stream.cc"
     "picolibrary/utility.cc"
+    "picolibrary/vector.cc"
     "picolibrary/void.cc"
     "picolibrary/wiznet.cc"
     "picolibrary/wiznet/w5500.cc"

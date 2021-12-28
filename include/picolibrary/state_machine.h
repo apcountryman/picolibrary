@@ -1175,7 +1175,7 @@ class HSM {
      */
     void enter( Path const & path ) noexcept
     {
-        for_each( path.rbegin(), path.rend(), [ this ]( auto state ) noexcept {
+        ::picolibrary::for_each( path.rbegin(), path.rend(), [ this ]( auto state ) noexcept {
             enter( *state );
         } );
     }
