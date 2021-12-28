@@ -96,7 +96,7 @@ class Fixed_Capacity_Vector {
     /**
      * \brief A vector reverse iterator.
      */
-    using Reverse_Iterator = std::reverse_iterator<Pointer>;
+    using Reverse_Iterator = std::reverse_iterator<Iterator>;
 
     /**
      * \brief A cosnt vector reverse iterator.
@@ -167,7 +167,8 @@ class Fixed_Capacity_Vector {
      *          picolibrary::make_fixed_capacity_vector( std::initializer_list<T> ) if
      *          argument validation is desired.
      *
-     * \param[in] initializer_list The initializer list to initialize the vector with.
+     * \param[in] initializer_list The initializer list containing the values to
+     *            initialize the vector with.
      */
     constexpr Fixed_Capacity_Vector( std::initializer_list<Value> initializer_list ) noexcept :
         m_size{ initializer_list.size() }
@@ -223,7 +224,7 @@ class Fixed_Capacity_Vector {
      *          picolibrary::Fixed_Capacity_Vector::assign( std::initializer_list<Value> )
      *          if argument validation is desired.
      *
-     * \param[in] initializer_list The initializer list containing the values to assign to
+     * \param[in] initializer_list The initializer list containing the values to store in
      *            the vector.
      *
      * \return The assigned to object.
@@ -353,7 +354,9 @@ class Fixed_Capacity_Vector {
     constexpr auto assign( std::initializer_list<Value> initializer_list ) noexcept
         -> Result<Void, Error_Code>
     {
-        if ( initializer_list.size() > N ) {} // if
+        if ( initializer_list.size() > N ) {
+            Generic_Error::INSUFFICIENT_CAPACITY;
+        } // if
 
         clear();
 
@@ -403,7 +406,7 @@ class Fixed_Capacity_Vector {
      * \return picolibrary::Generic_Error::OUT_OF_RANGE if the specified position is not a
      *         valid position.
      */
-    auto at( Position position ) noexcept -> Result<std::reference_wrapper<Value>, Error_Code>
+    constexpr auto at( Position position ) noexcept -> Result<std::reference_wrapper<Value>, Error_Code>
     {
         if ( position >= size() ) {
             return Generic_Error::OUT_OF_RANGE;
@@ -422,7 +425,7 @@ class Fixed_Capacity_Vector {
      * \return picolibrary::Generic_Error::OUT_OF_RANGE if the specified position is not a
      *         valid position.
      */
-    auto at( Position position ) const noexcept
+    constexpr auto at( Position position ) const noexcept
         -> Result<std::reference_wrapper<Value const>, Error_Code>
     {
         if ( position >= size() ) {
@@ -698,7 +701,7 @@ class Fixed_Capacity_Vector {
     }
 
     /**
-     * \brief Insert an element before the specified position in the vector.
+     * \brief Insert a value before the specified position in the vector.
      *
      * \param[in] position The position to insert value before.
      * \param[in] value The value to insert.
@@ -733,7 +736,7 @@ class Fixed_Capacity_Vector {
     }
 
     /**
-     * \brief Insert an element before the specified position in the vector.
+     * \brief Insert a value before the specified position in the vector.
      *
      * \param[in] position The position to insert value before.
      * \param[in] value The value to insert.
@@ -891,12 +894,12 @@ class Fixed_Capacity_Vector {
     }
 
     /**
-     * \brief Emplace an element before the specified position in the vector.
+     * \brief Emplace a value before the specified position in the vector.
      *
-     * \tparam Arguments Element construction argument types.
+     * \tparam Arguments Value construction argument types.
      *
-     * \param[in] position The position to emplace the new element before.
-     * \param[in] arguments Element construction arguments.
+     * \param[in] position The position to emplace the new value before.
+     * \param[in] arguments Value construction arguments.
      *
      * \return An iterator to the emplaced element if the vector has sufficient capacity
      *         to store the new element.
@@ -935,7 +938,7 @@ class Fixed_Capacity_Vector {
      *
      * \return An iterator to the element following the removed element.
      */
-    constexpr auto erase( Const_Iterator position ) noexcept -> Iterator
+    auto erase( Const_Iterator position ) noexcept -> Iterator
     {
         auto element = begin() + ( position - begin() );
 
@@ -960,7 +963,7 @@ class Fixed_Capacity_Vector {
      *
      * \return An iterator to the element following the removed elements.
      */
-    constexpr auto erase( Const_Iterator begin, Const_Iterator end ) noexcept -> Iterator
+    auto erase( Const_Iterator begin, Const_Iterator end ) noexcept -> Iterator
     {
         auto const n = end - begin;
 
@@ -980,7 +983,7 @@ class Fixed_Capacity_Vector {
     }
 
     /**
-     * \brief Append an element to the end of the vector.
+     * \brief Append a value to the end of the vector.
      *
      * \param[in] value The value to append to the vector.
      *
@@ -1002,7 +1005,7 @@ class Fixed_Capacity_Vector {
     }
 
     /**
-     * \brief Append an element to the end of the vector.
+     * \brief Append a value to the end of the vector.
      *
      * \param[in] value The value to append to the vector.
      *
@@ -1024,11 +1027,11 @@ class Fixed_Capacity_Vector {
     }
 
     /**
-     * \brief Append an element to the end of the vector.
+     * \brief Append a value to the end of the vector.
      *
-     * \tparam Arguments Element construction argument types.
+     * \tparam Arguments Value construction argument types.
      *
-     * \param[in] arguments Element construction arguments.
+     * \param[in] arguments Value construction arguments.
      *
      * \return A reference to the appended element if the vector has sufficient capacity
      *         to store the new element.
@@ -1053,7 +1056,7 @@ class Fixed_Capacity_Vector {
     /**
      * \brief Remove the last element of the vector.
      */
-    constexpr void pop_back() noexcept
+    void pop_back() noexcept
     {
         back().~Value();
 
@@ -1179,7 +1182,7 @@ struct fixed_capacity_vector_capacity<Fixed_Capacity_Vector<T, N>> :
  * \param[in] n The number of copies of value to initialize the vector with.
  * \param[in] value The value to initialize the vector with n copies of.
  *
- * \return The vector if n is less than or equal to N.
+ * \return The constructed vector if n is less than or equal to N.
  * \return picolibrary::Generic_Error::INSUFFICIENT_CAPACITY if n is greater than N.
  */
 template<typename T, std::size_t N>
@@ -1201,9 +1204,9 @@ constexpr auto make_fixed_capacity_vector( std::size_t n, T const & value ) noex
  * \tparam T The vector element type.
  * \tparam N The maximum number of elements in the vector.
  *
- * \param[in] n The number of copies of value to initialize the vector with.
+ * \param[in] n The number of default constructed values to initialize the vector with.
  *
- * \return The vector if n is less than or equal to N.
+ * \return The constructed vector if n is less than or equal to N.
  * \return picolibrary::Generic_Error::INSUFFICIENT_CAPACITY if n is greater than N.
  */
 template<typename T, std::size_t N>
@@ -1229,7 +1232,7 @@ constexpr auto make_fixed_capacity_vector( std::size_t n ) noexcept
  * \param[in] begin The beginning of the range of values to initialize the vector with.
  * \param[in] end The end of the range of values to initialize the vector with.
  *
- * \return The vector if the size of the range is less than or equal to N.
+ * \return The constructed vector if the size of the range is less than or equal to N.
  * \return picolibrary::Generic_Error::INSUFFICIENT_CAPACITY if the size of the range is
  *         greater than N.
  */
@@ -1252,9 +1255,11 @@ constexpr auto make_fixed_capacity_vector( Iterator begin, Iterator end ) noexce
  * \tparam T The vector element type.
  * \tparam N The maximum number of elements in the vector.
  *
- * \param[in] initializer_list The initializer list to initialize the vector with.
+ * \param[in] initializer_list The initializer list containing the values to initialize
+ *            the vector with.
  *
- * \return The vector if the size of the initializer list is less than or equal to N.
+ * \return The constructed  vector if the size of the initializer list is less than or
+ *         equal to N.
  * \return picolibrary::Generic_Error::INSUFFICIENT_CAPACITY if the size of the
  *         initializer list is greater than N.
  */
