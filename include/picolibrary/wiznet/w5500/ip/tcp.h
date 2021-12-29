@@ -1516,24 +1516,22 @@ class Acceptor {
      */
     auto enable_interrupts( std::uint8_t mask ) noexcept -> Result<Void, Error_Code>
     {
+        SN_IMR::Type sn_imr;
+        {
+            auto result = m_driver->read_sn_imr( m_hardware_sockets[ 0 ].id() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            sn_imr = result.value();
+        }
+
         for ( auto const hardware_socket : m_hardware_sockets ) {
-            SN_IMR::Type sn_imr;
-            {
-                auto result = m_driver->read_sn_imr( hardware_socket.id() );
-                if ( result.is_error() ) {
-                    return result.error();
-                } // if
-
-                sn_imr = result.value();
-            }
-
-            {
-                auto result = m_driver->write_sn_imr( hardware_socket.id(), sn_imr | mask );
-                if ( result.is_error() ) {
-                    return result.error();
-                } // if
-            }
-        } // for
+            auto result = m_driver->write_sn_imr( hardware_socket.id(), sn_imr | mask );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }     // for
 
         return {};
     }

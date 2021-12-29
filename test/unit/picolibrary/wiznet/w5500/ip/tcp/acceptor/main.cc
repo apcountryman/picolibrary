@@ -53,8 +53,8 @@ using ::picolibrary::Testing::Unit::WIZnet::W5500::IP::Mock_Network_Stack;
 using ::picolibrary::WIZnet::W5500::Socket_ID;
 using ::testing::_;
 using ::testing::AnyNumber;
+using ::testing::InSequence;
 using ::testing::Return;
-using ::testing::Sequence;
 
 using Acceptor = ::picolibrary::WIZnet::W5500::IP::TCP::Acceptor<Mock_Driver, Mock_Network_Stack>;
 using State = Acceptor::State;
@@ -247,28 +247,21 @@ TEST( enableInterrupts, snimrWriteError )
  */
 TEST( enableInterrupts, worksProperly )
 {
-    auto const backlog = random<std::uint_fast8_t>( 1, 8 );
-
-    auto const sequences = std::vector<Sequence>( backlog );
+    auto const in_sequence = InSequence{};
 
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids( backlog );
+    auto const socket_ids = random_unique_socket_ids();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
-    auto const mask = random<std::uint8_t>();
+    auto const sn_imr = random<std::uint8_t>();
+    auto const mask   = random<std::uint8_t>();
 
-    for ( auto i = std::uint_fast8_t{}; i < backlog; ++i ) {
-        auto const   socket_id = socket_ids[ i ];
-        auto const & sequence  = sequences[ i ];
-
-        auto const sn_imr = random<std::uint8_t>();
-
-        EXPECT_CALL( driver, read_sn_imr( socket_id ) ).InSequence( sequence ).WillOnce( Return( sn_imr ) );
+    EXPECT_CALL( driver, read_sn_imr( socket_ids[ 0 ] ) ).WillOnce( Return( sn_imr ) );
+    for ( auto const socket_id : socket_ids ) {
         EXPECT_CALL( driver, write_sn_imr( socket_id, sn_imr | mask ) )
-            .InSequence( sequence )
             .WillOnce( Return( Result<Void, Error_Code>{} ) );
     } // for
 
