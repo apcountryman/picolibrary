@@ -1388,6 +1388,8 @@ class Acceptor {
     /**
      * \brief Constructor.
      *
+     * \tparam Iterator Socket IDs interator.
+     *
      * \param[in] driver The driver for the W5500 the socket is associated with.
      * \param[in] begin The beginning of the socket's socket IDs.
      * \param[in] end The end of the socket's socket IDs.
@@ -1395,8 +1397,8 @@ class Acceptor {
      *
      * \attention The range [begin,end) must not be empty.
      */
-    constexpr Acceptor( Driver & driver, Socket_ID const * begin, Socket_ID const * end, Network_Stack & network_stack ) noexcept
-        :
+    template<typename Iterator>
+    constexpr Acceptor( Driver & driver, Iterator begin, Iterator end, Network_Stack & network_stack ) noexcept :
         m_state{ State::INITIALIZED },
         m_driver{ &driver },
         m_hardware_sockets{ begin, end },
@@ -1627,12 +1629,15 @@ class Acceptor {
     /**
      * \brief Initialize the socket interrupt mask.
      *
+     * \tparam Iterator Socket IDs iterator.
+     *
      * \param[in] begin The beginning of the socket's socket IDs.
      * \param[in] end The end of the socket's socket IDs.
      *
      * \return The socket interrupt mask.
      */
-    static constexpr auto socket_interrupt_mask( Socket_ID const * begin, Socket_ID const * end ) noexcept
+    template<typename Iterator>
+    static constexpr auto socket_interrupt_mask( Iterator begin, Iterator end ) noexcept
     {
         auto mask = std::uint8_t{};
 
@@ -1674,7 +1679,7 @@ class Acceptor {
      */
     void deallocate_sockets() noexcept
     {
-        for ( auto hardware_socket : m_hardware_sockets ) {
+        for ( auto const hardware_socket : m_hardware_sockets ) {
             m_network_stack->deallocate_socket( hardware_socket.id() );
         } // for
     }

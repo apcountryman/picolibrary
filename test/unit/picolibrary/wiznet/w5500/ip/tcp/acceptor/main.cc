@@ -47,7 +47,7 @@ using ::picolibrary::WIZnet::W5500::Socket_ID;
 using Acceptor = ::picolibrary::WIZnet::W5500::IP::TCP::Acceptor<Mock_Driver, Mock_Network_Stack>;
 using State = Acceptor::State;
 
-auto random_unique_socket_ids( std::uint_fast8_t backlog )
+auto random_unique_socket_ids( std::uint_fast8_t backlog = random<std::uint_fast8_t>( 1, 8 ) )
 {
     auto socket_ids = Array<Socket_ID, 8>{
         Socket_ID::_0, Socket_ID::_1, Socket_ID::_2, Socket_ID::_3,
@@ -154,6 +154,7 @@ TEST( constructorSocketIDs, worksProperly )
         { 5 },
         { 6 },
         { 7 },
+        { 8 },
 
         // clang-format on
     };
@@ -164,7 +165,7 @@ TEST( constructorSocketIDs, worksProperly )
 
         auto const socket_ids = random_unique_socket_ids( test_case.backlog );
 
-        auto const acceptor = Acceptor{ driver, &*socket_ids.begin(), &*socket_ids.end(), network_stack };
+        auto const acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
         EXPECT_EQ( acceptor.state(), State::INITIALIZED );
         EXPECT_EQ( sorted_socket_ids( acceptor.socket_ids() ), sorted_socket_ids( socket_ids ) );
