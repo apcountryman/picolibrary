@@ -1566,6 +1566,24 @@ class Acceptor {
         return {};
     }
 
+    /**
+     * \brief Disable all interrupts.
+     *
+     * \return Nothing if disabling all interrupts succeeded.
+     * \return An error code if disabling all interrupts failed.
+     */
+    auto disable_interrupts() noexcept -> Result<Void, Error_Code>
+    {
+        for ( auto const hardware_socket : m_hardware_sockets ) {
+            auto result = m_driver->write_sn_imr( hardware_socket.id(), 0x00 );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }     // for
+
+        return {};
+    }
+
   private:
     /**
      * \brief Hardware socket.

@@ -271,8 +271,8 @@ TEST( enableInterrupts, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::disable_interrupts()
- *        properly handles an SN_IMR register read error.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::disable_interrupts(
+ *        std::uint8_t ) properly handles an SN_IMR register read error.
  */
 TEST( disableInterrupts, snimrReadError )
 {
@@ -296,8 +296,8 @@ TEST( disableInterrupts, snimrReadError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::disable_interrupts()
- *        properly handles an SN_IMR register write error.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::disable_interrupts(
+ *        std::uint8_t ) properly handles an SN_IMR register write error.
  */
 TEST( disableInterrupts, snimrWriteError )
 {
@@ -322,8 +322,8 @@ TEST( disableInterrupts, snimrWriteError )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::disable_interrupts() works
- *        properly.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::disable_interrupts(
+ *        std::uint8_t ) works properly.
  */
 TEST( disableInterrupts, worksProperly )
 {
@@ -346,6 +346,55 @@ TEST( disableInterrupts, worksProperly )
     } // for
 
     EXPECT_FALSE( acceptor.disable_interrupts( mask ).is_error() );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::disable_interrupts()
+ *        properly handles an SN_IMR register write error.
+ */
+TEST( disableAllInterrupts, snimrWriteError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_imr( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = acceptor.disable_interrupts();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::disable_interrupts() works
+ *        properly.
+ */
+TEST( disableAllInterrupts, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    for ( auto const socket_id : socket_ids ) {
+        EXPECT_CALL( driver, write_sn_imr( socket_id, 0x00 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    } // for
+
+    EXPECT_FALSE( acceptor.disable_interrupts().is_error() );
 
     EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
 }
