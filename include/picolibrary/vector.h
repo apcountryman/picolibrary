@@ -153,7 +153,7 @@ class Fixed_Capacity_Vector {
      */
     template<typename Iterator>
     constexpr Fixed_Capacity_Vector( Iterator begin, Iterator end ) noexcept :
-        m_size{ end - begin }
+        m_size{ static_cast<Size>( end - begin ) }
     {
         ::picolibrary::for_each( begin, end, [ storage = &m_storage[ 0 ] ]( auto value ) mutable noexcept {
             new ( storage++ ) Value{ value };
