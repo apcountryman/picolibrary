@@ -24,12 +24,14 @@
 #define PICOLIBRARY_WIZNET_W5500_IP_TCP_H
 
 #include <cstdint>
+#include <utility>
 
 #include "picolibrary/algorithm.h"
 #include "picolibrary/error.h"
 #include "picolibrary/ip/tcp.h"
 #include "picolibrary/ipv4.h"
 #include "picolibrary/result.h"
+#include "picolibrary/vector.h"
 #include "picolibrary/void.h"
 #include "picolibrary/wiznet/w5500.h"
 
@@ -1377,7 +1379,7 @@ class Acceptor {
     constexpr Acceptor( Driver & driver, Socket_ID socket_id, Network_Stack & network_stack ) noexcept :
         m_state{ State::INITIALIZED },
         m_driver{ &driver },
-        m_server_socket_state{ server_socket_state( socket_id ) },
+        m_hardware_sockets{ socket_id },
         m_socket_interrupt_mask{ socket_interrupt_mask( socket_id ) },
         m_network_stack{ &network_stack }
     {
@@ -1397,7 +1399,7 @@ class Acceptor {
         :
         m_state{ State::INITIALIZED },
         m_driver{ &driver },
-        m_server_socket_state{ server_socket_state( begin, end ) },
+        m_hardware_sockets{ begin, end },
         m_socket_interrupt_mask{ socket_interrupt_mask( begin, end ) },
         m_network_stack{ &network_stack }
     {
@@ -1411,13 +1413,12 @@ class Acceptor {
     constexpr Acceptor( Acceptor && source ) noexcept :
         m_state{ source.m_state },
         m_driver{ source.m_driver },
-        m_server_socket_state{ source.m_server_socket_state },
+        m_hardware_sockets{ std::move( source.m_hardware_sockets ) },
         m_socket_interrupt_mask{ source.m_socket_interrupt_mask },
         m_network_stack{ source.m_network_stack }
     {
         source.m_state                 = State::UNINITIALIZED;
         source.m_driver                = nullptr;
-        source.m_server_socket_state   = {};
         source.m_socket_interrupt_mask = {};
         source.m_network_stack         = nullptr;
     }
@@ -1446,13 +1447,12 @@ class Acceptor {
 
             m_state                 = expression.m_state;
             m_driver                = expression.m_driver;
-            m_server_socket_state   = expression.m_server_socket_state;
+            m_hardware_sockets      = std::move( expression.hardware_sockets );
             m_socket_interrupt_mask = expression.m_socket_interrupt_mask;
             m_network_stack         = expression.m_network_stack;
 
             expression.m_state                 = State::UNINITIALIZED;
             expression.m_driver                = nullptr;
-            expression.m_server_socket_state   = {};
             expression.m_socket_interrupt_mask = {};
             expression.m_network_stack         = nullptr;
         } // if
@@ -1475,23 +1475,12 @@ class Acceptor {
     /**
      * \brief Get the socket's socket IDs.
      *
-     * \attention Only the first picolibrary::WIZnet::W5500::IP::TCP::Acceptor::backlog()
-     *            entries in the socket ID array are valid.
-     *
      * \return The socket's socket IDs.
      */
-    constexpr auto socket_ids() const noexcept
+    auto socket_ids() const noexcept
     {
-        auto socket_ids = Array<Socket_ID, SOCKETS>{};
-        auto i          = std::uint_fast8_t{};
-
-        for ( auto socket = std::uint_fast8_t{}; socket < SOCKETS; ++socket ) {
-            if ( m_server_socket_state[ socket ] != Server_Socket_State::UNAVAILABLE ) {
-                socket_ids[ i++ ] = static_cast<Socket_ID>( socket << Control_Byte::Bit::SOCKET );
-            } // if
-        }     // for
-
-        return socket_ids;
+        return Fixed_Capacity_Vector<Socket_ID, SOCKETS>{ m_hardware_sockets.begin(),
+                                                          m_hardware_sockets.end() };
     }
 
     /**
@@ -1501,15 +1490,7 @@ class Acceptor {
      */
     constexpr auto backlog() const noexcept
     {
-        auto backlog = std::uint_fast8_t{};
-
-        for ( auto const server_socket_state : m_server_socket_state ) {
-            if ( server_socket_state != Server_Socket_State::UNAVAILABLE ) {
-                ++backlog;
-            } // if
-        }     // for
-
-        return backlog;
+        return m_hardware_sockets.size();
     }
 
     /**
@@ -1525,55 +1506,110 @@ class Acceptor {
 
   private:
     /**
-     * \brief Server socket state.
+     * \brief Hardware socket.
      */
-    enum class Server_Socket_State : std::uint_fast8_t {
-        UNAVAILABLE,      ///< Unavailable.
-        AVAILABLE,        ///< Available for allocation.
-        ALLOCATED,        ///< Allocated.
-        AWAITING_SERVICE, ///< Awaiting post-deallocation service.
+    class Hardware_Socket {
+      public:
+        /**
+         * \brief State.
+         */
+        enum class State : std::uint_fast8_t {
+            AVAILABLE,        ///< Available for allocation.
+            ALLOCATED,        ///< Allocated.
+            AWAITING_SERVICE, ///< Awaiting post-deallocation service.
+        };
+
+        Hardware_Socket() = delete;
+
+        /**
+         * \brief Constructor.
+         *
+         * \param[in] id The socket's ID.
+         */
+        constexpr Hardware_Socket( Socket_ID id ) noexcept : m_id{ id }
+        {
+        }
+
+        /**
+         * \brief Constructor.
+         *
+         * \param[in] source The source of the move.
+         */
+        constexpr Hardware_Socket( Hardware_Socket && source ) noexcept = default;
+
+        /**
+         * \brief Constructor.
+         *
+         * \param[in] original The original to copy.
+         */
+        constexpr Hardware_Socket( Hardware_Socket const & original ) noexcept = default;
+
+        /**
+         * \brief Destructor.
+         */
+        ~Hardware_Socket() noexcept = default;
+
+        /**
+         * \brief Assignment operator.
+         *
+         * \param[in] expression The expression to be assigned.
+         *
+         * \return The assigned to object.
+         */
+        constexpr auto operator  =( Hardware_Socket && expression ) noexcept
+            -> Hardware_Socket & = default;
+
+        /**
+         * \brief Assignment operator.
+         *
+         * \param[in] expression The expression to be assigned.
+         *
+         * \return The assigned to object.
+         */
+        constexpr auto operator  =( Hardware_Socket const & expression ) noexcept
+            -> Hardware_Socket & = default;
+
+        /**
+         * \brief Get the socket's ID.
+         *
+         * \return The socket's ID.
+         */
+        constexpr auto id() const noexcept
+        {
+            return m_id;
+        }
+
+        /**
+         * \brief Get the socket's ID.
+         *
+         * \return The socket's ID.
+         */
+        constexpr operator Socket_ID() const noexcept
+        {
+            return m_id;
+        }
+
+        /**
+         * \brief Get the socket's state.
+         *
+         * \return The socket's state.
+         */
+        constexpr auto state() const noexcept
+        {
+            return m_state;
+        }
+
+      private:
+        /**
+         * \brief The socket's ID.
+         */
+        Socket_ID m_id{};
+
+        /**
+         * \brief The socket's state.
+         */
+        State m_state{};
     };
-
-    /**
-     * \brief Initialize the server socket state.
-     *
-     * \param[in] socket_id The socket's socket ID.
-     *
-     * \return The server socket state.
-     */
-    static constexpr auto server_socket_state( Socket_ID socket_id ) noexcept
-    {
-        auto server_socket_state = Array<Server_Socket_State, SOCKETS>{};
-
-        auto const socket = static_cast<std::uint_fast8_t>(
-            static_cast<std::uint_fast8_t>( socket_id ) >> Control_Byte::Bit::SOCKET );
-
-        server_socket_state[ socket ] = Server_Socket_State::AVAILABLE;
-
-        return server_socket_state;
-    }
-
-    /**
-     * \brief Initialize the server socket state.
-     *
-     * \param[in] begin The beginning of the socket's socket IDs.
-     * \param[in] end The end of the socket's socket IDs.
-     *
-     * \return The server socket state.
-     */
-    static constexpr auto server_socket_state( Socket_ID const * begin, Socket_ID const * end ) noexcept
-    {
-        auto server_socket_state = Array<Server_Socket_State, SOCKETS>{};
-
-        for_each( begin, end, [ &server_socket_state ]( auto socket_id ) noexcept {
-            auto const socket = static_cast<std::uint_fast8_t>(
-                static_cast<std::uint_fast8_t>( socket_id ) >> Control_Byte::Bit::SOCKET );
-
-            server_socket_state[ socket ] = Server_Socket_State::AVAILABLE;
-        } );
-
-        return server_socket_state;
-    }
 
     /**
      * \brief Initialize the socket interrupt mask.
@@ -1618,9 +1654,9 @@ class Acceptor {
     Driver * m_driver{};
 
     /**
-     * \brief Server sockets state.
+     * \brief Hardware sockets.
      */
-    Array<Server_Socket_State, SOCKETS> m_server_socket_state{};
+    Fixed_Capacity_Vector<Hardware_Socket, SOCKETS> m_hardware_sockets{};
 
     /**
      * \brief The socket's socket interrupt mask (mask to be used when checking the
@@ -1638,12 +1674,9 @@ class Acceptor {
      */
     void deallocate_sockets() noexcept
     {
-        for ( auto socket = std::uint_fast8_t{}; socket < SOCKETS; ++socket ) {
-            if ( m_server_socket_state[ socket ] != Server_Socket_State::UNAVAILABLE ) {
-                m_network_stack->deallocate_socket(
-                    static_cast<Socket_ID>( socket << Control_Byte::Bit::SOCKET ) );
-            } // if
-        }     // for
+        for ( auto hardware_socket : m_hardware_sockets ) {
+            m_network_stack->deallocate_socket( hardware_socket.id() );
+        } // for
     }
 };
 

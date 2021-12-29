@@ -30,12 +30,14 @@
 #include "picolibrary/testing/unit/random.h"
 #include "picolibrary/testing/unit/wiznet/w5500.h"
 #include "picolibrary/testing/unit/wiznet/w5500/ip/network_stack.h"
+#include "picolibrary/vector.h"
 #include "picolibrary/wiznet/w5500.h"
 #include "picolibrary/wiznet/w5500/ip/tcp.h"
 
 namespace {
 
 using ::picolibrary::Array;
+using ::picolibrary::Fixed_Capacity_Vector;
 using ::picolibrary::Testing::Unit::pseudo_random_number_generator;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::WIZnet::W5500::Mock_Driver;
@@ -64,9 +66,9 @@ auto sorted_socket_ids( std::vector<Socket_ID> socket_ids )
     return socket_ids;
 }
 
-auto sorted_socket_ids( Array<Socket_ID, 8> const & socket_ids, std::uint_fast8_t backlog )
+auto sorted_socket_ids( Fixed_Capacity_Vector<Socket_ID, 8> const & socket_ids )
 {
-    return sorted_socket_ids( { socket_ids.begin(), socket_ids.begin() + backlog } );
+    return sorted_socket_ids( std::vector<Socket_ID>{ socket_ids.begin(), socket_ids.end() } );
 }
 
 auto socket_interrupt_mask( std::vector<Socket_ID> const & socket_ids )
@@ -165,9 +167,7 @@ TEST( constructorSocketIDs, worksProperly )
         auto const acceptor = Acceptor{ driver, &*socket_ids.begin(), &*socket_ids.end(), network_stack };
 
         EXPECT_EQ( acceptor.state(), State::INITIALIZED );
-        EXPECT_EQ(
-            sorted_socket_ids( acceptor.socket_ids(), acceptor.backlog() ),
-            sorted_socket_ids( socket_ids ) );
+        EXPECT_EQ( sorted_socket_ids( acceptor.socket_ids() ), sorted_socket_ids( socket_ids ) );
         EXPECT_EQ( acceptor.backlog(), test_case.backlog );
         EXPECT_EQ( acceptor.socket_interrupt_mask(), socket_interrupt_mask( socket_ids ) );
 
