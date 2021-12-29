@@ -153,9 +153,9 @@ class Fixed_Capacity_Vector {
      */
     template<typename Iterator>
     constexpr Fixed_Capacity_Vector( Iterator begin, Iterator end ) noexcept :
-        m_size{ end - begin }
+        m_size{ static_cast<Size>( end - begin ) }
     {
-        ::picolibrary::for_each( begin, end, [ storage = &m_storage[ 0 ] ]( auto value ) noexcept {
+        ::picolibrary::for_each( begin, end, [ storage = &m_storage[ 0 ] ]( auto value ) mutable noexcept {
             new ( storage++ ) Value{ value };
         } );
     }
@@ -174,7 +174,9 @@ class Fixed_Capacity_Vector {
         m_size{ initializer_list.size() }
     {
         ::picolibrary::for_each(
-            initializer_list.begin(), initializer_list.end(), [ storage = &m_storage[ 0 ] ]( auto value ) noexcept {
+            initializer_list.begin(),
+            initializer_list.end(),
+            [ storage = &m_storage[ 0 ] ]( auto value ) mutable noexcept {
                 new ( storage++ ) Value{ value };
             } );
     }
@@ -234,7 +236,9 @@ class Fixed_Capacity_Vector {
         clear();
 
         ::picolibrary::for_each(
-            initializer_list.begin(), initializer_list.end(), [ storage = &m_storage[ 0 ] ]( auto value ) noexcept {
+            initializer_list.begin(),
+            initializer_list.end(),
+            [ storage = &m_storage[ 0 ] ]( auto value ) mutable noexcept {
                 new ( storage++ ) Value{ value };
             } );
 
@@ -328,15 +332,19 @@ class Fixed_Capacity_Vector {
     template<typename Iterator>
     constexpr auto assign( Iterator begin, Iterator end ) noexcept -> Result<Void, Error_Code>
     {
-        if ( end - begin > N ) {
+        auto const n = end - begin;
+
+        if ( n > N ) {
             return Generic_Error::INSUFFICIENT_CAPACITY;
         } // if
 
         clear();
 
-        ::picolibrary::for_each( begin, end, [ storage = &m_storage[ 0 ] ]( auto value ) noexcept {
+        ::picolibrary::for_each( begin, end, [ storage = &m_storage[ 0 ] ]( auto value ) mutable noexcept {
             new ( storage++ ) Value{ value };
         } );
+
+        m_size = n;
 
         return {};
     }
@@ -361,9 +369,13 @@ class Fixed_Capacity_Vector {
         clear();
 
         ::picolibrary::for_each(
-            initializer_list.begin(), initializer_list.end(), [ storage = &m_storage[ 0 ] ]( auto value ) noexcept {
+            initializer_list.begin(),
+            initializer_list.end(),
+            [ storage = &m_storage[ 0 ] ]( auto value ) mutable noexcept {
                 new ( storage++ ) Value{ value };
             } );
+
+        m_size = initializer_list.size();
 
         return {};
     }
@@ -843,7 +855,7 @@ class Fixed_Capacity_Vector {
 
         auto const inserted_elements = element + 1;
 
-        ::picolibrary::for_each( begin, end, [ element ]( auto value ) noexcept {
+        ::picolibrary::for_each( begin, end, [ element ]( auto value ) mutable noexcept {
             new ( ++element ) Value{ value };
         } );
 
@@ -884,7 +896,7 @@ class Fixed_Capacity_Vector {
         auto const inserted_elements = element + 1;
 
         ::picolibrary::for_each(
-            initializer_list.begin(), initializer_list.end(), [ element ]( auto value ) noexcept {
+            initializer_list.begin(), initializer_list.end(), [ element ]( auto value ) mutable noexcept {
                 new ( ++element ) Value{ value };
             } );
 
