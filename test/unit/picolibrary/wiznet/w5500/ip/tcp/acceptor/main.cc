@@ -400,6 +400,58 @@ TEST( disableAllInterrupts, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::enabled_interrupts()
+ *        properly handles an SN_IMR register read error.
+ */
+TEST( enabledInterrupts, snimrReadError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto const acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_imr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = acceptor.enabled_interrupts();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::enabled_interrupts() works
+ *        properly.
+ */
+TEST( enabledInterrupts, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto const acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const sn_imr = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, read_sn_imr( socket_ids[ 0 ] ) ).WillOnce( Return( sn_imr ) );
+
+    auto const result = acceptor.enabled_interrupts();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), sn_imr );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::IP::TCP::Acceptor unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().

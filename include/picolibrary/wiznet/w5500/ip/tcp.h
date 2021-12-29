@@ -1584,6 +1584,19 @@ class Acceptor {
         return {};
     }
 
+    /**
+     * \brief Get a mask identifying the interrupts that are enabled.
+     *
+     * \return A mask identifying the interrupts that are enabled if getting a mask
+     *         identifying the interrupts that are enabled succeeded.
+     * \return An error code if getting a mask identifying the interrupts that are enabled
+     *         failed.
+     */
+    auto enabled_interrupts() const noexcept
+    {
+        return m_driver->read_sn_imr( m_hardware_sockets[ 0 ].id() );
+    }
+
   private:
     /**
      * \brief Hardware socket.
