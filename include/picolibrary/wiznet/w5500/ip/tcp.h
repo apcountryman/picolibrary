@@ -1597,6 +1597,29 @@ class Acceptor {
         return m_driver->read_sn_imr( m_hardware_sockets[ 0 ].id() );
     }
 
+    /**
+     * \brief Get the interrupt context (SN_IR register value for all sockets associated
+     *        with the acceptor bitwise ORed together).
+     *
+     * \return The interrupt context if getting the interrupt context succeeded.
+     * \return An error code if getting the interrupt context failed.
+     */
+    auto interrupt_context() const noexcept -> Result<std::uint8_t, Error_Code>
+    {
+        auto interrupt_context = SN_IR::Type{};
+
+        for ( auto const hardware_socket : m_hardware_sockets ) {
+            auto result = m_driver->read_sn_ir( hardware_socket.id() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            interrupt_context |= result.value();
+        } // for
+
+        return interrupt_context;
+    }
+
   private:
     /**
      * \brief Hardware socket.

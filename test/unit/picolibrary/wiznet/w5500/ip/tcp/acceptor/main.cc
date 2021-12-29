@@ -430,8 +430,6 @@ TEST( enabledInterrupts, snimrReadError )
  */
 TEST( enabledInterrupts, worksProperly )
 {
-    auto const in_sequence = InSequence{};
-
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
@@ -447,6 +445,62 @@ TEST( enabledInterrupts, worksProperly )
 
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), sn_imr );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::interrupt_context()
+ *        properly handles an SN_IR register read error.
+ */
+TEST( interruptContext, snirReadError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto const acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_ir( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = acceptor.interrupt_context();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::interrupt_context() works
+ *        properly.
+ */
+TEST( interruptContext, worksProperly )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto const acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto interrupt_context = std::uint8_t{};
+
+    for ( auto const socket_id : socket_ids ) {
+        auto const sn_ir = random<std::uint8_t>();
+
+        EXPECT_CALL( driver, read_sn_ir( socket_id ) ).WillOnce( Return( sn_ir ) );
+
+        interrupt_context |= sn_ir;
+    } // for
+
+    auto const result = acceptor.interrupt_context();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), interrupt_context );
 
     EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
 }
