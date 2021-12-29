@@ -332,7 +332,9 @@ class Fixed_Capacity_Vector {
     template<typename Iterator>
     constexpr auto assign( Iterator begin, Iterator end ) noexcept -> Result<Void, Error_Code>
     {
-        if ( end - begin > N ) {
+        auto const n = end - begin;
+
+        if ( n > N ) {
             return Generic_Error::INSUFFICIENT_CAPACITY;
         } // if
 
@@ -341,6 +343,8 @@ class Fixed_Capacity_Vector {
         ::picolibrary::for_each( begin, end, [ storage = &m_storage[ 0 ] ]( auto value ) mutable noexcept {
             new ( storage++ ) Value{ value };
         } );
+
+        m_size = n;
 
         return {};
     }
@@ -370,6 +374,8 @@ class Fixed_Capacity_Vector {
             [ storage = &m_storage[ 0 ] ]( auto value ) mutable noexcept {
                 new ( storage++ ) Value{ value };
             } );
+
+        m_size = initializer_list.size();
 
         return {};
     }
