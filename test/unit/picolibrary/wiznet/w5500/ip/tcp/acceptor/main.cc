@@ -27,22 +27,34 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/array.h"
+#include "picolibrary/error.h"
+#include "picolibrary/result.h"
+#include "picolibrary/testing/unit/error.h"
 #include "picolibrary/testing/unit/random.h"
 #include "picolibrary/testing/unit/wiznet/w5500.h"
 #include "picolibrary/testing/unit/wiznet/w5500/ip/network_stack.h"
 #include "picolibrary/vector.h"
+#include "picolibrary/void.h"
 #include "picolibrary/wiznet/w5500.h"
 #include "picolibrary/wiznet/w5500/ip/tcp.h"
 
 namespace {
 
 using ::picolibrary::Array;
+using ::picolibrary::Error_Code;
 using ::picolibrary::Fixed_Capacity_Vector;
+using ::picolibrary::Result;
+using ::picolibrary::Void;
+using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::pseudo_random_number_generator;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::WIZnet::W5500::Mock_Driver;
 using ::picolibrary::Testing::Unit::WIZnet::W5500::IP::Mock_Network_Stack;
 using ::picolibrary::WIZnet::W5500::Socket_ID;
+using ::testing::_;
+using ::testing::AnyNumber;
+using ::testing::Return;
+using ::testing::Sequence;
 
 using Acceptor = ::picolibrary::WIZnet::W5500::IP::TCP::Acceptor<Mock_Driver, Mock_Network_Stack>;
 using State = Acceptor::State;
@@ -176,6 +188,93 @@ TEST( constructorSocketIDs, worksProperly )
             EXPECT_CALL( network_stack, deallocate_socket( socket_id ) );
         } // for
     }     // for
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::enable_interrupts()
+ *        properly handles an SN_IMR register read error.
+ */
+TEST( enableInterrupts, snimrReadError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_imr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = acceptor.enable_interrupts( random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::enable_interrupts()
+ *        properly handles an SN_IMR register write error.
+ */
+TEST( enableInterrupts, snimrWriteError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_imr( _ ) ).WillOnce( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, write_sn_imr( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = acceptor.enable_interrupts( random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::enable_interrupts() works
+ *        properly.
+ */
+TEST( enableInterrupts, worksProperly )
+{
+    auto const backlog = random<std::uint_fast8_t>( 1, 8 );
+
+    auto const sequences = std::vector<Sequence>( backlog );
+
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids( backlog );
+
+    auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const mask = random<std::uint8_t>();
+
+    for ( auto i = std::uint_fast8_t{}; i < backlog; ++i ) {
+        auto const   socket_id = socket_ids[ i ];
+        auto const & sequence  = sequences[ i ];
+
+        auto const sn_imr = random<std::uint8_t>();
+
+        EXPECT_CALL( driver, read_sn_imr( socket_id ) ).InSequence( sequence ).WillOnce( Return( sn_imr ) );
+        EXPECT_CALL( driver, write_sn_imr( socket_id, sn_imr | mask ) )
+            .InSequence( sequence )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+    } // for
+
+    EXPECT_FALSE( acceptor.enable_interrupts( mask ).is_error() );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
 }
 
 /**

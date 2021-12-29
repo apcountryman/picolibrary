@@ -1506,6 +1506,38 @@ class Acceptor {
         return m_socket_interrupt_mask;
     }
 
+    /**
+     * \brief Enable interrupts.
+     *
+     * \param[in] mask The mask identifying the interrupts to enable.
+     *
+     * \return Nothing if enabling interrupts succeeded.
+     * \return An error code if enabling interrupts failed.
+     */
+    auto enable_interrupts( std::uint8_t mask ) noexcept -> Result<Void, Error_Code>
+    {
+        for ( auto const hardware_socket : m_hardware_sockets ) {
+            SN_IMR::Type sn_imr;
+            {
+                auto result = m_driver->read_sn_imr( hardware_socket.id() );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+
+                sn_imr = result.value();
+            }
+
+            {
+                auto result = m_driver->write_sn_imr( hardware_socket.id(), sn_imr | mask );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+        } // for
+
+        return {};
+    }
+
   private:
     /**
      * \brief Hardware socket.
