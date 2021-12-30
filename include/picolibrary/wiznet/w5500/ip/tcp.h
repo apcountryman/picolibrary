@@ -1754,6 +1754,20 @@ class Acceptor {
         return {};
     }
 
+    /**
+     * \brief Get the socket's keepalive packet transmission period (SN_KPALVTR register
+     *        value).
+     *
+     * \return The socket's keepalive packet transmission period if getting the socket's
+     *         keepalive packet transmission period succeeded.
+     * \return An error code if getting the socket's keepalive packet transmission period
+     *         failed.
+     */
+    auto keepalive_period() const noexcept
+    {
+        return m_driver->read_sn_kpalvtr( m_hardware_sockets.front().id() );
+    }
+
   private:
     /**
      * \brief Hardware socket.
