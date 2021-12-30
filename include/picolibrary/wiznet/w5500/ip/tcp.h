@@ -1696,6 +1696,28 @@ class Acceptor {
         return m_maximum_segment_size;
     }
 
+    /**
+     * \brief Configure the socket's IPv4 packet time to live field value.
+     *
+     * \param[in] time_to_live The desired IPv4 packet time to live field value.
+     *
+     * \return Nothing if configuring the socket's IPv4 packet time to live field value
+     *         succeeded.
+     * \return An error code if configuring the socket's IPv4 packet time to live field
+     *         value failed.
+     */
+    auto configure_time_to_live( std::uint8_t time_to_live ) noexcept -> Result<Void, Error_Code>
+    {
+        for ( auto const hardware_socket : m_hardware_sockets ) {
+            auto result = m_driver->write_sn_ttl( hardware_socket.id(), time_to_live );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }     // for
+
+        return {};
+    }
+
   private:
     /**
      * \brief Hardware socket.
