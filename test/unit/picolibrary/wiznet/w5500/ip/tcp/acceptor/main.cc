@@ -753,6 +753,56 @@ TEST( configureTimeToLive, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::time_to_live() properly
+ *        handles an SN_IMR register read error.
+ */
+TEST( timeToLive, snttlReadError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto const acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_ttl( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = acceptor.time_to_live();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::time_to_live() works
+ *        properly.
+ */
+TEST( timeToLive, worksProperly )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto const acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const sn_ttl = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, read_sn_ttl( socket_ids.front() ) ).WillOnce( Return( sn_ttl ) );
+
+    auto const result = acceptor.time_to_live();
+
+    EXPECT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), sn_ttl );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::IP::TCP::Acceptor unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
