@@ -1620,6 +1620,30 @@ class Acceptor {
         return interrupt_context;
     }
 
+    /**
+     * \brief Configure the socket's no delayed ACK usage.
+     *
+     * \param[in] no_delayed_ack_configuration The desired no delayed ACK configuration.
+     *
+     * \return Nothing if configuring the socket's no delayed ACK usage succeeded.
+     * \return An error code if configuring the socket's no delayed ACK usage failed.
+     */
+    auto configure_no_delayed_ack( No_Delayed_ACK no_delayed_ack_configuration ) noexcept
+        -> Result<Void, Error_Code>
+    {
+        for ( auto const hardware_socket : m_hardware_sockets ) {
+            auto result = m_driver->write_sn_mr(
+                hardware_socket.id(),
+                static_cast<SN_MR::Type>( no_delayed_ack_configuration )
+                    | static_cast<SN_MR::Type>( Protocol::TCP ) );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }     // for
+
+        return {};
+    }
+
   private:
     /**
      * \brief Hardware socket.

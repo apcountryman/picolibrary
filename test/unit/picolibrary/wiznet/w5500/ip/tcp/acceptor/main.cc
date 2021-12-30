@@ -50,6 +50,7 @@ using ::picolibrary::Testing::Unit::pseudo_random_number_generator;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::WIZnet::W5500::Mock_Driver;
 using ::picolibrary::Testing::Unit::WIZnet::W5500::IP::Mock_Network_Stack;
+using ::picolibrary::WIZnet::W5500::No_Delayed_ACK;
 using ::picolibrary::WIZnet::W5500::Socket_ID;
 using ::testing::_;
 using ::testing::AnyNumber;
@@ -503,6 +504,71 @@ TEST( interruptContext, worksProperly )
     EXPECT_EQ( result.value(), interrupt_context );
 
     EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::configure_no_delayed_ack()
+ *        properly handles an SN_MR register write error.
+ */
+TEST( configureNoDelayedAck, snmrWriteError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_mr( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = acceptor.configure_no_delayed_ack( random<No_Delayed_ACK>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::configure_no_delayed_ack()
+ *        works properly.
+ */
+TEST( configureNoDelayedAck, worksProperly )
+{
+    struct {
+        No_Delayed_ACK no_delayed_ack_configuration;
+        std::uint8_t   sn_mr;
+    } const test_cases[]{
+        // clang-format off
+
+        { No_Delayed_ACK::DISABLED, 0b0'0'0'0'0001 },
+        { No_Delayed_ACK::ENABLED,  0b0'0'1'0'0001 },
+
+        // clang-format on
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto const in_sequence = InSequence{};
+
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto const socket_ids = random_unique_socket_ids();
+
+        auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+        for ( auto const socket_id : socket_ids ) {
+            EXPECT_CALL( driver, write_sn_mr( socket_id, test_case.sn_mr ) )
+                .WillOnce( Return( Result<Void, Error_Code>{} ) );
+        } // for
+
+        EXPECT_FALSE(
+            acceptor.configure_no_delayed_ack( test_case.no_delayed_ack_configuration ).is_error() );
+
+        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    } // for
 }
 
 /**
