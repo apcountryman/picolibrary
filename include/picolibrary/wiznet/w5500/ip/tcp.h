@@ -1731,6 +1731,29 @@ class Acceptor {
         return m_driver->read_sn_ttl( m_hardware_sockets.front().id() );
     }
 
+    /**
+     * \brief Configure the socket's keepalive packet transmission period (SN_KPALVTR
+     *        register value).
+     *
+     * \param[in] keepalive_period The desired keepalive packet transmission period.
+     *
+     * \return Nothing if configuring the socket's keepalive packet transmission period
+     *         succeeded.
+     * \return An error code if configuring the socket's keepalive packet transmission
+     *         period failed.
+     */
+    auto configure_keepalive_period( std::uint8_t keepalive_period ) noexcept -> Result<Void, Error_Code>
+    {
+        for ( auto const hardware_socket : m_hardware_sockets ) {
+            auto result = m_driver->write_sn_kpalvtr( hardware_socket.id(), keepalive_period );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }     // for
+
+        return {};
+    }
+
   private:
     /**
      * \brief Hardware socket.

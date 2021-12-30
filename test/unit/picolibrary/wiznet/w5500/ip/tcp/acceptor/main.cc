@@ -803,6 +803,60 @@ TEST( timeToLive, worksProperly )
 }
 
 /**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::IP::TCP::Acceptor::configure_keepalive_period()
+ *        properly handles an SN_KPALVTR register write error.
+ */
+TEST( configureKeepalivePeriod, snkpalvtrWriteError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = acceptor.configure_keepalive_period( random<std::uint8_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::IP::TCP::Acceptor::configure_keepalive_period()
+ *        works properly.
+ */
+TEST( configureKeepalivePeriod, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const keepalive_period = random<std::uint8_t>();
+
+    for ( auto const socket_id : socket_ids ) {
+        EXPECT_CALL( driver, write_sn_kpalvtr( socket_id, keepalive_period ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+    } // for
+
+    EXPECT_FALSE( acceptor.configure_keepalive_period( keepalive_period ).is_error() );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
  * \brief Execute the picolibrary::WIZnet::W5500::IP::TCP::Acceptor unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
