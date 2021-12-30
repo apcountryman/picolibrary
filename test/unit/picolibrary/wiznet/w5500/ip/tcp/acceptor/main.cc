@@ -105,6 +105,7 @@ TEST( constructorDefault, worksProperly )
     auto const acceptor = Acceptor{};
 
     EXPECT_EQ( acceptor.state(), State::UNINITIALIZED );
+    EXPECT_TRUE( acceptor.socket_ids().empty() );
     EXPECT_EQ( acceptor.backlog(), 0 );
     EXPECT_EQ( acceptor.socket_interrupt_mask(), 0 );
 }
@@ -140,7 +141,8 @@ TEST( constructorSocketID, worksProperly )
         auto const acceptor = Acceptor{ driver, test_case.socket_id, network_stack };
 
         EXPECT_EQ( acceptor.state(), State::INITIALIZED );
-        EXPECT_EQ( acceptor.socket_ids()[ 0 ], test_case.socket_id );
+        EXPECT_EQ( acceptor.socket_ids().size(), 1 );
+        EXPECT_EQ( acceptor.socket_ids().front(), test_case.socket_id );
         EXPECT_EQ( acceptor.backlog(), 1 );
         EXPECT_EQ( acceptor.socket_interrupt_mask(), test_case.socket_interrupt_mask );
 
@@ -260,7 +262,7 @@ TEST( enableInterrupts, worksProperly )
     auto const sn_imr = random<std::uint8_t>();
     auto const mask   = random<std::uint8_t>();
 
-    EXPECT_CALL( driver, read_sn_imr( socket_ids[ 0 ] ) ).WillOnce( Return( sn_imr ) );
+    EXPECT_CALL( driver, read_sn_imr( socket_ids.front() ) ).WillOnce( Return( sn_imr ) );
     for ( auto const socket_id : socket_ids ) {
         EXPECT_CALL( driver, write_sn_imr( socket_id, sn_imr | mask ) )
             .WillOnce( Return( Result<Void, Error_Code>{} ) );
@@ -440,7 +442,7 @@ TEST( enabledInterrupts, worksProperly )
 
     auto const sn_imr = random<std::uint8_t>();
 
-    EXPECT_CALL( driver, read_sn_imr( socket_ids[ 0 ] ) ).WillOnce( Return( sn_imr ) );
+    EXPECT_CALL( driver, read_sn_imr( socket_ids.front() ) ).WillOnce( Return( sn_imr ) );
 
     auto const result = acceptor.enabled_interrupts();
 
@@ -566,6 +568,72 @@ TEST( configureNoDelayedAck, worksProperly )
 
         EXPECT_FALSE(
             acceptor.configure_no_delayed_ack( test_case.no_delayed_ack_configuration ).is_error() );
+
+        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    } // for
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::IP::TCP::Acceptor::no_delayed_ack_configuration()
+ *        properly handles an SN_MR register read error.
+ */
+TEST( noDelayedAckConfiguration, snimrReadError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto const acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sn_mr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = acceptor.no_delayed_ack_configuration();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::IP::TCP::Acceptor::no_delayed_ack_configuration()
+ *        works properly.
+ */
+TEST( noDelayedAckConfiguration, worksProperly )
+{
+    struct {
+        std::uint8_t   sn_mr_nd;
+        No_Delayed_ACK no_delayed_ack_configuration;
+    } const test_cases[]{
+        // clang-format off
+
+        { 0b0'0'0'0'0000, No_Delayed_ACK::DISABLED },
+        { 0b0'0'1'0'0000, No_Delayed_ACK::ENABLED  },
+
+        // clang-format on
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto const socket_ids = random_unique_socket_ids();
+
+        auto const acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+        EXPECT_CALL( driver, read_sn_mr( socket_ids.front() ) )
+            .WillOnce( Return( static_cast<std::uint8_t>(
+                ( random<std::uint8_t>() & 0b1'1'0'1'1111 ) | test_case.sn_mr_nd ) ) );
+
+        auto const result = acceptor.no_delayed_ack_configuration();
+
+        EXPECT_TRUE( result.is_value() );
+        EXPECT_EQ( result.value(), test_case.no_delayed_ack_configuration );
 
         EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
     } // for

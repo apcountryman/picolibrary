@@ -1594,7 +1594,7 @@ class Acceptor {
      */
     auto enabled_interrupts() const noexcept
     {
-        return m_driver->read_sn_imr( m_hardware_sockets[ 0 ].id() );
+        return m_driver->read_sn_imr( m_hardware_sockets.front().id() );
     }
 
     /**
@@ -1642,6 +1642,23 @@ class Acceptor {
         }     // for
 
         return {};
+    }
+
+    /**
+     * \brief Get the socket's no delayed ACK configuration.
+     *
+     * \return The socket's no delayed ACK configuration if getting the socket's no
+     *         delayed ACK configuration succeeded.
+     * \return An error code if getting the socket's no delayed ACK configuration failed.
+     */
+    auto no_delayed_ack_configuration() const noexcept -> Result<No_Delayed_ACK, Error_Code>
+    {
+        auto result = m_driver->read_sn_mr( m_hardware_sockets.front().id() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return static_cast<No_Delayed_ACK>( result.value() & SN_MR::Mask::ND );
     }
 
   private:
