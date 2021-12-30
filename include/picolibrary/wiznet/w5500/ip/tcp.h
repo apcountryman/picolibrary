@@ -1417,7 +1417,8 @@ class Acceptor {
         m_driver{ source.m_driver },
         m_hardware_sockets{ std::move( source.m_hardware_sockets ) },
         m_socket_interrupt_mask{ source.m_socket_interrupt_mask },
-        m_network_stack{ source.m_network_stack }
+        m_network_stack{ source.m_network_stack },
+        m_maximum_segment_size{ source.m_maximum_segment_size }
     {
         source.m_state                 = State::UNINITIALIZED;
         source.m_driver                = nullptr;
@@ -1452,6 +1453,7 @@ class Acceptor {
             m_hardware_sockets      = std::move( expression.hardware_sockets );
             m_socket_interrupt_mask = expression.m_socket_interrupt_mask;
             m_network_stack         = expression.m_network_stack;
+            m_maximum_segment_size  = expression.m_maximum_segment_size;
 
             expression.m_state                 = State::UNINITIALIZED;
             expression.m_driver                = nullptr;
@@ -1661,6 +1663,39 @@ class Acceptor {
         return static_cast<No_Delayed_ACK>( result.value() & SN_MR::Mask::ND );
     }
 
+    /**
+     * \brief Configure the socket's maximum segment size.
+     *
+     * \param[in] maximum_segment_size The desired maximum segment size.
+     *
+     * \return Nothing if configuring the socket's maximum segment size succeeded.
+     * \return An error code if configuring the socket's maximum segment size failed.
+     */
+    auto configure_maximum_segment_size( std::uint16_t maximum_segment_size ) noexcept
+        -> Result<Void, Error_Code>
+    {
+        for ( auto const hardware_socket : m_hardware_sockets ) {
+            auto result = m_driver->write_sn_mssr( hardware_socket.id(), maximum_segment_size );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }     // for
+
+        m_maximum_segment_size = maximum_segment_size;
+
+        return {};
+    }
+
+    /**
+     * \brief Get the socket's maximum segment size.
+     *
+     * \return The socket's maximum segment size.
+     */
+    constexpr auto maximum_segment_size() const noexcept
+    {
+        return m_maximum_segment_size;
+    }
+
   private:
     /**
      * \brief Hardware socket.
@@ -1828,6 +1863,11 @@ class Acceptor {
      * \brief The network stack the socket is associated with.
      */
     Network_Stack * m_network_stack{};
+
+    /**
+     * \brief The socket's maximum segment size.
+     */
+    std::uint16_t m_maximum_segment_size{ SN_MSSR::RESET };
 
     /**
      * \brief Deallocate sockets.

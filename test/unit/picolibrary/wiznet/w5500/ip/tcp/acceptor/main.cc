@@ -108,6 +108,7 @@ TEST( constructorDefault, worksProperly )
     EXPECT_TRUE( acceptor.socket_ids().empty() );
     EXPECT_EQ( acceptor.backlog(), 0 );
     EXPECT_EQ( acceptor.socket_interrupt_mask(), 0 );
+    EXPECT_EQ( acceptor.maximum_segment_size(), 0x0000 );
 }
 
 /**
@@ -145,6 +146,7 @@ TEST( constructorSocketID, worksProperly )
         EXPECT_EQ( acceptor.socket_ids().front(), test_case.socket_id );
         EXPECT_EQ( acceptor.backlog(), 1 );
         EXPECT_EQ( acceptor.socket_interrupt_mask(), test_case.socket_interrupt_mask );
+        EXPECT_EQ( acceptor.maximum_segment_size(), 0x0000 );
 
         EXPECT_CALL( network_stack, deallocate_socket( test_case.socket_id ) );
     } // for
@@ -186,6 +188,7 @@ TEST( constructorSocketIDs, worksProperly )
         EXPECT_EQ( sorted_socket_ids( acceptor.socket_ids() ), sorted_socket_ids( socket_ids ) );
         EXPECT_EQ( acceptor.backlog(), test_case.backlog );
         EXPECT_EQ( acceptor.socket_interrupt_mask(), socket_interrupt_mask( socket_ids ) );
+        EXPECT_EQ( acceptor.maximum_segment_size(), 0x0000 );
 
         for ( auto const socket_id : socket_ids ) {
             EXPECT_CALL( network_stack, deallocate_socket( socket_id ) );
@@ -637,6 +640,64 @@ TEST( noDelayedAckConfiguration, worksProperly )
 
         EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
     } // for
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::IP::TCP::Acceptor::configure_maximum_segment_size()
+ *        properly handles an SN_MSSR register write error.
+ */
+TEST( configureMaximumSegmentSize, snmssrWriteError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, write_sn_mssr( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = acceptor.configure_maximum_segment_size( random<std::uint16_t>() );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_EQ( acceptor.maximum_segment_size(), 0x0000 );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::IP::TCP::Acceptor::configure_maximum_segment_size()
+ *        works properly.
+ */
+TEST( configureMaximumSegmentSize, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const maximum_segment_size = random<std::uint16_t>();
+
+    for ( auto const socket_id : socket_ids ) {
+        EXPECT_CALL( driver, write_sn_mssr( socket_id, maximum_segment_size ) )
+            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+    } // for
+
+    EXPECT_FALSE( acceptor.configure_maximum_segment_size( maximum_segment_size ).is_error() );
+
+    EXPECT_EQ( acceptor.maximum_segment_size(), maximum_segment_size );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
 }
 
 /**
