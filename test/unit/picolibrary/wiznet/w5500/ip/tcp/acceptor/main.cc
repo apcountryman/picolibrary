@@ -22,14 +22,20 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <stdexcept>
+#include <utility>
 #include <vector>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/array.h"
 #include "picolibrary/error.h"
+#include "picolibrary/ip/tcp.h"
+#include "picolibrary/ipv4.h"
 #include "picolibrary/result.h"
 #include "picolibrary/testing/unit/error.h"
+#include "picolibrary/testing/unit/ip/tcp.h"
+#include "picolibrary/testing/unit/ipv4.h"
 #include "picolibrary/testing/unit/random.h"
 #include "picolibrary/testing/unit/wiznet/w5500.h"
 #include "picolibrary/testing/unit/wiznet/w5500/ip/network_stack.h"
@@ -43,8 +49,11 @@ namespace {
 using ::picolibrary::Array;
 using ::picolibrary::Error_Code;
 using ::picolibrary::Fixed_Capacity_Vector;
+using ::picolibrary::Generic_Error;
 using ::picolibrary::Result;
 using ::picolibrary::Void;
+using ::picolibrary::IP::TCP::Port;
+using ::picolibrary::IPv4::Address;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::pseudo_random_number_generator;
 using ::picolibrary::Testing::Unit::random;
@@ -53,21 +62,32 @@ using ::picolibrary::Testing::Unit::WIZnet::W5500::IP::Mock_Network_Stack;
 using ::picolibrary::WIZnet::W5500::No_Delayed_ACK;
 using ::picolibrary::WIZnet::W5500::Socket_ID;
 using ::testing::_;
+using ::testing::AllOf;
 using ::testing::AnyNumber;
+using ::testing::Ge;
 using ::testing::InSequence;
+using ::testing::Le;
 using ::testing::Return;
 
 using Acceptor = ::picolibrary::WIZnet::W5500::IP::TCP::Acceptor<Mock_Driver, Mock_Network_Stack>;
 using State = Acceptor::State;
 
-auto random_unique_socket_ids( std::uint_fast8_t backlog = random<std::uint_fast8_t>( 1, 8 ) )
+auto random_unique_socket_ids( std::uint_fast8_t backlog = random<std::uint_fast8_t>( 1, 8 ), std::uint_fast8_t available_sockets = 8 )
 {
+    if ( available_sockets > 8 ) {
+        throw std::invalid_argument{ "available_sockets > 8" };
+    } // if
+
+    if ( backlog > available_sockets ) {
+        throw std::invalid_argument{ "backlog > available_sockets" };
+    } // if
+
     auto socket_ids = Array<Socket_ID, 8>{
         Socket_ID::_0, Socket_ID::_1, Socket_ID::_2, Socket_ID::_3,
         Socket_ID::_4, Socket_ID::_5, Socket_ID::_6, Socket_ID::_7,
     };
 
-    std::shuffle( socket_ids.begin(), socket_ids.end(), pseudo_random_number_generator() );
+    std::shuffle( socket_ids.begin(), socket_ids.begin() + available_sockets, pseudo_random_number_generator() );
 
     return std::vector<Socket_ID>{ socket_ids.begin(), socket_ids.begin() + backlog };
 }
@@ -93,6 +113,14 @@ auto socket_interrupt_mask( std::vector<Socket_ID> const & socket_ids )
     } // for
 
     return mask;
+}
+
+auto random_unique_addresses()
+{
+    auto const a = random<Address::Unsigned_Integer>();
+    auto const b = random<Address::Unsigned_Integer>();
+
+    return std::pair<Address, Address>{ a, b != a ? b : b ^ random<Address::Unsigned_Integer>( 1 ) };
 }
 
 } // namespace
@@ -904,6 +932,668 @@ TEST( keepalivePeriod, worksProperly )
     EXPECT_EQ( result.value(), sn_kpalvtr );
 
     EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::bind() properly handles an
+ *        attempt to bind a socket that is not in a state that allows it to be bound.
+ */
+TEST( bind, invalidState )
+{
+    struct {
+        State state;
+    } const test_cases[]{
+        // clang-format off
+
+        { State::UNINITIALIZED },
+        { State::BOUND         },
+        { State::LISTENING     },
+
+        // clang-format on
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto const socket_ids = random_unique_socket_ids();
+
+        auto acceptor = Acceptor{ test_case.state, driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+        auto const result = acceptor.bind();
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), Generic_Error::LOGIC_ERROR );
+
+        EXPECT_EQ( acceptor.state(), test_case.state );
+
+        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    } // for
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::bind() properly handles a
+ *        SIPR register read error.
+ */
+TEST( bind, siprReadError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( error ) );
+
+    auto const result = acceptor.bind( { random<Address>( 1 ), random<Port>() } );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_EQ( acceptor.state(), State::INITIALIZED );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::bind() properly handles an
+ *        attempt to bind the socket to an invalid endpoint.
+ */
+TEST( bind, invalidEndpoint )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const [ address, endpoint_address ] = random_unique_addresses();
+
+    EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( address.as_byte_array() ) );
+
+    auto const result = acceptor.bind( { endpoint_address, random<Port>() } );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), Generic_Error::INVALID_ARGUMENT );
+
+    EXPECT_EQ( acceptor.state(), State::INITIALIZED );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::bind() properly handles
+ *        ephemeral port allocation not being enabled.
+ */
+TEST( bind, ephemeralPortAllocationNotEnabled )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    EXPECT_CALL( network_stack, tcp_ephemeral_port_allocation_enabled() ).WillOnce( Return( false ) );
+
+    auto const result = acceptor.bind();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), Generic_Error::EPHEMERAL_PORTS_EXHAUSTED );
+
+    EXPECT_EQ( acceptor.state(), State::INITIALIZED );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::bind() properly handles an
+ *        SN_MR register read error.
+ */
+TEST( bind, snmrReadError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( driver, read_sn_mr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = acceptor.bind( random<Port>( 1 ) );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_EQ( acceptor.state(), State::INITIALIZED );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::bind() properly handles an
+ *        SN_PORT register read error.
+ */
+TEST( bind, snportReadError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = acceptor.bind( random<Port>( 1 ) );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_EQ( acceptor.state(), State::INITIALIZED );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::bind() properly handles
+ *        ephemeral port exhaustion.
+ */
+TEST( bind, ephemeralPortsExhausted )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const ephemeral_port = random<Port>( 1 );
+
+    EXPECT_CALL( network_stack, tcp_ephemeral_port_allocation_enabled() ).WillOnce( Return( true ) );
+    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( driver, read_sn_mr( _ ) )
+        .WillRepeatedly( Return( static_cast<std::uint8_t>(
+            ( random<std::uint8_t>() & 0b1'1'1'1'0000 ) | 0b0001 ) ) );
+    EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( ephemeral_port.as_unsigned_integer() ) );
+    EXPECT_CALL( network_stack, tcp_ephemeral_port_min() ).WillOnce( Return( ephemeral_port ) );
+    EXPECT_CALL( network_stack, tcp_ephemeral_port_max() ).WillOnce( Return( ephemeral_port ) );
+
+    auto const result = acceptor.bind();
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), Generic_Error::EPHEMERAL_PORTS_EXHAUSTED );
+
+    EXPECT_EQ( acceptor.state(), State::INITIALIZED );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::bind() properly handles
+ *        the requested endpoint being in use.
+ */
+TEST( bind, endpointInUse )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const port = random<Port>( 1 );
+
+    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( driver, read_sn_mr( _ ) )
+        .WillRepeatedly( Return( static_cast<std::uint8_t>(
+            ( random<std::uint8_t>() & 0b1'1'1'1'0000 ) | 0b0001 ) ) );
+    EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( port.as_unsigned_integer() ) );
+
+    auto const result = acceptor.bind( port );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), Generic_Error::ENDPOINT_IN_USE );
+
+    EXPECT_EQ( acceptor.state(), State::INITIALIZED );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::bind() properly handles an
+ *        SN_PORT register write error.
+ */
+TEST( bind, snportWriteError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( std::uint16_t{ 0 } ) );
+    EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = acceptor.bind( random<Port>( 1 ) );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_EQ( acceptor.state(), State::INITIALIZED );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::bind() properly handles an
+ *        SN_CR register write error.
+ */
+TEST( bind, sncrWriteError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( std::uint16_t{ 0 } ) );
+    EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( error ) );
+
+    auto const result = acceptor.bind( random<Port>( 1 ) );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_EQ( acceptor.state(), State::INITIALIZED );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::bind() properly handles an
+ *        SN_CR register read error.
+ */
+TEST( bind, sncrReadError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( std::uint16_t{ 0 } ) );
+    EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = acceptor.bind( random<Port>( 1 ) );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_EQ( acceptor.state(), State::INITIALIZED );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::bind() properly handles an
+ *        SN_SR register read error.
+ */
+TEST( bind, snsrReadError )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_ids = random_unique_socket_ids();
+
+    auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( std::uint16_t{ 0 } ) );
+    EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( error ) );
+
+    auto const result = acceptor.bind( random<Port>( 1 ) );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_EQ( acceptor.state(), State::INITIALIZED );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::bind() properly handles an
+ *        invalid SN_SR register value.
+ */
+TEST( bind, invalidSNSRValue )
+{
+    struct {
+        std::uint8_t sn_sr;
+    } const test_cases[]{
+        // clang-format off
+
+        { random<std::uint8_t>( 0x01, 0x12 ) },
+        { random<std::uint8_t>( 0x14       ) },
+
+        // clang-format on
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto const socket_ids = random_unique_socket_ids();
+
+        auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+        auto const error = random<Mock_Error>();
+
+        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+        EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
+        EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( std::uint16_t{ 0 } ) );
+        EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, write_sn_cr( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( test_case.sn_sr ) );
+        EXPECT_CALL( network_stack, nonresponsive_device_error() ).WillOnce( Return( error ) );
+
+        auto const result = acceptor.bind( random<Port>( 1 ) );
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), error );
+
+        EXPECT_EQ( acceptor.state(), State::INITIALIZED );
+
+        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    } // for
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::bind() works properly.
+ */
+TEST( bind, worksProperly )
+{
+    auto const generate_sn_port = []( std::uint8_t sn_mr, Port reserved_port ) {
+        auto const sn_port = random<std::uint16_t>();
+
+        return ( sn_mr & 0b0'0'0'0'1111 ) == 0b0001 and sn_port == reserved_port.as_unsigned_integer()
+                   ? static_cast<std::uint16_t>( sn_port ^ random<std::uint16_t>( 1 ) )
+                   : sn_port;
+    };
+
+    {
+        auto const in_sequence = InSequence{};
+
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto const available_sockets = random<std::uint_fast8_t>( 1, 8 );
+
+        auto const socket_ids = random_unique_socket_ids(
+            random<std::uint_fast8_t>( 1, available_sockets ), available_sockets );
+
+        auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+        auto const ephemeral_port_min = random<Port>( 1 );
+        auto const ephemeral_port_max = random<Port>( ephemeral_port_min );
+        auto const reserved_ephemeral_port = random<Port>( ephemeral_port_min, ephemeral_port_max );
+
+        EXPECT_CALL( network_stack, tcp_ephemeral_port_allocation_enabled() ).WillOnce( Return( true ) );
+        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( available_sockets ) );
+        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+            auto const sn_mr   = random<std::uint8_t>();
+            auto const sn_port = generate_sn_port( sn_mr, reserved_ephemeral_port );
+
+            EXPECT_CALL( driver, read_sn_mr( static_cast<Socket_ID>( socket << 5 ) ) ).WillOnce( Return( sn_mr ) );
+            EXPECT_CALL( driver, read_sn_port( static_cast<Socket_ID>( socket << 5 ) ) ).WillOnce( Return( sn_port ) );
+        } // for
+        EXPECT_CALL( network_stack, tcp_ephemeral_port_min() ).WillOnce( Return( ephemeral_port_min ) );
+        EXPECT_CALL( network_stack, tcp_ephemeral_port_max() ).WillOnce( Return( ephemeral_port_max ) );
+        for ( auto const socket_id : socket_ids ) {
+            EXPECT_CALL(
+                driver,
+                write_sn_port(
+                    socket_id,
+                    AllOf(
+                        Ge( ephemeral_port_min.as_unsigned_integer() ),
+                        Le( ephemeral_port_max.as_unsigned_integer() ) ) ) )
+                .WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, write_sn_cr( socket_id, 0x01 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
+            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( std::uint8_t{ 0x13 } ) );
+        } // for
+
+        EXPECT_FALSE( acceptor.bind().is_error() );
+
+        EXPECT_EQ( acceptor.state(), State::BOUND );
+
+        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    }
+
+    {
+        auto const in_sequence = InSequence{};
+
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto const available_sockets = random<std::uint_fast8_t>( 1, 8 );
+
+        auto const socket_ids = random_unique_socket_ids(
+            random<std::uint_fast8_t>( 1, available_sockets ), available_sockets );
+
+        auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+        auto const ephemeral_port_min = random<Port>( 1 );
+        auto const ephemeral_port_max = random<Port>( ephemeral_port_min );
+        auto const reserved_ephemeral_port = random<Port>( ephemeral_port_min, ephemeral_port_max );
+
+        EXPECT_CALL( network_stack, tcp_ephemeral_port_allocation_enabled() ).WillOnce( Return( true ) );
+        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( available_sockets ) );
+        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+            auto const sn_mr   = random<std::uint8_t>();
+            auto const sn_port = generate_sn_port( sn_mr, reserved_ephemeral_port );
+
+            EXPECT_CALL( driver, read_sn_mr( static_cast<Socket_ID>( socket << 5 ) ) ).WillOnce( Return( sn_mr ) );
+            EXPECT_CALL( driver, read_sn_port( static_cast<Socket_ID>( socket << 5 ) ) ).WillOnce( Return( sn_port ) );
+        } // for
+        EXPECT_CALL( network_stack, tcp_ephemeral_port_min() ).WillOnce( Return( ephemeral_port_min ) );
+        EXPECT_CALL( network_stack, tcp_ephemeral_port_max() ).WillOnce( Return( ephemeral_port_max ) );
+        for ( auto const socket_id : socket_ids ) {
+            EXPECT_CALL(
+                driver,
+                write_sn_port(
+                    socket_id,
+                    AllOf(
+                        Ge( ephemeral_port_min.as_unsigned_integer() ),
+                        Le( ephemeral_port_max.as_unsigned_integer() ) ) ) )
+                .WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, write_sn_cr( socket_id, 0x01 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
+            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( std::uint8_t{ 0x13 } ) );
+        } // for
+
+        EXPECT_FALSE( acceptor.bind( Port{} ).is_error() );
+
+        EXPECT_EQ( acceptor.state(), State::BOUND );
+
+        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    }
+
+    {
+        auto const in_sequence = InSequence{};
+
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto const available_sockets = random<std::uint_fast8_t>( 1, 8 );
+
+        auto const socket_ids = random_unique_socket_ids(
+            random<std::uint_fast8_t>( 1, available_sockets ), available_sockets );
+
+        auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+        auto const port = random<Port>( 1 );
+
+        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( available_sockets ) );
+        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+            auto const sn_mr   = random<std::uint8_t>();
+            auto const sn_port = generate_sn_port( sn_mr, port );
+
+            EXPECT_CALL( driver, read_sn_mr( static_cast<Socket_ID>( socket << 5 ) ) ).WillOnce( Return( sn_mr ) );
+            EXPECT_CALL( driver, read_sn_port( static_cast<Socket_ID>( socket << 5 ) ) ).WillOnce( Return( sn_port ) );
+        } // for
+        for ( auto const socket_id : socket_ids ) {
+            EXPECT_CALL( driver, write_sn_port( socket_id, port.as_unsigned_integer() ) )
+                .WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, write_sn_cr( socket_id, 0x01 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
+            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( std::uint8_t{ 0x13 } ) );
+        } // for
+
+        EXPECT_FALSE( acceptor.bind( port ).is_error() );
+
+        EXPECT_EQ( acceptor.state(), State::BOUND );
+
+        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    }
+
+    {
+        auto const in_sequence = InSequence{};
+
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto const available_sockets = random<std::uint_fast8_t>( 1, 8 );
+
+        auto const socket_ids = random_unique_socket_ids(
+            random<std::uint_fast8_t>( 1, available_sockets ), available_sockets );
+
+        auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+        auto const address            = random<Address>( 1 );
+        auto const ephemeral_port_min = random<Port>( 1 );
+        auto const ephemeral_port_max = random<Port>( ephemeral_port_min );
+        auto const reserved_ephemeral_port = random<Port>( ephemeral_port_min, ephemeral_port_max );
+
+        EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( address.as_byte_array() ) );
+        EXPECT_CALL( network_stack, tcp_ephemeral_port_allocation_enabled() ).WillOnce( Return( true ) );
+        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( available_sockets ) );
+        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+            auto const sn_mr   = random<std::uint8_t>();
+            auto const sn_port = generate_sn_port( sn_mr, reserved_ephemeral_port );
+
+            EXPECT_CALL( driver, read_sn_mr( static_cast<Socket_ID>( socket << 5 ) ) ).WillOnce( Return( sn_mr ) );
+            EXPECT_CALL( driver, read_sn_port( static_cast<Socket_ID>( socket << 5 ) ) ).WillOnce( Return( sn_port ) );
+        } // for
+        EXPECT_CALL( network_stack, tcp_ephemeral_port_min() ).WillOnce( Return( ephemeral_port_min ) );
+        EXPECT_CALL( network_stack, tcp_ephemeral_port_max() ).WillOnce( Return( ephemeral_port_max ) );
+        for ( auto const socket_id : socket_ids ) {
+            EXPECT_CALL(
+                driver,
+                write_sn_port(
+                    socket_id,
+                    AllOf(
+                        Ge( ephemeral_port_min.as_unsigned_integer() ),
+                        Le( ephemeral_port_max.as_unsigned_integer() ) ) ) )
+                .WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, write_sn_cr( socket_id, 0x01 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
+            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( std::uint8_t{ 0x13 } ) );
+        } // for
+
+        EXPECT_FALSE( acceptor.bind( { address, Port{} } ).is_error() );
+
+        EXPECT_EQ( acceptor.state(), State::BOUND );
+
+        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    }
+
+    {
+        auto const in_sequence = InSequence{};
+
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto const available_sockets = random<std::uint_fast8_t>( 1, 8 );
+
+        auto const socket_ids = random_unique_socket_ids(
+            random<std::uint_fast8_t>( 1, available_sockets ), available_sockets );
+
+        auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
+
+        auto const address = random<Address>( 1 );
+        auto const port    = random<Port>( 1 );
+
+        EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( address.as_byte_array() ) );
+        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( available_sockets ) );
+        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+            auto const sn_mr   = random<std::uint8_t>();
+            auto const sn_port = generate_sn_port( sn_mr, port );
+
+            EXPECT_CALL( driver, read_sn_mr( static_cast<Socket_ID>( socket << 5 ) ) ).WillOnce( Return( sn_mr ) );
+            EXPECT_CALL( driver, read_sn_port( static_cast<Socket_ID>( socket << 5 ) ) ).WillOnce( Return( sn_port ) );
+        } // for
+        for ( auto const socket_id : socket_ids ) {
+            EXPECT_CALL( driver, write_sn_port( socket_id, port.as_unsigned_integer() ) )
+                .WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, write_sn_cr( socket_id, 0x01 ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
+            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( std::uint8_t{ 0x00 } ) );
+            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( std::uint8_t{ 0x13 } ) );
+        } // for
+
+        EXPECT_FALSE( acceptor.bind( { address, port } ).is_error() );
+
+        EXPECT_EQ( acceptor.state(), State::BOUND );
+
+        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    }
 }
 
 /**

@@ -1407,6 +1407,32 @@ class Acceptor {
     {
     }
 
+#ifdef PICOLIBRARY_ENABLE_UNIT_TESTING
+    /**
+     * \brief Constructor.
+     *
+     * \tparam Iterator Socket IDs interator.
+     *
+     * \param[in] state The socket's initial state.
+     * \param[in] driver The driver for the W5500 the socket is associated with.
+     * \param[in] begin The beginning of the socket's socket IDs.
+     * \param[in] end The end of the socket's socket IDs.
+     * \param[in] network_stack The network stack the socket is associated with.
+     *
+     * \attention The range [begin,end) must not be empty.
+     */
+    template<typename Iterator>
+    constexpr Acceptor( State state, Driver & driver, Iterator begin, Iterator end, Network_Stack & network_stack ) noexcept
+        :
+        m_state{ state },
+        m_driver{ &driver },
+        m_hardware_sockets{ begin, end },
+        m_socket_interrupt_mask{ socket_interrupt_mask( begin, end ) },
+        m_network_stack{ &network_stack }
+    {
+    }
+#endif // PICOLIBRARY_ENABLE_UNIT_TESTING
+
     /**
      * \brief Constructor.
      *
@@ -1766,6 +1792,171 @@ class Acceptor {
     auto keepalive_period() const noexcept
     {
         return m_driver->read_sn_kpalvtr( m_hardware_sockets.front().id() );
+    }
+
+    /**
+     * \brief Bind the socket to a specific local endpoint.
+     *
+     * \param[in] endpoint The local endpoint to bind the socket to.
+     *
+     * \return Nothing if binding the socket to the local endpoint succeeded.
+     * \return picolibrary::Generic_Error::INVALID_ENDPOINT if endpoint is not a valid
+     *         local endpoint.
+     * \return picolibrary::Generic_Error::LOGIC_ERROR if the socket is not in a state
+     *         that allows it to be bound to a local endpoint.
+     * \return picolibrary::Generic_Error::LOGIC_ERROR if the socket has already been
+     *         bound to a local endpoint.
+     * \return picolibrary::Generic_Error::ENDPOINT_IN_USE if endpoint is already in use.
+     * \return picolibrary::Generic_Error::EPHEMERAL_PORTS_EXHAUSTED if an ephemeral port
+     *         was requested an no ephemeral ports are available.
+     * \return An error code if binding the socket to the local endpoint failed for any
+     *         other reason.
+     */
+    auto bind( ::picolibrary::IP::TCP::Endpoint const & endpoint = ::picolibrary::IP::TCP::Endpoint{} ) noexcept
+        -> Result<Void, Error_Code>
+    {
+        if ( m_state != State::INITIALIZED ) {
+            return Generic_Error::LOGIC_ERROR;
+        } // if
+
+        switch ( endpoint.address().version() ) {
+            case ::picolibrary::IP::Version::UNSPECIFIED: break;
+            case ::picolibrary::IP::Version::_4: break;
+            default: return Generic_Error::INVALID_ARGUMENT;
+        } // switch
+
+        if ( not endpoint.address().is_any() ) {
+            auto result = m_driver->read_sipr();
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+
+            if ( endpoint.address().ipv4().as_byte_array() != result.value() ) {
+                return Generic_Error::INVALID_ARGUMENT;
+            } // if
+        }     // if
+
+        if ( endpoint.port().is_any()
+             and not m_network_stack->tcp_ephemeral_port_allocation_enabled() ) {
+            return Generic_Error::EPHEMERAL_PORTS_EXHAUSTED;
+        } // if
+
+        SN_PORT::Type used_ports[ SOCKETS ];
+
+        auto const available_sockets = m_network_stack->available_sockets();
+
+        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+            auto const socket_id = static_cast<Socket_ID>( socket << Control_Byte::Bit::SOCKET );
+
+            Protocol protocol;
+            {
+                auto result = m_driver->read_sn_mr( socket_id );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+
+                protocol = static_cast<Protocol>( result.value() & SN_MR::Mask::P );
+            }
+
+            SN_PORT::Type port;
+            {
+                auto result = m_driver->read_sn_port( socket_id );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+
+                port = result.value();
+            }
+
+            used_ports[ socket ] = protocol == Protocol::TCP ? port : 0;
+        } // for
+
+        auto const is_available = [ &used_ports, available_sockets ]( SN_PORT::Type port ) noexcept -> bool {
+            for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+                if ( used_ports[ socket ] == port ) {
+                    return false;
+                } // if
+            }     // for
+
+            return true;
+        };
+
+        SN_PORT::Type port;
+
+        if ( endpoint.port().is_any() ) {
+            auto const ephemeral_port_min = m_network_stack->tcp_ephemeral_port_min().as_unsigned_integer();
+            auto const ephemeral_port_max = m_network_stack->tcp_ephemeral_port_max().as_unsigned_integer();
+
+            port = 0;
+
+            for ( auto ephemeral_port = ephemeral_port_min;
+                  ephemeral_port >= ephemeral_port_min and ephemeral_port <= ephemeral_port_max;
+                  ++ephemeral_port ) {
+                if ( is_available( ephemeral_port ) ) {
+                    port = ephemeral_port;
+
+                    break;
+                } // if
+            }     // for
+
+            if ( not port ) {
+                return Generic_Error::EPHEMERAL_PORTS_EXHAUSTED;
+            } // if
+        } else {
+            port = endpoint.port().as_unsigned_integer();
+
+            if ( not is_available( port ) ) {
+                return Generic_Error::ENDPOINT_IN_USE;
+            } // if
+        }     // else
+
+        for ( auto const hardware_socket : m_hardware_sockets ) {
+            {
+                auto result = m_driver->write_sn_port( hardware_socket.id(), port );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+
+            {
+                auto result = m_driver->write_sn_cr(
+                    hardware_socket.id(), static_cast<SN_CR::Type>( Command::OPEN ) );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+            }
+
+            for ( ;; ) {
+                auto result = m_driver->read_sn_cr( hardware_socket.id() );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+
+                if ( not result.value() ) {
+                    break;
+                } // if
+            }     // for
+
+            for ( ;; ) {
+                auto result = m_driver->read_sn_sr( hardware_socket.id() );
+                if ( result.is_error() ) {
+                    return result.error();
+                } // if
+
+                auto const socket_status = static_cast<Socket_Status>( result.value() );
+                if ( socket_status == Socket_Status::CLOSED ) {
+                    continue;
+                } else if ( socket_status == Socket_Status::OPENED_TCP ) {
+                    break;
+                } else {
+                    return m_network_stack->nonresponsive_device_error();
+                } // else
+            }     // for
+        }         // for
+
+        m_state = State::BOUND;
+
+        return {};
     }
 
   private:
