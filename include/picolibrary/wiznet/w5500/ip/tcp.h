@@ -1815,6 +1815,9 @@ class Acceptor {
     auto bind( ::picolibrary::IP::TCP::Endpoint const & endpoint = ::picolibrary::IP::TCP::Endpoint{} ) noexcept
         -> Result<Void, Error_Code>
     {
+        // #lizard forgives the length
+        // #lizard forgives the complexity
+
         if ( m_state != State::INITIALIZED ) {
             return Generic_Error::LOGIC_ERROR;
         } // if
