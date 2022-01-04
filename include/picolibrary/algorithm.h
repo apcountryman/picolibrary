@@ -44,6 +44,23 @@ struct Discard_Functor {
 };
 
 /**
+ * \brief Get the minimum of two values.
+ *
+ * \tparam T The type to compare.
+ *
+ * \param[in] a The first of the two values to compare.
+ * \param[in] b The second of the two values to compare.
+ *
+ * \return The minimum of the two values. If the two values are equal, the first argument
+ *         will be returned.
+ */
+template<typename T>
+constexpr auto const & min( T const & a, T const & b ) noexcept
+{
+    return b < a ? b : a;
+}
+
+/**
  * Check if two ranges are equal.
  *
  * \tparam Iterator_1 Range iterator for the first of the two ranges to be compared.
