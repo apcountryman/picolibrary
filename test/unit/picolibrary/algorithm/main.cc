@@ -106,6 +106,35 @@ TEST( min, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::max() works properly.
+ */
+TEST( max, worksProperly )
+{
+    {
+        auto const a = random<std::uint_fast8_t>(
+            0, std::numeric_limits<std::uint_fast8_t>::max() - 1 );
+        auto const b = random<std::uint_fast8_t>( a + 1 );
+
+        EXPECT_THAT( ::picolibrary::max( a, b ), Ref( b ) );
+    }
+
+    {
+        auto const b = random<std::uint_fast8_t>(
+            0, std::numeric_limits<std::uint_fast8_t>::max() - 1 );
+        auto const a = random<std::uint_fast8_t>( b + 1 );
+
+        EXPECT_THAT( ::picolibrary::max( a, b ), Ref( a ) );
+    }
+
+    {
+        auto const a = random<std::uint_fast8_t>();
+        auto const b = a;
+
+        EXPECT_THAT( ::picolibrary::max( a, b ), Ref( a ) );
+    }
+}
+
+/**
  * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2 ),
  *        picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2 ),
  *        picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Predicate ), and
