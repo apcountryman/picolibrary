@@ -22,6 +22,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <limits>
 #include <type_traits>
 #include <utility>
 #include <vector>
@@ -74,6 +75,64 @@ auto random_unique_containers( std::size_t size = random<std::uint_fast8_t>( 1 )
 }
 
 } // namespace
+
+/**
+ * \brief Verify picolibrary::min() works properly.
+ */
+TEST( min, worksProperly )
+{
+    {
+        auto const a = random<std::uint_fast8_t>(
+            0, std::numeric_limits<std::uint_fast8_t>::max() - 1 );
+        auto const b = random<std::uint_fast8_t>( a + 1 );
+
+        EXPECT_THAT( ::picolibrary::min( a, b ), Ref( a ) );
+    }
+
+    {
+        auto const b = random<std::uint_fast8_t>(
+            0, std::numeric_limits<std::uint_fast8_t>::max() - 1 );
+        auto const a = random<std::uint_fast8_t>( b + 1 );
+
+        EXPECT_THAT( ::picolibrary::min( a, b ), Ref( b ) );
+    }
+
+    {
+        auto const a = random<std::uint_fast8_t>();
+        auto const b = a;
+
+        EXPECT_THAT( ::picolibrary::min( a, b ), Ref( a ) );
+    }
+}
+
+/**
+ * \brief Verify picolibrary::max() works properly.
+ */
+TEST( max, worksProperly )
+{
+    {
+        auto const a = random<std::uint_fast8_t>(
+            0, std::numeric_limits<std::uint_fast8_t>::max() - 1 );
+        auto const b = random<std::uint_fast8_t>( a + 1 );
+
+        EXPECT_THAT( ::picolibrary::max( a, b ), Ref( b ) );
+    }
+
+    {
+        auto const b = random<std::uint_fast8_t>(
+            0, std::numeric_limits<std::uint_fast8_t>::max() - 1 );
+        auto const a = random<std::uint_fast8_t>( b + 1 );
+
+        EXPECT_THAT( ::picolibrary::max( a, b ), Ref( a ) );
+    }
+
+    {
+        auto const a = random<std::uint_fast8_t>();
+        auto const b = a;
+
+        EXPECT_THAT( ::picolibrary::max( a, b ), Ref( a ) );
+    }
+}
 
 /**
  * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2 ),
