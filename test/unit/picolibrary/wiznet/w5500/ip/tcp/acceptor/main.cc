@@ -62,6 +62,7 @@ using ::picolibrary::Testing::Unit::WIZnet::W5500::IP::Mock_Network_Stack;
 using ::picolibrary::WIZnet::W5500::No_Delayed_ACK;
 using ::picolibrary::WIZnet::W5500::Socket_ID;
 using ::testing::_;
+using ::testing::A;
 using ::testing::AllOf;
 using ::testing::AnyNumber;
 using ::testing::Ge;
@@ -72,14 +73,14 @@ using ::testing::Return;
 using Acceptor = ::picolibrary::WIZnet::W5500::IP::TCP::Acceptor<Mock_Driver, Mock_Network_Stack>;
 using State = Acceptor::State;
 
-auto random_unique_socket_ids( std::uint_fast8_t backlog = random<std::uint_fast8_t>( 1, 8 ), std::uint_fast8_t available_sockets = 8 )
+auto random_unique_socket_ids( std::uint_fast8_t backlog = random<std::uint_fast8_t>( 1, 8 ), std::uint_fast8_t sockets = 8 )
 {
-    if ( available_sockets > 8 ) {
-        throw std::invalid_argument{ "available_sockets > 8" };
+    if ( sockets > 8 ) {
+        throw std::invalid_argument{ "sockets > 8" };
     } // if
 
-    if ( backlog > available_sockets ) {
-        throw std::invalid_argument{ "backlog > available_sockets" };
+    if ( backlog > sockets ) {
+        throw std::invalid_argument{ "backlog > sockets" };
     } // if
 
     auto socket_ids = Array<Socket_ID, 8>{
@@ -87,7 +88,7 @@ auto random_unique_socket_ids( std::uint_fast8_t backlog = random<std::uint_fast
         Socket_ID::_4, Socket_ID::_5, Socket_ID::_6, Socket_ID::_7,
     };
 
-    std::shuffle( socket_ids.begin(), socket_ids.begin() + available_sockets, pseudo_random_number_generator() );
+    std::shuffle( socket_ids.begin(), socket_ids.begin() + sockets, pseudo_random_number_generator() );
 
     return std::vector<Socket_ID>{ socket_ids.begin(), socket_ids.begin() + backlog };
 }
@@ -246,7 +247,7 @@ TEST( enableInterrupts, snimrReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -272,7 +273,7 @@ TEST( enableInterrupts, snimrWriteError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -301,7 +302,7 @@ TEST( enableInterrupts, worksProperly )
 
     EXPECT_FALSE( acceptor.enable_interrupts( mask ).is_error() );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -326,7 +327,7 @@ TEST( disableInterrupts, snimrReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -352,7 +353,7 @@ TEST( disableInterrupts, snimrWriteError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -381,7 +382,7 @@ TEST( disableInterrupts, worksProperly )
 
     EXPECT_FALSE( acceptor.disable_interrupts( mask ).is_error() );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -406,7 +407,7 @@ TEST( disableAllInterrupts, snimrWriteError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -430,7 +431,7 @@ TEST( disableAllInterrupts, worksProperly )
 
     EXPECT_FALSE( acceptor.disable_interrupts().is_error() );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -455,7 +456,7 @@ TEST( enabledInterrupts, snimrReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -480,7 +481,7 @@ TEST( enabledInterrupts, worksProperly )
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), sn_imr );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -505,7 +506,7 @@ TEST( interruptContext, snirReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -536,7 +537,7 @@ TEST( interruptContext, worksProperly )
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), interrupt_context );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -561,7 +562,7 @@ TEST( configureNoDelayedAck, snmrWriteError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -600,7 +601,7 @@ TEST( configureNoDelayedAck, worksProperly )
         EXPECT_FALSE(
             acceptor.configure_no_delayed_ack( test_case.no_delayed_ack_configuration ).is_error() );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -627,7 +628,7 @@ TEST( noDelayedAckConfiguration, snimrReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -666,7 +667,7 @@ TEST( noDelayedAckConfiguration, worksProperly )
         EXPECT_TRUE( result.is_value() );
         EXPECT_EQ( result.value(), test_case.no_delayed_ack_configuration );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -695,7 +696,7 @@ TEST( configureMaximumSegmentSize, snmssrWriteError )
 
     EXPECT_EQ( acceptor.maximum_segment_size(), 0x0000 );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -725,7 +726,7 @@ TEST( configureMaximumSegmentSize, worksProperly )
 
     EXPECT_EQ( acceptor.maximum_segment_size(), maximum_segment_size );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -750,7 +751,7 @@ TEST( configureTimeToLive, snttlWriteError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -777,7 +778,7 @@ TEST( configureTimeToLive, worksProperly )
 
     EXPECT_FALSE( acceptor.configure_time_to_live( time_to_live ).is_error() );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -802,7 +803,7 @@ TEST( timeToLive, snttlReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -827,7 +828,7 @@ TEST( timeToLive, worksProperly )
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), sn_ttl );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -853,7 +854,7 @@ TEST( configureKeepalivePeriod, snkpalvtrWriteError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -881,7 +882,7 @@ TEST( configureKeepalivePeriod, worksProperly )
 
     EXPECT_FALSE( acceptor.configure_keepalive_period( keepalive_period ).is_error() );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -906,7 +907,7 @@ TEST( keepalivePeriod, snkpalvtrReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -931,7 +932,7 @@ TEST( keepalivePeriod, worksProperly )
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), sn_kpalvtr );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -967,7 +968,7 @@ TEST( bind, invalidState )
 
         EXPECT_EQ( acceptor.state(), test_case.state );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -995,7 +996,7 @@ TEST( bind, siprReadError )
 
     EXPECT_EQ( acceptor.state(), State::INITIALIZED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1022,7 +1023,7 @@ TEST( bind, invalidEndpoint )
 
     EXPECT_EQ( acceptor.state(), State::INITIALIZED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1047,7 +1048,7 @@ TEST( bind, ephemeralPortAllocationNotEnabled )
 
     EXPECT_EQ( acceptor.state(), State::INITIALIZED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1065,7 +1066,7 @@ TEST( bind, snmrReadError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) ).WillOnce( Return( error ) );
 
     auto const result = acceptor.bind( random<Port>( 1 ) );
@@ -1075,7 +1076,7 @@ TEST( bind, snmrReadError )
 
     EXPECT_EQ( acceptor.state(), State::INITIALIZED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1093,7 +1094,7 @@ TEST( bind, snportReadError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
     EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( error ) );
 
@@ -1104,7 +1105,7 @@ TEST( bind, snportReadError )
 
     EXPECT_EQ( acceptor.state(), State::INITIALIZED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1123,7 +1124,7 @@ TEST( bind, ephemeralPortsExhausted )
     auto const ephemeral_port = random<Port>( 1 );
 
     EXPECT_CALL( network_stack, tcp_ephemeral_port_allocation_enabled() ).WillOnce( Return( true ) );
-    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) )
         .WillRepeatedly( Return( static_cast<std::uint8_t>(
             ( random<std::uint8_t>() & 0b1'1'1'1'0000 ) | 0b0001 ) ) );
@@ -1138,7 +1139,7 @@ TEST( bind, ephemeralPortsExhausted )
 
     EXPECT_EQ( acceptor.state(), State::INITIALIZED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1156,7 +1157,7 @@ TEST( bind, endpointInUse )
 
     auto const port = random<Port>( 1 );
 
-    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) )
         .WillRepeatedly( Return( static_cast<std::uint8_t>(
             ( random<std::uint8_t>() & 0b1'1'1'1'0000 ) | 0b0001 ) ) );
@@ -1169,7 +1170,7 @@ TEST( bind, endpointInUse )
 
     EXPECT_EQ( acceptor.state(), State::INITIALIZED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1187,7 +1188,7 @@ TEST( bind, snportWriteError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
     EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( std::uint16_t{ 0 } ) );
     EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( error ) );
@@ -1199,7 +1200,7 @@ TEST( bind, snportWriteError )
 
     EXPECT_EQ( acceptor.state(), State::INITIALIZED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1217,7 +1218,7 @@ TEST( bind, sncrWriteError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
     EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( std::uint16_t{ 0 } ) );
     EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
@@ -1230,7 +1231,7 @@ TEST( bind, sncrWriteError )
 
     EXPECT_EQ( acceptor.state(), State::INITIALIZED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1248,7 +1249,7 @@ TEST( bind, sncrReadError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
     EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( std::uint16_t{ 0 } ) );
     EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
@@ -1262,7 +1263,7 @@ TEST( bind, sncrReadError )
 
     EXPECT_EQ( acceptor.state(), State::INITIALIZED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1280,7 +1281,7 @@ TEST( bind, snsrReadError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
     EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( std::uint16_t{ 0 } ) );
     EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
@@ -1295,7 +1296,7 @@ TEST( bind, snsrReadError )
 
     EXPECT_EQ( acceptor.state(), State::INITIALIZED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1325,7 +1326,7 @@ TEST( bind, invalidSNSRValue )
 
         auto const error = random<Mock_Error>();
 
-        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+        EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
         EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
         EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( std::uint16_t{ 0 } ) );
         EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
@@ -1341,7 +1342,7 @@ TEST( bind, invalidSNSRValue )
 
         EXPECT_EQ( acceptor.state(), State::INITIALIZED );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -1364,10 +1365,10 @@ TEST( bind, worksProperly )
         auto driver        = Mock_Driver{};
         auto network_stack = Mock_Network_Stack{};
 
-        auto const available_sockets = random<std::uint_fast8_t>( 1, 8 );
+        auto const sockets = random<std::uint_fast8_t>( 1, 8 );
 
         auto const socket_ids = random_unique_socket_ids(
-            random<std::uint_fast8_t>( 1, available_sockets ), available_sockets );
+            random<std::uint_fast8_t>( 1, sockets ), sockets );
 
         auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -1376,8 +1377,8 @@ TEST( bind, worksProperly )
         auto const reserved_ephemeral_port = random<Port>( ephemeral_port_min, ephemeral_port_max );
 
         EXPECT_CALL( network_stack, tcp_ephemeral_port_allocation_enabled() ).WillOnce( Return( true ) );
-        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( available_sockets ) );
-        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+        EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( sockets ) );
+        for ( auto socket = std::uint_fast8_t{}; socket < sockets; ++socket ) {
             auto const sn_mr   = random<std::uint8_t>();
             auto const sn_port = generate_sn_port( sn_mr, reserved_ephemeral_port );
 
@@ -1406,7 +1407,7 @@ TEST( bind, worksProperly )
 
         EXPECT_EQ( acceptor.state(), State::BOUND );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     }
 
     {
@@ -1415,10 +1416,10 @@ TEST( bind, worksProperly )
         auto driver        = Mock_Driver{};
         auto network_stack = Mock_Network_Stack{};
 
-        auto const available_sockets = random<std::uint_fast8_t>( 1, 8 );
+        auto const sockets = random<std::uint_fast8_t>( 1, 8 );
 
         auto const socket_ids = random_unique_socket_ids(
-            random<std::uint_fast8_t>( 1, available_sockets ), available_sockets );
+            random<std::uint_fast8_t>( 1, sockets ), sockets );
 
         auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -1427,8 +1428,8 @@ TEST( bind, worksProperly )
         auto const reserved_ephemeral_port = random<Port>( ephemeral_port_min, ephemeral_port_max );
 
         EXPECT_CALL( network_stack, tcp_ephemeral_port_allocation_enabled() ).WillOnce( Return( true ) );
-        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( available_sockets ) );
-        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+        EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( sockets ) );
+        for ( auto socket = std::uint_fast8_t{}; socket < sockets; ++socket ) {
             auto const sn_mr   = random<std::uint8_t>();
             auto const sn_port = generate_sn_port( sn_mr, reserved_ephemeral_port );
 
@@ -1457,7 +1458,7 @@ TEST( bind, worksProperly )
 
         EXPECT_EQ( acceptor.state(), State::BOUND );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     }
 
     {
@@ -1466,17 +1467,17 @@ TEST( bind, worksProperly )
         auto driver        = Mock_Driver{};
         auto network_stack = Mock_Network_Stack{};
 
-        auto const available_sockets = random<std::uint_fast8_t>( 1, 8 );
+        auto const sockets = random<std::uint_fast8_t>( 1, 8 );
 
         auto const socket_ids = random_unique_socket_ids(
-            random<std::uint_fast8_t>( 1, available_sockets ), available_sockets );
+            random<std::uint_fast8_t>( 1, sockets ), sockets );
 
         auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
         auto const port = random<Port>( 1 );
 
-        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( available_sockets ) );
-        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+        EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( sockets ) );
+        for ( auto socket = std::uint_fast8_t{}; socket < sockets; ++socket ) {
             auto const sn_mr   = random<std::uint8_t>();
             auto const sn_port = generate_sn_port( sn_mr, port );
 
@@ -1497,7 +1498,7 @@ TEST( bind, worksProperly )
 
         EXPECT_EQ( acceptor.state(), State::BOUND );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     }
 
     {
@@ -1506,10 +1507,10 @@ TEST( bind, worksProperly )
         auto driver        = Mock_Driver{};
         auto network_stack = Mock_Network_Stack{};
 
-        auto const available_sockets = random<std::uint_fast8_t>( 1, 8 );
+        auto const sockets = random<std::uint_fast8_t>( 1, 8 );
 
         auto const socket_ids = random_unique_socket_ids(
-            random<std::uint_fast8_t>( 1, available_sockets ), available_sockets );
+            random<std::uint_fast8_t>( 1, sockets ), sockets );
 
         auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -1520,8 +1521,8 @@ TEST( bind, worksProperly )
 
         EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( address.as_byte_array() ) );
         EXPECT_CALL( network_stack, tcp_ephemeral_port_allocation_enabled() ).WillOnce( Return( true ) );
-        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( available_sockets ) );
-        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+        EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( sockets ) );
+        for ( auto socket = std::uint_fast8_t{}; socket < sockets; ++socket ) {
             auto const sn_mr   = random<std::uint8_t>();
             auto const sn_port = generate_sn_port( sn_mr, reserved_ephemeral_port );
 
@@ -1550,7 +1551,7 @@ TEST( bind, worksProperly )
 
         EXPECT_EQ( acceptor.state(), State::BOUND );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     }
 
     {
@@ -1559,10 +1560,10 @@ TEST( bind, worksProperly )
         auto driver        = Mock_Driver{};
         auto network_stack = Mock_Network_Stack{};
 
-        auto const available_sockets = random<std::uint_fast8_t>( 1, 8 );
+        auto const sockets = random<std::uint_fast8_t>( 1, 8 );
 
         auto const socket_ids = random_unique_socket_ids(
-            random<std::uint_fast8_t>( 1, available_sockets ), available_sockets );
+            random<std::uint_fast8_t>( 1, sockets ), sockets );
 
         auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -1570,8 +1571,8 @@ TEST( bind, worksProperly )
         auto const port    = random<Port>( 1 );
 
         EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( address.as_byte_array() ) );
-        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( available_sockets ) );
-        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+        EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( sockets ) );
+        for ( auto socket = std::uint_fast8_t{}; socket < sockets; ++socket ) {
             auto const sn_mr   = random<std::uint8_t>();
             auto const sn_port = generate_sn_port( sn_mr, port );
 
@@ -1592,7 +1593,7 @@ TEST( bind, worksProperly )
 
         EXPECT_EQ( acceptor.state(), State::BOUND );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     }
 }
 
