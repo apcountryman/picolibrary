@@ -24,6 +24,7 @@
 #define PICOLIBRARY_TESTING_UNIT_WIZNET_W5500_IP_NETWORK_STACK_H
 
 #include <cstdint>
+#include <vector>
 
 #include "gmock/gmock.h"
 #include "picolibrary/error.h"
@@ -32,6 +33,7 @@
 #include "picolibrary/mac_address.h"
 #include "picolibrary/result.h"
 #include "picolibrary/testing/unit/wiznet/w5500/ip/tcp.h"
+#include "picolibrary/vector.h"
 #include "picolibrary/void.h"
 #include "picolibrary/wiznet/w5500.h"
 
@@ -110,8 +112,26 @@ class Mock_Network_Stack {
     MOCK_METHOD( (Result<Void, Error_Code>), service, () );
 
     MOCK_METHOD( (Result<::picolibrary::WIZnet::W5500::Socket_ID, Error_Code>), allocate_socket, () );
+    MOCK_METHOD(
+        (Result<Fixed_Capacity_Vector<::picolibrary::WIZnet::W5500::Socket_ID, 8>, Error_Code>),
+        allocate_socket,
+        ( std::uint_fast8_t ) );
     MOCK_METHOD( (Result<Void, Error_Code>), allocate_socket, ( ::picolibrary::WIZnet::W5500::Socket_ID ) );
+    MOCK_METHOD( (Result<Void, Error_Code>), allocate_socket, (std::vector<::picolibrary::WIZnet::W5500::Socket_ID>));
     MOCK_METHOD( void, deallocate_socket, ( ::picolibrary::WIZnet::W5500::Socket_ID ) );
+    MOCK_METHOD( void, deallocate_socket, (std::vector<::picolibrary::WIZnet::W5500::Socket_ID>));
+
+    template<typename Iterator>
+    auto allocate_socket( Iterator begin, Iterator end )
+    {
+        return allocate_socket( std::vector<::picolibrary::WIZnet::W5500::Socket_ID>{ begin, end } );
+    }
+
+    template<typename Iterator>
+    void deallocate_socket( Iterator begin, Iterator end )
+    {
+        deallocate_socket( std::vector<::picolibrary::WIZnet::W5500::Socket_ID>{ begin, end } );
+    }
 
     MOCK_METHOD(
         (Result<Void, Error_Code>),
