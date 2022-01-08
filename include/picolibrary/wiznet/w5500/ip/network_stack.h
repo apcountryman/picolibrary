@@ -81,7 +81,7 @@ class Network_Stack {
     constexpr Network_Stack( Network_Stack && source ) noexcept :
         m_driver{ source.m_driver },
         m_nonresponsive_device_error{ source.m_nonresponsive_device_error },
-        m_available_sockets{ source.m_available_sockets },
+        m_sockets{ source.m_sockets },
         m_socket_0_reserved{ source.m_socket_0_reserved },
         m_socket_state{ source.m_socket_state },
         m_tcp_ephemeral_port_allocation_enabled{ source.m_tcp_ephemeral_port_allocation_enabled },
@@ -110,7 +110,7 @@ class Network_Stack {
         if ( &expression != this ) {
             m_driver                     = expression.m_driver;
             m_nonresponsive_device_error = expression.m_nonresponsive_device_error;
-            m_available_sockets          = expression.m_available_sockets;
+            m_sockets                    = expression.m_sockets;
             m_socket_0_reserved          = expression.m_socket_0_reserved;
             m_socket_state               = expression.m_socket_state;
             m_tcp_ephemeral_port_allocation_enabled = expression.m_tcp_ephemeral_port_allocation_enabled;
@@ -375,9 +375,9 @@ class Network_Stack {
      * \brief Configure socket buffers.
      *
      * \param[in] buffer_size The desired socket buffer size. Must be at least 2 KiB. The
-     *            socket buffer size will determine the number of available sockets (2 KiB
-     *            -> 8 sockets, 4 KiB -> 4 sockets, 8 KiB -> 2 sockets, 16 KiB -> 1
-     *            socket).
+     *            socket buffer size will determine the number of sockets the network
+     *            stack will support (2 KiB -> 8 sockets, 4 KiB -> 4 sockets, 8 KiB -> 2
+     *            sockets, 16 KiB -> 1 socket).
      *
      * \return Nothing if socket buffers configuration succeeded.
      * \return picolibrary::Generic_Error::INVALID_ARGUMENT if buffer_size is less than 2
@@ -388,17 +388,17 @@ class Network_Stack {
     {
         // #lizard forgives the length
 
-        auto available_sockets = std::uint_fast8_t{};
+        auto sockets = std::uint_fast8_t{};
 
         switch ( buffer_size ) {
-            case Buffer_Size::_2_KIB: available_sockets = 16 / 2; break;
-            case Buffer_Size::_4_KIB: available_sockets = 16 / 4; break;
-            case Buffer_Size::_8_KIB: available_sockets = 16 / 8; break;
-            case Buffer_Size::_16_KIB: available_sockets = 16 / 16; break;
+            case Buffer_Size::_2_KIB: sockets = 16 / 2; break;
+            case Buffer_Size::_4_KIB: sockets = 16 / 4; break;
+            case Buffer_Size::_8_KIB: sockets = 16 / 8; break;
+            case Buffer_Size::_16_KIB: sockets = 16 / 16; break;
             default: return Generic_Error::INVALID_ARGUMENT;
         } // switch
 
-        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+        for ( auto socket = std::uint_fast8_t{}; socket < sockets; ++socket ) {
             auto const socket_id = static_cast<Socket_ID>( socket << Control_Byte::Bit::SOCKET );
 
             {
@@ -418,7 +418,7 @@ class Network_Stack {
             }
         } // for
 
-        for ( auto socket = available_sockets; socket < SOCKETS; ++socket ) {
+        for ( auto socket = sockets; socket < SOCKETS; ++socket ) {
             auto const socket_id = static_cast<Socket_ID>( socket << Control_Byte::Bit::SOCKET );
 
             {
@@ -438,13 +438,13 @@ class Network_Stack {
             }
         } // for
 
-        m_available_sockets = available_sockets;
+        m_sockets = sockets;
 
-        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+        for ( auto socket = std::uint_fast8_t{}; socket < sockets; ++socket ) {
             m_socket_state[ socket ] = Socket_State::AVAILABLE;
         } // for
 
-        for ( auto socket = available_sockets; socket < SOCKETS; ++socket ) {
+        for ( auto socket = sockets; socket < SOCKETS; ++socket ) {
             m_socket_state[ socket ] = Socket_State::UNAVAILABLE;
         } // for
 
@@ -452,13 +452,13 @@ class Network_Stack {
     }
 
     /**
-     * \brief Get the number of available sockets.
+     * \brief Get the number of sockets the network stack supports.
      *
-     * \return The number of available sockets.
+     * \return The number of sockets the network stack supports.
      */
-    auto available_sockets() const noexcept
+    auto sockets() const noexcept
     {
-        return m_available_sockets;
+        return m_sockets;
     }
 
     /**
@@ -884,8 +884,8 @@ class Network_Stack {
      * \brief Allocate a socket.
      *
      * \return The allocated socket's socket ID if a socket was successfully allocated.
-     * \return picolibrary::Generic_Error::NO_SOCKETS_AVAILABLE if a socket was not
-     *         successfully allocated.
+     * \return picolibrary::Generic_Error::NO_SOCKETS_AVAILABLE if no sockets are
+     *         available.
      */
     auto allocate_socket() noexcept -> Result<Socket_ID, Error_Code>
     {
@@ -908,8 +908,7 @@ class Network_Stack {
      * \param[in] socket_id The socket ID of the socket to allocate.
      *
      * \return socket_id if the socket was successfully allocated.
-     * \return picolibrary::Generic_Error::LOGIC_ERROR if the socket is not available for
-     *         allocation.
+     * \return picolibrary::Generic_Error::LOGIC_ERROR if the socket is not available.
      */
     auto allocate_socket( Socket_ID socket_id ) noexcept -> Result<Void, Error_Code>
     {
@@ -1080,7 +1079,7 @@ class Network_Stack {
      * \brief Socket state.
      */
     enum class Socket_State : std::uint_fast8_t {
-        AVAILABLE,        ///< Available for allocation.
+        AVAILABLE,        ///< Available.
         ALLOCATED,        ///< Allocated.
         AWAITING_SERVICE, ///< Awaiting post-deallocation service.
         UNAVAILABLE,      ///< Unavailable.
@@ -1098,9 +1097,9 @@ class Network_Stack {
     Error_Code m_nonresponsive_device_error{};
 
     /**
-     * \brief The number of available sockets.
+     * \brief The number of sockets the network stack supports.
      */
-    std::uint_fast8_t m_available_sockets{ 16 / 2 };
+    std::uint_fast8_t m_sockets{ 16 / 2 };
 
     /**
      * \brief Socket 0 reserved state.

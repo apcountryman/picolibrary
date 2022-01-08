@@ -94,7 +94,7 @@ TEST( constructor, worksProperly )
     auto const network_stack = Network_Stack{ driver, nonresponsive_device_error };
 
     EXPECT_EQ( network_stack.nonresponsive_device_error(), nonresponsive_device_error );
-    EXPECT_EQ( network_stack.available_sockets(), 8 );
+    EXPECT_EQ( network_stack.sockets(), 8 );
     EXPECT_FALSE( network_stack.tcp_ephemeral_port_allocation_enabled() );
 }
 
@@ -810,9 +810,9 @@ TEST( configureSocketBuffers, invalidBufferSize )
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_socket_buffers()
  *        properly handles an SN_RXBUF_SIZE register write error when configuring the
- *        socket buffer size of an available socket.
+ *        socket buffer size of a used socket.
  */
-TEST( configureSocketBuffers, writeSNRXBUFSIZEErrorAvailableSocket )
+TEST( configureSocketBuffers, writeSNRXBUFSIZEErrorUsedSocket )
 {
     auto driver = Mock_Driver{};
 
@@ -833,9 +833,9 @@ TEST( configureSocketBuffers, writeSNRXBUFSIZEErrorAvailableSocket )
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_socket_buffers()
  *        properly handles an SN_TXBUF_SIZE register write error when configuring the
- *        socket buffer size of an available socket.
+ *        socket buffer size of a used socket.
  */
-TEST( configureSocketBuffers, writeSNTXBUFSIZEErrorAvailableSocket )
+TEST( configureSocketBuffers, writeSNTXBUFSIZEErrorUsedSocket )
 {
     auto driver = Mock_Driver{};
 
@@ -923,7 +923,7 @@ TEST( configureSocketBuffers, worksProperly )
 {
     struct {
         Buffer_Size       buffer_size;
-        std::uint_fast8_t available_sockets;
+        std::uint_fast8_t sockets;
     } const configurations[]{
         { Buffer_Size::_2_KIB, 8 },
         { Buffer_Size::_4_KIB, 4 },
@@ -953,7 +953,7 @@ TEST( configureSocketBuffers, worksProperly )
             // clang-format on
         };
 
-        for ( auto socket = std::uint_fast8_t{}; socket < configuration.available_sockets; ++socket ) {
+        for ( auto socket = std::uint_fast8_t{}; socket < configuration.sockets; ++socket ) {
             EXPECT_CALL(
                 driver,
                 write_sn_rxbuf_size(
@@ -966,7 +966,7 @@ TEST( configureSocketBuffers, worksProperly )
                 .WillOnce( Return( Result<Void, Error_Code>{} ) );
         } // for
 
-        for ( auto socket = configuration.available_sockets; socket < 8; ++socket ) {
+        for ( auto socket = configuration.sockets; socket < 8; ++socket ) {
             EXPECT_CALL(
                 driver, write_sn_rxbuf_size( socket_id[ socket ], static_cast<std::uint8_t>( Buffer_Size::_0_KIB ) ) )
                 .WillOnce( Return( Result<Void, Error_Code>{} ) );
@@ -977,7 +977,7 @@ TEST( configureSocketBuffers, worksProperly )
 
         EXPECT_FALSE( network_stack.configure_socket_buffers( configuration.buffer_size ).is_error() );
 
-        EXPECT_EQ( network_stack.available_sockets(), configuration.available_sockets );
+        EXPECT_EQ( network_stack.sockets(), configuration.sockets );
     } // for
 }
 
