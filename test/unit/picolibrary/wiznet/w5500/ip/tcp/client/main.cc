@@ -61,6 +61,7 @@ using ::picolibrary::WIZnet::W5500::No_Delayed_ACK;
 using ::picolibrary::WIZnet::W5500::Socket_ID;
 using ::picolibrary::WIZnet::W5500::IP::TCP::Client;
 using ::testing::_;
+using ::testing::A;
 using ::testing::AllOf;
 using ::testing::AnyNumber;
 using ::testing::Ge;
@@ -149,7 +150,7 @@ TEST( enableInterrupts, snimrReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -173,7 +174,7 @@ TEST( enableInterrupts, snimrWriteError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -199,7 +200,7 @@ TEST( enableInterrupts, worksProperly )
 
     EXPECT_FALSE( client.enable_interrupts( mask ).is_error() );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -222,7 +223,7 @@ TEST( disableInterrupts, snimrReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -246,7 +247,7 @@ TEST( disableInterrupts, snimrWriteError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -273,7 +274,7 @@ TEST( disableInterrupts, worksProperly )
 
     EXPECT_FALSE( client.disable_interrupts( mask ).is_error() );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -296,7 +297,7 @@ TEST( disableAllInterrupts, snimrWriteError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -316,7 +317,7 @@ TEST( disableAllInterrupts, worksProperly )
 
     EXPECT_FALSE( client.disable_interrupts().is_error() );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -339,7 +340,7 @@ TEST( enabledInterrupts, snimrReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -364,7 +365,7 @@ TEST( enabledInterrupts, worksProperly )
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), sn_imr );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -387,7 +388,7 @@ TEST( interruptContext, snirReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -412,7 +413,7 @@ TEST( interruptContext, worksProperly )
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), sn_ir );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -448,7 +449,7 @@ TEST( clearInterrupts, snirWriteError )
 
             EXPECT_EQ( client.is_transmitting(), test_case.is_transmitting );
 
-            EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+            EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
         } // for
     }
 
@@ -479,7 +480,7 @@ TEST( clearInterrupts, snirWriteError )
 
             EXPECT_EQ( client.is_transmitting(), test_case.is_transmitting );
 
-            EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+            EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
         } // for
     }
 }
@@ -515,7 +516,7 @@ TEST( clearInterrupts, worksProperly )
 
             EXPECT_FALSE( client.is_transmitting() );
 
-            EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+            EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
         } // for
     }
 
@@ -545,7 +546,7 @@ TEST( clearInterrupts, worksProperly )
 
             EXPECT_EQ( client.is_transmitting(), test_case.is_transmitting and not( mask & 0b000'1'0'0'0'0 ) );
 
-            EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+            EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
         } // for
     }
 }
@@ -570,7 +571,7 @@ TEST( configureNoDelayedAck, snmrReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -594,7 +595,7 @@ TEST( configureNoDelayedAck, snmrWriteError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -635,7 +636,7 @@ TEST( configureNoDelayedAck, worksProperly )
         EXPECT_FALSE(
             client.configure_no_delayed_ack( test_case.no_delayed_ack_configuration ).is_error() );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -660,7 +661,7 @@ TEST( noDelayedAckConfiguration, snmrReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -695,7 +696,7 @@ TEST( noDelayedAckConfiguration, worksProperly )
         EXPECT_TRUE( result.is_value() );
         EXPECT_EQ( result.value(), test_case.no_delayed_ack_configuration );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -720,7 +721,7 @@ TEST( configureMaximumSegmentSize, mssrWriteError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -744,7 +745,7 @@ TEST( configureMaximumSegmentSize, worksProperly )
 
     EXPECT_FALSE( client.configure_maximum_segment_size( maximum_segment_size ).is_error() );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -767,7 +768,7 @@ TEST( maximumSegmentSize, mssrReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -792,7 +793,7 @@ TEST( maximumSegmentSize, worksProperly )
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), sn_mssr );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -815,7 +816,7 @@ TEST( configureTimeToLive, ttlWriteError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -837,7 +838,7 @@ TEST( configureTimeToLive, worksProperly )
 
     EXPECT_FALSE( client.configure_time_to_live( time_to_live ).is_error() );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -860,7 +861,7 @@ TEST( timeToLive, ttlReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -885,7 +886,7 @@ TEST( timeToLive, worksProperly )
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), sn_ttl );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -908,7 +909,7 @@ TEST( configureKeepalivePeriod, kpalvtrWriteError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -931,7 +932,7 @@ TEST( configureKeepalivePeriod, worksProperly )
 
     EXPECT_FALSE( client.configure_keepalive_period( keepalive_period ).is_error() );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -954,7 +955,7 @@ TEST( keepalivePeriod, kpalvtrReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -979,7 +980,7 @@ TEST( keepalivePeriod, worksProperly )
     EXPECT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), sn_kpalvtr );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1014,7 +1015,7 @@ TEST( bind, invalidState )
 
         EXPECT_EQ( client.state(), test_case.state );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -1040,7 +1041,7 @@ TEST( bind, siprReadError )
 
     EXPECT_EQ( client.state(), State::INITIALIZED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1065,7 +1066,7 @@ TEST( bind, invalidEndpoint )
 
     EXPECT_EQ( client.state(), State::INITIALIZED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1088,7 +1089,7 @@ TEST( bind, ephemeralPortAllocationNotEnabled )
 
     EXPECT_EQ( client.state(), State::INITIALIZED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1104,7 +1105,7 @@ TEST( bind, snmrReadError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) ).WillOnce( Return( error ) );
 
     auto const result = client.bind( random<Port>( 1 ) );
@@ -1114,7 +1115,7 @@ TEST( bind, snmrReadError )
 
     EXPECT_EQ( client.state(), State::INITIALIZED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1130,7 +1131,7 @@ TEST( bind, snportReadError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
     EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( error ) );
 
@@ -1141,7 +1142,7 @@ TEST( bind, snportReadError )
 
     EXPECT_EQ( client.state(), State::INITIALIZED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1158,7 +1159,7 @@ TEST( bind, ephemeralPortsExhausted )
     auto const ephemeral_port = random<Port>( 1 );
 
     EXPECT_CALL( network_stack, tcp_ephemeral_port_allocation_enabled() ).WillOnce( Return( true ) );
-    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) )
         .WillRepeatedly( Return( static_cast<std::uint8_t>(
             ( random<std::uint8_t>() & 0b1'1'1'1'0000 ) | 0b0001 ) ) );
@@ -1173,7 +1174,7 @@ TEST( bind, ephemeralPortsExhausted )
 
     EXPECT_EQ( client.state(), State::INITIALIZED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1189,7 +1190,7 @@ TEST( bind, endpointInUse )
 
     auto const port = random<Port>( 1 );
 
-    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) )
         .WillRepeatedly( Return( static_cast<std::uint8_t>(
             ( random<std::uint8_t>() & 0b1'1'1'1'0000 ) | 0b0001 ) ) );
@@ -1202,7 +1203,7 @@ TEST( bind, endpointInUse )
 
     EXPECT_EQ( client.state(), State::INITIALIZED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1218,7 +1219,7 @@ TEST( bind, snportWriteError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
     EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( std::uint16_t{ 0 } ) );
     EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( error ) );
@@ -1230,7 +1231,7 @@ TEST( bind, snportWriteError )
 
     EXPECT_EQ( client.state(), State::INITIALIZED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1246,7 +1247,7 @@ TEST( bind, sncrWriteError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
     EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( std::uint16_t{ 0 } ) );
     EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
@@ -1259,7 +1260,7 @@ TEST( bind, sncrWriteError )
 
     EXPECT_EQ( client.state(), State::INITIALIZED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1275,7 +1276,7 @@ TEST( bind, sncrReadError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
     EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( std::uint16_t{ 0 } ) );
     EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
@@ -1289,7 +1290,7 @@ TEST( bind, sncrReadError )
 
     EXPECT_EQ( client.state(), State::INITIALIZED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1305,7 +1306,7 @@ TEST( bind, snsrReadError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
     EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( std::uint16_t{ 0 } ) );
     EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
@@ -1320,7 +1321,7 @@ TEST( bind, snsrReadError )
 
     EXPECT_EQ( client.state(), State::INITIALIZED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1348,7 +1349,7 @@ TEST( bind, invalidSNSRValue )
 
         auto const error = random<Mock_Error>();
 
-        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+        EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
         EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
         EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( uint16_t{ 0 } ) );
         EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
@@ -1364,7 +1365,7 @@ TEST( bind, invalidSNSRValue )
 
         EXPECT_EQ( client.state(), State::INITIALIZED );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -1391,14 +1392,14 @@ TEST( bind, worksProperly )
 
         auto client = Client{ driver, socket_id, network_stack };
 
-        auto const available_sockets  = random<std::uint_fast8_t>( 1, 8 );
+        auto const sockets            = random<std::uint_fast8_t>( 1, 8 );
         auto const ephemeral_port_min = random<Port>( 1 );
         auto const ephemeral_port_max = random<Port>( ephemeral_port_min );
         auto const reserved_ephemeral_port = random<Port>( ephemeral_port_min, ephemeral_port_max );
 
         EXPECT_CALL( network_stack, tcp_ephemeral_port_allocation_enabled() ).WillOnce( Return( true ) );
-        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( available_sockets ) );
-        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+        EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( sockets ) );
+        for ( auto socket = std::uint_fast8_t{}; socket < sockets; ++socket ) {
             auto const sn_mr   = random<std::uint8_t>();
             auto const sn_port = generate_sn_port( sn_mr, reserved_ephemeral_port );
 
@@ -1425,7 +1426,7 @@ TEST( bind, worksProperly )
 
         EXPECT_EQ( client.state(), State::BOUND );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     }
 
     {
@@ -1438,14 +1439,14 @@ TEST( bind, worksProperly )
 
         auto client = Client{ driver, socket_id, network_stack };
 
-        auto const available_sockets  = random<std::uint_fast8_t>( 1, 8 );
+        auto const sockets            = random<std::uint_fast8_t>( 1, 8 );
         auto const ephemeral_port_min = random<Port>( 1 );
         auto const ephemeral_port_max = random<Port>( ephemeral_port_min );
         auto const reserved_ephemeral_port = random<Port>( ephemeral_port_min, ephemeral_port_max );
 
         EXPECT_CALL( network_stack, tcp_ephemeral_port_allocation_enabled() ).WillOnce( Return( true ) );
-        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( available_sockets ) );
-        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+        EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( sockets ) );
+        for ( auto socket = std::uint_fast8_t{}; socket < sockets; ++socket ) {
             auto const sn_mr   = random<std::uint8_t>();
             auto const sn_port = generate_sn_port( sn_mr, reserved_ephemeral_port );
 
@@ -1472,7 +1473,7 @@ TEST( bind, worksProperly )
 
         EXPECT_EQ( client.state(), State::BOUND );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     }
 
     {
@@ -1485,11 +1486,11 @@ TEST( bind, worksProperly )
 
         auto client = Client{ driver, socket_id, network_stack };
 
-        auto const port              = random<Port>( 1 );
-        auto const available_sockets = random<std::uint_fast8_t>( 1, 8 );
+        auto const port    = random<Port>( 1 );
+        auto const sockets = random<std::uint_fast8_t>( 1, 8 );
 
-        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( available_sockets ) );
-        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+        EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( sockets ) );
+        for ( auto socket = std::uint_fast8_t{}; socket < sockets; ++socket ) {
             auto const sn_mr   = random<std::uint8_t>();
             auto const sn_port = generate_sn_port( sn_mr, port );
 
@@ -1508,7 +1509,7 @@ TEST( bind, worksProperly )
 
         EXPECT_EQ( client.state(), State::BOUND );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     }
 
     {
@@ -1522,15 +1523,15 @@ TEST( bind, worksProperly )
         auto client = Client{ driver, socket_id, network_stack };
 
         auto const address            = random<Address>( 1 );
-        auto const available_sockets  = random<std::uint_fast8_t>( 1, 8 );
+        auto const sockets            = random<std::uint_fast8_t>( 1, 8 );
         auto const ephemeral_port_min = random<Port>( 1 );
         auto const ephemeral_port_max = random<Port>( ephemeral_port_min );
         auto const reserved_ephemeral_port = random<Port>( ephemeral_port_min, ephemeral_port_max );
 
         EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( address.as_byte_array() ) );
         EXPECT_CALL( network_stack, tcp_ephemeral_port_allocation_enabled() ).WillOnce( Return( true ) );
-        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( available_sockets ) );
-        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+        EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( sockets ) );
+        for ( auto socket = std::uint_fast8_t{}; socket < sockets; ++socket ) {
             auto const sn_mr   = random<std::uint8_t>();
             auto const sn_port = generate_sn_port( sn_mr, reserved_ephemeral_port );
 
@@ -1557,7 +1558,7 @@ TEST( bind, worksProperly )
 
         EXPECT_EQ( client.state(), State::BOUND );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     }
 
     {
@@ -1570,13 +1571,13 @@ TEST( bind, worksProperly )
 
         auto client = Client{ driver, socket_id, network_stack };
 
-        auto const address           = random<Address>( 1 );
-        auto const port              = random<Port>( 1 );
-        auto const available_sockets = random<std::uint_fast8_t>( 1, 8 );
+        auto const address = random<Address>( 1 );
+        auto const port    = random<Port>( 1 );
+        auto const sockets = random<std::uint_fast8_t>( 1, 8 );
 
         EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( address.as_byte_array() ) );
-        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( available_sockets ) );
-        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+        EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( sockets ) );
+        for ( auto socket = std::uint_fast8_t{}; socket < sockets; ++socket ) {
             auto const sn_mr   = random<std::uint8_t>();
             auto const sn_port = generate_sn_port( sn_mr, port );
 
@@ -1595,7 +1596,7 @@ TEST( bind, worksProperly )
 
         EXPECT_EQ( client.state(), State::BOUND );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     }
 }
 
@@ -1631,7 +1632,7 @@ TEST( connect, invalidState )
 
         EXPECT_EQ( client.state(), test_case.state );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -1667,7 +1668,7 @@ TEST( connect, invalidEndpoint )
 
         EXPECT_EQ( client.state(), State::BOUND );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -1693,7 +1694,7 @@ TEST( connect, sndiprWriteError )
 
     EXPECT_EQ( client.state(), State::BOUND );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1719,7 +1720,7 @@ TEST( connect, sndportWriteError )
 
     EXPECT_EQ( client.state(), State::BOUND );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1746,7 +1747,7 @@ TEST( connect, sncrWriteError )
 
     EXPECT_EQ( client.state(), State::BOUND );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1774,7 +1775,7 @@ TEST( connect, sncrReadError )
 
     EXPECT_EQ( client.state(), State::BOUND );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1799,7 +1800,7 @@ TEST( connect, snsrReadError )
 
     EXPECT_EQ( client.state(), State::CONNECTING );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1822,7 +1823,7 @@ TEST( connect, connectionTimeout )
 
     EXPECT_EQ( client.state(), State::CONNECTING );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -1863,7 +1864,7 @@ TEST( connect, invalidSNSRValue )
 
         EXPECT_EQ( client.state(), State::CONNECTING );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -1899,7 +1900,7 @@ TEST( connect, worksProperly )
 
         EXPECT_EQ( client.state(), State::CONNECTING );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     }
 
     {
@@ -1929,7 +1930,7 @@ TEST( connect, worksProperly )
 
             EXPECT_EQ( client.state(), State::CONNECTING );
 
-            EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+            EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
         } // for
     }
 
@@ -1957,7 +1958,7 @@ TEST( connect, worksProperly )
 
             EXPECT_EQ( client.state(), State::CONNECTED );
 
-            EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+            EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
         } // for
     }
 }
@@ -1982,7 +1983,7 @@ TEST( isConnected, snsrReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -2019,7 +2020,7 @@ TEST( isConnected, invalidSNSRValue )
         EXPECT_TRUE( result.is_error() );
         EXPECT_EQ( result.error(), error );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -2065,7 +2066,7 @@ TEST( isConnected, worksProperly )
         EXPECT_TRUE( result.is_value() );
         EXPECT_EQ( result.value(), test_case.is_connected );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -2089,7 +2090,7 @@ TEST( remoteEndpoint, sndiprReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -2113,7 +2114,7 @@ TEST( remoteEndpoint, sndportReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -2142,7 +2143,7 @@ TEST( remoteEndpoint, worksProperly )
     EXPECT_EQ( result.value().address().ipv4().as_byte_array(), sn_dipr );
     EXPECT_EQ( result.value().port().as_unsigned_integer(), sn_dport );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -2165,7 +2166,7 @@ TEST( localEndpoint, siprReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -2189,7 +2190,7 @@ TEST( localEndpoint, snportReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -2218,7 +2219,7 @@ TEST( localEndpoint, worksProperly )
     EXPECT_EQ( result.value().address().ipv4().as_byte_array(), sipr );
     EXPECT_EQ( result.value().port().as_unsigned_integer(), sn_port );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -2241,7 +2242,7 @@ TEST( outstanding, sntxbufsizeReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -2280,7 +2281,7 @@ TEST( outstanding, invalidSNTXBUFSIZEValue )
         EXPECT_TRUE( result.is_error() );
         EXPECT_EQ( result.error(), error );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -2306,7 +2307,7 @@ TEST( outstanding, sntxfsrReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -2347,7 +2348,7 @@ TEST( outstanding, invalidSNTXFSRValue )
         EXPECT_TRUE( result.is_error() );
         EXPECT_EQ( result.error(), error );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -2389,7 +2390,7 @@ TEST( outstanding, worksProperly )
         EXPECT_TRUE( result.is_value() );
         EXPECT_EQ( result.value(), ( test_case.sn_txbuf_size * 1024 ) - sn_tx_fsr );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -2430,7 +2431,7 @@ TEST( transmit, invalidState )
         EXPECT_EQ( client.state(), test_case.state );
         EXPECT_EQ( client.is_transmitting(), is_transmitting );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -2460,7 +2461,7 @@ TEST( transmit, snsrReadError )
     EXPECT_EQ( client.state(), State::CONNECTED );
     EXPECT_EQ( client.is_transmitting(), is_transmitting );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -2503,7 +2504,7 @@ TEST( transmit, invalidSNSRValue )
         EXPECT_EQ( client.state(), State::CONNECTED );
         EXPECT_EQ( client.is_transmitting(), is_transmitting );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -2547,7 +2548,7 @@ TEST( transmit, connectionLost )
         EXPECT_EQ( client.state(), State::CONNECTED );
         EXPECT_EQ( client.is_transmitting(), is_transmitting );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -2576,7 +2577,7 @@ TEST( transmit, snirReadError )
     EXPECT_EQ( client.state(), State::CONNECTED );
     EXPECT_TRUE( client.is_transmitting() );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -2603,7 +2604,7 @@ TEST( transmit, transmissionNotComplete )
     EXPECT_EQ( client.state(), State::CONNECTED );
     EXPECT_TRUE( client.is_transmitting() );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -2633,7 +2634,7 @@ TEST( transmit, snirWriteError )
     EXPECT_EQ( client.state(), State::CONNECTED );
     EXPECT_TRUE( client.is_transmitting() );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -2661,7 +2662,7 @@ TEST( transmit, sntxbufsizeReadError )
     EXPECT_EQ( client.state(), State::CONNECTED );
     EXPECT_FALSE( client.is_transmitting() );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -2705,7 +2706,7 @@ TEST( transmit, invalidSNTXBUFSIZEValue )
         EXPECT_EQ( client.state(), State::CONNECTED );
         EXPECT_FALSE( client.is_transmitting() );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -2736,7 +2737,7 @@ TEST( transmit, sntxfsrReadError )
     EXPECT_EQ( client.state(), State::CONNECTED );
     EXPECT_FALSE( client.is_transmitting() );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -2782,7 +2783,7 @@ TEST( transmit, invalidSNTXFSRValue )
         EXPECT_EQ( client.state(), State::CONNECTED );
         EXPECT_FALSE( client.is_transmitting() );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -2811,7 +2812,7 @@ TEST( transmit, transmitBufferFull )
     EXPECT_EQ( client.state(), State::CONNECTED );
     EXPECT_FALSE( client.is_transmitting() );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -2842,7 +2843,7 @@ TEST( transmit, sntxwrReadError )
     EXPECT_EQ( client.state(), State::CONNECTED );
     EXPECT_FALSE( client.is_transmitting() );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -2874,7 +2875,7 @@ TEST( transmit, transmitBufferWriteError )
     EXPECT_EQ( client.state(), State::CONNECTED );
     EXPECT_FALSE( client.is_transmitting() );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -2907,7 +2908,7 @@ TEST( transmit, sntxwrWriteError )
     EXPECT_EQ( client.state(), State::CONNECTED );
     EXPECT_FALSE( client.is_transmitting() );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -2941,7 +2942,7 @@ TEST( transmit, sncrWriteError )
     EXPECT_EQ( client.state(), State::CONNECTED );
     EXPECT_FALSE( client.is_transmitting() );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -2976,7 +2977,7 @@ TEST( transmit, sncrReadError )
     EXPECT_EQ( client.state(), State::CONNECTED );
     EXPECT_FALSE( client.is_transmitting() );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -3005,7 +3006,7 @@ TEST( transmit, worksProperly )
         EXPECT_EQ( client.state(), State::CONNECTED );
         EXPECT_FALSE( client.is_transmitting() );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     }
 
     {
@@ -3033,7 +3034,7 @@ TEST( transmit, worksProperly )
         EXPECT_EQ( client.state(), State::CONNECTED );
         EXPECT_FALSE( client.is_transmitting() );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     }
 
     {
@@ -3088,7 +3089,7 @@ TEST( transmit, worksProperly )
             EXPECT_EQ( client.state(), State::CONNECTED );
             EXPECT_TRUE( client.is_transmitting() );
 
-            EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+            EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
         } // for
     }
 
@@ -3148,7 +3149,7 @@ TEST( transmit, worksProperly )
             EXPECT_EQ( client.state(), State::CONNECTED );
             EXPECT_TRUE( client.is_transmitting() );
 
-            EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+            EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
         } // for
     }
 
@@ -3205,7 +3206,7 @@ TEST( transmit, worksProperly )
             EXPECT_EQ( client.state(), State::CONNECTED );
             EXPECT_TRUE( client.is_transmitting() );
 
-            EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+            EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
         } // for
     }
 
@@ -3266,7 +3267,7 @@ TEST( transmit, worksProperly )
             EXPECT_EQ( client.state(), State::CONNECTED );
             EXPECT_TRUE( client.is_transmitting() );
 
-            EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+            EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
         } // for
     }
 }
@@ -3304,7 +3305,7 @@ TEST( transmitKeepalive, invalidState )
 
         EXPECT_EQ( client.state(), test_case.state );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -3330,7 +3331,7 @@ TEST( transmitKeepalive, snsrReadError )
 
     EXPECT_EQ( client.state(), State::CONNECTED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -3369,7 +3370,7 @@ TEST( transmitKeepalive, invalidSNSRValue )
 
         EXPECT_EQ( client.state(), State::CONNECTED );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -3409,7 +3410,7 @@ TEST( transmitKeepalive, connectionLost )
 
         EXPECT_EQ( client.state(), State::CONNECTED );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -3436,7 +3437,7 @@ TEST( transmitKeepalive, sncrWriteError )
 
     EXPECT_EQ( client.state(), State::CONNECTED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -3463,7 +3464,7 @@ TEST( transmitKeepalive, sncrReadError )
 
     EXPECT_EQ( client.state(), State::CONNECTED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -3490,7 +3491,7 @@ TEST( transmitKeepalive, worksProperly )
 
     EXPECT_EQ( client.state(), State::CONNECTED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -3513,7 +3514,7 @@ TEST( available, snrxbufsizeReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -3552,7 +3553,7 @@ TEST( available, invalidSNRXBUFSIZEValue )
         EXPECT_TRUE( result.is_error() );
         EXPECT_EQ( result.error(), error );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -3578,7 +3579,7 @@ TEST( available, snrxrsrReadError )
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -3619,7 +3620,7 @@ TEST( available, invalidSNRXRSRValue )
         EXPECT_TRUE( result.is_error() );
         EXPECT_EQ( result.error(), error );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -3660,7 +3661,7 @@ TEST( available, worksProperly )
         EXPECT_TRUE( result.is_value() );
         EXPECT_EQ( result.value(), sn_rx_rsr );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -3698,7 +3699,7 @@ TEST( receive, invalidState )
 
         EXPECT_EQ( client.state(), test_case.state );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -3725,7 +3726,7 @@ TEST( receive, snsrReadError )
 
     EXPECT_EQ( client.state(), State::CONNECTED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -3765,7 +3766,7 @@ TEST( receive, invalidSNSRValue )
 
         EXPECT_EQ( client.state(), State::CONNECTED );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -3806,7 +3807,7 @@ TEST( receive, connectionLostGracefulShutdown )
 
         EXPECT_EQ( client.state(), State::CONNECTED );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -3835,7 +3836,7 @@ TEST( receive, snrxbufsizeReadError )
 
     EXPECT_EQ( client.state(), State::CONNECTED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -3879,7 +3880,7 @@ TEST( receive, invalidSNRXBUFSIZEValue )
 
         EXPECT_EQ( client.state(), State::CONNECTED );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -3910,7 +3911,7 @@ TEST( receive, snrxrsrReadError )
 
     EXPECT_EQ( client.state(), State::CONNECTED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -3956,7 +3957,7 @@ TEST( receive, invalidSNRXRSRValue )
 
         EXPECT_EQ( client.state(), State::CONNECTED );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -3997,7 +3998,7 @@ TEST( receive, receiveBufferEmpty )
 
         EXPECT_EQ( client.state(), State::CONNECTED );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -4029,7 +4030,7 @@ TEST( receive, snrxrdReadError )
 
     EXPECT_EQ( client.state(), State::CONNECTED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -4061,7 +4062,7 @@ TEST( receive, receiveBufferReadError )
 
     EXPECT_EQ( client.state(), State::CONNECTED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -4098,7 +4099,7 @@ TEST( receive, snrxrdWriteError )
 
     EXPECT_EQ( client.state(), State::CONNECTED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -4136,7 +4137,7 @@ TEST( receive, sncrWriteError )
 
     EXPECT_EQ( client.state(), State::CONNECTED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -4175,7 +4176,7 @@ TEST( receive, sncrReadError )
 
     EXPECT_EQ( client.state(), State::CONNECTED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -4229,7 +4230,7 @@ TEST( receive, worksProperly )
 
             EXPECT_EQ( client.state(), State::CONNECTED );
 
-            EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+            EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
         } // for
     }
 
@@ -4292,7 +4293,7 @@ TEST( receive, worksProperly )
 
             EXPECT_EQ( client.state(), State::CONNECTED );
 
-            EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+            EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
         } // for
     }
 
@@ -4354,7 +4355,7 @@ TEST( receive, worksProperly )
 
             EXPECT_EQ( client.state(), State::CONNECTED );
 
-            EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+            EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
         } // for
     }
 }
@@ -4393,7 +4394,7 @@ TEST( shutdown, invalidState )
 
         EXPECT_EQ( client.state(), test_case.state );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -4419,7 +4420,7 @@ TEST( shutdown, snsrReadError )
 
     EXPECT_EQ( client.state(), State::CONNECTED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -4458,7 +4459,7 @@ TEST( shutdown, invalidSNSRValue )
 
         EXPECT_EQ( client.state(), State::CONNECTED );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -4498,7 +4499,7 @@ TEST( shutdown, notConnected )
 
         EXPECT_EQ( client.state(), State::CONNECTED );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -4525,7 +4526,7 @@ TEST( shutdown, sncrWriteError )
 
     EXPECT_EQ( client.state(), State::CONNECTED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -4552,7 +4553,7 @@ TEST( shutdown, sncrReadError )
 
     EXPECT_EQ( client.state(), State::CONNECTED );
 
-    EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+    EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
 }
 
 /**
@@ -4590,7 +4591,7 @@ TEST( shutdown, worksProperly )
 
         EXPECT_EQ( client.state(), State::CONNECTED );
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( AnyNumber() );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( AnyNumber() );
     } // for
 }
 
@@ -4605,7 +4606,7 @@ TEST( close, worksProperly )
 
         auto client = Client{ State::UNINITIALIZED, driver, random<Socket_ID>(), network_stack };
 
-        EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( 0 );
+        EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( 0 );
 
         EXPECT_FALSE( client.close().is_error() );
     }
@@ -4636,7 +4637,7 @@ TEST( close, worksProperly )
 
             EXPECT_FALSE( client.close().is_error() );
 
-            EXPECT_CALL( network_stack, deallocate_socket( _ ) ).Times( 0 );
+            EXPECT_CALL( network_stack, deallocate_socket( A<Socket_ID>() ) ).Times( 0 );
         } // for
     }
 }
