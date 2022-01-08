@@ -25,11 +25,13 @@
 
 #include <cstdint>
 
+#include "picolibrary/algorithm.h"
 #include "picolibrary/error.h"
 #include "picolibrary/ip/tcp.h"
 #include "picolibrary/ipv4.h"
 #include "picolibrary/mac_address.h"
 #include "picolibrary/result.h"
+#include "picolibrary/vector.h"
 #include "picolibrary/void.h"
 #include "picolibrary/wiznet/w5500.h"
 #include "picolibrary/wiznet/w5500/ip/tcp.h"
@@ -903,6 +905,40 @@ class Network_Stack {
     }
 
     /**
+     * \brief Allocate n sockets.
+     *
+     * \param[in] n The number of sockets to allocate.
+     *
+     * \return The allocated sockets' socket IDs if n sockets were successfully allocated.
+     * \return picolibrary::Generic_Error::INSUFFICIENT_SOCKETS_AVAILABLE if insufficient
+     *         sockets are available.
+     */
+    auto allocate_socket( std::uint_fast8_t n ) noexcept
+        -> Result<Fixed_Capacity_Vector<Socket_ID, SOCKETS>, Error_Code>
+    {
+        Array<Socket_ID, SOCKETS> socket_ids;
+        auto                      available_sockets = std::uint_fast8_t{};
+
+        for ( auto socket = static_cast<std::uint_fast8_t>( m_socket_0_reserved ? 1 : 0 );
+              socket < SOCKETS;
+              ++socket ) {
+            if ( m_socket_state[ socket ] == Socket_State::AVAILABLE ) {
+                socket_ids[ available_sockets ] = static_cast<Socket_ID>(
+                    socket << Control_Byte::Bit::SOCKET );
+
+                ++available_sockets;
+            } // if
+        }     // for
+
+        if ( available_sockets < n ) {
+            return Generic_Error::INSUFFICIENT_SOCKETS_AVAILABLE;
+        } // if
+
+        return Fixed_Capacity_Vector<Socket_ID, SOCKETS>{ socket_ids.begin(),
+                                                          socket_ids.begin() + available_sockets };
+    }
+
+    /**
      * \brief Allocate a specific socket.
      *
      * \param[in] socket_id The socket ID of the socket to allocate.
@@ -925,6 +961,49 @@ class Network_Stack {
     }
 
     /**
+     * \brief Allocate a range of specific sockets.
+     *
+     * \tparam Iterator Socket ID range iterator.
+     *
+     * \param[in] begin The beginning of the range of socket IDs of the sockets to
+     *            allocate.
+     * \param[in] end The end of the range of socket IDs of the sockets to allocate.
+     *
+     * \return Nothing if the range of sockets was successfully allocated.
+     * \return picolibrary::Generic_Error::LOGIC_ERROR if any of the sockets are not
+     *         available.
+     */
+    template<typename Iterator>
+    auto allocate_socket( Iterator begin, Iterator end ) noexcept -> Result<Void, Error_Code>
+    {
+        // #lizard forgives the length
+
+        auto result = for_each<Discard_Functor>(
+            begin, end, [ this ]( Socket_ID socket_id ) noexcept -> Result<Void, Error_Code> {
+                auto const socket = static_cast<std::uint_fast8_t>(
+                    static_cast<std::uint_fast8_t>( socket_id ) >> Control_Byte::Bit::SOCKET );
+
+                if ( m_socket_state[ socket ] != Socket_State::AVAILABLE ) {
+                    return Generic_Error::LOGIC_ERROR;
+                } // if
+
+                return {};
+            } );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        ::picolibrary::for_each( begin, end, [ this ]( Socket_ID socket_id ) noexcept {
+            auto const socket = static_cast<std::uint_fast8_t>(
+                static_cast<std::uint_fast8_t>( socket_id ) >> Control_Byte::Bit::SOCKET );
+
+            m_socket_state[ socket ] = Socket_State::ALLOCATED;
+        } );
+
+        return {};
+    }
+
+    /**
      * \brief Deallocate a socket.
      *
      * \param[in] socket_id The socket ID of the socket to deallocate.
@@ -937,6 +1016,23 @@ class Network_Stack {
         if ( m_socket_state[ socket ] == Socket_State::ALLOCATED ) {
             m_socket_state[ socket ] = Socket_State::AWAITING_SERVICE;
         } // if
+    }
+
+    /**
+     * \brief Deallocate a range of sockets.
+     *
+     * \tparam Iterator Socket ID range iterator.
+     *
+     * \param[in] begin The beginning of the range of socket IDs of the sockets to
+     *            deallocate.
+     * \param[in] end The end of the range of socket IDs of the sockets to deallocate.
+     */
+    template<typename Iterator>
+    void deallocate_socket( Iterator begin, Iterator end ) noexcept
+    {
+        ::picolibrary::for_each( begin, end, [ this ]( Socket_ID socket_id ) noexcept {
+            deallocate_socket( socket_id );
+        } );
     }
 
     /**
