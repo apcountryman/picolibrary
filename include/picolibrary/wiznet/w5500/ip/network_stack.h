@@ -907,7 +907,7 @@ class Network_Stack {
      *
      * \param[in] socket_id The socket ID of the socket to allocate.
      *
-     * \return socket_id if the socket was successfully allocated.
+     * \return Nothing if the socket was successfully allocated.
      * \return picolibrary::Generic_Error::LOGIC_ERROR if the socket is not available.
      */
     auto allocate_socket( Socket_ID socket_id ) noexcept -> Result<Void, Error_Code>
