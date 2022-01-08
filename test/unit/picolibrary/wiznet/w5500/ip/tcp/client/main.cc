@@ -1104,7 +1104,7 @@ TEST( bind, snmrReadError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) ).WillOnce( Return( error ) );
 
     auto const result = client.bind( random<Port>( 1 ) );
@@ -1130,7 +1130,7 @@ TEST( bind, snportReadError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
     EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( error ) );
 
@@ -1158,7 +1158,7 @@ TEST( bind, ephemeralPortsExhausted )
     auto const ephemeral_port = random<Port>( 1 );
 
     EXPECT_CALL( network_stack, tcp_ephemeral_port_allocation_enabled() ).WillOnce( Return( true ) );
-    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) )
         .WillRepeatedly( Return( static_cast<std::uint8_t>(
             ( random<std::uint8_t>() & 0b1'1'1'1'0000 ) | 0b0001 ) ) );
@@ -1189,7 +1189,7 @@ TEST( bind, endpointInUse )
 
     auto const port = random<Port>( 1 );
 
-    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) )
         .WillRepeatedly( Return( static_cast<std::uint8_t>(
             ( random<std::uint8_t>() & 0b1'1'1'1'0000 ) | 0b0001 ) ) );
@@ -1218,7 +1218,7 @@ TEST( bind, snportWriteError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
     EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( std::uint16_t{ 0 } ) );
     EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( error ) );
@@ -1246,7 +1246,7 @@ TEST( bind, sncrWriteError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
     EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( std::uint16_t{ 0 } ) );
     EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
@@ -1275,7 +1275,7 @@ TEST( bind, sncrReadError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
     EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( std::uint16_t{ 0 } ) );
     EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
@@ -1305,7 +1305,7 @@ TEST( bind, snsrReadError )
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+    EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
     EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
     EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( std::uint16_t{ 0 } ) );
     EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
@@ -1348,7 +1348,7 @@ TEST( bind, invalidSNSRValue )
 
         auto const error = random<Mock_Error>();
 
-        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
+        EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( random<std::uint_fast8_t>( 1, 8 ) ) );
         EXPECT_CALL( driver, read_sn_mr( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
         EXPECT_CALL( driver, read_sn_port( _ ) ).WillRepeatedly( Return( uint16_t{ 0 } ) );
         EXPECT_CALL( driver, write_sn_port( _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
@@ -1391,14 +1391,14 @@ TEST( bind, worksProperly )
 
         auto client = Client{ driver, socket_id, network_stack };
 
-        auto const available_sockets  = random<std::uint_fast8_t>( 1, 8 );
+        auto const sockets            = random<std::uint_fast8_t>( 1, 8 );
         auto const ephemeral_port_min = random<Port>( 1 );
         auto const ephemeral_port_max = random<Port>( ephemeral_port_min );
         auto const reserved_ephemeral_port = random<Port>( ephemeral_port_min, ephemeral_port_max );
 
         EXPECT_CALL( network_stack, tcp_ephemeral_port_allocation_enabled() ).WillOnce( Return( true ) );
-        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( available_sockets ) );
-        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+        EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( sockets ) );
+        for ( auto socket = std::uint_fast8_t{}; socket < sockets; ++socket ) {
             auto const sn_mr   = random<std::uint8_t>();
             auto const sn_port = generate_sn_port( sn_mr, reserved_ephemeral_port );
 
@@ -1438,14 +1438,14 @@ TEST( bind, worksProperly )
 
         auto client = Client{ driver, socket_id, network_stack };
 
-        auto const available_sockets  = random<std::uint_fast8_t>( 1, 8 );
+        auto const sockets            = random<std::uint_fast8_t>( 1, 8 );
         auto const ephemeral_port_min = random<Port>( 1 );
         auto const ephemeral_port_max = random<Port>( ephemeral_port_min );
         auto const reserved_ephemeral_port = random<Port>( ephemeral_port_min, ephemeral_port_max );
 
         EXPECT_CALL( network_stack, tcp_ephemeral_port_allocation_enabled() ).WillOnce( Return( true ) );
-        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( available_sockets ) );
-        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+        EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( sockets ) );
+        for ( auto socket = std::uint_fast8_t{}; socket < sockets; ++socket ) {
             auto const sn_mr   = random<std::uint8_t>();
             auto const sn_port = generate_sn_port( sn_mr, reserved_ephemeral_port );
 
@@ -1485,11 +1485,11 @@ TEST( bind, worksProperly )
 
         auto client = Client{ driver, socket_id, network_stack };
 
-        auto const port              = random<Port>( 1 );
-        auto const available_sockets = random<std::uint_fast8_t>( 1, 8 );
+        auto const port    = random<Port>( 1 );
+        auto const sockets = random<std::uint_fast8_t>( 1, 8 );
 
-        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( available_sockets ) );
-        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+        EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( sockets ) );
+        for ( auto socket = std::uint_fast8_t{}; socket < sockets; ++socket ) {
             auto const sn_mr   = random<std::uint8_t>();
             auto const sn_port = generate_sn_port( sn_mr, port );
 
@@ -1522,15 +1522,15 @@ TEST( bind, worksProperly )
         auto client = Client{ driver, socket_id, network_stack };
 
         auto const address            = random<Address>( 1 );
-        auto const available_sockets  = random<std::uint_fast8_t>( 1, 8 );
+        auto const sockets            = random<std::uint_fast8_t>( 1, 8 );
         auto const ephemeral_port_min = random<Port>( 1 );
         auto const ephemeral_port_max = random<Port>( ephemeral_port_min );
         auto const reserved_ephemeral_port = random<Port>( ephemeral_port_min, ephemeral_port_max );
 
         EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( address.as_byte_array() ) );
         EXPECT_CALL( network_stack, tcp_ephemeral_port_allocation_enabled() ).WillOnce( Return( true ) );
-        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( available_sockets ) );
-        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+        EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( sockets ) );
+        for ( auto socket = std::uint_fast8_t{}; socket < sockets; ++socket ) {
             auto const sn_mr   = random<std::uint8_t>();
             auto const sn_port = generate_sn_port( sn_mr, reserved_ephemeral_port );
 
@@ -1570,13 +1570,13 @@ TEST( bind, worksProperly )
 
         auto client = Client{ driver, socket_id, network_stack };
 
-        auto const address           = random<Address>( 1 );
-        auto const port              = random<Port>( 1 );
-        auto const available_sockets = random<std::uint_fast8_t>( 1, 8 );
+        auto const address = random<Address>( 1 );
+        auto const port    = random<Port>( 1 );
+        auto const sockets = random<std::uint_fast8_t>( 1, 8 );
 
         EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( address.as_byte_array() ) );
-        EXPECT_CALL( network_stack, available_sockets() ).WillOnce( Return( available_sockets ) );
-        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+        EXPECT_CALL( network_stack, sockets() ).WillOnce( Return( sockets ) );
+        for ( auto socket = std::uint_fast8_t{}; socket < sockets; ++socket ) {
             auto const sn_mr   = random<std::uint8_t>();
             auto const sn_port = generate_sn_port( sn_mr, port );
 

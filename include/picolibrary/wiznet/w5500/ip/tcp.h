@@ -471,9 +471,9 @@ class Client {
 
         SN_PORT::Type used_ports[ SOCKETS ];
 
-        auto const available_sockets = m_network_stack->available_sockets();
+        auto const sockets = m_network_stack->sockets();
 
-        for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+        for ( auto socket = std::uint_fast8_t{}; socket < sockets; ++socket ) {
             auto const socket_id = static_cast<Socket_ID>( socket << Control_Byte::Bit::SOCKET );
 
             Protocol protocol;
@@ -499,8 +499,8 @@ class Client {
             used_ports[ socket ] = protocol == Protocol::TCP ? port : 0;
         } // for
 
-        auto const is_available = [ &used_ports, available_sockets ]( SN_PORT::Type port ) noexcept -> bool {
-            for ( auto socket = std::uint_fast8_t{}; socket < available_sockets; ++socket ) {
+        auto const is_available = [ &used_ports, sockets ]( SN_PORT::Type port ) noexcept -> bool {
+            for ( auto socket = std::uint_fast8_t{}; socket < sockets; ++socket ) {
                 if ( used_ports[ socket ] == port ) {
                     return false;
                 } // if
