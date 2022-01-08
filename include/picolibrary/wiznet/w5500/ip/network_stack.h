@@ -976,6 +976,8 @@ class Network_Stack {
     template<typename Iterator>
     auto allocate_socket( Iterator begin, Iterator end ) noexcept -> Result<Void, Error_Code>
     {
+        // #lizard forgives the length
+
         auto result = for_each<Discard_Functor>(
             begin, end, [ this ]( Socket_ID socket_id ) noexcept -> Result<Void, Error_Code> {
                 auto const socket = static_cast<std::uint_fast8_t>(
