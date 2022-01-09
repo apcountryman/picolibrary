@@ -1809,6 +1809,8 @@ class Acceptor {
      * \return picolibrary::Generic_Error::ENDPOINT_IN_USE if endpoint is already in use.
      * \return picolibrary::Generic_Error::EPHEMERAL_PORTS_EXHAUSTED if an ephemeral port
      *         was requested an no ephemeral ports are available.
+     * \return picolibrary::WIZnet::W5500::IP::Network_Stack::nonresponsive_device_error()
+     *         if the W5500 is nonresponsive.
      * \return An error code if binding the socket to the local endpoint failed for any
      *         other reason.
      */
