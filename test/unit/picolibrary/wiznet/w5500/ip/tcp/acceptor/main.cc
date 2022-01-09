@@ -73,25 +73,76 @@ using ::testing::Return;
 using Acceptor = ::picolibrary::WIZnet::W5500::IP::TCP::Acceptor<Mock_Driver, Mock_Network_Stack>;
 using State = Acceptor::State;
 
-auto random_unique_socket_ids( std::uint_fast8_t backlog = random<std::uint_fast8_t>( 1, 8 ), std::uint_fast8_t sockets = 8 )
-{
-    if ( sockets > 8 ) {
-        throw std::invalid_argument{ "sockets > 8" };
-    } // if
+class Random_Unique_Socket_IDs_Generator {
+  public:
+    Random_Unique_Socket_IDs_Generator() = default;
 
-    if ( backlog > sockets ) {
-        throw std::invalid_argument{ "backlog > sockets" };
-    } // if
+    Random_Unique_Socket_IDs_Generator( std::uint_fast8_t sockets ) :
+        m_socket_ids{ socket_ids( sockets ) }
+    {
+    }
 
-    auto socket_ids = Array<Socket_ID, 8>{
-        Socket_ID::_0, Socket_ID::_1, Socket_ID::_2, Socket_ID::_3,
-        Socket_ID::_4, Socket_ID::_5, Socket_ID::_6, Socket_ID::_7,
-    };
+    Random_Unique_Socket_IDs_Generator( Random_Unique_Socket_IDs_Generator && ) = delete;
 
-    std::shuffle( socket_ids.begin(), socket_ids.begin() + sockets, pseudo_random_number_generator() );
+    Random_Unique_Socket_IDs_Generator( Random_Unique_Socket_IDs_Generator const & ) = delete;
 
-    return std::vector<Socket_ID>{ socket_ids.begin(), socket_ids.begin() + backlog };
-}
+    ~Random_Unique_Socket_IDs_Generator() noexcept = default;
+
+    auto operator=( Random_Unique_Socket_IDs_Generator && ) = delete;
+
+    auto operator=( Random_Unique_Socket_IDs_Generator const & ) = delete;
+
+    auto available() const noexcept
+    {
+        return m_socket_ids.size();
+    }
+
+    auto operator()( std::uint_fast8_t n )
+    {
+        if ( not n ) {
+            throw std::invalid_argument{ "n == 0" };
+        } // if
+
+        if ( n > m_socket_ids.size() ) {
+            throw std::invalid_argument{ "n > available()" };
+        } // if
+
+        return generate( n );
+    }
+
+    auto operator()()
+    {
+        if ( not available() ) {
+            throw std::logic_error{ "no socket IDs available" };
+        } // if
+
+        return generate( random<std::uint_fast8_t>( 1, available() ) );
+    }
+
+  private:
+    std::vector<Socket_ID> m_socket_ids{ socket_ids( 8 ) };
+
+    static auto socket_ids( std::uint_fast8_t sockets ) -> std::vector<Socket_ID>
+    {
+        auto socket_ids = Array<Socket_ID, 8>{
+            Socket_ID::_0, Socket_ID::_1, Socket_ID::_2, Socket_ID::_3,
+            Socket_ID::_4, Socket_ID::_5, Socket_ID::_6, Socket_ID::_7,
+        };
+
+        std::shuffle( socket_ids.begin(), socket_ids.begin() + sockets, pseudo_random_number_generator() );
+
+        return std::vector<Socket_ID>{ socket_ids.begin(), socket_ids.begin() + sockets };
+    }
+
+    auto generate( std::uint_fast8_t n ) -> std::vector<Socket_ID>
+    {
+        auto socket_ids = std::vector<Socket_ID>{ m_socket_ids.end() - n, m_socket_ids.end() };
+
+        m_socket_ids.resize( m_socket_ids.size() - n );
+
+        return socket_ids;
+    }
+};
 
 auto sorted_socket_ids( std::vector<Socket_ID> socket_ids )
 {
@@ -209,7 +260,7 @@ TEST( constructorSocketIDs, worksProperly )
         auto driver        = Mock_Driver{};
         auto network_stack = Mock_Network_Stack{};
 
-        auto const socket_ids = random_unique_socket_ids( test_case.backlog );
+        auto const socket_ids = Random_Unique_Socket_IDs_Generator{}( test_case.backlog );
 
         auto const acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -234,7 +285,7 @@ TEST( enableInterrupts, snimrReadError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -259,7 +310,7 @@ TEST( enableInterrupts, snimrWriteError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -287,7 +338,7 @@ TEST( enableInterrupts, worksProperly )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -314,7 +365,7 @@ TEST( disableInterrupts, snimrReadError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -339,7 +390,7 @@ TEST( disableInterrupts, snimrWriteError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -367,7 +418,7 @@ TEST( disableInterrupts, worksProperly )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -394,7 +445,7 @@ TEST( disableAllInterrupts, snimrWriteError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -421,7 +472,7 @@ TEST( disableAllInterrupts, worksProperly )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -443,7 +494,7 @@ TEST( enabledInterrupts, snimrReadError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto const acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -468,7 +519,7 @@ TEST( enabledInterrupts, worksProperly )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto const acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -493,7 +544,7 @@ TEST( interruptContext, snirReadError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto const acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -518,7 +569,7 @@ TEST( interruptContext, worksProperly )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto const acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -549,7 +600,7 @@ TEST( configureNoDelayedAck, snmrWriteError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -589,7 +640,7 @@ TEST( configureNoDelayedAck, worksProperly )
         auto driver        = Mock_Driver{};
         auto network_stack = Mock_Network_Stack{};
 
-        auto const socket_ids = random_unique_socket_ids();
+        auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
         auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -615,7 +666,7 @@ TEST( noDelayedAckConfiguration, snimrReadError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto const acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -654,7 +705,7 @@ TEST( noDelayedAckConfiguration, worksProperly )
         auto driver        = Mock_Driver{};
         auto network_stack = Mock_Network_Stack{};
 
-        auto const socket_ids = random_unique_socket_ids();
+        auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
         auto const acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -681,7 +732,7 @@ TEST( configureMaximumSegmentSize, snmssrWriteError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -711,7 +762,7 @@ TEST( configureMaximumSegmentSize, worksProperly )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -738,7 +789,7 @@ TEST( configureTimeToLive, snttlWriteError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -765,7 +816,7 @@ TEST( configureTimeToLive, worksProperly )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -790,7 +841,7 @@ TEST( timeToLive, snttlReadError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto const acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -815,7 +866,7 @@ TEST( timeToLive, worksProperly )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto const acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -841,7 +892,7 @@ TEST( configureKeepalivePeriod, snkpalvtrWriteError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -869,7 +920,7 @@ TEST( configureKeepalivePeriod, worksProperly )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -894,7 +945,7 @@ TEST( keepalivePeriod, snkpalvtrReadError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto const acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -919,7 +970,7 @@ TEST( keepalivePeriod, worksProperly )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto const acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -957,7 +1008,7 @@ TEST( bind, invalidState )
         auto driver        = Mock_Driver{};
         auto network_stack = Mock_Network_Stack{};
 
-        auto const socket_ids = random_unique_socket_ids();
+        auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
         auto acceptor = Acceptor{ test_case.state, driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -981,7 +1032,7 @@ TEST( bind, siprReadError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -1008,7 +1059,7 @@ TEST( bind, invalidEndpoint )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -1035,7 +1086,7 @@ TEST( bind, ephemeralPortAllocationNotEnabled )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -1060,7 +1111,7 @@ TEST( bind, snmrReadError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -1088,7 +1139,7 @@ TEST( bind, snportReadError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -1117,7 +1168,7 @@ TEST( bind, ephemeralPortsExhausted )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -1151,7 +1202,7 @@ TEST( bind, endpointInUse )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -1182,7 +1233,7 @@ TEST( bind, snportWriteError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -1212,7 +1263,7 @@ TEST( bind, sncrWriteError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -1243,7 +1294,7 @@ TEST( bind, sncrReadError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -1275,7 +1326,7 @@ TEST( bind, snsrReadError )
     auto driver        = Mock_Driver{};
     auto network_stack = Mock_Network_Stack{};
 
-    auto const socket_ids = random_unique_socket_ids();
+    auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
     auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -1320,7 +1371,7 @@ TEST( bind, invalidSNSRValue )
         auto driver        = Mock_Driver{};
         auto network_stack = Mock_Network_Stack{};
 
-        auto const socket_ids = random_unique_socket_ids();
+        auto const socket_ids = Random_Unique_Socket_IDs_Generator{}();
 
         auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -1367,8 +1418,7 @@ TEST( bind, worksProperly )
 
         auto const sockets = random<std::uint_fast8_t>( 1, 8 );
 
-        auto const socket_ids = random_unique_socket_ids(
-            random<std::uint_fast8_t>( 1, sockets ), sockets );
+        auto const socket_ids = Random_Unique_Socket_IDs_Generator{ sockets }();
 
         auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -1418,8 +1468,7 @@ TEST( bind, worksProperly )
 
         auto const sockets = random<std::uint_fast8_t>( 1, 8 );
 
-        auto const socket_ids = random_unique_socket_ids(
-            random<std::uint_fast8_t>( 1, sockets ), sockets );
+        auto const socket_ids = Random_Unique_Socket_IDs_Generator{ sockets }();
 
         auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -1469,8 +1518,7 @@ TEST( bind, worksProperly )
 
         auto const sockets = random<std::uint_fast8_t>( 1, 8 );
 
-        auto const socket_ids = random_unique_socket_ids(
-            random<std::uint_fast8_t>( 1, sockets ), sockets );
+        auto const socket_ids = Random_Unique_Socket_IDs_Generator{ sockets }();
 
         auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -1509,8 +1557,7 @@ TEST( bind, worksProperly )
 
         auto const sockets = random<std::uint_fast8_t>( 1, 8 );
 
-        auto const socket_ids = random_unique_socket_ids(
-            random<std::uint_fast8_t>( 1, sockets ), sockets );
+        auto const socket_ids = Random_Unique_Socket_IDs_Generator{ sockets }();
 
         auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
@@ -1562,8 +1609,7 @@ TEST( bind, worksProperly )
 
         auto const sockets = random<std::uint_fast8_t>( 1, 8 );
 
-        auto const socket_ids = random_unique_socket_ids(
-            random<std::uint_fast8_t>( 1, sockets ), sockets );
+        auto const socket_ids = Random_Unique_Socket_IDs_Generator{ sockets }();
 
         auto acceptor = Acceptor{ driver, socket_ids.begin(), socket_ids.end(), network_stack };
 
