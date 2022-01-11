@@ -25,41 +25,6 @@ configure_file(
 set(
     PICOLIBRARY_SOURCE_FILES
     "picolibrary.cc"
-    "picolibrary/adc.cc"
-    "picolibrary/algorithm.cc"
-    "picolibrary/array.cc"
-    "picolibrary/asynchronous_serial.cc"
-    "picolibrary/asynchronous_serial/stream.cc"
-    "picolibrary/bit_manipulation.cc"
-    "picolibrary/circular_buffer.cc"
-    "picolibrary/crc.cc"
-    "picolibrary/error.cc"
-    "picolibrary/event.cc"
-    "picolibrary/format.cc"
-    "picolibrary/gpio.cc"
-    "picolibrary/i2c.cc"
-    "picolibrary/indicator.cc"
-    "picolibrary/interrupt_guard.cc"
-    "picolibrary/ip.cc"
-    "picolibrary/ip/network_stack.cc"
-    "picolibrary/ip/tcp.cc"
-    "picolibrary/ipv4.cc"
-    "picolibrary/mac_address.cc"
-    "picolibrary/microchip.cc"
-    "picolibrary/microchip/mcp23008.cc"
-    "picolibrary/microchip/mcp3008.cc"
-    "picolibrary/result.cc"
-    "picolibrary/spi.cc"
-    "picolibrary/state_machine.cc"
-    "picolibrary/stream.cc"
-    "picolibrary/utility.cc"
-    "picolibrary/vector.cc"
-    "picolibrary/void.cc"
-    "picolibrary/wiznet.cc"
-    "picolibrary/wiznet/w5500.cc"
-    "picolibrary/wiznet/w5500/ip.cc"
-    "picolibrary/wiznet/w5500/ip/network_stack.cc"
-    "picolibrary/wiznet/w5500/ip/tcp.cc"
 )
 set( PICOLIBRARY_LINK_LIBRARIES )
 
@@ -74,17 +39,6 @@ if( ${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING} )
     list(
         APPEND PICOLIBRARY_SOURCE_FILES
         "picolibrary/testing/interactive.cc"
-        "picolibrary/testing/interactive/adc.cc"
-        "picolibrary/testing/interactive/asynchronous_serial.cc"
-        "picolibrary/testing/interactive/asynchronous_serial/stream.cc"
-        "picolibrary/testing/interactive/gpio.cc"
-        "picolibrary/testing/interactive/i2c.cc"
-        "picolibrary/testing/interactive/microchip.cc"
-        "picolibrary/testing/interactive/microchip/mcp23008.cc"
-        "picolibrary/testing/interactive/microchip/mcp3008.cc"
-        "picolibrary/testing/interactive/spi.cc"
-        "picolibrary/testing/interactive/wiznet.cc"
-        "picolibrary/testing/interactive/wiznet/w5500.cc"
     )
 endif( ${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING} )
 
@@ -92,31 +46,6 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     list(
         APPEND PICOLIBRARY_SOURCE_FILES
         "picolibrary/testing/unit.cc"
-        "picolibrary/testing/unit/adc.cc"
-        "picolibrary/testing/unit/asynchronous_serial.cc"
-        "picolibrary/testing/unit/crc.cc"
-        "picolibrary/testing/unit/error.cc"
-        "picolibrary/testing/unit/event.cc"
-        "picolibrary/testing/unit/gpio.cc"
-        "picolibrary/testing/unit/i2c.cc"
-        "picolibrary/testing/unit/indicator.cc"
-        "picolibrary/testing/unit/ip.cc"
-        "picolibrary/testing/unit/ip/network_stack.cc"
-        "picolibrary/testing/unit/ip/tcp.cc"
-        "picolibrary/testing/unit/ipv4.cc"
-        "picolibrary/testing/unit/mac_address.cc"
-        "picolibrary/testing/unit/microchip.cc"
-        "picolibrary/testing/unit/microchip/mcp23008.cc"
-        "picolibrary/testing/unit/microchip/mcp3008.cc"
-        "picolibrary/testing/unit/mock_handle.cc"
-        "picolibrary/testing/unit/random.cc"
-        "picolibrary/testing/unit/spi.cc"
-        "picolibrary/testing/unit/stream.cc"
-        "picolibrary/testing/unit/wiznet.cc"
-        "picolibrary/testing/unit/wiznet/w5500.cc"
-        "picolibrary/testing/unit/wiznet/w5500/ip.cc"
-        "picolibrary/testing/unit/wiznet/w5500/ip/network_stack.cc"
-        "picolibrary/testing/unit/wiznet/w5500/ip/tcp.cc"
     )
     list(
         APPEND PICOLIBRARY_LINK_LIBRARIES
@@ -131,32 +60,16 @@ add_library(
 )
 target_include_directories(
     picolibrary
-    PUBLIC "${PICOLIBRARY_HARDWARE_INCLUDE_DIR}"
     PUBLIC "${PROJECT_SOURCE_DIR}/include"
 )
 target_compile_definitions(
     picolibrary
     PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING}>,PICOLIBRARY_ENABLE_INTERACTIVE_TESTING,>"
     PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_ENABLE_UNIT_TESTING}>,PICOLIBRARY_ENABLE_UNIT_TESTING,>"
-    PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION}>,PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION,>"
-    PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION}>,PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION,>"
 )
 target_link_libraries(
     picolibrary
     ${PICOLIBRARY_LINK_LIBRARIES}
-)
-
-add_library(
-    picolibrary-fatal_error STATIC
-    "picolibrary/fatal_error.cc"
-)
-target_include_directories(
-    picolibrary-fatal_error
-    PUBLIC "${PROJECT_SOURCE_DIR}/include"
-)
-target_link_libraries(
-    picolibrary-fatal_error
-    picolibrary
 )
 
 add_library(
