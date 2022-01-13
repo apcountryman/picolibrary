@@ -52,6 +52,63 @@ struct is_error_code_enum : std::false_type {
 template<typename Enum>
 constexpr auto is_error_code_enum_v = is_error_code_enum<Enum>::value;
 
+/**
+ * \brief Error category.
+ */
+class Error_Category {
+  public:
+    Error_Category( Error_Category && ) = delete;
+
+    Error_Category( Error_Category const & ) = delete;
+
+    auto operator=( Error_Category && ) = delete;
+
+    auto operator=( Error_Category const & ) = delete;
+
+    /**
+     * \brief Get the name of the error category.
+     *
+     * \return The name of the error category.
+     */
+#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
+    virtual auto name() const noexcept -> char const * = 0;
+#else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
+    constexpr auto const * name() const noexcept
+    {
+        return "";
+    }
+#endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
+
+    /**
+     * \brief Get an error ID's description.
+     *
+     * \param[in] id The error ID whose description is to be got.
+     *
+     * \return The error ID's description.
+     */
+#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
+    virtual auto error_description( Error_ID id ) const noexcept -> char const * = 0;
+#else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
+    constexpr auto const * error_description( Error_ID id ) const noexcept
+    {
+        static_cast<void>( id );
+
+        return "";
+    }
+#endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
+
+  protected:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Error_Category() noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Error_Category() noexcept = default;
+};
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_ERROR_H

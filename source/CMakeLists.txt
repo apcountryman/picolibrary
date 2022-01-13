@@ -47,6 +47,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     list(
         APPEND PICOLIBRARY_SOURCE_FILES
         "picolibrary/testing/unit.cc"
+        "picolibrary/testing/unit/error.cc"
         "picolibrary/testing/unit/random.cc"
     )
     list(
@@ -68,6 +69,7 @@ target_compile_definitions(
     picolibrary
     PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING}>,PICOLIBRARY_ENABLE_INTERACTIVE_TESTING,>"
     PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_ENABLE_UNIT_TESTING}>,PICOLIBRARY_ENABLE_UNIT_TESTING,>"
+    PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION}>,PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION,>"
 )
 target_link_libraries(
     picolibrary
