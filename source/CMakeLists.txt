@@ -46,6 +46,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     list(
         APPEND PICOLIBRARY_SOURCE_FILES
         "picolibrary/testing/unit.cc"
+        "picolibrary/testing/unit/random.cc"
     )
     list(
         APPEND PICOLIBRARY_LINK_LIBRARIES
