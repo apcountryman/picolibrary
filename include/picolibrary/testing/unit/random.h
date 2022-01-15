@@ -99,7 +99,7 @@ inline auto random<bool>()
 }
 
 /**
- * \brief Generate a pseudo random char.
+ * \brief Generate a pseudo-random char.
  *
  * \return A pseudo-random char in the range [' ','~'].
  */
