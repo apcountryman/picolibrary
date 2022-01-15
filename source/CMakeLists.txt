@@ -26,6 +26,7 @@ set(
     PICOLIBRARY_SOURCE_FILES
     "picolibrary.cc"
     "picolibrary/error.cc"
+    "picolibrary/void.cc"
 )
 set( PICOLIBRARY_LINK_LIBRARIES )
 
