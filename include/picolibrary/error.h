@@ -143,7 +143,7 @@ class Error_Code final {
      * \attention An error code construction helper function with the following name and
      *            signature must be provided:
      * \code
-     * auto make_error_code( Error_Code_Enum error ) noexcept -> picolibrary::Error_Code
+     * auto make_error_code( Error_Code_Enum error ) noexcept -> picolibrary::Error_Code;
      * \endcode
      *
      * \param[in] error The error.
@@ -167,7 +167,7 @@ class Error_Code final {
      *
      * \param[in] original The original to copy.
      */
-    constexpr Error_Code( Error_Code const & source ) = default;
+    constexpr Error_Code( Error_Code const & original ) = default;
 
     /**
      * \brief Destructor.
