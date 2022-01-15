@@ -23,10 +23,33 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_ERROR_H
 #define PICOLIBRARY_TESTING_UNIT_ERROR_H
 
+#include <type_traits>
+
 #include "gmock/gmock.h"
 #include "picolibrary/error.h"
+#include "picolibrary/testing/unit/random.h"
 
 namespace picolibrary::Testing::Unit {
+
+/**
+ * \brief Mock errors.
+ *
+ * \relatedalso picolibrary::Testing::Unit::Mock_Error_Category
+ */
+enum class Mock_Error : Error_ID {};
+
+/**
+ * \brief Generate a pseudo-random picolibrary::Testing::Unit::Mock_Error.
+ *
+ * \relatedalso picolibrary::Testing::Unit::Mock_Error_Category
+ *
+ * \return A pseudo-randomly generated picolibrary::Testing::Unit::Mock_Error.
+ */
+template<>
+inline auto random<Mock_Error>()
+{
+    return static_cast<Mock_Error>( random<Error_ID>() );
+}
 
 /**
  * \brief Mock error category.
@@ -57,6 +80,33 @@ class Mock_Error_Category : public Error_Category {
     MOCK_METHOD( char const *, error_description, ( Error_ID ), ( const, noexcept, override ) );
 };
 
+/**
+ * \brief Construct an error code from a mock error.
+ *
+ * \relatedalso picolibrary::Testing::Unit::Mock_Error_Category
+ *
+ * \param[in] error The mock error to construct the error code from.
+ *
+ * \return The constructed error code.
+ */
+inline auto make_error_code( Mock_Error error ) noexcept
+{
+    return Error_Code{ Mock_Error_Category::instance(), static_cast<Error_ID>( error ) };
+}
+
 } // namespace picolibrary::Testing::Unit
+
+namespace picolibrary {
+
+/**
+ * \brief picolibrary::Testing::Unit::Mock_Error error code enum registration.
+ *
+ * \relatedalso picolibrary::Testing::Unit::Mock_Error_Category
+ */
+template<>
+struct is_error_code_enum<Testing::Unit::Mock_Error> : std::true_type {
+};
+
+} // namespace picolibrary
 
 #endif // PICOLIBRARY_TESTING_UNIT_ERROR_H
