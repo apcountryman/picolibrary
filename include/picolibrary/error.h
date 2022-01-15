@@ -26,6 +26,8 @@
 #include <cstdint>
 #include <type_traits>
 
+#include "picolibrary/void.h"
+
 namespace picolibrary {
 
 /**
@@ -118,6 +120,13 @@ class Error_Code final {
      * \brief Constructor.
      */
     constexpr Error_Code() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Error_Code( Void ) noexcept
+    {
+    }
 
     /**
      * \brief Constructor.
