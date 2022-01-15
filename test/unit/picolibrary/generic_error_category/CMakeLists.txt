@@ -25,6 +25,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     target_link_libraries(
         test-unit-picolibrary-generic_error_category
         picolibrary
+        picolibrary-testing-unit-fatal_error
     )
     add_test(
         NAME    test-unit-picolibrary-generic_error_category

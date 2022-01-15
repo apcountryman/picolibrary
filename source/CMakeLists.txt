@@ -79,6 +79,15 @@ target_link_libraries(
 )
 
 add_library(
+    picolibrary-fatal_error STATIC
+    "picolibrary/fatal_error.cc"
+)
+target_include_directories(
+    picolibrary-fatal_error
+    PUBLIC "${PROJECT_SOURCE_DIR}/include"
+)
+
+add_library(
     picolibrary-version STATIC
     "${CMAKE_CURRENT_BINARY_DIR}/picolibrary/version.cc"
 )
@@ -86,3 +95,14 @@ target_include_directories(
     picolibrary-version
     PUBLIC "${PROJECT_SOURCE_DIR}/include"
 )
+
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+    add_library(
+        picolibrary-testing-unit-fatal_error STATIC
+        "picolibrary/testing/unit/fatal_error.cc"
+    )
+    target_include_directories(
+        picolibrary-testing-unit-fatal_error
+        PUBLIC "${PROJECT_SOURCE_DIR}/include"
+    )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )

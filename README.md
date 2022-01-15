@@ -28,6 +28,10 @@ target_link_libraries(
 )
 ```
 
+The `picolibrary` static library does not provide an implementation for
+`::picolibrary::trap_fatal_error()`.
+See `include/picolibrary/fatal_error.h` for more information.
+
 ## Usage (Development)
 This repository's Git `pre-commit` hook script is the simplest way to configure, build,
 and test this project during development.
