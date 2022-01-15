@@ -334,6 +334,114 @@ constexpr auto operator!=( Error_Code const & lhs, Error_Code const & rhs ) noex
     return not( lhs == rhs );
 }
 
+/**
+ * \brief Generic errors.
+ *
+ * \relatedalso picolibrary::Generic_Error_Category
+ */
+enum class Generic_Error : Error_ID {
+    INVALID_ARGUMENT, ///< Invalid argument.
+    LOGIC_ERROR,      ///< Logic error.
+    OUT_OF_RANGE,     ///< Out of range.
+    RUNTIME_ERROR,    ///< Runtime error.
+};
+
+/**
+ * \brief Generic error category.
+ */
+class Generic_Error_Category final : public Error_Category {
+  public:
+    /**
+     * \brief Get a reference to the generic error category instance.
+     *
+     * \return A reference to the generic error category instance.
+     */
+    static constexpr auto const & instance() noexcept
+    {
+        return INSTANCE;
+    }
+
+    Generic_Error_Category( Generic_Error_Category && ) = delete;
+
+    Generic_Error_Category( Generic_Error_Category const & ) = delete;
+
+    auto operator=( Generic_Error_Category && ) = delete;
+
+    auto operator=( Generic_Error_Category const & ) = delete;
+
+#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
+    /**
+     * \brief Get the name of the error category.
+     *
+     * \return The name of the error category.
+     */
+    virtual auto name() const noexcept -> char const * override final
+    {
+        return "::picolibrary::Generic_Error";
+    }
+#endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
+
+#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
+    /**
+     * \brief Get an error ID's description.
+     *
+     * \param[in] id The error ID whose description is to be got.
+     *
+     * \return The error ID's description.
+     */
+    virtual auto error_description( Error_ID id ) const noexcept -> char const * override final
+    {
+        switch ( static_cast<Generic_Error>( id ) ) {
+            case Generic_Error::INVALID_ARGUMENT: return "INVALID_ARGUMENT";
+            case Generic_Error::LOGIC_ERROR: return "LOGIC_ERROR";
+            case Generic_Error::OUT_OF_RANGE: return "OUT_OF_RANGE";
+            case Generic_Error::RUNTIME_ERROR: return "RUNTIME_ERROR";
+        } // switch
+
+        return "UNKNOWN";
+    }
+#endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
+
+  private:
+    /**
+     * \brief The generic error category instance.
+     */
+    static Generic_Error_Category const INSTANCE;
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Generic_Error_Category() noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Generic_Error_Category() noexcept = default;
+};
+
+/**
+ * \brief Construct an error code from a generic error.
+ *
+ * \relatedalso picolibrary::Generic_Error_Category
+ *
+ * \param[in] error The generic error to construct the error code from.
+ *
+ * \return The constructed error code.
+ */
+inline auto make_error_code( Generic_Error error ) noexcept
+{
+    return Error_Code{ Generic_Error_Category::instance(), static_cast<Error_ID>( error ) };
+}
+
+/**
+ * \brief picolibrary::Generic_Error error code enum registration.
+ *
+ * \relatedalso picolibrary::Generic_Error_Category
+ */
+template<>
+struct is_error_code_enum<Generic_Error> : std::true_type {
+};
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_ERROR_H
