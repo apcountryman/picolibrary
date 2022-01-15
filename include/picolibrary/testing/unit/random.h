@@ -137,7 +137,8 @@ auto random_container( std::size_t size, Value_Generator generate_value )
 template<typename Container>
 auto random_container( std::size_t size = random<std::uint_fast8_t>( 0, 15 ) )
 {
-    return random_container( size, random<typename Container::value_type>() );
+    return random_container<Container>(
+        size, []() { return random<typename Container::value_type>(); } );
 }
 
 } // namespace picolibrary::Testing::Unit
