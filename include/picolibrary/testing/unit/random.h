@@ -27,6 +27,7 @@
 #include <cstdint>
 #include <limits>
 #include <random>
+#include <utility>
 
 namespace picolibrary::Testing::Unit {
 
@@ -107,6 +108,22 @@ template<>
 inline auto random<char>()
 {
     return random<char>( ' ', '~' );
+}
+
+/**
+ * \brief Generate a pair of pseudo-random values that are unique.
+ *
+ * \tparam T The type to be pseudo-randomly generated.
+ *
+ * \return A pair of pseudo-random values that are unique.
+ */
+template<typename T>
+auto random_unique_pair()
+{
+    auto const a = random<T>();
+    auto const b = random<T>();
+
+    return std::pair<T, T>{ a, b != a ? b : b ^ random<T>( 1 ) };
 }
 
 /**
