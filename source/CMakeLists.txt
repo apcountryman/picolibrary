@@ -26,6 +26,7 @@ set(
     PICOLIBRARY_SOURCE_FILES
     "picolibrary.cc"
     "picolibrary/error.cc"
+    "picolibrary/precondition.cc"
     "picolibrary/result.cc"
     "picolibrary/void.cc"
 )
