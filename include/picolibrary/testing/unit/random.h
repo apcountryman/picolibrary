@@ -185,7 +185,7 @@ auto random_unique_container_pair( std::size_t size = random<std::size_t>( 1, 15
 {
     if ( not( size > 0 ) ) {
         throw std::invalid_argument{
-            "::picolibrary::Testing::Unit::random_unique_container_pair(): size == 0"
+            "::picolibrary::Testing::Unit::random_unique_container_pair(): size must be greater than 0"
         };
     } // if
 
