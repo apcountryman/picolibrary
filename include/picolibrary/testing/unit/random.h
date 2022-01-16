@@ -27,6 +27,7 @@
 #include <cstdint>
 #include <limits>
 #include <random>
+#include <stdexcept>
 #include <utility>
 
 namespace picolibrary::Testing::Unit {
@@ -167,6 +168,36 @@ auto random_container( std::size_t size = random<std::size_t>( 0, 15 ) )
 {
     return random_container<Container>(
         size, []() { return random<typename Container::value_type>(); } );
+}
+
+/**
+ * \brief Generate a pair of unique standard containers of the specified size populated
+ *        with pseudo-randomly generated values.
+ *
+ * \tparam Container The type of standard container to generate.
+ *
+ * \param[in] size The desired container size.
+ *
+ * \return The pair of generated containers.
+ */
+template<typename Container>
+auto random_unique_container_pair( std::size_t size = random<std::size_t>( 1, 15 ) )
+{
+    if ( not( size > 0 ) ) {
+        throw std::invalid_argument{
+            "::picolibrary::Testing::Unit::random_unique_container_pair(): size must be "
+            "greater than 0"
+        };
+    } // if
+
+    auto a = random_container<Container>( size );
+    auto b = random_container<Container>( size );
+
+    if ( a == b ) {
+        b[ random<std::size_t>( 0, size - 1 ) ] ^= random<typename Container::value_type>( 1 );
+    } // if
+
+    return std::pair<Container, Container>{ std::move( a ), std::move( b ) };
 }
 
 } // namespace picolibrary::Testing::Unit
