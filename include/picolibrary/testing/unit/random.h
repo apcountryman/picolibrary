@@ -111,11 +111,11 @@ inline auto random<char>()
 }
 
 /**
- * \brief Generate a pseudo-random pair of values.
+ * \brief Generate a pair of pseudo-random values that are unique.
  *
  * \tparam T The type to be pseudo-randomly generated.
  *
- * \return A pair of pseudo-randomly generated values.
+ * \return A pair of pseudo-random values that are unique.
  */
 template<typename T>
 auto random_unique_pair()
