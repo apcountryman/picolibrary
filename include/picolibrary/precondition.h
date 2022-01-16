@@ -33,7 +33,7 @@ namespace picolibrary {
  * \tparam Error A type that can be implicitly converted to picolibrary::Error_Code.
  *
  * \param[in] expectation The expectation to check.
- * \param[in] error The error that has occurred if the expectation is not met.
+ * \param[in] error The fatal error that occurs if the expectation is not met.
  */
 template<typename Error>
 void expect( bool expectation, Error error ) noexcept
