@@ -25,6 +25,7 @@ configure_file(
 set(
     PICOLIBRARY_SOURCE_FILES
     "picolibrary.cc"
+    "picolibrary/algorithm.cc"
     "picolibrary/error.cc"
     "picolibrary/postcondition.cc"
     "picolibrary/precondition.cc"
