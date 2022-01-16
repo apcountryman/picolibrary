@@ -21,6 +21,7 @@
  */
 
 #include <cstdint>
+#include <limits>
 #include <type_traits>
 #include <vector>
 
@@ -148,6 +149,35 @@ TEST( forEach, worksProperly )
         static_assert( std::is_same_v<decltype( result )::Value, Void> );
 
         ASSERT_TRUE( result.is_value() );
+    }
+}
+
+/**
+ * \brief picolibrary::min() works properly.
+ */
+TEST( min, worksProperly )
+{
+    {
+        auto const a = random<std::uint_fast8_t>(
+            0, std::numeric_limits<std::uint_fast8_t>::max() - 1 );
+        auto const b = random<std::uint_fast8_t>( a + 1 );
+
+        EXPECT_THAT( ::picolibrary::min( a, b ), Ref( a ) );
+    }
+
+    {
+        auto const b = random<std::uint_fast8_t>(
+            0, std::numeric_limits<std::uint_fast8_t>::max() - 1 );
+        auto const a = random<std::uint_fast8_t>( b + 1 );
+
+        EXPECT_THAT( ::picolibrary::min( a, b ), Ref( b ) );
+    }
+
+    {
+        auto const a = random<std::uint_fast8_t>();
+        auto const b = a;
+
+        EXPECT_THAT( ::picolibrary::min( a, b ), Ref( a ) );
     }
 }
 
