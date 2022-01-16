@@ -39,15 +39,8 @@ using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::Mock_Error_Category;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::random_container;
+using ::picolibrary::Testing::Unit::random_unique_pair;
 using ::testing::Return;
-
-auto random_unique_ids()
-{
-    auto const a = random<Error_ID>();
-    auto const b = random<Error_ID>();
-
-    return std::pair<Error_ID, Error_ID>{ a, b != a ? b : b ^ random<Error_ID>( 1 ) };
-}
 
 } // namespace
 
@@ -133,7 +126,7 @@ TEST( equalityOperator, worksProperly )
 
     {
         auto const category           = Mock_Error_Category{};
-        auto const [ lhs_id, rhs_id ] = random_unique_ids();
+        auto const [ lhs_id, rhs_id ] = random_unique_pair<Error_ID>();
 
         EXPECT_FALSE( ( Error_Code{ category, lhs_id } == Error_Code{ category, rhs_id } ) );
     }
@@ -149,7 +142,7 @@ TEST( equalityOperator, worksProperly )
     {
         auto const lhs_category       = Mock_Error_Category{};
         auto const rhs_category       = Mock_Error_Category{};
-        auto const [ lhs_id, rhs_id ] = random_unique_ids();
+        auto const [ lhs_id, rhs_id ] = random_unique_pair<Error_ID>();
 
         EXPECT_FALSE( ( Error_Code{ lhs_category, lhs_id } == Error_Code{ rhs_category, rhs_id } ) );
     }
@@ -170,7 +163,7 @@ TEST( inequalityOperator, worksProperly )
 
     {
         auto const category           = Mock_Error_Category{};
-        auto const [ lhs_id, rhs_id ] = random_unique_ids();
+        auto const [ lhs_id, rhs_id ] = random_unique_pair<Error_ID>();
 
         EXPECT_TRUE( ( Error_Code{ category, lhs_id } != Error_Code{ category, rhs_id } ) );
     }
@@ -186,7 +179,7 @@ TEST( inequalityOperator, worksProperly )
     {
         auto const lhs_category       = Mock_Error_Category{};
         auto const rhs_category       = Mock_Error_Category{};
-        auto const [ lhs_id, rhs_id ] = random_unique_ids();
+        auto const [ lhs_id, rhs_id ] = random_unique_pair<Error_ID>();
 
         EXPECT_TRUE( ( Error_Code{ lhs_category, lhs_id } != Error_Code{ rhs_category, rhs_id } ) );
     }
