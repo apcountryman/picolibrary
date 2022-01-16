@@ -152,8 +152,8 @@ constexpr auto for_each( Iterator begin, Iterator end, Functor functor, Functor_
  *
  * \return The functor if Policy is picolibrary::Functor_Can_Fail_Return_Functor and
  *         application of the functor to the range succeeded.
- * \return Nothing if Policy is picolibrary::Functor_Can_Fail_Discard_Functor application
- *         of the functor to the range succeeded.
+ * \return Nothing if Policy is picolibrary::Functor_Can_Fail_Discard_Functor and
+ *         application of the functor to the range succeeded.
  * \return An error code if application of the functor to the range failed.
  */
 template<typename Policy, typename Iterator, typename Functor>
