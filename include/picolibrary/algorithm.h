@@ -179,6 +179,23 @@ constexpr auto const & min( T const & a, T const & b ) noexcept
     return b < a ? b : a;
 }
 
+/**
+ * \brief Get the maximum of two values.
+ *
+ * \tparam T The type to compare.
+ *
+ * \param[in] a The first of the two values to compare.
+ * \param[in] b The second of the two values to compare.
+ *
+ * \return The maximum of the two values. If the two values are equal, the first argument
+ *         will be returned.
+ */
+template<typename T>
+constexpr auto const & max( T const & a, T const & b ) noexcept
+{
+    return b > a ? b : a;
+}
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_ALGORITHM_H
