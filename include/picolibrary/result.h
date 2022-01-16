@@ -196,7 +196,9 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
     /**
      * \brief Constructor.
      */
-    constexpr Result() noexcept = default;
+    constexpr Result() noexcept : m_is_value{ true }, m_value{}
+    {
+    }
 
     /**
      * \brief Constructor.
