@@ -146,7 +146,7 @@ auto random_container( std::size_t size, Value_Generator generate_value )
  * \return The generated container.
  */
 template<typename Container>
-auto random_container( std::size_t size = random<std::uint_fast8_t>( 0, 15 ) )
+auto random_container( std::size_t size = random<std::size_t>( 0, 15 ) )
 {
     return random_container<Container>(
         size, []() { return random<typename Container::value_type>(); } );

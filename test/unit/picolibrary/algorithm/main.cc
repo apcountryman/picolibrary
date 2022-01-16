@@ -65,7 +65,7 @@ TEST( forEach, functorError )
         EXPECT_CALL( functor, Call( _ ) ).WillOnce( Return( error ) );
 
         auto const values = random_container<std::vector<std::uint_fast8_t>>(
-            random<std::uint_fast8_t>( 1, 15 ) );
+            random<std::size_t>( 1, 15 ) );
         auto const result = ::picolibrary::for_each<Functor_Can_Fail_Return_Functor>(
             values.begin(), values.end(), functor.AsStdFunction() );
 
@@ -81,7 +81,7 @@ TEST( forEach, functorError )
         EXPECT_CALL( functor, Call( _ ) ).WillOnce( Return( error ) );
 
         auto const values = random_container<std::vector<std::uint_fast8_t>>(
-            random<std::uint_fast8_t>( 1, 15 ) );
+            random<std::size_t>( 1, 15 ) );
         auto const result = ::picolibrary::for_each<Functor_Can_Fail_Discard_Functor>(
             values.begin(), values.end(), functor.AsStdFunction() );
 
