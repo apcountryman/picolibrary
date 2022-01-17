@@ -196,6 +196,115 @@ constexpr auto const & max( T const & a, T const & b ) noexcept
     return b > a ? b : a;
 }
 
+/**
+ * \brief Check if two ranges are equal.
+ *
+ * \tparam Iterator_1 Range iterator for the first of the two ranges to be compared.
+ * \tparam Iterator_2 Range iterator for the second of the two ranges to be compared.
+ *
+ * \param[in] begin_1 The beginning of the first of the two ranges to be compared.
+ * \param[in] end_1 The end of the first of the two ranges to be compared.
+ * \param[in] begin_2 The beginning of the second of the two ranges to be compared.
+ *
+ * \return true of the two ranges are equal.
+ * \return false if the two ranges are not equal.
+ */
+template<typename Iterator_1, typename Iterator_2>
+constexpr auto equal( Iterator_1 begin_1, Iterator_1 end_1, Iterator_2 begin_2 ) noexcept -> bool
+{
+    for ( ; begin_1 != end_1; ++begin_1, ++begin_2 ) {
+        if ( *begin_1 != *begin_2 ) {
+            return false;
+        } // if
+    }     // for
+
+    return true;
+}
+
+/**
+ * \brief Check if two ranges are equal.
+ *
+ * \tparam Iterator_1 Range iterator for the first of the two ranges to be compared.
+ * \tparam Iterator_2 Range iterator for the second of the two ranges to be compared.
+ *
+ * \param[in] begin_1 The beginning of the first of the two ranges to be compared.
+ * \param[in] end_1 The end of the first of the two ranges to be compared.
+ * \param[in] begin_2 The beginning of the second of the two ranges to be compared.
+ * \param[in] end_2 The end of the second of the two ranges to be compared.
+ *
+ * \return true of the two ranges are equal.
+ * \return false if the two ranges are not equal.
+ */
+template<typename Iterator_1, typename Iterator_2>
+constexpr auto equal( Iterator_1 begin_1, Iterator_1 end_1, Iterator_2 begin_2, Iterator_2 end_2 ) noexcept
+    -> bool
+{
+    if ( ( end_2 - begin_2 ) != ( end_1 - begin_1 ) ) {
+        return false;
+    } // if
+
+    return ::picolibrary::equal( begin_1, end_1, begin_2 );
+}
+
+/**
+ * \brief Check if two ranges are equal.
+ *
+ * \tparam Iterator_1 Range iterator for the first of the two ranges to be compared.
+ * \tparam Iterator_2 Range iterator for the second of the two ranges to be compared.
+ * \tparam Predicate A binary predicate that takes two values to be compared by value or
+ *         const reference, and returns true if they are equal and false if they are not
+ *         equal.
+ *
+ * \param[in] begin_1 The beginning of the first of the two ranges to be compared.
+ * \param[in] end_1 The end of the first of the two ranges to be compared.
+ * \param[in] begin_2 The beginning of the second of the two ranges to be compared.
+ * \param[in] predicate The predicate to use to compare values.
+ *
+ * \return true of the two ranges are equal.
+ * \return false if the two ranges are not equal.
+ */
+template<typename Iterator_1, typename Iterator_2, typename Predicate>
+constexpr auto equal( Iterator_1 begin_1, Iterator_1 end_1, Iterator_2 begin_2, Predicate predicate ) noexcept
+    -> bool
+{
+    for ( ; begin_1 != end_1; ++begin_1, ++begin_2 ) {
+        if ( not predicate( *begin_1, *begin_2 ) ) {
+            return false;
+        } // if
+    }     // for
+
+    return true;
+}
+
+/**
+ * \brief Check if two ranges are equal.
+ *
+ * \tparam Iterator_1 Range iterator for the first of the two ranges to be compared.
+ * \tparam Iterator_2 Range iterator for the second of the two ranges to be compared.
+ * \tparam Predicate A binary predicate that takes two values to be compared by value or
+ *         const reference, and returns true if they are equal and false if they are not
+ *         equal.
+ *
+ * \param[in] begin_1 The beginning of the first of the two ranges to be compared.
+ * \param[in] end_1 The end of the first of the two ranges to be compared.
+ * \param[in] begin_2 The beginning of the second of the two ranges to be compared.
+ * \param[in] end_2 The end of the second of the two ranges to be compared.
+ * \param[in] predicate The predicate to use to compare values.
+ *
+ * \return true of the two ranges are equal.
+ * \return false if the two ranges are not equal.
+ */
+template<typename Iterator_1, typename Iterator_2, typename Predicate>
+constexpr auto equal( Iterator_1 begin_1, Iterator_1 end_1, Iterator_2 begin_2, Iterator_2 end_2, Predicate predicate ) noexcept
+    -> bool
+{
+    if ( ( end_2 - begin_2 ) != ( end_1 - begin_1 ) ) {
+        return false;
+    } // if
+
+    return ::picolibrary::equal( begin_1, end_1, begin_2, std::move( predicate ) );
+}
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_ALGORITHM_H
