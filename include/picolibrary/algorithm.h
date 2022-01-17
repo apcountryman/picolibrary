@@ -206,7 +206,7 @@ constexpr auto const & max( T const & a, T const & b ) noexcept
  * \param[in] end_1 The end of the first of the two ranges to be compared.
  * \param[in] begin_2 The beginning of the second of the two ranges to be compared.
  *
- * \return true of the two ranges are equal.
+ * \return true if the two ranges are equal.
  * \return false if the two ranges are not equal.
  */
 template<typename Iterator_1, typename Iterator_2>
@@ -232,7 +232,7 @@ constexpr auto equal( Iterator_1 begin_1, Iterator_1 end_1, Iterator_2 begin_2 )
  * \param[in] begin_2 The beginning of the second of the two ranges to be compared.
  * \param[in] end_2 The end of the second of the two ranges to be compared.
  *
- * \return true of the two ranges are equal.
+ * \return true if the two ranges are equal.
  * \return false if the two ranges are not equal.
  */
 template<typename Iterator_1, typename Iterator_2>
@@ -260,7 +260,7 @@ constexpr auto equal( Iterator_1 begin_1, Iterator_1 end_1, Iterator_2 begin_2, 
  * \param[in] begin_2 The beginning of the second of the two ranges to be compared.
  * \param[in] predicate The predicate to use to compare values.
  *
- * \return true of the two ranges are equal.
+ * \return true if the two ranges are equal.
  * \return false if the two ranges are not equal.
  */
 template<typename Iterator_1, typename Iterator_2, typename Predicate>
@@ -291,7 +291,7 @@ constexpr auto equal( Iterator_1 begin_1, Iterator_1 end_1, Iterator_2 begin_2, 
  * \param[in] end_2 The end of the second of the two ranges to be compared.
  * \param[in] predicate The predicate to use to compare values.
  *
- * \return true of the two ranges are equal.
+ * \return true if the two ranges are equal.
  * \return false if the two ranges are not equal.
  */
 template<typename Iterator_1, typename Iterator_2, typename Predicate>
