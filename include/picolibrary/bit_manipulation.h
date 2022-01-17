@@ -25,22 +25,25 @@
 
 #include <cstdint>
 #include <limits>
+#include <type_traits>
 
 namespace picolibrary {
 
 /**
- * \brief Lookup an integer's highest bit set.
+ * \brief Lookup an unsigned integer's highest bit set.
  *
- * \tparam Integer The type of integer the lookup will be performed on.
+ * \tparam T The type of unsigned integer the lookup will be performed on.
  *
  * \param[in] value The value whose highest bit set is to be looked up (assumed to be
  *            non-zero).
  *
  * \return The value's highest bit set.
  */
-template<typename Integer>
-constexpr auto highest_bit_set( Integer value )
+template<typename T>
+constexpr auto highest_bit_set( T value )
 {
+    static_assert( std::is_unsigned_v<T> );
+
     auto bit = std::uint_fast8_t{ 0 };
 
     for ( ; value >>= 1; ++bit ) {} // for
@@ -51,43 +54,46 @@ constexpr auto highest_bit_set( Integer value )
 /**
  * \brief Create a bit mask.
  *
- * \tparam Mask The type of mask to create.
+ * \tparam T The type of unsigned integer to use for the mask.
  *
  * \param[in] size The size of the mask (the number of masked bits).
  * \param[in] bit The bit position of the least significant masked bit.
  *
  * \return The created bit mask.
  */
-template<typename Mask>
+template<typename T>
 constexpr auto mask( std::uint_fast8_t size, std::uint_fast8_t bit ) noexcept
 {
-    return static_cast<Mask>(
-        ( static_cast<std::uintmax_t>( std::numeric_limits<Mask>::max() )
-          >> ( std::numeric_limits<Mask>::digits - size ) )
+    static_assert( std::is_unsigned_v<T> );
+
+    return static_cast<T>(
+        ( static_cast<std::uintmax_t>( std::numeric_limits<T>::max() ) >> ( std::numeric_limits<T>::digits - size ) )
         << bit );
 }
 
 /**
- * \brief Reflect the bits in an integer.
+ * \brief Reflect the bits in an unsigned integer.
  *
- * \tparam Integer The integer type to reflect.
+ * \tparam T The unsigned integer type to reflect.
  *
  * \param[in] value The value to reflect.
  *
  * \return The reflected value.
  */
-template<typename Integer>
-auto reflect( Integer value ) noexcept
+template<typename T>
+auto reflect( T value ) noexcept
 {
+    static_assert( std::is_unsigned_v<T> );
+
     auto result           = value;
-    auto remaining_shifts = std::numeric_limits<Integer>::digits - 1;
+    auto remaining_shifts = std::numeric_limits<T>::digits - 1;
 
     for ( value >>= 1; value; value >>= 1, --remaining_shifts ) {
         result <<= 1;
         result |= value & 0b1;
     } // for
 
-    return static_cast<Integer>( result << remaining_shifts );
+    return static_cast<T>( result << remaining_shifts );
 }
 
 } // namespace picolibrary
