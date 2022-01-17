@@ -67,6 +67,29 @@ constexpr auto mask( std::uint_fast8_t size, std::uint_fast8_t bit ) noexcept
         << bit );
 }
 
+/**
+ * \brief Reflect the bits in an integer.
+ *
+ * \tparam Integer The integer type to reflect.
+ *
+ * \param[in] value The value to reflect.
+ *
+ * \return The reflected value.
+ */
+template<typename Integer>
+auto reflect( Integer value ) noexcept
+{
+    auto result           = value;
+    auto remaining_shifts = std::numeric_limits<Integer>::digits - 1;
+
+    for ( value >>= 1; value; value >>= 1, --remaining_shifts ) {
+        result <<= 1;
+        result |= value & 0b1;
+    } // for
+
+    return static_cast<Integer>( result << remaining_shifts );
+}
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_BIT_MANIPULATION_H
