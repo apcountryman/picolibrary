@@ -20,6 +20,7 @@
  * \brief picolibrary algorithm unit test program.
  */
 
+#include <cstddef>
 #include <cstdint>
 #include <limits>
 #include <type_traits>
@@ -44,6 +45,8 @@ using ::picolibrary::Void;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::random_container;
+using ::picolibrary::Testing::Unit::random_unique_container_pair;
+using ::picolibrary::Testing::Unit::random_unique_pair;
 using ::testing::_;
 using ::testing::InSequence;
 using ::testing::MockFunction;
@@ -207,6 +210,67 @@ TEST( max, worksProperly )
         auto const b = a;
 
         EXPECT_THAT( ::picolibrary::max( a, b ), Ref( a ) );
+    }
+}
+
+/**
+ * \brief Verify picolibrary::equal() works properly.
+ */
+TEST( equal, worksProperly )
+{
+    {
+        auto const values = random_container<std::vector<std::uint_fast8_t>>();
+
+        EXPECT_TRUE( ::picolibrary::equal( values.begin(), values.end(), values.begin() ) );
+        EXPECT_TRUE( ::picolibrary::equal(
+            values.begin(), values.end(), values.begin(), []( auto a, auto b ) {
+                return a == b;
+            } ) );
+    }
+
+    {
+        auto const [ values_1, values_2 ] = random_unique_container_pair<std::vector<std::uint_fast8_t>>();
+
+        EXPECT_FALSE( ::picolibrary::equal( values_1.begin(), values_1.end(), values_2.begin() ) );
+        EXPECT_FALSE( ::picolibrary::equal(
+            values_1.begin(), values_1.end(), values_2.begin(), []( auto a, auto b ) {
+                return a == b;
+            } ) );
+    }
+
+    {
+        auto const values = random_container<std::vector<std::uint_fast8_t>>();
+
+        EXPECT_TRUE( ::picolibrary::equal(
+            values.begin(), values.end(), values.begin(), values.end() ) );
+        EXPECT_TRUE( ::picolibrary::equal(
+            values.begin(), values.end(), values.begin(), values.end(), []( auto a, auto b ) {
+                return a == b;
+            } ) );
+    }
+
+    {
+        auto const [ size_1, size_2 ] = random_unique_pair<std::uint8_t>();
+        auto const values_1 = random_container<std::vector<std::uint_fast8_t>>( size_1 );
+        auto const values_2 = random_container<std::vector<std::uint_fast8_t>>( size_2 );
+
+        EXPECT_FALSE( ::picolibrary::equal(
+            values_1.begin(), values_1.end(), values_2.begin(), values_2.end() ) );
+        EXPECT_FALSE( ::picolibrary::equal(
+            values_1.begin(), values_1.end(), values_2.begin(), values_2.end(), []( auto a, auto b ) {
+                return a == b;
+            } ) );
+    }
+
+    {
+        auto const [ values_1, values_2 ] = random_unique_container_pair<std::vector<std::uint_fast8_t>>();
+
+        EXPECT_FALSE( ::picolibrary::equal(
+            values_1.begin(), values_1.end(), values_2.begin(), values_2.end() ) );
+        EXPECT_FALSE( ::picolibrary::equal(
+            values_1.begin(), values_1.end(), values_2.begin(), values_2.end(), []( auto a, auto b ) {
+                return a == b;
+            } ) );
     }
 }
 
