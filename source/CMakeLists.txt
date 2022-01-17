@@ -26,6 +26,7 @@ set(
     PICOLIBRARY_SOURCE_FILES
     "picolibrary.cc"
     "picolibrary/algorithm.cc"
+    "picolibrary/bit_manipulation.cc"
     "picolibrary/error.cc"
     "picolibrary/postcondition.cc"
     "picolibrary/precondition.cc"
