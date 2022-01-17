@@ -38,6 +38,7 @@
 namespace {
 
 using ::picolibrary::Error_Code;
+using ::picolibrary::Functor_Can_Fail;
 using ::picolibrary::Functor_Can_Fail_Discard_Functor;
 using ::picolibrary::Functor_Can_Fail_Return_Functor;
 using ::picolibrary::Result;
@@ -152,6 +153,69 @@ TEST( forEach, worksProperly )
         static_assert( std::is_same_v<decltype( result )::Value, Void> );
 
         ASSERT_TRUE( result.is_value() );
+    }
+}
+
+/**
+ * \brief Verify picolibrary::generate() properly handles a functor error.
+ */
+TEST( generate, functorError )
+{
+    auto functor = MockFunction<Result<std::uint_fast8_t, Error_Code>()>{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( functor, Call() ).WillOnce( Return( error ) );
+
+    auto       output = std::vector<std::uint_fast8_t>( random<std::size_t>( 1, 15 ) );
+    auto const result = ::picolibrary::generate<Functor_Can_Fail>(
+        output.begin(), output.end(), functor.AsStdFunction() );
+
+    ASSERT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::generate() works properly.
+ */
+TEST( generate, worksProperly )
+{
+    {
+        auto const in_sequence = InSequence{};
+
+        auto functor = MockFunction<std::uint_fast8_t()>{};
+
+        auto const values = random_container<std::vector<std::uint_fast8_t>>();
+
+        for ( auto const value : values ) {
+            EXPECT_CALL( functor, Call() ).WillOnce( Return( value ) );
+        } // for
+
+        auto output = std::vector<std::uint_fast8_t>( values.size() );
+
+        ::picolibrary::generate( output.begin(), output.end(), functor.AsStdFunction() );
+
+        EXPECT_EQ( output, values );
+    }
+
+    {
+        auto const in_sequence = InSequence{};
+
+        auto functor = MockFunction<Result<std::uint_fast8_t, Error_Code>()>{};
+
+        auto const values = random_container<std::vector<std::uint_fast8_t>>();
+
+        for ( auto const value : values ) {
+            EXPECT_CALL( functor, Call() ).WillOnce( Return( value ) );
+        } // for
+
+        auto output = std::vector<std::uint_fast8_t>( values.size() );
+
+        EXPECT_FALSE( ::picolibrary::generate<Functor_Can_Fail>(
+                          output.begin(), output.end(), functor.AsStdFunction() )
+                          .is_error() );
+
+        EXPECT_EQ( output, values );
     }
 }
 
