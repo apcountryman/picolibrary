@@ -32,7 +32,8 @@ namespace picolibrary {
  *
  * \tparam Integer The type of integer the lookup will be performed on.
  *
- * \param[in] value The value whose highest bit set is to be looked up.
+ * \param[in] value The value whose highest bit set is to be looked up (assumed to be
+ *            non-zero).
  *
  * \return The value's highest bit set.
  */
