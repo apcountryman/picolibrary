@@ -145,13 +145,13 @@ class Array {
      *
      * \param[in] position The position of the array element to access.
      *
-     * \pre position < N
+     * \pre position < picolibrary::Array::size()
      *
      * \return The element at the specified position in the array.
      */
     constexpr auto at( Position position ) noexcept -> Reference
     {
-        expect( position < N, Generic_Error::OUT_OF_RANGE );
+        expect( position < size(), Generic_Error::OUT_OF_RANGE );
 
         return data()[ position ];
     }
@@ -161,13 +161,13 @@ class Array {
      *
      * \param[in] position The position of the array element to access.
      *
-     * \pre position < N
+     * \pre position < picolibrary::Array::size()
      *
      * \return The element at the specified position in the array.
      */
     constexpr auto at( Position position ) const noexcept -> Const_Reference
     {
-        expect( position < N, Generic_Error::OUT_OF_RANGE );
+        expect( position < size(), Generic_Error::OUT_OF_RANGE );
 
         return data()[ position ];
     }
