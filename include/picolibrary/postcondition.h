@@ -36,7 +36,7 @@ namespace picolibrary {
  * \param[in] error The fatal error that occurs if the guarantee is not met.
  */
 template<typename Error>
-void ensure( bool guarantee, Error error ) noexcept
+constexpr void ensure( bool guarantee, Error error ) noexcept
 {
     if ( not guarantee ) {
         trap_fatal_error( error );

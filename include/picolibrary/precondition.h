@@ -36,7 +36,7 @@ namespace picolibrary {
  * \param[in] error The fatal error that occurs if the expectation is not met.
  */
 template<typename Error>
-void expect( bool expectation, Error error ) noexcept
+constexpr void expect( bool expectation, Error error ) noexcept
 {
     if ( not expectation ) {
         trap_fatal_error( error );
