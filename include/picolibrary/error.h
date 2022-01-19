@@ -349,10 +349,11 @@ constexpr auto operator!=( Error_Code const & lhs, Error_Code const & rhs ) noex
  * \relatedalso picolibrary::Generic_Error_Category
  */
 enum class Generic_Error : Error_ID {
-    INVALID_ARGUMENT, ///< Invalid argument.
-    LOGIC_ERROR,      ///< Logic error.
-    OUT_OF_RANGE,     ///< Out of range.
-    RUNTIME_ERROR,    ///< Runtime error.
+    INVALID_ARGUMENT,   ///< Invalid argument.
+    IO_STREAM_DEGRADED, ///< I/O stream degraded.
+    LOGIC_ERROR,        ///< Logic error.
+    OUT_OF_RANGE,       ///< Out of range.
+    RUNTIME_ERROR,      ///< Runtime error.
 };
 
 /**
@@ -402,6 +403,7 @@ class Generic_Error_Category final : public Error_Category {
     {
         switch ( static_cast<Generic_Error>( id ) ) {
             case Generic_Error::INVALID_ARGUMENT: return "INVALID_ARGUMENT";
+            case Generic_Error::IO_STREAM_DEGRADED: return "IO_STREAM_DEGRADED";
             case Generic_Error::LOGIC_ERROR: return "LOGIC_ERROR";
             case Generic_Error::OUT_OF_RANGE: return "OUT_OF_RANGE";
             case Generic_Error::RUNTIME_ERROR: return "RUNTIME_ERROR";
