@@ -52,10 +52,11 @@ TEST( errorDescription, worksProperly )
     } const test_cases[]{
         // clang-format off
 
-        { Generic_Error::INVALID_ARGUMENT, "INVALID_ARGUMENT" },
-        { Generic_Error::LOGIC_ERROR,      "LOGIC_ERROR"      },
-        { Generic_Error::OUT_OF_RANGE,     "OUT_OF_RANGE"     },
-        { Generic_Error::RUNTIME_ERROR,    "RUNTIME_ERROR"    },
+        { Generic_Error::INVALID_ARGUMENT,   "INVALID_ARGUMENT"   },
+        { Generic_Error::IO_STREAM_DEGRADED, "IO_STREAM_DEGRADED" },
+        { Generic_Error::LOGIC_ERROR,        "LOGIC_ERROR"        },
+        { Generic_Error::OUT_OF_RANGE,       "OUT_OF_RANGE"       },
+        { Generic_Error::RUNTIME_ERROR,      "RUNTIME_ERROR"      },
 
         // clang-format on
     };
