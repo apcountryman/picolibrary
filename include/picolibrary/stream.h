@@ -114,7 +114,7 @@ class Stream_Buffer {
     }
 
     /**
-     * \brief Write an signed byte to the put area of the buffer.
+     * \brief Write a signed byte to the put area of the buffer.
      *
      * \param[in] value The signed byte to write to the put area of the buffer.
      *
