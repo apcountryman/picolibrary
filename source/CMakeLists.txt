@@ -32,6 +32,7 @@ set(
     "picolibrary/postcondition.cc"
     "picolibrary/precondition.cc"
     "picolibrary/result.cc"
+    "picolibrary/stream.cc"
     "picolibrary/void.cc"
 )
 set( PICOLIBRARY_LINK_LIBRARIES )
@@ -57,6 +58,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
         "picolibrary/testing/unit/error.cc"
         "picolibrary/testing/unit/mock_handle.cc"
         "picolibrary/testing/unit/random.cc"
+        "picolibrary/testing/unit/stream.cc"
     )
     list(
         APPEND PICOLIBRARY_LINK_LIBRARIES
