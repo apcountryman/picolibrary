@@ -334,7 +334,7 @@ class Stream {
     constexpr auto operator=( Stream const & expression ) noexcept -> Stream & = default;
 
     /**
-     * \brief Report the end-of-file has been reached.
+     * \brief Report that end-of-file has been reached.
      */
     constexpr void report_end_of_file_reached() noexcept
     {
@@ -407,7 +407,7 @@ class Stream {
     struct Mask {
         static constexpr auto END_OF_FILE_REACHED = mask<State>( 1, Bit::END_OF_FILE_REACHED ); ///< End-of-file reached.
         static constexpr auto IO_ERROR_PRESENT = mask<State>( 1, Bit::IO_ERROR_PRESENT ); ///< I/O error present.
-        static constexpr auto FATAL_ERROR_PRESENT = mask<State>( 1, Bit::FATAL_ERROR_PRESENT ); ///< End-of-file reached.
+        static constexpr auto FATAL_ERROR_PRESENT = mask<State>( 1, Bit::FATAL_ERROR_PRESENT ); ///< Fatal error present.
 
         static constexpr auto ERROR_PRESENT = State{ IO_ERROR_PRESENT | FATAL_ERROR_PRESENT }; ///< Error present.
     };
