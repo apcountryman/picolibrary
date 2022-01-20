@@ -67,7 +67,7 @@ TEST( putCharBlock, putError )
     auto const string = random_container<std::string>( random<std::size_t>( 1, 15 ) );
     auto const result = buffer.Stream_Buffer::put( &*string.begin(), &*string.end() );
 
-    EXPECT_TRUE( result.is_error() );
+    ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 }
 
@@ -106,7 +106,7 @@ TEST( putNullTerminatedString, putError )
     auto const result = buffer.Stream_Buffer::put(
         random_container<std::string>( random<std::size_t>( 1, 15 ) ).c_str() );
 
-    EXPECT_TRUE( result.is_error() );
+    ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 }
 
@@ -144,7 +144,7 @@ TEST( putUnsignedByteBlock, putError )
     auto const values = random_container<std::vector<std::uint8_t>>( random<std::size_t>( 1, 15 ) );
     auto const result = buffer.Stream_Buffer::put( &*values.begin(), &*values.end() );
 
-    EXPECT_TRUE( result.is_error() );
+    ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 }
 
@@ -183,7 +183,7 @@ TEST( putSignedByteBlock, putError )
     auto const values = random_container<std::vector<std::int8_t>>( random<std::size_t>( 1, 15 ) );
     auto const result = buffer.Stream_Buffer::put( &*values.begin(), &*values.end() );
 
-    EXPECT_TRUE( result.is_error() );
+    ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 }
 

@@ -25,6 +25,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 #include "gmock/gmock.h"
 #include "picolibrary/error.h"
@@ -125,7 +126,7 @@ class String_Stream_Buffer final : public Stream_Buffer {
      *
      * \return Nothing.
      */
-    virtual auto put( char character ) noexcept -> Result<Void, Error_Code> override
+    virtual auto put( char character ) noexcept -> Result<Void, Error_Code> override final
     {
         m_string.push_back( character );
 
