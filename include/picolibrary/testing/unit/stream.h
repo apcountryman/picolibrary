@@ -31,6 +31,7 @@
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
+#include "picolibrary/testing/unit/random.h"
 #include "picolibrary/void.h"
 
 namespace picolibrary::Testing::Unit {
@@ -84,6 +85,48 @@ class Mock_Stream_Buffer : public Stream_Buffer {
     }
 
     MOCK_METHOD( (Result<Void, Error_Code>), flush, (), ( noexcept, override ) );
+};
+
+/**
+ * \brief Mock output stream.
+ */
+class Mock_Output_Stream : public Output_Stream {
+  public:
+    Mock_Output_Stream()
+    {
+        set_buffer( &m_buffer );
+    }
+
+    Mock_Output_Stream( Mock_Output_Stream && ) = delete;
+
+    Mock_Output_Stream( Mock_Output_Stream const & ) = delete;
+
+    ~Mock_Output_Stream() noexcept = default;
+
+    auto operator=( Mock_Output_Stream && ) = delete;
+
+    auto operator=( Mock_Output_Stream const & ) = delete;
+
+    auto & buffer() noexcept
+    {
+        return m_buffer;
+    }
+
+    void report_random_error()
+    {
+        auto const flags = random<std::uint_fast8_t>( 0b01, 0b11 );
+
+        if ( flags & 0b01 ) {
+            report_io_error();
+        } // if
+
+        if ( flags & 0b10 ) {
+            report_fatal_error();
+        } // if
+    }
+
+  private:
+    Mock_Stream_Buffer m_buffer{};
 };
 
 /**
@@ -176,6 +219,49 @@ class String_Stream_Buffer final : public Stream_Buffer {
      * \brief The string abstracted by the device access buffer.
      */
     std::string m_string{};
+};
+
+/**
+ * \brief Unit testing output string stream.
+ */
+class Output_String_Stream : public Output_Stream {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    Output_String_Stream()
+    {
+        set_buffer( &m_buffer );
+    }
+
+    Output_String_Stream( Output_String_Stream && ) = delete;
+
+    Output_String_Stream( Output_String_Stream const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Output_String_Stream() noexcept = default;
+
+    auto operator=( Output_String_Stream && ) = delete;
+
+    auto operator=( Output_String_Stream const & ) = delete;
+
+    /**
+     * \brief Get the string abstracted by the stream.
+     *
+     * \return The string abstracted by the stream.
+     */
+    auto const & string() const noexcept
+    {
+        return m_buffer.string();
+    }
+
+  private:
+    /**
+     * \brief The stream's device access buffer.
+     */
+    String_Stream_Buffer m_buffer{};
 };
 
 } // namespace picolibrary::Testing::Unit

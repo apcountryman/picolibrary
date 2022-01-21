@@ -31,6 +31,9 @@ add_subdirectory( generic_error )
 # build the picolibrary::Generic_Error_Category unit tests
 add_subdirectory( generic_error_category )
 
+# build the picolibrary::Output_Stream unit tests
+add_subdirectory( output_stream )
+
 # build the picolibrary::Stream unit tests
 add_subdirectory( stream )
 
