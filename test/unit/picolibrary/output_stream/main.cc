@@ -1175,6 +1175,38 @@ TEST( outputFormatterNullTerminatedString, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Void> properly handles an
+ *        invalid format string.
+ */
+TEST( outputFormatterVoidDeathTest, invalidFormatString )
+{
+    EXPECT_DEATH(
+        {
+            static_cast<void>( Output_String_Stream{}.print(
+                ( std::string{ '{' } + random_format_string( random<std::size_t>( 1, 15 ) ) + '}' )
+                    .c_str(),
+                Void{} ) );
+        },
+        "::picolibrary::Generic_Error::INVALID_FORMAT" );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Void> works properly.
+ */
+TEST( outputFormatterVoid, worksProperly )
+{
+    auto stream = Output_String_Stream{};
+
+    auto const result = stream.print( "{}", Void{} );
+
+    ASSERT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), stream.string().size() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), "" );
+}
+
+/**
  * \brief Execute the picolibrary::Output_Stream unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
