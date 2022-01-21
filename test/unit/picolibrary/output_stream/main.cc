@@ -221,7 +221,7 @@ TEST( putChar, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Stream::put( char cosnt *, char const * ) properly
+ * \brief Verify picolibrary::Output_Stream::put( char const *, char const * ) properly
  *        handles the stream not being nominal.
  */
 TEST( putCharBlockDeathTest, notNominal )
@@ -307,7 +307,7 @@ TEST( putCharBlock, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Stream::put( char cosnt * ) properly handles the
+ * \brief Verify picolibrary::Output_Stream::put( char const * ) properly handles the
  *        stream not being nominal.
  */
 TEST( putNullTerminatedStringDeathTest, notNominal )
@@ -471,7 +471,7 @@ TEST( putUnsignedByte, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Stream::put( std::uint8_t cosnt *, std::uint8_t const
+ * \brief Verify picolibrary::Output_Stream::put( std::uint8_t const *, std::uint8_t const
  *        * ) properly handles the stream not being nominal.
  */
 TEST( putUnsignedByteBlockDeathTest, notNominal )
@@ -639,7 +639,7 @@ TEST( putSignedByte, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Stream::put( std::int8_t cosnt *, std::int8_t const *
+ * \brief Verify picolibrary::Output_Stream::put( std::int8_t const *, std::int8_t const *
  *        ) properly handles the stream not being nominal.
  */
 TEST( putSignedByteBlockDeathTest, notNominal )
