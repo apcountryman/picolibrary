@@ -488,18 +488,16 @@ class Output_Stream : public Stream {
     /**
      * \brief Write a character to the stream.
      *
+     * \pre picolibrary::Stream::is_nominal()
+     *
      * \param[in] character The character to write to the stream.
      *
      * \return Nothing if the write succeeded.
-     * \return picolibrary::Generic_Error::IO_STREAM_DEGRADED if either an I/O error or a
-     *         fatal error is present.
-     * \return An error code if the write failed for any other reason.
+     * \return An error code if the write failed.
      */
     auto put( char character ) noexcept -> Result<Void, Error_Code>
     {
-        if ( error_present() ) {
-            return Generic_Error::IO_STREAM_DEGRADED;
-        } // if
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         auto result = buffer()->put( character );
         if ( result.is_error() ) {
@@ -514,19 +512,17 @@ class Output_Stream : public Stream {
     /**
      * \brief Write a block of characters to the stream.
      *
+     * \pre picolibrary::Stream::is_nominal()
+     *
      * \param[in] begin The beginning of the block of characters to write to the stream.
      * \param[in] end The end of the block of characters to write to the stream.
      *
      * \return Nothing if the write succeeded.
-     * \return picolibrary::Generic_Error::IO_STREAM_DEGRADED if either an I/O error or a
-     *         fatal error is present.
-     * \return An error code if the write failed for any other reason.
+     * \return An error code if the write failed.
      */
     auto put( char const * begin, char const * end ) noexcept -> Result<Void, Error_Code>
     {
-        if ( error_present() ) {
-            return Generic_Error::IO_STREAM_DEGRADED;
-        } // if
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         auto result = buffer()->put( begin, end );
         if ( result.is_error() ) {
@@ -541,18 +537,16 @@ class Output_Stream : public Stream {
     /**
      * \brief Write a null-terminated string to the stream.
      *
+     * \pre picolibrary::Stream::is_nominal()
+     *
      * \param[in] string The null-terminated string to write to the stream.
      *
      * \return Nothing if the write succeeded.
-     * \return picolibrary::Generic_Error::IO_STREAM_DEGRADED if either an I/O error or a
-     *         fatal error is present.
-     * \return An error code if the write failed for any other reason.
+     * \return An error code if the write failed.
      */
     auto put( char const * string ) noexcept -> Result<Void, Error_Code>
     {
-        if ( error_present() ) {
-            return Generic_Error::IO_STREAM_DEGRADED;
-        } // if
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         auto result = buffer()->put( string );
         if ( result.is_error() ) {
@@ -567,18 +561,16 @@ class Output_Stream : public Stream {
     /**
      * \brief Write an unsigned byte to the stream.
      *
+     * \pre picolibrary::Stream::is_nominal()
+     *
      * \param[in] value The unsigned byte to write to the stream.
      *
      * \return Nothing if the write succeeded.
-     * \return picolibrary::Generic_Error::IO_STREAM_DEGRADED if either an I/O error or a
-     *         fatal error is present.
-     * \return An error code if the write failed for any other reason.
+     * \return An error code if the write failed.
      */
     auto put( std::uint8_t value ) noexcept -> Result<Void, Error_Code>
     {
-        if ( error_present() ) {
-            return Generic_Error::IO_STREAM_DEGRADED;
-        } // if
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         auto result = buffer()->put( value );
         if ( result.is_error() ) {
@@ -593,20 +585,18 @@ class Output_Stream : public Stream {
     /**
      * \brief Write a block of unsigned bytes to the stream.
      *
+     * \pre picolibrary::Stream::is_nominal()
+     *
      * \param[in] begin The beginning of the block of unsigned bytes to write to the
      *            stream.
      * \param[in] end The end of the block of unsigned bytes to write to the stream.
      *
      * \return Nothing if the write succeeded.
-     * \return picolibrary::Generic_Error::IO_STREAM_DEGRADED if either an I/O error or a
-     *         fatal error is present.
-     * \return An error code if the write failed for any other reason.
+     * \return An error code if the write failed.
      */
     auto put( std::uint8_t const * begin, std::uint8_t const * end ) noexcept -> Result<Void, Error_Code>
     {
-        if ( error_present() ) {
-            return Generic_Error::IO_STREAM_DEGRADED;
-        } // if
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         auto result = buffer()->put( begin, end );
         if ( result.is_error() ) {
@@ -621,18 +611,16 @@ class Output_Stream : public Stream {
     /**
      * \brief Write a signed byte to the stream.
      *
+     * \pre picolibrary::Stream::is_nominal()
+     *
      * \param[in] value The signed byte to write to the stream.
      *
      * \return Nothing if the write succeeded.
-     * \return picolibrary::Generic_Error::IO_STREAM_DEGRADED if either an I/O error or a
-     *         fatal error is present.
-     * \return An error code if the write failed for any other reason.
+     * \return An error code if the write failed.
      */
     auto put( std::int8_t value ) noexcept -> Result<Void, Error_Code>
     {
-        if ( error_present() ) {
-            return Generic_Error::IO_STREAM_DEGRADED;
-        } // if
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         auto result = buffer()->put( value );
         if ( result.is_error() ) {
@@ -647,19 +635,17 @@ class Output_Stream : public Stream {
     /**
      * \brief Write a block of signed bytes to the stream.
      *
+     * \pre picolibrary::Stream::is_nominal()
+     *
      * \param[in] begin The beginning of the block of signed bytes to write to the stream.
      * \param[in] end The end of the block of signed bytes to write to the stream.
      *
      * \return Nothing if the write succeeded.
-     * \return picolibrary::Generic_Error::IO_STREAM_DEGRADED if either an I/O error or a
-     *         fatal error is present.
-     * \return An error code if the write failed for any other reason.
+     * \return An error code if the write failed.
      */
     auto put( std::int8_t const * begin, std::int8_t const * end ) noexcept -> Result<Void, Error_Code>
     {
-        if ( error_present() ) {
-            return Generic_Error::IO_STREAM_DEGRADED;
-        } // if
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         auto result = buffer()->put( begin, end );
         if ( result.is_error() ) {
@@ -673,6 +659,8 @@ class Output_Stream : public Stream {
 
     /**
      * \brief Write formatted output to the stream.
+     *
+     * \pre picolibrary::Stream::is_nominal()
      *
      * \tparam Types The types to print.
      *
@@ -689,16 +677,12 @@ class Output_Stream : public Stream {
      * \pre All format specifications found in format are valid.
      *
      * \return Nothing if the write succeeded.
-     * \return picolibrary::Generic_Error::IO_STREAM_DEGRADED if either an I/O error or a
-     *         fatal error is present.
-     * \return An error code if the write failed for any other reason.
+     * \return An error code if the write failed.
      */
     template<typename... Types>
     auto print( char const * format, Types &&... values ) noexcept -> Result<Void, Error_Code>
     {
-        if ( error_present() ) {
-            return Generic_Error::IO_STREAM_DEGRADED;
-        } // if
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         return print_implementation( format, std::forward<Types>( values )... );
     }
@@ -707,11 +691,15 @@ class Output_Stream : public Stream {
      * \brief Write any output that has been buffered to the device associated with the
      *        stream.
      *
+     * \pre picolibrary::Stream::is_nominal()
+     *
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
     auto flush() noexcept -> Result<Void, Error_Code>
     {
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+
         auto result = buffer()->flush();
         if ( result.is_error() ) {
             report_fatal_error();
@@ -831,6 +819,8 @@ class Output_Stream : public Stream {
 
                     auto result = formatter.print( *this, value );
                     if ( result.is_error() ) {
+                        report_fatal_error();
+
                         return result.error();
                     } // if
 

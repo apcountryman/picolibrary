@@ -140,28 +140,46 @@ inline auto picolibrary::Testing::Unit::random<::Foo>()
 }
 
 /**
- * \brief Verify picolibrary::Output_Stream::put( char ) properly handles the presence of
- *        an I/O error and/or a fatal error.
+ * \brief Verify picolibrary::Output_Stream::put( char ) properly handles the stream not
+ *        being nominal.
  */
-TEST( putChar, errorPresent )
+TEST( putCharDeathTest, notNominal )
 {
-    auto stream = Mock_Output_Stream{};
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
 
-    stream.report_random_error();
+            stream.report_end_of_file_reached();
 
-    auto const io_error_present    = stream.io_error_present();
-    auto const fatal_error_present = stream.fatal_error_present();
+            EXPECT_CALL( stream.buffer(), put( A<char>() ) ).Times( 0 );
 
-    EXPECT_CALL( stream.buffer(), put( A<char>() ) ).Times( 0 );
+            static_cast<void>( stream.put( random<char>() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
 
-    auto const result = stream.put( random<char>() );
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
 
-    ASSERT_TRUE( result.is_error() );
-    EXPECT_EQ( result.error(), Generic_Error::IO_STREAM_DEGRADED );
+            stream.report_io_error();
 
-    EXPECT_FALSE( stream.end_of_file_reached() );
-    EXPECT_EQ( stream.io_error_present(), io_error_present );
-    EXPECT_EQ( stream.fatal_error_present(), fatal_error_present );
+            EXPECT_CALL( stream.buffer(), put( A<char>() ) ).Times( 0 );
+
+            static_cast<void>( stream.put( random<char>() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
+
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
+
+            stream.report_fatal_error();
+
+            EXPECT_CALL( stream.buffer(), put( A<char>() ) ).Times( 0 );
+
+            static_cast<void>( stream.put( random<char>() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
 }
 
 /**
@@ -203,29 +221,49 @@ TEST( putChar, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Stream::put( char const *, char const * ) properly
- *        handles the presence of an I/O error and/or a fatal error.
+ * \brief Verify picolibrary::Output_Stream::put( char cosnt *, char const * ) properly
+ *        handles the stream not being nominal.
  */
-TEST( putCharBlock, errorPresent )
+TEST( putCharBlockDeathTest, notNominal )
 {
-    auto stream = Mock_Output_Stream{};
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
 
-    stream.report_random_error();
+            stream.report_end_of_file_reached();
 
-    auto const io_error_present    = stream.io_error_present();
-    auto const fatal_error_present = stream.fatal_error_present();
+            EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).Times( 0 );
 
-    EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).Times( 0 );
+            auto const string = random_container<std::string>();
+            static_cast<void>( stream.put( &*string.begin(), &*string.end() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
 
-    auto const string = random_container<std::string>();
-    auto const result = stream.put( &*string.begin(), &*string.end() );
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
 
-    ASSERT_TRUE( result.is_error() );
-    EXPECT_EQ( result.error(), Generic_Error::IO_STREAM_DEGRADED );
+            stream.report_io_error();
 
-    EXPECT_FALSE( stream.end_of_file_reached() );
-    EXPECT_EQ( stream.io_error_present(), io_error_present );
-    EXPECT_EQ( stream.fatal_error_present(), fatal_error_present );
+            EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).Times( 0 );
+
+            auto const string = random_container<std::string>();
+            static_cast<void>( stream.put( &*string.begin(), &*string.end() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
+
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
+
+            stream.report_fatal_error();
+
+            EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).Times( 0 );
+
+            auto const string = random_container<std::string>();
+            static_cast<void>( stream.put( &*string.begin(), &*string.end() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
 }
 
 /**
@@ -269,29 +307,46 @@ TEST( putCharBlock, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Stream::put( char const * ) properly handles the
- *        presence of an I/O error and/or a fatal error.
+ * \brief Verify picolibrary::Output_Stream::put( char cosnt * ) properly handles the
+ *        stream not being nominal.
  */
-TEST( putNullTerminatedString, errorPresent )
+TEST( putNullTerminatedStringDeathTest, notNominal )
 {
-    auto stream = Mock_Output_Stream{};
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
 
-    stream.report_random_error();
+            stream.report_end_of_file_reached();
 
-    auto const io_error_present    = stream.io_error_present();
-    auto const fatal_error_present = stream.fatal_error_present();
+            EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).Times( 0 );
 
-    EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).Times( 0 );
+            static_cast<void>( stream.put( random_container<std::string>().c_str() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
 
-    auto const string = random_container<std::string>();
-    auto const result = stream.put( string.c_str() );
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
 
-    ASSERT_TRUE( result.is_error() );
-    EXPECT_EQ( result.error(), Generic_Error::IO_STREAM_DEGRADED );
+            stream.report_io_error();
 
-    EXPECT_FALSE( stream.end_of_file_reached() );
-    EXPECT_EQ( stream.io_error_present(), io_error_present );
-    EXPECT_EQ( stream.fatal_error_present(), fatal_error_present );
+            EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).Times( 0 );
+
+            static_cast<void>( stream.put( random_container<std::string>().c_str() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
+
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
+
+            stream.report_fatal_error();
+
+            EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).Times( 0 );
+
+            static_cast<void>( stream.put( random_container<std::string>().c_str() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
 }
 
 /**
@@ -335,27 +390,45 @@ TEST( putNullTerminatedString, worksProperly )
 
 /**
  * \brief Verify picolibrary::Output_Stream::put( std::uint8_t ) properly handles the
- *        presence of an I/O error and/or a fatal error.
+ *        stream not being nominal.
  */
-TEST( putUnsignedByte, errorPresent )
+TEST( putUnsignedByteDeathTest, notNominal )
 {
-    auto stream = Mock_Output_Stream{};
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
 
-    stream.report_random_error();
+            stream.report_end_of_file_reached();
 
-    auto const io_error_present    = stream.io_error_present();
-    auto const fatal_error_present = stream.fatal_error_present();
+            EXPECT_CALL( stream.buffer(), put( A<std::uint8_t>() ) ).Times( 0 );
 
-    EXPECT_CALL( stream.buffer(), put( A<std::uint8_t>() ) ).Times( 0 );
+            static_cast<void>( stream.put( random<std::uint8_t>() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
 
-    auto const result = stream.put( random<std::uint8_t>() );
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
 
-    ASSERT_TRUE( result.is_error() );
-    EXPECT_EQ( result.error(), Generic_Error::IO_STREAM_DEGRADED );
+            stream.report_io_error();
 
-    EXPECT_FALSE( stream.end_of_file_reached() );
-    EXPECT_EQ( stream.io_error_present(), io_error_present );
-    EXPECT_EQ( stream.fatal_error_present(), fatal_error_present );
+            EXPECT_CALL( stream.buffer(), put( A<std::uint8_t>() ) ).Times( 0 );
+
+            static_cast<void>( stream.put( random<std::uint8_t>() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
+
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
+
+            stream.report_fatal_error();
+
+            EXPECT_CALL( stream.buffer(), put( A<std::uint8_t>() ) ).Times( 0 );
+
+            static_cast<void>( stream.put( random<std::uint8_t>() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
 }
 
 /**
@@ -398,29 +471,49 @@ TEST( putUnsignedByte, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Stream::put( std::uint8_t const *, std::uint8_t const
- *        * ) properly handles the presence of an I/O error and/or a fatal error.
+ * \brief Verify picolibrary::Output_Stream::put( std::uint8_t cosnt *, std::uint8_t const
+ *        * ) properly handles the stream not being nominal.
  */
-TEST( putUnsignedByteBlock, errorPresent )
+TEST( putUnsignedByteBlockDeathTest, notNominal )
 {
-    auto stream = Mock_Output_Stream{};
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
 
-    stream.report_random_error();
+            stream.report_end_of_file_reached();
 
-    auto const io_error_present    = stream.io_error_present();
-    auto const fatal_error_present = stream.fatal_error_present();
+            EXPECT_CALL( stream.buffer(), put( A<std::vector<std::uint8_t>>() ) ).Times( 0 );
 
-    EXPECT_CALL( stream.buffer(), put( A<std::vector<std::uint8_t>>() ) ).Times( 0 );
+            auto const values = random_container<std::vector<std::uint8_t>>();
+            static_cast<void>( stream.put( &*values.begin(), &*values.end() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
 
-    auto const values = random_container<std::vector<std::uint8_t>>();
-    auto const result = stream.put( &*values.begin(), &*values.end() );
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
 
-    ASSERT_TRUE( result.is_error() );
-    EXPECT_EQ( result.error(), Generic_Error::IO_STREAM_DEGRADED );
+            stream.report_io_error();
 
-    EXPECT_FALSE( stream.end_of_file_reached() );
-    EXPECT_EQ( stream.io_error_present(), io_error_present );
-    EXPECT_EQ( stream.fatal_error_present(), fatal_error_present );
+            EXPECT_CALL( stream.buffer(), put( A<std::vector<std::uint8_t>>() ) ).Times( 0 );
+
+            auto const values = random_container<std::vector<std::uint8_t>>();
+            static_cast<void>( stream.put( &*values.begin(), &*values.end() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
+
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
+
+            stream.report_fatal_error();
+
+            EXPECT_CALL( stream.buffer(), put( A<std::vector<std::uint8_t>>() ) ).Times( 0 );
+
+            auto const values = random_container<std::vector<std::uint8_t>>();
+            static_cast<void>( stream.put( &*values.begin(), &*values.end() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
 }
 
 /**
@@ -465,27 +558,45 @@ TEST( putUnsignedByteBlock, worksProperly )
 
 /**
  * \brief Verify picolibrary::Output_Stream::put( std::int8_t ) properly handles the
- *        presence of an I/O error and/or a fatal error.
+ *        stream not being nominal.
  */
-TEST( putSignedByte, errorPresent )
+TEST( putSignedByteDeathTest, notNominal )
 {
-    auto stream = Mock_Output_Stream{};
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
 
-    stream.report_random_error();
+            stream.report_end_of_file_reached();
 
-    auto const io_error_present    = stream.io_error_present();
-    auto const fatal_error_present = stream.fatal_error_present();
+            EXPECT_CALL( stream.buffer(), put( A<std::int8_t>() ) ).Times( 0 );
 
-    EXPECT_CALL( stream.buffer(), put( A<std::int8_t>() ) ).Times( 0 );
+            static_cast<void>( stream.put( random<std::int8_t>() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
 
-    auto const result = stream.put( random<std::int8_t>() );
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
 
-    ASSERT_TRUE( result.is_error() );
-    EXPECT_EQ( result.error(), Generic_Error::IO_STREAM_DEGRADED );
+            stream.report_io_error();
 
-    EXPECT_FALSE( stream.end_of_file_reached() );
-    EXPECT_EQ( stream.io_error_present(), io_error_present );
-    EXPECT_EQ( stream.fatal_error_present(), fatal_error_present );
+            EXPECT_CALL( stream.buffer(), put( A<std::int8_t>() ) ).Times( 0 );
+
+            static_cast<void>( stream.put( random<std::int8_t>() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
+
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
+
+            stream.report_fatal_error();
+
+            EXPECT_CALL( stream.buffer(), put( A<std::int8_t>() ) ).Times( 0 );
+
+            static_cast<void>( stream.put( random<std::int8_t>() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
 }
 
 /**
@@ -528,29 +639,49 @@ TEST( putSignedByte, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Stream::put( std::int8_t const *, std::int8_t const *
- *        ) properly handles the presence of an I/O error and/or a fatal error.
+ * \brief Verify picolibrary::Output_Stream::put( std::int8_t cosnt *, std::int8_t const *
+ *        ) properly handles the stream not being nominal.
  */
-TEST( putSignedByteBlock, errorPresent )
+TEST( putSignedByteBlockDeathTest, notNominal )
 {
-    auto stream = Mock_Output_Stream{};
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
 
-    stream.report_random_error();
+            stream.report_end_of_file_reached();
 
-    auto const io_error_present    = stream.io_error_present();
-    auto const fatal_error_present = stream.fatal_error_present();
+            EXPECT_CALL( stream.buffer(), put( A<std::vector<std::int8_t>>() ) ).Times( 0 );
 
-    EXPECT_CALL( stream.buffer(), put( A<std::vector<std::int8_t>>() ) ).Times( 0 );
+            auto const values = random_container<std::vector<std::int8_t>>();
+            static_cast<void>( stream.put( &*values.begin(), &*values.end() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
 
-    auto const values = random_container<std::vector<std::int8_t>>();
-    auto const result = stream.put( &*values.begin(), &*values.end() );
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
 
-    ASSERT_TRUE( result.is_error() );
-    EXPECT_EQ( result.error(), Generic_Error::IO_STREAM_DEGRADED );
+            stream.report_io_error();
 
-    EXPECT_FALSE( stream.end_of_file_reached() );
-    EXPECT_EQ( stream.io_error_present(), io_error_present );
-    EXPECT_EQ( stream.fatal_error_present(), fatal_error_present );
+            EXPECT_CALL( stream.buffer(), put( A<std::vector<std::int8_t>>() ) ).Times( 0 );
+
+            auto const values = random_container<std::vector<std::int8_t>>();
+            static_cast<void>( stream.put( &*values.begin(), &*values.end() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
+
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
+
+            stream.report_fatal_error();
+
+            EXPECT_CALL( stream.buffer(), put( A<std::vector<std::int8_t>>() ) ).Times( 0 );
+
+            auto const values = random_container<std::vector<std::int8_t>>();
+            static_cast<void>( stream.put( &*values.begin(), &*values.end() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
 }
 
 /**
@@ -594,51 +725,85 @@ TEST( putSignedByteBlock, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Stream::print() properly handles the presence of an
- *        I/O error and/or a fatal error.
+ * \brief Verify picolibrary::Output_Stream::print() properly handles the stream not being
+ *        nominal.
  */
-TEST( print, errorPresent )
+TEST( printDeathTest, notNominal )
 {
-    {
-        auto stream = Mock_Output_Stream{};
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
 
-        stream.report_random_error();
+            stream.report_end_of_file_reached();
 
-        auto const io_error_present    = stream.io_error_present();
-        auto const fatal_error_present = stream.fatal_error_present();
+            EXPECT_CALL( stream.buffer(), put( A<char>() ) ).Times( 0 );
 
-        EXPECT_CALL( stream.buffer(), put( A<char>() ) ).Times( 0 );
+            static_cast<void>( stream.print( random_format_string().c_str() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
 
-        auto const result = stream.print( random_format_string().c_str() );
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
 
-        ASSERT_TRUE( result.is_error() );
-        EXPECT_EQ( result.error(), Generic_Error::IO_STREAM_DEGRADED );
+            stream.report_io_error();
 
-        EXPECT_FALSE( stream.end_of_file_reached() );
-        EXPECT_EQ( stream.io_error_present(), io_error_present );
-        EXPECT_EQ( stream.fatal_error_present(), fatal_error_present );
-    }
+            EXPECT_CALL( stream.buffer(), put( A<char>() ) ).Times( 0 );
 
-    {
-        auto stream = Mock_Output_Stream{};
+            static_cast<void>( stream.print( random_format_string().c_str() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
 
-        stream.report_random_error();
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
 
-        auto const io_error_present    = stream.io_error_present();
-        auto const fatal_error_present = stream.fatal_error_present();
+            stream.report_fatal_error();
 
-        EXPECT_CALL( stream.buffer(), put( A<char>() ) ).Times( 0 );
+            EXPECT_CALL( stream.buffer(), put( A<char>() ) ).Times( 0 );
 
-        auto const result = stream.print(
-            ( random_format_string() + "{}" + random_format_string() ).c_str(), random<Foo>() );
+            static_cast<void>( stream.print( random_format_string().c_str() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
 
-        ASSERT_TRUE( result.is_error() );
-        EXPECT_EQ( result.error(), Generic_Error::IO_STREAM_DEGRADED );
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
 
-        EXPECT_FALSE( stream.end_of_file_reached() );
-        EXPECT_EQ( stream.io_error_present(), io_error_present );
-        EXPECT_EQ( stream.fatal_error_present(), fatal_error_present );
-    }
+            stream.report_end_of_file_reached();
+
+            EXPECT_CALL( stream.buffer(), put( A<char>() ) ).Times( 0 );
+
+            static_cast<void>( stream.print(
+                ( random_format_string() + "{}" + random_format_string() ).c_str(), random<Foo>() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
+
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
+
+            stream.report_io_error();
+
+            EXPECT_CALL( stream.buffer(), put( A<char>() ) ).Times( 0 );
+
+            static_cast<void>( stream.print(
+                ( random_format_string() + "{}" + random_format_string() ).c_str(), random<Foo>() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
+
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
+
+            stream.report_fatal_error();
+
+            EXPECT_CALL( stream.buffer(), put( A<char>() ) ).Times( 0 );
+
+            static_cast<void>( stream.print(
+                ( random_format_string() + "{}" + random_format_string() ).c_str(), random<Foo>() ) );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
 }
 
 /**
@@ -762,7 +927,7 @@ TEST( print, outputFormatterPrintError )
 
     EXPECT_FALSE( stream.end_of_file_reached() );
     EXPECT_FALSE( stream.io_error_present() );
-    EXPECT_FALSE( stream.fatal_error_present() );
+    EXPECT_TRUE( stream.fatal_error_present() );
 }
 
 /**
@@ -812,6 +977,49 @@ TEST( print, worksProperly )
         EXPECT_TRUE( stream.is_nominal() );
         EXPECT_EQ( stream.string(), a + '{' + b + '}' + c + e );
     }
+}
+
+/**
+ * \brief Verify picolibrary::Output_Stream::flush() properly handles the stream not being
+ *        nominal.
+ */
+TEST( flushDeathTest, notNominal )
+{
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
+
+            stream.report_end_of_file_reached();
+
+            EXPECT_CALL( stream.buffer(), flush() ).Times( 0 );
+
+            static_cast<void>( stream.flush() );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
+
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
+
+            stream.report_io_error();
+
+            EXPECT_CALL( stream.buffer(), flush() ).Times( 0 );
+
+            static_cast<void>( stream.flush() );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
+
+    EXPECT_DEATH(
+        {
+            auto stream = Mock_Output_Stream{};
+
+            stream.report_fatal_error();
+
+            EXPECT_CALL( stream.buffer(), flush() ).Times( 0 );
+
+            static_cast<void>( stream.flush() );
+        },
+        "::picolibrary::Generic_Error::IO_STREAM_DEGRADED" );
 }
 
 /**

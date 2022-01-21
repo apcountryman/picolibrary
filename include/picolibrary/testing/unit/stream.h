@@ -31,7 +31,6 @@
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
-#include "picolibrary/testing/unit/random.h"
 #include "picolibrary/void.h"
 
 namespace picolibrary::Testing::Unit {
@@ -107,22 +106,15 @@ class Mock_Output_Stream : public Output_Stream {
 
     auto operator=( Mock_Output_Stream const & ) = delete;
 
+    using ::picolibrary::Stream::clear_end_of_file_reached_report;
+    using ::picolibrary::Stream::report_end_of_file_reached;
+
+    using ::picolibrary::Stream::clear_fatal_error;
+    using ::picolibrary::Stream::report_fatal_error;
+
     auto & buffer() noexcept
     {
         return m_buffer;
-    }
-
-    void report_random_error()
-    {
-        auto const flags = random<std::uint_fast8_t>( 0b01, 0b11 );
-
-        if ( flags & 0b01 ) {
-            report_io_error();
-        } // if
-
-        if ( flags & 0b10 ) {
-            report_fatal_error();
-        } // if
     }
 
   private:
