@@ -1111,6 +1111,58 @@ TEST( outputFormatterChar, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::Output_Formatter<char const *> properly handles an invalid
+ *        format string.
+ */
+TEST( outputFormatterNullTerminatedStringDeathTest, invalidFormatString )
+{
+    EXPECT_DEATH(
+        {
+            static_cast<void>( Output_String_Stream{}.print(
+                ( std::string{ '{' } + random_format_string( random<std::size_t>( 1, 15 ) ) + '}' )
+                    .c_str(),
+                random_container<std::string>().c_str() ) );
+        },
+        "::picolibrary::Generic_Error::INVALID_FORMAT" );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<char const *> properly handles a put error.
+ */
+TEST( outputFormatterNullTerminatedString, putError )
+{
+    auto stream = Mock_Output_Stream{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
+
+    auto const result = stream.print( "{}", random_container<std::string>().c_str() );
+
+    ASSERT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_FALSE( stream.io_error_present() );
+    EXPECT_TRUE( stream.fatal_error_present() );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<char const *> works properly.
+ */
+TEST( outputFormatterNullTerminatedString, worksProperly )
+{
+    auto stream = Output_String_Stream{};
+
+    auto const string = random_container<std::string>();
+
+    EXPECT_FALSE( stream.print( "{}", string.c_str() ).is_error() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), string );
+}
+
+/**
  * \brief Execute the picolibrary::Output_Stream unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().

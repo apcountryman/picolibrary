@@ -897,6 +897,61 @@ class Output_Formatter<char> {
     }
 };
 
+/**
+ * \brief Null-terminated string output formatter.
+ *
+ * Null-terminated strings only support the default format specification ("{}").
+ */
+template<>
+class Output_Formatter<char const *> {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Output_Formatter() noexcept = default;
+
+    Output_Formatter( Output_Formatter && ) = delete;
+
+    Output_Formatter( Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Output_Formatter() noexcept = default;
+
+    auto operator=( Output_Formatter && ) = delete;
+
+    auto operator=( Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Parse the format specification for the null-terminated string to be
+     *        formatted.
+     *
+     * \param[in] format The format specification for the null-terminated string to be
+     *            formatted.
+     *
+     * \return format
+     */
+    constexpr auto parse( char const * format ) noexcept
+    {
+        return format;
+    }
+
+    /**
+     * \brief Write the formatted null-terminated string to the stream.
+     *
+     * \param[in] stream The stream to write the formatted null-terminated string to.
+     * \param[in] string The null-terminated string to format.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto print( Output_Stream & stream, char const * string ) noexcept
+    {
+        return stream.put( string );
+    }
+};
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_STREAM_H
