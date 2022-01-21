@@ -20,6 +20,7 @@
  * \brief picolibrary::Output_Stream unit test program.
  */
 
+#include <cstddef>
 #include <cstdint>
 #include <stdexcept>
 #include <string>
@@ -1055,6 +1056,58 @@ TEST( flush, worksProperly )
     EXPECT_FALSE( stream.flush().is_error() );
 
     EXPECT_TRUE( stream.is_nominal() );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<char> properly handles an invalid format
+ *        string.
+ */
+TEST( outputFormatterCharDeathTest, invalidFormatString )
+{
+    EXPECT_DEATH(
+        {
+            static_cast<void>( Output_String_Stream{}.print(
+                ( std::string{ '{' } + random_format_string( random<std::size_t>( 1, 15 ) ) + '}' )
+                    .c_str(),
+                random<char>() ) );
+        },
+        "::picolibrary::Generic_Error::INVALID_FORMAT" );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<char> properly handles a put error.
+ */
+TEST( outputFormatterChar, putError )
+{
+    auto stream = Mock_Output_Stream{};
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( stream.buffer(), put( A<char>() ) ).WillOnce( Return( error ) );
+
+    auto const result = stream.print( "{}", random<char>() );
+
+    ASSERT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_FALSE( stream.io_error_present() );
+    EXPECT_TRUE( stream.fatal_error_present() );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<char> works properly.
+ */
+TEST( outputFormatterChar, worksProperly )
+{
+    auto stream = Output_String_Stream{};
+
+    auto const character = random<char>();
+
+    EXPECT_FALSE( stream.print( "{}", character ).is_error() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), std::string{ character } );
 }
 
 /**

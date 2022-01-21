@@ -844,6 +844,59 @@ class Output_Stream : public Stream {
     }
 };
 
+/**
+ * \brief Character output formatter.
+ *
+ * Characters only support the default format specification ("{}").
+ */
+template<>
+class Output_Formatter<char> {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Output_Formatter() noexcept = default;
+
+    Output_Formatter( Output_Formatter && ) = delete;
+
+    Output_Formatter( Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Output_Formatter() noexcept = default;
+
+    auto operator=( Output_Formatter && ) = delete;
+
+    auto operator=( Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Parse the format specification for the character to be formatted.
+     *
+     * \param[in] format The format specification for the character to be formatted.
+     *
+     * \return format
+     */
+    constexpr auto parse( char const * format ) noexcept
+    {
+        return format;
+    }
+
+    /**
+     * \brief Write the formatted character to the stream.
+     *
+     * \param[in] stream The stream to write the formatted character to.
+     * \param[in] character The character to format.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto print( Output_Stream & stream, char character ) noexcept
+    {
+        return stream.put( character );
+    }
+};
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_STREAM_H
