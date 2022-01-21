@@ -946,7 +946,7 @@ TEST( print, worksProperly )
         auto const result = stream.print( ( a + "{{" + b + "}}" + c ).c_str() );
 
         ASSERT_TRUE( result.is_value() );
-        EXPECT_EQ( result.value(), a.size() + 1 + b.size() + 1 + c.size() );
+        EXPECT_EQ( result.value(), stream.string().size() );
 
         EXPECT_TRUE( stream.is_nominal() );
         EXPECT_EQ( stream.string(), a + '{' + b + '}' + c );
@@ -979,7 +979,7 @@ TEST( print, worksProperly )
             ( a + "{{" + b + "}}" + c + '{' + d + '}' + e ).c_str(), foo );
 
         ASSERT_TRUE( result.is_value() );
-        EXPECT_EQ( result.value(), a.size() + 1 + b.size() + 1 + c.size() + foo_size + e.size() );
+        EXPECT_EQ( result.value(), stream.string().size() );
 
         EXPECT_TRUE( stream.is_nominal() );
         EXPECT_EQ( stream.string(), a + '{' + b + '}' + c + e );
@@ -1113,7 +1113,7 @@ TEST( outputFormatterChar, worksProperly )
     auto const result = stream.print( "{}", character );
 
     ASSERT_TRUE( result.is_value() );
-    EXPECT_EQ( result.value(), 1 );
+    EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
     EXPECT_EQ( stream.string(), std::string{ character } );
@@ -1168,7 +1168,7 @@ TEST( outputFormatterNullTerminatedString, worksProperly )
     auto const result = stream.print( "{}", string.c_str() );
 
     ASSERT_TRUE( result.is_value() );
-    EXPECT_EQ( result.value(), string.size() );
+    EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
     EXPECT_EQ( stream.string(), string );

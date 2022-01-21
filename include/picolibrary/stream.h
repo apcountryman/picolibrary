@@ -969,7 +969,7 @@ class Output_Formatter<char const *> {
             return result.error();
         } // if
 
-        return strlen( string );
+        return std::strlen( string );
     }
 };
 
