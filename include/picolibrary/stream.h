@@ -1078,6 +1078,16 @@ class Output_Formatter<Error_Code> {
     }
 };
 
+/**
+ * \brief Error code enum output formatter.
+ *
+ * \tparam Enum The error code enum type to print.
+ */
+template<typename Enum>
+class Output_Formatter<Enum, std::enable_if_t<is_error_code_enum_v<Enum>>> :
+    public Output_Formatter<Error_Code> {
+};
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_STREAM_H

@@ -1279,6 +1279,79 @@ TEST( outputFormatterErrorCode, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::Output_Formatter<Enum,
+ *        std::enable_if_t<picolibrary::is_error_code_enum_v<Enum>>> properly handles an
+ *        invalid format string.
+ */
+TEST( outputFormatterErrorCodeEnumDeathTest, invalidFormatString )
+{
+    EXPECT_DEATH(
+        {
+            static_cast<void>( Output_String_Stream{}.print(
+                ( std::string{ '{' } + random_format_string( random<std::size_t>( 1, 15 ) ) + '}' )
+                    .c_str(),
+                random<Mock_Error>() ) );
+        },
+        "::picolibrary::Generic_Error::INVALID_FORMAT" );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<Enum,
+ *        std::enable_if_t<picolibrary::is_error_code_enum_v<Enum>>> properly handles a
+ *        put error.
+ */
+TEST( outputFormatterErrorCodeEnum, putError )
+{
+    auto stream = Mock_Output_Stream{};
+
+    auto const error_category_name = random_container<std::string>();
+    auto const error_description   = random_container<std::string>();
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( Mock_Error_Category::instance(), name() )
+        .WillOnce( Return( error_category_name.c_str() ) );
+    EXPECT_CALL( Mock_Error_Category::instance(), error_description( _ ) )
+        .WillOnce( Return( error_description.c_str() ) );
+    EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
+
+    auto const result = stream.print( "{}", random<Mock_Error>() );
+
+    ASSERT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_FALSE( stream.io_error_present() );
+    EXPECT_TRUE( stream.fatal_error_present() );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<Enum,
+ *        std::enable_if_t<picolibrary::is_error_code_enum_v<Enum>>> works properly.
+ */
+TEST( outputFormatterErrorCodeEnum, worksProperly )
+{
+    auto stream = Output_String_Stream{};
+
+    auto const error               = random<Mock_Error>();
+    auto const error_category_name = random_container<std::string>();
+    auto const error_description   = random_container<std::string>();
+
+    EXPECT_CALL( Mock_Error_Category::instance(), name() )
+        .WillOnce( Return( error_category_name.c_str() ) );
+    EXPECT_CALL( Mock_Error_Category::instance(), error_description( static_cast<Error_ID>( error ) ) )
+        .WillOnce( Return( error_description.c_str() ) );
+
+    auto const result = stream.print( "{}", error );
+
+    ASSERT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), stream.string().size() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), error_category_name + "::" + error_description );
+}
+
+/**
  * \brief Execute the picolibrary::Output_Stream unit tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
