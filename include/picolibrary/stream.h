@@ -815,6 +815,8 @@ class Output_Stream : public Stream {
     auto print_implementation( char const * format, Type && value, Types &&... values ) noexcept
         -> Result<Void, Error_Code>
     {
+        // #lizard forgives the length
+
         for ( ; *format; ++format ) {
             if ( *format == '{' ) {
                 ++format;
