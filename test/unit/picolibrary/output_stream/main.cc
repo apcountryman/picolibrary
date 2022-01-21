@@ -23,6 +23,7 @@
 #include <cstdint>
 #include <stdexcept>
 #include <string>
+#include <type_traits>
 #include <vector>
 
 #include "gmock/gmock.h"
@@ -109,7 +110,7 @@ class Mock_Output_Formatter {
 template<>
 class picolibrary::Output_Formatter<::Foo> {
   public:
-    Output_Formatter() noexcept = default;
+    constexpr Output_Formatter() noexcept = default;
 
     Output_Formatter( Output_Formatter && ) = delete;
 

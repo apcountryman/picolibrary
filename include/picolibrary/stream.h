@@ -431,7 +431,7 @@ class Output_Stream;
 /**
  * \brief Output formatter.
  *
- * \tparam T The type to be printed.
+ * \tparam T The type to print.
  *
  * \attention This class must be fully or partially specialized for each type that will
  *            support formatted output.
@@ -619,7 +619,7 @@ class Output_Stream : public Stream {
     }
 
     /**
-     * \brief Write an signed byte to the stream.
+     * \brief Write a signed byte to the stream.
      *
      * \param[in] value The signed byte to write to the stream.
      *
@@ -684,7 +684,7 @@ class Output_Stream : public Stream {
      *            The format specification syntax for a particular type is defined by the
      *            specialization of picolibrary::Output_Formatter that is applicable to
      *            that type.
-     * \param[in] values The values to write.
+     * \param[in] values The values to format.
      *
      * \pre All format specifications found in format are valid.
      *
@@ -803,8 +803,8 @@ class Output_Stream : public Stream {
      *
      * \param[in] format The format string specifying the format to use for each value to
      *            be formatted.
-     * \param[in] value The value to write.
-     * \param[in] values The values to write.
+     * \param[in] value The value to format.
+     * \param[in] values The values to format.
      *
      * \pre All format specifications found in format are valid.
      *
