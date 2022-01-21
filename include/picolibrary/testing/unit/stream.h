@@ -87,6 +87,41 @@ class Mock_Stream_Buffer : public Stream_Buffer {
 };
 
 /**
+ * \brief Mock output stream.
+ */
+class Mock_Output_Stream : public Output_Stream {
+  public:
+    Mock_Output_Stream()
+    {
+        set_buffer( &m_buffer );
+    }
+
+    Mock_Output_Stream( Mock_Output_Stream && ) = delete;
+
+    Mock_Output_Stream( Mock_Output_Stream const & ) = delete;
+
+    ~Mock_Output_Stream() noexcept = default;
+
+    auto operator=( Mock_Output_Stream && ) = delete;
+
+    auto operator=( Mock_Output_Stream const & ) = delete;
+
+    using ::picolibrary::Stream::clear_end_of_file_reached_report;
+    using ::picolibrary::Stream::report_end_of_file_reached;
+
+    using ::picolibrary::Stream::clear_fatal_error;
+    using ::picolibrary::Stream::report_fatal_error;
+
+    auto & buffer() noexcept
+    {
+        return m_buffer;
+    }
+
+  private:
+    Mock_Stream_Buffer m_buffer{};
+};
+
+/**
  * \brief Unit testing string stream device access buffer.
  */
 class String_Stream_Buffer final : public Stream_Buffer {
@@ -176,6 +211,49 @@ class String_Stream_Buffer final : public Stream_Buffer {
      * \brief The string abstracted by the device access buffer.
      */
     std::string m_string{};
+};
+
+/**
+ * \brief Unit testing output string stream.
+ */
+class Output_String_Stream : public Output_Stream {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    Output_String_Stream()
+    {
+        set_buffer( &m_buffer );
+    }
+
+    Output_String_Stream( Output_String_Stream && ) = delete;
+
+    Output_String_Stream( Output_String_Stream const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Output_String_Stream() noexcept = default;
+
+    auto operator=( Output_String_Stream && ) = delete;
+
+    auto operator=( Output_String_Stream const & ) = delete;
+
+    /**
+     * \brief Get the string abstracted by the stream.
+     *
+     * \return The string abstracted by the stream.
+     */
+    auto const & string() const noexcept
+    {
+        return m_buffer.string();
+    }
+
+  private:
+    /**
+     * \brief The stream's device access buffer.
+     */
+    String_Stream_Buffer m_buffer{};
 };
 
 } // namespace picolibrary::Testing::Unit

@@ -24,10 +24,13 @@
 #define PICOLIBRARY_STREAM_H
 
 #include <cstdint>
+#include <type_traits>
+#include <utility>
 
 #include "picolibrary/algorithm.h"
 #include "picolibrary/bit_manipulation.h"
 #include "picolibrary/error.h"
+#include "picolibrary/precondition.h"
 #include "picolibrary/result.h"
 #include "picolibrary/void.h"
 
@@ -421,6 +424,424 @@ class Stream {
      * \brief The I/O stream device access buffer associated with the I/O stream.
      */
     Stream_Buffer * m_buffer{};
+};
+
+class Output_Stream;
+
+/**
+ * \brief Output formatter.
+ *
+ * \tparam T The type to print.
+ *
+ * \attention This class must be fully or partially specialized for each type that will
+ *            support formatted output.
+ */
+template<typename T, typename = void>
+class Output_Formatter {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Output_Formatter() noexcept = default;
+
+    Output_Formatter( Output_Formatter && ) = delete;
+
+    Output_Formatter( Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Output_Formatter() noexcept = default;
+
+    auto operator=( Output_Formatter && ) = delete;
+
+    auto operator=( Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Parse the format specification for the value to be formatted.
+     *
+     * \param[in] format The format specification for the value to be formatted.
+     *
+     * \pre format is a valid format specification for the value to be formatted.
+     *
+     * \return A pointer to the end of the format specification ('}').
+     */
+    auto parse( char const * format ) noexcept -> char const *;
+
+    /**
+     * \brief Write the formatted value to the stream.
+     *
+     * \param[in] stream The stream to write the formatted value to.
+     * \param[in] value The value to format.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto print( Output_Stream & stream, T const & value ) noexcept -> Result<Void, Error_Code>;
+};
+
+/**
+ * \brief Output stream.
+ */
+class Output_Stream : public Stream {
+  public:
+    /**
+     * \brief Write a character to the stream.
+     *
+     * \pre picolibrary::Stream::is_nominal()
+     *
+     * \param[in] character The character to write to the stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto put( char character ) noexcept -> Result<Void, Error_Code>
+    {
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+
+        auto result = buffer()->put( character );
+        if ( result.is_error() ) {
+            report_fatal_error();
+
+            return result.error();
+        } // if
+
+        return {};
+    }
+
+    /**
+     * \brief Write a block of characters to the stream.
+     *
+     * \pre picolibrary::Stream::is_nominal()
+     *
+     * \param[in] begin The beginning of the block of characters to write to the stream.
+     * \param[in] end The end of the block of characters to write to the stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto put( char const * begin, char const * end ) noexcept -> Result<Void, Error_Code>
+    {
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+
+        auto result = buffer()->put( begin, end );
+        if ( result.is_error() ) {
+            report_fatal_error();
+
+            return result.error();
+        } // if
+
+        return {};
+    }
+
+    /**
+     * \brief Write a null-terminated string to the stream.
+     *
+     * \pre picolibrary::Stream::is_nominal()
+     *
+     * \param[in] string The null-terminated string to write to the stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto put( char const * string ) noexcept -> Result<Void, Error_Code>
+    {
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+
+        auto result = buffer()->put( string );
+        if ( result.is_error() ) {
+            report_fatal_error();
+
+            return result.error();
+        } // if
+
+        return {};
+    }
+
+    /**
+     * \brief Write an unsigned byte to the stream.
+     *
+     * \pre picolibrary::Stream::is_nominal()
+     *
+     * \param[in] value The unsigned byte to write to the stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto put( std::uint8_t value ) noexcept -> Result<Void, Error_Code>
+    {
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+
+        auto result = buffer()->put( value );
+        if ( result.is_error() ) {
+            report_fatal_error();
+
+            return result.error();
+        } // if
+
+        return {};
+    }
+
+    /**
+     * \brief Write a block of unsigned bytes to the stream.
+     *
+     * \pre picolibrary::Stream::is_nominal()
+     *
+     * \param[in] begin The beginning of the block of unsigned bytes to write to the
+     *            stream.
+     * \param[in] end The end of the block of unsigned bytes to write to the stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto put( std::uint8_t const * begin, std::uint8_t const * end ) noexcept -> Result<Void, Error_Code>
+    {
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+
+        auto result = buffer()->put( begin, end );
+        if ( result.is_error() ) {
+            report_fatal_error();
+
+            return result.error();
+        } // if
+
+        return {};
+    }
+
+    /**
+     * \brief Write a signed byte to the stream.
+     *
+     * \pre picolibrary::Stream::is_nominal()
+     *
+     * \param[in] value The signed byte to write to the stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto put( std::int8_t value ) noexcept -> Result<Void, Error_Code>
+    {
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+
+        auto result = buffer()->put( value );
+        if ( result.is_error() ) {
+            report_fatal_error();
+
+            return result.error();
+        } // if
+
+        return {};
+    }
+
+    /**
+     * \brief Write a block of signed bytes to the stream.
+     *
+     * \pre picolibrary::Stream::is_nominal()
+     *
+     * \param[in] begin The beginning of the block of signed bytes to write to the stream.
+     * \param[in] end The end of the block of signed bytes to write to the stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto put( std::int8_t const * begin, std::int8_t const * end ) noexcept -> Result<Void, Error_Code>
+    {
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+
+        auto result = buffer()->put( begin, end );
+        if ( result.is_error() ) {
+            report_fatal_error();
+
+            return result.error();
+        } // if
+
+        return {};
+    }
+
+    /**
+     * \brief Write formatted output to the stream.
+     *
+     * \pre picolibrary::Stream::is_nominal()
+     *
+     * \tparam Types The types to print.
+     *
+     * \param[in] format The format string specifying the format to use for each value to
+     *            be formatted. Format string syntax is based on the Python format string
+     *            syntax. Named and positional arguments are not supported. The format
+     *            specification for each value to be formatted is delimited by '{' and
+     *            '}'. Use "{{" to write a literal '{'. Use "}}" to write a literal '}'.
+     *            The format specification syntax for a particular type is defined by the
+     *            specialization of picolibrary::Output_Formatter that is applicable to
+     *            that type.
+     * \param[in] values The values to format.
+     *
+     * \pre All format specifications found in format are valid.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    template<typename... Types>
+    auto print( char const * format, Types &&... values ) noexcept -> Result<Void, Error_Code>
+    {
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+
+        return print_implementation( format, std::forward<Types>( values )... );
+    }
+
+    /**
+     * \brief Write any output that has been buffered to the device associated with the
+     *        stream.
+     *
+     * \pre picolibrary::Stream::is_nominal()
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto flush() noexcept -> Result<Void, Error_Code>
+    {
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+
+        auto result = buffer()->flush();
+        if ( result.is_error() ) {
+            report_fatal_error();
+
+            return result.error();
+        } // if
+
+        return {};
+    }
+
+  protected:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Output_Stream() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Output_Stream( Output_Stream && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Output_Stream( Output_Stream const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Output_Stream() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Output_Stream && expression ) noexcept -> Output_Stream & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Output_Stream const & expression ) noexcept -> Output_Stream & = default;
+
+  private:
+    /**
+     * \brief Write formatted output to the stream.
+     *
+     * \param[in] format The format string specifying the format to use for each value to
+     *            be formatted.
+     *
+     * \pre All format specifications found in format are valid.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto print_implementation( char const * format ) noexcept -> Result<Void, Error_Code>
+    {
+        for ( ; *format; ++format ) {
+            if ( *format == '{' or *format == '}' ) {
+                expect( *( format + 1 ) == *format, Generic_Error::INVALID_FORMAT );
+
+                ++format;
+            } // if
+
+            auto result = put( *format );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }     // for
+
+        return {};
+    }
+
+    /**
+     * \brief Write formatted output to the stream.
+     *
+     * \tparam Type The type to print.
+     * \tparam Types The types to print.
+     *
+     * \param[in] format The format string specifying the format to use for each value to
+     *            be formatted.
+     * \param[in] value The value to format.
+     * \param[in] values The values to format.
+     *
+     * \pre All format specifications found in format are valid.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    template<typename Type, typename... Types>
+    auto print_implementation( char const * format, Type && value, Types &&... values ) noexcept
+        -> Result<Void, Error_Code>
+    {
+        // #lizard forgives the length
+
+        for ( ; *format; ++format ) {
+            if ( *format == '{' ) {
+                ++format;
+
+                if ( *format != '{' ) {
+                    auto formatter = Output_Formatter<std::decay_t<Type>>{};
+
+                    format = formatter.parse( format );
+                    expect( *format == '}', Generic_Error::INVALID_FORMAT );
+
+                    ++format;
+
+                    auto result = formatter.print( *this, value );
+                    if ( result.is_error() ) {
+                        report_fatal_error();
+
+                        return result.error();
+                    } // if
+
+                    return print_implementation( format, std::forward<Types>( values )... );
+                } // if
+            } else if ( *format == '}' ) {
+                ++format;
+
+                expect( *format == '}', Generic_Error::INVALID_FORMAT );
+            } // else if
+
+            auto result = put( *format );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }     // for
+
+        expect( false, Generic_Error::INVALID_FORMAT );
+
+        return {}; // unreachable
+    }
 };
 
 } // namespace picolibrary
