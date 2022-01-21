@@ -23,7 +23,9 @@
 #ifndef PICOLIBRARY_STREAM_H
 #define PICOLIBRARY_STREAM_H
 
+#include <cstddef>
 #include <cstdint>
+#include <cstring>
 #include <type_traits>
 #include <utility>
 
@@ -474,10 +476,10 @@ class Output_Formatter {
      * \param[in] stream The stream to write the formatted value to.
      * \param[in] value The value to format.
      *
-     * \return Nothing if the write succeeded.
+     * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto print( Output_Stream & stream, T const & value ) noexcept -> Result<Void, Error_Code>;
+    auto print( Output_Stream & stream, T const & value ) noexcept -> Result<std::size_t, Error_Code>;
 };
 
 /**
@@ -676,15 +678,15 @@ class Output_Stream : public Stream {
      *
      * \pre All format specifications found in format are valid.
      *
-     * \return Nothing if the write succeeded.
+     * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
     template<typename... Types>
-    auto print( char const * format, Types &&... values ) noexcept -> Result<Void, Error_Code>
+    auto print( char const * format, Types &&... values ) noexcept -> Result<std::size_t, Error_Code>
     {
         expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
-        return print_implementation( format, std::forward<Types>( values )... );
+        return print_implementation( std::size_t{ 0 }, format, std::forward<Types>( values )... );
     }
 
     /**
@@ -757,15 +759,17 @@ class Output_Stream : public Stream {
     /**
      * \brief Write formatted output to the stream.
      *
+     * \param[in] n The number of characters that have been written to the stream.
      * \param[in] format The format string specifying the format to use for each value to
      *            be formatted.
      *
      * \pre All format specifications found in format are valid.
      *
-     * \return Nothing if the write succeeded.
+     * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto print_implementation( char const * format ) noexcept -> Result<Void, Error_Code>
+    auto print_implementation( std::size_t n, char const * format ) noexcept
+        -> Result<std::size_t, Error_Code>
     {
         for ( ; *format; ++format ) {
             if ( *format == '{' or *format == '}' ) {
@@ -778,9 +782,11 @@ class Output_Stream : public Stream {
             if ( result.is_error() ) {
                 return result.error();
             } // if
-        }     // for
 
-        return {};
+            ++n;
+        } // for
+
+        return n;
     }
 
     /**
@@ -789,6 +795,7 @@ class Output_Stream : public Stream {
      * \tparam Type The type to print.
      * \tparam Types The types to print.
      *
+     * \param[in] n The number of characters that have been written to the stream.
      * \param[in] format The format string specifying the format to use for each value to
      *            be formatted.
      * \param[in] value The value to format.
@@ -796,12 +803,12 @@ class Output_Stream : public Stream {
      *
      * \pre All format specifications found in format are valid.
      *
-     * \return Nothing if the write succeeded.
+     * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
     template<typename Type, typename... Types>
-    auto print_implementation( char const * format, Type && value, Types &&... values ) noexcept
-        -> Result<Void, Error_Code>
+    auto print_implementation( std::size_t n, char const * format, Type && value, Types &&... values ) noexcept
+        -> Result<std::size_t, Error_Code>
     {
         // #lizard forgives the length
 
@@ -824,7 +831,9 @@ class Output_Stream : public Stream {
                         return result.error();
                     } // if
 
-                    return print_implementation( format, std::forward<Types>( values )... );
+                    n += result.value();
+
+                    return print_implementation( n, format, std::forward<Types>( values )... );
                 } // if
             } else if ( *format == '}' ) {
                 ++format;
@@ -836,11 +845,13 @@ class Output_Stream : public Stream {
             if ( result.is_error() ) {
                 return result.error();
             } // if
-        }     // for
+
+            ++n;
+        } // for
 
         expect( false, Generic_Error::INVALID_FORMAT );
 
-        return {}; // unreachable
+        return std::size_t{ 0 }; // unreachable
     }
 };
 
@@ -888,12 +899,17 @@ class Output_Formatter<char> {
      * \param[in] stream The stream to write the formatted character to.
      * \param[in] character The character to format.
      *
-     * \return Nothing if the write succeeded.
+     * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto print( Output_Stream & stream, char character ) noexcept
+    auto print( Output_Stream & stream, char character ) noexcept -> Result<std::size_t, Error_Code>
     {
-        return stream.put( character );
+        auto result = stream.put( character );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return std::size_t{ 1 };
     }
 };
 
@@ -943,12 +959,17 @@ class Output_Formatter<char const *> {
      * \param[in] stream The stream to write the formatted null-terminated string to.
      * \param[in] string The null-terminated string to format.
      *
-     * \return Nothing if the write succeeded.
+     * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto print( Output_Stream & stream, char const * string ) noexcept
+    auto print( Output_Stream & stream, char const * string ) noexcept -> Result<std::size_t, Error_Code>
     {
-        return stream.put( string );
+        auto result = stream.put( string );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return std::strlen( string );
     }
 };
 

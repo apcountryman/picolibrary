@@ -100,7 +100,7 @@ class Mock_Output_Formatter {
 
     MOCK_METHOD( char const *, parse, ( std::string ) );
 
-    MOCK_METHOD( (Result<Void, Error_Code>), print, (Output_Stream &, Foo const &));
+    MOCK_METHOD( (Result<std::size_t, Error_Code>), print, (Output_Stream &, Foo const &));
 
   private:
     inline static auto INSTANCE = static_cast<Mock_Output_Formatter *>( nullptr );
@@ -943,7 +943,10 @@ TEST( print, worksProperly )
         auto const b = random_format_string();
         auto const c = random_format_string();
 
-        EXPECT_FALSE( stream.print( ( a + "{{" + b + "}}" + c ).c_str() ).is_error() );
+        auto const result = stream.print( ( a + "{{" + b + "}}" + c ).c_str() );
+
+        ASSERT_TRUE( result.is_value() );
+        EXPECT_EQ( result.value(), stream.string().size() );
 
         EXPECT_TRUE( stream.is_nominal() );
         EXPECT_EQ( stream.string(), a + '{' + b + '}' + c );
@@ -965,15 +968,18 @@ TEST( print, worksProperly )
         auto const format_specification_begin = d + '}' + e;
         auto const format_specification_end   = std::string{ '}' } + e;
 
-        auto const foo = random<Foo>();
+        auto const foo      = random<Foo>();
+        auto const foo_size = random<std::size_t>();
 
         EXPECT_CALL( formatter, parse( format_specification_begin ) )
             .WillOnce( Return( format_specification_end.c_str() ) );
-        EXPECT_CALL( formatter, print( Ref( stream ), Ref( foo ) ) )
-            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( formatter, print( Ref( stream ), Ref( foo ) ) ).WillOnce( Return( foo_size ) );
 
-        EXPECT_FALSE(
-            stream.print( ( a + "{{" + b + "}}" + c + '{' + d + '}' + e ).c_str(), foo ).is_error() );
+        auto const result = stream.print(
+            ( a + "{{" + b + "}}" + c + '{' + d + '}' + e ).c_str(), foo );
+
+        ASSERT_TRUE( result.is_value() );
+        EXPECT_EQ( result.value(), stream.string().size() + foo_size );
 
         EXPECT_TRUE( stream.is_nominal() );
         EXPECT_EQ( stream.string(), a + '{' + b + '}' + c + e );
@@ -1104,7 +1110,10 @@ TEST( outputFormatterChar, worksProperly )
 
     auto const character = random<char>();
 
-    EXPECT_FALSE( stream.print( "{}", character ).is_error() );
+    auto const result = stream.print( "{}", character );
+
+    ASSERT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
     EXPECT_EQ( stream.string(), std::string{ character } );
@@ -1156,7 +1165,10 @@ TEST( outputFormatterNullTerminatedString, worksProperly )
 
     auto const string = random_container<std::string>();
 
-    EXPECT_FALSE( stream.print( "{}", string.c_str() ).is_error() );
+    auto const result = stream.print( "{}", string.c_str() );
+
+    ASSERT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
     EXPECT_EQ( stream.string(), string );
