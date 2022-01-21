@@ -40,11 +40,13 @@
 namespace {
 
 using ::picolibrary::Error_Code;
+using ::picolibrary::Error_ID;
 using ::picolibrary::Generic_Error;
 using ::picolibrary::Output_Stream;
 using ::picolibrary::Result;
 using ::picolibrary::Void;
 using ::picolibrary::Testing::Unit::Mock_Error;
+using ::picolibrary::Testing::Unit::Mock_Error_Category;
 using ::picolibrary::Testing::Unit::Mock_Output_Stream;
 using ::picolibrary::Testing::Unit::Output_String_Stream;
 using ::picolibrary::Testing::Unit::random;
@@ -1204,6 +1206,76 @@ TEST( outputFormatterVoid, worksProperly )
 
     EXPECT_TRUE( stream.is_nominal() );
     EXPECT_EQ( stream.string(), "" );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Error_Code> properly handles
+ *        an invalid format string.
+ */
+TEST( outputFormatterErrorCodeDeathTest, invalidFormatString )
+{
+    EXPECT_DEATH(
+        {
+            static_cast<void>( Output_String_Stream{}.print(
+                ( std::string{ '{' } + random_format_string( random<std::size_t>( 1, 15 ) ) + '}' )
+                    .c_str(),
+                Error_Code{ random<Mock_Error>() } ) );
+        },
+        "::picolibrary::Generic_Error::INVALID_FORMAT" );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Error_Code> properly handles a
+ *        put error.
+ */
+TEST( outputFormatterErrorCode, putError )
+{
+    auto stream = Mock_Output_Stream{};
+
+    auto const error_category_name = random_container<std::string>();
+    auto const error_description   = random_container<std::string>();
+
+    auto const error = random<Mock_Error>();
+
+    EXPECT_CALL( Mock_Error_Category::instance(), name() )
+        .WillOnce( Return( error_category_name.c_str() ) );
+    EXPECT_CALL( Mock_Error_Category::instance(), error_description( _ ) )
+        .WillOnce( Return( error_description.c_str() ) );
+    EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
+
+    auto const result = stream.print( "{}", Error_Code{ random<Mock_Error>() } );
+
+    ASSERT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
+
+    EXPECT_FALSE( stream.end_of_file_reached() );
+    EXPECT_FALSE( stream.io_error_present() );
+    EXPECT_TRUE( stream.fatal_error_present() );
+}
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Error_Code> works properly.
+ */
+TEST( outputFormatterErrorCode, worksProperly )
+{
+    auto stream = Output_String_Stream{};
+
+    auto const error               = random<Mock_Error>();
+    auto const error_category_name = random_container<std::string>();
+    auto const error_description   = random_container<std::string>();
+
+    EXPECT_CALL( Mock_Error_Category::instance(), name() )
+        .WillOnce( Return( error_category_name.c_str() ) );
+    EXPECT_CALL( Mock_Error_Category::instance(), error_description( static_cast<Error_ID>( error ) ) )
+        .WillOnce( Return( error_description.c_str() ) );
+
+    auto const result = stream.print( "{}", Error_Code{ error } );
+
+    ASSERT_TRUE( result.is_value() );
+    EXPECT_EQ( result.value(), stream.string().size() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), error_category_name + "::" + error_description );
 }
 
 /**
