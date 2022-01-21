@@ -979,7 +979,7 @@ TEST( print, worksProperly )
             ( a + "{{" + b + "}}" + c + '{' + d + '}' + e ).c_str(), foo );
 
         ASSERT_TRUE( result.is_value() );
-        EXPECT_EQ( result.value(), stream.string().size() );
+        EXPECT_EQ( result.value(), stream.string().size() + foo_size );
 
         EXPECT_TRUE( stream.is_nominal() );
         EXPECT_EQ( stream.string(), a + '{' + b + '}' + c + e );
