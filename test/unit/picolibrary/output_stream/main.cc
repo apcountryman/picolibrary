@@ -51,6 +51,7 @@ using ::picolibrary::Testing::Unit::Mock_Output_Stream;
 using ::picolibrary::Testing::Unit::Output_String_Stream;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::random_container;
+using ::picolibrary::Testing::Unit::random_format_string;
 using ::testing::_;
 using ::testing::A;
 using ::testing::Eq;
@@ -58,11 +59,6 @@ using ::testing::InSequence;
 using ::testing::Ref;
 using ::testing::Return;
 using ::testing::SafeMatcherCast;
-
-auto random_format_string( std::size_t size = random<std::size_t>( 0, 15 ) )
-{
-    return random_container<std::string>( size, []() { return random<char>( ' ', 'z' ); } );
-}
 
 enum class Foo {};
 

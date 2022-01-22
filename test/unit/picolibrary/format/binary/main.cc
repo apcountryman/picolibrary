@@ -42,14 +42,9 @@ using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::Mock_Output_Stream;
 using ::picolibrary::Testing::Unit::Output_String_Stream;
 using ::picolibrary::Testing::Unit::random;
-using ::picolibrary::Testing::Unit::random_container;
+using ::picolibrary::Testing::Unit::random_format_string;
 using ::testing::A;
 using ::testing::Return;
-
-auto random_format_string( std::size_t size = random<std::size_t>( 0, 15 ) )
-{
-    return random_container<std::string>( size, []() { return random<char>( ' ', 'z' ); } );
-}
 
 template<typename Integer>
 auto binary( Integer value )

@@ -23,6 +23,7 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_STREAM_H
 #define PICOLIBRARY_TESTING_UNIT_STREAM_H
 
+#include <cstddef>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -31,6 +32,7 @@
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
+#include "picolibrary/testing/unit/random.h"
 #include "picolibrary/void.h"
 
 namespace picolibrary::Testing::Unit {
@@ -85,6 +87,19 @@ class Mock_Stream_Buffer : public Stream_Buffer {
 
     MOCK_METHOD( (Result<Void, Error_Code>), flush, (), ( noexcept, override ) );
 };
+
+/**
+ * \brief Generate a std::string of the specified size populated with pseudo-randomly
+ *        generated characters in the range [' ','z'].
+ *
+ * \param[in] size The desired std::string size.
+ *
+ * \return The generated std::string.
+ */
+inline auto random_format_string( std::size_t size = random<std::size_t>( 0, 15 ) )
+{
+    return random_container<std::string>( size, []() { return random<char>( ' ', 'z' ); } );
+}
 
 /**
  * \brief Mock output stream.
