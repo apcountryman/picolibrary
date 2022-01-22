@@ -189,6 +189,81 @@ class Decimal {
     Integer m_value{};
 };
 
+/**
+ * \brief Integer hexadecimal output format specifier.
+ *
+ * \tparam Integer The integer type to format.
+ */
+template<typename Integer>
+class Hexadecimal {
+  public:
+    static_assert( std::is_integral_v<Integer> );
+
+    Hexadecimal() = delete;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] value The integer to be formatted.
+     */
+    constexpr Hexadecimal( Integer value ) noexcept : m_value{ value }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Hexadecimal( Hexadecimal && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Hexadecimal( Hexadecimal const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Hexadecimal() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Hexadecimal && expression ) noexcept -> Hexadecimal & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Hexadecimal const & expression ) noexcept -> Hexadecimal & = default;
+
+    /**
+     * \brief Get the integer to be formatted.
+     *
+     * \return The integer to be formatted.
+     */
+    constexpr operator Integer() const noexcept
+    {
+        return m_value;
+    }
+
+  private:
+    /**
+     * \brief The integer to be formatted.
+     */
+    Integer m_value{};
+};
+
 } // namespace picolibrary::Format
 
 namespace picolibrary {
@@ -432,6 +507,94 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_unsign
         } // if
 
         return static_cast<std::size_t>( decimal.end() - i.base() );
+    }
+};
+
+/**
+ * \brief picolibrary::Format::Hexadecimal output formatter.
+ *
+ * picolibrary::Format::Hexadecimal only supports the default format specification ("{}").
+ *
+ * \tparam Integer The type of integer to print.
+ */
+template<typename Integer>
+class Output_Formatter<Format::Hexadecimal<Integer>> {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Output_Formatter() noexcept = default;
+
+    Output_Formatter( Output_Formatter && ) = delete;
+
+    Output_Formatter( Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Output_Formatter() noexcept = default;
+
+    auto operator=( Output_Formatter && ) = delete;
+
+    auto operator=( Output_Formatter const & ) = delete;
+
+    /**
+     * \brief Parse the format specification for the picolibrary::Format::Hexadecimal to
+     *        be formatted.
+     *
+     * \param[in] format The format specification for the picolibrary::Format::Hexadecimal
+     *            to be formatted.
+     *
+     * \return format
+     */
+    constexpr auto parse( char const * format ) noexcept
+    {
+        return format;
+    }
+
+    /**
+     * \brief Write the formatted picolibrary::Format::Hexadecimal to the stream.
+     *
+     * \param[in] stream The stream to write the formatted
+     *            picolibrary::Format::Hexadecimal to.
+     * \param[in] value The integer to format.
+     *
+     * \return The number of characters written to the stream if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto print( Output_Stream & stream, Integer value ) noexcept -> Result<std::size_t, Error_Code>
+    {
+        // #lizard forgives the length
+
+        using U = std::make_unsigned_t<Integer>;
+
+        constexpr auto nibbles = std::numeric_limits<U>::digits / 4;
+
+        U u;
+        static_assert( sizeof( u ) == sizeof( value ) );
+        std::memcpy( &u, &value, sizeof( value ) );
+
+        Array<char, 2 + nibbles> hexadecimal;
+
+        auto i = hexadecimal.rbegin();
+        for ( auto nibble = 0; nibble < nibbles; ++nibble ) {
+            auto const n = u & 0xF;
+
+            *i = n < 0xA ? '0' + n : 'A' + ( n - 0xA );
+
+            ++i;
+            u >>= 4;
+        } // for
+        *i = 'x';
+        ++i;
+        *i = '0';
+
+        auto result = stream.put( hexadecimal.begin(), hexadecimal.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return hexadecimal.size();
     }
 };
 
