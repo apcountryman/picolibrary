@@ -332,6 +332,8 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_signed
      */
     auto print( Output_Stream & stream, Integer value ) noexcept -> Result<std::size_t, Error_Code>
     {
+        // #lizard forgives the length
+
         Array<char, 1 + std::numeric_limits<Integer>::digits10 + 1> decimal;
 
         auto is_negative = value < 0;
