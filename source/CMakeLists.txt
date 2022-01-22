@@ -29,6 +29,7 @@ set(
     "picolibrary/array.cc"
     "picolibrary/bit_manipulation.cc"
     "picolibrary/error.cc"
+    "picolibrary/format.cc"
     "picolibrary/postcondition.cc"
     "picolibrary/precondition.cc"
     "picolibrary/result.cc"
