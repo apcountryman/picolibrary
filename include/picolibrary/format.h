@@ -170,6 +170,8 @@ class Output_Formatter<Format::Binary<Integer>> {
      */
     auto print( Output_Stream & stream, Integer value ) noexcept -> Result<std::size_t, Error_Code>
     {
+        // #lizard forgives the length
+
         using U = std::make_unsigned_t<Integer>;
 
         constexpr auto bits = std::numeric_limits<U>::digits;
