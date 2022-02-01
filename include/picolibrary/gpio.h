@@ -38,6 +38,14 @@ enum class Initial_Pull_Up_State : std::uint_fast8_t {
     ENABLED,  ///< Enabled.
 };
 
+/**
+ * \brief Initial pin state.
+ */
+enum class Initial_Pin_State : std::uint_fast8_t {
+    LOW,  ///< Low.
+    HIGH, ///< High.
+};
+
 } // namespace picolibrary::GPIO
 
 #endif // PICOLIBRARY_GPIO_H
