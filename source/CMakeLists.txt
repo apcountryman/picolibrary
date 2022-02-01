@@ -58,6 +58,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
         APPEND PICOLIBRARY_SOURCE_FILES
         "picolibrary/testing/unit.cc"
         "picolibrary/testing/unit/error.cc"
+        "picolibrary/testing/unit/gpio.cc"
         "picolibrary/testing/unit/mock_handle.cc"
         "picolibrary/testing/unit/random.cc"
         "picolibrary/testing/unit/stream.cc"
