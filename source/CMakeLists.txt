@@ -30,6 +30,7 @@ set(
     "picolibrary/bit_manipulation.cc"
     "picolibrary/error.cc"
     "picolibrary/format.cc"
+    "picolibrary/gpio.cc"
     "picolibrary/postcondition.cc"
     "picolibrary/precondition.cc"
     "picolibrary/result.cc"
