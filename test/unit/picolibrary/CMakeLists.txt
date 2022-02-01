@@ -25,6 +25,9 @@ add_subdirectory( bit_manipulation )
 # build the picolibrary::Error_Code unit tests
 add_subdirectory( error_code )
 
+# build the picolibrary::GPIO unit tests
+add_subdirectory( gpio )
+
 # build the picolibrary::Format unit tests
 add_subdirectory( format )
 
