@@ -23,6 +23,25 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_GPIO_H
 #define PICOLIBRARY_TESTING_UNIT_GPIO_H
 
+#include "picolibrary/gpio.h"
+#include "picolibrary/testing/unit/random.h"
+
+namespace picolibrary::Testing::Unit {
+
+/**
+ * \brief Generate a pseudo-random picolibrary::GPIO::Initial_Pull_Up_State.
+ *
+ * \return A pseudo-randomly generated picolibrary::GPIO::Initial_Pull_Up_State.
+ */
+template<>
+inline auto random<GPIO::Initial_Pull_Up_State>()
+{
+    return random<bool>() ? GPIO::Initial_Pull_Up_State::DISABLED
+                          : GPIO::Initial_Pull_Up_State::ENABLED;
+}
+
+} // namespace picolibrary::Testing::Unit
+
 /**
  * \brief General Purpose Input/Output (GPIO) unit testing facilities.
  */

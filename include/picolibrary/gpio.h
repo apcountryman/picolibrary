@@ -23,10 +23,21 @@
 #ifndef PICOLIBRARY_GPIO_H
 #define PICOLIBRARY_GPIO_H
 
+#include <cstdint>
+
 /**
  * \brief General Purpose Input/Output (GPIO) facilities.
  */
 namespace picolibrary::GPIO {
+
+/**
+ * \brief Initial internal pull-up resistor state.
+ */
+enum class Initial_Pull_Up_State : std::uint_fast8_t {
+    DISABLED, ///< Disabled.
+    ENABLED,  ///< Enabled.
+};
+
 } // namespace picolibrary::GPIO
 
 #endif // PICOLIBRARY_GPIO_H
