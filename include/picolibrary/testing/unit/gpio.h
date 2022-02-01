@@ -40,6 +40,17 @@ inline auto random<GPIO::Initial_Pull_Up_State>()
                           : GPIO::Initial_Pull_Up_State::ENABLED;
 }
 
+/**
+ * \brief Generate a pseudo-random picolibrary::GPIO::Initial_Pin_State.
+ *
+ * \return A pseudo-randomly generated picolibrary::GPIO::Initial_Pin_State.
+ */
+template<>
+inline auto random<GPIO::Initial_Pin_State>()
+{
+    return random<bool>() ? GPIO::Initial_Pin_State::LOW : GPIO::Initial_Pin_State::HIGH;
+}
+
 } // namespace picolibrary::Testing::Unit
 
 /**
