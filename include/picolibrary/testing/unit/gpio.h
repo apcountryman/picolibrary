@@ -290,6 +290,93 @@ class Mock_Output_Pin {
     MOCK_METHOD( void, toggle, () );
 };
 
+/**
+ * \brief Mock Input/Output (I/O) pin.
+ */
+class Mock_IO_Pin {
+  public:
+    class Handle : public Mock_Handle<Mock_IO_Pin> {
+      public:
+        constexpr Handle() noexcept = default;
+
+        constexpr Handle( Mock_IO_Pin & mock ) noexcept : Mock_Handle<Mock_IO_Pin>{ mock }
+        {
+        }
+
+        constexpr Handle( Handle && source ) noexcept = default;
+
+        Handle( Handle const & ) = delete;
+
+        ~Handle() noexcept = default;
+
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
+
+        auto operator=( Handle const & ) = delete;
+
+        void initialize()
+        {
+            mock().initialize();
+        }
+
+        void initialize( ::picolibrary::GPIO::Initial_Pin_State initial_pin_state )
+        {
+            mock().initialize( initial_pin_state );
+        }
+
+        auto is_low() const
+        {
+            return mock().is_low();
+        }
+
+        auto is_high() const
+        {
+            return mock().is_high();
+        }
+
+        void transition_to_low()
+        {
+            mock().transition_to_low();
+        }
+
+        void transition_to_high()
+        {
+            mock().transition_to_high();
+        }
+
+        void toggle()
+        {
+            mock().toggle();
+        }
+    };
+
+    Mock_IO_Pin() = default;
+
+    Mock_IO_Pin( Mock_IO_Pin && ) = delete;
+
+    Mock_IO_Pin( Mock_IO_Pin const & ) = delete;
+
+    ~Mock_IO_Pin() noexcept = default;
+
+    auto operator=( Mock_IO_Pin && ) = delete;
+
+    auto operator=( Mock_IO_Pin const & ) = delete;
+
+    auto handle() noexcept
+    {
+        return Handle{ *this };
+    }
+
+    MOCK_METHOD( void, initialize, () );
+    MOCK_METHOD( void, initialize, ( ::picolibrary::GPIO::Initial_Pin_State ) );
+
+    MOCK_METHOD( bool, is_low, (), ( const ) );
+    MOCK_METHOD( bool, is_high, (), ( const ) );
+
+    MOCK_METHOD( void, transition_to_low, () );
+    MOCK_METHOD( void, transition_to_high, () );
+    MOCK_METHOD( void, toggle, () );
+};
+
 } // namespace picolibrary::Testing::Unit::GPIO
 
 #endif // PICOLIBRARY_TESTING_UNIT_GPIO_H
