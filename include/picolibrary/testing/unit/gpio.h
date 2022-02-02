@@ -160,9 +160,9 @@ class Mock_Internally_Pulled_Up_Input_Pin : public Mock_Input_Pin {
 
         using Mock_Input_Pin::Handle::initialize;
 
-        auto initialize( ::picolibrary::GPIO::Initial_Pull_Up_State initial_pull_up_state )
+        void initialize( ::picolibrary::GPIO::Initial_Pull_Up_State initial_pull_up_state )
         {
-            return mock().initialize( initial_pull_up_state );
+            mock().initialize( initial_pull_up_state );
         }
 
         auto pull_up_is_disabled() const
