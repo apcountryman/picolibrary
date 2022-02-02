@@ -190,6 +190,64 @@ class Internally_Pulled_Up_Input_Pin_Concept {
     auto is_high() const noexcept -> bool;
 };
 
+/**
+ * \brief Output pin concept.
+ */
+class Output_Pin_Concept {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    Output_Pin_Concept() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Output_Pin_Concept( Output_Pin_Concept && source ) noexcept = default;
+
+    Output_Pin_Concept( Output_Pin_Concept const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Output_Pin_Concept() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Output_Pin_Concept && expression ) noexcept -> Output_Pin_Concept & = default;
+
+    auto operator=( Output_Pin_Concept const & ) = delete;
+
+    /**
+     * \brief Initialize the pin's hardware.
+     *
+     * \param[in] initial_pin_state The initial state of the pin.
+     */
+    void initialize( Initial_Pin_State initial_pin_state = Initial_Pin_State::LOW ) noexcept;
+
+    /**
+     * \brief Transition the pin to the low state.
+     */
+    void transition_to_low() noexcept;
+
+    /**
+     * \brief Transition the pin to the high state.
+     */
+    void transition_to_high() noexcept;
+
+    /**
+     * \brief Toggle the pin state.
+     */
+    void toggle() noexcept;
+};
+
 } // namespace picolibrary::GPIO
 
 #endif // PICOLIBRARY_GPIO_H
