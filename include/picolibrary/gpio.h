@@ -391,6 +391,8 @@ class Active_Low_Input_Pin : public Input_Pin {
  *            state. All output pin implementations should use this assumption. If the
  *            high pin/signal state is not the active pin/signal state, this class can be
  *            used to invert an output pin implementation's behavior.
+ *
+ * \tparam Output_Pin The type of output pin being adapted.
  */
 template<typename Output_Pin>
 class Active_Low_Output_Pin : public Output_Pin {
