@@ -268,6 +268,12 @@ class Output_Pin_Concept {
 
 /**
  * \brief Input/Output (I/O) pin concept.
+ *
+ * \attention picolibrary assumes that the high pin/signal state is the active pin/signal
+ *            state. All I/O pin implementations should use this assumption. If the high
+ *            pin/signal state is not the active pin/signal state,
+ *            picolibrary::GPIO::Active_Low_IO_Pin can be used to invert an I/O pin
+ *            implementation's behavior.
  */
 class IO_Pin_Concept {
   public:
@@ -418,6 +424,23 @@ class Active_Low_Output_Pin : public Output_Pin {
     {
         Output_Pin::transition_to_low();
     }
+};
+
+/**
+ * \brief Active low I/O pin adapter.
+ *
+ *
+ * \attention picolibrary assumes that the high pin/signal state is the active pin/signal
+ *            state. All I/O pin implementations should use this assumption. If the high
+ *            pin/signal state is not the active pin/signal state, this class can be used
+ *            to invert an I/O pin implementation's behavior.
+ *
+ * \tparam IO_Pin The type of I/O pin being adapted.
+ */
+template<typename IO_Pin>
+class Active_Low_IO_Pin : public Active_Low_Output_Pin<Active_Low_Input_Pin<IO_Pin>> {
+  public:
+    using Active_Low_Output_Pin<Active_Low_Input_Pin<IO_Pin>>::Active_Low_Output_Pin;
 };
 
 } // namespace picolibrary::GPIO
