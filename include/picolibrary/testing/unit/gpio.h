@@ -215,6 +215,81 @@ class Mock_Internally_Pulled_Up_Input_Pin : public Mock_Input_Pin {
     MOCK_METHOD( void, enable_pull_up, () );
 };
 
+/**
+ * \brief Mock output pin.
+ */
+class Mock_Output_Pin {
+  public:
+    class Handle : public Mock_Handle<Mock_Output_Pin> {
+      public:
+        constexpr Handle() noexcept = default;
+
+        constexpr Handle( Mock_Output_Pin & mock ) noexcept :
+            Mock_Handle<Mock_Output_Pin>{ mock }
+        {
+        }
+
+        constexpr Handle( Handle && source ) noexcept = default;
+
+        Handle( Handle const & ) = delete;
+
+        ~Handle() noexcept = default;
+
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
+
+        auto operator=( Handle const & ) = delete;
+
+        void initialize()
+        {
+            mock().initialize();
+        }
+
+        void initialize( ::picolibrary::GPIO::Initial_Pin_State initial_pin_state )
+        {
+            mock().initialize( initial_pin_state );
+        }
+
+        void transition_to_low()
+        {
+            mock().transition_to_low();
+        }
+
+        void transition_to_high()
+        {
+            mock().transition_to_high();
+        }
+
+        void toggle()
+        {
+            mock().toggle();
+        }
+    };
+
+    Mock_Output_Pin() = default;
+
+    Mock_Output_Pin( Mock_Output_Pin && ) = delete;
+
+    Mock_Output_Pin( Mock_Output_Pin const & ) = delete;
+
+    ~Mock_Output_Pin() noexcept = default;
+
+    auto operator=( Mock_Output_Pin && ) = delete;
+
+    auto operator=( Mock_Output_Pin const & ) = delete;
+
+    auto handle() noexcept
+    {
+        return Handle{ *this };
+    }
+
+    MOCK_METHOD( void, initialize, () );
+    MOCK_METHOD( void, initialize, ( ::picolibrary::GPIO::Initial_Pin_State ) );
+
+    MOCK_METHOD( void, transition_to_low, () );
+    MOCK_METHOD( void, transition_to_high, () );
+    MOCK_METHOD( void, toggle, () );
+};
+
 } // namespace picolibrary::Testing::Unit::GPIO
 
 #endif // PICOLIBRARY_TESTING_UNIT_GPIO_H
