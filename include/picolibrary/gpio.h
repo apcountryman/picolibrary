@@ -204,6 +204,12 @@ class Internally_Pulled_Up_Input_Pin_Concept {
 
 /**
  * \brief Output pin concept.
+ *
+ * \attention picolibrary assumes that the high pin/signal state is the active pin/signal
+ *            state. All output pin implementations should use this assumption. If the
+ *            high pin/signal state is not the active pin/signal state,
+ *            picolibrary::GPIO::Active_Low_Output_Pin can be used to invert an output pin
+ *            implementation's behavior.
  */
 class Output_Pin_Concept {
   public:
@@ -369,6 +375,48 @@ class Active_Low_Input_Pin : public Input_Pin {
     auto is_high() const noexcept
     {
         return Input_Pin::is_low();
+    }
+};
+
+/**
+ * \brief Active low output pin adapter.
+ *
+ * \attention picolibrary assumes that the high pin/signal state is the active pin/signal
+ *            state. All output pin implementations should use this assumption. If the
+ *            high pin/signal state is not the active pin/signal state, this class can be
+ *            used to invert an output pin implementation's behavior.
+ */
+template<typename Output_Pin>
+class Active_Low_Output_Pin : public Output_Pin {
+  public:
+    using Output_Pin::Output_Pin;
+
+    /**
+     * \brief Initialize the pin's hardware.
+     *
+     * \param[in] initial_pin_state The initial state of the pin.
+     */
+    void initialize( Initial_Pin_State initial_pin_state = Initial_Pin_State::LOW ) noexcept
+    {
+        Output_Pin::initialize(
+            initial_pin_state == Initial_Pin_State::HIGH ? Initial_Pin_State::LOW
+                                                         : Initial_Pin_State::HIGH );
+    }
+
+    /**
+     * \brief Transition the pin to the high state.
+     */
+    void transition_to_low() noexcept
+    {
+        Output_Pin::transition_to_high();
+    }
+
+    /**
+     * \brief Transition the pin to the low state.
+     */
+    void transition_to_high() noexcept
+    {
+        Output_Pin::transition_to_low();
     }
 };
 
