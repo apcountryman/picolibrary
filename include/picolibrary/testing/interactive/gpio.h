@@ -58,6 +58,29 @@ void state( Output_Stream & stream, Input_Pin pin, Delayer delay ) noexcept
     } // for
 }
 
+/**
+ * \brief GPIO output pin toggle interactive test helper.
+ *
+ * \tparam Output_Pin The type of output pin to toggle.
+ * \tparam Delayer A nullary functor called to introduce a delay each time the pin is
+ *         toggled.
+ *
+ * \param[in] pin The pin to toggle.
+ * \param[in] delay The nullary functor to call to introduce a delay each time the pin is
+ *            toggled.
+ */
+template<typename Output_Pin, typename Delayer>
+void toggle( Output_Pin pin, Delayer delay ) noexcept
+{
+    pin.initialize();
+
+    for ( ;; ) {
+        delay();
+
+        pin.toggle();
+    } // for
+}
+
 } // namespace picolibrary::Testing::Interactive::GPIO
 
 #endif // PICOLIBRARY_TESTING_INTERACTIVE_GPIO_H
