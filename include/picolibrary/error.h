@@ -349,12 +349,13 @@ constexpr auto operator!=( Error_Code const & lhs, Error_Code const & rhs ) noex
  * \relatedalso picolibrary::Generic_Error_Category
  */
 enum class Generic_Error : Error_ID {
-    INVALID_ARGUMENT,   ///< Invalid argument.
-    INVALID_FORMAT,     ///< Invalid format.
-    IO_STREAM_DEGRADED, ///< I/O stream degraded.
-    LOGIC_ERROR,        ///< Logic error.
-    OUT_OF_RANGE,       ///< Out of range.
-    RUNTIME_ERROR,      ///< Runtime error.
+    INSUFFICIENT_CAPACITY, ///< Insufficient capacity.
+    INVALID_ARGUMENT,      ///< Invalid argument.
+    INVALID_FORMAT,        ///< Invalid format.
+    IO_STREAM_DEGRADED,    ///< I/O stream degraded.
+    LOGIC_ERROR,           ///< Logic error.
+    OUT_OF_RANGE,          ///< Out of range.
+    RUNTIME_ERROR,         ///< Runtime error.
 };
 
 /**
@@ -403,6 +404,7 @@ class Generic_Error_Category final : public Error_Category {
     virtual auto error_description( Error_ID id ) const noexcept -> char const * override final
     {
         switch ( static_cast<Generic_Error>( id ) ) {
+            case Generic_Error::INSUFFICIENT_CAPACITY: return "INSUFFICIENT_CAPACITY";
             case Generic_Error::INVALID_ARGUMENT: return "INVALID_ARGUMENT";
             case Generic_Error::INVALID_FORMAT: return "INVALID_FORMAT";
             case Generic_Error::IO_STREAM_DEGRADED: return "IO_STREAM_DEGRADED";
