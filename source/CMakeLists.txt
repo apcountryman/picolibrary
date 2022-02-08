@@ -29,6 +29,7 @@ set(
     "picolibrary/array.cc"
     "picolibrary/bit_manipulation.cc"
     "picolibrary/error.cc"
+    "picolibrary/fixed_capacity_vector.cc"
     "picolibrary/format.cc"
     "picolibrary/gpio.cc"
     "picolibrary/postcondition.cc"
