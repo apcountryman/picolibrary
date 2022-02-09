@@ -145,7 +145,7 @@ class Fixed_Capacity_Vector {
      *            with.
      * \param[in] end The end of the range of values to initialize the vector with.
      *
-     * \pre static_cast<Size>( end - begin ) <=
+     * \pre static_cast<picolibrary::Fixed_Capacity_Vector::Size>( end - begin ) <=
      *      picolibrary::Fixed_Capacity_Vector::max_size()
      */
     template<typename Iterator>
@@ -168,16 +168,8 @@ class Fixed_Capacity_Vector {
      * \pre initializer_list.size() <= picolibrary::Fixed_Capacity_Vector::max_size()
      */
     constexpr Fixed_Capacity_Vector( std::initializer_list<Value> initializer_list ) noexcept :
-        m_size{ initializer_list.size() }
+        Fixed_Capacity_Vector{ initializer_list.begin(), initializer_list.end() }
     {
-        expect( initializer_list.size() <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
-
-        ::picolibrary::for_each(
-            initializer_list.begin(),
-            initializer_list.end(),
-            [ storage = &m_storage[ 0 ] ]( auto value ) mutable noexcept {
-                new ( storage++ ) Value{ value };
-            } );
     }
 
     /**
@@ -230,18 +222,7 @@ class Fixed_Capacity_Vector {
      */
     constexpr auto & operator=( std::initializer_list<Value> initializer_list ) noexcept
     {
-        expect( initializer_list.size() <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
-
-        clear();
-
-        m_size = initializer_list.size();
-
-        ::picolibrary::for_each(
-            initializer_list.begin(),
-            initializer_list.end(),
-            [ storage = &m_storage[ 0 ] ]( auto value ) mutable noexcept {
-                new ( storage++ ) Value{ value };
-            } );
+        assign( initializer_list );
 
         return *this;
     }
@@ -321,7 +302,7 @@ class Fixed_Capacity_Vector {
      * \param[in] begin The beginning of the range of values to store in the vector.
      * \param[in] end The end of the range of values to store in the vector.
      *
-     * \pre static_cast<Size>( end - begin ) <=
+     * \pre static_cast<picolibrary::Fixed_Capacity_Vector::Size>( end - begin ) <=
      *      picolibrary::Fixed_Capacity_Vector::max_size()
      */
     template<typename Iterator>
@@ -350,18 +331,7 @@ class Fixed_Capacity_Vector {
      */
     constexpr void assign( std::initializer_list<Value> initializer_list ) noexcept
     {
-        expect( initializer_list.size() <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
-
-        clear();
-
-        m_size = initializer_list.size();
-
-        ::picolibrary::for_each(
-            initializer_list.begin(),
-            initializer_list.end(),
-            [ storage = &m_storage[ 0 ] ]( auto value ) mutable noexcept {
-                new ( storage++ ) Value{ value };
-            } );
+        assign( initializer_list.begin(), initializer_list.end() );
     }
 
     /**
@@ -492,17 +462,6 @@ class Fixed_Capacity_Vector {
     auto data() const noexcept -> Const_Pointer
     {
         return std::launder( reinterpret_cast<Const_Pointer>( m_storage.data() ) );
-    }
-
-    /**
-     * \brief Check if the vector is empty.
-     *
-     * \return true if the vector is empty.
-     * \return false if the vector is not empty.
-     */
-    [[nodiscard]] constexpr auto empty() const noexcept -> bool
-    {
-        return not size();
     }
 
     /**
@@ -650,6 +609,17 @@ class Fixed_Capacity_Vector {
     }
 
     /**
+     * \brief Check if the vector is empty.
+     *
+     * \return true if the vector is empty.
+     * \return false if the vector is not empty.
+     */
+    [[nodiscard]] constexpr auto empty() const noexcept -> bool
+    {
+        return not size();
+    }
+
+    /**
      * \brief Get the number of elements in the vector.
      *
      * \return The number of elements in the vector.
@@ -692,7 +662,9 @@ class Fixed_Capacity_Vector {
     /**
      * \brief Insert a value before the specified position in the vector.
      *
-     * \pre picolibrary::Fixed_Capacity_Vector::size() + 1 <=
+     * \pre picolibrary::Fixed_Capacity_Vector::size() + 1 >
+     *      picolibrary::Fixed_Capacity_Vector::size() and
+     *      picolibrary::Fixed_Capacity_Vector::size() + 1 <=
      *      picolibrary::Fixed_Capacity_Vector::max_size()
      *
      * \param[in] position The position to insert the value before.
@@ -708,7 +680,9 @@ class Fixed_Capacity_Vector {
     /**
      * \brief Insert a value before the specified position in the vector.
      *
-     * \pre picolibrary::Fixed_Capacity_Vector::size() + 1 <=
+     * \pre picolibrary::Fixed_Capacity_Vector::size() + 1 >
+     *      picolibrary::Fixed_Capacity_Vector::size() and
+     *      picolibrary::Fixed_Capacity_Vector::size() + 1 <=
      *      picolibrary::Fixed_Capacity_Vector::max_size()
      *
      * \param[in] position The position to insert the value before.
@@ -718,7 +692,7 @@ class Fixed_Capacity_Vector {
      */
     auto insert( Const_Iterator position, Value && value ) noexcept
     {
-        expect( size() + 1 <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
+        expect( size() + 1 > size() and size() + 1 <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         auto element = --end();
 
@@ -730,9 +704,9 @@ class Fixed_Capacity_Vector {
 
         auto const inserted_element = element + 1;
 
-        new ( ++element ) Value{ std::move( value ) };
-
         m_size += 1;
+
+        new ( ++element ) Value{ std::move( value ) };
 
         return inserted_element;
     }
@@ -744,14 +718,16 @@ class Fixed_Capacity_Vector {
      * \param[in] n The number of copies of value to insert.
      * \param[in] value The value to insert n copies of.
      *
-     * \pre picolibrary::Fixed_Capacity_Vector::size() + n <=
+     * \pre picolibrary::Fixed_Capacity_Vector::size() + n >
+     *      picolibrary::Fixed_Capacity_Vector::size() and
+     *      picolibrary::Fixed_Capacity_Vector::size() + n <=
      *      picolibrary::Fixed_Capacity_Vector::max_size()
      *
      * \return An iterator to the inserted elements.
      */
     auto insert( Const_Iterator position, Size n, Value const & value ) noexcept
     {
-        expect( size() + n <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
+        expect( size() + n > size() and size() + n <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         auto element = --end();
 
@@ -763,9 +739,9 @@ class Fixed_Capacity_Vector {
 
         auto const inserted_elements = element + 1;
 
-        while ( n-- ) { new ( ++element ) Value{ value }; } // while
-
         m_size += n;
+
+        while ( n-- ) { new ( ++element ) Value{ value }; } // while
 
         return inserted_elements;
     }
@@ -780,8 +756,12 @@ class Fixed_Capacity_Vector {
      * \param[in] begin The beginning of the range of values to insert.
      * \param[in] end The end of the range of values to insert.
      *
-     * \pre picolibrary::Fixed_Capacity_Vector::size() + static_cast<Size>( end - begin )
-     *      <= picolibrary::Fixed_Capacity_Vector::max_size()
+     * \pre picolibrary::Fixed_Capacity_Vector::size() +
+     *      static_cast<picolibrary::Fixed_Capacity_Vector::Size>( end - begin ) >
+     *      picolibrary::Fixed_Capacity_Vector::size() and
+     *      picolibrary::Fixed_Capacity_Vector::size() +
+     *      static_cast<picolibrary::Fixed_Capacity_Vector::Size>( end - begin ) <=
+     *      picolibrary::Fixed_Capacity_Vector::max_size()
      *
      * \return An iterator to the inserted elements.
      */
@@ -790,7 +770,7 @@ class Fixed_Capacity_Vector {
     {
         auto const n = static_cast<Size>( end - begin );
 
-        expect( size() + n <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
+        expect( size() + n > size() and size() + n <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         auto element = --end();
 
@@ -802,11 +782,11 @@ class Fixed_Capacity_Vector {
 
         auto const inserted_elements = element + 1;
 
+        m_size += n;
+
         ::picolibrary::for_each( begin, end, [ element ]( auto value ) mutable noexcept {
             new ( ++element ) Value{ value };
         } );
-
-        m_size += n;
 
         return inserted_elements;
     }
@@ -818,7 +798,9 @@ class Fixed_Capacity_Vector {
      * \param[in] position The position to insert the values before.
      * \param[in] initializer_list The initializer list containing the values to insert.
      *
-     * \pre picolibrary::Fixed_Capacity_Vector::size() + initializer_list.size() <=
+     * \pre picolibrary::Fixed_Capacity_Vector::size() + initializer_list.size() >
+     *      picolibrary::Fixed_Capacity_Vector::size() and
+     *      picolibrary::Fixed_Capacity_Vector::size() + initializer_list.size() <=
      *      picolibrary::Fixed_Capacity_Vector::max_size()
      *
      * \return An iterator to the inserted elements.
@@ -831,7 +813,9 @@ class Fixed_Capacity_Vector {
     /**
      * \brief Emplace a value before the specified position in the vector.
      *
-     * \pre picolibrary::Fixed_Capacity_Vector::size() + 1 <=
+     * \pre picolibrary::Fixed_Capacity_Vector::size() + 1 >
+     *      picolibrary::Fixed_Capacity_Vector::size() and
+     *      picolibrary::Fixed_Capacity_Vector::size() + 1 <=
      *      picolibrary::Fixed_Capacity_Vector::max_size()
      *
      * \tparam Arguments Value construction argument types.
@@ -839,12 +823,12 @@ class Fixed_Capacity_Vector {
      * \param[in] position The position to emplace the new value before.
      * \param[in] arguments Value construction arguments.
      *
-     * \return An iterator to the inserted element.
+     * \return An iterator to the emplaced element.
      */
     template<typename... Arguments>
     auto emplace( Const_Iterator position, Arguments &&... arguments ) noexcept
     {
-        expect( size() + 1 <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
+        expect( size() + 1 > size() and size() + 1 <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         auto element = --end();
 
@@ -919,14 +903,16 @@ class Fixed_Capacity_Vector {
     /**
      * \brief Append a value to the vector.
      *
-     * \pre picolibrary::Fixed_Capacity_Vector::size() + 1 <=
+     * \pre picolibrary::Fixed_Capacity_Vector::size() + 1 >
+     *      picolibrary::Fixed_Capacity_Vector::size() and
+     *      picolibrary::Fixed_Capacity_Vector::size() + 1 <=
      *      picolibrary::Fixed_Capacity_Vector::max_size()
      *
      * \param[in] value The value to append to the vector.
      */
     constexpr void push_back( Value const & value ) noexcept
     {
-        expect( size() + 1 <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
+        expect( size() + 1 > size() and size() + 1 <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         new ( &m_storage[ m_size ] ) Value{ value };
 
@@ -936,14 +922,16 @@ class Fixed_Capacity_Vector {
     /**
      * \brief Append a value to the vector.
      *
-     * \pre picolibrary::Fixed_Capacity_Vector::size() + 1 <=
+     * \pre picolibrary::Fixed_Capacity_Vector::size() + 1 >
+     *      picolibrary::Fixed_Capacity_Vector::size() and
+     *      picolibrary::Fixed_Capacity_Vector::size() + 1 <=
      *      picolibrary::Fixed_Capacity_Vector::max_size()
      *
      * \param[in] value The value to append to the vector.
      */
     constexpr void push_back( Value && value ) noexcept
     {
-        expect( size() + 1 <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
+        expect( size() + 1 > size() and size() + 1 <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         new ( &m_storage[ m_size ] ) Value{ std::move( value ) };
 
@@ -953,7 +941,9 @@ class Fixed_Capacity_Vector {
     /**
      * \brief Append a value to the vector.
      *
-     * \pre picolibrary::Fixed_Capacity_Vector::size() + 1 <=
+     * \pre picolibrary::Fixed_Capacity_Vector::size() + 1 >
+     *      picolibrary::Fixed_Capacity_Vector::size() and
+     *      picolibrary::Fixed_Capacity_Vector::size() + 1 <=
      *      picolibrary::Fixed_Capacity_Vector::max_size()
      *
      * \tparam Arguments Value construction argument types.
@@ -965,7 +955,7 @@ class Fixed_Capacity_Vector {
     template<typename... Arguments>
     auto emplace_back( Arguments &&... arguments ) noexcept -> Reference
     {
-        expect( size() + 1 <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
+        expect( size() + 1 > size() and size() + 1 <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         new ( &m_storage[ m_size ] ) Value{ std::forward<Arguments>( arguments )... };
 
