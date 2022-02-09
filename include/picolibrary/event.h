@@ -30,7 +30,7 @@ namespace picolibrary {
 /**
  * \brief Event ID.
  */
-using Error_ID = std::uint_fast8_t;
+using Event_ID = std::uint_fast8_t;
 
 } // namespace picolibrary
 
