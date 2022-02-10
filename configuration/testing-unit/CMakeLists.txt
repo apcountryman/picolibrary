@@ -34,6 +34,9 @@ mark_as_advanced(
 # human readable error information suppression configuration
 set( PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION OFF CACHE BOOL "" FORCE )
 
+# human readable event information suppression configuration
+set( PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION OFF CACHE BOOL "" FORCE )
+
 # unit testing configuration
 set( PICOLIBRARY_ENABLE_UNIT_TESTING            ON  CACHE BOOL "" FORCE )
 set( PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST OFF CACHE BOOL "" FORCE )

@@ -61,6 +61,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
         APPEND PICOLIBRARY_SOURCE_FILES
         "picolibrary/testing/unit.cc"
         "picolibrary/testing/unit/error.cc"
+        "picolibrary/testing/unit/event.cc"
         "picolibrary/testing/unit/gpio.cc"
         "picolibrary/testing/unit/mock_handle.cc"
         "picolibrary/testing/unit/random.cc"
@@ -86,6 +87,7 @@ target_compile_definitions(
     PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING}>,PICOLIBRARY_ENABLE_INTERACTIVE_TESTING,>"
     PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_ENABLE_UNIT_TESTING}>,PICOLIBRARY_ENABLE_UNIT_TESTING,>"
     PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION}>,PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION,>"
+    PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION}>,PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION,>"
 )
 target_link_libraries(
     picolibrary
