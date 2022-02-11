@@ -23,8 +23,14 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_EVENT_H
 #define PICOLIBRARY_TESTING_UNIT_EVENT_H
 
+#include <cstddef>
+
 #include "gmock/gmock.h"
+#include "picolibrary/error.h"
 #include "picolibrary/event.h"
+#include "picolibrary/result.h"
+#include "picolibrary/stream.h"
+#include "picolibrary/testing/unit/random.h"
 
 namespace picolibrary::Testing::Unit {
 
@@ -55,6 +61,31 @@ class Mock_Event_Category : public Event_Category {
     MOCK_METHOD( char const *, name, (), ( const, noexcept, override ) );
 
     MOCK_METHOD( char const *, event_description, ( Event_ID ), ( const, noexcept, override ) );
+};
+
+/**
+ * \brief Mock event.
+ */
+class Mock_Event : public Event {
+  public:
+    Mock_Event(
+        Mock_Event_Category const & category = Mock_Event_Category::instance(),
+        Event_ID                    id       = random<Event_ID>() ) :
+        Event{ category, id }
+    {
+    }
+
+    Mock_Event( Mock_Event && ) = delete;
+
+    Mock_Event( Mock_Event const & ) = delete;
+
+    virtual ~Mock_Event() noexcept override = default;
+
+    auto operator=( Mock_Event && ) = delete;
+
+    auto operator=( Mock_Event const & ) = delete;
+
+    MOCK_METHOD( (Result<std::size_t, Error_Code>), print_details, (Output_Stream &), ( const, noexcept, override ) );
 };
 
 } // namespace picolibrary::Testing::Unit
