@@ -64,15 +64,6 @@ auto decimal( Integer value )
  * \tparam Integer The type of integer to print.
  */
 template<typename Integer>
-class outputFormatterDecimalDeathTest : public ::testing::Test {
-};
-
-/**
- * \brief picolibrary::Output_Formatter<picolibrary::Decimal> unit test fixture.
- *
- * \tparam Integer The type of integer to print.
- */
-template<typename Integer>
 class outputFormatterDecimal : public ::testing::Test {
 };
 
@@ -85,30 +76,7 @@ using Integers =
 /**
  * \brief picolibrary::Output_Formatter<picolibrary::Decimal> unit test fixture.
  */
-TYPED_TEST_SUITE( outputFormatterDecimalDeathTest, Integers );
-
-/**
- * \brief picolibrary::Output_Formatter<picolibrary::Decimal> unit test fixture.
- */
 TYPED_TEST_SUITE( outputFormatterDecimal, Integers );
-
-/**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Decimal> properly
- *        handles an invalid format string.
- */
-TYPED_TEST( outputFormatterDecimalDeathTest, invalidFormatString )
-{
-    using Integer = TypeParam;
-
-    EXPECT_DEATH(
-        {
-            static_cast<void>( Output_String_Stream{}.print(
-                ( std::string{ '{' } + random_format_string( random<std::size_t>( 1, 15 ) ) + '}' )
-                    .c_str(),
-                Decimal{ random<Integer>() } ) );
-        },
-        "::picolibrary::Generic_Error::INVALID_FORMAT" );
-}
 
 /**
  * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Decimal> properly

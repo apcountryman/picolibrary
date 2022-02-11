@@ -75,15 +75,6 @@ auto binary( Integer value )
  * \tparam Integer The type of integer to print.
  */
 template<typename Integer>
-class outputFormatterBinaryDeathTest : public ::testing::Test {
-};
-
-/**
- * \brief picolibrary::Output_Formatter<picolibrary::Binary> unit test fixture.
- *
- * \tparam Integer The type of integer to print.
- */
-template<typename Integer>
 class outputFormatterBinary : public ::testing::Test {
 };
 
@@ -96,30 +87,7 @@ using Integers =
 /**
  * \brief picolibrary::Output_Formatter<picolibrary::Binary> unit test fixture.
  */
-TYPED_TEST_SUITE( outputFormatterBinaryDeathTest, Integers );
-
-/**
- * \brief picolibrary::Output_Formatter<picolibrary::Binary> unit test fixture.
- */
 TYPED_TEST_SUITE( outputFormatterBinary, Integers );
-
-/**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Binary> properly
- *        handles an invalid format string.
- */
-TYPED_TEST( outputFormatterBinaryDeathTest, invalidFormatString )
-{
-    using Integer = TypeParam;
-
-    EXPECT_DEATH(
-        {
-            static_cast<void>( Output_String_Stream{}.print(
-                ( std::string{ '{' } + random_format_string( random<std::size_t>( 1, 15 ) ) + '}' )
-                    .c_str(),
-                Binary{ random<Integer>() } ) );
-        },
-        "::picolibrary::Generic_Error::INVALID_FORMAT" );
-}
 
 /**
  * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Binary> properly

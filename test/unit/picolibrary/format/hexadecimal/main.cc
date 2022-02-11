@@ -78,15 +78,6 @@ auto hexadecimal( Integer value )
  * \tparam Integer The type of integer to print.
  */
 template<typename Integer>
-class outputFormatterHexadecimalDeathTest : public ::testing::Test {
-};
-
-/**
- * \brief picolibrary::Output_Formatter<picolibrary::Hexadecimal> unit test fixture.
- *
- * \tparam Integer The type of integer to print.
- */
-template<typename Integer>
 class outputFormatterHexadecimal : public ::testing::Test {
 };
 
@@ -99,30 +90,7 @@ using Integers =
 /**
  * \brief picolibrary::Output_Formatter<picolibrary::Hexadecimal> unit test fixture.
  */
-TYPED_TEST_SUITE( outputFormatterHexadecimalDeathTest, Integers );
-
-/**
- * \brief picolibrary::Output_Formatter<picolibrary::Hexadecimal> unit test fixture.
- */
 TYPED_TEST_SUITE( outputFormatterHexadecimal, Integers );
-
-/**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Hexadecimal> properly
- *        handles an invalid format string.
- */
-TYPED_TEST( outputFormatterHexadecimalDeathTest, invalidFormatString )
-{
-    using Integer = TypeParam;
-
-    EXPECT_DEATH(
-        {
-            static_cast<void>( Output_String_Stream{}.print(
-                ( std::string{ '{' } + random_format_string( random<std::size_t>( 1, 15 ) ) + '}' )
-                    .c_str(),
-                Hexadecimal{ random<Integer>() } ) );
-        },
-        "::picolibrary::Generic_Error::INVALID_FORMAT" );
-}
 
 /**
  * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Hexadecimal> properly

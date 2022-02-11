@@ -33,15 +33,6 @@ using ::picolibrary::Generic_Error_Category;
 } // namespace
 
 /**
- * \brief Verify picolibrary::Generic_Error_Category::name() works properly.
- */
-TEST( name, worksProperly )
-{
-    EXPECT_STREQ(
-        Generic_Error_Category::instance().name(), "::picolibrary::Generic_Error" );
-}
-
-/**
  * \brief Verify picolibrary::Generic_Error_Category::error_description() works properly.
  */
 TEST( errorDescription, worksProperly )
