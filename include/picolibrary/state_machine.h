@@ -179,7 +179,7 @@ class State_Machine {
      * \endcode
      *
      * Application Event Handling:
-     * A state make take either of the following actions when handling an application
+     * A state may take either of the following actions when handling an application
      * event:
      * - Handle the event
      * - Trigger a state transition in response to the event
@@ -191,7 +191,7 @@ class State_Machine {
      * \endcode
      *
      * If the state triggers a state transition in response to the event, the state's
-     * event handler must trigger a state transition as follows:
+     * event handler must trigger the state transition as follows:
      * \code
      * return state_machine.transition_to( target_state, event );
      * \endcode
@@ -243,7 +243,7 @@ class State_Machine {
      *
      * \param[in] initial_pseudostate The state event handler for the initial pseudostate.
      *            The state event handler for the initial pseudostate must trigger the
-     *            initial state transition by calling
+     *            initial transition by calling
      *            picolibrary::State_Machine::transition_to().
      */
     constexpr State_Machine( State_Event_Handler_Reference initial_pseudostate ) noexcept :
@@ -305,9 +305,7 @@ class State_Machine {
         expect(
             ( *m_initial_pseudostate )( *this, event ) == Event_Handling_Result::STATE_TRANSITION_TRIGGERED,
             Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
-
         enter( *m_target_state );
-
         m_current_state = m_target_state;
     }
 
