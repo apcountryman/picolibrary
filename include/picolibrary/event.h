@@ -32,6 +32,63 @@ namespace picolibrary {
  */
 using Event_ID = std::uint_fast8_t;
 
+/**
+ * \brief Event category.
+ */
+class Event_Category {
+  public:
+    Event_Category( Event_Category && ) = delete;
+
+    Event_Category( Event_Category const & ) = delete;
+
+    auto operator=( Event_Category && ) = delete;
+
+    auto operator=( Event_Category const & ) = delete;
+
+    /**
+     * \brief Get the name of the event category.
+     *
+     * \return The name of the event category.
+     */
+#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
+    virtual auto name() const noexcept -> char const * = 0;
+#else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
+    constexpr auto const * name() const noexcept
+    {
+        return "";
+    }
+#endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
+
+    /**
+     * \brief Get an event ID's description.
+     *
+     * \param[in] id The event ID whose description is to be got.
+     *
+     * \return The event ID's description.
+     */
+#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
+    virtual auto event_description( Event_ID id ) const noexcept -> char const * = 0;
+#else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
+    constexpr auto const * event_description( Event_ID id ) const noexcept
+    {
+        static_cast<void>( id );
+
+        return "";
+    }
+#endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
+
+  protected:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Event_Category() noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Event_Category() noexcept = default;
+};
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_EVENT_H
