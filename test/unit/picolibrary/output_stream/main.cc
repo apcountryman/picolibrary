@@ -1063,22 +1063,6 @@ TEST( flush, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<char> properly handles an invalid format
- *        string.
- */
-TEST( outputFormatterCharDeathTest, invalidFormatString )
-{
-    EXPECT_DEATH(
-        {
-            static_cast<void>( Output_String_Stream{}.print(
-                ( std::string{ '{' } + random_format_string( random<std::size_t>( 1, 15 ) ) + '}' )
-                    .c_str(),
-                random<char>() ) );
-        },
-        "::picolibrary::Generic_Error::INVALID_FORMAT" );
-}
-
-/**
  * \brief Verify picolibrary::Output_Formatter<char> properly handles a put error.
  */
 TEST( outputFormatterChar, putError )
@@ -1115,22 +1099,6 @@ TEST( outputFormatterChar, worksProperly )
 
     EXPECT_TRUE( stream.is_nominal() );
     EXPECT_EQ( stream.string(), std::string{ character } );
-}
-
-/**
- * \brief Verify picolibrary::Output_Formatter<char const *> properly handles an invalid
- *        format string.
- */
-TEST( outputFormatterNullTerminatedStringDeathTest, invalidFormatString )
-{
-    EXPECT_DEATH(
-        {
-            static_cast<void>( Output_String_Stream{}.print(
-                ( std::string{ '{' } + random_format_string( random<std::size_t>( 1, 15 ) ) + '}' )
-                    .c_str(),
-                random_container<std::string>().c_str() ) );
-        },
-        "::picolibrary::Generic_Error::INVALID_FORMAT" );
 }
 
 /**
@@ -1173,22 +1141,6 @@ TEST( outputFormatterNullTerminatedString, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Void> properly handles an
- *        invalid format string.
- */
-TEST( outputFormatterVoidDeathTest, invalidFormatString )
-{
-    EXPECT_DEATH(
-        {
-            static_cast<void>( Output_String_Stream{}.print(
-                ( std::string{ '{' } + random_format_string( random<std::size_t>( 1, 15 ) ) + '}' )
-                    .c_str(),
-                Void{} ) );
-        },
-        "::picolibrary::Generic_Error::INVALID_FORMAT" );
-}
-
-/**
  * \brief Verify picolibrary::Output_Formatter<picolibrary::Void> works properly.
  */
 TEST( outputFormatterVoid, worksProperly )
@@ -1202,22 +1154,6 @@ TEST( outputFormatterVoid, worksProperly )
 
     EXPECT_TRUE( stream.is_nominal() );
     EXPECT_EQ( stream.string(), "" );
-}
-
-/**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Error_Code> properly handles
- *        an invalid format string.
- */
-TEST( outputFormatterErrorCodeDeathTest, invalidFormatString )
-{
-    EXPECT_DEATH(
-        {
-            static_cast<void>( Output_String_Stream{}.print(
-                ( std::string{ '{' } + random_format_string( random<std::size_t>( 1, 15 ) ) + '}' )
-                    .c_str(),
-                Error_Code{ random<Mock_Error>() } ) );
-        },
-        "::picolibrary::Generic_Error::INVALID_FORMAT" );
 }
 
 /**
@@ -1272,23 +1208,6 @@ TEST( outputFormatterErrorCode, worksProperly )
 
     EXPECT_TRUE( stream.is_nominal() );
     EXPECT_EQ( stream.string(), error_category_name + "::" + error_description );
-}
-
-/**
- * \brief Verify picolibrary::Output_Formatter<Enum,
- *        std::enable_if_t<picolibrary::is_error_code_enum_v<Enum>>> properly handles an
- *        invalid format string.
- */
-TEST( outputFormatterErrorCodeEnumDeathTest, invalidFormatString )
-{
-    EXPECT_DEATH(
-        {
-            static_cast<void>( Output_String_Stream{}.print(
-                ( std::string{ '{' } + random_format_string( random<std::size_t>( 1, 15 ) ) + '}' )
-                    .c_str(),
-                random<Mock_Error>() ) );
-        },
-        "::picolibrary::Generic_Error::INVALID_FORMAT" );
 }
 
 /**
