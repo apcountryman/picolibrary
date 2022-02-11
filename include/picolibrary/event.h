@@ -25,6 +25,9 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <new>
+#include <type_traits>
+#include <utility>
 
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
@@ -345,6 +348,100 @@ class Simple_Event final : public Event {
      * \return The assigned to object.
      */
     auto operator=( Simple_Event const & expression ) noexcept -> Simple_Event & = default;
+};
+
+/**
+ * \brief Event type tag.
+ *
+ * \tparam Event The event type.
+ */
+template<typename Event>
+struct Event_Type {
+    static_assert( std::is_base_of_v<::picolibrary::Event, Event> );
+};
+
+/**
+ * \brief Event storage.
+ *
+ * \tparam SIZE The event storage size.
+ */
+template<std::size_t SIZE>
+class Event_Storage {
+  public:
+    Event_Storage() = delete;
+
+    /**
+     * \brief Constructor.
+     *
+     * \tparam Event The type of event to be stored.
+     *
+     * \param[in] event The event to be stored.
+     */
+    template<typename Event, typename = std::enable_if_t<std::is_base_of_v<::picolibrary::Event, Event>>>
+    Event_Storage( Event && event ) noexcept
+    {
+        static_assert( sizeof( Event ) <= SIZE );
+
+        new ( &m_storage ) Event{ std::forward<Event>( event ) };
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \tparam Event The type of event to be stored.
+     * \tparam Arguments Event construction argument types.
+     *
+     * \param[in] arguments Event construction arguments.
+     */
+    template<typename Event, typename... Arguments>
+    Event_Storage( Event_Type<Event>, Arguments &&... arguments ) noexcept
+    {
+        static_assert( sizeof( Event ) <= SIZE );
+
+        new ( &m_storage ) Event{ std::forward<Arguments>( arguments )... };
+    }
+
+    Event_Storage( Event_Storage && ) = delete;
+
+    Event_Storage( Event_Storage const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Event_Storage() noexcept
+    {
+        event().~Event();
+    }
+
+    auto operator=( Event_Storage && ) = delete;
+
+    auto operator=( Event_Storage const & ) = delete;
+
+    /**
+     * \brief Get the stored event.
+     *
+     * \return The stored event.
+     */
+    auto & event() noexcept
+    {
+        return *std::launder( reinterpret_cast<Event *>( &m_storage ) );
+    }
+
+    /**
+     * \brief Get the stored event.
+     *
+     * \return The stored event.
+     */
+    auto const & event() const noexcept
+    {
+        return *std::launder( reinterpret_cast<Event const *>( &m_storage ) );
+    }
+
+  private:
+    /**
+     * \brief The event storage.
+     */
+    std::aligned_storage_t<SIZE, alignof( Event )> m_storage;
 };
 
 } // namespace picolibrary
