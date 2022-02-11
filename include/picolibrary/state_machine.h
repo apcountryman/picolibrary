@@ -232,6 +232,38 @@ class State_Machine {
      */
     using State_Event_Handler_Reference = std::add_lvalue_reference_t<State_Event_Handler>;
 
+    /**
+     * \brief Report that an event has been handled.
+     *
+     * \param[in] handled_event The event that has been handled.
+     *
+     * \return Event handled event handling result.
+     */
+    constexpr auto event_handled( Event const & handled_event ) const noexcept
+    {
+        static_cast<void>( handled_event );
+
+        return Event_Handling_Result::EVENT_HANDLED;
+    }
+
+    /**
+     * \brief Trigger a state transition.
+     *
+     * \param[in] target_state The state event handler for the target of the state
+     *            transition.
+     * \param[in] triggering_event The event that is triggering the state transition.
+     *
+     * \return State transition triggered event handling result.
+     */
+    constexpr auto transition_to( State_Event_Handler_Reference target_state, Event const & triggering_event ) noexcept
+    {
+        static_cast<void>( triggering_event );
+
+        m_target_state = &target_state;
+
+        return Event_Handling_Result::STATE_TRANSITION_TRIGGERED;
+    }
+
   protected:
     /**
      * \brief Constructor.
