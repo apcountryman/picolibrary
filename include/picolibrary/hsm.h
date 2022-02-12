@@ -167,7 +167,7 @@ class HSM {
      * \code
      * return hsm.defer_event_handling_to( superstate, event );
      * \endcode
-     * If the state is a highest level state (a state that has not explicit superstate),
+     * If the state is a highest level state (a state that has no explicit superstate),
      * the state's event handler must defer handling of the entry pseudo-event to the
      * state event handler for the implicit "top" superstate as follows:
      * \code
@@ -176,8 +176,8 @@ class HSM {
      *
      * Exit actions:
      * If a state has exit actions, the state's event handler must execute the state's
-     * exit actions when it is passed the exit pseudo-event. Once the state's exit
-     * actions have been executed, the state's event handler must report that the exit
+     * exit actions when it is passed the exit pseudo-event. Once the state's exit actions
+     * have been executed, the state's event handler must report that the exit
      * pseudo-event has been handled. The exit pseudo-event can be identified and acted
      * upon as follows:
      * \code
@@ -196,7 +196,7 @@ class HSM {
      * \code
      * return hsm.defer_event_handling_to( superstate, event );
      * \endcode
-     * If the state is a highest level state (a state that has not explicit superstate),
+     * If the state is a highest level state (a state that has no explicit superstate),
      * the state's event handler must defer handling of the exit pseudo-event to the state
      * event handler for the implicit "top" superstate as follows:
      * \code
@@ -292,7 +292,7 @@ class HSM {
      *
      * // handle application events
      *
-     * return state_machine.defer_event_handling_to( superstate, event );
+     * return hsm.defer_event_handling_to( superstate, event );
      * \endcode
      */
     using State_Event_Handler = auto( HSM & hsm, Event const & event ) noexcept -> Event_Handling_Result;
@@ -518,26 +518,6 @@ class HSM {
     class Path {
       public:
         /**
-         * \brief Max state depth (not including the implicit "top" superstate).
-         */
-        static constexpr auto MAX_STATE_DEPTH = std::size_t{ 8 };
-
-        /**
-         * \brief Path storage.
-         */
-        using Storage = Fixed_Capacity_Vector<State_Event_Handler_Pointer, MAX_STATE_DEPTH>;
-
-        /**
-         * \brief A const path iterator.
-         */
-        using Const_Iterator = Storage::Const_Iterator;
-
-        /**
-         * \brief A const path reverse iterator.
-         */
-        using Const_Reverse_Iterator = Storage::Const_Reverse_Iterator;
-
-        /**
          * \brief Remove the state event handlers for the superstates that are common to a
          *        pair of paths.
          *
@@ -674,9 +654,14 @@ class HSM {
 
       private:
         /**
+         * \brief Max state depth (not including the implicit "top" superstate).
+         */
+        static constexpr auto MAX_STATE_DEPTH = std::size_t{ 8 };
+
+        /**
          * \brief The path storage.
          */
-        Storage m_storage{};
+        Fixed_Capacity_Vector<State_Event_Handler_Pointer, MAX_STATE_DEPTH> m_storage{};
 
         /**
          * \brief The path state.
