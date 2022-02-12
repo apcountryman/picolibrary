@@ -812,6 +812,8 @@ class HSM {
      */
     void transition_from( State_Event_Handler_Pointer source_state ) noexcept
     {
+        // #lizard forgives the length
+
         auto current_state = m_current_state;
         auto target_state  = m_target_state;
 
