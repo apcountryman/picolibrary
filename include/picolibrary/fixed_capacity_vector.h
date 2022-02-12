@@ -540,7 +540,7 @@ class Fixed_Capacity_Vector {
      */
     auto rbegin() noexcept -> Reverse_Iterator
     {
-        return { end() };
+        return Reverse_Iterator{ end() };
     }
 
     /**
@@ -550,7 +550,7 @@ class Fixed_Capacity_Vector {
      */
     auto rbegin() const noexcept -> Const_Reverse_Iterator
     {
-        return { end() };
+        return Const_Reverse_Iterator{ end() };
     }
 
     /**
@@ -560,7 +560,7 @@ class Fixed_Capacity_Vector {
      */
     auto crbegin() const noexcept -> Const_Reverse_Iterator
     {
-        return { cend() };
+        return Const_Reverse_Iterator{ cend() };
     }
 
     /**
@@ -575,7 +575,7 @@ class Fixed_Capacity_Vector {
      */
     auto rend() noexcept -> Reverse_Iterator
     {
-        return { begin() };
+        return Reverse_Iterator{ begin() };
     }
 
     /**
@@ -590,7 +590,7 @@ class Fixed_Capacity_Vector {
      */
     auto rend() const noexcept -> Const_Reverse_Iterator
     {
-        return { begin() };
+        return Const_Reverse_Iterator{ begin() };
     }
 
     /**
@@ -605,7 +605,7 @@ class Fixed_Capacity_Vector {
      */
     auto crend() const noexcept -> Const_Reverse_Iterator
     {
-        return { cbegin() };
+        return Const_Reverse_Iterator{ cbegin() };
     }
 
     /**
