@@ -654,7 +654,7 @@ class Fixed_Capacity_Vector {
      */
     constexpr void clear() noexcept
     {
-        for ( auto i = Size{}; i < m_size; ++i ) { data()[ i ]->~Value(); } // for
+        for ( auto i = Size{}; i < m_size; ++i ) { data()[ i ].~Value(); } // for
 
         m_size = 0;
     }
