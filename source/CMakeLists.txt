@@ -33,6 +33,7 @@ set(
     "picolibrary/fixed_capacity_vector.cc"
     "picolibrary/format.cc"
     "picolibrary/gpio.cc"
+    "picolibrary/hsm.cc"
     "picolibrary/postcondition.cc"
     "picolibrary/precondition.cc"
     "picolibrary/result.cc"
