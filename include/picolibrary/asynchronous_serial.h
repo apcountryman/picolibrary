@@ -25,6 +25,8 @@
 
 #include <cstdint>
 
+#include "picolibrary/algorithm.h"
+
 /**
  * \brief Asynchronous serial facilities.
  */
@@ -143,6 +145,36 @@ class Transmitter_Concept {
      * \param[in] end The end of the block of data to transmit.
      */
     void transmit( Data const * begin, Data const * end ) noexcept;
+};
+
+/**
+ * \brief Asynchronous serial transmitter.
+ *
+ * \tparam Basic_Transmitter The asynchronous serial basic transmitter to add asynchronous
+ *         serial transmitter functionality to.
+ */
+template<typename Basic_Transmitter>
+class Transmitter : public Basic_Transmitter {
+  public:
+    /**
+     * \brief The integral type used to hold the data to be transmitted.
+     */
+    using Data = typename Basic_Transmitter::Data;
+
+    using Basic_Transmitter::Basic_Transmitter;
+
+    using Basic_Transmitter::transmit;
+
+    /**
+     * \brief Transmit a block of data.
+     *
+     * \param[in] begin The beginning of the block of data to transmit.
+     * \param[in] end The end of the block of data to transmit.
+     */
+    void transmit( Data const * begin, Data const * end ) noexcept
+    {
+        for_each( begin, end, [ this ]( auto data ) noexcept { transmit( data ); } );
+    }
 };
 
 } // namespace picolibrary::Asynchronous_Serial
