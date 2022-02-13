@@ -84,6 +84,67 @@ class Basic_Transmitter_Concept {
     void transmit( Data data ) noexcept;
 };
 
+/**
+ * \brief Asynchronous serial transmitter concept.
+ */
+class Transmitter_Concept {
+  public:
+    /**
+     * \brief The integral type used to hold the data to be transmitted.
+     */
+    using Data = std::uint8_t;
+
+    /**
+     * \brief Constructor.
+     */
+    Transmitter_Concept() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Transmitter_Concept( Transmitter_Concept && source ) noexcept = default;
+
+    Transmitter_Concept( Transmitter_Concept const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Transmitter_Concept() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Transmitter_Concept && expression ) noexcept -> Transmitter_Concept & = default;
+
+    auto operator=( Transmitter_Concept const & ) = delete;
+
+    /**
+     * \brief Initialize the transmitter's hardware.
+     */
+    void initialize() noexcept;
+
+    /**
+     * \brief Transmit data.
+     *
+     * \param[in] data The data to transmit.
+     */
+    void transmit( Data data ) noexcept;
+
+    /**
+     * \brief Transmit a block of data.
+     *
+     * \param[in] begin The beginning of the block of data to transmit.
+     * \param[in] end The end of the block of data to transmit.
+     */
+    void transmit( Data const * begin, Data const * end ) noexcept;
+};
+
 } // namespace picolibrary::Asynchronous_Serial
 
 #endif // PICOLIBRARY_ASYNCHRONOUS_SERIAL_H
