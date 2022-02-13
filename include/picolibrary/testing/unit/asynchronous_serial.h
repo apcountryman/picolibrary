@@ -23,6 +23,8 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_ASYNCHRONOUS_SERIAL_H
 #define PICOLIBRARY_TESTING_UNIT_ASYNCHRONOUS_SERIAL_H
 
+#include <vector>
+
 #include "gmock/gmock.h"
 #include "picolibrary/testing/unit/mock_handle.h"
 
@@ -93,6 +95,84 @@ class Mock_Basic_Transmitter {
     MOCK_METHOD( void, initialize, () );
 
     MOCK_METHOD( void, transmit, ( Data ) );
+};
+
+/**
+ * \brief Mock asynchronous serial transmitter.
+ *
+ * \tparam The integral type used to hold the data to be transmitted.
+ */
+template<typename Data_Type>
+class Mock_Transmitter : public Mock_Basic_Transmitter<Data_Type> {
+  public:
+    using Data = typename Mock_Basic_Transmitter<Data_Type>::Data;
+
+    class Handle : public Mock_Basic_Transmitter<Data_Type>::Handle {
+      public:
+        using Data = typename Mock_Basic_Transmitter<Data_Type>::Handle::Data;
+
+        constexpr Handle() noexcept = default;
+
+        constexpr Handle( Mock_Transmitter & mock ) noexcept :
+            Mock_Basic_Transmitter<Data_Type>::Handle{ mock }
+        {
+        }
+
+        constexpr Handle( Handle && source ) noexcept = default;
+
+        Handle( Handle const & ) = delete;
+
+        ~Handle() noexcept = default;
+
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
+
+        auto operator=( Handle const & ) = delete;
+
+        auto & mock() noexcept
+        {
+            return static_cast<Mock_Transmitter &>( Mock_Basic_Transmitter<Data_Type>::Handle::mock() );
+        }
+
+        auto const & mock() const noexcept
+        {
+            return static_cast<Mock_Transmitter const &>(
+                Mock_Basic_Transmitter<Data_Type>::Handle::mock() );
+        }
+
+        using Mock_Basic_Transmitter<Data_Type>::Handle::transmit;
+
+        void transmit( Data const * begin, Data const * end )
+        {
+            mock().transmit( begin, end );
+        }
+    };
+
+    Mock_Transmitter() = default;
+
+    Mock_Transmitter( Mock_Transmitter && ) = delete;
+
+    Mock_Transmitter( Mock_Transmitter const & ) = delete;
+
+    ~Mock_Transmitter() noexcept = default;
+
+    auto operator=( Mock_Transmitter && ) = delete;
+
+    auto operator=( Mock_Transmitter const & ) = delete;
+
+    auto handle() noexcept
+    {
+        return Handle{ *this };
+    }
+
+    using Mock_Basic_Transmitter<Data_Type>::transmit;
+    using Mock_Basic_Transmitter<Data_Type>::gmock_transmit;
+
+    MOCK_METHOD( void, transmit, (std::vector<Data>));
+
+    void transmit( Data const * begin, Data const * end )
+    {
+        return transmit( std::vector<Data>{ begin, end } );
+    }
 };
 
 } // namespace picolibrary::Testing::Unit::Asynchronous_Serial
