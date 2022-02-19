@@ -45,21 +45,21 @@ class Basic_Transmitter_Concept {
     /**
      * \brief Constructor.
      */
-    Basic_Transmitter_Concept() noexcept = default;
+    Basic_Transmitter_Concept() noexcept;
 
     /**
      * \brief Constructor.
      *
      * \param[in] source The source of the move.
      */
-    Basic_Transmitter_Concept( Basic_Transmitter_Concept && source ) noexcept = default;
+    Basic_Transmitter_Concept( Basic_Transmitter_Concept && source ) noexcept;
 
     Basic_Transmitter_Concept( Basic_Transmitter_Concept const & ) = delete;
 
     /**
      * \brief Destructor.
      */
-    ~Basic_Transmitter_Concept() noexcept = default;
+    ~Basic_Transmitter_Concept() noexcept;
 
     /**
      * \brief Assignment operator.
@@ -68,8 +68,7 @@ class Basic_Transmitter_Concept {
      *
      * \return The assigned to object.
      */
-    auto operator=( Basic_Transmitter_Concept && expression ) noexcept
-        -> Basic_Transmitter_Concept & = default;
+    auto operator=( Basic_Transmitter_Concept && expression ) noexcept -> Basic_Transmitter_Concept &;
 
     auto operator=( Basic_Transmitter_Concept const & ) = delete;
 
@@ -99,21 +98,21 @@ class Transmitter_Concept {
     /**
      * \brief Constructor.
      */
-    Transmitter_Concept() noexcept = default;
+    Transmitter_Concept() noexcept;
 
     /**
      * \brief Constructor.
      *
      * \param[in] source The source of the move.
      */
-    Transmitter_Concept( Transmitter_Concept && source ) noexcept = default;
+    Transmitter_Concept( Transmitter_Concept && source ) noexcept;
 
     Transmitter_Concept( Transmitter_Concept const & ) = delete;
 
     /**
      * \brief Destructor.
      */
-    ~Transmitter_Concept() noexcept = default;
+    ~Transmitter_Concept() noexcept;
 
     /**
      * \brief Assignment operator.
@@ -122,7 +121,7 @@ class Transmitter_Concept {
      *
      * \return The assigned to object.
      */
-    auto operator=( Transmitter_Concept && expression ) noexcept -> Transmitter_Concept & = default;
+    auto operator=( Transmitter_Concept && expression ) noexcept -> Transmitter_Concept &;
 
     auto operator=( Transmitter_Concept const & ) = delete;
 

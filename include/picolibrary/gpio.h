@@ -60,21 +60,21 @@ class Input_Pin_Concept {
     /**
      * \brief Constructor.
      */
-    Input_Pin_Concept() noexcept = default;
+    Input_Pin_Concept() noexcept;
 
     /**
      * \brief Constructor.
      *
      * \param[in] source The source of the move.
      */
-    Input_Pin_Concept( Input_Pin_Concept && source ) noexcept = default;
+    Input_Pin_Concept( Input_Pin_Concept && source ) noexcept;
 
     Input_Pin_Concept( Input_Pin_Concept const & ) = delete;
 
     /**
      * \brief Destructor.
      */
-    ~Input_Pin_Concept() noexcept = default;
+    ~Input_Pin_Concept() noexcept;
 
     /**
      * \brief Assignment operator.
@@ -83,7 +83,7 @@ class Input_Pin_Concept {
      *
      * \return The assigned to object.
      */
-    auto operator=( Input_Pin_Concept && expression ) noexcept -> Input_Pin_Concept & = default;
+    auto operator=( Input_Pin_Concept && expression ) noexcept -> Input_Pin_Concept &;
 
     auto operator=( Input_Pin_Concept const & ) = delete;
 
@@ -123,21 +123,21 @@ class Internally_Pulled_Up_Input_Pin_Concept {
     /**
      * \brief Constructor.
      */
-    Internally_Pulled_Up_Input_Pin_Concept() noexcept = default;
+    Internally_Pulled_Up_Input_Pin_Concept() noexcept;
 
     /**
      * \brief Constructor.
      *
      * \param[in] source The source of the move.
      */
-    Internally_Pulled_Up_Input_Pin_Concept( Internally_Pulled_Up_Input_Pin_Concept && source ) noexcept = default;
+    Internally_Pulled_Up_Input_Pin_Concept( Internally_Pulled_Up_Input_Pin_Concept && source ) noexcept;
 
     Internally_Pulled_Up_Input_Pin_Concept( Internally_Pulled_Up_Input_Pin_Concept const & ) = delete;
 
     /**
      * \brief Destructor.
      */
-    ~Internally_Pulled_Up_Input_Pin_Concept() noexcept = default;
+    ~Internally_Pulled_Up_Input_Pin_Concept() noexcept;
 
     /**
      * \brief Assignment operator.
@@ -147,7 +147,7 @@ class Internally_Pulled_Up_Input_Pin_Concept {
      * \return The assigned to object.
      */
     auto operator=( Internally_Pulled_Up_Input_Pin_Concept && expression ) noexcept
-        -> Internally_Pulled_Up_Input_Pin_Concept & = default;
+        -> Internally_Pulled_Up_Input_Pin_Concept &;
 
     auto operator=( Internally_Pulled_Up_Input_Pin_Concept const & ) = delete;
 
@@ -216,21 +216,21 @@ class Output_Pin_Concept {
     /**
      * \brief Constructor.
      */
-    Output_Pin_Concept() noexcept = default;
+    Output_Pin_Concept() noexcept;
 
     /**
      * \brief Constructor.
      *
      * \param[in] source The source of the move.
      */
-    Output_Pin_Concept( Output_Pin_Concept && source ) noexcept = default;
+    Output_Pin_Concept( Output_Pin_Concept && source ) noexcept;
 
     Output_Pin_Concept( Output_Pin_Concept const & ) = delete;
 
     /**
      * \brief Destructor.
      */
-    ~Output_Pin_Concept() noexcept = default;
+    ~Output_Pin_Concept() noexcept;
 
     /**
      * \brief Assignment operator.
@@ -239,7 +239,7 @@ class Output_Pin_Concept {
      *
      * \return The assigned to object.
      */
-    auto operator=( Output_Pin_Concept && expression ) noexcept -> Output_Pin_Concept & = default;
+    auto operator=( Output_Pin_Concept && expression ) noexcept -> Output_Pin_Concept &;
 
     auto operator=( Output_Pin_Concept const & ) = delete;
 
@@ -280,21 +280,21 @@ class IO_Pin_Concept {
     /**
      * \brief Constructor.
      */
-    IO_Pin_Concept() noexcept = default;
+    IO_Pin_Concept() noexcept;
 
     /**
      * \brief Constructor.
      *
      * \param[in] source The source of the move.
      */
-    IO_Pin_Concept( IO_Pin_Concept && source ) noexcept = default;
+    IO_Pin_Concept( IO_Pin_Concept && source ) noexcept;
 
     IO_Pin_Concept( IO_Pin_Concept const & ) = delete;
 
     /**
      * \brief Destructor.
      */
-    ~IO_Pin_Concept() noexcept = default;
+    ~IO_Pin_Concept() noexcept;
 
     /**
      * \brief Assignment operator.
@@ -303,7 +303,7 @@ class IO_Pin_Concept {
      *
      * \return The assigned to object.
      */
-    auto operator=( IO_Pin_Concept && expression ) noexcept -> IO_Pin_Concept & = default;
+    auto operator=( IO_Pin_Concept && expression ) noexcept -> IO_Pin_Concept &;
 
     auto operator=( IO_Pin_Concept const & ) = delete;
 
