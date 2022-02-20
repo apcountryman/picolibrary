@@ -23,6 +23,8 @@
 #ifndef PICOLIBRARY_ASYNCHRONOUS_SERIAL_STREAM_H
 #define PICOLIBRARY_ASYNCHRONOUS_SERIAL_STREAM_H
 
+#include <utility>
+
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
