@@ -18,3 +18,6 @@
 
 # build the picolibrary::Asynchronous_Serial::Transmitter unit tests
 add_subdirectory( transmitter )
+
+# build the picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer unit tests
+add_subdirectory( unbuffered_output_stream_buffer )
