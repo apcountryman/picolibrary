@@ -28,6 +28,7 @@ set(
     "picolibrary/algorithm.cc"
     "picolibrary/array.cc"
     "picolibrary/asynchronous_serial.cc"
+    "picolibrary/asynchronous_serial/stream.cc"
     "picolibrary/bit_manipulation.cc"
     "picolibrary/error.cc"
     "picolibrary/event.cc"
