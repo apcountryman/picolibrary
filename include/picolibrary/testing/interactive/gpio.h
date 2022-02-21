@@ -53,8 +53,15 @@ void state( Output_Stream & stream, Input_Pin pin, Delayer delay ) noexcept
     for ( ;; ) {
         delay();
 
-        auto const result = stream.put( pin.is_high() ? "high\n" : "low\n" );
-        expect( not result.is_error(), result.error() );
+        {
+            auto const result = stream.put( pin.is_high() ? "high\n" : "low\n" );
+            expect( not result.is_error(), result.error() );
+        }
+
+        {
+            auto const result = stream.flush();
+            expect( not result.is_error(), result.error() );
+        }
     } // for
 }
 
