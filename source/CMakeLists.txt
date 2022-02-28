@@ -36,6 +36,7 @@ set(
     "picolibrary/format.cc"
     "picolibrary/gpio.cc"
     "picolibrary/hsm.cc"
+    "picolibrary/i2c.cc"
     "picolibrary/postcondition.cc"
     "picolibrary/precondition.cc"
     "picolibrary/result.cc"
