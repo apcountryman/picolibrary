@@ -43,6 +43,17 @@ constexpr void expect( bool expectation, Error error ) noexcept
     } // if
 }
 
+/**
+ * \brief Bypass precondition expectation checks tag.
+ */
+struct Bypass_Precondition_Expectation_Checks {
+};
+
+/**
+ * \brief Bypass precondition expectation checks tag.
+ */
+constexpr auto BYPASS_PRECONDITION_EXPECTATION_CHECKS = Bypass_Precondition_Expectation_Checks{};
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_PRECONDITION_H
