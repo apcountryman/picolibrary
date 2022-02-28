@@ -22,7 +22,7 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "picolibrary/algorithm.h"
+#include "picolibrary/i2c.h"
 
 /**
  * \brief Execute the picolibrary::I2C unit tests.
