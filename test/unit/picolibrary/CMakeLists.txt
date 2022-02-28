@@ -43,6 +43,9 @@ add_subdirectory( generic_error )
 # build the picolibrary::Generic_Error_Category unit tests
 add_subdirectory( generic_error_category )
 
+# build the picolibrary::I2C unit tests
+add_subdirectory( i2c )
+
 # build the picolibrary::Output_Stream unit tests
 add_subdirectory( output_stream )
 
