@@ -34,14 +34,14 @@
 namespace picolibrary::I2C {
 
 /**
- * \brief Device address, transmitted format.
- */
-class Address_Transmitted;
-
-/**
  * \brief Device address, numeric format.
  */
 class Address_Numeric;
+
+/**
+ * \brief Device address, transmitted format.
+ */
+class Address_Transmitted;
 
 class Address_Numeric {
   public:
