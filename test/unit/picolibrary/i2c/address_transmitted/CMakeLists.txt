@@ -13,28 +13,22 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/i2c/CMakeLists.txt
-# Description: picolibrary::I2C unit tests CMake rules.
-
-# build the picolibrary::I2C::Address_Numeric unit tests
-add_subdirectory( address_numeric )
+# File: test/unit/picolibrary/i2c/address_transmitted/CMakeLists.txt
+# Description: picolibrary::I2C::Address_Transmitted unit tests CMake rules.
 
 # build the picolibrary::I2C::Address_Transmitted unit tests
-add_subdirectory( address_transmitted )
-
-# build the picolibrary::I2C unit tests
 if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     add_executable(
-        test-unit-picolibrary-i2c
+        test-unit-picolibrary-i2c-address_transmitted
         main.cc
     )
     target_link_libraries(
-        test-unit-picolibrary-i2c
+        test-unit-picolibrary-i2c-address_transmitted
         picolibrary
         picolibrary-testing-unit-fatal_error
     )
     add_test(
-        NAME    test-unit-picolibrary-i2c
-        COMMAND test-unit-picolibrary-i2c --gtest_color=yes
+        NAME    test-unit-picolibrary-i2c-address_transmitted
+        COMMAND test-unit-picolibrary-i2c-address_transmitted --gtest_color=yes
     )
 endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
