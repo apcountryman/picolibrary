@@ -23,7 +23,11 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_I2C_H
 #define PICOLIBRARY_TESTING_UNIT_I2C_H
 
+#include <cstdint>
+
+#include "gmock/gmock.h"
 #include "picolibrary/i2c.h"
+#include "picolibrary/testing/unit/mock_handle.h"
 #include "picolibrary/testing/unit/random.h"
 
 namespace picolibrary::Testing::Unit {
@@ -144,6 +148,109 @@ inline auto random<I2C::Response>()
  * \brief Inter-Integrated Circuit (I2C) unit testing facilities.
  */
 namespace picolibrary::Testing::Unit::I2C {
+
+/**
+ * \brief Mock basic controller.
+ */
+class Mock_Basic_Controller {
+  public:
+    class Handle : public Mock_Handle<Mock_Basic_Controller> {
+      public:
+        constexpr Handle() noexcept = default;
+
+        constexpr Handle( Mock_Basic_Controller & mock ) noexcept :
+            Mock_Handle<Mock_Basic_Controller>{ mock }
+        {
+        }
+
+        constexpr Handle( Handle && source ) noexcept = default;
+
+        Handle( Handle const & ) = delete;
+
+        ~Handle() noexcept = default;
+
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
+
+        auto operator=( Handle const & ) = delete;
+
+        void initialize()
+        {
+            Mock_Handle<Mock_Basic_Controller>::mock().initialize();
+        }
+
+        auto bus_error_present() const
+        {
+            return Mock_Handle<Mock_Basic_Controller>::mock().bus_error_present();
+        }
+
+        void start()
+        {
+            Mock_Handle<Mock_Basic_Controller>::mock().start();
+        }
+
+        void repeated_start()
+        {
+            Mock_Handle<Mock_Basic_Controller>::mock().repeated_start();
+        }
+
+        void stop()
+        {
+            Mock_Handle<Mock_Basic_Controller>::mock().stop();
+        }
+
+        auto address( ::picolibrary::I2C::Address_Transmitted address, ::picolibrary::I2C::Operation operation )
+        {
+            return Mock_Handle<Mock_Basic_Controller>::mock().address( address, operation );
+        }
+
+        auto read( ::picolibrary::I2C::Response response )
+        {
+            return Mock_Handle<Mock_Basic_Controller>::mock().read( response );
+        }
+
+        auto write( std::uint8_t data )
+        {
+            return Mock_Handle<Mock_Basic_Controller>::mock().write( data );
+        }
+    };
+
+    Mock_Basic_Controller() = default;
+
+    Mock_Basic_Controller( Mock_Basic_Controller && ) = delete;
+
+    Mock_Basic_Controller( Mock_Basic_Controller const & ) = delete;
+
+    ~Mock_Basic_Controller() noexcept = default;
+
+    auto operator=( Mock_Basic_Controller && ) = delete;
+
+    auto operator=( Mock_Basic_Controller const & ) = delete;
+
+    auto handle() noexcept
+    {
+        return Handle{ *this };
+    }
+
+    MOCK_METHOD( void, initialize, () );
+
+    MOCK_METHOD( bool, bus_error_present, (), ( const ) );
+
+    MOCK_METHOD( void, start, () );
+
+    MOCK_METHOD( void, repeated_start, () );
+
+    MOCK_METHOD( void, stop, () );
+
+    MOCK_METHOD(
+        ::picolibrary::I2C::Response,
+        address,
+        ( ::picolibrary::I2C::Address_Transmitted, ::picolibrary::I2C::Operation ) );
+
+    MOCK_METHOD( std::uint8_t, read, ( ::picolibrary::I2C::Response ) );
+
+    MOCK_METHOD( ::picolibrary::I2C::Response, write, ( std::uint8_t ) );
+};
+
 } // namespace picolibrary::Testing::Unit::I2C
 
 #endif // PICOLIBRARY_TESTING_UNIT_I2C_H
