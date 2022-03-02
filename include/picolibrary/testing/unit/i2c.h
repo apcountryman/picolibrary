@@ -127,6 +127,17 @@ inline auto random<I2C::Operation>()
     return random<bool>() ? I2C::Operation::READ : I2C::Operation::WRITE;
 }
 
+/**
+ * \brief Generate a pseudo-random picolibrary::I2C::Response.
+ *
+ * \return A pseudo-randomly generated picolibrary::I2C::Response.
+ */
+template<>
+inline auto random<I2C::Response>()
+{
+    return random<bool>() ? I2C::Response::ACK : I2C::Response::NACK;
+}
+
 } // namespace picolibrary::Testing::Unit
 
 /**
