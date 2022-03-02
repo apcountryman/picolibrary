@@ -707,6 +707,57 @@ class Controller_Concept {
     auto write( std::uint8_t const * begin, std::uint8_t const * end ) noexcept -> Response;
 };
 
+/**
+ * \brief Controller.
+ *
+ * \tparam Basic_Controller The basic controller to add controller functionality to.
+ */
+template<typename Basic_Controller>
+class Controller : public Basic_Controller {
+  public:
+    using Basic_Controller::Basic_Controller;
+
+    using Basic_Controller::read;
+
+    /**
+     * \brief Read a block of data from a device.
+     *
+     * \param[out] begin The beginning of the block of read data.
+     * \param[out] end The end of the block of read data.
+     * \param[in] response The response to transmit once the last byte in the block has
+     *            been read.
+     */
+    void read( std::uint8_t * begin, std::uint8_t * end, Response response ) noexcept
+    {
+        for ( ; begin != end; ++begin ) {
+            *begin = read( begin + 1 == end ? response : Response::ACK );
+        } // for
+    }
+
+    using Basic_Controller::write;
+
+    /**
+     * \brief Write a block of data to a device.
+     *
+     * \param[in] begin The beginning of the block of data to write.
+     * \param[in] end The end of the block of data to write.
+     *
+     * \return picolibrary::I2C::Response::ACK if an ACK response is received for every
+     *         byte written.
+     * \return picolibrary::I2C::Response::NACK if a NACK response is received.
+     */
+    auto write( std::uint8_t const * begin, std::uint8_t const * end ) noexcept -> Response
+    {
+        for ( ; begin != end; ++begin ) {
+            if ( write( *begin ) != Response::ACK ) {
+                return Response::NACK;
+            } // if
+        }     // for
+
+        return Response::ACK;
+    }
+};
+
 } // namespace picolibrary::I2C
 
 #endif // PICOLIBRARY_I2C_H
