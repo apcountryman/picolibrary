@@ -590,6 +590,123 @@ class Basic_Controller_Concept {
     auto write( std::uint8_t data ) noexcept -> Response;
 };
 
+/**
+ * \brief Controller concept.
+ */
+class Controller_Concept {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    Controller_Concept() noexcept;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Controller_Concept( Controller_Concept && source ) noexcept;
+
+    Controller_Concept( Controller_Concept const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Controller_Concept() noexcept;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Controller_Concept && expression ) noexcept -> Controller_Concept &;
+
+    auto operator=( Controller_Concept const & ) = delete;
+
+    /**
+     * \brief Initialize the controller's hardware.
+     */
+    void initialize() noexcept;
+
+    /**
+     * \brief Check if a bus error is present.
+     *
+     * \return true if a bus error is present.
+     * \return false if a bus error is not present.
+     */
+    auto bus_error_present() const noexcept -> bool;
+
+    /**
+     * \brief Transmit a start condition.
+     */
+    void start() noexcept;
+
+    /**
+     * \brief Transmit a repeated start condition.
+     */
+    void repeated_start() noexcept;
+
+    /**
+     * \brief Transmit a stop condition.
+     */
+    void stop() noexcept;
+
+    /**
+     * \brief Address a device.
+     *
+     * \param[in] address The address of the device to address.
+     * \param[in] operation The operation that will be performed once the device has been
+     *            addressed.
+     *
+     * \return picolibrary::I2C::Response::ACK if an ACK response is received.
+     * \return picolibrary::I2C::Response::NACK if a NACK response is received.
+     */
+    auto address( Address_Transmitted address, Operation operation ) noexcept -> Response;
+
+    /**
+     * \brief Read data from a device.
+     *
+     * \param[in] response The response to transmit once the data has been read.
+     *
+     * \return The data read from the device.
+     */
+    auto read( Response response ) noexcept -> std::uint8_t;
+
+    /**
+     * \brief Read a block of data from a device.
+     *
+     * \param[out] begin The beginning of the block of read data.
+     * \param[out] end The end of the block of read data.
+     * \param[in] response The response to transmit once the last byte in the block has
+     *            been read.
+     */
+    void read( std::uint8_t * begin, std::uint8_t * end, Response response ) noexcept;
+
+    /**
+     * \brief Write data to a device.
+     *
+     * \param[in] data The data to write to the device.
+     *
+     * \return picolibrary::I2C::Response::ACK if an ACK response is received.
+     * \return picolibrary::I2C::Response::NACK if a NACK response is received.
+     */
+    auto write( std::uint8_t data ) noexcept -> Response;
+
+    /**
+     * \brief Write a block of data to a device.
+     *
+     * \param[in] begin The beginning of the block of data to write.
+     * \param[in] end The end of the block of data to write.
+     *
+     * \return picolibrary::I2C::Response::ACK if an ACK response is received for every
+     *         byte written.
+     * \return picolibrary::I2C::Response::NACK if a NACK response is received.
+     */
+    auto write( std::uint8_t const * begin, std::uint8_t const * end ) noexcept -> Response;
+};
+
 } // namespace picolibrary::I2C
 
 #endif // PICOLIBRARY_I2C_H
