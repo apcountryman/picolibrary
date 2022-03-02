@@ -23,7 +23,9 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_I2C_H
 #define PICOLIBRARY_TESTING_UNIT_I2C_H
 
+#include <algorithm>
 #include <cstdint>
+#include <vector>
 
 #include "gmock/gmock.h"
 #include "picolibrary/i2c.h"
@@ -249,6 +251,97 @@ class Mock_Basic_Controller {
     MOCK_METHOD( std::uint8_t, read, ( ::picolibrary::I2C::Response ) );
 
     MOCK_METHOD( ::picolibrary::I2C::Response, write, ( std::uint8_t ) );
+};
+
+/**
+ * \brief Mock controller.
+ */
+class Mock_Controller : public Mock_Basic_Controller {
+  public:
+    class Handle : public Mock_Basic_Controller::Handle {
+      public:
+        constexpr Handle() noexcept = default;
+
+        constexpr Handle( Mock_Controller & mock ) noexcept :
+            Mock_Basic_Controller::Handle{ mock }
+        {
+        }
+
+        constexpr Handle( Handle && source ) noexcept = default;
+
+        Handle( Handle const & ) = delete;
+
+        ~Handle() noexcept = default;
+
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
+
+        auto operator=( Handle const & ) = delete;
+
+        auto & mock() noexcept
+        {
+            return static_cast<Mock_Controller &>( Mock_Basic_Controller::Handle::mock() );
+        }
+
+        auto const & mock() const noexcept
+        {
+            return static_cast<Mock_Controller const &>( Mock_Basic_Controller::Handle::mock() );
+        }
+
+        using Mock_Basic_Controller::Handle::read;
+
+        void read( std::uint8_t * begin, std::uint8_t * end, ::picolibrary::I2C::Response response )
+        {
+            mock().read( begin, end, response );
+        }
+
+        using Mock_Basic_Controller::Handle::write;
+
+        auto write( std::uint8_t const * begin, std::uint8_t const * end )
+        {
+            return mock().write( begin, end );
+        }
+    };
+
+    Mock_Controller() = default;
+
+    Mock_Controller( Mock_Controller && ) = delete;
+
+    Mock_Controller( Mock_Controller const & ) = delete;
+
+    ~Mock_Controller() noexcept = default;
+
+    auto operator=( Mock_Controller && ) = delete;
+
+    auto operator=( Mock_Controller const & ) = delete;
+
+    auto handle() noexcept
+    {
+        return Handle{ *this };
+    }
+
+    using Mock_Basic_Controller::gmock_read;
+    using Mock_Basic_Controller::read;
+
+    MOCK_METHOD( std::vector<std::uint8_t>, read, ( std::vector<std::uint8_t>, ::picolibrary::I2C::Response ) );
+
+    void read( std::uint8_t * begin, std::uint8_t * end, ::picolibrary::I2C::Response response )
+    {
+        static_cast<void>( end );
+
+        auto const data = read( std::vector<std::uint8_t>{}, response );
+
+        std::copy( data.begin(), data.end(), begin );
+    }
+
+    using Mock_Basic_Controller::gmock_write;
+    using Mock_Basic_Controller::write;
+
+    MOCK_METHOD( ::picolibrary::I2C::Response, write, (std::vector<std::uint8_t>));
+
+    auto write( std::uint8_t const * begin, std::uint8_t const * end ) -> ::picolibrary::I2C::Response
+    {
+        return write( std::vector<std::uint8_t>{ begin, end } );
+    }
 };
 
 } // namespace picolibrary::Testing::Unit::I2C
