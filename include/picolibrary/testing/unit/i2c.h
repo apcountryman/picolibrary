@@ -62,7 +62,8 @@ inline auto random<I2C::Address_Numeric>( I2C::Address_Numeric min )
 /**
  * \brief Generate a pseudo-random picolibrary::I2C::Address_Numeric.
  *
- * \return A pseudo-random picolibrary::I2C::Address_Numeric.
+ * \return A pseudo-random picolibrary::I2C::Address_Numeric in the range
+ *         [picolibrary::I2C::Address_Numeric::min(),picolibrary::I2C::Address_Numeric::max()].
  */
 template<>
 inline auto random<I2C::Address_Numeric>()
@@ -105,7 +106,8 @@ inline auto random<I2C::Address_Transmitted>( I2C::Address_Transmitted min )
 /**
  * \brief Generate a pseudo-random picolibrary::I2C::Address_Transmitted.
  *
- * \return A pseudo-random picolibrary::I2C::Address_Transmitted.
+ * \return A pseudo-random picolibrary::I2C::Address_Transmitted in the range
+ *         [picolibrary::I2C::Address_Transmitted::min(),picolibrary::I2C::Address_Transmitted::max()].
  */
 template<>
 inline auto random<I2C::Address_Transmitted>()

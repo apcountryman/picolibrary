@@ -93,7 +93,7 @@ TEST( constructorUnsignedInteger, worksProperly )
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
  *        picolibrary::I2C::Address_Numeric::Unsigned_Integer ) works properly.
  */
-TEST( constructorBypassPreconditionExpectationChecks, worksProperly )
+TEST( constructorBypassPreconditionExpectationChecksUnsignedInteger, worksProperly )
 {
     auto const address = random_address();
 
