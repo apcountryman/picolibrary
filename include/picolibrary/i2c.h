@@ -801,6 +801,53 @@ class Bus_Control_Guard {
     Controller & m_controller;
 };
 
+/**
+ * \brief Check if a device is responsive.
+ *
+ * \tparam Controller The type of controller used to communicate with the device.
+ *
+ * \param[in] controller The controller to use to communicate with the device.
+ * \param[in] address The device's address.
+ * \param[in] operation The operation to request when addressing the device.
+ *
+ * \return picolibrary::I2C::Response::ACK if the device is responsive.
+ * \return picolibrary::I2C::Response::NACK if the device is not responsive.
+ */
+template<typename Controller>
+auto ping( Controller & controller, Address_Transmitted address, Operation operation ) noexcept
+{
+    auto const guard = Bus_Control_Guard{ controller };
+
+    auto const response = controller.address( address, operation );
+
+    if ( operation == Operation::READ ) {
+        controller.read( Response::NACK );
+    } // if
+
+    return response;
+}
+
+/**
+ * \brief Check if a device is responsive.
+ *
+ * \tparam Controller The type of controller used to communicate with the device.
+ *
+ * \param[in] controller The controller to use to communicate with the device.
+ * \param[in] address The device's address.
+ *
+ * \return picolibrary::I2C::Response::ACK if the device is responsive.
+ * \return picolibrary::I2C::Response::NACK if the device is not responsive.
+ */
+template<typename Controller>
+auto ping( Controller & controller, Address_Transmitted address ) noexcept
+{
+    auto const response_read  = ping( controller, address, Operation::READ );
+    auto const response_write = ping( controller, address, Operation::WRITE );
+
+    return response_read == Response::ACK and response_write == Response::ACK ? Response::ACK
+                                                                              : Response::NACK;
+}
+
 } // namespace picolibrary::I2C
 
 #endif // PICOLIBRARY_I2C_H

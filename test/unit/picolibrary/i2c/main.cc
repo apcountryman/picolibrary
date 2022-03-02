@@ -20,9 +20,127 @@
  * \brief picolibrary::I2C unit test program.
  */
 
+#include <cstdint>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/i2c.h"
+#include "picolibrary/testing/unit/i2c.h"
+#include "picolibrary/testing/unit/random.h"
+
+namespace {
+
+using ::picolibrary::I2C::Address_Transmitted;
+using ::picolibrary::I2C::Operation;
+using ::picolibrary::I2C::ping;
+using ::picolibrary::I2C::Response;
+using ::picolibrary::Testing::Unit::random;
+using ::picolibrary::Testing::Unit::I2C::Mock_Controller;
+using ::testing::InSequence;
+using ::testing::Return;
+
+} // namespace
+
+/**
+ * \brief Verify picolibrary::I2C::ping() works properly.
+ */
+TEST( ping, worksProperly )
+{
+    {
+        struct {
+            Response response;
+        } const test_cases[]{
+            // clang-format off
+
+            { Response::ACK  },
+            { Response::NACK },
+
+            // clang-format on
+        };
+
+        for ( auto const test_case : test_cases ) {
+            auto const in_sequence = InSequence{};
+
+            auto controller = Mock_Controller{};
+
+            auto const address = random<Address_Transmitted>();
+
+            EXPECT_CALL( controller, start() );
+            EXPECT_CALL( controller, address( address, Operation::READ ) )
+                .WillOnce( Return( test_case.response ) );
+            EXPECT_CALL( controller, read( Response::NACK ) ).WillOnce( Return( random<std::uint8_t>() ) );
+            EXPECT_CALL( controller, stop() );
+
+            EXPECT_EQ( ping( controller, address, Operation::READ ), test_case.response );
+        } // for
+    }
+
+    {
+        struct {
+            Response response;
+        } const test_cases[]{
+            // clang-format off
+
+            { Response::ACK  },
+            { Response::NACK },
+
+            // clang-format on
+        };
+
+        for ( auto const test_case : test_cases ) {
+            auto const in_sequence = InSequence{};
+
+            auto controller = Mock_Controller{};
+
+            auto const address = random<Address_Transmitted>();
+
+            EXPECT_CALL( controller, start() );
+            EXPECT_CALL( controller, address( address, Operation::WRITE ) )
+                .WillOnce( Return( test_case.response ) );
+            EXPECT_CALL( controller, stop() );
+
+            EXPECT_EQ( ping( controller, address, Operation::WRITE ), test_case.response );
+        } // for
+    }
+
+    {
+        struct {
+            Response response_read;
+            Response response_write;
+            Response response;
+        } const test_cases[]{
+            // clang-format off
+
+            { Response::ACK,  Response::ACK,  Response::ACK  },
+            { Response::ACK,  Response::NACK, Response::NACK },
+            { Response::NACK, Response::ACK,  Response::NACK },
+            { Response::NACK, Response::NACK, Response::NACK },
+
+            // clang-format on
+        };
+
+        for ( auto const test_case : test_cases ) {
+            auto const in_sequence = InSequence{};
+
+            auto controller = Mock_Controller{};
+
+            auto const address = random<Address_Transmitted>();
+
+            EXPECT_CALL( controller, start() );
+            EXPECT_CALL( controller, address( address, Operation::READ ) )
+                .WillOnce( Return( test_case.response_read ) );
+            EXPECT_CALL( controller, read( Response::NACK ) ).WillOnce( Return( random<std::uint8_t>() ) );
+            EXPECT_CALL( controller, stop() );
+
+            EXPECT_CALL( controller, start() );
+            EXPECT_CALL( controller, address( address, Operation::WRITE ) )
+                .WillOnce( Return( test_case.response_write ) );
+            EXPECT_CALL( controller, stop() );
+
+            EXPECT_EQ( ping( controller, address ), test_case.response );
+        } // for
+    }
+}
 
 /**
  * \brief Execute the picolibrary::I2C unit tests.
