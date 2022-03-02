@@ -43,6 +43,7 @@ TEST( errorDescription, worksProperly )
     } const test_cases[]{
         // clang-format off
 
+        { Generic_Error::ARBITRATION_LOST,                 "ARBITRATION_LOST"                 },
         { Generic_Error::BUS_ERROR,                        "BUS_ERROR"                        },
         { Generic_Error::INSUFFICIENT_CAPACITY,            "INSUFFICIENT_CAPACITY"            },
         { Generic_Error::INVALID_ARGUMENT,                 "INVALID_ARGUMENT"                 },
