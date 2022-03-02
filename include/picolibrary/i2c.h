@@ -758,6 +758,49 @@ class Controller : public Basic_Controller {
     }
 };
 
+/**
+ * \brief RAII bus control guard.
+ *
+ * \tparam Controller The type of controller that is being used to interact with the bus.
+ */
+template<typename Controller>
+class Bus_Control_Guard {
+  public:
+    Bus_Control_Guard() = delete;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] controller The controller that is being used to interact with the bus.
+     */
+    Bus_Control_Guard( Controller & controller ) noexcept : m_controller{ controller }
+    {
+        m_controller.start();
+    }
+
+    Bus_Control_Guard( Bus_Control_Guard && ) = delete;
+
+    Bus_Control_Guard( Bus_Control_Guard const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Bus_Control_Guard() noexcept
+    {
+        m_controller.stop();
+    }
+
+    auto operator=( Bus_Control_Guard && ) = delete;
+
+    auto operator=( Bus_Control_Guard const & ) = delete;
+
+  private:
+    /**
+     * \brief The controller that is being used to interact with the bus.
+     */
+    Controller & m_controller;
+};
+
 } // namespace picolibrary::I2C
 
 #endif // PICOLIBRARY_I2C_H
