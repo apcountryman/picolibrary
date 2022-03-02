@@ -517,7 +517,7 @@ class Basic_Controller_Concept {
     /**
      * \brief Destructor.
      */
-    ~Basic_Controller_Concept() noexcept = default;
+    ~Basic_Controller_Concept() noexcept;
 
     /**
      * \brief Assignment operator.
