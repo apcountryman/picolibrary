@@ -349,6 +349,7 @@ constexpr auto operator!=( Error_Code const & lhs, Error_Code const & rhs ) noex
  * \relatedalso picolibrary::Generic_Error_Category
  */
 enum class Generic_Error : Error_ID {
+    BUS_ERROR,                        ///< Bus error.
     INSUFFICIENT_CAPACITY,            ///< Insufficient capacity.
     INVALID_ARGUMENT,                 ///< Invalid argument.
     INVALID_FORMAT,                   ///< Invalid format.
@@ -407,6 +408,7 @@ class Generic_Error_Category final : public Error_Category {
         switch ( static_cast<Generic_Error>( id ) ) {
                 // clang-format off
 
+            case Generic_Error::BUS_ERROR: return "BUS_ERROR";
             case Generic_Error::INSUFFICIENT_CAPACITY: return "INSUFFICIENT_CAPACITY";
             case Generic_Error::INVALID_ARGUMENT: return "INVALID_ARGUMENT";
             case Generic_Error::INVALID_FORMAT: return "INVALID_FORMAT";
