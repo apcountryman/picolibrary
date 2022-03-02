@@ -68,7 +68,9 @@ TEST( ping, worksProperly )
             EXPECT_CALL( controller, start() );
             EXPECT_CALL( controller, address( address, Operation::READ ) )
                 .WillOnce( Return( test_case.response ) );
-            EXPECT_CALL( controller, read( Response::NACK ) ).WillOnce( Return( random<std::uint8_t>() ) );
+            if ( test_case.response == Response::ACK ) {
+                EXPECT_CALL( controller, read( Response::NACK ) ).WillOnce( Return( random<std::uint8_t>() ) );
+            } // if
             EXPECT_CALL( controller, stop() );
 
             EXPECT_EQ( ping( controller, address, Operation::READ ), test_case.response );
@@ -129,7 +131,9 @@ TEST( ping, worksProperly )
             EXPECT_CALL( controller, start() );
             EXPECT_CALL( controller, address( address, Operation::READ ) )
                 .WillOnce( Return( test_case.response_read ) );
-            EXPECT_CALL( controller, read( Response::NACK ) ).WillOnce( Return( random<std::uint8_t>() ) );
+            if ( test_case.response_read == Response::ACK ) {
+                EXPECT_CALL( controller, read( Response::NACK ) ).WillOnce( Return( random<std::uint8_t>() ) );
+            } // if
             EXPECT_CALL( controller, stop() );
 
             EXPECT_CALL( controller, start() );
