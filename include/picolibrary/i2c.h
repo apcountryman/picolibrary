@@ -820,7 +820,7 @@ auto ping( Controller & controller, Address_Transmitted address, Operation opera
 
     auto const response = controller.address( address, operation );
 
-    if ( operation == Operation::READ ) {
+    if ( operation == Operation::READ and response == Response::ACK ) {
         controller.read( Response::NACK );
     } // if
 
