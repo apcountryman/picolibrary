@@ -479,6 +479,14 @@ constexpr auto operator>=( Address_Transmitted lhs, Address_Transmitted rhs ) no
     return not( lhs < rhs );
 }
 
+/**
+ * \brief Operation.
+ */
+enum class Operation : std::uint8_t {
+    READ  = 0b1, ///< Read.
+    WRITE = 0b0, ///< Write.
+};
+
 } // namespace picolibrary::I2C
 
 #endif // PICOLIBRARY_I2C_H
