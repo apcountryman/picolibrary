@@ -1121,8 +1121,8 @@ class Device {
      * \param[in] bus_multiplexer_aligner The device's bus multiplexer aligner.
      * \param[in] controller The controller used to communicate with the device.
      * \param[in] address The device's address.
-     * \param[in] The fatal error that occurs if the device does not respond when
-     *            addressed or does not acknowledge a write.
+     * \param[in] nonresponsive_device_error The fatal error that occurs if the device
+     *            does not respond when addressed or does not acknowledge a write.
      */
     constexpr Device(
         Bus_Multiplexer_Aligner bus_multiplexer_aligner,
@@ -1132,7 +1132,7 @@ class Device {
         m_align_bus_multiplexer{ std::move( bus_multiplexer_aligner ) },
         m_controller{ &controller },
         m_address{ std::move( address ) },
-        m_nonresponsive_device_error{ std::move( nonresponsive_device_error ) }
+        m_nonresponsive_device_error{ nonresponsive_device_error }
     {
     }
 
