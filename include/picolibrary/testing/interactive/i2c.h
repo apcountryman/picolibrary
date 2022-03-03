@@ -46,6 +46,8 @@ namespace picolibrary::Testing::Interactive::I2C {
 template<typename Controller>
 void scan( Output_Stream & stream, Controller controller ) noexcept
 {
+    // #lizard forgives the length
+
     controller.initializer();
 
     auto devices_found = false;
