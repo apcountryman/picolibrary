@@ -25,9 +25,11 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <functional>
 #include <vector>
 
 #include "gmock/gmock.h"
+#include "picolibrary/error.h"
 #include "picolibrary/i2c.h"
 #include "picolibrary/testing/unit/mock_handle.h"
 #include "picolibrary/testing/unit/random.h"
@@ -341,6 +343,59 @@ class Mock_Controller : public Mock_Basic_Controller {
     auto write( std::uint8_t const * begin, std::uint8_t const * end ) -> ::picolibrary::I2C::Response
     {
         return write( std::vector<std::uint8_t>{ begin, end } );
+    }
+};
+
+/**
+ * \brief Mock device.
+ */
+class Mock_Device {
+  public:
+    Mock_Device() = default;
+
+    Mock_Device( std::function<void()>, Mock_Controller &, ::picolibrary::I2C::Address_Transmitted, Error_Code const & )
+    {
+    }
+
+    Mock_Device( Mock_Device && ) = delete;
+
+    Mock_Device( Mock_Device const & ) = delete;
+
+    ~Mock_Device() noexcept = default;
+
+    auto operator=( Mock_Device && ) = delete;
+
+    auto operator=( Mock_Device const & ) = delete;
+
+    MOCK_METHOD( ::picolibrary::I2C::Address_Transmitted, address, (), ( const ) );
+
+    MOCK_METHOD( Error_Code, nonresponsive_device_error, (), ( const ) );
+
+    MOCK_METHOD( ::picolibrary::I2C::Response, ping, ( ::picolibrary::I2C::Operation ), ( const ) );
+    MOCK_METHOD( ::picolibrary::I2C::Response, ping, (), ( const ) );
+
+    MOCK_METHOD( void, align_bus_multiplexer, (), ( const ) );
+
+    MOCK_METHOD( Mock_Controller &, controller, (), ( const ) );
+
+    MOCK_METHOD( std::uint8_t, read, ( std::uint8_t ), ( const ) );
+    MOCK_METHOD( std::vector<std::uint8_t>, read, (std::uint8_t, std::vector<std::uint8_t>), ( const ) );
+
+    void read( std::uint8_t register_address, std::uint8_t * begin, std::uint8_t * end ) const
+    {
+        static_cast<void>( end );
+
+        auto const data = read( register_address, std::vector<std::uint8_t>{} );
+
+        std::copy( data.begin(), data.end(), begin );
+    }
+
+    MOCK_METHOD( void, write, ( std::uint8_t, std::uint8_t ) );
+    MOCK_METHOD( void, write, (std::uint8_t, std::vector<std::uint8_t>));
+
+    void write( std::uint8_t register_address, std::uint8_t const * begin, std::uint8_t const * end )
+    {
+        write( register_address, std::vector<std::uint8_t>{ begin, end } );
     }
 };
 
