@@ -998,6 +998,51 @@ auto scan( Controller & controller, Functor functor ) noexcept
     return scan( controller, std::move( functor ), Policy{} );
 }
 
+/**
+ * \brief Bus multiplexer aligner for buses with no multiplexers.
+ */
+class Bus_Multiplexer_Aligner {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Bus_Multiplexer_Aligner() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Bus_Multiplexer_Aligner( Bus_Multiplexer_Aligner && source ) noexcept = default;
+
+    Bus_Multiplexer_Aligner( Bus_Multiplexer_Aligner const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Bus_Multiplexer_Aligner() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator          =( Bus_Multiplexer_Aligner && expression ) noexcept
+        -> Bus_Multiplexer_Aligner & = default;
+
+    auto operator=( Bus_Multiplexer_Aligner const & ) = delete;
+
+    /**
+     * \brief Align the bus's nonexistent multiplexers to enable communication with a
+     *        specific device.
+     */
+    constexpr void operator()() noexcept
+    {
+    }
+};
+
 } // namespace picolibrary::I2C
 
 #endif // PICOLIBRARY_I2C_H
