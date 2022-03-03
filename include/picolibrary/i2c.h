@@ -1038,7 +1038,7 @@ class Bus_Multiplexer_Aligner {
      * \brief Align the bus's nonexistent multiplexers to enable communication with a
      *        specific device.
      */
-    constexpr void operator()() noexcept
+    constexpr void operator()() const noexcept
     {
     }
 };
