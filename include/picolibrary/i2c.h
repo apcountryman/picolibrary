@@ -1043,6 +1043,270 @@ class Bus_Multiplexer_Aligner {
     }
 };
 
+/**
+ * \brief Device.
+ *
+ * \tparam Bus_Multiplexer_Aligner A nullary functor. The functor must be default
+ *         constructable, move constructable, and move assignable. When called, the
+ *         functor should align the bus's multiplexer(s) (if any) to enable communication
+ *         with the device.
+ * \tparam Controller The type of controller used to communicate with the device.
+ */
+template<typename Bus_Multiplexer_Aligner, typename Controller>
+class Device {
+  public:
+    Device( Device const & ) = delete;
+
+    auto operator=( Device const & ) = delete;
+
+    /**
+     * \brief Get the device's address.
+     *
+     * \return The device's address.
+     */
+    constexpr auto address() const noexcept
+    {
+        return m_address;
+    }
+
+    /**
+     * \brief Get the fatal error that occurs if the device does not respond when
+     *        addressed or does not acknowledge a write.
+     *
+     * \return The fatal error that occurs if the device does not respond when addressed
+     *         or does not acknowledge a write.
+     */
+    constexpr auto const & nonresponsive_device_error() const noexcept
+    {
+        return m_nonresponsive_device_error;
+    }
+
+    /**
+     * \brief Check if the device is responsive.
+     *
+     * \param[in] operation The operation to request when addressing the device.
+     *
+     * \return picolibrary::I2C::Response::ACK if the device is responsive.
+     * \return picolibrary::I2C::Response::NACK if the device is not responsive.
+     */
+    auto ping( Operation operation ) const noexcept
+    {
+        align_bus_multiplexer();
+
+        return ::picolibrary::I2C::ping( *m_controller, m_address, operation );
+    }
+
+    /**
+     * \brief Check if the device is responsive.
+     *
+     * \return picolibrary::I2C::Response::ACK if the device is responsive.
+     * \return picolibrary::I2C::Response::NACK if the device is not responsive.
+     */
+    auto ping() const noexcept
+    {
+        align_bus_multiplexer();
+
+        return ::picolibrary::I2C::ping( *m_controller, m_address );
+    }
+
+  protected:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Device() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] bus_multiplexer_aligner The device's bus multiplexer aligner.
+     * \param[in] controller The controller used to communicate with the device.
+     * \param[in] address The device's address.
+     * \param[in] The fatal error that occurs if the device does not respond when
+     *            addressed or does not acknowledge a write.
+     */
+    constexpr Device(
+        Bus_Multiplexer_Aligner bus_multiplexer_aligner,
+        Controller &            controller,
+        Address_Transmitted     address,
+        Error_Code const &      nonresponsive_device_error ) noexcept :
+        m_align_bus_multiplexer{ std::move( bus_multiplexer_aligner ) },
+        m_controller{ &controller },
+        m_address{ std::move( address ) },
+        m_nonresponsive_device_error{ std::move( nonresponsive_device_error ) }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Device( Device && source ) noexcept :
+        m_align_bus_multiplexer{ std::move( source.m_align_bus_multiplexer ) },
+        m_controller{ source.m_controller },
+        m_address{ std::move( source.m_address ) },
+        m_nonresponsive_device_error{ std::move( source.m_nonresponsive_device_error ) }
+    {
+        source.m_controller = nullptr;
+    }
+
+    /**
+     * \brief Destructor.
+     */
+    ~Device() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto & operator=( Device && expression ) noexcept
+    {
+        if ( &expression != this ) {
+            m_align_bus_multiplexer = std::move( expression.m_align_bus_multiplexer );
+            m_controller            = expression.m_controller;
+            m_address               = std::move( expression.m_address );
+            m_nonresponsive_device_error = std::move( expression.m_nonresponsive_device_error );
+
+            expression.m_controller = nullptr;
+        } // if
+
+        return *this;
+    }
+
+    /**
+     * \brief Align the bus's multiplexer(s) (if any) to enable communication with the
+     *        device.
+     */
+    constexpr void align_bus_multiplexer() const noexcept
+    {
+        m_align_bus_multiplexer();
+    }
+
+    /**
+     * \brief Get the controller used to communicate with the device.
+     *
+     * \return The controller used to communicate with the device.
+     */
+    constexpr auto & controller() const noexcept
+    {
+        return *m_controller;
+    }
+
+    /**
+     * \brief Read a register.
+     *
+     * \pre the device is responsive
+     *
+     * \param[in] register_address The address of the register to read.
+     *
+     * \return The data read from the register.
+     */
+    auto read( std::uint8_t register_address ) const noexcept
+    {
+        m_align_bus_multiplexer();
+
+        auto const guard = Bus_Control_Guard{ *m_controller };
+
+        expect( m_controller->address( m_address, Operation::WRITE ) == Response::ACK, m_nonresponsive_device_error );
+        expect( m_controller->write( register_address ) == Response::ACK, m_nonresponsive_device_error );
+
+        m_controller->repeated_start();
+
+        expect( m_controller->address( m_address, Operation::READ ) == Response::ACK, m_nonresponsive_device_error );
+        return m_controller->read( Response::NACK );
+    }
+
+    /**
+     * \brief Read a block of registers.
+     *
+     * \pre the device is responsive
+     *
+     * \param[in] register_address The address of the block of registers to read.
+     * \param[out] begin The beginning of the data read from the block of registers.
+     * \param[out] end The end of the data read from the block of registers.
+     *
+     * \warning This function does not verify that the register block size is non-zero. If
+     *          the register block size is zero, a NACK terminated read will never be
+     *          performed which results in the device retaining control of the SDA signal,
+     *          locking up the bus.
+     */
+    void read( std::uint8_t register_address, std::uint8_t * begin, std::uint8_t * end ) const noexcept
+    {
+        m_align_bus_multiplexer();
+
+        auto const guard = Bus_Control_Guard{ *m_controller };
+
+        expect( m_controller->address( m_address, Operation::WRITE ) == Response::ACK, m_nonresponsive_device_error );
+        expect( m_controller->write( register_address ) == Response::ACK, m_nonresponsive_device_error );
+
+        m_controller->repeated_start();
+
+        expect( m_controller->address( m_address, Operation::READ ) == Response::ACK, m_nonresponsive_device_error );
+        m_controller->read( begin, end, Response::NACK );
+    }
+
+    /**
+     * \brief Write to a register.
+     *
+     * \param[in] register_address The address of the register to write to.
+     * \param[in] data The data to write to the register.
+     */
+    void write( std::uint8_t register_address, std::uint8_t data ) noexcept
+    {
+        m_align_bus_multiplexer();
+
+        auto const guard = Bus_Control_Guard{ *m_controller };
+
+        expect( m_controller->address( m_address, Operation::WRITE ) == Response::ACK, m_nonresponsive_device_error );
+        expect( m_controller->write( register_address ) == Response::ACK, m_nonresponsive_device_error );
+        expect( m_controller->write( data ) == Response::ACK, m_nonresponsive_device_error );
+    }
+
+    /**
+     * \brief Write to a block of registers.
+     *
+     * \param[in] register_address The address of the block of registers to write to.
+     * \param[in] begin, The beginning of the data to write to the block of registers.
+     * \param[in] end, The end of the data to write to the block of registers.
+     */
+    void write( std::uint8_t register_address, std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+    {
+        m_align_bus_multiplexer();
+
+        auto const guard = Bus_Control_Guard{ *m_controller };
+
+        expect( m_controller->address( m_address, Operation::WRITE ) == Response::ACK, m_nonresponsive_device_error );
+        expect( m_controller->write( register_address ) == Response::ACK, m_nonresponsive_device_error );
+        expect( m_controller->write( begin, end ) == Response::ACK, m_nonresponsive_device_error );
+    }
+
+  private:
+    /**
+     * \brief Align the bus's multiplexer(s) (if any) to enable communication with the
+     *        device.
+     */
+    Bus_Multiplexer_Aligner m_align_bus_multiplexer{};
+
+    /**
+     * \brief The controller used to communicate with the device.
+     */
+    Controller * m_controller{};
+
+    /**
+     * \brief The device's address.
+     */
+    Address_Transmitted m_address{};
+
+    /**
+     * \brief The fatal error that occurs if the device does not respond when addressed or
+     *        does not acknowledge a write.
+     */
+    Error_Code m_nonresponsive_device_error{};
+};
+
 } // namespace picolibrary::I2C
 
 #endif // PICOLIBRARY_I2C_H
