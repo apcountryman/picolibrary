@@ -48,7 +48,7 @@ void scan( Output_Stream & stream, Controller controller ) noexcept
 {
     // #lizard forgives the length
 
-    controller.initializer();
+    controller.initialize();
 
     auto devices_found = false;
 
