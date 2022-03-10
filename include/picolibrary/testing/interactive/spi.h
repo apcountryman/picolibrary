@@ -23,10 +23,49 @@
 #ifndef PICOLIBRARY_TESTING_INTERACTIVE_SPI_H
 #define PICOLIBRARY_TESTING_INTERACTIVE_SPI_H
 
+#include <cstdint>
+
+#include "picolibrary/error.h"
+#include "picolibrary/format.h"
+#include "picolibrary/precondition.h"
+#include "picolibrary/stream.h"
+
 /**
  * \brief Serial Peripheral Interface (SPI) interactive testing facilities.
  */
 namespace picolibrary::Testing::Interactive::SPI {
+
+/**
+ * \brief Controller echo interactive test helper.
+ *
+ * \tparam Controller The type of controller to test.
+ * \tparam Delayer A nullary functor called to introduce a delay each time data is
+ *         exchanged.
+ *
+ * \param[in] stream The output stream to write test output to.
+ * \param[in] controller The controller to test.
+ * \param[in] configuration The clock and data exchange bit order configuration to use for
+ *            the test.
+ * \param[in] delay The nullary functor to call to introduce a delay each time data is
+ *            exchanged.
+ */
+template<typename Controller, typename Delayer>
+void echo( Output_Stream & stream, Controller controller, typename Controller::Configuration const & configuration, Delayer delay ) noexcept
+{
+    controller.initialize();
+    controller.configure( configuration );
+
+    for ( auto tx = std::uint8_t{};; ++tx ) {
+        delay();
+
+        auto const rx     = controller.exchange( tx );
+        auto const result = stream.print(
+            "exchange( {} ) -> {}\n", Format::Hexadecimal{ tx }, Format::Hexadecimal{ rx } );
+        expect( not result.is_error(), result.error() );
+        expect( rx == tx, Generic_Error::RUNTIME_ERROR );
+    } // for
+}
+
 } // namespace picolibrary::Testing::Interactive::SPI
 
 #endif // PICOLIBRARY_TESTING_INTERACTIVE_SPI_H
