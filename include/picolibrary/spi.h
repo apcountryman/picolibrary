@@ -24,6 +24,7 @@
 #define PICOLIBRARY_SPI_H
 
 #include <cstdint>
+#include <utility>
 
 #include "picolibrary/algorithm.h"
 
@@ -406,6 +407,196 @@ class Device_Selection_Guard {
      * \brief The device selector used to select and deselect the device.
      */
     Device_Selector & m_device_selector;
+};
+
+/**
+ * \brief Device.
+ *
+ * \tparam Controller The type of controller used to communicate with the device.
+ * \tparam Device_Selector The type of device selector used to select and deselect the
+ *         device.
+ */
+template<typename Controller, typename Device_Selector>
+class Device {
+  public:
+    Device( Device const & ) = delete;
+
+    auto operator=( Device const & ) = delete;
+
+  protected:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Device() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] controller The controller used to communicate with the device.
+     * \param[in] configuration The controller clock and data exchange bit order
+     *            configuration that meets the device's communication requirements.
+     * \param[in] device_selector The device selector used to select and deselect the
+     *            device.
+     */
+    constexpr Device( Controller & controller, typename Controller::Configuration const & configuration, Device_Selector device_selector ) noexcept
+        :
+        m_controller{ &controller },
+        m_configuration{ configuration },
+        m_device_selector{ std::move( device_selector ) }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Device( Device && source ) noexcept :
+        m_controller{ source.m_controller },
+        m_configuration{ std::move( source.m_configuration ) },
+        m_device_selector{ std::move( source.m_device_selector ) }
+    {
+        source.m_controller = nullptr;
+    }
+
+    /**
+     * \brief Destructor.
+     */
+    ~Device() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto & operator=( Device && expression ) noexcept
+    {
+        if ( &expression != this ) {
+            m_controller      = expression.m_controller;
+            m_configuration   = std::move( expression.m_configuration );
+            m_device_selector = std::move( expression.m_device_selector );
+
+            expression.m_controller = nullptr;
+        } // if
+
+        return *this;
+    }
+
+    /**
+     * \brief Initialize the device's device selection hardware.
+     */
+    void initialize() const noexcept
+    {
+        m_device_selector.initialize();
+    }
+
+    /**
+     * \brief Configure the controller's clock and data exchange bit order to meet the
+     *        device's communication requirements.
+     */
+    constexpr void configure() const noexcept
+    {
+        m_controller->configure( m_configuration );
+    }
+
+    /**
+     * \brief Access the device selector used to select and deselect the device.
+     *
+     * \return The device selector used to select and deselect the device.
+     */
+    constexpr auto & device_selector() const noexcept
+    {
+        return m_device_selector;
+    }
+
+    /**
+     * \brief Exchange data with the device.
+     *
+     * \param[in] data The data to transmit to the device.
+     *
+     * \return The data received from the device.
+     */
+    auto exchange( std::uint8_t data ) const noexcept
+    {
+        return m_controller->exchange( data );
+    }
+
+    /**
+     * \brief Exchange a block of data with the device.
+     *
+     * \param[in] tx_begin The beginning of the block of data to transmit to the device.
+     * \param[in] tx_end The end of the block of data to transmit to the device.
+     * \param[out] rx_begin The beginning of the block of data received from the device.
+     * \param[out] rx_end The end of the block of data received from the device.
+     *
+     * \warning This function may not verify that the transmit and receive data blocks are
+     *          the same size.
+     */
+    void exchange( std::uint8_t const * tx_begin, std::uint8_t const * tx_end, std::uint8_t * rx_begin, std::uint8_t * rx_end ) const noexcept
+    {
+        m_controller->exchange( tx_begin, tx_end, rx_begin, rx_end );
+    }
+
+    /**
+     * \brief Receive data from the device.
+     *
+     * \return The data received from the device.
+     */
+    auto receive() const noexcept
+    {
+        return m_controller->receive();
+    }
+
+    /**
+     * \brief Receive a block of data from the device.
+     *
+     * \param[out] begin The beginning of the block of data received from the device.
+     * \param[out] end The end of the block of data received from the device.
+     */
+    void receive( std::uint8_t * begin, std::uint8_t * end ) const noexcept
+    {
+        m_controller->receive( begin, end );
+    }
+
+    /**
+     * \brief Transmit data to the device.
+     *
+     * \param[in] data The data to transmit to the device.
+     */
+    void transmit( std::uint8_t data ) const noexcept
+    {
+        m_controller->transmit( data );
+    }
+
+    /**
+     * \brief Transmit a block of data to the device.
+     *
+     * \param[in] begin The beginning of the block of data to transmit to the device.
+     * \param[in] end The end of the block of data to transmit to the device.
+     */
+    void transmit( std::uint8_t const * begin, std::uint8_t const * end ) const noexcept
+    {
+        m_controller->transmit( begin, end );
+    }
+
+  private:
+    /**
+     * \brief The controller used to communicate with the device.
+     */
+    Controller * m_controller{};
+
+    /**
+     * \brief The controller clock and data exchange bit order configuration that meets
+     *        the device's communication requirements.
+     */
+    typename Controller::Configuration m_configuration{};
+
+    /**
+     * \brief The device selector used to select and deselect the device.
+     */
+    Device_Selector mutable m_device_selector{};
 };
 
 } // namespace picolibrary::SPI
