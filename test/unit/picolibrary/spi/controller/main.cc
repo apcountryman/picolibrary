@@ -104,7 +104,6 @@ TEST( receiveBlock, worksProperly )
         EXPECT_CALL( controller, exchange( _ ) ).Times( 0 );
 
         auto data = std::vector<std::uint8_t>{};
-
         controller.receive( &*data.begin(), &*data.end() );
     }
 
