@@ -248,12 +248,12 @@ class Mock_Device_Selector {
 
         void select()
         {
-            Mock_Handle<Mock_Device_Selector>::mock().initialize();
+            Mock_Handle<Mock_Device_Selector>::mock().select();
         }
 
         void deselect()
         {
-            Mock_Handle<Mock_Device_Selector>::mock().initialize();
+            Mock_Handle<Mock_Device_Selector>::mock().deselect();
         }
     };
 
