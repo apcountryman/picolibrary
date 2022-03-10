@@ -281,6 +281,66 @@ class Mock_Device_Selector {
     MOCK_METHOD( void, deselect, () );
 };
 
+/**
+ * \brief Mock device.
+ */
+class Mock_Device {
+  public:
+    Mock_Device() = default;
+
+    Mock_Device( Mock_Controller &, Mock_Controller::Configuration const &, Mock_Device_Selector::Handle )
+    {
+    }
+
+    Mock_Device( Mock_Device && ) = delete;
+
+    Mock_Device( Mock_Device const & ) = delete;
+
+    ~Mock_Device() noexcept = default;
+
+    auto operator=( Mock_Device && ) = delete;
+
+    auto operator=( Mock_Device const & ) = delete;
+
+    MOCK_METHOD( void, initialize, () );
+
+    MOCK_METHOD( void, configure, (), ( const ) );
+
+    MOCK_METHOD( Mock_Device_Selector::Handle &, device_selector, (), ( const ) );
+
+    MOCK_METHOD( std::uint8_t, exchange, ( std::uint8_t ), ( const ) );
+    MOCK_METHOD( std::vector<std::uint8_t>, exchange, (std::vector<std::uint8_t>), ( const ) );
+
+    void exchange( std::uint8_t const * tx_begin, std::uint8_t const * tx_end, std::uint8_t * rx_begin, std::uint8_t * rx_end ) const
+    {
+        static_cast<void>( rx_end );
+
+        auto const data = exchange( std::vector<std::uint8_t>{ tx_begin, tx_end } );
+
+        std::copy( data.begin(), data.end(), rx_begin );
+    }
+
+    MOCK_METHOD( std::uint8_t, receive, (), ( const ) );
+    MOCK_METHOD( std::vector<std::uint8_t>, receive, (std::vector<std::uint8_t>), ( const ) );
+
+    void receive( std::uint8_t * begin, std::uint8_t * end ) const
+    {
+        static_cast<void>( end );
+
+        auto const data = receive( std::vector<std::uint8_t>{} );
+
+        std::copy( data.begin(), data.end(), begin );
+    }
+
+    MOCK_METHOD( void, transmit, ( std::uint8_t ), ( const ) );
+    MOCK_METHOD( void, transmit, (std::vector<std::uint8_t>), ( const ) );
+
+    void transmit( std::uint8_t const * begin, std::uint8_t const * end ) const
+    {
+        transmit( std::vector<std::uint8_t>{ begin, end } );
+    }
+};
+
 } // namespace picolibrary::Testing::Unit::SPI
 
 #endif // PICOLIBRARY_TESTING_UNIT_SPI_H
