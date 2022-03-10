@@ -77,8 +77,8 @@ TEST( initialize, worksProperly )
     auto device_selector = Mock_Device_Selector{};
 
     auto const device = Device{ controller,
-                          random<Mock_Controller::Configuration>(),
-                          device_selector.handle() };
+                                random<Mock_Controller::Configuration>(),
+                                device_selector.handle() };
 
     EXPECT_CALL( device_selector, initialize() );
 
