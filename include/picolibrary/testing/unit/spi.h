@@ -302,7 +302,7 @@ class Mock_Device {
 
     auto operator=( Mock_Device const & ) = delete;
 
-    MOCK_METHOD( void, initialize, () );
+    MOCK_METHOD( void, initialize, (), ( const ) );
 
     MOCK_METHOD( void, configure, (), ( const ) );
 

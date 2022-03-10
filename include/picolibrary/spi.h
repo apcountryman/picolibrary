@@ -485,9 +485,9 @@ class Device {
     }
 
     /**
-     * \brief Initialize the device's device selector's hardware.
+     * \brief Initialize the device's device selection hardware.
      */
-    void initialize() noexcept
+    void initialize() const noexcept
     {
         m_device_selector.initialize();
     }
@@ -502,9 +502,9 @@ class Device {
     }
 
     /**
-     * \brief Access the device's device selector.
+     * \brief Access the device selector used to select and deselect the device.
      *
-     * \return The device's device selector.
+     * \return The device selector used to select and deselect the device.
      */
     constexpr auto & device_selector() const noexcept
     {
@@ -531,8 +531,8 @@ class Device {
      * \param[out] rx_begin The beginning of the block of data received from the device.
      * \param[out] rx_end The end of the block of data received from the device.
      *
-     * \warning This function does not verify that the transmit and receive data blocks
-     *          are the same size.
+     * \warning This function may not verify that the transmit and receive data blocks are
+     *          the same size.
      */
     void exchange( std::uint8_t const * tx_begin, std::uint8_t const * tx_end, std::uint8_t * rx_begin, std::uint8_t * rx_end ) const noexcept
     {

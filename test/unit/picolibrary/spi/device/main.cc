@@ -76,7 +76,7 @@ TEST( initialize, worksProperly )
     auto controller      = Mock_Controller{};
     auto device_selector = Mock_Device_Selector{};
 
-    auto device = Device{ controller,
+    auto const device = Device{ controller,
                           random<Mock_Controller::Configuration>(),
                           device_selector.handle() };
 
