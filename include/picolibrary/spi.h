@@ -25,6 +25,8 @@
 
 #include <cstdint>
 
+#include "picolibrary/algorithm.h"
+
 /**
  * \brief Serial Peripheral Interface (SPI) facilities.
  */
@@ -203,6 +205,83 @@ class Controller_Concept {
      * \param[in] end The end of the block of data to transmit to the device.
      */
     void transmit( std::uint8_t const * begin, std::uint8_t const * end ) noexcept;
+};
+
+/**
+ * \brief Controller.
+ *
+ * \tparam Basic_Controller The type of basic controller to add controller functionality
+ *         to.
+ */
+template<typename Basic_Controller>
+class Controller : public Basic_Controller {
+  public:
+    using Basic_Controller::Basic_Controller;
+
+    using Basic_Controller::exchange;
+
+    /**
+     * \brief Exchange a block of data with a device.
+     *
+     * \param[in] tx_begin The beginning of the block of data to transmit to the device.
+     * \param[in] tx_end The end of the block of data to transmit to the device.
+     * \param[out] rx_begin The beginning of the block of data received from the device.
+     * \param[out] rx_end The end of the block of data received from the device.
+     *
+     * \warning This function does not verify that the transmit and receive data blocks
+     *          are the same size.
+     */
+    void exchange( std::uint8_t const * tx_begin, std::uint8_t const * tx_end, std::uint8_t * rx_begin, std::uint8_t * rx_end ) noexcept
+    {
+        static_cast<void>( rx_end );
+
+        for ( ; tx_begin != tx_end; ++tx_begin, ++rx_begin ) {
+            *rx_begin = exchange( *tx_begin );
+        } // for
+    }
+
+    /**
+     * \brief Receive data from a device.
+     *
+     * \return The data received from the device.
+     */
+    auto receive() noexcept
+    {
+        return exchange( 0x00 );
+    }
+
+    /**
+     * \brief Receive a block of data from a device.
+     *
+     * \param[out] begin The beginning of the block of data received from the device.
+     * \param[out] end The end of the block of data received from the device.
+     */
+    void receive( std::uint8_t * begin, std::uint8_t * end ) noexcept
+    {
+        ::picolibrary::generate( begin, end, [ this ]() noexcept { return receive(); } );
+    }
+
+    /**
+     * \brief Transmit data to a device.
+     *
+     * \param[in] data The data to transmit to the device.
+     */
+    void transmit( std::uint8_t data ) noexcept
+    {
+        exchange( data );
+    }
+
+    /**
+     * \brief Transmit a block of data to a device.
+     *
+     * \param[in] begin The beginning of the block of data to transmit to the device.
+     * \param[in] end The end of the block of data to transmit to the device.
+     */
+    void transmit( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+    {
+        ::picolibrary::for_each(
+            begin, end, [ this ]( auto data ) noexcept { transmit( data ); } );
+    }
 };
 
 } // namespace picolibrary::SPI
