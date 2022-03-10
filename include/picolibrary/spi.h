@@ -335,6 +335,33 @@ class Device_Selector_Concept {
     void deselect() noexcept;
 };
 
+/**
+ * \brief GPIO output pin based device selector.
+ *
+ * \tparam GPIO_Output_Pin The type of GPIO output pin used to select a device.
+ */
+template<typename GPIO_Output_Pin>
+class GPIO_Output_Pin_Device_Selector : public GPIO_Output_Pin {
+  public:
+    using GPIO_Output_Pin::GPIO_Output_Pin;
+
+    /**
+     * \brief Select the device.
+     */
+    void select() noexcept
+    {
+        GPIO_Output_Pin::transition_to_high();
+    }
+
+    /**
+     * \brief Deselect the device.
+     */
+    void deselect() noexcept
+    {
+        GPIO_Output_Pin::transition_to_low();
+    }
+};
+
 } // namespace picolibrary::SPI
 
 #endif // PICOLIBRARY_SPI_H
