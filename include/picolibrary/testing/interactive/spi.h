@@ -50,7 +50,7 @@ namespace picolibrary::Testing::Interactive::SPI {
  *            exchanged.
  */
 template<typename Controller, typename Delayer>
-void echo( Output_Stream & stream, Controller controller, typename Controller::Configuration const configuration, Delayer delay ) noexcept
+void echo( Output_Stream & stream, Controller controller, typename Controller::Configuration const & configuration, Delayer delay ) noexcept
 {
     controller.initialize();
     controller.configure( configuration );
