@@ -40,6 +40,7 @@ set(
     "picolibrary/postcondition.cc"
     "picolibrary/precondition.cc"
     "picolibrary/result.cc"
+    "picolibrary/spi.cc"
     "picolibrary/state_machine.cc"
     "picolibrary/stream.cc"
     "picolibrary/void.cc"
