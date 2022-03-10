@@ -96,6 +96,115 @@ class Basic_Controller_Concept {
     auto exchange( std::uint8_t data ) noexcept -> std::uint8_t;
 };
 
+/**
+ * \brief Controller concept.
+ */
+class Controller_Concept {
+  public:
+    /**
+     * \brief Clock (frequency, polarity, and phase) and data exchange bit order
+     *        configuration.
+     */
+    struct Configuration {
+    };
+
+    /**
+     * \brief Constructor.
+     */
+    Controller_Concept() noexcept;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Controller_Concept( Controller_Concept && source ) noexcept;
+
+    Controller_Concept( Controller_Concept const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Controller_Concept() noexcept;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Controller_Concept && expression ) noexcept -> Controller_Concept &;
+
+    auto operator=( Controller_Concept const & ) = delete;
+
+    /**
+     * \brief Initialize the controller's hardware.
+     */
+    void initialize() noexcept;
+
+    /**
+     * \brief Configure the controller's clock and data exchange bit order to meet a
+     *        specific device's communication requirements.
+     *
+     * \param[in] configuration The clock and data exchange bit order configuration that
+     *            meets the device's communication requirements.
+     */
+    void configure( Configuration const & configuration ) noexcept;
+
+    /**
+     * \brief Exchange data with a device.
+     *
+     * \param[in] data The data to transmit to the device.
+     *
+     * \return The data received from the device.
+     */
+    auto exchange( std::uint8_t data ) noexcept -> std::uint8_t;
+
+    /**
+     * \brief Exchange a block of data with a device.
+     *
+     * \param[in] tx_begin The beginning of the block of data to transmit to the device.
+     * \param[in] tx_end The end of the block of data to transmit to the device.
+     * \param[out] rx_begin The beginning of the block of data received from the device.
+     * \param[out] rx_end The end of the block of data received from the device.
+     *
+     * \warning Implementations of this function may not verify that the transmit and
+     *          receive data blocks are the same size.
+     */
+    void exchange( std::uint8_t const * tx_begin, std::uint8_t const * tx_end, std::uint8_t * rx_begin, std::uint8_t * rx_end ) noexcept;
+
+    /**
+     * \brief Receive data from a device.
+     *
+     * \return The data received from the device.
+     */
+    auto receive() noexcept -> std::uint8_t;
+
+    /**
+     * \brief Receive a block of data from a device.
+     *
+     * \param[out] begin The beginning of the block of data received from the device.
+     * \param[out] end The end of the block of data received from the device.
+     */
+    void receive( std::uint8_t * begin, std::uint8_t * end ) noexcept;
+
+    /**
+     * \brief Transmit data to a device.
+     *
+     * \param[in] data The data to transmit to the device.
+     */
+    void transmit( std::uint8_t data ) noexcept;
+
+    /**
+     * \brief Transmit a block of data to a device.
+     *
+     * \param[in] begin The beginning of the block of data to transmit to the device.
+     * \param[in] end The end of the block of data to transmit to the device.
+     */
+    void transmit( std::uint8_t const * begin, std::uint8_t const * end ) noexcept;
+};
+
 } // namespace picolibrary::SPI
 
 #endif // PICOLIBRARY_SPI_H
