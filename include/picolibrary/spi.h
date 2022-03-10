@@ -36,7 +36,7 @@ namespace picolibrary::SPI {
 class Basic_Controller_Concept {
   public:
     /**
-     * \brief Clock (frequency, polarity, and phase), and data exchange bit order
+     * \brief Clock (frequency, polarity, and phase) and data exchange bit order
      *        configuration.
      */
     struct Configuration {
@@ -78,10 +78,10 @@ class Basic_Controller_Concept {
     void initialize() noexcept;
 
     /**
-     * \brief Configure the controller's clock, and data exchange bit order to meet a
+     * \brief Configure the controller's clock and data exchange bit order to meet a
      *        specific device's communication requirements.
      *
-     * \param[in] configuration The clock, and data exchange bit order configuration that
+     * \param[in] configuration The clock and data exchange bit order configuration that
      *            meets the device's communication requirements.
      */
     void configure( Configuration const & configuration ) noexcept;
