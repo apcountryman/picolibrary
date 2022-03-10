@@ -217,6 +217,70 @@ class Mock_Controller : public Mock_Basic_Controller {
     }
 };
 
+/**
+ * \brief Mock device selector.
+ */
+class Mock_Device_Selector {
+  public:
+    class Handle : public Mock_Handle<Mock_Device_Selector> {
+      public:
+        constexpr Handle() noexcept = default;
+
+        constexpr Handle( Mock_Device_Selector & mock ) noexcept :
+            Mock_Handle<Mock_Device_Selector>{ mock }
+        {
+        }
+
+        constexpr Handle( Handle && source ) noexcept = default;
+
+        Handle( Handle const & ) = delete;
+
+        ~Handle() noexcept = default;
+
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
+
+        auto operator=( Handle const & ) = delete;
+
+        void initialize()
+        {
+            Mock_Handle<Mock_Device_Selector>::mock().initialize();
+        }
+
+        void select()
+        {
+            Mock_Handle<Mock_Device_Selector>::mock().initialize();
+        }
+
+        void deselect()
+        {
+            Mock_Handle<Mock_Device_Selector>::mock().initialize();
+        }
+    };
+
+    Mock_Device_Selector() = default;
+
+    Mock_Device_Selector( Mock_Device_Selector && ) = delete;
+
+    Mock_Device_Selector( Mock_Device_Selector const & ) = delete;
+
+    ~Mock_Device_Selector() noexcept = default;
+
+    auto operator=( Mock_Device_Selector && ) = delete;
+
+    auto operator=( Mock_Device_Selector const & ) = delete;
+
+    auto handle() noexcept
+    {
+        return Handle{ *this };
+    }
+
+    MOCK_METHOD( void, initialize, () );
+
+    MOCK_METHOD( void, select, () );
+
+    MOCK_METHOD( void, deselect, () );
+};
+
 } // namespace picolibrary::Testing::Unit::SPI
 
 #endif // PICOLIBRARY_TESTING_UNIT_SPI_H

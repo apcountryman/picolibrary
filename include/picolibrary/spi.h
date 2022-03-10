@@ -284,6 +284,57 @@ class Controller : public Basic_Controller {
     }
 };
 
+/**
+ * \brief Device selector concept.
+ */
+class Device_Selector_Concept {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    Device_Selector_Concept() noexcept;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Device_Selector_Concept( Device_Selector_Concept && source ) noexcept;
+
+    Device_Selector_Concept( Device_Selector_Concept const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Device_Selector_Concept() noexcept;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Device_Selector_Concept && expression ) noexcept -> Device_Selector_Concept &;
+
+    auto operator=( Device_Selector_Concept const & ) = delete;
+
+    /**
+     * \brief Initialize the device selector's hardware.
+     */
+    void initialize() noexcept;
+
+    /**
+     * \brief Select the device.
+     */
+    void select() noexcept;
+
+    /**
+     * \brief Deselect the device.
+     */
+    void deselect() noexcept;
+};
+
 } // namespace picolibrary::SPI
 
 #endif // PICOLIBRARY_SPI_H
