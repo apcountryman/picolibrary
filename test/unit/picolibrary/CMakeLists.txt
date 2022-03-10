@@ -49,6 +49,9 @@ add_subdirectory( i2c )
 # build the picolibrary::Output_Stream unit tests
 add_subdirectory( output_stream )
 
+# build the picolibrary::SPI unit tests
+add_subdirectory( spi )
+
 # build the picolibrary::Stream unit tests
 add_subdirectory( stream )
 
