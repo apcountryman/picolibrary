@@ -46,6 +46,9 @@ add_subdirectory( gpio )
 # build the picolibrary::I2C unit tests
 add_subdirectory( i2c )
 
+# build the picolibrary::Microchip unit tests
+add_subdirectory( microchip )
+
 # build the picolibrary::Output_Stream unit tests
 add_subdirectory( output_stream )
 
