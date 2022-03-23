@@ -24,6 +24,6 @@
 
 namespace picolibrary::Microchip::MCP23X08 {
 
-static_assert( IOCON::Bit::RESERVED6 == 6 ); // NOLINT(cppcoreguidelines-avoid-magic-numbers)
+static_assert( IOCON::Bit::RESERVED6 == 6 ); // NOLINT(*-magic-numbers)
 
 } // namespace picolibrary::Microchip::MCP23X08
