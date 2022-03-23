@@ -38,6 +38,7 @@ set(
     "picolibrary/hsm.cc"
     "picolibrary/i2c.cc"
     "picolibrary/microchip.cc"
+    "picolibrary/microchip/mcp23x08.cc"
     "picolibrary/postcondition.cc"
     "picolibrary/precondition.cc"
     "picolibrary/result.cc"
