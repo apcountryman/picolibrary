@@ -67,21 +67,6 @@ TEST( constructorDefault, worksProperly )
 
 /**
  * \brief Verify picolibrary::I2C::Address_Transmitted::Address_Transmitted(
- *        picolibrary::I2C::Address_Transmitted::Unsigned_Integer ) properly handles an
- *        invalid address.
- */
-TEST( constructorUnsignedIntegerDeathTest, invalidAddress )
-{
-    EXPECT_DEATH(
-        {
-            auto const address_transmitted = Address_Transmitted{ static_cast<Address_Transmitted::Unsigned_Integer>(
-                random<Address_Transmitted::Unsigned_Integer>() | 0b1 ) };
-        },
-        "::picolibrary::Generic_Error::INVALID_ARGUMENT" );
-}
-
-/**
- * \brief Verify picolibrary::I2C::Address_Transmitted::Address_Transmitted(
  *        picolibrary::I2C::Address_Transmitted::Unsigned_Integer ) works properly.
  */
 TEST( constructorUnsignedInteger, worksProperly )
