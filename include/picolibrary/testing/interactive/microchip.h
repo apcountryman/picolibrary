@@ -24,7 +24,7 @@
 #define PICOLIBRARY_TESTING_INTERACTIVE_MICROCHIP_H
 
 /**
- * \brief Microchip interactive testing facilities.
+ * \brief Microchip interactive testing facilities
  */
 namespace picolibrary::Testing::Interactive::Microchip {
 } // namespace picolibrary::Testing::Interactive::Microchip
