@@ -76,6 +76,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
         "picolibrary/testing/unit/event.cc"
         "picolibrary/testing/unit/gpio.cc"
         "picolibrary/testing/unit/i2c.cc"
+        "picolibrary/testing/unit/microchip.cc"
         "picolibrary/testing/unit/mock_handle.cc"
         "picolibrary/testing/unit/random.cc"
         "picolibrary/testing/unit/spi.cc"
