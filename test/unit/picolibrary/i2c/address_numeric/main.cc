@@ -65,18 +65,6 @@ TEST( constructorDefault, worksProperly )
 
 /**
  * \brief Verify picolibrary::I2C::Address_Numeric::Address_Numeric(
- *        picolibrary::I2C::Address_Numeric::Unsigned_Integer ) properly handles an
- *        invalid address.
- */
-TEST( constructorUnsignedIntegerDeathTest, invalidAddress )
-{
-    EXPECT_DEATH(
-        { auto const address_numeric = Address_Numeric{ 0b1111111 + 1 }; },
-        "::picolibrary::Generic_Error::INVALID_ARGUMENT" );
-}
-
-/**
- * \brief Verify picolibrary::I2C::Address_Numeric::Address_Numeric(
  *        picolibrary::I2C::Address_Numeric::Unsigned_Integer ) works properly.
  */
 TEST( constructorUnsignedInteger, worksProperly )
