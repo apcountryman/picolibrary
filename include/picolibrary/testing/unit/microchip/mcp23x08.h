@@ -23,10 +23,64 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_MICROCHIP_MCP23X08_H
 #define PICOLIBRARY_TESTING_UNIT_MICROCHIP_MCP23X08_H
 
+#include <cstdint>
+
+#include "gmock/gmock.h"
+
 /**
  * \brief Microchip MCP23008/MCP23S08 unit testing facilities.
  */
 namespace picolibrary::Testing::Unit::Microchip::MCP23X08 {
+
+/**
+ * \brief Mock driver.
+ */
+class Mock_Driver {
+  public:
+    Mock_Driver() = default;
+
+    Mock_Driver( Mock_Driver && ) = delete;
+
+    Mock_Driver( Mock_Driver const & ) = delete;
+
+    ~Mock_Driver() noexcept = default;
+
+    auto operator=( Mock_Driver && ) = delete;
+
+    auto operator=( Mock_Driver const & ) = delete;
+
+    MOCK_METHOD( std::uint8_t, read_iodir, (), ( const ) );
+    MOCK_METHOD( void, write_iodir, ( std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, read_ipol, (), ( const ) );
+    MOCK_METHOD( void, write_ipol, ( std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, read_gpinten, (), ( const ) );
+    MOCK_METHOD( void, write_gpinten, ( std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, read_defval, (), ( const ) );
+    MOCK_METHOD( void, write_defval, ( std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, read_intcon, (), ( const ) );
+    MOCK_METHOD( void, write_intcon, ( std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, read_iocon, (), ( const ) );
+    MOCK_METHOD( void, write_iocon, ( std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, read_gppu, (), ( const ) );
+    MOCK_METHOD( void, write_gppu, ( std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, read_intf, (), ( const ) );
+
+    MOCK_METHOD( std::uint8_t, read_intcap, (), ( const ) );
+
+    MOCK_METHOD( std::uint8_t, read_gpio, (), ( const ) );
+    MOCK_METHOD( void, write_gpio, ( std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, read_olat, (), ( const ) );
+    MOCK_METHOD( void, write_olat, ( std::uint8_t ) );
+};
+
 } // namespace picolibrary::Testing::Unit::Microchip::MCP23X08
 
 #endif // PICOLIBRARY_TESTING_UNIT_MICROCHIP_MCP23X08_H
