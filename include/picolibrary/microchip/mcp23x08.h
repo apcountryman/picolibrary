@@ -48,7 +48,7 @@ struct IODIR {
 };
 
 /**
- * \brief Input Polarity PORT (IPOL) register.
+ * \brief Input Polarity Port (IPOL) register.
  */
 struct IPOL {
     /**
@@ -194,7 +194,7 @@ struct INTF {
 };
 
 /**
- * \brief Interrupt Captured Value for PORT (INTCAP) register.
+ * \brief Interrupt Captured Value for Port (INTCAP) register.
  */
 struct INTCAP {
     /**
@@ -204,7 +204,7 @@ struct INTCAP {
 };
 
 /**
- * \brief General Purpose I/O PORT (GPIO) register.
+ * \brief General Purpose I/O Port (GPIO) register.
  */
 struct GPIO {
     /**
