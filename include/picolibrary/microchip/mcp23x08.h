@@ -228,6 +228,182 @@ struct OLAT {
     static constexpr auto RESET = std::uint8_t{ 0x00 };
 };
 
+/**
+ * \brief Driver concept.
+ */
+class Driver_Concept {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    Driver_Concept() noexcept;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Driver_Concept( Driver_Concept && source ) noexcept;
+
+    Driver_Concept( Driver_Concept const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Driver_Concept() noexcept;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Driver_Concept && expression ) noexcept -> Driver_Concept &;
+
+    auto operator=( Driver_Concept const & ) = delete;
+
+    /**
+     * \brief Read the IODIR register.
+     *
+     * \return The data read from the IODIR register.
+     */
+    auto read_iodir() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Write to the IODIR register.
+     *
+     * \param[in] data The data to write to the IODIR register.
+     */
+    void write_iodir( std::uint8_t data ) noexcept;
+
+    /**
+     * \brief Read the IPOL register.
+     *
+     * \return The data read from the IPOL register.
+     */
+    auto read_ipol() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Write to the IPOL register.
+     *
+     * \param[in] data The data to write to the IPOL register.
+     */
+    void write_ipol( std::uint8_t data ) noexcept;
+
+    /**
+     * \brief Read the GPINTEN register.
+     *
+     * \return The data read from the GPINTEN register.
+     */
+    auto read_gpinten() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Write to the GPINTEN register.
+     *
+     * \param[in] data The data to write to the GPINTEN register.
+     */
+    void write_gpinten( std::uint8_t data ) noexcept;
+
+    /**
+     * \brief Read the DEFVAL register.
+     *
+     * \return The data read from the DEFVAL register.
+     */
+    auto read_defval() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Write to the DEFVAL register.
+     *
+     * \param[in] data The data to write to the DEFVAL register.
+     */
+    void write_defval( std::uint8_t data ) noexcept;
+
+    /**
+     * \brief Read the INTCON register.
+     *
+     * \return The data read from the INTCON register.
+     */
+    auto read_intcon() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Write to the INTCON register.
+     *
+     * \param[in] data The data to write to the INTCON register.
+     */
+    void write_intcon( std::uint8_t data ) noexcept;
+
+    /**
+     * \brief Read the IOCON register.
+     *
+     * \return The data read from the IOCON register.
+     */
+    auto read_iocon() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Write to the IOCON register.
+     *
+     * \param[in] data The data to write to the IOCON register.
+     */
+    void write_iocon( std::uint8_t data ) noexcept;
+
+    /**
+     * \brief Read the GPPU register.
+     *
+     * \return The data read from the GPPU register.
+     */
+    auto read_gppu() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Write to the GPPU register.
+     *
+     * \param[in] data The data to write to the GPPU register.
+     */
+    void write_gppu( std::uint8_t data ) noexcept;
+
+    /**
+     * \brief Read the INTF register.
+     *
+     * \return The data read from the INTF register.
+     */
+    auto read_intf() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Read the INTCAP register.
+     *
+     * \return The data read from the INTCAP register.
+     */
+    auto read_intcap() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Read the GPIO register.
+     *
+     * \return The data read from the GPIO register.
+     */
+    auto read_gpio() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Write to the GPIO register.
+     *
+     * \param[in] data The data to write to the GPIO register.
+     */
+    void write_gpio( std::uint8_t data ) noexcept;
+
+    /**
+     * \brief Read the OLAT register.
+     *
+     * \return The data read from the OLAT register.
+     */
+    auto read_olat() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Write to the OLAT register.
+     *
+     * \param[in] data The data to write to the OLAT register.
+     */
+    void write_olat( std::uint8_t data ) noexcept;
+};
+
 } // namespace picolibrary::Microchip::MCP23X08
 
 #endif // PICOLIBRARY_MICROCHIP_MCP23X08_H
