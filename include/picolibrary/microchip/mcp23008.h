@@ -23,10 +23,36 @@
 #ifndef PICOLIBRARY_MICROCHIP_MCP23008_H
 #define PICOLIBRARY_MICROCHIP_MCP23008_H
 
+#include "picolibrary/i2c.h"
+#include "picolibrary/precondition.h"
+
 /**
  * \brief Microchip MCP23008 facilities.
  */
 namespace picolibrary::Microchip::MCP23008 {
+
+/**
+ * \brief Get the minimum valid address.
+ *
+ * \return The minimum valid address.
+ */
+constexpr auto address_min() noexcept
+{
+    return I2C::Address_Transmitted{ I2C::Address_Numeric{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
+                                                           0b0100'000 } };
+}
+
+/**
+ * \brief Get the maximum valid address.
+ *
+ * \return The maximum valid address.
+ */
+constexpr auto address_max() noexcept
+{
+    return I2C::Address_Transmitted{ I2C::Address_Numeric{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
+                                                           0b0100'111 } };
+}
+
 } // namespace picolibrary::Microchip::MCP23008
 
 #endif // PICOLIBRARY_MICROCHIP_MCP23008_H
