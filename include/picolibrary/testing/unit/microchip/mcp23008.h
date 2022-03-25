@@ -23,10 +23,39 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_MICROCHIP_MCP23008_H
 #define PICOLIBRARY_TESTING_UNIT_MICROCHIP_MCP23008_H
 
+#include <functional>
+
+#include "picolibrary/i2c.h"
+#include "picolibrary/testing/unit/i2c.h"
+#include "picolibrary/testing/unit/microchip/mcp23x08.h"
+
 /**
  * \brief Microchip MCP23008 unit testing facilities.
  */
 namespace picolibrary::Testing::Unit::Microchip::MCP23008 {
+
+/**
+ * \brief Mock driver.
+ */
+class Mock_Driver : public I2C::Mock_Device, public MCP23X08::Mock_Driver {
+  public:
+    Mock_Driver() = default;
+
+    Mock_Driver( std::function<void()>, I2C::Mock_Controller &, ::picolibrary::I2C::Address_Transmitted, Error_Code const & )
+    {
+    }
+
+    Mock_Driver( Mock_Driver && ) = delete;
+
+    Mock_Driver( Mock_Driver const & ) = delete;
+
+    ~Mock_Driver() noexcept = default;
+
+    auto operator=( Mock_Driver && ) = delete;
+
+    auto operator=( Mock_Driver const & ) = delete;
+};
+
 } // namespace picolibrary::Testing::Unit::Microchip::MCP23008
 
 #endif // PICOLIBRARY_TESTING_UNIT_MICROCHIP_MCP23008_H
