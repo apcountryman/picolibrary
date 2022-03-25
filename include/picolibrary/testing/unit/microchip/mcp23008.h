@@ -25,6 +25,7 @@
 
 #include <functional>
 
+#include "picolibrary/error.h"
 #include "picolibrary/i2c.h"
 #include "picolibrary/testing/unit/i2c.h"
 #include "picolibrary/testing/unit/microchip/mcp23x08.h"

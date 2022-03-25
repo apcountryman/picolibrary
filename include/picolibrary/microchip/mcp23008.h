@@ -65,9 +65,9 @@ constexpr auto address_max() noexcept
  *         functor should align the bus's multiplexer(s) (if any) to enable communication
  *         with the MCP23008.
  * \tparam Controller The type of controller used to communicate with the MCP23008.
- * \tparam Device The type of I2C device implementation used by the driver. The default
- *         I2C device implementation should be used unless a mock I2C device
- *         implementation is being injected to support unit testing of this driver.
+ * \tparam Device The type of device implementation used by the driver. The default device
+ *         implementation should be used unless a mock device implementation is being
+ *         injected to support unit testing of this driver.
  */
 template<typename Bus_Multiplexer_Aligner, typename Controller, typename Device = I2C::Device<Bus_Multiplexer_Aligner, Controller>>
 class Driver : public Device {
