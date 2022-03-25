@@ -1251,6 +1251,8 @@ class Device {
     /**
      * \brief Write to a register.
      *
+     * \pre the device is responsive
+     *
      * \param[in] register_address The address of the register to write to.
      * \param[in] data The data to write to the register.
      */
@@ -1267,6 +1269,8 @@ class Device {
 
     /**
      * \brief Write to a block of registers.
+     *
+     * \pre the device is responsive
      *
      * \param[in] register_address The address of the block of registers to write to.
      * \param[in] begin, The beginning of the data to write to the block of registers.
