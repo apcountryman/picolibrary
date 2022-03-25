@@ -66,6 +66,7 @@ if( ${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING} )
         "picolibrary/testing/interactive/gpio.cc"
         "picolibrary/testing/interactive/i2c.cc"
         "picolibrary/testing/interactive/microchip.cc"
+        "picolibrary/testing/interactive/microchip/mcp23008.cc"
         "picolibrary/testing/interactive/microchip/mcp23x08.cc"
         "picolibrary/testing/interactive/spi.cc"
     )
