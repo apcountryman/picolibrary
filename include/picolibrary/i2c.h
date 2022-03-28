@@ -1019,9 +1019,9 @@ class Device_Address_Transmitted;
 template<Address_Numeric::Unsigned_Integer MIN, Address_Numeric::Unsigned_Integer MAX>
 class Device_Address_Numeric : public Address_Numeric {
   public:
-    static_assert( MIN >= Address_Numeric::min() );
+    static_assert( MIN >= Address_Numeric::min().as_unsigned_integer() );
 
-    static_assert( MAX <= Address_Numeric::max() );
+    static_assert( MAX <= Address_Numeric::max().as_unsigned_integer() );
 
     static_assert( MIN <= MAX );
 
@@ -1083,7 +1083,7 @@ class Device_Address_Numeric : public Address_Numeric {
     /**
      * \brief Constructor.
      *
-     * \param[in] address
+     * \param[in] address The address.
      */
     constexpr Device_Address_Numeric( Device_Address_Transmitted<( MIN << 1 ), ( MAX << 1 )> address ) noexcept :
         Address_Numeric{ address }
@@ -1133,10 +1133,10 @@ class Device_Address_Numeric : public Address_Numeric {
 template<Address_Transmitted::Unsigned_Integer MIN, Address_Transmitted::Unsigned_Integer MAX>
 class Device_Address_Transmitted : public Address_Transmitted {
   public:
-    static_assert( MIN >= Address_Numeric::min() );
+    static_assert( MIN >= Address_Numeric::min().as_unsigned_integer() );
     static_assert( not( MIN & 0b1 ) );
 
-    static_assert( MAX <= Address_Numeric::max() );
+    static_assert( MAX <= Address_Numeric::max().as_unsigned_integer() );
     static_assert( not( MAX & 0b1 ) );
 
     static_assert( MIN <= MAX );
@@ -1201,7 +1201,7 @@ class Device_Address_Transmitted : public Address_Transmitted {
     /**
      * \brief Constructor.
      *
-     * \param[in] address
+     * \param[in] address The address.
      */
     constexpr Device_Address_Transmitted( Device_Address_Numeric<( MIN >> 1 ), ( MAX >> 1 )> address ) noexcept :
         Address_Transmitted{ address }
