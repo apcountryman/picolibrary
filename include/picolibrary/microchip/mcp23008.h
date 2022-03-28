@@ -36,28 +36,6 @@
 namespace picolibrary::Microchip::MCP23008 {
 
 /**
- * \brief Get the minimum valid address.
- *
- * \return The minimum valid address.
- */
-constexpr auto address_min() noexcept
-{
-    return I2C::Address_Transmitted{ I2C::Address_Numeric{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
-                                                           0b0100'000 } };
-}
-
-/**
- * \brief Get the maximum valid address.
- *
- * \return The maximum valid address.
- */
-constexpr auto address_max() noexcept
-{
-    return I2C::Address_Transmitted{ I2C::Address_Numeric{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
-                                                           0b0100'111 } };
-}
-
-/**
  * \brief Address, numeric format.
  */
 using Address_Numeric = I2C::Device_Address_Numeric<0b0100'000, 0b0100'111>;
@@ -95,18 +73,14 @@ class Driver : public Device {
      * \param[in] address The MCP23008's address.
      * \param[in] nonresponsive_device_error The fatal error that occurs if the MCP23008
      *            does not respond when addressed or does not acknowledge a write.
-     *
-     * \pre address >= picolibrary::Microchip::MCP23008::address_min()
-     * \pre address <= picolibrary::Microchip::MCP23008::address_max()
      */
     constexpr Driver(
-        Bus_Multiplexer_Aligner  bus_multiplexer_aligner,
-        Controller &             controller,
-        I2C::Address_Transmitted address,
-        Error_Code const &       nonresponsive_device_error ) noexcept :
+        Bus_Multiplexer_Aligner bus_multiplexer_aligner,
+        Controller &            controller,
+        Address_Transmitted     address,
+        Error_Code const &      nonresponsive_device_error ) noexcept :
         Device{ std::move( bus_multiplexer_aligner ), controller, std::move( address ), nonresponsive_device_error }
     {
-        expect( address >= address_min() and address <= address_max(), Generic_Error::INVALID_ARGUMENT );
     }
 
     /**
