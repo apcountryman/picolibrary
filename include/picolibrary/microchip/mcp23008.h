@@ -58,6 +58,241 @@ constexpr auto address_max() noexcept
 }
 
 /**
+ * \brief Address, numeric format.
+ */
+class Address_Numeric;
+
+/**
+ * \brief Address, transmitted format.
+ */
+class Address_Transmitted;
+
+/**
+ * \brief Address, numeric format.
+ */
+class Address_Numeric : public I2C::Address_Numeric {
+  public:
+    /**
+     * \brief Get the minimum valid address.
+     *
+     * \return The minimum valid address.
+     */
+    static constexpr auto min() noexcept
+    {
+        return Address_Numeric{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, 0b0100'000 };
+    }
+
+    /**
+     * \brief Get the maximum valid address.
+     *
+     * \return The maximum valid address.
+     */
+    static constexpr auto max() noexcept
+    {
+        return Address_Numeric{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, 0b0100'111 };
+    }
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Address_Numeric() noexcept :
+        I2C::Address_Numeric{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, min().as_unsigned_integer() }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] address The address.
+     *
+     * \pre address >= picolibrary::Microchip::MCP23008::Numeric_Address::min().as_unsigned_integer()
+     * \pre address <= picolibrary::Microchip::MCP23008::Numeric_Address::max().as_unsigned_integer()
+     */
+    constexpr Address_Numeric( I2C::Address_Numeric::Unsigned_Integer address ) noexcept :
+        I2C::Address_Numeric{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, address }
+    {
+        expect(
+            address >= min().as_unsigned_integer() and address <= max().as_unsigned_integer(),
+            Generic_Error::INVALID_ARGUMENT );
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] address The address.
+     */
+    constexpr Address_Numeric( Bypass_Precondition_Expectation_Checks, I2C::Address_Numeric::Unsigned_Integer address ) noexcept
+        :
+        I2C::Address_Numeric{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, address }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] address The address.
+     */
+    constexpr Address_Numeric( Address_Transmitted address ) noexcept;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Address_Numeric( Address_Numeric && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Address_Numeric( Address_Numeric const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Address_Numeric() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Address_Numeric && expression ) noexcept -> Address_Numeric & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator  =( Address_Numeric const & expression ) noexcept
+        -> Address_Numeric & = default;
+};
+
+/**
+ * \brief Address, transmitted format.
+ */
+class Address_Transmitted : public I2C::Address_Transmitted {
+  public:
+    /**
+     * \brief Get the minimum valid address.
+     *
+     * \return The minimum valid address.
+     */
+    static constexpr auto min() noexcept
+    {
+        return Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, 0b0100'000'0 };
+    }
+
+    /**
+     * \brief Get the maximum valid address.
+     *
+     * \return The maximum valid address.
+     */
+    static constexpr auto max() noexcept
+    {
+        return Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, 0b0100'111'0 };
+    }
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Address_Transmitted() noexcept :
+        I2C::Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, min().as_unsigned_integer() }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] address The address.
+     *
+     * \pre address >= picolibrary::Microchip::MCP23008::Transmitted_Address::min().as_unsigned_integer()
+     * \pre address <= picolibrary::Microchip::MCP23008::Transmitted_Address::max().as_unsigned_integer()
+     * \pre not( address & 0b1 )
+     */
+    constexpr Address_Transmitted( I2C::Address_Transmitted::Unsigned_Integer address ) noexcept :
+        I2C::Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, address }
+    {
+        expect(
+            address >= min().as_unsigned_integer()
+                and address <= max().as_unsigned_integer() and not( address & 0b1 ),
+            Generic_Error::INVALID_ARGUMENT );
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] address The address.
+     */
+    constexpr Address_Transmitted( Bypass_Precondition_Expectation_Checks, I2C::Address_Transmitted::Unsigned_Integer address ) noexcept
+        :
+        I2C::Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, address }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] address The address.
+     */
+    constexpr Address_Transmitted( Address_Numeric address ) noexcept;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Address_Transmitted( Address_Transmitted && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Address_Transmitted( Address_Transmitted const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Address_Transmitted() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator      =( Address_Transmitted && expression ) noexcept
+        -> Address_Transmitted & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator      =( Address_Transmitted const & expression ) noexcept
+        -> Address_Transmitted & = default;
+};
+
+constexpr Address_Numeric::Address_Numeric( Address_Transmitted address ) noexcept :
+    I2C::Address_Numeric{ address }
+{
+}
+
+constexpr Address_Transmitted::Address_Transmitted( Address_Numeric address ) noexcept :
+    I2C::Address_Transmitted{ address }
+{
+}
+
+/**
  * \brief Driver.
  *
  * \tparam Bus_Multiplexer_Aligner A nullary functor. The functor must be default
