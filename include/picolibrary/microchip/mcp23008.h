@@ -58,6 +58,16 @@ constexpr auto address_max() noexcept
 }
 
 /**
+ * \brief Address, numeric format.
+ */
+using Address_Numeric = I2C::Device_Address_Numeric<0b0100'000, 0b0100'111>;
+
+/**
+ * \brief Address, transmitted format.
+ */
+using Address_Transmitted = I2C::Device_Address_Transmitted<0b0100'000'0, 0b0100'111'0>;
+
+/**
  * \brief Driver.
  *
  * \tparam Bus_Multiplexer_Aligner A nullary functor. The functor must be default
