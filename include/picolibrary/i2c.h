@@ -999,6 +999,256 @@ auto scan( Controller & controller, Functor functor ) noexcept
 }
 
 /**
+ * \brief Device address, numeric format.
+ *
+ * \tparam MIN The minimum valid address.
+ * \tparam MAX The maximum valid address.
+ */
+template<Address_Numeric::Unsigned_Integer MIN, Address_Numeric::Unsigned_Integer MAX>
+class Device_Address_Numeric;
+
+/**
+ * \brief Device address, transmitted format.
+ *
+ * \tparam MIN The minimum valid address.
+ * \tparam MAX The maximum valid address.
+ */
+template<Address_Transmitted::Unsigned_Integer MIN, Address_Transmitted::Unsigned_Integer MAX>
+class Device_Address_Transmitted;
+
+template<Address_Numeric::Unsigned_Integer MIN, Address_Numeric::Unsigned_Integer MAX>
+class Device_Address_Numeric : public Address_Numeric {
+  public:
+    static_assert( MIN >= Address_Numeric::min().as_unsigned_integer() );
+
+    static_assert( MAX <= Address_Numeric::max().as_unsigned_integer() );
+
+    static_assert( MIN <= MAX );
+
+    /**
+     * \brief Get the minimum valid address.
+     *
+     * \return The minimum valid address.
+     */
+    static constexpr auto min() noexcept
+    {
+        return Device_Address_Numeric{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, MIN };
+    }
+
+    /**
+     * \brief Get the maximum valid address.
+     *
+     * \return The maximum valid address.
+     */
+    static constexpr auto max() noexcept
+    {
+        return Device_Address_Numeric{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, MAX };
+    }
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Device_Address_Numeric() noexcept :
+        Address_Numeric{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, MIN }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] address The address.
+     *
+     * \pre address >= picolibrary::I2C::Device_Address_Numeric::min().as_unsigned_integer()
+     * \pre address <= picolibrary::I2C::Device_Address_Numeric::max().as_unsigned_integer()
+     */
+    constexpr Device_Address_Numeric( Unsigned_Integer address ) noexcept :
+        Address_Numeric{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, address }
+    {
+        expect(
+            address >= min().as_unsigned_integer() and address <= max().as_unsigned_integer(),
+            Generic_Error::INVALID_ARGUMENT );
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] address The address.
+     */
+    constexpr Device_Address_Numeric( Bypass_Precondition_Expectation_Checks, Unsigned_Integer address ) noexcept
+        :
+        Address_Numeric{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, address }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] address The address.
+     */
+    constexpr Device_Address_Numeric( Device_Address_Transmitted<( MIN << 1 ), ( MAX << 1 )> address ) noexcept :
+        Address_Numeric{ address }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Device_Address_Numeric( Device_Address_Numeric && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Device_Address_Numeric( Device_Address_Numeric const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Device_Address_Numeric() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator         =( Device_Address_Numeric && expression ) noexcept
+        -> Device_Address_Numeric & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Device_Address_Numeric const & expression ) noexcept
+        -> Device_Address_Numeric & = default;
+};
+
+template<Address_Transmitted::Unsigned_Integer MIN, Address_Transmitted::Unsigned_Integer MAX>
+class Device_Address_Transmitted : public Address_Transmitted {
+  public:
+    static_assert( MIN >= Address_Numeric::min().as_unsigned_integer() );
+    static_assert( not( MIN & 0b1 ) );
+
+    static_assert( MAX <= Address_Numeric::max().as_unsigned_integer() );
+    static_assert( not( MAX & 0b1 ) );
+
+    static_assert( MIN <= MAX );
+
+    /**
+     * \brief Get the minimum valid address.
+     *
+     * \return The minimum valid address.
+     */
+    static constexpr auto min() noexcept
+    {
+        return Device_Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, MIN };
+    }
+
+    /**
+     * \brief Get the maximum valid address.
+     *
+     * \return The maximum valid address.
+     */
+    static constexpr auto max() noexcept
+    {
+        return Device_Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, MAX };
+    }
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Device_Address_Transmitted() noexcept :
+        Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, MIN }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] address The address.
+     *
+     * \pre address >= picolibrary::I2C::Device_Address_Transmitted::min().as_unsigned_integer()
+     * \pre address <= picolibrary::I2C::Device_Address_Transmitted::max().as_unsigned_integer()
+     * \pre not( address & 0b1 )
+     */
+    constexpr Device_Address_Transmitted( Unsigned_Integer address ) noexcept :
+        Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, address }
+    {
+        expect(
+            address >= min().as_unsigned_integer()
+                and address <= max().as_unsigned_integer() and not( address & 0b1 ),
+            Generic_Error::INVALID_ARGUMENT );
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] address The address.
+     */
+    constexpr Device_Address_Transmitted( Bypass_Precondition_Expectation_Checks, Unsigned_Integer address ) noexcept
+        :
+        Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, address }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] address The address.
+     */
+    constexpr Device_Address_Transmitted( Device_Address_Numeric<( MIN >> 1 ), ( MAX >> 1 )> address ) noexcept :
+        Address_Transmitted{ address }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Device_Address_Transmitted( Device_Address_Transmitted && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Device_Address_Transmitted( Device_Address_Transmitted const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Device_Address_Transmitted() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Device_Address_Transmitted && expression ) noexcept
+        -> Device_Address_Transmitted & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Device_Address_Transmitted const & expression ) noexcept
+        -> Device_Address_Transmitted & = default;
+};
+
+/**
  * \brief Bus multiplexer aligner for buses with no multiplexers.
  */
 class Bus_Multiplexer_Aligner {
