@@ -25,7 +25,6 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "picolibrary/i2c.h"
 #include "picolibrary/microchip/mcp23008.h"
 #include "picolibrary/testing/unit/error.h"
 #include "picolibrary/testing/unit/i2c.h"
@@ -33,8 +32,8 @@
 
 namespace {
 
-using ::picolibrary::I2C::Address_Numeric;
-using ::picolibrary::I2C::Address_Transmitted;
+using ::picolibrary::Microchip::MCP23008::Address_Numeric;
+using ::picolibrary::Microchip::MCP23008::Address_Transmitted;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::I2C::Mock_Controller;
@@ -47,8 +46,9 @@ using Driver = ::picolibrary::Microchip::MCP23008::Driver<std::function<void()>,
 
 /**
  * \brief Verify picolibrary::Microchip::MCP23008::Driver::Driver(
- *        Bus_Multiplexer_Aligner, Controller &, picolibrary::I2C::Address_Transmitted,
- *        picolibrary::Error_Code const & ) works properly.
+ *        Bus_Multiplexer_Aligner, Controller &,
+ *        picolibrary::Microchip::MCP23008::Address_Transmitted, picolibrary::Error_Code
+ *        const & ) works properly.
  */
 TEST( constructor, worksProperly )
 {
