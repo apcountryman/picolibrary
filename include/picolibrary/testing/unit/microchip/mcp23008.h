@@ -26,7 +26,7 @@
 #include <functional>
 
 #include "picolibrary/error.h"
-#include "picolibrary/i2c.h"
+#include "picolibrary/microchip/mcp23008.h"
 #include "picolibrary/testing/unit/i2c.h"
 #include "picolibrary/testing/unit/microchip/mcp23x08.h"
 
@@ -42,7 +42,7 @@ class Mock_Driver : public I2C::Mock_Device, public MCP23X08::Mock_Driver {
   public:
     Mock_Driver() = default;
 
-    Mock_Driver( std::function<void()>, I2C::Mock_Controller &, ::picolibrary::I2C::Address_Transmitted, Error_Code const & )
+    Mock_Driver( std::function<void()>, I2C::Mock_Controller &, ::picolibrary::Microchip::MCP23008::Address_Transmitted, Error_Code const & )
     {
     }
 
