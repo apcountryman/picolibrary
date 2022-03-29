@@ -88,9 +88,9 @@ TEST( constructorUnsignedInteger, worksProperly )
     };
 
     for ( auto const test_case : test_cases ) {
-        auto const address_numeric = Address_Transmitted{ test_case.address };
+        auto const address_transmitted = Address_Transmitted{ test_case.address };
 
-        EXPECT_EQ( address_numeric.as_unsigned_integer(), test_case.address );
+        EXPECT_EQ( address_transmitted.as_unsigned_integer(), test_case.address );
     } // for
 }
 
@@ -117,10 +117,10 @@ TEST( constructorBypassPreconditionExpectationChecksUnsignedInteger, worksProper
     };
 
     for ( auto const test_case : test_cases ) {
-        auto const address_numeric = Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
+        auto const address_transmitted = Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
                                                           test_case.address };
 
-        EXPECT_EQ( address_numeric.as_unsigned_integer(), test_case.address );
+        EXPECT_EQ( address_transmitted.as_unsigned_integer(), test_case.address );
     } // for
 }
 
