@@ -21,3 +21,6 @@ add_subdirectory( address_numeric )
 
 # build the picolibrary::Microchip::MCP23S08::Address_Transmitted unit tests
 add_subdirectory( address_transmitted )
+
+# build the picolibrary::Microchip::MCP23S08::Communication_Controller unit tests
+add_subdirectory( communication_controller )

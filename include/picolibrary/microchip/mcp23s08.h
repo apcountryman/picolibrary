@@ -24,9 +24,11 @@
 #define PICOLIBRARY_MICROCHIP_MCP23S08_H
 
 #include <cstdint>
+#include <utility>
 
 #include "picolibrary/error.h"
 #include "picolibrary/precondition.h"
+#include "picolibrary/spi.h"
 
 /**
  * \brief Microchip MCP23S08 facilities.
@@ -486,6 +488,134 @@ constexpr auto operator>=( Address_Transmitted lhs, Address_Transmitted rhs ) no
 {
     return not( lhs < rhs );
 }
+
+/**
+ * \brief Communication controller.
+ *
+ * \tparam Controller The type of controller used to communicate with the MCP23S08.
+ * \tparam Device_Selector The type of device selector used to select and deselect the
+ *         MCP23S08.
+ * \tparam Device The type of device implementation used by the communication controller.
+ *         The default device implementation should be used unless a mock device
+ *         implementation is being injected to support unit testing of this communication
+ *         controller.
+ */
+template<typename Controller, typename Device_Selector, typename Device = SPI::Device<Controller, Device_Selector>>
+class Communication_Controller : public Device {
+  public:
+    Communication_Controller( Communication_Controller const & ) = delete;
+
+    auto operator=( Communication_Controller const & ) = delete;
+
+    /**
+     * \brief Get the device's address.
+     *
+     * \return The device's address.
+     */
+    constexpr auto address() const noexcept
+    {
+        return m_address;
+    }
+
+    using Device::initialize;
+
+  protected:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Communication_Controller() = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] controller The controller used to communicate with the MCP23S08.
+     * \param[in] configuration The controller clock and data exchange bit order
+     *            configuration that meets the MCP23S08's communication requirements.
+     * \param[in] device_selector The device selector used to select and deselect the
+     *            MCP23S08.
+     * \param[in] address The MCP23S08's address.
+     */
+    constexpr Communication_Controller(
+        Controller &                               controller,
+        typename Controller::Configuration const & configuration,
+        Device_Selector                            device_selector,
+        Address_Transmitted                        address ) noexcept :
+        Device{ controller, configuration, std::move( device_selector ) },
+        m_address{ std::move( address ) }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Communication_Controller( Communication_Controller && source ) noexcept = default;
+
+    /**
+     * \brief Destructor..
+     */
+    ~Communication_Controller() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator           =( Communication_Controller && expression ) noexcept
+        -> Communication_Controller & = default;
+
+    /**
+     * \brief Read a register.
+     *
+     * \param[in] register_address The address of the register to read.
+     *
+     * \return The data read from the register.
+     */
+    auto read( std::uint8_t register_address ) const noexcept
+    {
+        Device::configure();
+
+        auto const guard = SPI::Device_Selection_Guard{ Device::device_selector() };
+
+        Device::transmit( m_address.as_unsigned_integer() | static_cast<std::uint8_t>( Operation::READ ) );
+        Device::transmit( register_address );
+        return Device::receive();
+    }
+
+    /**
+     * \brief Write to a register.
+     *
+     * \param[in] register_address The address of the register to write to.
+     * \param[in] data The data to write to the register.
+     */
+    void write( std::uint8_t register_address, std::uint8_t data ) noexcept
+    {
+        Device::configure();
+
+        auto const guard = SPI::Device_Selection_Guard{ Device::device_selector() };
+
+        Device::transmit( m_address.as_unsigned_integer() | static_cast<std::uint8_t>( Operation::WRITE ) );
+        Device::transmit( register_address );
+        Device::transmit( data );
+    }
+
+  private:
+    /**
+     * \brief Operation.
+     */
+    enum class Operation : std::uint8_t {
+        READ  = 0b1, ///< Read.
+        WRITE = 0b0, ///< Write.
+    };
+
+    /**
+     * \brief The MCP23S08's address.
+     */
+    Address_Transmitted m_address{};
+};
 
 } // namespace picolibrary::Microchip::MCP23S08
 

@@ -23,8 +23,12 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_MICROCHIP_MCP23S08_H
 #define PICOLIBRARY_TESTING_UNIT_MICROCHIP_MCP23S08_H
 
+#include <cstdint>
+
+#include "gmock/gmock.h"
 #include "picolibrary/microchip/mcp23s08.h"
 #include "picolibrary/testing/unit/random.h"
+#include "picolibrary/testing/unit/spi.h"
 
 namespace picolibrary::Testing::Unit {
 
@@ -138,6 +142,31 @@ inline auto random<Microchip::MCP23S08::Address_Transmitted>()
  * \brief Microchip MCP23S08 unit testing facilities.
  */
 namespace picolibrary::Testing::Unit::Microchip::MCP23S08 {
+
+/**
+ * \brief Mock communication controller.
+ */
+class Mock_Communication_Controller : public SPI::Mock_Device {
+  public:
+    Mock_Communication_Controller() = default;
+
+    Mock_Communication_Controller( Mock_Communication_Controller && ) = delete;
+
+    Mock_Communication_Controller( Mock_Communication_Controller const & ) = delete;
+
+    ~Mock_Communication_Controller() noexcept = default;
+
+    auto operator=( Mock_Communication_Controller && ) = delete;
+
+    auto operator=( Mock_Communication_Controller const & ) = delete;
+
+    MOCK_METHOD( ::picolibrary::Microchip::MCP23S08::Address_Transmitted, address, (), ( const ) );
+
+    MOCK_METHOD( std::uint8_t, read, ( std::uint8_t ), ( const ) );
+
+    MOCK_METHOD( void, write, ( std::uint8_t, std::uint8_t ) );
+};
+
 } // namespace picolibrary::Testing::Unit::Microchip::MCP23S08
 
 #endif // PICOLIBRARY_TESTING_UNIT_MICROCHIP_MCP23S08_H
