@@ -666,7 +666,7 @@ class Driver : public Communication_Controller {
     Driver( Driver const & ) = delete;
 
     /**
-     * \brief Destructor..
+     * \brief Destructor.
      */
     ~Driver() noexcept = default;
 
@@ -684,8 +684,6 @@ class Driver : public Communication_Controller {
     /**
      * \brief Read the IODIR register.
      *
-     * \pre the MCP23008 is responsive
-     *
      * \return The data read from the IODIR register.
      */
     auto read_iodir() const noexcept
@@ -695,8 +693,6 @@ class Driver : public Communication_Controller {
 
     /**
      * \brief Write to the IODIR register.
-     *
-     * \pre the MCP23008 is responsive
      *
      * \param[in] data The data to write to the IODIR register.
      */
@@ -708,8 +704,6 @@ class Driver : public Communication_Controller {
     /**
      * \brief Read the IPOL register.
      *
-     * \pre the MCP23008 is responsive
-     *
      * \return The data read from the IPOL register.
      */
     auto read_ipol() const noexcept
@@ -719,8 +713,6 @@ class Driver : public Communication_Controller {
 
     /**
      * \brief Write to the IPOL register.
-     *
-     * \pre the MCP23008 is responsive
      *
      * \param[in] data The data to write to the IPOL register.
      */
@@ -732,8 +724,6 @@ class Driver : public Communication_Controller {
     /**
      * \brief Read the GPINTEN register.
      *
-     * \pre the MCP23008 is responsive
-     *
      * \return The data read from the GPINTEN register.
      */
     auto read_gpinten() const noexcept
@@ -743,8 +733,6 @@ class Driver : public Communication_Controller {
 
     /**
      * \brief Write to the GPINTEN register.
-     *
-     * \pre the MCP23008 is responsive
      *
      * \param[in] data The data to write to the GPINTEN register.
      */
@@ -756,8 +744,6 @@ class Driver : public Communication_Controller {
     /**
      * \brief Read the DEFVAL register.
      *
-     * \pre the MCP23008 is responsive
-     *
      * \return The data read from the DEFVAL register.
      */
     auto read_defval() const noexcept
@@ -767,8 +753,6 @@ class Driver : public Communication_Controller {
 
     /**
      * \brief Write to the DEFVAL register.
-     *
-     * \pre the MCP23008 is responsive
      *
      * \param[in] data The data to write to the DEFVAL register.
      */
@@ -780,8 +764,6 @@ class Driver : public Communication_Controller {
     /**
      * \brief Read the INTCON register.
      *
-     * \pre the MCP23008 is responsive
-     *
      * \return The data read from the INTCON register.
      */
     auto read_intcon() const noexcept
@@ -791,8 +773,6 @@ class Driver : public Communication_Controller {
 
     /**
      * \brief Write to the INTCON register.
-     *
-     * \pre the MCP23008 is responsive
      *
      * \param[in] data The data to write to the INTCON register.
      */
@@ -804,8 +784,6 @@ class Driver : public Communication_Controller {
     /**
      * \brief Read the IOCON register.
      *
-     * \pre the MCP23008 is responsive
-     *
      * \return The data read from the IOCON register.
      */
     auto read_iocon() const noexcept
@@ -815,8 +793,6 @@ class Driver : public Communication_Controller {
 
     /**
      * \brief Write to the IOCON register.
-     *
-     * \pre the MCP23008 is responsive
      *
      * \param[in] data The data to write to the IOCON register.
      */
@@ -828,8 +804,6 @@ class Driver : public Communication_Controller {
     /**
      * \brief Read the GPPU register.
      *
-     * \pre the MCP23008 is responsive
-     *
      * \return The data read from the GPPU register.
      */
     auto read_gppu() const noexcept
@@ -839,8 +813,6 @@ class Driver : public Communication_Controller {
 
     /**
      * \brief Write to the GPPU register.
-     *
-     * \pre the MCP23008 is responsive
      *
      * \param[in] data The data to write to the GPPU register.
      */
@@ -852,8 +824,6 @@ class Driver : public Communication_Controller {
     /**
      * \brief Read the INTF register.
      *
-     * \pre the MCP23008 is responsive
-     *
      * \return The data read from the INTF register.
      */
     auto read_intf() const noexcept
@@ -863,8 +833,6 @@ class Driver : public Communication_Controller {
 
     /**
      * \brief Read the INTCAP register.
-     *
-     * \pre the MCP23008 is responsive
      *
      * \return The data read from the INTCAP register.
      */
@@ -876,8 +844,6 @@ class Driver : public Communication_Controller {
     /**
      * \brief Read the GPIO register.
      *
-     * \pre the MCP23008 is responsive
-     *
      * \return The data read from the GPIO register.
      */
     auto read_gpio() const noexcept
@@ -887,8 +853,6 @@ class Driver : public Communication_Controller {
 
     /**
      * \brief Write to the GPIO register.
-     *
-     * \pre the MCP23008 is responsive
      *
      * \param[in] data The data to write to the GPIO register.
      */
@@ -900,8 +864,6 @@ class Driver : public Communication_Controller {
     /**
      * \brief Read the OLAT register.
      *
-     * \pre the MCP23008 is responsive
-     *
      * \return The data read from the OLAT register.
      */
     auto read_olat() const noexcept
@@ -911,8 +873,6 @@ class Driver : public Communication_Controller {
 
     /**
      * \brief Write to the OLAT register.
-     *
-     * \pre the MCP23008 is responsive
      *
      * \param[in] data The data to write to the OLAT register.
      */
