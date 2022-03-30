@@ -517,13 +517,7 @@ class Communication_Controller : public Device {
         return m_address;
     }
 
-    /**
-     * \brief Initialize the MCP23S08's device selection hardware.
-     */
-    void initialize() const noexcept
-    {
-        Device::initialize();
-    }
+    using Device::initialize;
 
   protected:
     /**
@@ -594,7 +588,7 @@ class Communication_Controller : public Device {
     /**
      * \brief Write to a register.
      *
-     * \param[in] register_address The address of the register to read.
+     * \param[in] register_address The address of the register to write to.
      * \param[in] data The data to write to the register.
      */
     void write( std::uint8_t register_address, std::uint8_t data ) noexcept

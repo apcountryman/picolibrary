@@ -69,7 +69,7 @@ class Communication_Controller :
  * \brief Verify
  *        picolibrary::Microchip::MCP23S08::Communication_Controller::Communication_Controller(
  *        Controller &, Controller::Configuration const &, Device_Selector,
- *        ::picolibrary::Microchip::MCP23S08::Address_Transmitted ) works properly.
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) works properly.
  */
 TEST( constructor, worksProperly )
 {
@@ -99,24 +99,6 @@ TEST( constructor, worksProperly )
 
         EXPECT_EQ( communication_controller.address(), test_case.address );
     } // for
-}
-
-/**
- * \brief Verify picolibrary::Microchip::MCP23S08::Communication_Controller::initialize()
- *        works properly.
- */
-TEST( initialize, worksProperly )
-{
-    auto controller      = Mock_Controller{};
-    auto device_selector = Mock_Device_Selector{};
-
-    auto const communication_controller = Communication_Controller{
-        controller, random<Mock_Controller::Configuration>(), device_selector.handle(), random<Address_Transmitted>()
-    };
-
-    EXPECT_CALL( communication_controller, initialize() );
-
-    communication_controller.initialize();
 }
 
 /**
