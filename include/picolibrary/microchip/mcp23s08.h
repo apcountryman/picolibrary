@@ -27,6 +27,7 @@
 #include <utility>
 
 #include "picolibrary/error.h"
+#include "picolibrary/microchip/mcp23x08.h"
 #include "picolibrary/precondition.h"
 #include "picolibrary/spi.h"
 
@@ -615,6 +616,310 @@ class Communication_Controller : public Device {
      * \brief The MCP23S08's address.
      */
     Address_Transmitted m_address{};
+};
+
+/**
+ * \brief Driver.
+ *
+ * \tparam Controller The type of controller used to communicate with the MCP23S08.
+ * \tparam Device_Selector The type of device selector used to select and deselect the
+ *         MCP23S08.
+ * \tparam Communication_Controller The type of communication controller implementation
+ *         used by the driver. The default communication controller implementation should
+ *         be used unless a mock communication controller implementation is being injected
+ *         to support unit testing of this driver.
+ */
+template<typename Controller, typename Device_Selector, typename Communication_Controller = ::picolibrary::Microchip::MCP23S08::Communication_Controller<Controller, Device_Selector>>
+class Driver : public Communication_Controller {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Driver() = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] controller The controller used to communicate with the MCP23S08.
+     * \param[in] configuration The controller clock and data exchange bit order
+     *            configuration that meets the MCP23S08's communication requirements.
+     * \param[in] device_selector The device selector used to select and deselect the
+     *            MCP23S08.
+     * \param[in] address The MCP23S08's address.
+     */
+    constexpr Driver(
+        Controller &                               controller,
+        typename Controller::Configuration const & configuration,
+        Device_Selector                            device_selector,
+        Address_Transmitted                        address ) noexcept :
+        Communication_Controller{ controller, configuration, std::move( device_selector ), std::move( address ) }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Driver( Driver && source ) noexcept = default;
+
+    Driver( Driver const & ) = delete;
+
+    /**
+     * \brief Destructor..
+     */
+    ~Driver() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Driver && expression ) noexcept -> Driver & = default;
+
+    auto operator=( Driver const & ) = delete;
+
+    /**
+     * \brief Read the IODIR register.
+     *
+     * \pre the MCP23008 is responsive
+     *
+     * \return The data read from the IODIR register.
+     */
+    auto read_iodir() const noexcept
+    {
+        return this->read( MCP23X08::IODIR::ADDRESS );
+    }
+
+    /**
+     * \brief Write to the IODIR register.
+     *
+     * \pre the MCP23008 is responsive
+     *
+     * \param[in] data The data to write to the IODIR register.
+     */
+    void write_iodir( std::uint8_t data ) noexcept
+    {
+        this->write( MCP23X08::IODIR::ADDRESS, data );
+    }
+
+    /**
+     * \brief Read the IPOL register.
+     *
+     * \pre the MCP23008 is responsive
+     *
+     * \return The data read from the IPOL register.
+     */
+    auto read_ipol() const noexcept
+    {
+        return this->read( MCP23X08::IPOL::ADDRESS );
+    }
+
+    /**
+     * \brief Write to the IPOL register.
+     *
+     * \pre the MCP23008 is responsive
+     *
+     * \param[in] data The data to write to the IPOL register.
+     */
+    void write_ipol( std::uint8_t data ) noexcept
+    {
+        this->write( MCP23X08::IPOL::ADDRESS, data );
+    }
+
+    /**
+     * \brief Read the GPINTEN register.
+     *
+     * \pre the MCP23008 is responsive
+     *
+     * \return The data read from the GPINTEN register.
+     */
+    auto read_gpinten() const noexcept
+    {
+        return this->read( MCP23X08::GPINTEN::ADDRESS );
+    }
+
+    /**
+     * \brief Write to the GPINTEN register.
+     *
+     * \pre the MCP23008 is responsive
+     *
+     * \param[in] data The data to write to the GPINTEN register.
+     */
+    void write_gpinten( std::uint8_t data ) noexcept
+    {
+        this->write( MCP23X08::GPINTEN::ADDRESS, data );
+    }
+
+    /**
+     * \brief Read the DEFVAL register.
+     *
+     * \pre the MCP23008 is responsive
+     *
+     * \return The data read from the DEFVAL register.
+     */
+    auto read_defval() const noexcept
+    {
+        return this->read( MCP23X08::DEFVAL::ADDRESS );
+    }
+
+    /**
+     * \brief Write to the DEFVAL register.
+     *
+     * \pre the MCP23008 is responsive
+     *
+     * \param[in] data The data to write to the DEFVAL register.
+     */
+    void write_defval( std::uint8_t data ) noexcept
+    {
+        this->write( MCP23X08::DEFVAL::ADDRESS, data );
+    }
+
+    /**
+     * \brief Read the INTCON register.
+     *
+     * \pre the MCP23008 is responsive
+     *
+     * \return The data read from the INTCON register.
+     */
+    auto read_intcon() const noexcept
+    {
+        return this->read( MCP23X08::INTCON::ADDRESS );
+    }
+
+    /**
+     * \brief Write to the INTCON register.
+     *
+     * \pre the MCP23008 is responsive
+     *
+     * \param[in] data The data to write to the INTCON register.
+     */
+    void write_intcon( std::uint8_t data ) noexcept
+    {
+        this->write( MCP23X08::INTCON::ADDRESS, data );
+    }
+
+    /**
+     * \brief Read the IOCON register.
+     *
+     * \pre the MCP23008 is responsive
+     *
+     * \return The data read from the IOCON register.
+     */
+    auto read_iocon() const noexcept
+    {
+        return this->read( MCP23X08::IOCON::ADDRESS );
+    }
+
+    /**
+     * \brief Write to the IOCON register.
+     *
+     * \pre the MCP23008 is responsive
+     *
+     * \param[in] data The data to write to the IOCON register.
+     */
+    void write_iocon( std::uint8_t data ) noexcept
+    {
+        this->write( MCP23X08::IOCON::ADDRESS, data );
+    }
+
+    /**
+     * \brief Read the GPPU register.
+     *
+     * \pre the MCP23008 is responsive
+     *
+     * \return The data read from the GPPU register.
+     */
+    auto read_gppu() const noexcept
+    {
+        return this->read( MCP23X08::GPPU::ADDRESS );
+    }
+
+    /**
+     * \brief Write to the GPPU register.
+     *
+     * \pre the MCP23008 is responsive
+     *
+     * \param[in] data The data to write to the GPPU register.
+     */
+    void write_gppu( std::uint8_t data ) noexcept
+    {
+        this->write( MCP23X08::GPPU::ADDRESS, data );
+    }
+
+    /**
+     * \brief Read the INTF register.
+     *
+     * \pre the MCP23008 is responsive
+     *
+     * \return The data read from the INTF register.
+     */
+    auto read_intf() const noexcept
+    {
+        return this->read( MCP23X08::INTF::ADDRESS );
+    }
+
+    /**
+     * \brief Read the INTCAP register.
+     *
+     * \pre the MCP23008 is responsive
+     *
+     * \return The data read from the INTCAP register.
+     */
+    auto read_intcap() const noexcept
+    {
+        return this->read( MCP23X08::INTCAP::ADDRESS );
+    }
+
+    /**
+     * \brief Read the GPIO register.
+     *
+     * \pre the MCP23008 is responsive
+     *
+     * \return The data read from the GPIO register.
+     */
+    auto read_gpio() const noexcept
+    {
+        return this->read( MCP23X08::GPIO::ADDRESS );
+    }
+
+    /**
+     * \brief Write to the GPIO register.
+     *
+     * \pre the MCP23008 is responsive
+     *
+     * \param[in] data The data to write to the GPIO register.
+     */
+    void write_gpio( std::uint8_t data ) noexcept
+    {
+        this->write( MCP23X08::GPIO::ADDRESS, data );
+    }
+
+    /**
+     * \brief Read the OLAT register.
+     *
+     * \pre the MCP23008 is responsive
+     *
+     * \return The data read from the OLAT register.
+     */
+    auto read_olat() const noexcept
+    {
+        return this->read( MCP23X08::OLAT::ADDRESS );
+    }
+
+    /**
+     * \brief Write to the OLAT register.
+     *
+     * \pre the MCP23008 is responsive
+     *
+     * \param[in] data The data to write to the OLAT register.
+     */
+    void write_olat( std::uint8_t data ) noexcept
+    {
+        this->write( MCP23X08::OLAT::ADDRESS, data );
+    }
 };
 
 } // namespace picolibrary::Microchip::MCP23S08
