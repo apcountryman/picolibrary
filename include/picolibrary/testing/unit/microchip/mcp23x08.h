@@ -81,6 +81,42 @@ class Mock_Driver {
     MOCK_METHOD( void, write_olat, ( std::uint8_t ) );
 };
 
+/**
+ * \brief Mock caching driver.
+ */
+class Mock_Caching_Driver : public Mock_Driver {
+  public:
+    Mock_Caching_Driver() = default;
+
+    Mock_Caching_Driver( Mock_Caching_Driver && ) = delete;
+
+    Mock_Caching_Driver( Mock_Caching_Driver const & ) = delete;
+
+    ~Mock_Caching_Driver() noexcept = default;
+
+    auto operator=( Mock_Caching_Driver && ) = delete;
+
+    auto operator=( Mock_Caching_Driver const & ) = delete;
+
+    MOCK_METHOD( void, reset_cache, () );
+
+    MOCK_METHOD( std::uint8_t, iodir, (), ( const ) );
+
+    MOCK_METHOD( std::uint8_t, ipol, (), ( const ) );
+
+    MOCK_METHOD( std::uint8_t, gpinten, (), ( const ) );
+
+    MOCK_METHOD( std::uint8_t, defval, (), ( const ) );
+
+    MOCK_METHOD( std::uint8_t, intcon, (), ( const ) );
+
+    MOCK_METHOD( std::uint8_t, iocon, (), ( const ) );
+
+    MOCK_METHOD( std::uint8_t, gppu, (), ( const ) );
+
+    MOCK_METHOD( std::uint8_t, olat, (), ( const ) );
+};
+
 } // namespace picolibrary::Testing::Unit::Microchip::MCP23X08
 
 #endif // PICOLIBRARY_TESTING_UNIT_MICROCHIP_MCP23X08_H
