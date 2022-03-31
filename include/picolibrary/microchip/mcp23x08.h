@@ -404,6 +404,243 @@ class Driver_Concept {
     void write_olat( std::uint8_t data ) noexcept;
 };
 
+/**
+ * \brief Caching driver concept.
+ */
+class Caching_Driver_Concept {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    Caching_Driver_Concept() noexcept;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Caching_Driver_Concept( Caching_Driver_Concept && source ) noexcept;
+
+    Caching_Driver_Concept( Caching_Driver_Concept const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Caching_Driver_Concept() noexcept;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Caching_Driver_Concept && expression ) noexcept -> Caching_Driver_Concept &;
+
+    auto operator=( Caching_Driver_Concept const & ) = delete;
+
+    /**
+     * \brief Reset all cached register values.
+     */
+    void reset_cache() noexcept;
+
+    /**
+     * \brief Read the IODIR register.
+     *
+     * \return The data read from the IODIR register.
+     */
+    auto read_iodir() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Write to the IODIR register.
+     *
+     * \param[in] data The data to write to the IODIR register.
+     */
+    void write_iodir( std::uint8_t data ) noexcept;
+
+    /**
+     * \brief Get the cached IODIR register value.
+     *
+     * \return The cached IODIR register value.
+     */
+    auto iodir() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Read the IPOL register.
+     *
+     * \return The data read from the IPOL register.
+     */
+    auto read_ipol() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Write to the IPOL register.
+     *
+     * \param[in] data The data to write to the IPOL register.
+     */
+    void write_ipol( std::uint8_t data ) noexcept;
+
+    /**
+     * \brief Get the cached IPOL register value.
+     *
+     * \return The cached IPOL register value.
+     */
+    auto ipol() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Read the GPINTEN register.
+     *
+     * \return The data read from the GPINTEN register.
+     */
+    auto read_gpinten() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Write to the GPINTEN register.
+     *
+     * \param[in] data The data to write to the GPINTEN register.
+     */
+    void write_gpinten( std::uint8_t data ) noexcept;
+
+    /**
+     * \brief Get the cached GPINTEN register value.
+     *
+     * \return The cached GPINTEN register value.
+     */
+    auto gpinten() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Read the DEFVAL register.
+     *
+     * \return The data read from the DEFVAL register.
+     */
+    auto read_defval() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Write to the DEFVAL register.
+     *
+     * \param[in] data The data to write to the DEFVAL register.
+     */
+    void write_defval( std::uint8_t data ) noexcept;
+
+    /**
+     * \brief Get the cached DEFVAL register value.
+     *
+     * \return The cached DEFVAL register value.
+     */
+    auto defval() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Read the INTCON register.
+     *
+     * \return The data read from the INTCON register.
+     */
+    auto read_intcon() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Write to the INTCON register.
+     *
+     * \param[in] data The data to write to the INTCON register.
+     */
+    void write_intcon( std::uint8_t data ) noexcept;
+
+    /**
+     * \brief Get the cached INTCON register value.
+     *
+     * \return The cached INTCON register value.
+     */
+    auto intcon() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Read the IOCON register.
+     *
+     * \return The data read from the IOCON register.
+     */
+    auto read_iocon() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Write to the IOCON register.
+     *
+     * \param[in] data The data to write to the IOCON register.
+     */
+    void write_iocon( std::uint8_t data ) noexcept;
+
+    /**
+     * \brief Get the cached IOCON register value.
+     *
+     * \return The cached IOCON register value.
+     */
+    auto iocon() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Read the GPPU register.
+     *
+     * \return The data read from the GPPU register.
+     */
+    auto read_gppu() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Write to the GPPU register.
+     *
+     * \param[in] data The data to write to the GPPU register.
+     */
+    void write_gppu( std::uint8_t data ) noexcept;
+
+    /**
+     * \brief Get the cached GPPU register value.
+     *
+     * \return The cached GPPU register value.
+     */
+    auto gppu() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Read the INTF register.
+     *
+     * \return The data read from the INTF register.
+     */
+    auto read_intf() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Read the INTCAP register.
+     *
+     * \return The data read from the INTCAP register.
+     */
+    auto read_intcap() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Read the GPIO register.
+     *
+     * \return The data read from the GPIO register.
+     */
+    auto read_gpio() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Write to the GPIO register.
+     *
+     * \param[in] data The data to write to the GPIO register.
+     */
+    void write_gpio( std::uint8_t data ) noexcept;
+
+    /**
+     * \brief Read the OLAT register.
+     *
+     * \return The data read from the OLAT register.
+     */
+    auto read_olat() const noexcept -> std::uint8_t;
+
+    /**
+     * \brief Write to the OLAT register.
+     *
+     * \param[in] data The data to write to the OLAT register.
+     */
+    void write_olat( std::uint8_t data ) noexcept;
+
+    /**
+     * \brief Get the cached OLAT register value.
+     *
+     * \return The cached OLAT register value.
+     */
+    auto olat() const noexcept -> std::uint8_t;
+};
+
 } // namespace picolibrary::Microchip::MCP23X08
 
 #endif // PICOLIBRARY_MICROCHIP_MCP23X08_H
