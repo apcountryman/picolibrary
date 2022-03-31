@@ -654,7 +654,7 @@ class Caching_Driver : public Driver {
     /**
      * \brief Reset all cached register values.
      */
-    void reset_cache() noexcept
+    constexpr void reset_cache() noexcept
     {
         m_iodir   = IODIR::RESET;
         m_ipol    = IPOL::RESET;
