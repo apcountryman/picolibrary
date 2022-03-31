@@ -641,6 +641,261 @@ class Caching_Driver_Concept {
     auto olat() const noexcept -> std::uint8_t;
 };
 
+/**
+ * \brief Caching driver.
+ *
+ * \tparam Driver The type of driver to add caching driver functionality to.
+ */
+template<typename Driver>
+class Caching_Driver : public Driver {
+  public:
+    using Driver::Driver;
+
+    /**
+     * \brief Reset all cached register values.
+     */
+    void reset_cache() noexcept
+    {
+        m_iodir   = IODIR::RESET;
+        m_ipol    = IPOL::RESET;
+        m_gpinten = GPINTEN::RESET;
+        m_defval  = DEFVAL::RESET;
+        m_intcon  = INTCON::RESET;
+        m_iocon   = IOCON::RESET;
+        m_gppu    = GPPU::RESET;
+        m_olat    = OLAT::RESET;
+    }
+
+    /**
+     * \brief Write to the IODIR register.
+     *
+     * \param[in] data The data to write to the IODIR register.
+     */
+    void write_iodir( std::uint8_t data ) noexcept
+    {
+        Driver::write_iodir( data );
+
+        m_iodir = data;
+    }
+
+    /**
+     * \brief Get the cached IODIR register value.
+     *
+     * \return The cached IODIR register value.
+     */
+    constexpr auto iodir() const noexcept
+    {
+        return m_iodir;
+    }
+
+    /**
+     * \brief Write to the IPOL register.
+     *
+     * \param[in] data The data to write to the IPOL register.
+     */
+    void write_ipol( std::uint8_t data ) noexcept
+    {
+        Driver::write_ipol( data );
+
+        m_ipol = data;
+    }
+
+    /**
+     * \brief Get the cached IPOL register value.
+     *
+     * \return The cached IPOL register value.
+     */
+    constexpr auto ipol() const noexcept
+    {
+        return m_ipol;
+    }
+
+    /**
+     * \brief Write to the GPINTEN register.
+     *
+     * \param[in] data The data to write to the GPINTEN register.
+     */
+    void write_gpinten( std::uint8_t data ) noexcept
+    {
+        Driver::write_gpinten( data );
+
+        m_gpinten = data;
+    }
+
+    /**
+     * \brief Get the cached GPINTEN register value.
+     *
+     * \return The cached GPINTEN register value.
+     */
+    constexpr auto gpinten() const noexcept
+    {
+        return m_gpinten;
+    }
+
+    /**
+     * \brief Write to the DEFVAL register.
+     *
+     * \param[in] data The data to write to the DEFVAL register.
+     */
+    void write_defval( std::uint8_t data ) noexcept
+    {
+        Driver::write_defval( data );
+
+        m_defval = data;
+    }
+
+    /**
+     * \brief Get the cached DEFVAL register value.
+     *
+     * \return The cached DEFVAL register value.
+     */
+    constexpr auto defval() const noexcept
+    {
+        return m_defval;
+    }
+
+    /**
+     * \brief Write to the INTCON register.
+     *
+     * \param[in] data The data to write to the INTCON register.
+     */
+    void write_intcon( std::uint8_t data ) noexcept
+    {
+        Driver::write_intcon( data );
+
+        m_intcon = data;
+    }
+
+    /**
+     * \brief Get the cached INTCON register value.
+     *
+     * \return The cached INTCON register value.
+     */
+    constexpr auto intcon() const noexcept
+    {
+        return m_intcon;
+    }
+
+    /**
+     * \brief Write to the IOCON register.
+     *
+     * \param[in] data The data to write to the IOCON register.
+     */
+    void write_iocon( std::uint8_t data ) noexcept
+    {
+        Driver::write_iocon( data );
+
+        m_iocon = data;
+    }
+
+    /**
+     * \brief Get the cached IOCON register value.
+     *
+     * \return The cached IOCON register value.
+     */
+    constexpr auto iocon() const noexcept
+    {
+        return m_iocon;
+    }
+
+    /**
+     * \brief Write to the GPPU register.
+     *
+     * \param[in] data The data to write to the GPPU register.
+     */
+    void write_gppu( std::uint8_t data ) noexcept
+    {
+        Driver::write_gppu( data );
+
+        m_gppu = data;
+    }
+
+    /**
+     * \brief Get the cached GPPU register value.
+     *
+     * \return The cached GPPU register value.
+     */
+    constexpr auto gppu() const noexcept
+    {
+        return m_gppu;
+    }
+
+    /**
+     * \brief Write to the GPIO register.
+     *
+     * \param[in] data The data to write to the GPIO register.
+     */
+    void write_gpio( std::uint8_t data ) noexcept
+    {
+        Driver::write_gpio( data );
+
+        m_olat = data;
+    }
+
+    /**
+     * \brief Write to the OLAT register.
+     *
+     * \param[in] data The data to write to the OLAT register.
+     */
+    void write_olat( std::uint8_t data ) noexcept
+    {
+        Driver::write_olat( data );
+
+        m_olat = data;
+    }
+
+    /**
+     * \brief Get the cached OLAT register value.
+     *
+     * \return The cached OLAT register value.
+     */
+    constexpr auto olat() const noexcept
+    {
+        return m_olat;
+    }
+
+  private:
+    /**
+     * \brief The cached IODIR register value.
+     */
+    std::uint8_t m_iodir{ IODIR::RESET };
+
+    /**
+     * \brief The cached IPOL register value.
+     */
+    std::uint8_t m_ipol{ IPOL::RESET };
+
+    /**
+     * \brief The cached GPINTEN register value.
+     */
+    std::uint8_t m_gpinten{ GPINTEN::RESET };
+
+    /**
+     * \brief The cached DEFVAL register value.
+     */
+    std::uint8_t m_defval{ DEFVAL::RESET };
+
+    /**
+     * \brief The cached INTCON register value.
+     */
+    std::uint8_t m_intcon{ INTCON::RESET };
+
+    /**
+     * \brief The cached IOCON register value.
+     */
+    std::uint8_t m_iocon{ IOCON::RESET };
+
+    /**
+     * \brief The cached GPPU register value.
+     */
+    std::uint8_t m_gppu{ GPPU::RESET };
+
+    /**
+     * \brief The cached OLAT register value.
+     */
+    std::uint8_t m_olat{ OLAT::RESET };
+};
+
 } // namespace picolibrary::Microchip::MCP23X08
 
 #endif // PICOLIBRARY_MICROCHIP_MCP23X08_H
