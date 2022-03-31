@@ -577,13 +577,13 @@ class Communication_Controller : public Device {
      */
     auto read( std::uint8_t register_address ) const noexcept
     {
-        Device::configure();
+        this->configure();
 
-        auto const guard = SPI::Device_Selection_Guard{ Device::device_selector() };
+        auto const guard = SPI::Device_Selection_Guard{ this->device_selector() };
 
-        Device::transmit( m_address.as_unsigned_integer() | static_cast<std::uint8_t>( Operation::READ ) );
-        Device::transmit( register_address );
-        return Device::receive();
+        this->transmit( m_address.as_unsigned_integer() | static_cast<std::uint8_t>( Operation::READ ) );
+        this->transmit( register_address );
+        return this->receive();
     }
 
     /**
@@ -594,13 +594,13 @@ class Communication_Controller : public Device {
      */
     void write( std::uint8_t register_address, std::uint8_t data ) noexcept
     {
-        Device::configure();
+        this->configure();
 
-        auto const guard = SPI::Device_Selection_Guard{ Device::device_selector() };
+        auto const guard = SPI::Device_Selection_Guard{ this->device_selector() };
 
-        Device::transmit( m_address.as_unsigned_integer() | static_cast<std::uint8_t>( Operation::WRITE ) );
-        Device::transmit( register_address );
-        Device::transmit( data );
+        this->transmit( m_address.as_unsigned_integer() | static_cast<std::uint8_t>( Operation::WRITE ) );
+        this->transmit( register_address );
+        this->transmit( data );
     }
 
   private:
