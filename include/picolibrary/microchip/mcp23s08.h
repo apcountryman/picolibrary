@@ -554,7 +554,7 @@ class Communication_Controller : public Device {
     constexpr Communication_Controller( Communication_Controller && source ) noexcept = default;
 
     /**
-     * \brief Destructor..
+     * \brief Destructor.
      */
     ~Communication_Controller() noexcept = default;
 
