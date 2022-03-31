@@ -82,7 +82,7 @@ class Mock_Driver {
 };
 
 /**
- * \brief Mock driver.
+ * \brief Mock caching driver.
  */
 class Mock_Caching_Driver : public Mock_Driver {
   public:
