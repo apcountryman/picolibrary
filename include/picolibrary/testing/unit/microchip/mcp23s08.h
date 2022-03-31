@@ -27,6 +27,7 @@
 
 #include "gmock/gmock.h"
 #include "picolibrary/microchip/mcp23s08.h"
+#include "picolibrary/testing/unit/microchip/mcp23x08.h"
 #include "picolibrary/testing/unit/random.h"
 #include "picolibrary/testing/unit/spi.h"
 
@@ -43,12 +44,14 @@ namespace picolibrary::Testing::Unit {
  *         [min,max].
  */
 template<>
-inline auto random<Microchip::MCP23S08::Address_Numeric>(
-    Microchip::MCP23S08::Address_Numeric min,
-    Microchip::MCP23S08::Address_Numeric max )
+inline auto random<::picolibrary::Microchip::MCP23S08::Address_Numeric>(
+    ::picolibrary::Microchip::MCP23S08::Address_Numeric min,
+    ::picolibrary::Microchip::MCP23S08::Address_Numeric max )
 {
-    return Microchip::MCP23S08::Address_Numeric{ random<Microchip::MCP23S08::Address_Numeric::Unsigned_Integer>(
-        min.as_unsigned_integer(), max.as_unsigned_integer() ) };
+    return ::picolibrary::Microchip::MCP23S08::Address_Numeric{
+        random<::picolibrary::Microchip::MCP23S08::Address_Numeric::Unsigned_Integer>(
+            min.as_unsigned_integer(), max.as_unsigned_integer() )
+    };
 }
 
 /**
@@ -62,10 +65,11 @@ inline auto random<Microchip::MCP23S08::Address_Numeric>(
  *         [min,picolibrary::Microchip::MCP23S08::Address_Numeric::max()].
  */
 template<>
-inline auto random<Microchip::MCP23S08::Address_Numeric>( Microchip::MCP23S08::Address_Numeric min )
+inline auto random<::picolibrary::Microchip::MCP23S08::Address_Numeric>(
+    ::picolibrary::Microchip::MCP23S08::Address_Numeric min )
 {
-    return random<Microchip::MCP23S08::Address_Numeric>(
-        min, Microchip::MCP23S08::Address_Numeric::max() );
+    return random<::picolibrary::Microchip::MCP23S08::Address_Numeric>(
+        min, ::picolibrary::Microchip::MCP23S08::Address_Numeric::max() );
 }
 
 /**
@@ -75,10 +79,11 @@ inline auto random<Microchip::MCP23S08::Address_Numeric>( Microchip::MCP23S08::A
  *         [picolibrary::Microchip::MCP23S08::Address_Numeric::min(),picolibrary::Microchip::MCP23S08::Address_Numeric::max()].
  */
 template<>
-inline auto random<Microchip::MCP23S08::Address_Numeric>()
+inline auto random<::picolibrary::Microchip::MCP23S08::Address_Numeric>()
 {
-    return random<Microchip::MCP23S08::Address_Numeric>(
-        Microchip::MCP23S08::Address_Numeric::min(), Microchip::MCP23S08::Address_Numeric::max() );
+    return random<::picolibrary::Microchip::MCP23S08::Address_Numeric>(
+        ::picolibrary::Microchip::MCP23S08::Address_Numeric::min(),
+        ::picolibrary::Microchip::MCP23S08::Address_Numeric::max() );
 }
 
 /**
@@ -92,13 +97,13 @@ inline auto random<Microchip::MCP23S08::Address_Numeric>()
  *         range [min,max].
  */
 template<>
-inline auto random<Microchip::MCP23S08::Address_Transmitted>(
-    Microchip::MCP23S08::Address_Transmitted min,
-    Microchip::MCP23S08::Address_Transmitted max )
+inline auto random<::picolibrary::Microchip::MCP23S08::Address_Transmitted>(
+    ::picolibrary::Microchip::MCP23S08::Address_Transmitted min,
+    ::picolibrary::Microchip::MCP23S08::Address_Transmitted max )
 {
-    return Microchip::MCP23S08::Address_Transmitted{
-        static_cast<Microchip::MCP23S08::Address_Transmitted::Unsigned_Integer>(
-            random<Microchip::MCP23S08::Address_Transmitted::Unsigned_Integer>(
+    return ::picolibrary::Microchip::MCP23S08::Address_Transmitted{
+        static_cast<::picolibrary::Microchip::MCP23S08::Address_Transmitted::Unsigned_Integer>(
+            random<::picolibrary::Microchip::MCP23S08::Address_Transmitted::Unsigned_Integer>(
                 min.as_unsigned_integer(), max.as_unsigned_integer() )
             & 0b11111'11'0 )
     };
@@ -115,10 +120,11 @@ inline auto random<Microchip::MCP23S08::Address_Transmitted>(
  *         range [min,picolibrary::Microchip::MCP23S08::Address_Transmitted::max()].
  */
 template<>
-inline auto random<Microchip::MCP23S08::Address_Transmitted>( Microchip::MCP23S08::Address_Transmitted min )
+inline auto random<::picolibrary::Microchip::MCP23S08::Address_Transmitted>(
+    ::picolibrary::Microchip::MCP23S08::Address_Transmitted min )
 {
-    return random<Microchip::MCP23S08::Address_Transmitted>(
-        min, Microchip::MCP23S08::Address_Transmitted::max() );
+    return random<::picolibrary::Microchip::MCP23S08::Address_Transmitted>(
+        min, ::picolibrary::Microchip::MCP23S08::Address_Transmitted::max() );
 }
 
 /**
@@ -129,11 +135,11 @@ inline auto random<Microchip::MCP23S08::Address_Transmitted>( Microchip::MCP23S0
  *         [picolibrary::Microchip::MCP23S08::Address_Transmitted::min(),picolibrary::Microchip::MCP23S08::Address_Transmitted::max()].
  */
 template<>
-inline auto random<Microchip::MCP23S08::Address_Transmitted>()
+inline auto random<::picolibrary::Microchip::MCP23S08::Address_Transmitted>()
 {
-    return random<Microchip::MCP23S08::Address_Transmitted>(
-        Microchip::MCP23S08::Address_Transmitted::min(),
-        Microchip::MCP23S08::Address_Transmitted::max() );
+    return random<::picolibrary::Microchip::MCP23S08::Address_Transmitted>(
+        ::picolibrary::Microchip::MCP23S08::Address_Transmitted::min(),
+        ::picolibrary::Microchip::MCP23S08::Address_Transmitted::max() );
 }
 
 } // namespace picolibrary::Testing::Unit
@@ -173,6 +179,32 @@ class Mock_Communication_Controller : public SPI::Mock_Device {
     MOCK_METHOD( std::uint8_t, read, ( std::uint8_t ), ( const ) );
 
     MOCK_METHOD( void, write, ( std::uint8_t, std::uint8_t ) );
+};
+
+/**
+ * \brief Mock driver.
+ */
+class Mock_Driver : public Mock_Communication_Controller, public MCP23X08::Mock_Driver {
+  public:
+    Mock_Driver() = default;
+
+    Mock_Driver(
+        SPI::Mock_Controller &,
+        SPI::Mock_Controller::Configuration const &,
+        SPI::Mock_Device_Selector::Handle,
+        ::picolibrary::Microchip::MCP23S08::Address_Transmitted )
+    {
+    }
+
+    Mock_Driver( Mock_Driver && ) = delete;
+
+    Mock_Driver( Mock_Driver const & ) = delete;
+
+    ~Mock_Driver() noexcept = default;
+
+    auto operator=( Mock_Driver && ) = delete;
+
+    auto operator=( Mock_Driver const & ) = delete;
 };
 
 } // namespace picolibrary::Testing::Unit::Microchip::MCP23S08
