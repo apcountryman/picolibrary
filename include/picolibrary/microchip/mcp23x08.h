@@ -896,6 +896,235 @@ class Caching_Driver : public Driver {
     std::uint8_t m_olat{ OLAT::RESET };
 };
 
+/**
+ * \brief Pin.
+ *
+ * \tparam Caching_Driver The type of caching driver used to interact with a
+ *         MCP23008/MCP23S08.
+ */
+template<typename Caching_Driver>
+class Pin {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Pin() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] caching_driver The caching driver used to interact with the
+     *            MCP23008/MCP23S08 the pin is a member of.
+     * \param[in] mask The mask identifying the pin.
+     */
+    constexpr Pin( Caching_Driver & caching_driver, std::uint8_t mask ) noexcept :
+        m_caching_driver{ &caching_driver },
+        m_mask{ mask }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Pin( Pin && source ) noexcept :
+        m_caching_driver{ source.m_caching_driver },
+        m_mask{ source.m_mask }
+    {
+        source.m_caching_driver = nullptr;
+        source.m_mask           = 0;
+    }
+
+    Pin( Pin const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Pin() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto & operator=( Pin && expression ) noexcept
+    {
+        if ( &expression != this ) {
+            m_caching_driver = expression.m_caching_driver;
+            m_mask           = expression.m_mask;
+
+            expression.m_caching_driver = nullptr;
+            expression.m_mask           = 0;
+        } // if
+
+        return *this;
+    }
+
+    /**
+     * \brief Check if the pin is associated with a caching driver.
+     *
+     * \return true if the pin is associated with a caching driver.
+     * \return false if the pin is not associated with a caching driver.
+     */
+    constexpr explicit operator bool() const noexcept
+    {
+        return m_caching_driver;
+    }
+
+    /**
+     * \brief Configure the pin to act as an internally pulled-up input pin.
+     */
+    void configure_pin_as_internally_pulled_up_input() noexcept
+    {
+        m_caching_driver->write_iodir( m_caching_driver->iodir() | m_mask );
+    }
+
+    /**
+     * \brief Configure the pin to act as an open-drain I/O pin.
+     */
+    void configure_pin_as_open_drain_io() noexcept
+    {
+        m_caching_driver->write_iodir( m_caching_driver->iodir() | m_mask );
+    }
+
+    /**
+     * \brief Configure the pin to act as a push-pull I/O pin.
+     */
+    void configure_pin_as_push_pull_io() noexcept
+    {
+        m_caching_driver->write_iodir( m_caching_driver->iodir() & ~m_mask );
+    }
+
+    /**
+     * \brief Check if an internally pulled-up input pin's internal pull-up resistor is
+     *        disabled.
+     *
+     * \return true if the internally pulled-up input pin's internal pull-up resistor is
+     *         disabled.
+     * \return false if the internally pulled-up input pin's internal pull-up resistor is
+     *         not disabled.
+     */
+    auto pull_up_is_disabled() const noexcept
+    {
+        return not pull_up_is_enabled();
+    }
+
+    /**
+     * \brief Check if an internally pulled-up input pin's internal pull-up resistor is
+     *        enabled.
+     *
+     * \return true if the internally pulled-up input pin's internal pull-up resistor is
+     *         enabled.
+     * \return false if the internally pulled-up input pin's internal pull-up resistor is
+     *         not enabled.
+     */
+    auto pull_up_is_enabled() const noexcept -> bool
+    {
+        return m_caching_driver->gppu() & m_mask;
+    }
+
+    /**
+     * \brief Disable an internally pulled-up input pin's internal pull-up resistor.
+     */
+    void disable_pull_up() noexcept
+    {
+        m_caching_driver->write_gppu( m_caching_driver->gppu() & ~m_mask );
+    }
+
+    /**
+     * \brief Enable an internally pulled-up input pin's internal pull-up resistor.
+     */
+    void enable_pull_up() noexcept
+    {
+        m_caching_driver->write_gppu( m_caching_driver->gppu() | m_mask );
+    }
+
+    /**
+     * \brief Check if the pin is in the low state.
+     *
+     * \return true if the pin is in the low state.
+     * \return false if the pin is not in the low state.
+     */
+    auto is_low() const noexcept
+    {
+        return not is_high();
+    }
+
+    /**
+     * \brief Check if the pin is in the high state.
+     *
+     * \return true if the pin is in the high state.
+     * \return false if the pin is not in the high state.
+     */
+    auto is_high() const noexcept -> bool
+    {
+        return m_caching_driver->read_gpio() & m_mask;
+    }
+
+    /**
+     * \brief Transition an open-drain I/O pin to the low state.
+     */
+    void transition_open_drain_io_to_low() noexcept
+    {
+        m_caching_driver->write_iodir( m_caching_driver->iodir() & ~m_mask );
+    }
+
+    /**
+     * \brief Transition a push-pull I/O pin to the low state.
+     */
+    void transition_push_pull_io_to_low() noexcept
+    {
+        m_caching_driver->write_olat( m_caching_driver->olat() & ~m_mask );
+    }
+
+    /**
+     * \brief Transition an open-drain I/O pin to the high state.
+     */
+    void transition_open_drain_io_to_high() noexcept
+    {
+        m_caching_driver->write_iodir( m_caching_driver->iodir() | m_mask );
+    }
+
+    /**
+     * \brief Transition a push-pull I/O pin to the high state.
+     */
+    void transition_push_pull_io_to_high() noexcept
+    {
+        m_caching_driver->write_olat( m_caching_driver->olat() | m_mask );
+    }
+
+    /**
+     * \brief Toggle the state of an open-drain I/O pin.
+     */
+    void toggle_open_drain_io() noexcept
+    {
+        m_caching_driver->write_iodir( m_caching_driver->iodir() ^ m_mask );
+    }
+
+    /**
+     * \brief Toggle the state of a push-pull I/O pin.
+     */
+    void toggle_push_pull_io() noexcept
+    {
+        m_caching_driver->write_olat( m_caching_driver->olat() ^ m_mask );
+    }
+
+  private:
+    /**
+     * \brief The caching driver used to interact with the MCP23008/MCP23S08 the pin is a
+     *        member of.
+     */
+    Caching_Driver * m_caching_driver{};
+
+    /**
+     * \brief The mask identifying the pin.
+     */
+    std::uint8_t m_mask{};
+};
+
 } // namespace picolibrary::Microchip::MCP23X08
 
 #endif // PICOLIBRARY_MICROCHIP_MCP23X08_H

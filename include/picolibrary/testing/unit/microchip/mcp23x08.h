@@ -119,4 +119,51 @@ class Mock_Caching_Driver : public Mock_Driver {
 
 } // namespace picolibrary::Testing::Unit::Microchip::MCP23X08
 
+/**
+ * \brief Mock pin.
+ */
+class Mock_Pin {
+  public:
+    Mock_Pin() = default;
+
+    Mock_Pin( Mock_Pin && ) = delete;
+
+    Mock_Pin( Mock_Pin const & ) = delete;
+
+    ~Mock_Pin() noexcept = default;
+
+    auto operator=( Mock_Pin && ) = delete;
+
+    auto operator=( Mock_Pin const & ) = delete;
+
+    MOCK_METHOD( bool, is_associated, (), ( const ) );
+
+    explicit operator bool() const
+    {
+        return is_associated();
+    }
+
+    MOCK_METHOD( void, configure_pin_as_internally_pulled_up_input, () );
+    MOCK_METHOD( void, configure_pin_as_open_drain_io, () );
+    MOCK_METHOD( void, configure_pin_as_push_pull_io, () );
+
+    MOCK_METHOD( bool, pull_up_is_disabled, (), ( const ) );
+    MOCK_METHOD( bool, pull_up_is_enabled, (), ( const ) );
+
+    MOCK_METHOD( void, disable_pull_up, () );
+    MOCK_METHOD( void, enable_pull_up, () );
+
+    MOCK_METHOD( bool, is_low, (), ( const ) );
+    MOCK_METHOD( bool, is_high, (), ( const ) );
+
+    MOCK_METHOD( void, transition_open_drain_io_to_low, () );
+    MOCK_METHOD( void, transition_push_pull_io_to_low, () );
+
+    MOCK_METHOD( void, transition_open_drain_io_to_high, () );
+    MOCK_METHOD( void, transition_push_pull_io_to_high, () );
+
+    MOCK_METHOD( void, toggle_open_drain_io, () );
+    MOCK_METHOD( void, toggle_push_pull_io, () );
+};
+
 #endif // PICOLIBRARY_TESTING_UNIT_MICROCHIP_MCP23X08_H
