@@ -19,5 +19,8 @@
 # build the picolibrary::Microchip::MCP23X08::Caching_Driver unit tests
 add_subdirectory( caching_driver )
 
+# build the picolibrary::Microchip::MCP23X08::Internally_Pulled_Up_Input_Pin unit tests
+add_subdirectory( internally_pulled_up_input_pin )
+
 # build the picolibrary::Microchip::MCP23X08::Pin unit tests
 add_subdirectory( pin )
