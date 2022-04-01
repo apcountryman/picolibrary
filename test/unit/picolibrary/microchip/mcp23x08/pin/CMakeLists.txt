@@ -13,11 +13,22 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/microchip/mcp23x08/CMakeLists.txt
-# Description: picolibrary::Microchip::MCP23X08 unit tests CMake rules.
-
-# build the picolibrary::Microchip::MCP23X08::Caching_Driver unit tests
-add_subdirectory( caching_driver )
+# File: test/unit/picolibrary/microchip/mcp23x08/pin/CMakeLists.txt
+# Description: picolibrary::Microchip::MCP23X08::Pin unit tests CMake rules.
 
 # build the picolibrary::Microchip::MCP23X08::Pin unit tests
-add_subdirectory( pin )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+    add_executable(
+        test-unit-picolibrary-microchip-mcp23x08-pin
+        main.cc
+    )
+    target_link_libraries(
+        test-unit-picolibrary-microchip-mcp23x08-pin
+        picolibrary
+        picolibrary-testing-unit-fatal_error
+    )
+    add_test(
+        NAME    test-unit-picolibrary-microchip-mcp23x08-pin
+        COMMAND test-unit-picolibrary-microchip-mcp23x08-pin --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
