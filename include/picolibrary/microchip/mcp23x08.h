@@ -991,7 +991,7 @@ class Pin {
      */
     void configure_pin_as_open_drain_io() noexcept
     {
-        m_caching_driver->write_iodir( m_caching_driver->iodir() | m_mask );
+        m_caching_driver->write_olat( m_caching_driver->olat() & ~m_mask );
     }
 
     /**

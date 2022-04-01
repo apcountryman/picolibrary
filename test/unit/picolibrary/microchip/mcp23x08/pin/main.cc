@@ -68,10 +68,10 @@ TEST( configurePinAsOpenDrainIO, worksProperly )
 
     auto pin = Pin{ mcp23x08, mask };
 
-    auto const iodir = random<std::uint8_t>();
+    auto const olat = random<std::uint8_t>();
 
-    EXPECT_CALL( mcp23x08, iodir() ).WillOnce( Return( iodir ) );
-    EXPECT_CALL( mcp23x08, write_iodir( iodir | mask ) );
+    EXPECT_CALL( mcp23x08, olat() ).WillOnce( Return( olat ) );
+    EXPECT_CALL( mcp23x08, write_olat( olat & ~mask ) );
 
     pin.configure_pin_as_open_drain_io();
 }
