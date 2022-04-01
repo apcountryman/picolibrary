@@ -899,7 +899,7 @@ class Caching_Driver : public Driver {
 /**
  * \brief Pin.
  *
- * \tparam Caching_Driver The type of caching driver used to interact with the
+ * \tparam Caching_Driver The type of caching driver used to interact with a
  *         MCP23008/MCP23S08.
  */
 template<typename Caching_Driver>
