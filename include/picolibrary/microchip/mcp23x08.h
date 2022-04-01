@@ -963,6 +963,8 @@ class Pin {
         return *this;
     }
 
+    auto operator=( Pin const & ) = delete;
+
     /**
      * \brief Check if the pin is associated with a caching driver.
      *
