@@ -1434,6 +1434,151 @@ class Open_Drain_IO_Pin {
     }
 };
 
+/**
+ * \brief Push-pull I/O pin.
+ *
+ * \tparam Caching_Driver The type of caching driver used to interact with a
+ *         MCP23008/MCP23S08.
+ */
+template<typename Caching_Driver>
+class Push_Pull_IO_Pin {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Push_Pull_IO_Pin() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] caching_driver The caching driver used to interact with the
+     *            MCP23008/MCP23S08 the pin is a member of.
+     * \param[in] mask The mask identifying the pin.
+     */
+    constexpr Push_Pull_IO_Pin( Caching_Driver & caching_driver, std::uint8_t mask ) noexcept :
+        m_pin{ caching_driver, mask }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Push_Pull_IO_Pin( Push_Pull_IO_Pin && source ) noexcept = default;
+
+    Push_Pull_IO_Pin( Push_Pull_IO_Pin const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Push_Pull_IO_Pin() noexcept
+    {
+        disable();
+    }
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto & operator=( Push_Pull_IO_Pin && expression ) noexcept
+    {
+        if ( &expression != this ) {
+            disable();
+
+            m_pin = std::move( expression.m_pin );
+        } // if
+
+        return *this;
+    }
+
+    auto operator=( Push_Pull_IO_Pin const & ) = delete;
+
+    /**
+     * \brief Initialize the pin's hardware.
+     *
+     * \param[in] initial_pin_state The initial state of the pin.
+     */
+    void initialize( ::picolibrary::GPIO::Initial_Pin_State initial_pin_state = ::picolibrary::GPIO::Initial_Pin_State::LOW ) noexcept
+    {
+        switch ( initial_pin_state ) {
+            case ::picolibrary::GPIO::Initial_Pin_State::LOW:
+                m_pin.transition_push_pull_io_to_low();
+                break;
+            case ::picolibrary::GPIO::Initial_Pin_State::HIGH:
+                m_pin.transition_push_pull_io_to_high();
+                break;
+        } // switch
+
+        m_pin.configure_pin_as_push_pull_io();
+    }
+
+    /**
+     * \brief Check if the pin is in the low state.
+     *
+     * \return true if the pin is in the low state.
+     * \return false if the pin is not in the low state.
+     */
+    auto is_low() const noexcept
+    {
+        return m_pin.is_low();
+    }
+
+    /**
+     * \brief Check if the pin is in the high state.
+     *
+     * \return true if the pin is in the high state.
+     * \return false if the pin is not in the high state.
+     */
+    auto is_high() const noexcept
+    {
+        return m_pin.is_high();
+    }
+
+    /**
+     * \brief Transition the pin to the low state.
+     */
+    void transition_to_low() noexcept
+    {
+        m_pin.transition_push_pull_io_to_low();
+    }
+
+    /**
+     * \brief Transition the pin to the high state.
+     */
+    void transition_to_high() noexcept
+    {
+        m_pin.transition_push_pull_io_to_high();
+    }
+
+    /**
+     * \brief Toggle the pin state.
+     */
+    void toggle() noexcept
+    {
+        m_pin.toggle_push_pull_io();
+    }
+
+  private:
+    /**
+     * \brief The pin.
+     */
+    Pin<Caching_Driver> m_pin{};
+
+    /**
+     * \brief Disable the pin.
+     */
+    constexpr void disable() noexcept
+    {
+        if ( m_pin ) {
+            m_pin.configure_pin_as_internally_pulled_up_input();
+        } // if
+    }
+};
+
 } // namespace picolibrary::Microchip::MCP23X08
 
 #endif // PICOLIBRARY_MICROCHIP_MCP23X08_H
