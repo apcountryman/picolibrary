@@ -24,8 +24,10 @@
 #define PICOLIBRARY_MICROCHIP_MCP23X08_H
 
 #include <cstdint>
+#include <utility>
 
 #include "picolibrary/bit_manipulation.h"
+#include "picolibrary/gpio.h"
 
 /**
  * \brief Microchip MCP23008/MCP23S08 facilities.
@@ -1125,6 +1127,166 @@ class Pin {
      * \brief The mask identifying the pin.
      */
     std::uint8_t m_mask{};
+};
+
+/**
+ * \brief Internally pulled-up input pin.
+ *
+ * \tparam Caching_Driver The type of caching driver used to interact with a
+ *         MCP23008/MCP23S08.
+ */
+template<typename Caching_Driver>
+class Internally_Pulled_Up_Input_Pin {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Internally_Pulled_Up_Input_Pin() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] caching_driver The caching driver used to interact with the
+     *            MCP23008/MCP23S08 the pin is a member of.
+     * \param[in] mask The mask identifying the pin.
+     */
+    constexpr Internally_Pulled_Up_Input_Pin( Caching_Driver & caching_driver, std::uint8_t mask ) noexcept :
+        m_pin{ caching_driver, mask }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Internally_Pulled_Up_Input_Pin( Internally_Pulled_Up_Input_Pin && source ) noexcept = default;
+
+    Internally_Pulled_Up_Input_Pin( Internally_Pulled_Up_Input_Pin const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Internally_Pulled_Up_Input_Pin() noexcept
+    {
+        disable();
+    }
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto & operator=( Internally_Pulled_Up_Input_Pin && expression ) noexcept
+    {
+        if ( &expression != this ) {
+            disable();
+
+            m_pin = std::move( expression.m_pin );
+        } // if
+
+        return *this;
+    }
+
+    auto operator=( Internally_Pulled_Up_Input_Pin const & ) = delete;
+
+    /**
+     * \brief Initialize the pin's hardware.
+     *
+     * \param[in] initial_pull_up_state The initial state of the pin's internal pull-up
+     *            resistor.
+     */
+    void initialize( ::picolibrary::GPIO::Initial_Pull_Up_State initial_pull_up_state = ::picolibrary::GPIO::Initial_Pull_Up_State::DISABLED ) noexcept
+    {
+        m_pin.configure_pin_as_internally_pulled_up_input();
+
+        switch ( initial_pull_up_state ) {
+            case ::picolibrary::GPIO::Initial_Pull_Up_State::DISABLED:
+                m_pin.disable_pull_up();
+                break;
+            case ::picolibrary::GPIO::Initial_Pull_Up_State::ENABLED:
+                m_pin.enable_pull_up();
+                break;
+        } // switch
+    }
+
+    /**
+     * \brief Check if the pin's internal pull-up resistor is disabled.
+     *
+     * \return true if the pin's internal pull-up resistor is disabled.
+     * \return false if the pin's internal pull-up resistor is not disabled.
+     */
+    auto pull_up_is_disabled() const noexcept
+    {
+        return m_pin.pull_up_is_disabled();
+    }
+
+    /**
+     * \brief Check if the pin's internal pull-up resistor is enabled.
+     *
+     * \return true if the pin's internal pull-up resistor is enabled.
+     * \return false if the pin's internal pull-up resistor is not enabled.
+     */
+    auto pull_up_is_enabled() const noexcept
+    {
+        return m_pin.pull_up_is_enabled();
+    }
+
+    /**
+     * \brief Disable the pin's internal pull-up resistor.
+     */
+    void disable_pull_up() noexcept
+    {
+        m_pin.disable_pull_up();
+    }
+
+    /**
+     * \brief Enable the pin's internal pull-up resistor.
+     */
+    void enable_pull_up() noexcept
+    {
+        m_pin.enable_pull_up();
+    }
+
+    /**
+     * \brief Check if the pin is in the low state.
+     *
+     * \return true if the pin is in the low state.
+     * \return false if the pin is not in the low state.
+     */
+    auto is_low() const noexcept
+    {
+        return m_pin.is_low();
+    }
+
+    /**
+     * \brief Check if the pin is in the high state.
+     *
+     * \return true if the pin is in the high state.
+     * \return false if the pin is not in the high state.
+     */
+    auto is_high() const noexcept
+    {
+        return m_pin.is_high();
+    }
+
+  private:
+    /**
+     * \brief The pin.
+     */
+    Pin<Caching_Driver> m_pin{};
+
+    /**
+     * \brief Disable the pin.
+     */
+    constexpr void disable() noexcept
+    {
+        if ( m_pin ) {
+            m_pin.disable_pull_up();
+        } // if
+    }
 };
 
 } // namespace picolibrary::Microchip::MCP23X08
