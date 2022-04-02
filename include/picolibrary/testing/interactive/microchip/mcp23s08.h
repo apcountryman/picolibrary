@@ -113,6 +113,8 @@ void toggle(
     std::uint8_t                                            mask,
     Delayer                                                 delay ) noexcept
 {
+    // #lizard forgives the parameter count
+
     controller.initialize();
 
     auto mcp23s08 = ::picolibrary::Microchip::MCP23X08::Caching_Driver<::picolibrary::Microchip::MCP23S08::Driver<Controller, Device_Selector>>{
