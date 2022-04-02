@@ -75,6 +75,38 @@ void state(
         std::move( delay ) );
 }
 
+/**
+ * \brief Output pin toggle interactive test helper.
+ *
+ * \tparam Output_Pin The type of output pin to toggle.
+ * \tparam Controller The type of controller used to communicate with the MCP23008.
+ * \tparam Delayer A nullary functor called to introduce a delay each time the pin is
+ *         toggled.
+ *
+ * \param[in] controller The controller used to communicate with the MCP23008.
+ * \param[in] address The MCP23008's address.
+ * \param[in] mask The mask identifying the pin.
+ * \param[in] delay The nullary functor to call to introduce a delay each time the pin is
+ *            toggled.
+ */
+template<template<typename> typename Output_Pin, typename Controller, typename Delayer>
+void toggle(
+    Controller                                              controller,
+    ::picolibrary::Microchip::MCP23008::Address_Transmitted address,
+    std::uint8_t                                            mask,
+    Delayer                                                 delay ) noexcept
+{
+    controller.initialize();
+
+    auto mcp23008 = ::picolibrary::Microchip::MCP23X08::Caching_Driver<
+        ::picolibrary::Microchip::MCP23008::Driver<::picolibrary::I2C::Bus_Multiplexer_Aligner, Controller>>{
+        {}, controller, std::move( address ), Generic_Error::NONRESPONSIVE_DEVICE
+    };
+
+    ::picolibrary::Testing::Interactive::GPIO::toggle(
+        Output_Pin{ mcp23008, mask }, std::move( delay ) );
+}
+
 } // namespace picolibrary::Testing::Interactive::Microchip::MCP23008
 
 #endif // PICOLIBRARY_TESTING_INTERACTIVE_MICROCHIP_MCP23008_H
