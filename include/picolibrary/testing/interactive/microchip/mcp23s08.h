@@ -84,6 +84,47 @@ void state(
         std::move( delay ) );
 }
 
+/**
+ * \brief Output pin toggle interactive test helper.
+ *
+ * \tparam Output_Pin The type of output pin to toggle.
+ * \tparam Controller The type of controller used to communicate with the MCP23S08.
+ * \tparam Device_Selector The type of device selector used to select and deselect the
+ *         MCP23S08.
+ * \tparam Delayer A nullary functor called to introduce a delay each time the pin is
+ *         toggled.
+ *
+ * \param[in] controller The controller used to communicate with the MCP23S08.
+ * \param[in] configuration The controller clock and data exchange bit order configuration
+ *            that meets the MCP23S08's communication requirements.
+ * \param[in] device_selector The device selector used to select and deselect the
+ *            MCP23S08.
+ * \param[in] address The MCP23S08's address.
+ * \param[in] mask The mask identifying the pin.
+ * \param[in] delay The nullary functor to call to introduce a delay each time the pin is
+ *            toggled.
+ */
+template<template<typename> typename Output_Pin, typename Controller, typename Device_Selector, typename Delayer>
+void toggle(
+    Controller                                              controller,
+    typename Controller::Configuration                      configuration,
+    Device_Selector                                         device_selector,
+    ::picolibrary::Microchip::MCP23S08::Address_Transmitted address,
+    std::uint8_t                                            mask,
+    Delayer                                                 delay ) noexcept
+{
+    controller.initialize();
+
+    auto mcp23s08 = ::picolibrary::Microchip::MCP23X08::Caching_Driver<::picolibrary::Microchip::MCP23S08::Driver<Controller, Device_Selector>>{
+        controller, configuration, std::move( device_selector ), std::move( address )
+    };
+
+    mcp23s08.initialize();
+
+    ::picolibrary::Testing::Interactive::GPIO::toggle(
+        Output_Pin{ mcp23s08, mask }, std::move( delay ) );
+}
+
 } // namespace picolibrary::Testing::Interactive::Microchip::MCP23S08
 
 #endif // PICOLIBRARY_TESTING_INTERACTIVE_MICROCHIP_MCP23S08_H
