@@ -23,10 +23,58 @@
 #ifndef PICOLIBRARY_TESTING_INTERACTIVE_MICROCHIP_MCP23008_H
 #define PICOLIBRARY_TESTING_INTERACTIVE_MICROCHIP_MCP23008_H
 
+#include <cstdint>
+#include <utility>
+
+#include "picolibrary/error.h"
+#include "picolibrary/i2c.h"
+#include "picolibrary/microchip/mcp23008.h"
+#include "picolibrary/microchip/mcp23x08.h"
+#include "picolibrary/stream.h"
+#include "picolibrary/testing/interactive/gpio.h"
+
 /**
  * \brief Microchip MCP23008 interactive testing facilities.
  */
 namespace picolibrary::Testing::Interactive::Microchip::MCP23008 {
+
+/**
+ * \brief Internally pulled-up input pin state interactive test helper.
+ *
+ * \tparam Controller The type of controller used to communicate with the MCP23008.
+ * \tparam Delayer A nullary functor called to introduce a delay each time the pin's state
+ *         is gotten.
+ *
+ * \param[in] stream The output stream to write the pin state to.
+ * \param[in] controller The controller used to communicate with the MCP23008.
+ * \param[in] address The MCP23008's address.
+ * \param[in] mask The mask identifying the pin.
+ * \param[in] delay The nullary functor to call to introduce a delay each time the pin's
+ *            state is gotten.
+ *
+ * \pre writing to the stream succeeds
+ */
+template<typename Controller, typename Delayer>
+void state(
+    Output_Stream &                                         stream,
+    Controller                                              controller,
+    ::picolibrary::Microchip::MCP23008::Address_Transmitted address,
+    std::uint8_t                                            mask,
+    Delayer                                                 delay ) noexcept
+{
+    controller.initialize();
+
+    auto mcp23008 = ::picolibrary::Microchip::MCP23X08::Caching_Driver<
+        ::picolibrary::Microchip::MCP23008::Driver<::picolibrary::I2C::Bus_Multiplexer_Aligner, Controller>>{
+        {}, controller, std::move( address ), Generic_Error::NONRESPONSIVE_DEVICE
+    };
+
+    ::picolibrary::Testing::Interactive::GPIO::state(
+        stream,
+        ::picolibrary::Microchip::MCP23X08::Internally_Pulled_Up_Input_Pin{ mcp23008, mask },
+        std::move( delay ) );
+}
+
 } // namespace picolibrary::Testing::Interactive::Microchip::MCP23008
 
 #endif // PICOLIBRARY_TESTING_INTERACTIVE_MICROCHIP_MCP23008_H
