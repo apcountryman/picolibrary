@@ -23,10 +23,67 @@
 #ifndef PICOLIBRARY_TESTING_INTERACTIVE_MICROCHIP_MCP23S08_H
 #define PICOLIBRARY_TESTING_INTERACTIVE_MICROCHIP_MCP23S08_H
 
+#include <cstdint>
+#include <utility>
+
+#include "picolibrary/microchip/mcp23s08.h"
+#include "picolibrary/microchip/mcp23x08.h"
+#include "picolibrary/stream.h"
+#include "picolibrary/testing/interactive/gpio.h"
+
 /**
  * \brief Microchip MCP23S08 interactive testing facilities.
  */
 namespace picolibrary::Testing::Interactive::Microchip::MCP23S08 {
+
+/**
+ * \brief Internally pulled-up input pin state interactive test helper.
+ *
+ * \tparam Controller The type of controller used to communicate with the MCP23S08.
+ * \tparam Device_Selector The type of device selector used to select and deselect the
+ *         MCP23S08.
+ * \tparam Delayer A nullary functor called to introduce a delay each time the pin's state
+ *         is gotten.
+ *
+ * \param[in] stream The output stream to write the pin state to.
+ * \param[in] controller The controller used to communicate with the MCP23S08.
+ * \param[in] configuration The controller clock and data exchange bit order configuration
+ *            that meets the MCP23S08's communication requirements.
+ * \param[in] device_selector The device selector used to select and deselect the
+ *            MCP23S08.
+ * \param[in] address The MCP23S08's address.
+ * \param[in] mask The mask identifying the pin.
+ * \param[in] delay The nullary functor to call to introduce a delay each time the pin's
+ *            state is gotten.
+ *
+ * \pre writing to the stream succeeds
+ */
+template<typename Controller, typename Device_Selector, typename Delayer>
+void state(
+    Output_Stream &                                         stream,
+    Controller                                              controller,
+    typename Controller::Configuration                      configuration,
+    Device_Selector                                         device_selector,
+    ::picolibrary::Microchip::MCP23S08::Address_Transmitted address,
+    std::uint8_t                                            mask,
+    Delayer                                                 delay ) noexcept
+{
+    // #lizard forgives the parameter count
+
+    controller.initialize();
+
+    auto mcp23s08 = ::picolibrary::Microchip::MCP23X08::Caching_Driver<::picolibrary::Microchip::MCP23S08::Driver<Controller, Device_Selector>>{
+        controller, configuration, std::move( device_selector ), std::move( address )
+    };
+
+    mcp23s08.initialize();
+
+    ::picolibrary::Testing::Interactive::GPIO::state(
+        stream,
+        ::picolibrary::Microchip::MCP23X08::Internally_Pulled_Up_Input_Pin{ mcp23s08, mask },
+        std::move( delay ) );
+}
+
 } // namespace picolibrary::Testing::Interactive::Microchip::MCP23S08
 
 #endif // PICOLIBRARY_TESTING_INTERACTIVE_MICROCHIP_MCP23S08_H
