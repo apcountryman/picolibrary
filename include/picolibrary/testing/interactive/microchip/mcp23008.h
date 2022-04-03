@@ -29,7 +29,6 @@
 #include "picolibrary/error.h"
 #include "picolibrary/i2c.h"
 #include "picolibrary/microchip/mcp23008.h"
-#include "picolibrary/microchip/mcp23x08.h"
 #include "picolibrary/stream.h"
 #include "picolibrary/testing/interactive/gpio.h"
 
@@ -97,8 +96,7 @@ void toggle(
 {
     controller.initialize();
 
-    auto mcp23008 = ::picolibrary::Microchip::MCP23X08::Caching_Driver<
-        ::picolibrary::Microchip::MCP23008::Driver<::picolibrary::I2C::Bus_Multiplexer_Aligner, Controller>>{
+    auto mcp23008 = ::picolibrary::Microchip::MCP23008::Caching_Driver<::picolibrary::I2C::Bus_Multiplexer_Aligner, Controller>{
         {}, controller, std::move( address ), Generic_Error::NONRESPONSIVE_DEVICE
     };
 
