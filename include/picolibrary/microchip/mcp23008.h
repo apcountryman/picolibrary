@@ -383,6 +383,8 @@ class Driver : public Device {
 template<typename Bus_Multiplexer_Aligner, typename Controller>
 using Caching_Driver = MCP23X08::Caching_Driver<Driver<Bus_Multiplexer_Aligner, Controller>>;
 
+using MCP23X08::Pin;
+
 } // namespace picolibrary::Microchip::MCP23008
 
 #endif // PICOLIBRARY_MICROCHIP_MCP23008_H
