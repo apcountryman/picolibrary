@@ -371,6 +371,18 @@ class Driver : public Device {
     }
 };
 
+/**
+ * \brief Caching driver.
+ *
+ * \tparam Bus_Multiplexer_Aligner A nullary functor. The functor must be default
+ *         constructable, move constructable, and move assignable. When called, the
+ *         functor should align the bus's multiplexer(s) (if any) to enable communication
+ *         with the MCP23008.
+ * \tparam Controller The type of controller used to communicate with the MCP23008.
+ */
+template<typename Bus_Multiplexer_Aligner, typename Controller>
+using Caching_Driver = MCP23X08::Caching_Driver<Driver<Bus_Multiplexer_Aligner, Controller>>;
+
 } // namespace picolibrary::Microchip::MCP23008
 
 #endif // PICOLIBRARY_MICROCHIP_MCP23008_H
