@@ -64,14 +64,13 @@ void state(
 {
     controller.initialize();
 
-    auto mcp23008 = ::picolibrary::Microchip::MCP23X08::Caching_Driver<
-        ::picolibrary::Microchip::MCP23008::Driver<::picolibrary::I2C::Bus_Multiplexer_Aligner, Controller>>{
+    auto mcp23008 = ::picolibrary::Microchip::MCP23008::Caching_Driver<::picolibrary::I2C::Bus_Multiplexer_Aligner, Controller>{
         {}, controller, std::move( address ), Generic_Error::NONRESPONSIVE_DEVICE
     };
 
     ::picolibrary::Testing::Interactive::GPIO::state(
         stream,
-        ::picolibrary::Microchip::MCP23X08::Internally_Pulled_Up_Input_Pin{ mcp23008, mask },
+        ::picolibrary::Microchip::MCP23008::Internally_Pulled_Up_Input_Pin{ mcp23008, mask },
         std::move( delay ) );
 }
 
