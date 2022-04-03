@@ -387,6 +387,8 @@ using MCP23X08::Pin;
 
 using MCP23X08::Internally_Pulled_Up_Input_Pin;
 
+using MCP23X08::Open_Drain_IO_Pin;
+
 } // namespace picolibrary::Microchip::MCP23008
 
 #endif // PICOLIBRARY_MICROCHIP_MCP23008_H
