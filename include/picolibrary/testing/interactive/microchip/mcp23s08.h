@@ -27,7 +27,6 @@
 #include <utility>
 
 #include "picolibrary/microchip/mcp23s08.h"
-#include "picolibrary/microchip/mcp23x08.h"
 #include "picolibrary/stream.h"
 #include "picolibrary/testing/interactive/gpio.h"
 
@@ -117,7 +116,7 @@ void toggle(
 
     controller.initialize();
 
-    auto mcp23s08 = ::picolibrary::Microchip::MCP23X08::Caching_Driver<::picolibrary::Microchip::MCP23S08::Driver<Controller, Device_Selector>>{
+    auto mcp23s08 = ::picolibrary::Microchip::MCP23S08::Caching_Driver<Controller, Device_Selector>{
         controller, configuration, std::move( device_selector ), std::move( address )
     };
 
