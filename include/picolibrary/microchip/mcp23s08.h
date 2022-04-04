@@ -710,7 +710,7 @@ class Driver : public Communication_Controller {
      */
     auto read_iodir() const noexcept
     {
-        return this->read( MCP23X08::IODIR::ADDRESS );
+        return this->read( IODIR::ADDRESS );
     }
 
     /**
@@ -720,7 +720,7 @@ class Driver : public Communication_Controller {
      */
     void write_iodir( std::uint8_t data ) noexcept
     {
-        this->write( MCP23X08::IODIR::ADDRESS, data );
+        this->write( IODIR::ADDRESS, data );
     }
 
     /**
@@ -730,7 +730,7 @@ class Driver : public Communication_Controller {
      */
     auto read_ipol() const noexcept
     {
-        return this->read( MCP23X08::IPOL::ADDRESS );
+        return this->read( IPOL::ADDRESS );
     }
 
     /**
@@ -740,7 +740,7 @@ class Driver : public Communication_Controller {
      */
     void write_ipol( std::uint8_t data ) noexcept
     {
-        this->write( MCP23X08::IPOL::ADDRESS, data );
+        this->write( IPOL::ADDRESS, data );
     }
 
     /**
@@ -750,7 +750,7 @@ class Driver : public Communication_Controller {
      */
     auto read_gpinten() const noexcept
     {
-        return this->read( MCP23X08::GPINTEN::ADDRESS );
+        return this->read( GPINTEN::ADDRESS );
     }
 
     /**
@@ -760,7 +760,7 @@ class Driver : public Communication_Controller {
      */
     void write_gpinten( std::uint8_t data ) noexcept
     {
-        this->write( MCP23X08::GPINTEN::ADDRESS, data );
+        this->write( GPINTEN::ADDRESS, data );
     }
 
     /**
@@ -770,7 +770,7 @@ class Driver : public Communication_Controller {
      */
     auto read_defval() const noexcept
     {
-        return this->read( MCP23X08::DEFVAL::ADDRESS );
+        return this->read( DEFVAL::ADDRESS );
     }
 
     /**
@@ -780,7 +780,7 @@ class Driver : public Communication_Controller {
      */
     void write_defval( std::uint8_t data ) noexcept
     {
-        this->write( MCP23X08::DEFVAL::ADDRESS, data );
+        this->write( DEFVAL::ADDRESS, data );
     }
 
     /**
@@ -790,7 +790,7 @@ class Driver : public Communication_Controller {
      */
     auto read_intcon() const noexcept
     {
-        return this->read( MCP23X08::INTCON::ADDRESS );
+        return this->read( INTCON::ADDRESS );
     }
 
     /**
@@ -800,7 +800,7 @@ class Driver : public Communication_Controller {
      */
     void write_intcon( std::uint8_t data ) noexcept
     {
-        this->write( MCP23X08::INTCON::ADDRESS, data );
+        this->write( INTCON::ADDRESS, data );
     }
 
     /**
@@ -810,7 +810,7 @@ class Driver : public Communication_Controller {
      */
     auto read_iocon() const noexcept
     {
-        return this->read( MCP23X08::IOCON::ADDRESS );
+        return this->read( IOCON::ADDRESS );
     }
 
     /**
@@ -820,7 +820,7 @@ class Driver : public Communication_Controller {
      */
     void write_iocon( std::uint8_t data ) noexcept
     {
-        this->write( MCP23X08::IOCON::ADDRESS, data );
+        this->write( IOCON::ADDRESS, data );
     }
 
     /**
@@ -830,7 +830,7 @@ class Driver : public Communication_Controller {
      */
     auto read_gppu() const noexcept
     {
-        return this->read( MCP23X08::GPPU::ADDRESS );
+        return this->read( GPPU::ADDRESS );
     }
 
     /**
@@ -840,7 +840,7 @@ class Driver : public Communication_Controller {
      */
     void write_gppu( std::uint8_t data ) noexcept
     {
-        this->write( MCP23X08::GPPU::ADDRESS, data );
+        this->write( GPPU::ADDRESS, data );
     }
 
     /**
@@ -850,7 +850,7 @@ class Driver : public Communication_Controller {
      */
     auto read_intf() const noexcept
     {
-        return this->read( MCP23X08::INTF::ADDRESS );
+        return this->read( INTF::ADDRESS );
     }
 
     /**
@@ -860,7 +860,7 @@ class Driver : public Communication_Controller {
      */
     auto read_intcap() const noexcept
     {
-        return this->read( MCP23X08::INTCAP::ADDRESS );
+        return this->read( INTCAP::ADDRESS );
     }
 
     /**
@@ -870,7 +870,7 @@ class Driver : public Communication_Controller {
      */
     auto read_gpio() const noexcept
     {
-        return this->read( MCP23X08::GPIO::ADDRESS );
+        return this->read( GPIO::ADDRESS );
     }
 
     /**
@@ -880,7 +880,7 @@ class Driver : public Communication_Controller {
      */
     void write_gpio( std::uint8_t data ) noexcept
     {
-        this->write( MCP23X08::GPIO::ADDRESS, data );
+        this->write( GPIO::ADDRESS, data );
     }
 
     /**
@@ -890,7 +890,7 @@ class Driver : public Communication_Controller {
      */
     auto read_olat() const noexcept
     {
-        return this->read( MCP23X08::OLAT::ADDRESS );
+        return this->read( OLAT::ADDRESS );
     }
 
     /**
@@ -900,7 +900,7 @@ class Driver : public Communication_Controller {
      */
     void write_olat( std::uint8_t data ) noexcept
     {
-        this->write( MCP23X08::OLAT::ADDRESS, data );
+        this->write( OLAT::ADDRESS, data );
     }
 };
 
