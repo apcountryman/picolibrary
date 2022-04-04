@@ -36,6 +36,28 @@
  */
 namespace picolibrary::Microchip::MCP23S08 {
 
+using MCP23X08::IODIR;
+
+using MCP23X08::IPOL;
+
+using MCP23X08::GPINTEN;
+
+using MCP23X08::DEFVAL;
+
+using MCP23X08::INTCON;
+
+using MCP23X08::IOCON;
+
+using MCP23X08::GPPU;
+
+using MCP23X08::INTF;
+
+using MCP23X08::INTCAP;
+
+using MCP23X08::GPIO;
+
+using MCP23X08::OLAT;
+
 /**
  * \brief MCP23S08 address, numeric format.
  */
