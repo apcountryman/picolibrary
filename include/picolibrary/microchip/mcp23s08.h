@@ -914,6 +914,8 @@ class Driver : public Communication_Controller {
 template<typename Controller, typename Device_Selector>
 using Caching_Driver = MCP23X08::Caching_Driver<Driver<Controller, Device_Selector>>;
 
+using MCP23X08::Pin;
+
 } // namespace picolibrary::Microchip::MCP23S08
 
 #endif // PICOLIBRARY_MICROCHIP_MCP23S08_H
