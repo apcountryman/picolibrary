@@ -904,6 +904,16 @@ class Driver : public Communication_Controller {
     }
 };
 
+/**
+ * \brief Caching driver.
+ *
+ * \tparam Controller The type of controller used to communicate with the MCP23S08.
+ * \tparam Device_Selector The type of device selector used to select and deselect the
+ *         MCP23S08.
+ */
+template<typename Controller, typename Device_Selector>
+using Caching_Driver = MCP23X08::Caching_Driver<Driver<Controller, Device_Selector>>;
+
 } // namespace picolibrary::Microchip::MCP23S08
 
 #endif // PICOLIBRARY_MICROCHIP_MCP23S08_H
