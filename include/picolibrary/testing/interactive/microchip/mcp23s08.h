@@ -72,7 +72,7 @@ void state(
 
     controller.initialize();
 
-    auto mcp23s08 = ::picolibrary::Microchip::MCP23X08::Caching_Driver<::picolibrary::Microchip::MCP23S08::Driver<Controller, Device_Selector>>{
+    auto mcp23s08 = ::picolibrary::Microchip::MCP23S08::Caching_Driver<Controller, Device_Selector>{
         controller, configuration, std::move( device_selector ), std::move( address )
     };
 
@@ -80,7 +80,7 @@ void state(
 
     ::picolibrary::Testing::Interactive::GPIO::state(
         stream,
-        ::picolibrary::Microchip::MCP23X08::Internally_Pulled_Up_Input_Pin{ mcp23s08, mask },
+        ::picolibrary::Microchip::MCP23S08::Internally_Pulled_Up_Input_Pin{ mcp23s08, mask },
         std::move( delay ) );
 }
 
