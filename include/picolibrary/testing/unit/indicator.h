@@ -23,7 +23,9 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_INDICATOR_H
 #define PICOLIBRARY_TESTING_UNIT_INDICATOR_H
 
+#include "gmock/gmock.h"
 #include "picolibrary/indicator.h"
+#include "picolibrary/testing/unit/mock_handle.h"
 #include "picolibrary/testing/unit/random.h"
 
 namespace picolibrary::Testing::Unit {
@@ -46,6 +48,82 @@ inline auto random<Indicator::Initial_Indicator_State>()
  * \brief Indicator unit testing facilities.
  */
 namespace picolibrary::Testing::Unit::Indicator {
+
+/**
+ * \brief Mock fixed intensity indicator.
+ */
+class Mock_Fixed_Intensity_Indicator {
+  public:
+    class Handle : public Mock_Handle<Mock_Fixed_Intensity_Indicator> {
+      public:
+        constexpr Handle() noexcept = default;
+
+        constexpr Handle( Mock_Fixed_Intensity_Indicator & mock ) noexcept :
+            Mock_Handle<Mock_Fixed_Intensity_Indicator>{ mock }
+        {
+        }
+
+        constexpr Handle( Handle && source ) noexcept = default;
+
+        Handle( Handle const & ) = delete;
+
+        ~Handle() noexcept = default;
+
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
+
+        auto operator=( Handle const & ) = delete;
+
+        void initialize()
+        {
+            mock().initialize();
+        }
+
+        void initialize( ::picolibrary::Indicator::Initial_Indicator_State initial_indicator_state )
+        {
+            mock().initialize( initial_indicator_state );
+        }
+
+        void extinguish()
+        {
+            mock().extinguish();
+        }
+
+        void illuminate()
+        {
+            mock().illuminate();
+        }
+
+        void toggle()
+        {
+            mock().toggle();
+        }
+    };
+
+    Mock_Fixed_Intensity_Indicator() = default;
+
+    Mock_Fixed_Intensity_Indicator( Mock_Fixed_Intensity_Indicator && ) = delete;
+
+    Mock_Fixed_Intensity_Indicator( Mock_Fixed_Intensity_Indicator const & ) = delete;
+
+    ~Mock_Fixed_Intensity_Indicator() noexcept = default;
+
+    auto operator=( Mock_Fixed_Intensity_Indicator && ) = delete;
+
+    auto operator=( Mock_Fixed_Intensity_Indicator const & ) = delete;
+
+    auto handle() noexcept
+    {
+        return Handle{ *this };
+    }
+
+    MOCK_METHOD( void, initialize, () );
+    MOCK_METHOD( void, initialize, ( ::picolibrary::Indicator::Initial_Indicator_State ) );
+
+    MOCK_METHOD( void, extinguish, () );
+    MOCK_METHOD( void, illuminate, () );
+    MOCK_METHOD( void, toggle, () );
+};
+
 } // namespace picolibrary::Testing::Unit::Indicator
 
 #endif // PICOLIBRARY_TESTING_UNIT_INDICATOR_H
