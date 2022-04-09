@@ -38,6 +38,65 @@ enum class Initial_Indicator_State : std::uint_fast8_t {
     ILLUMINATED,  ///< Illuminated.
 };
 
+/**
+ * \brief Fixed intensity indicator concept.
+ */
+class Fixed_Intensity_Indicator_Concept {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    Fixed_Intensity_Indicator_Concept() noexcept;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Fixed_Intensity_Indicator_Concept( Fixed_Intensity_Indicator_Concept && source ) noexcept;
+
+    Fixed_Intensity_Indicator_Concept( Fixed_Intensity_Indicator_Concept const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Fixed_Intensity_Indicator_Concept() noexcept;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Fixed_Intensity_Indicator_Concept && expression ) noexcept
+        -> Fixed_Intensity_Indicator_Concept &;
+
+    auto operator=( Fixed_Intensity_Indicator_Concept const & ) = delete;
+
+    /**
+     * \brief Initialize the indicator's hardware.
+     *
+     * \param[in] initial_indicator_state The initial state of the indicator.
+     */
+    void initialize( Initial_Indicator_State initial_indicator_state = Initial_Indicator_State::EXTINGUISHED ) noexcept;
+
+    /**
+     * \brief Extinguish the indicator.
+     */
+    void extinguish() noexcept;
+
+    /**
+     * \brief Illuminate the indicator.
+     */
+    void illuminate() noexcept;
+
+    /**
+     * \brief Toggle the indicator state.
+     */
+    void toggle() noexcept;
+};
+
 } // namespace picolibrary::Indicator
 
 #endif // PICOLIBRARY_INDICATOR_H
