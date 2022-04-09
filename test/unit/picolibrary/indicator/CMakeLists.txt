@@ -15,3 +15,6 @@
 
 # File: test/unit/picolibrary/indicator/CMakeLists.txt
 # Description: picolibrary::Indicator unit tests CMake rules.
+
+# build the picolibrary::Indicator::GPIO_Output_Pin_Fixed_Intensity_Indicator unit tests
+add_subdirectory( gpio_output_pin_fixed_intensity_indicator )
