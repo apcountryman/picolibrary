@@ -25,6 +25,8 @@
 
 #include <cstdint>
 
+#include "picolibrary/gpio.h"
+
 /**
  * \brief Indicator facilities.
  */
@@ -95,6 +97,51 @@ class Fixed_Intensity_Indicator_Concept {
      * \brief Toggle the indicator state.
      */
     void toggle() noexcept;
+};
+
+/**
+ * \brief GPIO output pin based fixed intensity indicator.
+ *
+ * \tparam GPIO_Output_Pin The type of GPIO output pin used to manipulate the indicator.
+ */
+template<typename GPIO_Output_Pin>
+class GPIO_Output_Pin_Fixed_Intensity_Indicator : public GPIO_Output_Pin {
+  public:
+    using GPIO_Output_Pin::GPIO_Output_Pin;
+
+    /**
+     * \brief Initialize the indicator's hardware.
+     *
+     * \param[in] initial_indicator_state The initial state of the indicator.
+     */
+    void initialize( Initial_Indicator_State initial_indicator_state = Initial_Indicator_State::EXTINGUISHED ) noexcept
+    {
+        static_assert(
+            static_cast<std::uint_fast8_t>( Initial_Indicator_State::EXTINGUISHED )
+            == static_cast<std::uint_fast8_t>( GPIO::Initial_Pin_State::LOW ) );
+        static_assert(
+            static_cast<std::uint_fast8_t>( Initial_Indicator_State::ILLUMINATED )
+            == static_cast<std::uint_fast8_t>( GPIO::Initial_Pin_State::HIGH ) );
+
+        GPIO_Output_Pin::initialize( static_cast<GPIO::Initial_Pin_State>(
+            static_cast<std::uint_fast8_t>( initial_indicator_state ) ) );
+    }
+
+    /**
+     * \brief Extinguish the indicator.
+     */
+    void extinguish() noexcept
+    {
+        GPIO_Output_Pin::transition_to_low();
+    }
+
+    /**
+     * \brief Illuminate the indicator.
+     */
+    void illuminate() noexcept
+    {
+        GPIO_Output_Pin::transition_to_high();
+    }
 };
 
 } // namespace picolibrary::Indicator
