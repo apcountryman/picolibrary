@@ -37,6 +37,7 @@ set(
     "picolibrary/gpio.cc"
     "picolibrary/hsm.cc"
     "picolibrary/i2c.cc"
+    "picolibrary/indicator.cc"
     "picolibrary/microchip.cc"
     "picolibrary/microchip/mcp23008.cc"
     "picolibrary/microchip/mcp23s08.cc"
