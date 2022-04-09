@@ -23,10 +23,21 @@
 #ifndef PICOLIBRARY_INDICATOR_H
 #define PICOLIBRARY_INDICATOR_H
 
+#include <cstdint>
+
 /**
  * \brief Indicator facilities.
  */
 namespace picolibrary::Indicator {
+
+/**
+ * \brief Initial indicator state.
+ */
+enum class Initial_Indicator_State : std::uint_fast8_t {
+    EXTINGUISHED, ///< Extinguished.
+    ILLUMINATED,  ///< Illuminated.
+};
+
 } // namespace picolibrary::Indicator
 
 #endif // PICOLIBRARY_INDICATOR_H
