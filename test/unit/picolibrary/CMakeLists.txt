@@ -49,6 +49,9 @@ add_subdirectory( i2c )
 # build the picolibrary::Indicator unit tests
 add_subdirectory( indicator )
 
+# build the picolibrary::Interrupt unit tests
+add_subdirectory( interrupt )
+
 # build the picolibrary::Microchip unit tests
 add_subdirectory( microchip )
 
