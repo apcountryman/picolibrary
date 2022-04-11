@@ -23,6 +23,8 @@
 #ifndef PICOLIBRARY_INTERRUPT_H
 #define PICOLIBRARY_INTERRUPT_H
 
+#include <type_traits>
+
 /**
  * \brief Interrupt facilities.
  */
@@ -82,6 +84,108 @@ class Controller_Concept {
      * \brief Restore the previously saved interrupt(s) enable state.
      */
     void restore_interrupt_enable_state() noexcept;
+};
+
+/**
+ * \brief Restore interrupt enable state critical section exit action.
+ */
+struct Restore_Interrupt_Enable_State {
+};
+
+/**
+ * \brief Restore interrupt enable state critical section exit action.
+ */
+constexpr auto RESTORE_INTERRUPT_ENABLE_STATE = Restore_Interrupt_Enable_State{};
+
+/**
+ * \brief Enable interrupt critical section exit action.
+ */
+struct Enable_Interrupt {
+};
+
+/**
+ * \brief Enable interrupt critical section exit action.
+ */
+constexpr auto ENABLE_INTERRUPT = Enable_Interrupt{};
+
+/**
+ * \brief RAII critical section guard.
+ *
+ * \tparam Controller The type of controller used to manipulate the interrupt enable
+ *         state.
+ * \tparam Exit_Action The action to take when exiting the critical section
+ *         (picolibrary::Interrupt::Restore_Interrupt_Enable_State or
+ *         picolibrary::Interrupt::Enable_Interrupt).
+ */
+template<typename Controller, typename Exit_Action>
+class Critical_Section_Guard {
+  public:
+    static_assert( std::is_same_v<Exit_Action, Restore_Interrupt_Enable_State> or std::is_same_v<Exit_Action, Enable_Interrupt> );
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] controller The controller used to manipulate the interrupt enable state.
+     */
+    Critical_Section_Guard( Controller & controller, Exit_Action ) noexcept :
+        m_controller{ controller }
+    {
+        enter( Exit_Action{} );
+    }
+
+    Critical_Section_Guard( Critical_Section_Guard && ) = delete;
+
+    Critical_Section_Guard( Critical_Section_Guard const & ) = delete;
+
+    ~Critical_Section_Guard() noexcept
+    {
+        exit( Exit_Action{} );
+    }
+
+    auto operator=( Critical_Section_Guard && ) = delete;
+
+    auto operator=( Critical_Section_Guard const & ) = delete;
+
+  private:
+    /**
+     * \brief The controller used to manipulate the interrupt enable state.
+     */
+    Controller & m_controller;
+
+    /**
+     * \brief Execute the critical section entry actions associated with the restore
+     *        interrupt enable state critical section exit action.
+     */
+    void enter( Restore_Interrupt_Enable_State ) noexcept
+    {
+        m_controller.save_interrupt_enable_state();
+        m_controller.disable_interrupt();
+    }
+
+    /**
+     * \brief Execute the restore interrupt enable state critical section exit action.
+     */
+    void exit( Restore_Interrupt_Enable_State ) noexcept
+    {
+        m_controller.restore_interrupt_enable_state();
+    }
+
+    /**
+     * \brief Execute the critical section entry action associated with the enable
+     *        interrupt critical section exit action.
+     */
+    void enter( Enable_Interrupt ) noexcept
+    {
+        m_controller.disable_interrupt();
+    }
+
+    /**
+     * \brief Execute the enable interrupt critical section exit action.
+     */
+    void exit( Enable_Interrupt ) noexcept
+    {
+        m_controller.enable_interrupt();
+    }
 };
 
 } // namespace picolibrary::Interrupt
