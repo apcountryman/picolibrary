@@ -38,6 +38,7 @@ set(
     "picolibrary/hsm.cc"
     "picolibrary/i2c.cc"
     "picolibrary/indicator.cc"
+    "picolibrary/interrupt.cc"
     "picolibrary/microchip.cc"
     "picolibrary/microchip/mcp23008.cc"
     "picolibrary/microchip/mcp23s08.cc"
