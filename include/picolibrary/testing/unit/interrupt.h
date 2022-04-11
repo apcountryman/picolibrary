@@ -23,10 +23,83 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_INTERRUPT_H
 #define PICOLIBRARY_TESTING_UNIT_INTERRUPT_H
 
+#include "gmock/gmock.h"
+#include "picolibrary/testing/unit/mock_handle.h"
+
 /**
  * \brief Interrupt unit testing facilities.
  */
 namespace picolibrary::Testing::Unit::Interrupt {
+
+/**
+ * \brief Mock controller.
+ */
+class Mock_Controller {
+  public:
+    class Handle : public Mock_Handle<Mock_Controller> {
+      public:
+        constexpr Handle() noexcept = default;
+
+        constexpr Handle( Mock_Controller & mock ) noexcept :
+            Mock_Handle<Mock_Controller>{ mock }
+        {
+        }
+
+        constexpr Handle( Handle && source ) noexcept = default;
+
+        Handle( Handle const & ) = delete;
+
+        ~Handle() noexcept = default;
+
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
+
+        auto operator=( Handle const & ) = delete;
+
+        void disable_interrupt()
+        {
+            mock().disable_interrupt();
+        }
+
+        void enable_interrupt()
+        {
+            mock().enable_interrupt();
+        }
+
+        void save_interrupt_enable_state() noexcept
+        {
+            mock().save_interrupt_enable_state();
+        }
+
+        void restore_interrupt_enable_state() noexcept
+        {
+            mock().restore_interrupt_enable_state();
+        }
+    };
+
+    Mock_Controller() = default;
+
+    Mock_Controller( Mock_Controller && ) = delete;
+
+    Mock_Controller( Mock_Controller const & ) = delete;
+
+    ~Mock_Controller() noexcept = default;
+
+    auto operator=( Mock_Controller && ) = delete;
+
+    auto operator=( Mock_Controller const & ) = delete;
+
+    auto handle() noexcept
+    {
+        return Handle{ *this };
+    }
+
+    MOCK_METHOD( void, disable_interrupt, () );
+    MOCK_METHOD( void, enable_interrupt, () );
+
+    MOCK_METHOD( void, save_interrupt_enable_state, () );
+    MOCK_METHOD( void, restore_interrupt_enable_state, () );
+};
+
 } // namespace picolibrary::Testing::Unit::Interrupt
 
 #endif // PICOLIBRARY_TESTING_UNIT_INTERRUPT_H
