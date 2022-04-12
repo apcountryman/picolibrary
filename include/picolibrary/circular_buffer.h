@@ -27,18 +27,39 @@ namespace picolibrary {
 
 /**
  * \brief picolibrary::Circular_Buffer single reader/writer access pattern.
+ *
+ * This access pattern supports the following use cases (assumes there is a main thread of
+ * execution and interrupts, and interrupts cannot interrupt one another):
+ * - The main thread of execution both writes to and reads from the circular buffer while
+ *   interrupts neither write to nor read from the circular buffer
+ * - Interrupts both write to and read from the circular buffer while the main thread of
+ *   execution neither writes to nor reads from the circular buffer
  */
 struct Single_Reader_Writer {
 };
 
 /**
  * \brief picolibrary::Circular_Buffer single reader, single writer access pattern.
+ *
+ * This access pattern supports the following use cases (assumes there is a main thread of
+ * execution and interrupts, and interrupts cannot interrupt one another):
+ * - The main thread of execution only writes to the circular buffer while interrupts only
+ *   read from the circular buffer
+ * - Interrupts only write to the circular buffer while the main thread of execution only
+ *   reads from the circular buffer
  */
 struct Single_Reader_Single_Writer {
 };
 
 /**
- * \brief picolibrary::Circular_Buffer single reader, multiple writers.
+ * \brief picolibrary::Circular_Buffer single reader, multiple writers access pattern.
+ *
+ * This access pattern supports the following use cases (assumes there is a main thread of
+ * execution and interrupts, and interrupts cannot interrupt one another):
+ * - The main thread of execution both write to and reads from the circular buffer while
+ *   interrupts only write to the circular buffer
+ * - Interrupts both write to and read from the circular buffer while the main thread of
+ *   execution only writes to the circular buffer
  */
 struct Single_Reader_Multiple_Writers {
 };
@@ -49,10 +70,11 @@ struct Single_Reader_Multiple_Writers {
  * \tparam T The circular buffer element type.
  * \tparam Size_Type The unsigned integer type used to track the number of elements in the
  *         circular buffer.
- * \tparam N The maximum number of elements in the circular buffer.
- * \tparam Access_Pattern The circular buffer access pattern
- *         (picolibrary::Single_Reader_Writer, picolibrary::Single_Reader_Single_Writer,
- *         or picolibrary::Single_Reader_Multiple_Writers).
+ * \tparam N The maximum number of elements in the circular buffer (must be a power of
+ *         two).
+ * \tparam Access_Pattern The circular buffer access pattern (must be
+ *         picolibrary::Single_Reader_Writer, picolibrary::Single_Reader_Single_Writer, or
+ *         picolibrary::Single_Reader_Multiple_Writers).
  * \tparam Interrupt_Controller The type of interrupt controller used to manipulate the
  *         interrupt enable state of any interrupts that interact with the circular buffer
  *         (must be void if Access_Pattern is picolibrary::Single_Reader_Writer).
