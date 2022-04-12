@@ -30,6 +30,7 @@ set(
     "picolibrary/asynchronous_serial.cc"
     "picolibrary/asynchronous_serial/stream.cc"
     "picolibrary/bit_manipulation.cc"
+    "picolibrary/circular_buffer.cc"
     "picolibrary/error.cc"
     "picolibrary/event.cc"
     "picolibrary/fixed_capacity_vector.cc"
