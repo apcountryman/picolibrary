@@ -32,8 +32,8 @@ namespace picolibrary {
  * execution and interrupts, and interrupts cannot interrupt one another):
  * - The main thread of execution both writes to and reads from the circular buffer while
  *   interrupts neither write to nor read from the circular buffer
- * - Interrupts both write to and read from the circular buffer while the main thread of
- *   execution neither writes to nor reads from the circular buffer
+ * - An interrupt both writes to and reads from the circular buffer while the main thread
+ *   of execution and other interrupts neither write to nor read from the circular buffer
  */
 struct Single_Reader_Writer {
 };
@@ -47,6 +47,8 @@ struct Single_Reader_Writer {
  *   read from the circular buffer
  * - Interrupts only write to the circular buffer while the main thread of execution only
  *   reads from the circular buffer
+ * - Interrupts both write to and read from the circular buffer while the main thread of
+ *   execution neither writes to nor reads from the circular buffer
  */
 struct Single_Reader_Single_Writer {
 };
