@@ -96,6 +96,24 @@ auto reflect( T value ) noexcept
     return static_cast<T>( result << remaining_shifts );
 }
 
+/**
+ * \brief Check if an unsigned integer is a power of two.
+ *
+ * \tparam T The type of unsigned integer the check will be performed on.
+ *
+ * \param[in] value The value to perform the check on.
+ *
+ * \return true if value is a power of two.
+ * \return false if value is not a power of two.
+ */
+template<typename T>
+constexpr auto is_power_of_two( T value ) noexcept -> bool
+{
+    static_assert( std::is_unsigned_v<T> );
+
+    return value != 0 and ( value & ( value - 1 ) ) == 0;
+}
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_BIT_MANIPULATION_H
