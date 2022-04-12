@@ -55,6 +55,7 @@ TEST( errorDescription, worksProperly )
         { Generic_Error::RUNTIME_ERROR,                    "RUNTIME_ERROR"                    },
         { Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT, "UNEXPECTED_EVENT_HANDLING_RESULT" },
         { Generic_Error::WOULD_OVERFLOW,                   "WOULD_OVERFLOW"                   },
+        { Generic_Error::WOULD_UNDERFLOW,                  "WOULD_UNDERFLOW"                  },
 
         // clang-format on
     };
@@ -68,7 +69,7 @@ TEST( errorDescription, worksProperly )
 
     EXPECT_STREQ(
         Generic_Error_Category::instance().error_description(
-            static_cast<Error_ID>( Generic_Error::WOULD_OVERFLOW ) + 1 ),
+            static_cast<Error_ID>( Generic_Error::WOULD_UNDERFLOW ) + 1 ),
         "UNKNOWN" );
 }
 
