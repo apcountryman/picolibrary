@@ -212,7 +212,7 @@ class Circular_Buffer<T, Size_Type, N, Single_Reader_Writer, void> {
      * \return true if the circular buffer is full.
      * \return false if the circular buffer is not full.
      */
-    auto full() const noexcept -> bool
+    [[nodiscard]] auto full() const noexcept -> bool
     {
         return size() == max_size();
     }
