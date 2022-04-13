@@ -54,6 +54,17 @@ struct Bypass_Precondition_Expectation_Checks {
  */
 constexpr auto BYPASS_PRECONDITION_EXPECTATION_CHECKS = Bypass_Precondition_Expectation_Checks{};
 
+/**
+ * \brief Run precondition expectation checks tag.
+ */
+struct Run_Precondition_Expectation_Checks {
+};
+
+/**
+ * \brief Run precondition expectation checks tag.
+ */
+constexpr auto RUN_PRECONDITION_EXPECTATION_CHECKS = Run_Precondition_Expectation_Checks{};
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_PRECONDITION_H
