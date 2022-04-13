@@ -179,7 +179,7 @@ class Circular_Buffer<T, Size_Type, N, Single_Reader_Writer, void> {
     auto back() noexcept -> Value &
     {
         return *std::launder( reinterpret_cast<Value *>(
-            &m_storage[ ( m_read - 1 ) & index_wrap_around_mask() ] ) );
+            &m_storage[ ( m_read + size() - 1 ) & index_wrap_around_mask() ] ) );
     }
 
     /**
@@ -193,7 +193,7 @@ class Circular_Buffer<T, Size_Type, N, Single_Reader_Writer, void> {
     auto back() const noexcept -> Value const &
     {
         return *std::launder( reinterpret_cast<Value const *>(
-            &m_storage[ ( m_read - 1 ) & index_wrap_around_mask() ] ) );
+            &m_storage[ ( m_read + size() - 1 ) & index_wrap_around_mask() ] ) );
     }
 
     /**
