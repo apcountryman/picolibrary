@@ -320,6 +320,23 @@ class Circular_Buffer<T, Size_Type, N, Single_Reader_Writer, void> {
     /**
      * \brief Emplace a value at the back of the circular buffer.
      *
+     * \pre not picolibrary::Circular_Buffer::full()
+     *
+     * \tparam Arguments Value construction argument types.
+     *
+     * \param[in] arguments Value construction arguments.
+     */
+    template<typename... Arguments>
+    void emplace( Run_Precondition_Expectation_Checks, Arguments &&... arguments ) noexcept
+    {
+        expect( not full(), Generic_Error::WOULD_OVERFLOW );
+
+        emplace( BYPASS_PRECONDITION_EXPECTATION_CHECKS, std::forward<Arguments>( arguments )... );
+    }
+
+    /**
+     * \brief Emplace a value at the back of the circular buffer.
+     *
      * \warning Calling this function on a full circular buffer results in undefined
      *          behavior.
      *
@@ -660,6 +677,23 @@ class Circular_Buffer<T, Size_Type, N, Single_Reader_Single_Writer, Interrupt_Co
     /**
      * \brief Emplace a value at the back of the circular buffer.
      *
+     * \pre not picolibrary::Circular_Buffer::full()
+     *
+     * \tparam Arguments Value construction argument types.
+     *
+     * \param[in] arguments Value construction arguments.
+     */
+    template<typename... Arguments>
+    void emplace( Run_Precondition_Expectation_Checks, Arguments &&... arguments ) noexcept
+    {
+        expect( not full(), Generic_Error::WOULD_OVERFLOW );
+
+        emplace( BYPASS_PRECONDITION_EXPECTATION_CHECKS, std::forward<Arguments>( arguments )... );
+    }
+
+    /**
+     * \brief Emplace a value at the back of the circular buffer.
+     *
      * \warning Calling this function on a full circular buffer results in undefined
      *          behavior.
      *
@@ -887,6 +921,24 @@ class Circular_Buffer<T, Size_Type, N, Single_Reader_Single_Writer, Interrupt_Co
      */
     template<typename... Arguments>
     void emplace_from_interrupt( Arguments &&... arguments ) noexcept
+    {
+        expect( not full_from_interrupt(), Generic_Error::WOULD_OVERFLOW );
+
+        emplace_from_interrupt(
+            BYPASS_PRECONDITION_EXPECTATION_CHECKS, std::forward<Arguments>( arguments )... );
+    }
+
+    /**
+     * \brief Emplace a value at the back of the circular buffer.
+     *
+     * \pre not picolibrary::Circular_Buffer::full_from_interrupt()
+     *
+     * \tparam Arguments Value construction argument types.
+     *
+     * \param[in] arguments Value construction arguments.
+     */
+    template<typename... Arguments>
+    void emplace_from_interrupt( Run_Precondition_Expectation_Checks, Arguments &&... arguments ) noexcept
     {
         expect( not full_from_interrupt(), Generic_Error::WOULD_OVERFLOW );
 
