@@ -142,12 +142,12 @@ class Circular_Buffer<T, Size_Type, N, Single_Reader_Writer, void> {
     auto operator=( Circular_Buffer const & ) = delete;
 
     /**
-     * \brief Access the first element of the circular buffer.
+     * \brief Access the element at the front of the circular buffer.
      *
      * \warning Calling this function on an empty circular buffer results in undefined
      *          behavior.
      *
-     * \return The first element of the circular buffer.
+     * \return The element at the front of the circular buffer.
      */
     auto front() noexcept -> Value &
     {
@@ -155,12 +155,12 @@ class Circular_Buffer<T, Size_Type, N, Single_Reader_Writer, void> {
     }
 
     /**
-     * \brief Access the first element of the circular buffer.
+     * \brief Access the element at the front of the circular buffer.
      *
      * \warning Calling this function on an empty circular buffer results in undefined
      *          behavior.
      *
-     * \return The first element of the circular buffer.
+     * \return The element at the front of the circular buffer.
      */
     auto front() const noexcept -> Value const &
     {
@@ -168,12 +168,12 @@ class Circular_Buffer<T, Size_Type, N, Single_Reader_Writer, void> {
     }
 
     /**
-     * \brief Access the last element of the circular buffer.
+     * \brief Access the element at the back of the circular buffer.
      *
      * \warning Calling this function on an empty circular buffer results in undefined
      *          behavior.
      *
-     * \return The last element of the circular buffer.
+     * \return The element at the back of the circular buffer.
      */
     auto back() noexcept -> Value &
     {
@@ -182,12 +182,12 @@ class Circular_Buffer<T, Size_Type, N, Single_Reader_Writer, void> {
     }
 
     /**
-     * \brief Access the last element of the circular buffer.
+     * \brief Access the element at the back of the circular buffer.
      *
      * \warning Calling this function on an empty circular buffer results in undefined
      *          behavior.
      *
-     * \return The last element of the circular buffer.
+     * \return The element at the back of the circular buffer.
      */
     auto back() const noexcept -> Value const &
     {
@@ -201,9 +201,9 @@ class Circular_Buffer<T, Size_Type, N, Single_Reader_Writer, void> {
      * \return true if the circular buffer is empty.
      * \return false if the circular buffer is not empty.
      */
-    auto empty() const noexcept -> bool
+    [[nodiscard]] auto empty() const noexcept -> bool
     {
-        return not size();
+        return size() == 0;
     }
 
     /**
