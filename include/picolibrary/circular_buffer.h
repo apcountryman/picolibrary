@@ -817,7 +817,7 @@ class Circular_Buffer<T, Size_Type, N, Single_Reader_Single_Writer, Interrupt_Co
     /**
      * \brief Insert a value at the back of the circular buffer.
      *
-     * \pre not picolibrary::Circular_Buffer::full()
+     * \pre not picolibrary::Circular_Buffer::full_from_interrupt()
      *
      * \param[in] value The value to insert.
      */
@@ -848,7 +848,7 @@ class Circular_Buffer<T, Size_Type, N, Single_Reader_Single_Writer, Interrupt_Co
     /**
      * \brief Insert a value at the back of the circular buffer.
      *
-     * \pre not picolibrary::Circular_Buffer::full()
+     * \pre not picolibrary::Circular_Buffer::full_from_interrupt()
      *
      * \param[in] value The value to insert.
      */
@@ -879,7 +879,7 @@ class Circular_Buffer<T, Size_Type, N, Single_Reader_Single_Writer, Interrupt_Co
     /**
      * \brief Emplace a value at the back of the circular buffer.
      *
-     * \pre not picolibrary::Circular_Buffer::full()
+     * \pre not picolibrary::Circular_Buffer::full_from_interrupt()
      *
      * \tparam Arguments Value construction argument types.
      *
@@ -917,7 +917,7 @@ class Circular_Buffer<T, Size_Type, N, Single_Reader_Single_Writer, Interrupt_Co
     /**
      * \brief Remove the element at the front of the circular buffer.
      *
-     * \pre not picolibrary::Circular_Buffer::empty()
+     * \pre not picolibrary::Circular_Buffer::empty_from_interrupt()
      */
     void pop_from_interrupt() noexcept
     {
