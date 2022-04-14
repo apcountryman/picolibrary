@@ -28,8 +28,8 @@ namespace picolibrary {
 /**
  * \brief Circular buffer use case.
  *
- * \attention These use cases assume that interrupts that interact with the circular
- *            buffer cannot be interrupted by other interrupts that interact with the same
+ * \attention These use cases assume that interrupts that interact with a circular buffer
+ *            cannot be interrupted by other interrupts that interact with the same
  *            circular buffer.
  */
 enum class Circular_Buffer_Use_Case {
@@ -87,10 +87,11 @@ enum class Circular_Buffer_Use_Case {
  *         circular buffer.
  * \tparam N The maximum number of elements in a circular buffer (must be a power of two).
  * \tparam USE_CASE The circular buffer use case.
- * \tparam Interrupt_Controller The type of interrupt controller used to manipulate the
- *         interrupt enable state of any interrupts that interact with a circular buffer
- *         (must be void if either only the main thread of execution interacts with a
- *         circular buffer or only interrupts interact with a circular buffer).
+ * \tparam Interrupt_Controller The type of interrupt controller used by the main thread
+ *         of execution to manipulate the interrupt enable state of any interrupts that
+ *         also interact with the circular buffer (must be void if either only the main
+ *         thread of execution interacts with a circular buffer or only interrupts
+ *         interact with a circular buffer).
  */
 template<typename T, typename Size_Type, Size_Type N, Circular_Buffer_Use_Case USE_CASE, typename Interrupt_Controller = void>
 class Circular_Buffer;
