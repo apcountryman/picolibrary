@@ -47,13 +47,6 @@ enum class Circular_Buffer_Use_Case {
     INTERRUPT_READS_WRITES,
 
     /**
-     * An interrupt reads from the circular buffer. One or more other interrupts write to
-     * the circular buffer. The main thread of execution does not interact with the
-     * circular buffer.
-     */
-    INTERRUPT_READS_INTERRUPT_WRITES,
-
-    /**
      * The main thread of execution reads from the circular buffer. One or more interrupts
      * write to the circular buffer.
      */
@@ -64,6 +57,13 @@ enum class Circular_Buffer_Use_Case {
      * the circular buffer. The main thread of execution writes to the circular buffer.
      */
     INTERRUPT_READS_MAIN_WRITES,
+
+    /**
+     * An interrupt reads from the circular buffer. One or more other interrupts write to
+     * the circular buffer. The main thread of execution does not interact with the
+     * circular buffer.
+     */
+    INTERRUPT_READS_INTERRUPT_WRITES,
 
     /**
      * The main thread of execution reads from and writes to the circular buffer. One or
