@@ -23,6 +23,8 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_INTERRUPT_H
 #define PICOLIBRARY_TESTING_UNIT_INTERRUPT_H
 
+#include <cstdint>
+
 #include "gmock/gmock.h"
 #include "picolibrary/testing/unit/mock_handle.h"
 
@@ -36,8 +38,12 @@ namespace picolibrary::Testing::Unit::Interrupt {
  */
 class Mock_Controller {
   public:
+    using Interrupt_Enable_State = std::uint_fast8_t;
+
     class Handle : public Mock_Handle<Mock_Controller> {
       public:
+        using Interrupt_Enable_State = Mock_Controller::Interrupt_Enable_State;
+
         constexpr Handle() noexcept = default;
 
         constexpr Handle( Mock_Controller & mock ) noexcept :
@@ -65,14 +71,14 @@ class Mock_Controller {
             mock().enable_interrupt();
         }
 
-        void save_interrupt_enable_state() noexcept
+        auto save_interrupt_enable_state() const noexcept -> Interrupt_Enable_State
         {
-            mock().save_interrupt_enable_state();
+            return mock().save_interrupt_enable_state();
         }
 
-        void restore_interrupt_enable_state() noexcept
+        void restore_interrupt_enable_state( Interrupt_Enable_State interrupt_enable_state ) noexcept
         {
-            mock().restore_interrupt_enable_state();
+            mock().restore_interrupt_enable_state( interrupt_enable_state );
         }
     };
 
@@ -96,8 +102,8 @@ class Mock_Controller {
     MOCK_METHOD( void, disable_interrupt, () );
     MOCK_METHOD( void, enable_interrupt, () );
 
-    MOCK_METHOD( void, save_interrupt_enable_state, () );
-    MOCK_METHOD( void, restore_interrupt_enable_state, () );
+    MOCK_METHOD( Interrupt_Enable_State, save_interrupt_enable_state, (), ( const ) );
+    MOCK_METHOD( void, restore_interrupt_enable_state, ( Interrupt_Enable_State ) );
 };
 
 } // namespace picolibrary::Testing::Unit::Interrupt
