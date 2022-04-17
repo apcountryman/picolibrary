@@ -24,13 +24,16 @@
 #include "gtest/gtest.h"
 #include "picolibrary/interrupt.h"
 #include "picolibrary/testing/unit/interrupt.h"
+#include "picolibrary/testing/unit/random.h"
 
 namespace {
 
 using ::picolibrary::Interrupt::Critical_Section_Guard;
 using ::picolibrary::Interrupt::ENABLE_INTERRUPT;
 using ::picolibrary::Interrupt::RESTORE_INTERRUPT_ENABLE_STATE;
+using ::picolibrary::Testing::Unit::random;
 using ::picolibrary::Testing::Unit::Interrupt::Mock_Controller;
+using ::testing::Return;
 
 } // namespace
 
@@ -42,12 +45,14 @@ TEST( criticalSectionGuard, worksProperly )
     {
         auto controller = Mock_Controller{};
 
-        EXPECT_CALL( controller, save_interrupt_enable_state() );
+        auto const interrupt_enable_state = random<Mock_Controller::Interrupt_Enable_State>();
+
+        EXPECT_CALL( controller, save_interrupt_enable_state() ).WillOnce( Return( interrupt_enable_state ) );
         EXPECT_CALL( controller, disable_interrupt() );
 
-        auto guard = Critical_Section_Guard{ controller, RESTORE_INTERRUPT_ENABLE_STATE };
+        auto const guard = Critical_Section_Guard{ controller, RESTORE_INTERRUPT_ENABLE_STATE };
 
-        EXPECT_CALL( controller, restore_interrupt_enable_state() );
+        EXPECT_CALL( controller, restore_interrupt_enable_state( interrupt_enable_state ) );
     }
 
     {
@@ -55,7 +60,7 @@ TEST( criticalSectionGuard, worksProperly )
 
         EXPECT_CALL( controller, disable_interrupt() );
 
-        auto guard = Critical_Section_Guard{ controller, ENABLE_INTERRUPT };
+        auto const guard = Critical_Section_Guard{ controller, ENABLE_INTERRUPT };
 
         EXPECT_CALL( controller, enable_interrupt() );
     }
