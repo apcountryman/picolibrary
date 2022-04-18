@@ -1335,7 +1335,7 @@ class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::INTERRUPT_READS
  *         two).
  */
 template<typename T, typename Size_Type, Size_Type N>
-class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::MAIN_READS_INTERRUPTS_WRITE, void> {
+class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::INTERRUPT_READS_INTERRUPTS_WRITE, void> {
   public:
     static_assert( std::is_trivially_destructible_v<T> );
 
