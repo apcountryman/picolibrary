@@ -24,7 +24,7 @@
 #define PICOLIBRARY_ADC_H
 
 /**
- * \brief General Analog-to-Digital Converter (ADC) facilities.
+ * \brief Analog-to-Digital Converter (ADC) facilities.
  */
 namespace picolibrary::ADC {
 } // namespace picolibrary::ADC
