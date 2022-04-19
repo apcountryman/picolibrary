@@ -82,6 +82,7 @@ if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
     list(
         APPEND PICOLIBRARY_SOURCE_FILES
         "picolibrary/testing/unit.cc"
+        "picolibrary/testing/unit/adc.cc"
         "picolibrary/testing/unit/asynchronous_serial.cc"
         "picolibrary/testing/unit/error.cc"
         "picolibrary/testing/unit/event.cc"
