@@ -25,6 +25,7 @@ configure_file(
 set(
     PICOLIBRARY_SOURCE_FILES
     "picolibrary.cc"
+    "picolibrary/adc.cc"
     "picolibrary/algorithm.cc"
     "picolibrary/array.cc"
     "picolibrary/asynchronous_serial.cc"
