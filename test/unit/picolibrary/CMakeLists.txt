@@ -16,6 +16,9 @@
 # File: test/unit/picolibrary/CMakeLists.txt
 # Description: picolibrary unit tests CMake rules.
 
+# build the picolibrary::ADC unit tests
+add_subdirectory( adc )
+
 # build the picolibrary algorithm unit tests
 add_subdirectory( algorithm )
 
