@@ -326,7 +326,7 @@ class Blocking_Single_Sample_Converter_Concept {
      *
      * \return The sample.
      */
-    auto sample() const noexcept -> Sample;
+    auto sample() noexcept -> Sample;
 };
 
 } // namespace picolibrary::ADC
