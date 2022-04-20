@@ -579,6 +579,83 @@ class Mock_Non_Blocking_Single_Sample_Converter {
     MOCK_METHOD( Sample, sample, () );
 };
 
+/**
+ * \brief Mock blocking, free running ADC.
+ *
+ * \tparam T The sample unsigned integer representation.
+ * \tparam N The number of bits in the sample.
+ */
+template<typename T, std::uint_fast8_t N>
+class Mock_Blocking_Free_Running_Converter {
+  public:
+    using Sample = ::picolibrary::ADC::Sample<T, N>;
+
+    class Handle : public Mock_Handle<Mock_Blocking_Free_Running_Converter> {
+      public:
+        using Sample = Mock_Blocking_Free_Running_Converter::Sample;
+
+        constexpr Handle() noexcept = default;
+
+        constexpr Handle( Mock_Blocking_Free_Running_Converter & mock ) noexcept :
+            Mock_Handle<Mock_Blocking_Free_Running_Converter>{ mock }
+        {
+        }
+
+        constexpr Handle( Handle && source ) noexcept = default;
+
+        Handle( Handle const & ) = delete;
+
+        ~Handle() noexcept = default;
+
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
+
+        auto operator=( Handle const & ) = delete;
+
+        void initialize()
+        {
+            Mock_Handle<Mock_Blocking_Free_Running_Converter>::mock().initialize();
+        }
+
+        void start_converter()
+        {
+            Mock_Handle<Mock_Blocking_Free_Running_Converter>::mock().start_converter();
+        }
+
+        void stop_converter()
+        {
+            Mock_Handle<Mock_Blocking_Free_Running_Converter>::mock().stop_converter();
+        }
+
+        auto sample() -> Sample
+        {
+            return Mock_Handle<Mock_Blocking_Free_Running_Converter>::mock.sample();
+        }
+    };
+
+    Mock_Blocking_Free_Running_Converter() = default;
+
+    Mock_Blocking_Free_Running_Converter( Mock_Blocking_Free_Running_Converter && ) = delete;
+
+    Mock_Blocking_Free_Running_Converter( Mock_Blocking_Free_Running_Converter const & ) = delete;
+
+    ~Mock_Blocking_Free_Running_Converter() noexcept = default;
+
+    auto operator=( Mock_Blocking_Free_Running_Converter && ) = delete;
+
+    auto operator=( Mock_Blocking_Free_Running_Converter const & ) = delete;
+
+    auto handle() noexcept
+    {
+        return Handle{ *this };
+    }
+
+    MOCK_METHOD( void, initialize, () );
+
+    MOCK_METHOD( void, start_converter, () );
+    MOCK_METHOD( void, stop_converter, () );
+    MOCK_METHOD( Sample, sample, () );
+};
+
 } // namespace picolibrary::Testing::Unit::ADC
 
 #endif // PICOLIBRARY_TESTING_UNIT_ADC_H
