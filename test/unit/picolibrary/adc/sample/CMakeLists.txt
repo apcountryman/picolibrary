@@ -13,8 +13,22 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/adc/CMakeLists.txt
-# Description: picolibrary::ADC unit tests CMake rules.
+# File: test/unit/picolibrary/adc/sample/CMakeLists.txt
+# Description: picolibrary::ADC::Sample unit tests CMake rules.
 
 # build the picolibrary::ADC::Sample unit tests
-add_subdirectory( sample )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+    add_executable(
+        test-unit-picolibrary-adc-sample
+        main.cc
+    )
+    target_link_libraries(
+        test-unit-picolibrary-adc-sample
+        picolibrary
+        picolibrary-testing-unit-fatal_error
+    )
+    add_test(
+        NAME    test-unit-picolibrary-adc-sample
+        COMMAND test-unit-picolibrary-adc-sample --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
