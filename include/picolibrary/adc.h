@@ -275,6 +275,60 @@ constexpr auto operator>=( Sample<T, N> lhs, Sample<T, N> rhs ) noexcept -> bool
     return not( lhs < rhs );
 }
 
+/**
+ * \brief Blocking, single sample ADC concept.
+ */
+class Blocking_Single_Sample_Converter_Concept {
+  public:
+    /**
+     * \brief Sample.
+     */
+    using Sample = ::picolibrary::ADC::Sample<std::uint_fast8_t, 8>;
+
+    /**
+     * \brief Constructor.
+     */
+    Blocking_Single_Sample_Converter_Concept() noexcept;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Blocking_Single_Sample_Converter_Concept( Blocking_Single_Sample_Converter_Concept && source ) noexcept;
+
+    Blocking_Single_Sample_Converter_Concept( Blocking_Single_Sample_Converter_Concept const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Blocking_Single_Sample_Converter_Concept() noexcept;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Blocking_Single_Sample_Converter_Concept && expression ) noexcept
+        -> Blocking_Single_Sample_Converter_Concept &;
+
+    auto operator=( Blocking_Single_Sample_Converter_Concept const & ) = delete;
+
+    /**
+     * \brief Initialize the ADC's hardware.
+     */
+    void initialize() noexcept;
+
+    /**
+     * \brief Get a sample.
+     *
+     * \return The sample.
+     */
+    auto sample() const noexcept -> Sample;
+};
+
 } // namespace picolibrary::ADC
 
 #endif // PICOLIBRARY_ADC_H
