@@ -396,6 +396,70 @@ class Non_Blocking_Single_Sample_Converter_Concept {
     auto sample() noexcept -> Sample;
 };
 
+/**
+ * \brief Blocking, free running ADC concept.
+ */
+class Blocking_Free_Running_Converter_Concept {
+  public:
+    /**
+     * \brief Sample.
+     */
+    using Sample = ::picolibrary::ADC::Sample<std::uint_fast8_t, 8>;
+
+    /**
+     * \brief Constructor.
+     */
+    Blocking_Free_Running_Converter_Concept() noexcept;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Blocking_Free_Running_Converter_Concept( Blocking_Free_Running_Converter_Concept && source ) noexcept;
+
+    Blocking_Free_Running_Converter_Concept( Blocking_Free_Running_Converter_Concept const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Blocking_Free_Running_Converter_Concept() noexcept;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Blocking_Free_Running_Converter_Concept && expression ) noexcept
+        -> Blocking_Free_Running_Converter_Concept &;
+
+    auto operator=( Blocking_Free_Running_Converter_Concept const & ) = delete;
+
+    /**
+     * \brief Initialize the ADC's hardware.
+     */
+    void initialize() noexcept;
+
+    /**
+     * \brief Start the ADC.
+     */
+    void start_converter() noexcept;
+
+    /**
+     * \brief Stop the ADC.
+     */
+    void stop_converter() noexcept;
+
+    /**
+     * \brief Get a sample.
+     *
+     * \return The sample.
+     */
+    auto sample() noexcept -> Sample;
+};
+
 } // namespace picolibrary::ADC
 
 #endif // PICOLIBRARY_ADC_H
