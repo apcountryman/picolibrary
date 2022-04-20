@@ -25,7 +25,9 @@
 
 #include <cstdint>
 
+#include "gmock/gmock.h"
 #include "picolibrary/adc.h"
+#include "picolibrary/testing/unit/mock_handle.h"
 #include "picolibrary/testing/unit/random.h"
 
 namespace picolibrary::Testing::Unit {
@@ -434,6 +436,72 @@ inline auto random<ADC::Sample<std::uint_fast32_t, 24>>()
  * \brief Analog-to-Digital Converter (ADC) unit testing facilities.
  */
 namespace picolibrary::Testing::Unit::ADC {
+
+/**
+ * \brief Mock blocking, single sample ADC.
+ *
+ * \tparam T The sample unsigned integer representation.
+ * \tparam N The number of bits in the sample.
+ */
+template<typename T, std::uint_fast8_t N>
+class Mock_Blocking_Single_Sample_Converter {
+  public:
+    using Sample = ::picolibrary::ADC::Sample<T, N>;
+
+    class Handle : public Mock_Handle<Mock_Blocking_Single_Sample_Converter> {
+      public:
+        using Sample = Mock_Blocking_Single_Sample_Converter::Sample;
+
+        constexpr Handle() noexcept = default;
+
+        constexpr Handle( Mock_Blocking_Single_Sample_Converter & mock ) noexcept :
+            Mock_Handle<Mock_Blocking_Single_Sample_Converter>{ mock }
+        {
+        }
+
+        constexpr Handle( Handle && source ) noexcept = default;
+
+        Handle( Handle const & ) = delete;
+
+        ~Handle() noexcept = default;
+
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
+
+        auto operator=( Handle const & ) = delete;
+
+        void initialize()
+        {
+            Mock_Handle<Mock_Blocking_Single_Sample_Converter>::mock().initialize();
+        }
+
+        auto sample() const -> Sample
+        {
+            return Mock_Handle<Mock_Blocking_Single_Sample_Converter>::mock.sample();
+        }
+    };
+
+    Mock_Blocking_Single_Sample_Converter() = default;
+
+    Mock_Blocking_Single_Sample_Converter( Mock_Blocking_Single_Sample_Converter && ) = delete;
+
+    Mock_Blocking_Single_Sample_Converter( Mock_Blocking_Single_Sample_Converter const & ) = delete;
+
+    ~Mock_Blocking_Single_Sample_Converter() noexcept = default;
+
+    auto operator=( Mock_Blocking_Single_Sample_Converter && ) = delete;
+
+    auto operator=( Mock_Blocking_Single_Sample_Converter const & ) = delete;
+
+    auto handle() noexcept
+    {
+        return Handle{ *this };
+    }
+
+    MOCK_METHOD( void, initialize, () );
+
+    MOCK_METHOD( Sample, sample, (), ( const ) );
+};
+
 } // namespace picolibrary::Testing::Unit::ADC
 
 #endif // PICOLIBRARY_TESTING_UNIT_ADC_H
