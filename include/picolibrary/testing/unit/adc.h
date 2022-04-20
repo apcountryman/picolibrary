@@ -474,7 +474,7 @@ class Mock_Blocking_Single_Sample_Converter {
             Mock_Handle<Mock_Blocking_Single_Sample_Converter>::mock().initialize();
         }
 
-        auto sample() const -> Sample
+        auto sample() -> Sample
         {
             return Mock_Handle<Mock_Blocking_Single_Sample_Converter>::mock.sample();
         }
@@ -499,7 +499,7 @@ class Mock_Blocking_Single_Sample_Converter {
 
     MOCK_METHOD( void, initialize, () );
 
-    MOCK_METHOD( Sample, sample, (), ( const ) );
+    MOCK_METHOD( Sample, sample, () );
 };
 
 } // namespace picolibrary::Testing::Unit::ADC
