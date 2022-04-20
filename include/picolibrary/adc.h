@@ -329,6 +329,73 @@ class Blocking_Single_Sample_Converter_Concept {
     auto sample() noexcept -> Sample;
 };
 
+/**
+ * \brief Non-blocking, single sample ADC concept.
+ */
+class Non_Blocking_Single_Sample_Converter_Concept {
+  public:
+    /**
+     * \brief Sample.
+     */
+    using Sample = ::picolibrary::ADC::Sample<std::uint_fast8_t, 8>;
+
+    /**
+     * \brief Constructor.
+     */
+    Non_Blocking_Single_Sample_Converter_Concept() noexcept;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Non_Blocking_Single_Sample_Converter_Concept( Non_Blocking_Single_Sample_Converter_Concept && source ) noexcept;
+
+    Non_Blocking_Single_Sample_Converter_Concept( Non_Blocking_Single_Sample_Converter_Concept const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Non_Blocking_Single_Sample_Converter_Concept() noexcept;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Non_Blocking_Single_Sample_Converter_Concept && expression ) noexcept
+        -> Non_Blocking_Single_Sample_Converter_Concept &;
+
+    auto operator=( Non_Blocking_Single_Sample_Converter_Concept const & ) = delete;
+
+    /**
+     * \brief Initialize the ADC's hardware.
+     */
+    void initialize() noexcept;
+
+    /**
+     * \brief Initiate a conversion.
+     */
+    void initiate_conversion() noexcept;
+
+    /**
+     * \brief Check if a sample is available.
+     *
+     * \return true if a sample is available.
+     * \return false if a sample is not available.
+     */
+    auto sample_is_available() const noexcept -> bool;
+
+    /**
+     * \brief Get a sample.
+     *
+     * \return The sample.
+     */
+    auto sample() noexcept -> Sample;
+};
+
 } // namespace picolibrary::ADC
 
 #endif // PICOLIBRARY_ADC_H
