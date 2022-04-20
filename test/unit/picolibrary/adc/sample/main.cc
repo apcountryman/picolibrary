@@ -50,7 +50,7 @@ auto random_unique_unsigned_integer_pair()
     auto const a = random_unsigned_integer<Sample>();
     auto const b = random_unsigned_integer<Sample>();
 
-    return std::pair<Sample, Sample>{ a, b != a ? b : b ^ random_unsigned_integer<Sample>( 1 ) };
+    return std::pair<typename Sample::Unsigned_Integer, typename Sample::Unsigned_Integer>{ a, b != a ? b : b ^ random_unsigned_integer<Sample>( 1 ) };
 }
 
 } // namespace
