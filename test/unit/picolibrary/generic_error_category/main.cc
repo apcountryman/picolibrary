@@ -23,12 +23,14 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/error.h"
+#include "picolibrary/utility.h"
 
 namespace {
 
 using ::picolibrary::Error_ID;
 using ::picolibrary::Generic_Error;
 using ::picolibrary::Generic_Error_Category;
+using ::picolibrary::to_underlying;
 
 } // namespace
 
@@ -62,14 +64,13 @@ TEST( errorDescription, worksProperly )
 
     for ( auto const test_case : test_cases ) {
         EXPECT_STREQ(
-            Generic_Error_Category::instance().error_description(
-                static_cast<Error_ID>( test_case.id ) ),
+            Generic_Error_Category::instance().error_description( to_underlying( test_case.id ) ),
             test_case.description );
     } // for
 
     EXPECT_STREQ(
         Generic_Error_Category::instance().error_description(
-            static_cast<Error_ID>( Generic_Error::WOULD_UNDERFLOW ) + 1 ),
+            to_underlying( Generic_Error::WOULD_UNDERFLOW ) + 1 ),
         "UNKNOWN" );
 }
 

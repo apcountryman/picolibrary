@@ -23,15 +23,16 @@
 #include "picolibrary/state_machine.h"
 
 #include "picolibrary/event.h"
+#include "picolibrary/utility.h"
 
 namespace picolibrary {
 
 State_Machine::Pseudo_Event_Category const State_Machine::Pseudo_Event_Category::INSTANCE{};
 
 Simple_Event const State_Machine::ENTRY{ Pseudo_Event_Category::instance(),
-                                         static_cast<Event_ID>( Pseudo_Event::ENTRY ) };
+                                         to_underlying( Pseudo_Event::ENTRY ) };
 
 Simple_Event const State_Machine::EXIT{ Pseudo_Event_Category::instance(),
-                                        static_cast<Event_ID>( Pseudo_Event::EXIT ) };
+                                        to_underlying( Pseudo_Event::EXIT ) };
 
 } // namespace picolibrary

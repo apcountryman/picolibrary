@@ -35,6 +35,7 @@
 #include "picolibrary/testing/unit/error.h"
 #include "picolibrary/testing/unit/random.h"
 #include "picolibrary/testing/unit/stream.h"
+#include "picolibrary/utility.h"
 #include "picolibrary/void.h"
 
 namespace {
@@ -44,6 +45,7 @@ using ::picolibrary::Error_ID;
 using ::picolibrary::Generic_Error;
 using ::picolibrary::Output_Stream;
 using ::picolibrary::Result;
+using ::picolibrary::to_underlying;
 using ::picolibrary::Void;
 using ::picolibrary::Testing::Unit::Mock_Error;
 using ::picolibrary::Testing::Unit::Mock_Error_Category;
@@ -711,7 +713,7 @@ TEST( outputFormatterErrorCode, worksProperly )
 
     EXPECT_CALL( Mock_Error_Category::instance(), name() )
         .WillOnce( Return( error_category_name.c_str() ) );
-    EXPECT_CALL( Mock_Error_Category::instance(), error_description( static_cast<Error_ID>( error ) ) )
+    EXPECT_CALL( Mock_Error_Category::instance(), error_description( to_underlying( error ) ) )
         .WillOnce( Return( error_description.c_str() ) );
 
     auto const result = stream.print( "{}", Error_Code{ error } );
@@ -767,7 +769,7 @@ TEST( outputFormatterErrorCodeEnum, worksProperly )
 
     EXPECT_CALL( Mock_Error_Category::instance(), name() )
         .WillOnce( Return( error_category_name.c_str() ) );
-    EXPECT_CALL( Mock_Error_Category::instance(), error_description( static_cast<Error_ID>( error ) ) )
+    EXPECT_CALL( Mock_Error_Category::instance(), error_description( to_underlying( error ) ) )
         .WillOnce( Return( error_description.c_str() ) );
 
     auto const result = stream.print( "{}", error );
