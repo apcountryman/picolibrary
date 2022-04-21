@@ -54,7 +54,7 @@ void sample( Output_Stream & stream, Blocking_Single_Sample_Converter adc, Delay
 
     {
         auto const result = stream.print(
-            "ADC sample range: [{}, {}]\n",
+            "ADC sample range: [{},{}]\n",
             Format::Decimal{ Blocking_Single_Sample_Converter::Sample::min().as_unsigned_integer() },
             Format::Decimal{ Blocking_Single_Sample_Converter::Sample::max().as_unsigned_integer() } );
         expect( not result.is_error(), result.error() );
