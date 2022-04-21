@@ -51,6 +51,7 @@ set(
     "picolibrary/spi.cc"
     "picolibrary/state_machine.cc"
     "picolibrary/stream.cc"
+    "picolibrary/utility.cc"
     "picolibrary/void.cc"
 )
 set( PICOLIBRARY_LINK_LIBRARIES )
