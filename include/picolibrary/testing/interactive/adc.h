@@ -23,10 +23,57 @@
 #ifndef PICOLIBRARY_TESTING_INTERACTIVE_ADC_H
 #define PICOLIBRARY_TESTING_INTERACTIVE_ADC_H
 
+#include "picolibrary/format.h"
+#include "picolibrary/precondition.h"
+#include "picolibrary/stream.h"
+
 /**
  * \brief Analog-to-Digital Converter (ADC) interactive testing facilities.
  */
 namespace picolibrary::Testing::Interactive::ADC {
+
+/**
+ * \brief Blocking, single sample ADC sample interactive test helper.
+ *
+ * \tparam Blocking_Single_Sample_Converter The type of blocking, single sample ADC to use
+ *         to get the samples.
+ * \tparam Delayer A nullary functor called to introduce a delay each time a sample is
+ *         gotten.
+ *
+ * \param[in] stream The output stream to write the samples to.
+ * \param[in] adc The ADC to use to get the samples.
+ * \param[in] delay The nullary functor to call to introduce a delay each time a sample is
+ *            gotten.
+ */
+template<typename Blocking_Single_Sample_Converter, typename Delayer>
+void sample( Output_Stream & stream, Blocking_Single_Sample_Converter adc, Delayer delay ) noexcept
+{
+    adc.initialize();
+
+    {
+        auto const result = stream.print(
+            "ADC sample range: [{}, {}]\n",
+            Format::Decimal{ Blocking_Single_Sample_Converter::Sample::min().as_unsigned_integer() },
+            Format::Decimal{ Blocking_Single_Sample_Converter::Sample::max().as_unsigned_integer() } );
+        expect( not result.is_error(), result.error() );
+    }
+
+    for ( ;; ) {
+        delay();
+
+        {
+            auto const result = stream.print(
+                "{}\n", Format::Decimal{ adc.sample().as_unsigned_integer() } );
+            expect( not result.is_error(), result.error() );
+        }
+
+        {
+            auto const result = stream.flush();
+            expect( not result.is_error(), result.error() );
+        }
+    } // for
+}
+
 } // namespace picolibrary::Testing::Interactive::ADC
 
 #endif // PICOLIBRARY_TESTING_INTERACTIVE_ADC_H
