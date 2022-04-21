@@ -26,6 +26,7 @@
 #include <cstdint>
 #include <type_traits>
 
+#include "picolibrary/utility.h"
 #include "picolibrary/void.h"
 
 namespace picolibrary {
@@ -461,7 +462,7 @@ class Generic_Error_Category final : public Error_Category {
  */
 inline auto make_error_code( Generic_Error error ) noexcept
 {
-    return Error_Code{ Generic_Error_Category::instance(), static_cast<Error_ID>( error ) };
+    return Error_Code{ Generic_Error_Category::instance(), to_underlying( error ) };
 }
 
 /**

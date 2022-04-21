@@ -28,6 +28,7 @@
 #include "gmock/gmock.h"
 #include "picolibrary/error.h"
 #include "picolibrary/testing/unit/random.h"
+#include "picolibrary/utility.h"
 
 namespace picolibrary::Testing::Unit {
 
@@ -91,7 +92,7 @@ class Mock_Error_Category : public Error_Category {
  */
 inline auto make_error_code( Mock_Error error ) noexcept
 {
-    return Error_Code{ Mock_Error_Category::instance(), static_cast<Error_ID>( error ) };
+    return Error_Code{ Mock_Error_Category::instance(), to_underlying( error ) };
 }
 
 } // namespace picolibrary::Testing::Unit

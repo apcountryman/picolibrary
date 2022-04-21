@@ -23,21 +23,21 @@
 #include "picolibrary/hsm.h"
 
 #include "picolibrary/event.h"
+#include "picolibrary/utility.h"
 
 namespace picolibrary {
 
 HSM::Pseudo_Event_Category const HSM::Pseudo_Event_Category::INSTANCE{};
 
 Simple_Event const HSM::DISCOVERY{ Pseudo_Event_Category::instance(),
-                                   static_cast<Event_ID>( Pseudo_Event::DISCOVERY ) };
+                                   to_underlying( Pseudo_Event::DISCOVERY ) };
 
 Simple_Event const HSM::ENTRY{ Pseudo_Event_Category::instance(),
-                               static_cast<Event_ID>( Pseudo_Event::ENTRY ) };
+                               to_underlying( Pseudo_Event::ENTRY ) };
 
-Simple_Event const HSM::EXIT{ Pseudo_Event_Category::instance(),
-                              static_cast<Event_ID>( Pseudo_Event::EXIT ) };
+Simple_Event const HSM::EXIT{ Pseudo_Event_Category::instance(), to_underlying( Pseudo_Event::EXIT ) };
 
 Simple_Event const HSM::NESTED_INITIAL_TRANSITION{ Pseudo_Event_Category::instance(),
-                                                   static_cast<Event_ID>( Pseudo_Event::NESTED_INITIAL_TRANSITION ) };
+                                                   to_underlying( Pseudo_Event::NESTED_INITIAL_TRANSITION ) };
 
 } // namespace picolibrary

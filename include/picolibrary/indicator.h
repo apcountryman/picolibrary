@@ -26,6 +26,7 @@
 #include <cstdint>
 
 #include "picolibrary/gpio.h"
+#include "picolibrary/utility.h"
 
 /**
  * \brief Indicator facilities.
@@ -117,14 +118,14 @@ class GPIO_Output_Pin_Fixed_Intensity_Indicator : public GPIO_Output_Pin {
     void initialize( Initial_Indicator_State initial_indicator_state = Initial_Indicator_State::EXTINGUISHED ) noexcept
     {
         static_assert(
-            static_cast<std::uint_fast8_t>( Initial_Indicator_State::EXTINGUISHED )
-            == static_cast<std::uint_fast8_t>( GPIO::Initial_Pin_State::LOW ) );
+            to_underlying( Initial_Indicator_State::EXTINGUISHED )
+            == to_underlying( GPIO::Initial_Pin_State::LOW ) );
         static_assert(
-            static_cast<std::uint_fast8_t>( Initial_Indicator_State::ILLUMINATED )
-            == static_cast<std::uint_fast8_t>( GPIO::Initial_Pin_State::HIGH ) );
+            to_underlying( Initial_Indicator_State::ILLUMINATED )
+            == to_underlying( GPIO::Initial_Pin_State::HIGH ) );
 
-        GPIO_Output_Pin::initialize( static_cast<GPIO::Initial_Pin_State>(
-            static_cast<std::uint_fast8_t>( initial_indicator_state ) ) );
+        GPIO_Output_Pin::initialize(
+            static_cast<GPIO::Initial_Pin_State>( to_underlying( initial_indicator_state ) ) );
     }
 
     /**

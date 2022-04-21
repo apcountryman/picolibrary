@@ -30,6 +30,7 @@
 #include "picolibrary/microchip/mcp23x08.h"
 #include "picolibrary/precondition.h"
 #include "picolibrary/spi.h"
+#include "picolibrary/utility.h"
 
 /**
  * \brief Microchip MCP23S08 facilities.
@@ -603,7 +604,7 @@ class Communication_Controller : public Device {
 
         auto const guard = SPI::Device_Selection_Guard{ this->device_selector() };
 
-        this->transmit( m_address.as_unsigned_integer() | static_cast<std::uint8_t>( Operation::READ ) );
+        this->transmit( m_address.as_unsigned_integer() | to_underlying( Operation::READ ) );
         this->transmit( register_address );
         return this->receive();
     }
@@ -620,7 +621,7 @@ class Communication_Controller : public Device {
 
         auto const guard = SPI::Device_Selection_Guard{ this->device_selector() };
 
-        this->transmit( m_address.as_unsigned_integer() | static_cast<std::uint8_t>( Operation::WRITE ) );
+        this->transmit( m_address.as_unsigned_integer() | to_underlying( Operation::WRITE ) );
         this->transmit( register_address );
         this->transmit( data );
     }
