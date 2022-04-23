@@ -23,10 +23,36 @@
 #ifndef PICOLIBRARY_MICROCHIP_MCP3008_H
 #define PICOLIBRARY_MICROCHIP_MCP3008_H
 
+#include <cstdint>
+
 /**
  * \brief Microchip MCP3008 facilities.
  */
 namespace picolibrary::Microchip::MCP3008 {
+
+/**
+ * \brief Input.
+ */
+enum class Input : std::uint8_t {
+    CH0 = 0b1'000'0000, ///< Single-ended, CH0.
+    CH1 = 0b1'001'0000, ///< Single-ended, CH1.
+    CH2 = 0b1'010'0000, ///< Single-ended, CH2.
+    CH3 = 0b1'011'0000, ///< Single-ended, CH3.
+    CH4 = 0b1'100'0000, ///< Single-ended, CH4.
+    CH5 = 0b1'101'0000, ///< Single-ended, CH5.
+    CH6 = 0b1'110'0000, ///< Single-ended, CH6.
+    CH7 = 0b1'111'0000, ///< Single-ended, CH7.
+
+    CH0_RELATIVE_TO_CH1 = 0b0'000'0000, ///< Differential, CH0 relative to CH1.
+    CH1_RELATIVE_TO_CH0 = 0b0'001'0000, ///< Differential, CH1 relative to CH0.
+    CH2_RELATIVE_TO_CH3 = 0b0'010'0000, ///< Differential, CH2 relative to CH3.
+    CH3_RELATIVE_TO_CH2 = 0b0'011'0000, ///< Differential, CH3 relative to CH2.
+    CH4_RELATIVE_TO_CH5 = 0b0'100'0000, ///< Differential, CH4 relative to CH5.
+    CH5_RELATIVE_TO_CH4 = 0b0'101'0000, ///< Differential, CH5 relative to CH4.
+    CH6_RELATIVE_TO_CH7 = 0b0'110'0000, ///< Differential, CH6 relative to CH7.
+    CH7_RELATIVE_TO_CH6 = 0b0'111'0000, ///< Differential, CH7 relative to CH6.
+};
+
 } // namespace picolibrary::Microchip::MCP3008
 
 #endif // PICOLIBRARY_MICROCHIP_MCP3008_H
