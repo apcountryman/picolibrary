@@ -25,6 +25,8 @@
 
 #include <cstdint>
 
+#include "picolibrary/adc.h"
+
 /**
  * \brief Microchip MCP3008 facilities.
  */
@@ -52,6 +54,11 @@ enum class Input : std::uint8_t {
     CH6_RELATIVE_TO_CH7 = 0b0'110'0000, ///< Differential, CH6 relative to CH7.
     CH7_RELATIVE_TO_CH6 = 0b0'111'0000, ///< Differential, CH7 relative to CH6.
 };
+
+/**
+ * \brief Sample.
+ */
+using Sample = ADC::Sample<std::uint_fast16_t, 10>;
 
 } // namespace picolibrary::Microchip::MCP3008
 
