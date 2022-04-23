@@ -76,7 +76,7 @@ class Error_Category {
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
     virtual auto name() const noexcept -> char const * = 0;
 #else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
-    constexpr auto const * name() const noexcept
+    constexpr auto name() const noexcept -> char const *
     {
         return "";
     }
@@ -92,7 +92,7 @@ class Error_Category {
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
     virtual auto error_description( Error_ID id ) const noexcept -> char const * = 0;
 #else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
-    constexpr auto const * error_description( Error_ID id ) const noexcept
+    constexpr auto error_description( Error_ID id ) const noexcept -> char const *
     {
         static_cast<void>( id );
 
@@ -207,7 +207,7 @@ class Error_Code final {
      *
      * \return The error's category.
      */
-    constexpr auto const & category() const noexcept
+    constexpr auto category() const noexcept -> Error_Category const &
     {
         return *m_category;
     }
@@ -217,7 +217,7 @@ class Error_Code final {
      *
      * \return The error's ID.
      */
-    constexpr auto id() const noexcept
+    constexpr auto id() const noexcept -> Error_ID
     {
         return m_id;
     }
@@ -227,7 +227,7 @@ class Error_Code final {
      *
      * \return The error's description.
      */
-    auto const * description() const noexcept
+    auto description() const noexcept -> char const *
     {
         return category().error_description( id() );
     }
@@ -323,7 +323,7 @@ class Error_Code final {
  * \return true if lhs is equal to rhs.
  * \return false if lhs is not equal to rhs.
  */
-constexpr auto operator==( Error_Code const & lhs, Error_Code const & rhs ) noexcept
+constexpr auto operator==( Error_Code const & lhs, Error_Code const & rhs ) noexcept -> bool
 {
     return &lhs.category() == &rhs.category() and lhs.id() == rhs.id();
 }
@@ -339,7 +339,7 @@ constexpr auto operator==( Error_Code const & lhs, Error_Code const & rhs ) noex
  * \return true if lhs is not equal to rhs.
  * \return false if lhs is equal to rhs.
  */
-constexpr auto operator!=( Error_Code const & lhs, Error_Code const & rhs ) noexcept
+constexpr auto operator!=( Error_Code const & lhs, Error_Code const & rhs ) noexcept -> bool
 {
     return not( lhs == rhs );
 }
@@ -375,7 +375,7 @@ class Generic_Error_Category final : public Error_Category {
      *
      * \return A reference to the generic error category instance.
      */
-    static constexpr auto const & instance() noexcept
+    static constexpr auto instance() noexcept -> Generic_Error_Category const &
     {
         return INSTANCE;
     }
@@ -460,7 +460,7 @@ class Generic_Error_Category final : public Error_Category {
  *
  * \return The constructed error code.
  */
-inline auto make_error_code( Generic_Error error ) noexcept
+inline auto make_error_code( Generic_Error error ) noexcept -> Error_Code
 {
     return Error_Code{ Generic_Error_Category::instance(), to_underlying( error ) };
 }

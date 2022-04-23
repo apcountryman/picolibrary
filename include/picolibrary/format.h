@@ -305,7 +305,7 @@ class Output_Formatter<Format::Binary<Integer>> {
      *
      * \return format
      */
-    constexpr auto parse( char const * format ) noexcept
+    constexpr auto parse( char const * format ) noexcept -> char const *
     {
         return format;
     }
@@ -390,7 +390,7 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_signed
      *
      * \return format
      */
-    constexpr auto parse( char const * format ) noexcept
+    constexpr auto parse( char const * format ) noexcept -> char const *
     {
         return format;
     }
@@ -474,7 +474,7 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_unsign
      *
      * \return format
      */
-    constexpr auto parse( char const * format ) noexcept
+    constexpr auto parse( char const * format ) noexcept -> char const *
     {
         return format;
     }
@@ -547,7 +547,7 @@ class Output_Formatter<Format::Hexadecimal<Integer>> {
      *
      * \return format
      */
-    constexpr auto parse( char const * format ) noexcept
+    constexpr auto parse( char const * format ) noexcept -> char const *
     {
         return format;
     }

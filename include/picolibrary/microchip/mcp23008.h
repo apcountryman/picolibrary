@@ -137,7 +137,7 @@ class Driver : public Device {
      *
      * \return The data read from the IODIR register.
      */
-    auto read_iodir() const noexcept
+    auto read_iodir() const noexcept -> std::uint8_t
     {
         return this->read( IODIR::ADDRESS );
     }
@@ -161,7 +161,7 @@ class Driver : public Device {
      *
      * \return The data read from the IPOL register.
      */
-    auto read_ipol() const noexcept
+    auto read_ipol() const noexcept -> std::uint8_t
     {
         return this->read( IPOL::ADDRESS );
     }
@@ -185,7 +185,7 @@ class Driver : public Device {
      *
      * \return The data read from the GPINTEN register.
      */
-    auto read_gpinten() const noexcept
+    auto read_gpinten() const noexcept -> std::uint8_t
     {
         return this->read( GPINTEN::ADDRESS );
     }
@@ -209,7 +209,7 @@ class Driver : public Device {
      *
      * \return The data read from the DEFVAL register.
      */
-    auto read_defval() const noexcept
+    auto read_defval() const noexcept -> std::uint8_t
     {
         return this->read( DEFVAL::ADDRESS );
     }
@@ -233,7 +233,7 @@ class Driver : public Device {
      *
      * \return The data read from the INTCON register.
      */
-    auto read_intcon() const noexcept
+    auto read_intcon() const noexcept -> std::uint8_t
     {
         return this->read( INTCON::ADDRESS );
     }
@@ -257,7 +257,7 @@ class Driver : public Device {
      *
      * \return The data read from the IOCON register.
      */
-    auto read_iocon() const noexcept
+    auto read_iocon() const noexcept -> std::uint8_t
     {
         return this->read( IOCON::ADDRESS );
     }
@@ -281,7 +281,7 @@ class Driver : public Device {
      *
      * \return The data read from the GPPU register.
      */
-    auto read_gppu() const noexcept
+    auto read_gppu() const noexcept -> std::uint8_t
     {
         return this->read( GPPU::ADDRESS );
     }
@@ -305,7 +305,7 @@ class Driver : public Device {
      *
      * \return The data read from the INTF register.
      */
-    auto read_intf() const noexcept
+    auto read_intf() const noexcept -> std::uint8_t
     {
         return this->read( INTF::ADDRESS );
     }
@@ -317,7 +317,7 @@ class Driver : public Device {
      *
      * \return The data read from the INTCAP register.
      */
-    auto read_intcap() const noexcept
+    auto read_intcap() const noexcept -> std::uint8_t
     {
         return this->read( INTCAP::ADDRESS );
     }
@@ -329,7 +329,7 @@ class Driver : public Device {
      *
      * \return The data read from the GPIO register.
      */
-    auto read_gpio() const noexcept
+    auto read_gpio() const noexcept -> std::uint8_t
     {
         return this->read( GPIO::ADDRESS );
     }
@@ -353,7 +353,7 @@ class Driver : public Device {
      *
      * \return The data read from the OLAT register.
      */
-    auto read_olat() const noexcept
+    auto read_olat() const noexcept -> std::uint8_t
     {
         return this->read( OLAT::ADDRESS );
     }

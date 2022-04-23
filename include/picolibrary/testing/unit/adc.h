@@ -45,7 +45,7 @@ namespace picolibrary::Testing::Unit {
 template<>
 inline auto random<ADC::Sample<std::uint_fast8_t, 8>>(
     ADC::Sample<std::uint_fast8_t, 8> min,
-    ADC::Sample<std::uint_fast8_t, 8> max )
+    ADC::Sample<std::uint_fast8_t, 8> max ) -> ADC::Sample<std::uint_fast8_t, 8>
 {
     return ADC::Sample<std::uint_fast8_t, 8>{ random<ADC::Sample<std::uint_fast8_t, 8>::Unsigned_Integer>(
         min.as_unsigned_integer(), max.as_unsigned_integer() ) };
@@ -62,6 +62,7 @@ inline auto random<ADC::Sample<std::uint_fast8_t, 8>>(
  */
 template<>
 inline auto random<ADC::Sample<std::uint_fast8_t, 8>>( ADC::Sample<std::uint_fast8_t, 8> min )
+    -> ADC::Sample<std::uint_fast8_t, 8>
 {
     return random<ADC::Sample<std::uint_fast8_t, 8>>( min, ADC::Sample<std::uint_fast8_t, 8>::max() );
 }
@@ -74,7 +75,7 @@ inline auto random<ADC::Sample<std::uint_fast8_t, 8>>( ADC::Sample<std::uint_fas
  *         8>::min(),picolibrary::ADC::Sample<std::uint_fast8_t, 8>::max()].
  */
 template<>
-inline auto random<ADC::Sample<std::uint_fast8_t, 8>>()
+inline auto random<ADC::Sample<std::uint_fast8_t, 8>>() -> ADC::Sample<std::uint_fast8_t, 8>
 {
     return random<ADC::Sample<std::uint_fast8_t, 8>>(
         ADC::Sample<std::uint_fast8_t, 8>::min(), ADC::Sample<std::uint_fast8_t, 8>::max() );
@@ -93,7 +94,7 @@ inline auto random<ADC::Sample<std::uint_fast8_t, 8>>()
 template<>
 inline auto random<ADC::Sample<std::uint_fast16_t, 10>>(
     ADC::Sample<std::uint_fast16_t, 10> min,
-    ADC::Sample<std::uint_fast16_t, 10> max )
+    ADC::Sample<std::uint_fast16_t, 10> max ) -> ADC::Sample<std::uint_fast16_t, 10>
 {
     return ADC::Sample<std::uint_fast16_t, 10>{ random<ADC::Sample<std::uint_fast16_t, 10>::Unsigned_Integer>(
         min.as_unsigned_integer(), max.as_unsigned_integer() ) };
@@ -111,6 +112,7 @@ inline auto random<ADC::Sample<std::uint_fast16_t, 10>>(
  */
 template<>
 inline auto random<ADC::Sample<std::uint_fast16_t, 10>>( ADC::Sample<std::uint_fast16_t, 10> min )
+    -> ADC::Sample<std::uint_fast16_t, 10>
 {
     return random<ADC::Sample<std::uint_fast16_t, 10>>(
         min, ADC::Sample<std::uint_fast16_t, 10>::max() );
@@ -124,7 +126,7 @@ inline auto random<ADC::Sample<std::uint_fast16_t, 10>>( ADC::Sample<std::uint_f
  *         10>::min(),picolibrary::ADC::Sample<std::uint_fast16_t, 10>::max()].
  */
 template<>
-inline auto random<ADC::Sample<std::uint_fast16_t, 10>>()
+inline auto random<ADC::Sample<std::uint_fast16_t, 10>>() -> ADC::Sample<std::uint_fast16_t, 10>
 {
     return random<ADC::Sample<std::uint_fast16_t, 10>>(
         ADC::Sample<std::uint_fast16_t, 10>::min(), ADC::Sample<std::uint_fast16_t, 10>::max() );
@@ -143,7 +145,7 @@ inline auto random<ADC::Sample<std::uint_fast16_t, 10>>()
 template<>
 inline auto random<ADC::Sample<std::uint_fast16_t, 12>>(
     ADC::Sample<std::uint_fast16_t, 12> min,
-    ADC::Sample<std::uint_fast16_t, 12> max )
+    ADC::Sample<std::uint_fast16_t, 12> max ) -> ADC::Sample<std::uint_fast16_t, 12>
 {
     return ADC::Sample<std::uint_fast16_t, 12>{ random<ADC::Sample<std::uint_fast16_t, 12>::Unsigned_Integer>(
         min.as_unsigned_integer(), max.as_unsigned_integer() ) };
@@ -161,6 +163,7 @@ inline auto random<ADC::Sample<std::uint_fast16_t, 12>>(
  */
 template<>
 inline auto random<ADC::Sample<std::uint_fast16_t, 12>>( ADC::Sample<std::uint_fast16_t, 12> min )
+    -> ADC::Sample<std::uint_fast16_t, 12>
 {
     return random<ADC::Sample<std::uint_fast16_t, 12>>(
         min, ADC::Sample<std::uint_fast16_t, 12>::max() );
@@ -174,7 +177,7 @@ inline auto random<ADC::Sample<std::uint_fast16_t, 12>>( ADC::Sample<std::uint_f
  *         12>::min(),picolibrary::ADC::Sample<std::uint_fast16_t, 12>::max()].
  */
 template<>
-inline auto random<ADC::Sample<std::uint_fast16_t, 12>>()
+inline auto random<ADC::Sample<std::uint_fast16_t, 12>>() -> ADC::Sample<std::uint_fast16_t, 12>
 {
     return random<ADC::Sample<std::uint_fast16_t, 12>>(
         ADC::Sample<std::uint_fast16_t, 12>::min(), ADC::Sample<std::uint_fast16_t, 12>::max() );
@@ -193,7 +196,7 @@ inline auto random<ADC::Sample<std::uint_fast16_t, 12>>()
 template<>
 inline auto random<ADC::Sample<std::uint_fast16_t, 14>>(
     ADC::Sample<std::uint_fast16_t, 14> min,
-    ADC::Sample<std::uint_fast16_t, 14> max )
+    ADC::Sample<std::uint_fast16_t, 14> max ) -> ADC::Sample<std::uint_fast16_t, 14>
 {
     return ADC::Sample<std::uint_fast16_t, 14>{ random<ADC::Sample<std::uint_fast16_t, 14>::Unsigned_Integer>(
         min.as_unsigned_integer(), max.as_unsigned_integer() ) };
@@ -211,6 +214,7 @@ inline auto random<ADC::Sample<std::uint_fast16_t, 14>>(
  */
 template<>
 inline auto random<ADC::Sample<std::uint_fast16_t, 14>>( ADC::Sample<std::uint_fast16_t, 14> min )
+    -> ADC::Sample<std::uint_fast16_t, 14>
 {
     return random<ADC::Sample<std::uint_fast16_t, 14>>(
         min, ADC::Sample<std::uint_fast16_t, 14>::max() );
@@ -224,7 +228,7 @@ inline auto random<ADC::Sample<std::uint_fast16_t, 14>>( ADC::Sample<std::uint_f
  *         14>::min(),picolibrary::ADC::Sample<std::uint_fast16_t, 14>::max()].
  */
 template<>
-inline auto random<ADC::Sample<std::uint_fast16_t, 14>>()
+inline auto random<ADC::Sample<std::uint_fast16_t, 14>>() -> ADC::Sample<std::uint_fast16_t, 14>
 {
     return random<ADC::Sample<std::uint_fast16_t, 14>>(
         ADC::Sample<std::uint_fast16_t, 14>::min(), ADC::Sample<std::uint_fast16_t, 14>::max() );
@@ -243,7 +247,7 @@ inline auto random<ADC::Sample<std::uint_fast16_t, 14>>()
 template<>
 inline auto random<ADC::Sample<std::uint_fast16_t, 16>>(
     ADC::Sample<std::uint_fast16_t, 16> min,
-    ADC::Sample<std::uint_fast16_t, 16> max )
+    ADC::Sample<std::uint_fast16_t, 16> max ) -> ADC::Sample<std::uint_fast16_t, 16>
 {
     return ADC::Sample<std::uint_fast16_t, 16>{ random<ADC::Sample<std::uint_fast16_t, 16>::Unsigned_Integer>(
         min.as_unsigned_integer(), max.as_unsigned_integer() ) };
@@ -261,6 +265,7 @@ inline auto random<ADC::Sample<std::uint_fast16_t, 16>>(
  */
 template<>
 inline auto random<ADC::Sample<std::uint_fast16_t, 16>>( ADC::Sample<std::uint_fast16_t, 16> min )
+    -> ADC::Sample<std::uint_fast16_t, 16>
 {
     return random<ADC::Sample<std::uint_fast16_t, 16>>(
         min, ADC::Sample<std::uint_fast16_t, 16>::max() );
@@ -274,7 +279,7 @@ inline auto random<ADC::Sample<std::uint_fast16_t, 16>>( ADC::Sample<std::uint_f
  *         16>::min(),picolibrary::ADC::Sample<std::uint_fast16_t, 16>::max()].
  */
 template<>
-inline auto random<ADC::Sample<std::uint_fast16_t, 16>>()
+inline auto random<ADC::Sample<std::uint_fast16_t, 16>>() -> ADC::Sample<std::uint_fast16_t, 16>
 {
     return random<ADC::Sample<std::uint_fast16_t, 16>>(
         ADC::Sample<std::uint_fast16_t, 16>::min(), ADC::Sample<std::uint_fast16_t, 16>::max() );
@@ -293,7 +298,7 @@ inline auto random<ADC::Sample<std::uint_fast16_t, 16>>()
 template<>
 inline auto random<ADC::Sample<std::uint_fast32_t, 18>>(
     ADC::Sample<std::uint_fast32_t, 18> min,
-    ADC::Sample<std::uint_fast32_t, 18> max )
+    ADC::Sample<std::uint_fast32_t, 18> max ) -> ADC::Sample<std::uint_fast32_t, 18>
 {
     return ADC::Sample<std::uint_fast32_t, 18>{ random<ADC::Sample<std::uint_fast32_t, 18>::Unsigned_Integer>(
         min.as_unsigned_integer(), max.as_unsigned_integer() ) };
@@ -311,6 +316,7 @@ inline auto random<ADC::Sample<std::uint_fast32_t, 18>>(
  */
 template<>
 inline auto random<ADC::Sample<std::uint_fast32_t, 18>>( ADC::Sample<std::uint_fast32_t, 18> min )
+    -> ADC::Sample<std::uint_fast32_t, 18>
 {
     return random<ADC::Sample<std::uint_fast32_t, 18>>(
         min, ADC::Sample<std::uint_fast32_t, 18>::max() );
@@ -324,7 +330,7 @@ inline auto random<ADC::Sample<std::uint_fast32_t, 18>>( ADC::Sample<std::uint_f
  *         18>::min(),picolibrary::ADC::Sample<std::uint_fast32_t, 18>::max()].
  */
 template<>
-inline auto random<ADC::Sample<std::uint_fast32_t, 18>>()
+inline auto random<ADC::Sample<std::uint_fast32_t, 18>>() -> ADC::Sample<std::uint_fast32_t, 18>
 {
     return random<ADC::Sample<std::uint_fast32_t, 18>>(
         ADC::Sample<std::uint_fast32_t, 18>::min(), ADC::Sample<std::uint_fast32_t, 18>::max() );
@@ -343,7 +349,7 @@ inline auto random<ADC::Sample<std::uint_fast32_t, 18>>()
 template<>
 inline auto random<ADC::Sample<std::uint_fast32_t, 20>>(
     ADC::Sample<std::uint_fast32_t, 20> min,
-    ADC::Sample<std::uint_fast32_t, 20> max )
+    ADC::Sample<std::uint_fast32_t, 20> max ) -> ADC::Sample<std::uint_fast32_t, 20>
 {
     return ADC::Sample<std::uint_fast32_t, 20>{ random<ADC::Sample<std::uint_fast32_t, 20>::Unsigned_Integer>(
         min.as_unsigned_integer(), max.as_unsigned_integer() ) };
@@ -361,6 +367,7 @@ inline auto random<ADC::Sample<std::uint_fast32_t, 20>>(
  */
 template<>
 inline auto random<ADC::Sample<std::uint_fast32_t, 20>>( ADC::Sample<std::uint_fast32_t, 20> min )
+    -> ADC::Sample<std::uint_fast32_t, 20>
 {
     return random<ADC::Sample<std::uint_fast32_t, 20>>(
         min, ADC::Sample<std::uint_fast32_t, 20>::max() );
@@ -374,7 +381,7 @@ inline auto random<ADC::Sample<std::uint_fast32_t, 20>>( ADC::Sample<std::uint_f
  *         20>::min(),picolibrary::ADC::Sample<std::uint_fast32_t, 20>::max()].
  */
 template<>
-inline auto random<ADC::Sample<std::uint_fast32_t, 20>>()
+inline auto random<ADC::Sample<std::uint_fast32_t, 20>>() -> ADC::Sample<std::uint_fast32_t, 20>
 {
     return random<ADC::Sample<std::uint_fast32_t, 20>>(
         ADC::Sample<std::uint_fast32_t, 20>::min(), ADC::Sample<std::uint_fast32_t, 20>::max() );
@@ -393,7 +400,7 @@ inline auto random<ADC::Sample<std::uint_fast32_t, 20>>()
 template<>
 inline auto random<ADC::Sample<std::uint_fast32_t, 24>>(
     ADC::Sample<std::uint_fast32_t, 24> min,
-    ADC::Sample<std::uint_fast32_t, 24> max )
+    ADC::Sample<std::uint_fast32_t, 24> max ) -> ADC::Sample<std::uint_fast32_t, 24>
 {
     return ADC::Sample<std::uint_fast32_t, 24>{ random<ADC::Sample<std::uint_fast32_t, 24>::Unsigned_Integer>(
         min.as_unsigned_integer(), max.as_unsigned_integer() ) };
@@ -411,6 +418,7 @@ inline auto random<ADC::Sample<std::uint_fast32_t, 24>>(
  */
 template<>
 inline auto random<ADC::Sample<std::uint_fast32_t, 24>>( ADC::Sample<std::uint_fast32_t, 24> min )
+    -> ADC::Sample<std::uint_fast32_t, 24>
 {
     return random<ADC::Sample<std::uint_fast32_t, 24>>(
         min, ADC::Sample<std::uint_fast32_t, 24>::max() );
@@ -424,7 +432,7 @@ inline auto random<ADC::Sample<std::uint_fast32_t, 24>>( ADC::Sample<std::uint_f
  *         24>::min(),picolibrary::ADC::Sample<std::uint_fast32_t, 24>::max()].
  */
 template<>
-inline auto random<ADC::Sample<std::uint_fast32_t, 24>>()
+inline auto random<ADC::Sample<std::uint_fast32_t, 24>>() -> ADC::Sample<std::uint_fast32_t, 24>
 {
     return random<ADC::Sample<std::uint_fast32_t, 24>>(
         ADC::Sample<std::uint_fast32_t, 24>::min(), ADC::Sample<std::uint_fast32_t, 24>::max() );
@@ -492,7 +500,7 @@ class Mock_Blocking_Single_Sample_Converter {
 
     auto operator=( Mock_Blocking_Single_Sample_Converter const & ) = delete;
 
-    auto handle() noexcept
+    auto handle() noexcept -> Handle
     {
         return Handle{ *this };
     }
@@ -567,7 +575,7 @@ class Mock_Non_Blocking_Single_Sample_Converter {
 
     auto operator=( Mock_Non_Blocking_Single_Sample_Converter const & ) = delete;
 
-    auto handle() noexcept
+    auto handle() noexcept -> Handle
     {
         return Handle{ *this };
     }
@@ -644,7 +652,7 @@ class Mock_Blocking_Free_Running_Converter {
 
     auto operator=( Mock_Blocking_Free_Running_Converter const & ) = delete;
 
-    auto handle() noexcept
+    auto handle() noexcept -> Handle
     {
         return Handle{ *this };
     }
@@ -726,7 +734,7 @@ class Mock_Non_Blocking_Free_Running_Converter {
 
     auto operator=( Mock_Non_Blocking_Free_Running_Converter const & ) = delete;
 
-    auto handle() noexcept
+    auto handle() noexcept -> Handle
     {
         return Handle{ *this };
     }

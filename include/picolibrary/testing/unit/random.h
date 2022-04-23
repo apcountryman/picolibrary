@@ -37,7 +37,7 @@ namespace picolibrary::Testing::Unit {
  *
  * \return The unit testing pseudo-random number generator.
  */
-inline auto & pseudo_random_number_generator()
+inline auto pseudo_random_number_generator() -> std::mt19937 &
 {
     static auto generator = std::mt19937{ std::random_device{}() };
 
@@ -55,7 +55,7 @@ inline auto & pseudo_random_number_generator()
  * \return A pseudo-random value in the range [min,max].
  */
 template<typename T>
-auto random( T min, T max )
+auto random( T min, T max ) -> T
 {
     return std::uniform_int_distribution<T>{ min, max }( pseudo_random_number_generator() );
 }
@@ -70,7 +70,7 @@ auto random( T min, T max )
  * \return A pseudo-random value in the range [min,std::numeric_limits<T>::max()].
  */
 template<typename T>
-auto random( T min )
+auto random( T min ) -> T
 {
     return random<T>( min, std::numeric_limits<T>::max() );
 }
@@ -84,7 +84,7 @@ auto random( T min )
  *         [std::numeric_limits<T>::min(),std::numeric_limits<T>::max()].
  */
 template<typename T>
-auto random()
+auto random() -> T
 {
     return random<T>( std::numeric_limits<T>::min(), std::numeric_limits<T>::max() );
 }
@@ -95,9 +95,9 @@ auto random()
  * \return A pseudo-random bool.
  */
 template<>
-inline auto random<bool>()
+inline auto random<bool>() -> bool
 {
-    return static_cast<bool>( random<std::uint_fast8_t>( 0, 1 ) );
+    return random<std::uint_fast8_t>( 0, 1 );
 }
 
 /**
@@ -106,7 +106,7 @@ inline auto random<bool>()
  * \return A pseudo-random char in the range [' ','~'].
  */
 template<>
-inline auto random<char>()
+inline auto random<char>() -> char
 {
     return random<char>( ' ', '~' );
 }
@@ -119,7 +119,7 @@ inline auto random<char>()
  * \return A pair of pseudo-random values that are unique.
  */
 template<typename T>
-auto random_unique_pair()
+auto random_unique_pair() -> std::pair<T, T>
 {
     auto const a = random<T>();
     auto const b = random<T>();
@@ -142,7 +142,7 @@ auto random_unique_pair()
  * \return The generated container.
  */
 template<typename Container, typename Value_Generator>
-auto random_container( std::size_t size, Value_Generator generate_value )
+auto random_container( std::size_t size, Value_Generator generate_value ) -> Container
 {
     auto container = Container{};
 
@@ -164,7 +164,7 @@ auto random_container( std::size_t size, Value_Generator generate_value )
  * \return The generated container.
  */
 template<typename Container>
-auto random_container( std::size_t size = random<std::size_t>( 0, 15 ) )
+auto random_container( std::size_t size = random<std::size_t>( 0, 15 ) ) -> Container
 {
     return random_container<Container>(
         size, []() { return random<typename Container::value_type>(); } );
@@ -182,6 +182,7 @@ auto random_container( std::size_t size = random<std::size_t>( 0, 15 ) )
  */
 template<typename Container>
 auto random_unique_container_pair( std::size_t size = random<std::size_t>( 1, 15 ) )
+    -> std::pair<Container, Container>
 {
     if ( not( size > 0 ) ) {
         throw std::invalid_argument{

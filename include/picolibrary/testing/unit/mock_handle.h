@@ -42,7 +42,7 @@ class Mock_Handle {
      *
      * \return The mock.
      */
-    auto & mock() noexcept
+    auto mock() noexcept -> Mock &
     {
         return *m_mock;
     }
@@ -52,7 +52,7 @@ class Mock_Handle {
      *
      * \return The mock.
      */
-    auto const & mock() const noexcept
+    auto mock() const noexcept -> Mock const &
     {
         return *m_mock;
     }
@@ -94,7 +94,7 @@ class Mock_Handle {
      *
      * \return The assigned to object.
      */
-    constexpr auto & operator=( Mock_Handle && expression ) noexcept
+    constexpr auto operator=( Mock_Handle && expression ) noexcept -> Mock_Handle &
     {
         if ( &expression != this ) {
             m_mock = expression.m_mock;

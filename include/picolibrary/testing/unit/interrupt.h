@@ -94,7 +94,7 @@ class Mock_Controller {
 
     auto operator=( Mock_Controller const & ) = delete;
 
-    auto handle() noexcept
+    auto handle() noexcept -> Handle
     {
         return Handle{ *this };
     }

@@ -40,7 +40,7 @@ namespace picolibrary {
  * \return The value's highest bit set.
  */
 template<typename T>
-constexpr auto highest_bit_set( T value )
+constexpr auto highest_bit_set( T value ) noexcept -> std::uint_fast8_t
 {
     static_assert( std::is_unsigned_v<T> );
 
@@ -62,13 +62,13 @@ constexpr auto highest_bit_set( T value )
  * \return The created bit mask.
  */
 template<typename T>
-constexpr auto mask( std::uint_fast8_t size, std::uint_fast8_t bit ) noexcept
+constexpr auto mask( std::uint_fast8_t size, std::uint_fast8_t bit ) noexcept -> T
 {
     static_assert( std::is_unsigned_v<T> );
 
-    return static_cast<T>(
-        ( static_cast<std::uintmax_t>( std::numeric_limits<T>::max() ) >> ( std::numeric_limits<T>::digits - size ) )
-        << bit );
+    return ( static_cast<std::uintmax_t>( std::numeric_limits<T>::max() )
+             >> ( std::numeric_limits<T>::digits - size ) )
+           << bit;
 }
 
 /**
@@ -81,7 +81,7 @@ constexpr auto mask( std::uint_fast8_t size, std::uint_fast8_t bit ) noexcept
  * \return The reflected value.
  */
 template<typename T>
-auto reflect( T value ) noexcept
+auto reflect( T value ) noexcept -> T
 {
     static_assert( std::is_unsigned_v<T> );
 
@@ -93,7 +93,7 @@ auto reflect( T value ) noexcept
         result |= value & 0b1;
     } // for
 
-    return static_cast<T>( result << remaining_shifts );
+    return result << remaining_shifts;
 }
 
 /**

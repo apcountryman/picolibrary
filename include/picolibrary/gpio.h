@@ -367,7 +367,7 @@ class Active_Low_Input_Pin : public Input_Pin {
      * \return true if the pin is in the high state.
      * \return false if the pin is not in the high state.
      */
-    auto is_low() const noexcept
+    auto is_low() const noexcept -> bool
     {
         return Input_Pin::is_high();
     }
@@ -378,7 +378,7 @@ class Active_Low_Input_Pin : public Input_Pin {
      * \return true if the pin is in the low state.
      * \return false if the pin is not in the low state.
      */
-    auto is_high() const noexcept
+    auto is_high() const noexcept -> bool
     {
         return Input_Pin::is_low();
     }

@@ -220,7 +220,7 @@ class Fixed_Capacity_Vector {
      *
      * \return The assigned to object.
      */
-    constexpr auto & operator=( std::initializer_list<Value> initializer_list ) noexcept
+    constexpr auto operator=( std::initializer_list<Value> initializer_list ) noexcept -> Fixed_Capacity_Vector
     {
         assign( initializer_list );
 
@@ -234,7 +234,7 @@ class Fixed_Capacity_Vector {
      *
      * \return The assigned to object.
      */
-    constexpr auto & operator=( Fixed_Capacity_Vector && expression ) noexcept
+    constexpr auto operator=( Fixed_Capacity_Vector && expression ) noexcept -> Fixed_Capacity_Vector
     {
         if ( &expression != this ) {
             clear();
@@ -259,7 +259,7 @@ class Fixed_Capacity_Vector {
      *
      * \return The assigned to object.
      */
-    constexpr auto & operator=( Fixed_Capacity_Vector const & expression ) noexcept
+    constexpr auto operator=( Fixed_Capacity_Vector const & expression ) noexcept -> Fixed_Capacity_Vector
     {
         if ( &expression != this ) {
             clear();
@@ -672,7 +672,7 @@ class Fixed_Capacity_Vector {
      *
      * \return An iterator to the inserted element.
      */
-    auto insert( Const_Iterator position, Value const & value ) noexcept
+    auto insert( Const_Iterator position, Value const & value ) noexcept -> Iterator
     {
         return insert( position, 1, value );
     }
@@ -690,7 +690,7 @@ class Fixed_Capacity_Vector {
      *
      * \return An iterator to the inserted element.
      */
-    auto insert( Const_Iterator position, Value && value ) noexcept
+    auto insert( Const_Iterator position, Value && value ) noexcept -> Iterator
     {
         expect( size() + 1 > size() and size() + 1 <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
 
@@ -725,7 +725,7 @@ class Fixed_Capacity_Vector {
      *
      * \return An iterator to the inserted elements.
      */
-    auto insert( Const_Iterator position, Size n, Value const & value ) noexcept
+    auto insert( Const_Iterator position, Size n, Value const & value ) noexcept -> Iterator
     {
         expect( size() + n > size() and size() + n <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
 
@@ -766,7 +766,7 @@ class Fixed_Capacity_Vector {
      * \return An iterator to the inserted elements.
      */
     template<typename Iterator>
-    auto insert( Const_Iterator position, Iterator begin, Iterator end ) noexcept
+    auto insert( Const_Iterator position, Iterator begin, Iterator end ) noexcept -> Iterator
     {
         auto const n = static_cast<Size>( end - begin );
 
@@ -805,7 +805,7 @@ class Fixed_Capacity_Vector {
      *
      * \return An iterator to the inserted elements.
      */
-    auto insert( Const_Iterator position, std::initializer_list<Value> initializer_list ) noexcept
+    auto insert( Const_Iterator position, std::initializer_list<Value> initializer_list ) noexcept -> Iterator
     {
         return insert( position, initializer_list.begin(), initializer_list.end() );
     }
@@ -826,7 +826,7 @@ class Fixed_Capacity_Vector {
      * \return An iterator to the emplaced element.
      */
     template<typename... Arguments>
-    auto emplace( Const_Iterator position, Arguments &&... arguments ) noexcept
+    auto emplace( Const_Iterator position, Arguments &&... arguments ) noexcept -> Iterator
     {
         expect( size() + 1 > size() and size() + 1 <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
 
@@ -854,7 +854,7 @@ class Fixed_Capacity_Vector {
      *
      * \return An iterator to the element following the removed element.
      */
-    auto erase( Const_Iterator position ) noexcept
+    auto erase( Const_Iterator position ) noexcept -> Iterator
     {
         auto element = begin() + ( position - begin() );
 
@@ -879,7 +879,7 @@ class Fixed_Capacity_Vector {
      *
      * \return An iterator to the element following the removed elements.
      */
-    auto erase( Const_Iterator begin, Const_Iterator end ) noexcept
+    auto erase( Const_Iterator begin, Const_Iterator end ) noexcept -> Iterator
     {
         auto const n = end - begin();
 
@@ -1120,7 +1120,8 @@ constexpr auto operator==( Fixed_Capacity_Vector<T, LHS_N> const & lhs, Fixed_Ca
  * \return false if lhs is equal to rhs.
  */
 template<typename T, std::size_t LHS_N, std::size_t RHS_N>
-constexpr auto operator==( Fixed_Capacity_Vector<T, LHS_N> const & lhs, Fixed_Capacity_Vector<T, RHS_N> const & rhs ) noexcept
+constexpr auto operator!=( Fixed_Capacity_Vector<T, LHS_N> const & lhs, Fixed_Capacity_Vector<T, RHS_N> const & rhs ) noexcept
+    -> bool
 {
     return not( lhs == rhs );
 }

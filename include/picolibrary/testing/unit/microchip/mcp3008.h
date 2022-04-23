@@ -36,7 +36,7 @@ namespace picolibrary::Testing::Unit {
  * \return A pseudo-randomly generated picolibrary::Microchip::MCP3008::Input.
  */
 template<>
-inline auto random<Microchip::MCP3008::Input>()
+inline auto random<Microchip::MCP3008::Input>() -> Microchip::MCP3008::Input
 {
     return static_cast<Microchip::MCP3008::Input>( random<std::uint_fast8_t>( 0b0'000, 0b1'111 ) << 4 );
 }

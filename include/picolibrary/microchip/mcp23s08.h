@@ -81,7 +81,7 @@ class Address_Numeric {
      *
      * \return The minimum valid address.
      */
-    static constexpr auto min() noexcept
+    static constexpr auto min() noexcept -> Address_Numeric
     {
         return Address_Numeric{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, 0b01000'00 };
     }
@@ -91,7 +91,7 @@ class Address_Numeric {
      *
      * \return The maximum valid address.
      */
-    static constexpr auto max() noexcept
+    static constexpr auto max() noexcept -> Address_Numeric
     {
         return Address_Numeric{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, 0b01000'11 };
     }
@@ -200,7 +200,7 @@ class Address_Transmitted {
      *
      * \return The minimum valid address.
      */
-    static constexpr auto min() noexcept
+    static constexpr auto min() noexcept -> Address_Transmitted
     {
         return Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, 0b01000'00'0 };
     }
@@ -210,7 +210,7 @@ class Address_Transmitted {
      *
      * \return The maximum valid address.
      */
-    static constexpr auto max() noexcept
+    static constexpr auto max() noexcept -> Address_Transmitted
     {
         return Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, 0b01000'11'0 };
     }
@@ -327,7 +327,7 @@ constexpr Address_Numeric::Address_Numeric( Address_Transmitted address ) noexce
  * \return true if lhs is equal to rhs.
  * \return false if lhs is not equal to rhs.
  */
-constexpr auto operator==( Address_Numeric lhs, Address_Numeric rhs ) noexcept
+constexpr auto operator==( Address_Numeric lhs, Address_Numeric rhs ) noexcept -> bool
 {
     return lhs.as_unsigned_integer() == rhs.as_unsigned_integer();
 }
@@ -343,7 +343,7 @@ constexpr auto operator==( Address_Numeric lhs, Address_Numeric rhs ) noexcept
  * \return true if lhs is not equal to rhs.
  * \return false if lhs is equal to rhs.
  */
-constexpr auto operator!=( Address_Numeric lhs, Address_Numeric rhs ) noexcept
+constexpr auto operator!=( Address_Numeric lhs, Address_Numeric rhs ) noexcept -> bool
 {
     return not( lhs == rhs );
 }
@@ -359,7 +359,7 @@ constexpr auto operator!=( Address_Numeric lhs, Address_Numeric rhs ) noexcept
  * \return true if lhs is less than rhs.
  * \return false if lhs is not less than rhs.
  */
-constexpr auto operator<( Address_Numeric lhs, Address_Numeric rhs ) noexcept
+constexpr auto operator<( Address_Numeric lhs, Address_Numeric rhs ) noexcept -> bool
 {
     return lhs.as_unsigned_integer() < rhs.as_unsigned_integer();
 }
@@ -375,7 +375,7 @@ constexpr auto operator<( Address_Numeric lhs, Address_Numeric rhs ) noexcept
  * \return true if lhs is greater than rhs.
  * \return false if lhs is not greater than rhs.
  */
-constexpr auto operator>( Address_Numeric lhs, Address_Numeric rhs ) noexcept
+constexpr auto operator>( Address_Numeric lhs, Address_Numeric rhs ) noexcept -> bool
 {
     return rhs < lhs;
 }
@@ -391,7 +391,7 @@ constexpr auto operator>( Address_Numeric lhs, Address_Numeric rhs ) noexcept
  * \return true if lhs is less than or equal to rhs.
  * \return false if lhs is not less than or equal to rhs.
  */
-constexpr auto operator<=( Address_Numeric lhs, Address_Numeric rhs ) noexcept
+constexpr auto operator<=( Address_Numeric lhs, Address_Numeric rhs ) noexcept -> bool
 {
     return not( lhs > rhs );
 }
@@ -407,7 +407,7 @@ constexpr auto operator<=( Address_Numeric lhs, Address_Numeric rhs ) noexcept
  * \return true if lhs is greater than or equal to rhs.
  * \return false if lhs is not greater than or equal to rhs.
  */
-constexpr auto operator>=( Address_Numeric lhs, Address_Numeric rhs ) noexcept
+constexpr auto operator>=( Address_Numeric lhs, Address_Numeric rhs ) noexcept -> bool
 {
     return not( lhs < rhs );
 }
@@ -428,7 +428,7 @@ constexpr Address_Transmitted::Address_Transmitted( Address_Numeric address ) no
  * \return true if lhs is equal to rhs.
  * \return false if lhs is not equal to rhs.
  */
-constexpr auto operator==( Address_Transmitted lhs, Address_Transmitted rhs ) noexcept
+constexpr auto operator==( Address_Transmitted lhs, Address_Transmitted rhs ) noexcept -> bool
 {
     return lhs.as_unsigned_integer() == rhs.as_unsigned_integer();
 }
@@ -444,7 +444,7 @@ constexpr auto operator==( Address_Transmitted lhs, Address_Transmitted rhs ) no
  * \return true if lhs is not equal to rhs.
  * \return false if lhs is equal to rhs.
  */
-constexpr auto operator!=( Address_Transmitted lhs, Address_Transmitted rhs ) noexcept
+constexpr auto operator!=( Address_Transmitted lhs, Address_Transmitted rhs ) noexcept -> bool
 {
     return not( lhs == rhs );
 }
@@ -460,7 +460,7 @@ constexpr auto operator!=( Address_Transmitted lhs, Address_Transmitted rhs ) no
  * \return true if lhs is less than rhs.
  * \return false if lhs is not less than rhs.
  */
-constexpr auto operator<( Address_Transmitted lhs, Address_Transmitted rhs ) noexcept
+constexpr auto operator<( Address_Transmitted lhs, Address_Transmitted rhs ) noexcept -> bool
 {
     return lhs.as_unsigned_integer() < rhs.as_unsigned_integer();
 }
@@ -476,7 +476,7 @@ constexpr auto operator<( Address_Transmitted lhs, Address_Transmitted rhs ) noe
  * \return true if lhs is greater than rhs.
  * \return false if lhs is not greater than rhs.
  */
-constexpr auto operator>( Address_Transmitted lhs, Address_Transmitted rhs ) noexcept
+constexpr auto operator>( Address_Transmitted lhs, Address_Transmitted rhs ) noexcept -> bool
 {
     return rhs < lhs;
 }
@@ -492,7 +492,7 @@ constexpr auto operator>( Address_Transmitted lhs, Address_Transmitted rhs ) noe
  * \return true if lhs is less than or equal to rhs.
  * \return false if lhs is not less than or equal to rhs.
  */
-constexpr auto operator<=( Address_Transmitted lhs, Address_Transmitted rhs ) noexcept
+constexpr auto operator<=( Address_Transmitted lhs, Address_Transmitted rhs ) noexcept -> bool
 {
     return not( lhs > rhs );
 }
@@ -508,7 +508,7 @@ constexpr auto operator<=( Address_Transmitted lhs, Address_Transmitted rhs ) no
  * \return true if lhs is greater than or equal to rhs.
  * \return false if lhs is not greater than or equal to rhs.
  */
-constexpr auto operator>=( Address_Transmitted lhs, Address_Transmitted rhs ) noexcept
+constexpr auto operator>=( Address_Transmitted lhs, Address_Transmitted rhs ) noexcept -> bool
 {
     return not( lhs < rhs );
 }
@@ -536,7 +536,7 @@ class Communication_Controller : public Device {
      *
      * \return The device's address.
      */
-    constexpr auto address() const noexcept
+    constexpr auto address() const noexcept -> Address_Transmitted
     {
         return m_address;
     }
@@ -598,7 +598,7 @@ class Communication_Controller : public Device {
      *
      * \return The data read from the register.
      */
-    auto read( std::uint8_t register_address ) const noexcept
+    auto read( std::uint8_t register_address ) const noexcept -> std::uint8_t
     {
         this->configure();
 
@@ -709,7 +709,7 @@ class Driver : public Communication_Controller {
      *
      * \return The data read from the IODIR register.
      */
-    auto read_iodir() const noexcept
+    auto read_iodir() const noexcept -> std::uint8_t
     {
         return this->read( IODIR::ADDRESS );
     }
@@ -729,7 +729,7 @@ class Driver : public Communication_Controller {
      *
      * \return The data read from the IPOL register.
      */
-    auto read_ipol() const noexcept
+    auto read_ipol() const noexcept -> std::uint8_t
     {
         return this->read( IPOL::ADDRESS );
     }
@@ -749,7 +749,7 @@ class Driver : public Communication_Controller {
      *
      * \return The data read from the GPINTEN register.
      */
-    auto read_gpinten() const noexcept
+    auto read_gpinten() const noexcept -> std::uint8_t
     {
         return this->read( GPINTEN::ADDRESS );
     }
@@ -769,7 +769,7 @@ class Driver : public Communication_Controller {
      *
      * \return The data read from the DEFVAL register.
      */
-    auto read_defval() const noexcept
+    auto read_defval() const noexcept -> std::uint8_t
     {
         return this->read( DEFVAL::ADDRESS );
     }
@@ -789,7 +789,7 @@ class Driver : public Communication_Controller {
      *
      * \return The data read from the INTCON register.
      */
-    auto read_intcon() const noexcept
+    auto read_intcon() const noexcept -> std::uint8_t
     {
         return this->read( INTCON::ADDRESS );
     }
@@ -809,7 +809,7 @@ class Driver : public Communication_Controller {
      *
      * \return The data read from the IOCON register.
      */
-    auto read_iocon() const noexcept
+    auto read_iocon() const noexcept -> std::uint8_t
     {
         return this->read( IOCON::ADDRESS );
     }
@@ -829,7 +829,7 @@ class Driver : public Communication_Controller {
      *
      * \return The data read from the GPPU register.
      */
-    auto read_gppu() const noexcept
+    auto read_gppu() const noexcept -> std::uint8_t
     {
         return this->read( GPPU::ADDRESS );
     }
@@ -849,7 +849,7 @@ class Driver : public Communication_Controller {
      *
      * \return The data read from the INTF register.
      */
-    auto read_intf() const noexcept
+    auto read_intf() const noexcept -> std::uint8_t
     {
         return this->read( INTF::ADDRESS );
     }
@@ -859,7 +859,7 @@ class Driver : public Communication_Controller {
      *
      * \return The data read from the INTCAP register.
      */
-    auto read_intcap() const noexcept
+    auto read_intcap() const noexcept -> std::uint8_t
     {
         return this->read( INTCAP::ADDRESS );
     }
@@ -869,7 +869,7 @@ class Driver : public Communication_Controller {
      *
      * \return The data read from the GPIO register.
      */
-    auto read_gpio() const noexcept
+    auto read_gpio() const noexcept -> std::uint8_t
     {
         return this->read( GPIO::ADDRESS );
     }
@@ -889,7 +889,7 @@ class Driver : public Communication_Controller {
      *
      * \return The data read from the OLAT register.
      */
-    auto read_olat() const noexcept
+    auto read_olat() const noexcept -> std::uint8_t
     {
         return this->read( OLAT::ADDRESS );
     }

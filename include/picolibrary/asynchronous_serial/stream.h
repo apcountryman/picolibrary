@@ -309,7 +309,7 @@ class Unbuffered_Output_Stream : public Output_Stream {
      *
      * \return The assigned to object.
      */
-    constexpr auto & operator=( Unbuffered_Output_Stream && expression ) noexcept
+    constexpr auto operator=( Unbuffered_Output_Stream && expression ) noexcept -> Unbuffered_Output_Stream &
     {
         if ( &expression != this ) {
             m_buffer = std::move( expression.m_buffer );

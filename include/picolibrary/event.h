@@ -62,7 +62,7 @@ class Event_Category {
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
     virtual auto name() const noexcept -> char const * = 0;
 #else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
-    constexpr auto const * name() const noexcept
+    constexpr auto name() const noexcept -> char const *
     {
         return "";
     }
@@ -78,7 +78,7 @@ class Event_Category {
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
     virtual auto event_description( Event_ID id ) const noexcept -> char const * = 0;
 #else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
-    constexpr auto const * event_description( Event_ID id ) const noexcept
+    constexpr auto event_description( Event_ID id ) const noexcept -> char const *
     {
         static_cast<void>( id );
 
@@ -115,7 +115,7 @@ class Event {
      *
      * \return The event's category.
      */
-    constexpr auto const & category() const noexcept
+    constexpr auto category() const noexcept -> Event_Category const &
     {
         return *m_category;
     }
@@ -125,7 +125,7 @@ class Event {
      *
      * \return The event's ID.
      */
-    constexpr auto id() const noexcept
+    constexpr auto id() const noexcept -> Event_ID
     {
         return m_id;
     }
@@ -135,7 +135,7 @@ class Event {
      *
      * \return The event's description.
      */
-    auto const * description() const noexcept
+    auto description() const noexcept -> char const *
     {
         return category().event_description( id() );
     }
@@ -254,7 +254,7 @@ class Output_Formatter<Event> {
      *
      * \return format
      */
-    constexpr auto parse( char const * format ) noexcept
+    constexpr auto parse( char const * format ) noexcept -> char const *
     {
         return format;
     }
@@ -422,7 +422,7 @@ class Event_Storage {
      *
      * \return The stored event.
      */
-    auto & event() noexcept
+    auto event() noexcept -> Event &
     {
         return *std::launder( reinterpret_cast<Event *>( &m_storage ) );
     }
@@ -432,7 +432,7 @@ class Event_Storage {
      *
      * \return The stored event.
      */
-    auto const & event() const noexcept
+    auto event() const noexcept -> Event const &
     {
         return *std::launder( reinterpret_cast<Event const *>( &m_storage ) );
     }

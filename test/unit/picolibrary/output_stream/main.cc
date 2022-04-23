@@ -66,7 +66,7 @@ enum class Foo {};
 
 class Mock_Output_Formatter {
   public:
-    static auto & instance()
+    static auto instance() -> Mock_Output_Formatter &
     {
         if ( not INSTANCE ) {
             throw std::logic_error{
@@ -123,19 +123,19 @@ class picolibrary::Output_Formatter<::Foo> {
 
     auto operator=( Output_Formatter const & ) = delete;
 
-    auto parse( char const * format ) noexcept
+    auto parse( char const * format ) noexcept -> char const *
     {
         return ::Mock_Output_Formatter::instance().parse( format );
     }
 
-    auto print( Output_Stream & stream, ::Foo const & foo ) noexcept
+    auto print( Output_Stream & stream, ::Foo const & foo ) noexcept -> Result<std::size_t, Error_Code>
     {
         return ::Mock_Output_Formatter::instance().print( stream, foo );
     }
 };
 
 template<>
-inline auto picolibrary::Testing::Unit::random<::Foo>()
+inline auto picolibrary::Testing::Unit::random<::Foo>() -> ::Foo
 {
     return static_cast<::Foo>( random<std::underlying_type_t<::Foo>>() );
 }

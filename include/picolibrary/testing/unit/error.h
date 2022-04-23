@@ -47,7 +47,7 @@ enum class Mock_Error : Error_ID {};
  * \return A pseudo-randomly generated picolibrary::Testing::Unit::Mock_Error.
  */
 template<>
-inline auto random<Mock_Error>()
+inline auto random<Mock_Error>() -> Mock_Error
 {
     return static_cast<Mock_Error>( random<Error_ID>() );
 }
@@ -57,7 +57,7 @@ inline auto random<Mock_Error>()
  */
 class Mock_Error_Category : public Error_Category {
   public:
-    static auto const & instance()
+    static auto instance() -> Mock_Error_Category const &
     {
         static auto category = Mock_Error_Category{};
 
@@ -90,7 +90,7 @@ class Mock_Error_Category : public Error_Category {
  *
  * \return The constructed error code.
  */
-inline auto make_error_code( Mock_Error error ) noexcept
+inline auto make_error_code( Mock_Error error ) noexcept -> Error_Code
 {
     return Error_Code{ Mock_Error_Category::instance(), to_underlying( error ) };
 }

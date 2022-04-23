@@ -96,7 +96,7 @@ class Mock_Stream_Buffer : public Stream_Buffer {
  *
  * \return The generated std::string.
  */
-inline auto random_format_string( std::size_t size = random<std::size_t>( 0, 15 ) )
+inline auto random_format_string( std::size_t size = random<std::size_t>( 0, 15 ) ) -> std::string
 {
     return random_container<std::string>( size, []() { return random<char>( ' ', 'z' ); } );
 }
@@ -127,7 +127,7 @@ class Mock_Output_Stream : public Output_Stream {
     using ::picolibrary::Stream::clear_fatal_error;
     using ::picolibrary::Stream::report_fatal_error;
 
-    auto & buffer() noexcept
+    auto buffer() noexcept -> Mock_Stream_Buffer &
     {
         return m_buffer;
     }
@@ -164,7 +164,7 @@ class String_Stream_Buffer final : public Stream_Buffer {
      *
      * \return The string abstracted by the device access buffer.
      */
-    auto const & string() const noexcept
+    auto string() const noexcept -> std::string const &
     {
         return m_string;
     }
@@ -259,7 +259,7 @@ class Output_String_Stream : public Output_Stream {
      *
      * \return The string abstracted by the stream.
      */
-    auto const & string() const noexcept
+    auto string() const noexcept -> std::string const &
     {
         return m_buffer.string();
     }

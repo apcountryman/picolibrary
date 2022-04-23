@@ -263,7 +263,7 @@ class Array {
      *
      * \return An iterator to the first element of the array.
      */
-    constexpr auto begin() noexcept
+    constexpr auto begin() noexcept -> Iterator
     {
         return data();
     }
@@ -273,7 +273,7 @@ class Array {
      *
      * \return An iterator to the first element of the array.
      */
-    constexpr auto begin() const noexcept
+    constexpr auto begin() const noexcept -> Const_Iterator
     {
         return data();
     }
@@ -283,7 +283,7 @@ class Array {
      *
      * \return An iterator to the first element of the array.
      */
-    constexpr auto cbegin() const noexcept
+    constexpr auto cbegin() const noexcept -> Const_Iterator
     {
         return data();
     }
@@ -296,7 +296,7 @@ class Array {
      *
      * \return An iterator to the element following the last element of the array.
      */
-    constexpr auto end() noexcept
+    constexpr auto end() noexcept -> Iterator
     {
         return begin() + size();
     }
@@ -309,7 +309,7 @@ class Array {
      *
      * \return An iterator to the element following the last element of the array.
      */
-    constexpr auto end() const noexcept
+    constexpr auto end() const noexcept -> Const_Iterator
     {
         return begin() + size();
     }
@@ -322,7 +322,7 @@ class Array {
      *
      * \return An iterator to the element following the last element of the array.
      */
-    constexpr auto cend() const noexcept
+    constexpr auto cend() const noexcept -> Const_Iterator
     {
         return begin() + size();
     }
@@ -332,7 +332,7 @@ class Array {
      *
      * \return An iterator to the first element of the reversed array.
      */
-    constexpr auto rbegin() noexcept
+    constexpr auto rbegin() noexcept -> Reverse_Iterator
     {
         return Reverse_Iterator{ end() };
     }
@@ -342,7 +342,7 @@ class Array {
      *
      * \return An iterator to the first element of the reversed array.
      */
-    constexpr auto rbegin() const noexcept
+    constexpr auto rbegin() const noexcept -> Const_Reverse_Iterator
     {
         return Const_Reverse_Iterator{ end() };
     }
@@ -352,7 +352,7 @@ class Array {
      *
      * \return An iterator to the first element of the reversed array.
      */
-    constexpr auto crbegin() const noexcept
+    constexpr auto crbegin() const noexcept -> Const_Reverse_Iterator
     {
         return Const_Reverse_Iterator{ end() };
     }
@@ -367,7 +367,7 @@ class Array {
      * \return An iterator to the element following the last element of the reversed
      *         array.
      */
-    constexpr auto rend() noexcept
+    constexpr auto rend() noexcept -> Reverse_Iterator
     {
         return Reverse_Iterator{ begin() };
     }
@@ -382,7 +382,7 @@ class Array {
      * \return An iterator to the element following the last element of the reversed
      *         array.
      */
-    constexpr auto rend() const noexcept
+    constexpr auto rend() const noexcept -> Const_Reverse_Iterator
     {
         return Const_Reverse_Iterator{ begin() };
     }
@@ -397,7 +397,7 @@ class Array {
      * \return An iterator to the element following the last element of the reversed
      *         array.
      */
-    constexpr auto crend() const noexcept
+    constexpr auto crend() const noexcept -> Const_Reverse_Iterator
     {
         return Const_Reverse_Iterator{ begin() };
     }
@@ -408,7 +408,7 @@ class Array {
      * \return true if the array is empty.
      * \return false if the array is not empty.
      */
-    [[nodiscard]] constexpr auto empty() const noexcept
+    [[nodiscard]] constexpr auto empty() const noexcept -> bool
     {
         return not size();
     }
@@ -471,7 +471,7 @@ struct array_size<Array<T, N>> : std::integral_constant<std::size_t, N> {
  * \return false if lhs is not equal to rhs.
  */
 template<typename T, std::size_t N>
-constexpr auto operator==( Array<T, N> const & lhs, Array<T, N> const & rhs ) noexcept
+constexpr auto operator==( Array<T, N> const & lhs, Array<T, N> const & rhs ) noexcept -> bool
 {
     return ::picolibrary::equal( lhs.begin(), lhs.end(), rhs.begin() );
 }
@@ -491,7 +491,7 @@ constexpr auto operator==( Array<T, N> const & lhs, Array<T, N> const & rhs ) no
  * \return false if lhs is equal to rhs.
  */
 template<typename T, std::size_t N>
-constexpr auto operator!=( Array<T, N> const & lhs, Array<T, N> const & rhs ) noexcept
+constexpr auto operator!=( Array<T, N> const & lhs, Array<T, N> const & rhs ) noexcept -> bool
 {
     return not( lhs == rhs );
 }
