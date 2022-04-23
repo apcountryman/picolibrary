@@ -220,7 +220,8 @@ class Fixed_Capacity_Vector {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( std::initializer_list<Value> initializer_list ) noexcept -> Fixed_Capacity_Vector &
+    constexpr auto operator=( std::initializer_list<Value> initializer_list ) noexcept
+        -> Fixed_Capacity_Vector &
     {
         assign( initializer_list );
 
