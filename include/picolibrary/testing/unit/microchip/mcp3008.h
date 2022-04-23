@@ -23,6 +23,26 @@
 #ifndef PICOLIBRARY_TESTING_UNIT_MICROCHIP_MCP3008_H
 #define PICOLIBRARY_TESTING_UNIT_MICROCHIP_MCP3008_H
 
+#include <cstdint>
+
+#include "picolibrary/microchip/mcp3008.h"
+#include "picolibrary/testing/unit/random.h"
+
+namespace picolibrary::Testing::Unit {
+
+/**
+ * \brief Generate a pseudo-random picolibrary::Microchip::MCP3008::Input.
+ *
+ * \return A pseudo-randomly generated picolibrary::Microchip::MCP3008::Input.
+ */
+template<>
+inline auto random<Microchip::MCP3008::Input>()
+{
+    return static_cast<Microchip::MCP3008::Input>( random<std::uint_fast8_t>( 0b0'000, 0b1'111 ) << 4 );
+}
+
+} // namespace picolibrary::Testing::Unit
+
 /**
  * \brief Microchip MCP3008 unit testing facilities.
  */
