@@ -39,9 +39,9 @@ namespace picolibrary::Testing::Unit {
  */
 class Mock_Event_Category : public Event_Category {
   public:
-    static auto const & instance()
+    static auto instance() -> Mock_Event_Category const &
     {
-        static auto category = Mock_Event_Category{};
+        static auto const category = Mock_Event_Category{};
 
         return category;
     }

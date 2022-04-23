@@ -47,6 +47,7 @@ namespace picolibrary::Testing::Unit {
  */
 template<>
 inline auto random<I2C::Address_Numeric>( I2C::Address_Numeric min, I2C::Address_Numeric max )
+    -> I2C::Address_Numeric
 {
     return I2C::Address_Numeric{ random<I2C::Address_Numeric::Unsigned_Integer>(
         min.as_unsigned_integer(), max.as_unsigned_integer() ) };
@@ -62,7 +63,7 @@ inline auto random<I2C::Address_Numeric>( I2C::Address_Numeric min, I2C::Address
  *         [min,picolibrary::I2C::Address_Numeric::max()].
  */
 template<>
-inline auto random<I2C::Address_Numeric>( I2C::Address_Numeric min )
+inline auto random<I2C::Address_Numeric>( I2C::Address_Numeric min ) -> I2C::Address_Numeric
 {
     return random<I2C::Address_Numeric>( min, I2C::Address_Numeric::max() );
 }
@@ -74,7 +75,7 @@ inline auto random<I2C::Address_Numeric>( I2C::Address_Numeric min )
  *         [picolibrary::I2C::Address_Numeric::min(),picolibrary::I2C::Address_Numeric::max()].
  */
 template<>
-inline auto random<I2C::Address_Numeric>()
+inline auto random<I2C::Address_Numeric>() -> I2C::Address_Numeric
 {
     return random<I2C::Address_Numeric>( I2C::Address_Numeric::min(), I2C::Address_Numeric::max() );
 }
@@ -90,6 +91,7 @@ inline auto random<I2C::Address_Numeric>()
  */
 template<>
 inline auto random<I2C::Address_Transmitted>( I2C::Address_Transmitted min, I2C::Address_Transmitted max )
+    -> I2C::Address_Transmitted
 {
     return I2C::Address_Transmitted{ static_cast<I2C::Address_Transmitted::Unsigned_Integer>(
         random<I2C::Address_Transmitted::Unsigned_Integer>( min.as_unsigned_integer(), max.as_unsigned_integer() )
@@ -106,7 +108,7 @@ inline auto random<I2C::Address_Transmitted>( I2C::Address_Transmitted min, I2C:
  *         [min,picolibrary::I2C::Address_Transmitted::max()].
  */
 template<>
-inline auto random<I2C::Address_Transmitted>( I2C::Address_Transmitted min )
+inline auto random<I2C::Address_Transmitted>( I2C::Address_Transmitted min ) -> I2C::Address_Transmitted
 {
     return random<I2C::Address_Transmitted>( min, I2C::Address_Transmitted::max() );
 }
@@ -118,7 +120,7 @@ inline auto random<I2C::Address_Transmitted>( I2C::Address_Transmitted min )
  *         [picolibrary::I2C::Address_Transmitted::min(),picolibrary::I2C::Address_Transmitted::max()].
  */
 template<>
-inline auto random<I2C::Address_Transmitted>()
+inline auto random<I2C::Address_Transmitted>() -> I2C::Address_Transmitted
 {
     return random<I2C::Address_Transmitted>(
         I2C::Address_Transmitted::min(), I2C::Address_Transmitted::max() );
@@ -130,7 +132,7 @@ inline auto random<I2C::Address_Transmitted>()
  * \return A pseudo-randomly generated picolibrary::I2C::Operation.
  */
 template<>
-inline auto random<I2C::Operation>()
+inline auto random<I2C::Operation>() -> I2C::Operation
 {
     return random<bool>() ? I2C::Operation::READ : I2C::Operation::WRITE;
 }
@@ -141,7 +143,7 @@ inline auto random<I2C::Operation>()
  * \return A pseudo-randomly generated picolibrary::I2C::Response.
  */
 template<>
-inline auto random<I2C::Response>()
+inline auto random<I2C::Response>() -> I2C::Response
 {
     return random<bool>() ? I2C::Response::ACK : I2C::Response::NACK;
 }
@@ -182,7 +184,7 @@ class Mock_Basic_Controller {
             Mock_Handle<Mock_Basic_Controller>::mock().initialize();
         }
 
-        auto bus_error_present() const
+        auto bus_error_present() const -> bool
         {
             return Mock_Handle<Mock_Basic_Controller>::mock().bus_error_present();
         }
@@ -203,16 +205,17 @@ class Mock_Basic_Controller {
         }
 
         auto address( ::picolibrary::I2C::Address_Transmitted address, ::picolibrary::I2C::Operation operation )
+            -> ::picolibrary::I2C::Response
         {
             return Mock_Handle<Mock_Basic_Controller>::mock().address( address, operation );
         }
 
-        auto read( ::picolibrary::I2C::Response response )
+        auto read( ::picolibrary::I2C::Response response ) -> std::uint8_t
         {
             return Mock_Handle<Mock_Basic_Controller>::mock().read( response );
         }
 
-        auto write( std::uint8_t data )
+        auto write( std::uint8_t data ) -> ::picolibrary::I2C::Response
         {
             return Mock_Handle<Mock_Basic_Controller>::mock().write( data );
         }
@@ -230,7 +233,7 @@ class Mock_Basic_Controller {
 
     auto operator=( Mock_Basic_Controller const & ) = delete;
 
-    auto handle() noexcept
+    auto handle() noexcept -> Handle
     {
         return Handle{ *this };
     }
@@ -279,12 +282,12 @@ class Mock_Controller : public Mock_Basic_Controller {
 
         auto operator=( Handle const & ) = delete;
 
-        auto & mock() noexcept
+        auto mock() noexcept -> Mock_Controller &
         {
             return static_cast<Mock_Controller &>( Mock_Basic_Controller::Handle::mock() );
         }
 
-        auto const & mock() const noexcept
+        auto mock() const noexcept -> Mock_Controller const &
         {
             return static_cast<Mock_Controller const &>( Mock_Basic_Controller::Handle::mock() );
         }
@@ -298,7 +301,7 @@ class Mock_Controller : public Mock_Basic_Controller {
 
         using Mock_Basic_Controller::Handle::write;
 
-        auto write( std::uint8_t const * begin, std::uint8_t const * end )
+        auto write( std::uint8_t const * begin, std::uint8_t const * end ) -> ::picolibrary::I2C::Response
         {
             return mock().write( begin, end );
         }
@@ -316,7 +319,7 @@ class Mock_Controller : public Mock_Basic_Controller {
 
     auto operator=( Mock_Controller const & ) = delete;
 
-    auto handle() noexcept
+    auto handle() noexcept -> Handle
     {
         return Handle{ *this };
     }

@@ -64,7 +64,7 @@ struct Functor_Can_Fail_Discard_Functor {
  * \return The functor.
  */
 template<typename Iterator, typename Functor>
-constexpr auto for_each( Iterator begin, Iterator end, Functor functor ) noexcept
+constexpr auto for_each( Iterator begin, Iterator end, Functor functor ) noexcept -> Functor
 {
     for ( ; begin != end; ++begin ) { functor( *begin ); } // for
 
@@ -244,7 +244,7 @@ constexpr auto generate( Iterator begin, Iterator end, Functor functor ) noexcep
  *         will be returned.
  */
 template<typename T>
-constexpr auto const & min( T const & a, T const & b ) noexcept
+constexpr auto min( T const & a, T const & b ) noexcept -> T const &
 {
     return b < a ? b : a;
 }
@@ -261,7 +261,7 @@ constexpr auto const & min( T const & a, T const & b ) noexcept
  *         will be returned.
  */
 template<typename T>
-constexpr auto const & max( T const & a, T const & b ) noexcept
+constexpr auto max( T const & a, T const & b ) noexcept -> T const &
 {
     return b > a ? b : a;
 }

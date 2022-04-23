@@ -47,6 +47,7 @@ template<>
 inline auto random<::picolibrary::Microchip::MCP23S08::Address_Numeric>(
     ::picolibrary::Microchip::MCP23S08::Address_Numeric min,
     ::picolibrary::Microchip::MCP23S08::Address_Numeric max )
+    -> ::picolibrary::Microchip::MCP23S08::Address_Numeric
 {
     return ::picolibrary::Microchip::MCP23S08::Address_Numeric{
         random<::picolibrary::Microchip::MCP23S08::Address_Numeric::Unsigned_Integer>(
@@ -67,6 +68,7 @@ inline auto random<::picolibrary::Microchip::MCP23S08::Address_Numeric>(
 template<>
 inline auto random<::picolibrary::Microchip::MCP23S08::Address_Numeric>(
     ::picolibrary::Microchip::MCP23S08::Address_Numeric min )
+    -> ::picolibrary::Microchip::MCP23S08::Address_Numeric
 {
     return random<::picolibrary::Microchip::MCP23S08::Address_Numeric>(
         min, ::picolibrary::Microchip::MCP23S08::Address_Numeric::max() );
@@ -80,6 +82,7 @@ inline auto random<::picolibrary::Microchip::MCP23S08::Address_Numeric>(
  */
 template<>
 inline auto random<::picolibrary::Microchip::MCP23S08::Address_Numeric>()
+    -> ::picolibrary::Microchip::MCP23S08::Address_Numeric
 {
     return random<::picolibrary::Microchip::MCP23S08::Address_Numeric>(
         ::picolibrary::Microchip::MCP23S08::Address_Numeric::min(),
@@ -100,6 +103,7 @@ template<>
 inline auto random<::picolibrary::Microchip::MCP23S08::Address_Transmitted>(
     ::picolibrary::Microchip::MCP23S08::Address_Transmitted min,
     ::picolibrary::Microchip::MCP23S08::Address_Transmitted max )
+    -> ::picolibrary::Microchip::MCP23S08::Address_Transmitted
 {
     return ::picolibrary::Microchip::MCP23S08::Address_Transmitted{
         static_cast<::picolibrary::Microchip::MCP23S08::Address_Transmitted::Unsigned_Integer>(
@@ -122,6 +126,7 @@ inline auto random<::picolibrary::Microchip::MCP23S08::Address_Transmitted>(
 template<>
 inline auto random<::picolibrary::Microchip::MCP23S08::Address_Transmitted>(
     ::picolibrary::Microchip::MCP23S08::Address_Transmitted min )
+    -> ::picolibrary::Microchip::MCP23S08::Address_Transmitted
 {
     return random<::picolibrary::Microchip::MCP23S08::Address_Transmitted>(
         min, ::picolibrary::Microchip::MCP23S08::Address_Transmitted::max() );
@@ -136,6 +141,7 @@ inline auto random<::picolibrary::Microchip::MCP23S08::Address_Transmitted>(
  */
 template<>
 inline auto random<::picolibrary::Microchip::MCP23S08::Address_Transmitted>()
+    -> ::picolibrary::Microchip::MCP23S08::Address_Transmitted
 {
     return random<::picolibrary::Microchip::MCP23S08::Address_Transmitted>(
         ::picolibrary::Microchip::MCP23S08::Address_Transmitted::min(),

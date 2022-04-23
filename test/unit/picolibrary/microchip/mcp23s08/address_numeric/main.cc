@@ -37,11 +37,13 @@ using ::picolibrary::Microchip::MCP23S08::Address_Transmitted;
 using ::picolibrary::Testing::Unit::random;
 
 auto random_address( Address_Numeric::Unsigned_Integer min = 0b01000'00, Address_Numeric::Unsigned_Integer max = 0b01000'11 )
+    -> Address_Numeric::Unsigned_Integer
 {
     return random<Address_Numeric::Unsigned_Integer>( min, max );
 }
 
 auto random_unique_address_pair()
+    -> std::pair<Address_Numeric::Unsigned_Integer, Address_Numeric::Unsigned_Integer>
 {
     auto const a = random_address();
     auto const b = random_address();

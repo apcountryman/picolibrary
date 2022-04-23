@@ -48,7 +48,7 @@ using ::testing::A;
 using ::testing::Return;
 
 template<typename Integer>
-auto binary( Integer value )
+auto binary( Integer value ) -> std::string
 {
     using U = std::make_unsigned_t<Integer>;
 

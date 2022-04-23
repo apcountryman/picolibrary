@@ -36,7 +36,7 @@ namespace picolibrary::Testing::Unit {
  * \return A pseudo-randomly generated picolibrary::GPIO::Initial_Pull_Up_State.
  */
 template<>
-inline auto random<GPIO::Initial_Pull_Up_State>()
+inline auto random<GPIO::Initial_Pull_Up_State>() -> GPIO::Initial_Pull_Up_State
 {
     return random<bool>() ? GPIO::Initial_Pull_Up_State::DISABLED
                           : GPIO::Initial_Pull_Up_State::ENABLED;
@@ -48,7 +48,7 @@ inline auto random<GPIO::Initial_Pull_Up_State>()
  * \return A pseudo-randomly generated picolibrary::GPIO::Initial_Pin_State.
  */
 template<>
-inline auto random<GPIO::Initial_Pin_State>()
+inline auto random<GPIO::Initial_Pin_State>() -> GPIO::Initial_Pin_State
 {
     return random<bool>() ? GPIO::Initial_Pin_State::LOW : GPIO::Initial_Pin_State::HIGH;
 }
@@ -89,12 +89,12 @@ class Mock_Input_Pin {
             mock().initialize();
         }
 
-        auto is_low() const
+        auto is_low() const -> bool
         {
             return mock().is_low();
         }
 
-        auto is_high() const
+        auto is_high() const -> bool
         {
             return mock().is_high();
         }
@@ -112,7 +112,7 @@ class Mock_Input_Pin {
 
     auto operator=( Mock_Input_Pin const & ) = delete;
 
-    auto handle() noexcept
+    auto handle() noexcept -> Handle
     {
         return Handle{ *this };
     }
@@ -147,12 +147,12 @@ class Mock_Internally_Pulled_Up_Input_Pin : public Mock_Input_Pin {
 
         auto operator=( Handle const & ) = delete;
 
-        auto & mock() noexcept
+        auto mock() noexcept -> Mock_Internally_Pulled_Up_Input_Pin &
         {
             return static_cast<Mock_Internally_Pulled_Up_Input_Pin &>( Mock_Input_Pin::Handle::mock() );
         }
 
-        auto const & mock() const noexcept
+        auto mock() const noexcept -> Mock_Internally_Pulled_Up_Input_Pin const &
         {
             return static_cast<Mock_Internally_Pulled_Up_Input_Pin const &>(
                 Mock_Input_Pin::Handle::mock() );
@@ -165,12 +165,12 @@ class Mock_Internally_Pulled_Up_Input_Pin : public Mock_Input_Pin {
             mock().initialize( initial_pull_up_state );
         }
 
-        auto pull_up_is_disabled() const
+        auto pull_up_is_disabled() const -> bool
         {
             return mock().pull_up_is_disabled();
         }
 
-        auto pull_up_is_enabled() const
+        auto pull_up_is_enabled() const -> bool
         {
             return mock().pull_up_is_enabled();
         }
@@ -198,7 +198,7 @@ class Mock_Internally_Pulled_Up_Input_Pin : public Mock_Input_Pin {
 
     auto operator=( Mock_Internally_Pulled_Up_Input_Pin const & ) = delete;
 
-    auto handle() noexcept
+    auto handle() noexcept -> Handle
     {
         return Handle{ *this };
     }
@@ -277,7 +277,7 @@ class Mock_Output_Pin {
 
     auto operator=( Mock_Output_Pin const & ) = delete;
 
-    auto handle() noexcept
+    auto handle() noexcept -> Handle
     {
         return Handle{ *this };
     }
@@ -323,12 +323,12 @@ class Mock_IO_Pin {
             mock().initialize( initial_pin_state );
         }
 
-        auto is_low() const
+        auto is_low() const -> bool
         {
             return mock().is_low();
         }
 
-        auto is_high() const
+        auto is_high() const -> bool
         {
             return mock().is_high();
         }
@@ -361,7 +361,7 @@ class Mock_IO_Pin {
 
     auto operator=( Mock_IO_Pin const & ) = delete;
 
-    auto handle() noexcept
+    auto handle() noexcept -> Handle
     {
         return Handle{ *this };
     }

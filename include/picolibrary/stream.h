@@ -216,7 +216,7 @@ class Stream {
      * \return true if the stream is nominal.
      * \return false if the stream is not nominal.
      */
-    constexpr auto is_nominal() const noexcept
+    constexpr auto is_nominal() const noexcept -> bool
     {
         return not m_state;
     }
@@ -375,7 +375,7 @@ class Stream {
      *
      * \brief The I/O stream device access buffer associated with the I/O stream.
      */
-    constexpr auto buffer() noexcept
+    constexpr auto buffer() noexcept -> Stream_Buffer *
     {
         return m_buffer;
     }
@@ -888,7 +888,7 @@ class Output_Formatter<char> {
      *
      * \return format
      */
-    constexpr auto parse( char const * format ) noexcept
+    constexpr auto parse( char const * format ) noexcept -> char const *
     {
         return format;
     }
@@ -948,7 +948,7 @@ class Output_Formatter<char const *> {
      *
      * \return format
      */
-    constexpr auto parse( char const * format ) noexcept
+    constexpr auto parse( char const * format ) noexcept -> char const *
     {
         return format;
     }
@@ -1007,7 +1007,7 @@ class Output_Formatter<Void> {
      *
      * \return format
      */
-    constexpr auto parse( char const * format ) noexcept
+    constexpr auto parse( char const * format ) noexcept -> char const *
     {
         return format;
     }
@@ -1058,7 +1058,7 @@ class Output_Formatter<Error_Code> {
      *
      * \return format
      */
-    constexpr auto parse( char const * format ) noexcept
+    constexpr auto parse( char const * format ) noexcept -> char const *
     {
         return format;
     }
@@ -1073,6 +1073,7 @@ class Output_Formatter<Error_Code> {
      * \return An error code if the write failed.
      */
     auto print( Output_Stream & stream, Error_Code const & error ) noexcept
+        -> Result<std::size_t, Error_Code>
     {
         return stream.print( "{}::{}", error.category().name(), error.description() );
     }

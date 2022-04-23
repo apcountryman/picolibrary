@@ -36,7 +36,7 @@ namespace picolibrary::Testing::Unit {
  * \return A pseudo-randomly generated picolibrary::Indicator::Initial_Indicator_State.
  */
 template<>
-inline auto random<Indicator::Initial_Indicator_State>()
+inline auto random<Indicator::Initial_Indicator_State>() -> Indicator::Initial_Indicator_State
 {
     return random<bool>() ? Indicator::Initial_Indicator_State::EXTINGUISHED
                           : Indicator::Initial_Indicator_State::ILLUMINATED;
@@ -111,7 +111,7 @@ class Mock_Fixed_Intensity_Indicator {
 
     auto operator=( Mock_Fixed_Intensity_Indicator const & ) = delete;
 
-    auto handle() noexcept
+    auto handle() noexcept -> Handle
     {
         return Handle{ *this };
     }

@@ -146,7 +146,7 @@ class [[nodiscard]] Result<Void, Void, true> final
      *
      * \return true (operation succeeded).
      */
-    [[nodiscard]] constexpr auto is_value() const noexcept
+    [[nodiscard]] constexpr auto is_value() const noexcept->bool
     {
         return true;
     }
@@ -156,7 +156,7 @@ class [[nodiscard]] Result<Void, Void, true> final
      *
      * \return false (operation succeeded).
      */
-    [[nodiscard]] constexpr auto is_error() const noexcept
+    [[nodiscard]] constexpr auto is_error() const noexcept->bool
     {
         return not is_value();
     }
@@ -169,7 +169,7 @@ class [[nodiscard]] Result<Void, Void, true> final
      *
      * \return picolibrary::Void
      */
-    [[nodiscard]] constexpr auto error() const noexcept
+    [[nodiscard]] constexpr auto error() const noexcept->Error
     {
         return Error{};
     }
@@ -272,7 +272,7 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
      *
      * \return The assigned to object.
      */
-    constexpr auto & operator=( Result && expression ) noexcept
+    constexpr auto operator=( Result && expression ) noexcept->Result &
     {
         if ( &expression != this ) {
             if ( is_value() == expression.is_value() ) {
@@ -298,7 +298,7 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
      *
      * \return The assigned to object.
      */
-    constexpr auto & operator=( Result const & expression ) noexcept
+    constexpr auto operator=( Result const & expression ) noexcept->Result &
     {
         if ( &expression != this ) {
             if ( is_value() == expression.is_value() ) {
@@ -347,7 +347,7 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
      *
      * \return The error.
      */
-    [[nodiscard]] constexpr auto && error() && noexcept
+    [[nodiscard]] constexpr auto error() && noexcept->Error &&
     {
         return static_cast<Error &&>( m_error );
     }
@@ -360,7 +360,7 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
      *
      * \return The error.
      */
-    [[nodiscard]] constexpr auto const && error() const && noexcept
+    [[nodiscard]] constexpr auto error() const && noexcept->Error const &&
     {
         return static_cast<Error const &&>( m_error );
     }
@@ -373,7 +373,7 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
      *
      * \return The error.
      */
-    [[nodiscard]] constexpr auto & error() & noexcept
+    [[nodiscard]] constexpr auto error() & noexcept->Error &
     {
         return static_cast<Error &>( m_error );
     }
@@ -386,7 +386,7 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
      *
      * \return The error.
      */
-    [[nodiscard]] constexpr auto const & error() const & noexcept
+    [[nodiscard]] constexpr auto error() const & noexcept->Error const &
     {
         return static_cast<Error const &>( m_error );
     }
@@ -501,7 +501,7 @@ class [[nodiscard]] Result<Value_Type, Void, true> final
      *
      * \return The assigned to object.
      */
-    constexpr auto & operator=( Result && expression ) noexcept
+    constexpr auto operator=( Result && expression ) noexcept->Result &
     {
         if ( &expression != this ) {
             m_value = std::move( expression.m_value );
@@ -517,7 +517,7 @@ class [[nodiscard]] Result<Value_Type, Void, true> final
      *
      * \return The assigned to object.
      */
-    constexpr auto & operator=( Result const & expression ) noexcept
+    constexpr auto operator=( Result const & expression ) noexcept->Result &
     {
         if ( &expression != this ) {
             m_value = expression.m_value;
@@ -531,7 +531,7 @@ class [[nodiscard]] Result<Value_Type, Void, true> final
      *
      * \return true (operation succeeded).
      */
-    [[nodiscard]] constexpr auto is_value() const noexcept
+    [[nodiscard]] constexpr auto is_value() const noexcept->bool
     {
         return true;
     }
@@ -541,7 +541,7 @@ class [[nodiscard]] Result<Value_Type, Void, true> final
      *
      * \return false (operation succeeded).
      */
-    [[nodiscard]] constexpr auto is_error() const noexcept
+    [[nodiscard]] constexpr auto is_error() const noexcept->bool
     {
         return not is_value();
     }
@@ -551,7 +551,7 @@ class [[nodiscard]] Result<Value_Type, Void, true> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto && value() && noexcept
+    [[nodiscard]] constexpr auto value() && noexcept->Value &&
     {
         return static_cast<Value &&>( m_value );
     }
@@ -561,7 +561,7 @@ class [[nodiscard]] Result<Value_Type, Void, true> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto const && value() const && noexcept
+    [[nodiscard]] constexpr auto value() const && noexcept->Value const &&
     {
         return static_cast<Value const &&>( m_value );
     }
@@ -571,7 +571,7 @@ class [[nodiscard]] Result<Value_Type, Void, true> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto & value() & noexcept
+    [[nodiscard]] constexpr auto value() & noexcept->Value &
     {
         return static_cast<Value &>( m_value );
     }
@@ -581,7 +581,7 @@ class [[nodiscard]] Result<Value_Type, Void, true> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto const & value() const & noexcept
+    [[nodiscard]] constexpr auto value() const & noexcept->Value const &
     {
         return static_cast<Value const &>( m_value );
     }
@@ -594,7 +594,7 @@ class [[nodiscard]] Result<Value_Type, Void, true> final
      *
      * \return picolibrary::Void
      */
-    [[nodiscard]] constexpr auto error() const noexcept
+    [[nodiscard]] constexpr auto error() const noexcept->Error
     {
         return Error{};
     }
@@ -707,7 +707,7 @@ class [[nodiscard]] Result<Value_Type, Void, false> final
      *
      * \return The assigned to object.
      */
-    constexpr auto & operator=( Result && expression ) noexcept
+    constexpr auto operator=( Result && expression ) noexcept->Result &
     {
         if ( &expression != this ) {
             m_value = std::move( expression.m_value );
@@ -723,7 +723,7 @@ class [[nodiscard]] Result<Value_Type, Void, false> final
      *
      * \return The assigned to object.
      */
-    constexpr auto & operator=( Result const & expression ) noexcept
+    constexpr auto operator=( Result const & expression ) noexcept->Result &
     {
         if ( &expression != this ) {
             m_value = expression.m_value;
@@ -737,7 +737,7 @@ class [[nodiscard]] Result<Value_Type, Void, false> final
      *
      * \return true (operation succeeded).
      */
-    [[nodiscard]] constexpr auto is_value() const noexcept
+    [[nodiscard]] constexpr auto is_value() const noexcept->bool
     {
         return true;
     }
@@ -747,7 +747,7 @@ class [[nodiscard]] Result<Value_Type, Void, false> final
      *
      * \return false (operation succeeded).
      */
-    [[nodiscard]] constexpr auto is_error() const noexcept
+    [[nodiscard]] constexpr auto is_error() const noexcept->bool
     {
         return not is_value();
     }
@@ -757,7 +757,7 @@ class [[nodiscard]] Result<Value_Type, Void, false> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto && value() && noexcept
+    [[nodiscard]] constexpr auto value() && noexcept->Value &&
     {
         return static_cast<Value &&>( m_value );
     }
@@ -767,7 +767,7 @@ class [[nodiscard]] Result<Value_Type, Void, false> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto const && value() const && noexcept
+    [[nodiscard]] constexpr auto value() const && noexcept->Value const &&
     {
         return static_cast<Value const &&>( m_value );
     }
@@ -777,7 +777,7 @@ class [[nodiscard]] Result<Value_Type, Void, false> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto & value() & noexcept
+    [[nodiscard]] constexpr auto value() & noexcept->Value &
     {
         return static_cast<Value &>( m_value );
     }
@@ -787,7 +787,7 @@ class [[nodiscard]] Result<Value_Type, Void, false> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto const & value() const & noexcept
+    [[nodiscard]] constexpr auto value() const & noexcept->Value const &
     {
         return static_cast<Value const &>( m_value );
     }
@@ -800,7 +800,7 @@ class [[nodiscard]] Result<Value_Type, Void, false> final
      *
      * \return picolibrary::Void
      */
-    [[nodiscard]] constexpr auto error() const noexcept
+    [[nodiscard]] constexpr auto error() const noexcept->Error
     {
         return Error{};
     }
@@ -964,7 +964,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      *
      * \return The assigned to object.
      */
-    constexpr auto & operator=( Result && expression ) noexcept
+    constexpr auto operator=( Result && expression ) noexcept->Result &
     {
         if ( &expression != this ) {
             if ( is_value() == expression.is_value() ) {
@@ -994,7 +994,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      *
      * \return The assigned to object.
      */
-    constexpr auto & operator=( Result const & expression ) noexcept
+    constexpr auto operator=( Result const & expression ) noexcept->Result &
     {
         if ( &expression != this ) {
             if ( is_value() == expression.is_value() ) {
@@ -1047,7 +1047,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto && value() && noexcept
+    [[nodiscard]] constexpr auto value() && noexcept->Value &&
     {
         return static_cast<Value &&>( m_value );
     }
@@ -1060,7 +1060,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto const && value() const && noexcept
+    [[nodiscard]] constexpr auto value() const && noexcept->Value const &&
     {
         return static_cast<Value const &&>( m_value );
     }
@@ -1073,7 +1073,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto & value() & noexcept
+    [[nodiscard]] constexpr auto value() & noexcept->Value &
     {
         return static_cast<Value &>( m_value );
     }
@@ -1086,7 +1086,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto const & value() const & noexcept
+    [[nodiscard]] constexpr auto value() const & noexcept->Value const &
     {
         return static_cast<Value const &>( m_value );
     }
@@ -1099,7 +1099,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      *
      * \return The error.
      */
-    [[nodiscard]] constexpr auto && error() && noexcept
+    [[nodiscard]] constexpr auto error() && noexcept->Error &&
     {
         return static_cast<Error &&>( m_error );
     }
@@ -1112,7 +1112,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      *
      * \return The error.
      */
-    [[nodiscard]] constexpr auto const && error() const && noexcept
+    [[nodiscard]] constexpr auto error() const && noexcept->Error const &&
     {
         return static_cast<Error const &&>( m_error );
     }
@@ -1125,7 +1125,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      *
      * \return The error.
      */
-    [[nodiscard]] constexpr auto & error() & noexcept
+    [[nodiscard]] constexpr auto error() & noexcept->Error &
     {
         return static_cast<Error &>( m_error );
     }
@@ -1138,7 +1138,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      *
      * \return The error.
      */
-    [[nodiscard]] constexpr auto const & error() const & noexcept
+    [[nodiscard]] constexpr auto error() const & noexcept->Error const &
     {
         return static_cast<Error const &>( m_error );
     }
@@ -1312,7 +1312,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      *
      * \return The assigned to object.
      */
-    constexpr auto & operator=( Result && expression ) noexcept
+    constexpr auto operator=( Result && expression ) noexcept->Result &
     {
         if ( &expression != this ) {
             if ( is_value() == expression.is_value() ) {
@@ -1343,7 +1343,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      *
      * \return The assigned to object.
      */
-    constexpr auto & operator=( Result const & expression ) noexcept
+    constexpr auto operator=( Result const & expression ) noexcept->Result &
     {
         if ( &expression != this ) {
             if ( is_value() == expression.is_value() ) {
@@ -1397,7 +1397,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto && value() && noexcept
+    [[nodiscard]] constexpr auto value() && noexcept->Value &&
     {
         return static_cast<Value &&>( m_value );
     }
@@ -1410,7 +1410,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto const && value() const && noexcept
+    [[nodiscard]] constexpr auto value() const && noexcept->Value const &&
     {
         return static_cast<Value const &&>( m_value );
     }
@@ -1423,7 +1423,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto & value() & noexcept
+    [[nodiscard]] constexpr auto value() & noexcept->Value &
     {
         return static_cast<Value &>( m_value );
     }
@@ -1436,7 +1436,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      *
      * \return The generated information.
      */
-    [[nodiscard]] constexpr auto const & value() const & noexcept
+    [[nodiscard]] constexpr auto value() const & noexcept->Value const &
     {
         return static_cast<Value const &>( m_value );
     }
@@ -1449,7 +1449,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      *
      * \return The error.
      */
-    [[nodiscard]] constexpr auto && error() && noexcept
+    [[nodiscard]] constexpr auto error() && noexcept->Error &&
     {
         return static_cast<Error &&>( m_error );
     }
@@ -1462,7 +1462,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      *
      * \return The error.
      */
-    [[nodiscard]] constexpr auto const && error() const && noexcept
+    [[nodiscard]] constexpr auto error() const && noexcept->Error const &&
     {
         return static_cast<Error const &&>( m_error );
     }
@@ -1475,7 +1475,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      *
      * \return The error.
      */
-    [[nodiscard]] constexpr auto & error() & noexcept
+    [[nodiscard]] constexpr auto error() & noexcept->Error &
     {
         return static_cast<Error &>( m_error );
     }
@@ -1488,7 +1488,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      *
      * \return The error.
      */
-    [[nodiscard]] constexpr auto const & error() const & noexcept
+    [[nodiscard]] constexpr auto error() const & noexcept->Error const &
     {
         return static_cast<Error const &>( m_error );
     }

@@ -45,7 +45,7 @@ using ::testing::A;
 using ::testing::Return;
 
 template<typename Integer>
-auto decimal( Integer value )
+auto decimal( Integer value ) -> std::string
 {
     auto stream = std::ostringstream{};
 

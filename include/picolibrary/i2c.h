@@ -60,7 +60,7 @@ class Address_Numeric {
      *
      * \return The minimum valid address.
      */
-    static constexpr auto min() noexcept
+    static constexpr auto min() noexcept -> Address_Numeric
     {
         return Address_Numeric{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, 0b0000000 };
     }
@@ -70,7 +70,7 @@ class Address_Numeric {
      *
      * \return The maximum valid address.
      */
-    static constexpr auto max() noexcept
+    static constexpr auto max() noexcept -> Address_Numeric
     {
         return Address_Numeric{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, 0b1111111 };
     }
@@ -176,7 +176,7 @@ class Address_Transmitted {
      *
      * \return The minimum valid address.
      */
-    static constexpr auto min() noexcept
+    static constexpr auto min() noexcept -> Address_Transmitted
     {
         return Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, 0b0000000'0 };
     }
@@ -186,7 +186,7 @@ class Address_Transmitted {
      *
      * \return The maximum valid address.
      */
-    static constexpr auto max() noexcept
+    static constexpr auto max() noexcept -> Address_Transmitted
     {
         return Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, 0b1111111'0 };
     }
@@ -270,7 +270,7 @@ class Address_Transmitted {
      *
      * \return The address in its unsigned integer representation.
      */
-    constexpr auto as_unsigned_integer() const noexcept
+    constexpr auto as_unsigned_integer() const noexcept -> Unsigned_Integer
     {
         return m_address;
     }
@@ -298,7 +298,7 @@ constexpr Address_Numeric::Address_Numeric( Address_Transmitted address ) noexce
  * \return true if lhs is equal to rhs.
  * \return false if lhs is not equal to rhs.
  */
-constexpr auto operator==( Address_Numeric lhs, Address_Numeric rhs ) noexcept
+constexpr auto operator==( Address_Numeric lhs, Address_Numeric rhs ) noexcept -> bool
 {
     return lhs.as_unsigned_integer() == rhs.as_unsigned_integer();
 }
@@ -314,7 +314,7 @@ constexpr auto operator==( Address_Numeric lhs, Address_Numeric rhs ) noexcept
  * \return true if lhs is not equal to rhs.
  * \return false if lhs is equal to rhs.
  */
-constexpr auto operator!=( Address_Numeric lhs, Address_Numeric rhs ) noexcept
+constexpr auto operator!=( Address_Numeric lhs, Address_Numeric rhs ) noexcept -> bool
 {
     return not( lhs == rhs );
 }
@@ -330,7 +330,7 @@ constexpr auto operator!=( Address_Numeric lhs, Address_Numeric rhs ) noexcept
  * \return true if lhs is less than rhs.
  * \return false if lhs is not less than rhs.
  */
-constexpr auto operator<( Address_Numeric lhs, Address_Numeric rhs ) noexcept
+constexpr auto operator<( Address_Numeric lhs, Address_Numeric rhs ) noexcept -> bool
 {
     return lhs.as_unsigned_integer() < rhs.as_unsigned_integer();
 }
@@ -346,7 +346,7 @@ constexpr auto operator<( Address_Numeric lhs, Address_Numeric rhs ) noexcept
  * \return true if lhs is greater than rhs.
  * \return false if lhs is not greater than rhs.
  */
-constexpr auto operator>( Address_Numeric lhs, Address_Numeric rhs ) noexcept
+constexpr auto operator>( Address_Numeric lhs, Address_Numeric rhs ) noexcept -> bool
 {
     return rhs < lhs;
 }
@@ -362,7 +362,7 @@ constexpr auto operator>( Address_Numeric lhs, Address_Numeric rhs ) noexcept
  * \return true if lhs is less than or equal to rhs.
  * \return false if lhs is not less than or equal to rhs.
  */
-constexpr auto operator<=( Address_Numeric lhs, Address_Numeric rhs ) noexcept
+constexpr auto operator<=( Address_Numeric lhs, Address_Numeric rhs ) noexcept -> bool
 {
     return not( lhs > rhs );
 }
@@ -378,7 +378,7 @@ constexpr auto operator<=( Address_Numeric lhs, Address_Numeric rhs ) noexcept
  * \return true if lhs is greater than or equal to rhs.
  * \return false if lhs is not greater than or equal to rhs.
  */
-constexpr auto operator>=( Address_Numeric lhs, Address_Numeric rhs ) noexcept
+constexpr auto operator>=( Address_Numeric lhs, Address_Numeric rhs ) noexcept -> bool
 {
     return not( lhs < rhs );
 }
@@ -399,7 +399,7 @@ constexpr Address_Transmitted::Address_Transmitted( Address_Numeric address ) no
  * \return true if lhs is equal to rhs.
  * \return false if lhs is not equal to rhs.
  */
-constexpr auto operator==( Address_Transmitted lhs, Address_Transmitted rhs ) noexcept
+constexpr auto operator==( Address_Transmitted lhs, Address_Transmitted rhs ) noexcept -> bool
 {
     return lhs.as_unsigned_integer() == rhs.as_unsigned_integer();
 }
@@ -415,7 +415,7 @@ constexpr auto operator==( Address_Transmitted lhs, Address_Transmitted rhs ) no
  * \return true if lhs is not equal to rhs.
  * \return false if lhs is equal to rhs.
  */
-constexpr auto operator!=( Address_Transmitted lhs, Address_Transmitted rhs ) noexcept
+constexpr auto operator!=( Address_Transmitted lhs, Address_Transmitted rhs ) noexcept -> bool
 {
     return not( lhs == rhs );
 }
@@ -431,7 +431,7 @@ constexpr auto operator!=( Address_Transmitted lhs, Address_Transmitted rhs ) no
  * \return true if lhs is less than rhs.
  * \return false if lhs is not less than rhs.
  */
-constexpr auto operator<( Address_Transmitted lhs, Address_Transmitted rhs ) noexcept
+constexpr auto operator<( Address_Transmitted lhs, Address_Transmitted rhs ) noexcept -> bool
 {
     return lhs.as_unsigned_integer() < rhs.as_unsigned_integer();
 }
@@ -447,7 +447,7 @@ constexpr auto operator<( Address_Transmitted lhs, Address_Transmitted rhs ) noe
  * \return true if lhs is greater than rhs.
  * \return false if lhs is not greater than rhs.
  */
-constexpr auto operator>( Address_Transmitted lhs, Address_Transmitted rhs ) noexcept
+constexpr auto operator>( Address_Transmitted lhs, Address_Transmitted rhs ) noexcept -> bool
 {
     return rhs < lhs;
 }
@@ -463,7 +463,7 @@ constexpr auto operator>( Address_Transmitted lhs, Address_Transmitted rhs ) noe
  * \return true if lhs is less than or equal to rhs.
  * \return false if lhs is not less than or equal to rhs.
  */
-constexpr auto operator<=( Address_Transmitted lhs, Address_Transmitted rhs ) noexcept
+constexpr auto operator<=( Address_Transmitted lhs, Address_Transmitted rhs ) noexcept -> bool
 {
     return not( lhs > rhs );
 }
@@ -479,7 +479,7 @@ constexpr auto operator<=( Address_Transmitted lhs, Address_Transmitted rhs ) no
  * \return true if lhs is greater than or equal to rhs.
  * \return false if lhs is not greater than or equal to rhs.
  */
-constexpr auto operator>=( Address_Transmitted lhs, Address_Transmitted rhs ) noexcept
+constexpr auto operator>=( Address_Transmitted lhs, Address_Transmitted rhs ) noexcept -> bool
 {
     return not( lhs < rhs );
 }
@@ -820,6 +820,7 @@ class Bus_Control_Guard {
  */
 template<typename Controller>
 auto ping( Controller & controller, Address_Transmitted address, Operation operation ) noexcept
+    -> Response
 {
     auto const guard = Bus_Control_Guard{ controller };
 
@@ -844,7 +845,7 @@ auto ping( Controller & controller, Address_Transmitted address, Operation opera
  * \return picolibrary::I2C::Response::NACK if the device is not responsive.
  */
 template<typename Controller>
-auto ping( Controller & controller, Address_Transmitted address ) noexcept
+auto ping( Controller & controller, Address_Transmitted address ) noexcept -> Response
 {
     auto const response_read  = ping( controller, address, Operation::READ );
     auto const response_write = ping( controller, address, Operation::WRITE );
@@ -866,7 +867,7 @@ auto ping( Controller & controller, Address_Transmitted address ) noexcept
  * \return The functor.
  */
 template<typename Controller, typename Functor>
-auto scan( Controller & controller, Functor functor ) noexcept
+auto scan( Controller & controller, Functor functor ) noexcept -> Functor
 {
     Operation const operations[]{
         Operation::READ,
@@ -1030,7 +1031,7 @@ class Device_Address_Numeric : public Address_Numeric {
      *
      * \return The minimum valid address.
      */
-    static constexpr auto min() noexcept
+    static constexpr auto min() noexcept -> Device_Address_Numeric
     {
         return Device_Address_Numeric{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, MIN };
     }
@@ -1040,7 +1041,7 @@ class Device_Address_Numeric : public Address_Numeric {
      *
      * \return The maximum valid address.
      */
-    static constexpr auto max() noexcept
+    static constexpr auto max() noexcept -> Device_Address_Numeric
     {
         return Device_Address_Numeric{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, MAX };
     }
@@ -1146,7 +1147,7 @@ class Device_Address_Transmitted : public Address_Transmitted {
      *
      * \return The minimum valid address.
      */
-    static constexpr auto min() noexcept
+    static constexpr auto min() noexcept -> Device_Address_Transmitted
     {
         return Device_Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, MIN };
     }
@@ -1156,7 +1157,7 @@ class Device_Address_Transmitted : public Address_Transmitted {
      *
      * \return The maximum valid address.
      */
-    static constexpr auto max() noexcept
+    static constexpr auto max() noexcept -> Device_Address_Transmitted
     {
         return Device_Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, MAX };
     }
@@ -1314,7 +1315,7 @@ class Device {
      *
      * \return The device's address.
      */
-    constexpr auto address() const noexcept
+    constexpr auto address() const noexcept -> Address_Transmitted
     {
         return m_address;
     }
@@ -1326,7 +1327,7 @@ class Device {
      * \return The fatal error that occurs if the device does not respond when addressed
      *         or does not acknowledge a write.
      */
-    constexpr auto const & nonresponsive_device_error() const noexcept
+    constexpr auto nonresponsive_device_error() const noexcept -> Error_Code const &
     {
         return m_nonresponsive_device_error;
     }
@@ -1339,7 +1340,7 @@ class Device {
      * \return picolibrary::I2C::Response::ACK if the device is responsive.
      * \return picolibrary::I2C::Response::NACK if the device is not responsive.
      */
-    auto ping( Operation operation ) const noexcept
+    auto ping( Operation operation ) const noexcept -> Response
     {
         align_bus_multiplexer();
 
@@ -1352,7 +1353,7 @@ class Device {
      * \return picolibrary::I2C::Response::ACK if the device is responsive.
      * \return picolibrary::I2C::Response::NACK if the device is not responsive.
      */
-    auto ping() const noexcept
+    auto ping() const noexcept -> Response
     {
         align_bus_multiplexer();
 
@@ -1412,7 +1413,7 @@ class Device {
      *
      * \return The assigned to object.
      */
-    constexpr auto & operator=( Device && expression ) noexcept
+    constexpr auto operator=( Device && expression ) noexcept -> Device &
     {
         if ( &expression != this ) {
             m_align_bus_multiplexer = std::move( expression.m_align_bus_multiplexer );
@@ -1440,7 +1441,7 @@ class Device {
      *
      * \return The controller used to communicate with the device.
      */
-    constexpr auto & controller() const noexcept
+    constexpr auto controller() const noexcept -> Controller &
     {
         return *m_controller;
     }
@@ -1454,7 +1455,7 @@ class Device {
      *
      * \return The data read from the register.
      */
-    auto read( std::uint8_t register_address ) const noexcept
+    auto read( std::uint8_t register_address ) const noexcept -> std::uint8_t
     {
         m_align_bus_multiplexer();
 

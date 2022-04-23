@@ -60,7 +60,7 @@ class HSM {
          *
          * \return A reference to the pseudo-event category instance.
          */
-        static constexpr auto const & instance() noexcept
+        static constexpr auto instance() noexcept -> Pseudo_Event_Category const &
         {
             return INSTANCE;
         }
@@ -318,7 +318,7 @@ class HSM {
      *
      * \return Event ignored event handling result.
      */
-    static constexpr auto top( HSM & hsm, Event const & event ) noexcept
+    static constexpr auto top( HSM & hsm, Event const & event ) noexcept -> Event_Handling_Result
     {
         return hsm.event_ignored( event );
     }
@@ -330,7 +330,7 @@ class HSM {
      *
      * \return Event handled event handling result.
      */
-    constexpr auto event_handled( Event const & handled_event ) const noexcept
+    constexpr auto event_handled( Event const & handled_event ) const noexcept -> Event_Handling_Result
     {
         static_cast<void>( handled_event );
 
@@ -347,6 +347,7 @@ class HSM {
      * \return State transition triggered event handling result.
      */
     constexpr auto transition_to( State_Event_Handler_Reference target_state, Event const & triggering_event ) noexcept
+        -> Event_Handling_Result
     {
         static_cast<void>( triggering_event );
 
@@ -365,6 +366,7 @@ class HSM {
      * \return Event handling deferred to superstate event handling result.
      */
     constexpr auto defer_event_handling_to( State_Event_Handler_Reference superstate, Event const & deferred_event ) noexcept
+        -> Event_Handling_Result
     {
         static_cast<void>( deferred_event );
 
@@ -485,7 +487,7 @@ class HSM {
      *
      * \return The state event handler for the currently active state.
      */
-    constexpr auto current_state() const noexcept
+    constexpr auto current_state() const noexcept -> State_Event_Handler_Pointer
     {
         return m_current_state;
     }
@@ -502,7 +504,7 @@ class HSM {
      * \return false if state is neither the state event handler for the currently active
      *         state nor any of its superstates.
      */
-    auto is_in( State_Event_Handler_Reference state ) noexcept
+    auto is_in( State_Event_Handler_Reference state ) noexcept -> bool
     {
         Path path;
 

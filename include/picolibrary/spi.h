@@ -246,7 +246,7 @@ class Controller : public Basic_Controller {
      *
      * \return The data received from the device.
      */
-    auto receive() noexcept
+    auto receive() noexcept -> std::uint8_t
     {
         return exchange( 0x00 );
     }
@@ -471,7 +471,7 @@ class Device {
      *
      * \return The assigned to object.
      */
-    constexpr auto & operator=( Device && expression ) noexcept
+    constexpr auto operator=( Device && expression ) noexcept -> Device &
     {
         if ( &expression != this ) {
             m_controller      = expression.m_controller;
@@ -506,7 +506,7 @@ class Device {
      *
      * \return The device selector used to select and deselect the device.
      */
-    constexpr auto & device_selector() const noexcept
+    constexpr auto device_selector() const noexcept -> Device_Selector &
     {
         return m_device_selector;
     }
@@ -518,7 +518,7 @@ class Device {
      *
      * \return The data received from the device.
      */
-    auto exchange( std::uint8_t data ) const noexcept
+    auto exchange( std::uint8_t data ) const noexcept -> std::uint8_t
     {
         return m_controller->exchange( data );
     }
@@ -544,7 +544,7 @@ class Device {
      *
      * \return The data received from the device.
      */
-    auto receive() const noexcept
+    auto receive() const noexcept -> std::uint8_t
     {
         return m_controller->receive();
     }

@@ -49,7 +49,7 @@ using ::testing::A;
 using ::testing::Return;
 
 template<typename Integer>
-auto hexadecimal( Integer value )
+auto hexadecimal( Integer value ) -> std::string
 {
     using U = std::make_unsigned_t<Integer>;
 

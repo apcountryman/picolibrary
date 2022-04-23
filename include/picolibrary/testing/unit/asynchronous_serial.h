@@ -87,7 +87,7 @@ class Mock_Basic_Transmitter {
 
     auto operator=( Mock_Basic_Transmitter const & ) = delete;
 
-    auto handle() noexcept
+    auto handle() noexcept -> Handle
     {
         return Handle{ *this };
     }
@@ -128,12 +128,12 @@ class Mock_Transmitter : public Mock_Basic_Transmitter<Data_Type> {
 
         auto operator=( Handle const & ) = delete;
 
-        auto & mock() noexcept
+        auto mock() noexcept -> Mock_Transmitter &
         {
             return static_cast<Mock_Transmitter &>( Mock_Basic_Transmitter<Data_Type>::Handle::mock() );
         }
 
-        auto const & mock() const noexcept
+        auto mock() const noexcept -> Mock_Transmitter const &
         {
             return static_cast<Mock_Transmitter const &>(
                 Mock_Basic_Transmitter<Data_Type>::Handle::mock() );
@@ -159,7 +159,7 @@ class Mock_Transmitter : public Mock_Basic_Transmitter<Data_Type> {
 
     auto operator=( Mock_Transmitter const & ) = delete;
 
-    auto handle() noexcept
+    auto handle() noexcept -> Handle
     {
         return Handle{ *this };
     }

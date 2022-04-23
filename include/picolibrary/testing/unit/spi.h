@@ -73,7 +73,7 @@ class Mock_Basic_Controller {
             Mock_Handle<Mock_Basic_Controller>::mock().configure( configuration );
         }
 
-        auto exchange( std::uint8_t data )
+        auto exchange( std::uint8_t data ) -> std::uint8_t
         {
             return Mock_Handle<Mock_Basic_Controller>::mock().exchange( data );
         }
@@ -91,7 +91,7 @@ class Mock_Basic_Controller {
 
     auto operator=( Mock_Basic_Controller const & ) = delete;
 
-    auto handle() noexcept
+    auto handle() noexcept -> Handle
     {
         return Handle{ *this };
     }
@@ -127,12 +127,12 @@ class Mock_Controller : public Mock_Basic_Controller {
 
         auto operator=( Handle const & ) = delete;
 
-        auto & mock() noexcept
+        auto mock() noexcept -> Mock_Controller &
         {
             return static_cast<Mock_Controller &>( Mock_Basic_Controller::Handle::mock() );
         }
 
-        auto const & mock() const noexcept
+        auto mock() const noexcept -> Mock_Controller const &
         {
             return static_cast<Mock_Controller const &>( Mock_Basic_Controller::Handle::mock() );
         }
@@ -144,7 +144,7 @@ class Mock_Controller : public Mock_Basic_Controller {
             mock().exchange( tx_begin, tx_end, rx_begin, rx_end );
         }
 
-        auto receive()
+        auto receive() -> std::uint8_t
         {
             return mock().receive();
         }
@@ -177,7 +177,7 @@ class Mock_Controller : public Mock_Basic_Controller {
 
     auto operator=( Mock_Controller const & ) = delete;
 
-    auto handle() noexcept
+    auto handle() noexcept -> Handle
     {
         return Handle{ *this };
     }
@@ -269,7 +269,7 @@ class Mock_Device_Selector {
 
     auto operator=( Mock_Device_Selector const & ) = delete;
 
-    auto handle() noexcept
+    auto handle() noexcept -> Handle
     {
         return Handle{ *this };
     }
