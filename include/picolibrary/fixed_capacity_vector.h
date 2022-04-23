@@ -220,7 +220,7 @@ class Fixed_Capacity_Vector {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( std::initializer_list<Value> initializer_list ) noexcept -> Fixed_Capacity_Vector
+    constexpr auto operator=( std::initializer_list<Value> initializer_list ) noexcept -> Fixed_Capacity_Vector &
     {
         assign( initializer_list );
 
@@ -234,7 +234,7 @@ class Fixed_Capacity_Vector {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Fixed_Capacity_Vector && expression ) noexcept -> Fixed_Capacity_Vector
+    constexpr auto operator=( Fixed_Capacity_Vector && expression ) noexcept -> Fixed_Capacity_Vector &
     {
         if ( &expression != this ) {
             clear();
@@ -259,7 +259,7 @@ class Fixed_Capacity_Vector {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Fixed_Capacity_Vector const & expression ) noexcept -> Fixed_Capacity_Vector
+    constexpr auto operator=( Fixed_Capacity_Vector const & expression ) noexcept -> Fixed_Capacity_Vector &
     {
         if ( &expression != this ) {
             clear();
