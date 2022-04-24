@@ -27,6 +27,7 @@
 
 #include "picolibrary/microchip/mcp3008.h"
 #include "picolibrary/testing/unit/random.h"
+#include "picolibrary/testing/unit/spi.h"
 
 namespace picolibrary::Testing::Unit {
 
@@ -47,6 +48,31 @@ inline auto random<Microchip::MCP3008::Input>() -> Microchip::MCP3008::Input
  * \brief Microchip MCP3008 unit testing facilities.
  */
 namespace picolibrary::Testing::Unit::Microchip::MCP3008 {
+
+/**
+ * \brief Mock driver.
+ */
+class Mock_Driver : public SPI::Mock_Device {
+  public:
+    Mock_Driver() = default;
+
+    Mock_Driver( SPI::Mock_Controller &, SPI::Mock_Controller::Configuration const &, SPI::Mock_Device_Selector::Handle )
+    {
+    }
+
+    Mock_Driver( Mock_Driver && ) = delete;
+
+    Mock_Driver( Mock_Driver const & ) = delete;
+
+    ~Mock_Driver() noexcept = default;
+
+    auto operator=( Mock_Driver && ) = delete;
+
+    auto operator=( Mock_Driver const & ) = delete;
+
+    MOCK_METHOD( ::picolibrary::Microchip::MCP3008::Sample, sample, ( ::picolibrary::Microchip::MCP3008::Input ) );
+};
+
 } // namespace picolibrary::Testing::Unit::Microchip::MCP3008
 
 #endif // PICOLIBRARY_TESTING_UNIT_MICROCHIP_MCP3008_H
