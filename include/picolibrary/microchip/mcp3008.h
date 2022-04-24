@@ -154,6 +154,106 @@ class Driver : public Device {
     }
 };
 
+/**
+ * \brief Blocking, single sample ADC.
+ *
+ * \tparam Driver The type of driver used to interact with the MCP3008.
+ */
+template<typename Driver>
+class Blocking_Single_Sample_Converter {
+  public:
+    /**
+     * \brief Sample.
+     */
+    using Sample = MCP3008::Sample;
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Blocking_Single_Sample_Converter() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] driver The driver used to interact with the MCP3008.
+     * \param[in] input The input to sample.
+     */
+    constexpr Blocking_Single_Sample_Converter( Driver & driver, Input input ) noexcept :
+        m_driver{ &driver },
+        m_input{ input }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Blocking_Single_Sample_Converter( Blocking_Single_Sample_Converter && source ) noexcept :
+        m_driver{ source.m_driver },
+        m_input{ source.m_input }
+    {
+        source.m_driver = nullptr;
+    }
+
+    Blocking_Single_Sample_Converter( Blocking_Single_Sample_Converter const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Blocking_Single_Sample_Converter() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Blocking_Single_Sample_Converter && expression ) noexcept
+        -> Blocking_Single_Sample_Converter &
+    {
+        if ( &expression != this ) {
+            m_driver = expression.m_driver;
+            m_input  = expression.m_input;
+
+            expression.m_driver = nullptr;
+        } // if
+
+        return *this;
+    }
+
+    auto operator=( Blocking_Single_Sample_Converter const & ) = delete;
+
+    /**
+     * \brief Initialize the ADC's hardware.
+     */
+    void initialize() noexcept
+    {
+    }
+
+    /**
+     * \brief Get a sample.
+     *
+     * \return The sample.
+     */
+    auto sample() noexcept -> Sample
+    {
+        return m_driver->sample( m_input );
+    }
+
+  private:
+    /**
+     * \brief The driver used to interact with the MCP3008.
+     */
+    Driver * m_driver{ nullptr };
+
+    /**
+     * \brief The input to sample.
+     */
+    Input m_input{};
+};
+
 } // namespace picolibrary::Microchip::MCP3008
 
 #endif // PICOLIBRARY_MICROCHIP_MCP3008_H
