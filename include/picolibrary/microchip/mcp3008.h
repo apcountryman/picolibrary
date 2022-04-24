@@ -29,8 +29,9 @@
 
 #include "picolibrary/adc.h"
 #include "picolibrary/array.h"
-#include "picolibrary/bit_manipulation.h"
+#include "picolibrary/precondition.h"
 #include "picolibrary/spi.h"
+#include "picolibrary/utility.h"
 
 /**
  * \brief Microchip MCP3008 facilities.

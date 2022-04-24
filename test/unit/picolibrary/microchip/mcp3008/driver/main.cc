@@ -76,7 +76,7 @@ TEST( sample, worksProperly )
         { Input::CH6_RELATIVE_TO_CH7, 0b0'110'0000 },
         { Input::CH7_RELATIVE_TO_CH6, 0b0'111'0000 },
 
-        // clang-format off
+        // clang-format on
     };
 
     for ( auto const test_case : test_cases ) {
