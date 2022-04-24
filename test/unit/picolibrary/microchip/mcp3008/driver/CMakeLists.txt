@@ -13,8 +13,22 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/microchip/mcp3008/CMakeLists.txt
-# Description: picolibrary::Microchip::MCP3008 unit tests CMake rules.
+# File: test/unit/picolibrary/microchip/mcp3008/driver/CMakeLists.txt
+# Description: picolibrary::Microchip::MCP3008::Driver unit tests CMake rules.
 
 # build the picolibrary::Microchip::MCP3008::Driver unit tests
-add_subdirectory( driver )
+if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+    add_executable(
+        test-unit-picolibrary-microchip-mcp3008-driver
+        main.cc
+    )
+    target_link_libraries(
+        test-unit-picolibrary-microchip-mcp3008-driver
+        picolibrary
+        picolibrary-testing-unit-fatal_error
+    )
+    add_test(
+        NAME    test-unit-picolibrary-microchip-mcp3008-driver
+        COMMAND test-unit-picolibrary-microchip-mcp3008-driver --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )

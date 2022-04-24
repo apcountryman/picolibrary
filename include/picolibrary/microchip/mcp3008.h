@@ -24,8 +24,14 @@
 #define PICOLIBRARY_MICROCHIP_MCP3008_H
 
 #include <cstdint>
+#include <limits>
+#include <utility>
 
 #include "picolibrary/adc.h"
+#include "picolibrary/array.h"
+#include "picolibrary/precondition.h"
+#include "picolibrary/spi.h"
+#include "picolibrary/utility.h"
 
 /**
  * \brief Microchip MCP3008 facilities.
@@ -59,6 +65,94 @@ enum class Input : std::uint8_t {
  * \brief Sample.
  */
 using Sample = ADC::Sample<std::uint_fast16_t, 10>;
+
+/**
+ * \brief Driver.
+ *
+ * \tparam Controller The type of controller used to communicate with the MCP3008.
+ * \tparam Device_Selector The type of device selector used to select and deselect the
+ *         MCP3008.
+ * \tparam Device The type of device implementation used by the driver. The default device
+ *         implementation should be used unless a mock device implementation is being
+ *         injected to support unit testing of this driver.
+ */
+template<typename Controller, typename Device_Selector, typename Device = SPI::Device<Controller, Device_Selector>>
+class Driver : public Device {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Driver() = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] controller The controller used to communicate with the MCP3008.
+     * \param[in] configuration The controller clock and data exchange bit order
+     *            configuration that meets the MCP3008's communication requirements.
+     * \param[in] device_selector The device selector used to select and deselect the
+     *            MCP3008.
+     */
+    constexpr Driver( Controller & controller, typename Controller::Configuration const & configuration, Device_Selector device_selector ) noexcept
+        :
+        Device{ controller, configuration, std::move( device_selector ) }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Driver( Driver && source ) noexcept = default;
+
+    Driver( Driver const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Driver() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Driver && expression ) noexcept -> Driver & = default;
+
+    auto operator=( Driver const & ) = delete;
+
+    using Device::initialize;
+
+    /**
+     * \brief Get a sample.
+     *
+     * \param[in] input The input to get the sample from.
+     *
+     * \return The sample.
+     */
+    auto sample( Input input ) noexcept -> Sample
+    {
+        auto data = Array<std::uint8_t, 3>{
+            0x01,
+            to_underlying( input ),
+            0x00,
+        };
+
+        this->configure();
+
+        auto const guard = SPI::Device_Selection_Guard{ this->device_selector() };
+
+        this->exchange( data.begin(), data.end(), data.begin(), data.end() );
+
+        return Sample{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
+                       ( static_cast<Sample::Unsigned_Integer>( data[ 1 ] & 0b11 )
+                         << std::numeric_limits<std::uint8_t>::digits )
+                           | data[ 2 ] };
+    }
+};
 
 } // namespace picolibrary::Microchip::MCP3008
 
