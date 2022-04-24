@@ -82,14 +82,13 @@ TEST( sample, worksProperly )
     for ( auto const test_case : test_cases ) {
         auto const in_sequence = InSequence{};
 
-        auto controller = Mock_Controller{};
-        auto device_selector = Mock_Device_Selector{};
+        auto controller             = Mock_Controller{};
+        auto device_selector        = Mock_Device_Selector{};
         auto device_selector_handle = device_selector.handle();
 
-        auto mcp3008 = Driver{
-            controller,
-            random<Mock_Controller::Configuration>(),
-            device_selector.handle() };
+        auto mcp3008 = Driver{ controller,
+                               random<Mock_Controller::Configuration>(),
+                               device_selector.handle() };
 
         auto const sample = random<Sample>();
 
@@ -101,8 +100,8 @@ TEST( sample, worksProperly )
         auto const rx = std::vector<std::uint8_t>{
             random<std::uint8_t>(),
             static_cast<std::uint8_t>(
-                ( random<std::uint8_t>( 0b000000, 0b111111 ) << 2 ) |
-                ( sample.as_unsigned_integer() >> std::numeric_limits<std::uint8_t>::digits ) ),
+                ( random<std::uint8_t>( 0b000000, 0b111111 ) << 2 )
+                | ( sample.as_unsigned_integer() >> std::numeric_limits<std::uint8_t>::digits ) ),
             static_cast<std::uint8_t>( sample.as_unsigned_integer() ),
         };
         EXPECT_CALL( mcp3008, configure() );
