@@ -46,7 +46,7 @@ namespace picolibrary::Testing::Interactive::ADC {
  *            gotten.
  */
 template<typename Blocking_Single_Sample_Converter, typename Delayer>
-void sample( Output_Stream & stream, Blocking_Single_Sample_Converter adc, Delayer delay ) noexcept
+void sample_blocking_single_sample_converter( Output_Stream & stream, Blocking_Single_Sample_Converter adc, Delayer delay ) noexcept
 {
     // #lizard forgives the length
 
