@@ -61,6 +61,8 @@ void sample(
     ::picolibrary::Microchip::MCP3008::Input input,
     Delayer                                  delay ) noexcept
 {
+    // #lizard forgives the parameter count
+
     controller.initialize();
 
     auto mcp3008 = ::picolibrary::Microchip::MCP3008::Driver{ controller,
