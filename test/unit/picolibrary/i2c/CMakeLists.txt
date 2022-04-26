@@ -13,7 +13,6 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/i2c/CMakeLists.txt
 # Description: picolibrary::I2C unit tests CMake rules.
 
 # build the picolibrary::I2C::Address_Numeric unit tests

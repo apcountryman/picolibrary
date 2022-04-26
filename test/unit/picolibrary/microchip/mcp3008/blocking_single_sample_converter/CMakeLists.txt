@@ -13,7 +13,6 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/microchip/mcp3008/blocking_single_sample_converter/CMakeLists.txt
 # Description: picolibrary::Microchip::MCP3008::Blocking_Single_Sample_Converter unit
 #       tests CMake rules.
 

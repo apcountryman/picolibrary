@@ -13,7 +13,6 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: configuration/release/CMakeLists.txt
 # Description: picolibrary release configuration.
 
 # install prefix is not applicable

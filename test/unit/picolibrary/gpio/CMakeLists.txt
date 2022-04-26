@@ -13,7 +13,6 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/gpio/CMakeLists.txt
 # Description: picolibrary::GPIO unit tests CMake rules.
 
 # build the picolibrary::GPIO::Active_Low_Input_Pin unit tests

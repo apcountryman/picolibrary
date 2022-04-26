@@ -13,7 +13,6 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: configuration/testing-interactive/CMakeLists.txt
 # Description: picolibrary interactive testing configuration.
 
 # install prefix is not applicable

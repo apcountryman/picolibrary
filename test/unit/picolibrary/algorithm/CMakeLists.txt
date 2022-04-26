@@ -13,7 +13,6 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/algorithm/CMakeLists.txt
 # Description: picolibrary algorithm unit tests CMake rules.
 
 # build the picolibrary algorithm unit tests

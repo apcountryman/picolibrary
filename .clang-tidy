@@ -13,7 +13,6 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: .clang-tidy
 # Description: clang-tidy configuration for the picolibrary repository.
 
 Checks: '*,-abseil*,-android*,-boost*,-fuchsia*,-google*,-llvm*,-mpi*,-objc*,-openmp*,-portability-simd*,-zircon*'
