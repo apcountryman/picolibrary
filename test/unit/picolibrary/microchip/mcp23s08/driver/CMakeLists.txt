@@ -13,7 +13,6 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/microchip/mcp23s08/driver/CMakeLists.txt
 # Description: picolibrary::Microchip::MCP23S08::Driver unit tests CMake rules.
 
 # build the picolibrary::Microchip::MCP23S08::Driver unit tests

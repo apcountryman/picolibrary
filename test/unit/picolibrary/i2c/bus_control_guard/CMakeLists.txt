@@ -13,7 +13,6 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/i2c/bus_control_guard/CMakeLists.txt
 # Description: picolibrary::I2C::Bus_Control_Guard unit tests CMake rules.
 
 # build the picolibrary::I2C::Bus_Control_Guard unit tests

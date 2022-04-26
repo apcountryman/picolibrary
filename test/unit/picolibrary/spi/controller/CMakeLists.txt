@@ -13,7 +13,6 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/spi/controller/CMakeLists.txt
 # Description: picolibrary::SPI::Controller unit tests CMake rules.
 
 # build the picolibrary::SPI::Controller unit tests

@@ -13,7 +13,6 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/event/CMakeLists.txt
 # Description: picolibrary::Event unit tests CMake rules.
 
 # build the picolibrary::Event unit tests

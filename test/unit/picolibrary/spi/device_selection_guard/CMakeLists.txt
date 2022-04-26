@@ -13,7 +13,6 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/spi/device_selection_guard/CMakeLists.txt
 # Description: picolibrary::SPI::Device_Selection_Guard unit tests CMake rules.
 
 # build the picolibrary::SPI::Device_Selection_Guard unit tests

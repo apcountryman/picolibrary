@@ -13,7 +13,6 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/asynchronous_serial/transmitter/CMakeLists.txt
 # Description: picolibrary::Asynchronous_Serial::Transmitter unit tests CMake rules.
 
 # build the picolibrary::Asynchronous_Serial::Transmitter unit tests

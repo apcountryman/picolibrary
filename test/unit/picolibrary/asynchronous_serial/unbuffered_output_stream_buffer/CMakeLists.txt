@@ -13,7 +13,6 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/asynchronous_serial/unbuffered_output_stream_buffer/CMakeLists.txt
 # Description: picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer unit
 #       tests CMake rules.
 

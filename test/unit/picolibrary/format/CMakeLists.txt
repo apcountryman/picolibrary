@@ -13,7 +13,6 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/format/CMakeLists.txt
 # Description: picolibrary::Format unit tests CMake rules.
 
 # build the picolibrary::Format::Binary unit tests

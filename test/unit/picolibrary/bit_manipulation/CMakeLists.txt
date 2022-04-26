@@ -13,7 +13,6 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/bit_manipulation/CMakeLists.txt
 # Description: picolibrary bit manipulation unit tests CMake rules.
 
 # build the picolibrary bit manipulation unit tests

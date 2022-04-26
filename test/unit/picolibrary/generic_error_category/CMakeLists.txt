@@ -13,7 +13,6 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/generic_error_category/CMakeLists.txt
 # Description: picolibrary::Generic_Error_Category unit tests CMake rules.
 
 # build the picolibrary::Generic_Error_Category unit tests

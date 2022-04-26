@@ -13,7 +13,6 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/interrupt/CMakeLists.txt
 # Description: picolibrary::Interrupt unit tests CMake rules.
 
 # build the picolibrary::Interrupt::Critical_Section_Guard unit tests

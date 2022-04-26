@@ -13,7 +13,6 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# File: test/unit/picolibrary/stream/CMakeLists.txt
 # Description: picolibrary::Stream unit tests CMake rules.
 
 # build the picolibrary::Stream unit tests
