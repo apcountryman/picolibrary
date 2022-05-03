@@ -53,7 +53,7 @@ void sample_blocking_single_sample_converter( Output_Stream & stream, Blocking_S
     adc.initialize();
 
     {
-        auto const result = stream.print(
+        auto result = stream.print(
             "ADC sample range: [{},{}]\n",
             Format::Decimal{ Blocking_Single_Sample_Converter::Sample::min().as_unsigned_integer() },
             Format::Decimal{ Blocking_Single_Sample_Converter::Sample::max().as_unsigned_integer() } );
@@ -64,13 +64,13 @@ void sample_blocking_single_sample_converter( Output_Stream & stream, Blocking_S
         delay();
 
         {
-            auto const result = stream.print(
+            auto result = stream.print(
                 "{}\n", Format::Decimal{ adc.sample().as_unsigned_integer() } );
             expect( not result.is_error(), result.error() );
         }
 
         {
-            auto const result = stream.flush();
+            auto result = stream.flush();
             expect( not result.is_error(), result.error() );
         }
     } // for

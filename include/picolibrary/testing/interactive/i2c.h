@@ -59,7 +59,7 @@ void scan( Output_Stream & stream, Controller controller ) noexcept
             if ( response == ::picolibrary::I2C::Response::ACK ) {
                 devices_found = true;
 
-                auto const result = stream.print(
+                auto result = stream.print(
                     "device found: {} ({})\n",
                     Format::Hexadecimal{ static_cast<std::uint8_t>( address.as_unsigned_integer() ) },
                     operation == ::picolibrary::I2C::Operation::READ ? 'R' : 'W' );
@@ -68,11 +68,11 @@ void scan( Output_Stream & stream, Controller controller ) noexcept
         } );
 
     if ( not devices_found ) {
-        auto const result = stream.put( "no devices found\n" );
+        auto result = stream.put( "no devices found\n" );
         expect( not result.is_error(), result.error() );
     } // if
 
-    auto const result = stream.flush();
+    auto result = stream.flush();
     expect( not result.is_error(), result.error() );
 }
 
