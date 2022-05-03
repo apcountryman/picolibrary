@@ -44,6 +44,8 @@ namespace picolibrary::Testing::Interactive::ADC {
  * \param[in] adc The ADC to use to get the samples.
  * \param[in] delay The nullary functor to call to introduce a delay each time a sample is
  *            gotten.
+ *
+ * \pre writing to the stream succeeds
  */
 template<typename Blocking_Single_Sample_Converter, typename Delayer>
 void sample_blocking_single_sample_converter( Output_Stream & stream, Blocking_Single_Sample_Converter adc, Delayer delay ) noexcept

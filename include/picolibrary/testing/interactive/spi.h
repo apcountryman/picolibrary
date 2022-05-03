@@ -48,6 +48,8 @@ namespace picolibrary::Testing::Interactive::SPI {
  *            the test.
  * \param[in] delay The nullary functor to call to introduce a delay each time data is
  *            exchanged.
+ *
+ * \pre writing to the stream succeeds
  */
 template<typename Controller, typename Delayer>
 void echo( Output_Stream & stream, Controller controller, typename Controller::Configuration const & configuration, Delayer delay ) noexcept

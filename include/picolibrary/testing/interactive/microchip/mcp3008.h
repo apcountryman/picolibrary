@@ -51,6 +51,8 @@ namespace picolibrary::Testing::Interactive::Microchip::MCP3008 {
  * \param[in] input The input to sample.
  * \param[in] delay The nullary functor to call to introduce a delay each time a sample is
  *            gotten.
+ *
+ * \pre writing to the stream succeeds
  */
 template<typename Controller, typename Device_Selector, typename Delayer>
 void sample(
