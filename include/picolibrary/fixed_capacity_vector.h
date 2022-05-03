@@ -124,6 +124,21 @@ class Fixed_Capacity_Vector {
     /**
      * \brief Constructor.
      *
+     * \param[in] n The number of copies of value to initialize the vector with.
+     * \param[in] value The value to initialize the vector with n copies of.
+     *
+     * \warning Exceeding the vector's capacity results in undefined behavior.
+     */
+    constexpr Fixed_Capacity_Vector( Bypass_Precondition_Expectation_Checks, Size n, Value const & value ) noexcept
+        :
+        m_size{ n }
+    {
+        while ( n-- ) { new ( &m_storage[ n ] ) Value{ value }; } // while
+    }
+
+    /**
+     * \brief Constructor.
+     *
      * \param[in] n The number of default constructed values to initialize the vector
      *            with.
      *
@@ -133,6 +148,20 @@ class Fixed_Capacity_Vector {
     {
         expect( n <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
 
+        while ( n-- ) { new ( &m_storage[ n ] ) Value{}; } // while
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] n The number of default constructed values to initialize the vector
+     *            with.
+     *
+     * \warning Exceeding the vector's capacity results in undefined behavior.
+     */
+    constexpr explicit Fixed_Capacity_Vector( Bypass_Precondition_Expectation_Checks, Size n ) noexcept :
+        m_size{ n }
+    {
         while ( n-- ) { new ( &m_storage[ n ] ) Value{}; } // while
     }
 
@@ -162,6 +191,27 @@ class Fixed_Capacity_Vector {
     /**
      * \brief Constructor.
      *
+     * \tparam Iterator Range iterator.
+     *
+     * \param[in] begin The beginning of the range of values to initialize the vector
+     *            with.
+     * \param[in] end The end of the range of values to initialize the vector with.
+     *
+     * \warning Exceeding the vector's capacity results in undefined behavior.
+     */
+    template<typename Iterator>
+    constexpr Fixed_Capacity_Vector( Bypass_Precondition_Expectation_Checks, Iterator begin, Iterator end ) noexcept
+        :
+        m_size{ static_cast<Size>( end - begin ) }
+    {
+        ::picolibrary::for_each( begin, end, [ storage = &m_storage[ 0 ] ]( auto value ) mutable noexcept {
+            new ( storage++ ) Value{ value };
+        } );
+    }
+
+    /**
+     * \brief Constructor.
+     *
      * \param[in] initializer_list The initializer list containing the values to
      *            initialize the vector with.
      *
@@ -169,6 +219,22 @@ class Fixed_Capacity_Vector {
      */
     constexpr Fixed_Capacity_Vector( std::initializer_list<Value> initializer_list ) noexcept :
         Fixed_Capacity_Vector{ initializer_list.begin(), initializer_list.end() }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] initializer_list The initializer list containing the values to
+     *            initialize the vector with.
+     *
+     * \warning Exceeding the vector's capacity results in undefined behavior.
+     */
+    constexpr Fixed_Capacity_Vector( Bypass_Precondition_Expectation_Checks, std::initializer_list<Value> initializer_list ) noexcept
+        :
+        Fixed_Capacity_Vector{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
+                               initializer_list.begin(),
+                               initializer_list.end() }
     {
     }
 
@@ -296,6 +362,23 @@ class Fixed_Capacity_Vector {
     }
 
     /**
+     * \brief Replace the vector's contents with n copies of a value.
+     *
+     * \param[in] n The number of copies of value to store in the vector.
+     * \param[in] value The value to store n copies of in the vector.
+     *
+     * \warning Exceeding the vector's capacity results in undefined behavior.
+     */
+    constexpr void assign( Bypass_Precondition_Expectation_Checks, Size n, Value const & value ) noexcept
+    {
+        clear();
+
+        m_size = n;
+
+        while ( n-- ) { new ( &m_storage[ n ] ) Value{ value }; } // while
+    }
+
+    /**
      * \brief Replace the vector's contents with those in the provided range.
      *
      * \tparam Iterator Range iterator.
@@ -323,6 +406,28 @@ class Fixed_Capacity_Vector {
     }
 
     /**
+     * \brief Replace the vector's contents with those in the provided range.
+     *
+     * \tparam Iterator Range iterator.
+     *
+     * \param[in] begin The beginning of the range of values to store in the vector.
+     * \param[in] end The end of the range of values to store in the vector.
+     *
+     * \warning Exceeding the vector's capacity results in undefined behavior.
+     */
+    template<typename Iterator>
+    constexpr void assign( Bypass_Precondition_Expectation_Checks, Iterator begin, Iterator end ) noexcept
+    {
+        clear();
+
+        m_size = end - begin;
+
+        ::picolibrary::for_each( begin, end, [ storage = &m_storage[ 0 ] ]( auto value ) mutable noexcept {
+            new ( storage++ ) Value{ value };
+        } );
+    }
+
+    /**
      * \brief Replace the vector's contents with those in the provided initializer list.
      *
      * \param[in] initializer_list The initializer list containing the values to store in
@@ -333,6 +438,22 @@ class Fixed_Capacity_Vector {
     constexpr void assign( std::initializer_list<Value> initializer_list ) noexcept
     {
         assign( initializer_list.begin(), initializer_list.end() );
+    }
+
+    /**
+     * \brief Replace the vector's contents with those in the provided initializer list.
+     *
+     * \param[in] initializer_list The initializer list containing the values to store in
+     *            the vector.
+     *
+     * \warning Exceeding the vector's capacity results in undefined behavior.
+     */
+    constexpr void assign( Bypass_Precondition_Expectation_Checks, std::initializer_list<Value> initializer_list ) noexcept
+    {
+        assign(
+            BYPASS_PRECONDITION_EXPECTATION_CHECKS,
+            initializer_list.begin(),
+            initializer_list.end() );
     }
 
     /**
@@ -705,6 +826,36 @@ class Fixed_Capacity_Vector {
     /**
      * \brief Insert a value before the specified position in the vector.
      *
+     * \warning Calling this function on a full vector results in undefined behavior.
+     *
+     * \param[in] position The position to insert the value before.
+     * \param[in] value The value to insert.
+     *
+     * \return An iterator to the inserted element.
+     */
+    auto insert( Bypass_Precondition_Expectation_Checks, Const_Iterator position, Value const & value ) noexcept
+        -> Iterator
+    {
+        auto element = --end();
+
+        for ( ; element >= position; --element ) {
+            new ( element + 1 ) Value{ std::move( *element ) };
+
+            element->~Value();
+        } // for
+
+        auto const inserted_element = element + 1;
+
+        m_size += 1;
+
+        new ( ++element ) Value{ value };
+
+        return inserted_element;
+    }
+
+    /**
+     * \brief Insert a value before the specified position in the vector.
+     *
      * \pre not picolibrary::Fixed_Capacity_Vector::full()
      *
      * \param[in] position The position to insert the value before.
@@ -716,6 +867,36 @@ class Fixed_Capacity_Vector {
     {
         expect( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
 
+        auto element = --end();
+
+        for ( ; element >= position; --element ) {
+            new ( element + 1 ) Value{ std::move( *element ) };
+
+            element->~Value();
+        } // for
+
+        auto const inserted_element = element + 1;
+
+        m_size += 1;
+
+        new ( ++element ) Value{ std::move( value ) };
+
+        return inserted_element;
+    }
+
+    /**
+     * \brief Insert a value before the specified position in the vector.
+     *
+     * \warning Calling this function on a full vector results in undefined behavior.
+     *
+     * \param[in] position The position to insert the value before.
+     * \param[in] value The value to insert.
+     *
+     * \return An iterator to the inserted element.
+     */
+    auto insert( Bypass_Precondition_Expectation_Checks, Const_Iterator position, Value && value ) noexcept
+        -> Iterator
+    {
         auto element = --end();
 
         for ( ; element >= position; --element ) {
@@ -751,6 +932,37 @@ class Fixed_Capacity_Vector {
     {
         expect( size() + n > size() and size() + n <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
 
+        auto element = --end();
+
+        for ( ; element >= position; --element ) {
+            new ( element + n ) Value{ std::move( *element ) };
+
+            element->~Value();
+        } // for
+
+        auto const inserted_elements = element + 1;
+
+        m_size += n;
+
+        while ( n-- ) { new ( ++element ) Value{ value }; } // while
+
+        return inserted_elements;
+    }
+
+    /**
+     * \brief Insert n copies of a value before the specified position in the vector.
+     *
+     * \param[in] position The position to insert n copies of value before.
+     * \param[in] n The number of copies of value to insert.
+     * \param[in] value The value to insert n copies of.
+     *
+     * \warning Exceeding the vector's capacity results in undefined behavior.
+     *
+     * \return An iterator to the inserted elements.
+     */
+    auto insert( Bypass_Precondition_Expectation_Checks, Const_Iterator position, Size n, Value const & value ) noexcept
+        -> Iterator
+    {
         auto element = --end();
 
         for ( ; element >= position; --element ) {
@@ -814,6 +1026,45 @@ class Fixed_Capacity_Vector {
     }
 
     /**
+     * \brief Insert values from the specified range before the specified position in the
+     *        vector.
+     *
+     * \tparam Iterator Range iterator.
+     *
+     * \param[in] position The position to insert the values before.
+     * \param[in] begin The beginning of the range of values to insert.
+     * \param[in] end The end of the range of values to insert.
+     *
+     * \warning Exceeding the vector's capacity results in undefined behavior.
+     *
+     * \return An iterator to the inserted elements.
+     */
+    template<typename Iterator>
+    auto insert( Bypass_Precondition_Expectation_Checks, Const_Iterator position, Iterator begin, Iterator end ) noexcept
+        -> Iterator
+    {
+        auto const n = static_cast<Size>( end - begin );
+
+        auto element = --end();
+
+        for ( ; element >= position; --element ) {
+            new ( element + n ) Value{ std::move( *element ) };
+
+            element->~Value();
+        } // for
+
+        auto const inserted_elements = element + 1;
+
+        m_size += n;
+
+        ::picolibrary::for_each( begin, end, [ element ]( auto value ) mutable noexcept {
+            new ( ++element ) Value{ value };
+        } );
+
+        return inserted_elements;
+    }
+
+    /**
      * \brief Insert values from the specified initializer list before the specified
      *        position in the vector.
      *
@@ -833,6 +1084,27 @@ class Fixed_Capacity_Vector {
     }
 
     /**
+     * \brief Insert values from the specified initializer list before the specified
+     *        position in the vector.
+     *
+     * \param[in] position The position to insert the values before.
+     * \param[in] initializer_list The initializer list containing the values to insert.
+     *
+     * \warning Exceeding the vector's capacity results in undefined behavior.
+     *
+     * \return An iterator to the inserted elements.
+     */
+    auto insert( Bypass_Precondition_Expectation_Checks, Const_Iterator position, std::initializer_list<Value> initializer_list ) noexcept
+        -> Iterator
+    {
+        return insert(
+            BYPASS_PRECONDITION_EXPECTATION_CHECKS,
+            position,
+            initializer_list.begin(),
+            initializer_list.end() );
+    }
+
+    /**
      * \brief Emplace a value before the specified position in the vector.
      *
      * \pre not picolibrary::Fixed_Capacity_Vector::full()
@@ -849,6 +1121,39 @@ class Fixed_Capacity_Vector {
     {
         expect( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
 
+        auto element = --end();
+
+        for ( ; element >= position; --element ) {
+            new ( element + 1 ) Value{ std::move( *element ) };
+
+            element->~Value();
+        } // for
+
+        auto const inserted_element = element + 1;
+
+        new ( ++element ) Value{ std::forward<Arguments>( arguments )... };
+
+        m_size += 1;
+
+        return inserted_element;
+    }
+
+    /**
+     * \brief Emplace a value before the specified position in the vector.
+     *
+     * \warning Calling this function on a full vector results in undefined behavior.
+     *
+     * \tparam Arguments Value construction argument types.
+     *
+     * \param[in] position The position to emplace the new value before.
+     * \param[in] arguments Value construction arguments.
+     *
+     * \return An iterator to the emplaced element.
+     */
+    template<typename... Arguments>
+    auto emplace( Bypass_Precondition_Expectation_Checks, Const_Iterator position, Arguments &&... arguments ) noexcept
+        -> Iterator
+    {
         auto element = --end();
 
         for ( ; element >= position; --element ) {
@@ -938,6 +1243,20 @@ class Fixed_Capacity_Vector {
     /**
      * \brief Append a value to the vector.
      *
+     * \warning Calling this function on a full vector results in undefined behavior.
+     *
+     * \param[in] value The value to append to the vector.
+     */
+    constexpr void push_back( Bypass_Precondition_Expectation_Checks, Value const & value ) noexcept
+    {
+        new ( &m_storage[ m_size ] ) Value{ value };
+
+        ++m_size;
+    }
+
+    /**
+     * \brief Append a value to the vector.
+     *
      * \pre not picolibrary::Fixed_Capacity_Vector::full()
      *
      * \param[in] value The value to append to the vector.
@@ -946,6 +1265,20 @@ class Fixed_Capacity_Vector {
     {
         expect( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
 
+        new ( &m_storage[ m_size ] ) Value{ std::move( value ) };
+
+        ++m_size;
+    }
+
+    /**
+     * \brief Append a value to the vector.
+     *
+     * \warning Calling this function on a full vector results in undefined behavior.
+     *
+     * \param[in] value The value to append to the vector.
+     */
+    constexpr void push_back( Bypass_Precondition_Expectation_Checks, Value && value ) noexcept
+    {
         new ( &m_storage[ m_size ] ) Value{ std::move( value ) };
 
         ++m_size;
@@ -967,6 +1300,52 @@ class Fixed_Capacity_Vector {
     {
         expect( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
 
+        new ( &m_storage[ m_size ] ) Value{ std::forward<Arguments>( arguments )... };
+
+        ++m_size;
+
+        return back();
+    }
+
+    /**
+     * \brief Append a value to the vector.
+     *
+     * \pre not picolibrary::Fixed_Capacity_Vector::full()
+     *
+     * \tparam Arguments Value construction argument types.
+     *
+     * \param[in] arguments Value construction arguments.
+     *
+     * \return A reference to the appended element.
+     */
+    template<typename... Arguments>
+    auto emplace_back( Run_Precondition_Expectation_Checks, Arguments &&... arguments ) noexcept
+        -> Reference
+    {
+        expect( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
+
+        new ( &m_storage[ m_size ] ) Value{ std::forward<Arguments>( arguments )... };
+
+        ++m_size;
+
+        return back();
+    }
+
+    /**
+     * \brief Append a value to the vector.
+     *
+     * \warning Calling this function on a full vector results in undefined behavior.
+     *
+     * \tparam Arguments Value construction argument types.
+     *
+     * \param[in] arguments Value construction arguments.
+     *
+     * \return A reference to the appended element.
+     */
+    template<typename... Arguments>
+    auto emplace_back( Bypass_Precondition_Expectation_Checks, Arguments &&... arguments ) noexcept
+        -> Reference
+    {
         new ( &m_storage[ m_size ] ) Value{ std::forward<Arguments>( arguments )... };
 
         ++m_size;
@@ -1014,6 +1393,30 @@ class Fixed_Capacity_Vector {
      * \brief Resize the vector to be the specified size.
      *
      * \param[in] size The desired vector size.
+     *
+     * \warning Exceeding the vector's capacity results in undefined behavior.
+     */
+    constexpr void resize( Bypass_Precondition_Expectation_Checks, Size size ) noexcept
+    {
+        if ( size < m_size ) {
+            for ( auto element = begin() + size; element != end(); ++element ) {
+                element->~Value();
+            } // for
+        }     // if
+
+        if ( size > m_size ) {
+            for ( auto element = end(); element != begin() + size; ++element ) {
+                new ( element ) Value{};
+            } // for
+        }     // if
+
+        m_size = size;
+    }
+
+    /**
+     * \brief Resize the vector to be the specified size.
+     *
+     * \param[in] size The desired vector size.
      * \param[in] value The value to append to the vector if the desired vector size is
      *            greater than the current vector size.
      *
@@ -1023,6 +1426,32 @@ class Fixed_Capacity_Vector {
     {
         expect( size <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
 
+        if ( size < m_size ) {
+            for ( auto element = begin() + size; element != end(); ++element ) {
+                element->~Value();
+            } // for
+        }     // if
+
+        if ( size > m_size ) {
+            for ( auto element = end(); element != begin() + size; ++element ) {
+                new ( element ) Value{ value };
+            } // for
+        }     // if
+
+        m_size = size;
+    }
+
+    /**
+     * \brief Resize the vector to be the specified size.
+     *
+     * \param[in] size The desired vector size.
+     * \param[in] value The value to append to the vector if the desired vector size is
+     *            greater than the current vector size.
+     *
+     * \warning Exceeding the vector's capacity results in undefined behavior.
+     */
+    constexpr void resize( Bypass_Precondition_Expectation_Checks, Size size, Value const & value ) noexcept
+    {
         if ( size < m_size ) {
             for ( auto element = begin() + size; element != end(); ++element ) {
                 element->~Value();
