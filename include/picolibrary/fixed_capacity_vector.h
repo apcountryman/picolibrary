@@ -692,10 +692,7 @@ class Fixed_Capacity_Vector {
     /**
      * \brief Insert a value before the specified position in the vector.
      *
-     * \pre picolibrary::Fixed_Capacity_Vector::size() + 1 >
-     *      picolibrary::Fixed_Capacity_Vector::size() and
-     *      picolibrary::Fixed_Capacity_Vector::size() + 1 <=
-     *      picolibrary::Fixed_Capacity_Vector::max_size()
+     * \pre not picolibrary::Fixed_Capacity_Vector::full()
      *
      * \param[in] position The position to insert the value before.
      * \param[in] value The value to insert.
@@ -704,7 +701,7 @@ class Fixed_Capacity_Vector {
      */
     auto insert( Const_Iterator position, Value && value ) noexcept -> Iterator
     {
-        expect( size() + 1 > size() and size() + 1 <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
+        expect( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         auto element = --end();
 
@@ -825,10 +822,7 @@ class Fixed_Capacity_Vector {
     /**
      * \brief Emplace a value before the specified position in the vector.
      *
-     * \pre picolibrary::Fixed_Capacity_Vector::size() + 1 >
-     *      picolibrary::Fixed_Capacity_Vector::size() and
-     *      picolibrary::Fixed_Capacity_Vector::size() + 1 <=
-     *      picolibrary::Fixed_Capacity_Vector::max_size()
+     * \pre not picolibrary::Fixed_Capacity_Vector::full()
      *
      * \tparam Arguments Value construction argument types.
      *
@@ -840,7 +834,7 @@ class Fixed_Capacity_Vector {
     template<typename... Arguments>
     auto emplace( Const_Iterator position, Arguments &&... arguments ) noexcept -> Iterator
     {
-        expect( size() + 1 > size() and size() + 1 <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
+        expect( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         auto element = --end();
 
@@ -915,16 +909,13 @@ class Fixed_Capacity_Vector {
     /**
      * \brief Append a value to the vector.
      *
-     * \pre picolibrary::Fixed_Capacity_Vector::size() + 1 >
-     *      picolibrary::Fixed_Capacity_Vector::size() and
-     *      picolibrary::Fixed_Capacity_Vector::size() + 1 <=
-     *      picolibrary::Fixed_Capacity_Vector::max_size()
+     * \pre not picolibrary::Fixed_Capacity_Vector::full()
      *
      * \param[in] value The value to append to the vector.
      */
     constexpr void push_back( Value const & value ) noexcept
     {
-        expect( size() + 1 > size() and size() + 1 <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
+        expect( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         new ( &m_storage[ m_size ] ) Value{ value };
 
@@ -934,16 +925,13 @@ class Fixed_Capacity_Vector {
     /**
      * \brief Append a value to the vector.
      *
-     * \pre picolibrary::Fixed_Capacity_Vector::size() + 1 >
-     *      picolibrary::Fixed_Capacity_Vector::size() and
-     *      picolibrary::Fixed_Capacity_Vector::size() + 1 <=
-     *      picolibrary::Fixed_Capacity_Vector::max_size()
+     * \pre not picolibrary::Fixed_Capacity_Vector::full()
      *
      * \param[in] value The value to append to the vector.
      */
     constexpr void push_back( Value && value ) noexcept
     {
-        expect( size() + 1 > size() and size() + 1 <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
+        expect( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         new ( &m_storage[ m_size ] ) Value{ std::move( value ) };
 
@@ -953,10 +941,7 @@ class Fixed_Capacity_Vector {
     /**
      * \brief Append a value to the vector.
      *
-     * \pre picolibrary::Fixed_Capacity_Vector::size() + 1 >
-     *      picolibrary::Fixed_Capacity_Vector::size() and
-     *      picolibrary::Fixed_Capacity_Vector::size() + 1 <=
-     *      picolibrary::Fixed_Capacity_Vector::max_size()
+     * \pre not picolibrary::Fixed_Capacity_Vector::full()
      *
      * \tparam Arguments Value construction argument types.
      *
@@ -967,7 +952,7 @@ class Fixed_Capacity_Vector {
     template<typename... Arguments>
     auto emplace_back( Arguments &&... arguments ) noexcept -> Reference
     {
-        expect( size() + 1 > size() and size() + 1 <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
+        expect( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         new ( &m_storage[ m_size ] ) Value{ std::forward<Arguments>( arguments )... };
 
