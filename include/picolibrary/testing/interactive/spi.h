@@ -58,11 +58,18 @@ void echo( Output_Stream & stream, Controller controller, typename Controller::C
     for ( auto tx = std::uint8_t{};; ++tx ) {
         delay();
 
-        auto const rx     = controller.exchange( tx );
-        auto       result = stream.print(
-            "exchange( {} ) -> {}\n", Format::Hexadecimal{ tx }, Format::Hexadecimal{ rx } );
-        expect( not result.is_error(), result.error() );
-        expect( rx == tx, Generic_Error::RUNTIME_ERROR );
+        {
+            auto const rx     = controller.exchange( tx );
+            auto       result = stream.print(
+                "exchange( {} ) -> {}\n", Format::Hexadecimal{ tx }, Format::Hexadecimal{ rx } );
+            expect( not result.is_error(), result.error() );
+            expect( rx == tx, Generic_Error::RUNTIME_ERROR );
+        }
+
+        {
+            auto result = stream.flush();
+            expect( not result.is_error(), result.error() );
+        }
     } // for
 }
 
