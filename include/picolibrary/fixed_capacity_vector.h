@@ -617,7 +617,18 @@ class Fixed_Capacity_Vector {
      */
     [[nodiscard]] constexpr auto empty() const noexcept -> bool
     {
-        return not size();
+        return size() == 0;
+    }
+
+    /**
+     * \brief Check if the vector is full.
+     *
+     * \return true if the vector is full.
+     * \return false if the vector is not full.
+     */
+    [[nodiscard]] constexpr auto full() const noexcept -> bool
+    {
+        return size() == max_size();
     }
 
     /**
