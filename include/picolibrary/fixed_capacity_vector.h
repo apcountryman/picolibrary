@@ -674,10 +674,7 @@ class Fixed_Capacity_Vector {
     /**
      * \brief Insert a value before the specified position in the vector.
      *
-     * \pre picolibrary::Fixed_Capacity_Vector::size() + 1 >
-     *      picolibrary::Fixed_Capacity_Vector::size() and
-     *      picolibrary::Fixed_Capacity_Vector::size() + 1 <=
-     *      picolibrary::Fixed_Capacity_Vector::max_size()
+     * \pre not picolibrary::Fixed_Capacity_Vector::full()
      *
      * \param[in] position The position to insert the value before.
      * \param[in] value The value to insert.
@@ -686,7 +683,23 @@ class Fixed_Capacity_Vector {
      */
     auto insert( Const_Iterator position, Value const & value ) noexcept -> Iterator
     {
-        return insert( position, 1, value );
+        expect( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
+
+        auto element = --end();
+
+        for ( ; element >= position; --element ) {
+            new ( element + 1 ) Value{ std::move( *element ) };
+
+            element->~Value();
+        } // for
+
+        auto const inserted_element = element + 1;
+
+        m_size += 1;
+
+        new ( ++element ) Value{ value };
+
+        return inserted_element;
     }
 
     /**
