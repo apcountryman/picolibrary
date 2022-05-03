@@ -59,7 +59,7 @@ void echo( Output_Stream & stream, Controller controller, typename Controller::C
         delay();
 
         auto const rx     = controller.exchange( tx );
-        auto const result = stream.print(
+        auto       result = stream.print(
             "exchange( {} ) -> {}\n", Format::Hexadecimal{ tx }, Format::Hexadecimal{ rx } );
         expect( not result.is_error(), result.error() );
         expect( rx == tx, Generic_Error::RUNTIME_ERROR );
