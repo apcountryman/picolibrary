@@ -42,6 +42,8 @@ namespace picolibrary::Testing::Interactive::I2C {
  *
  * \param[in] stream The output stream to write the scan results to.
  * \param[in] controller The controller used to communicate with devices on the bus.
+ *
+ * \pre writing to the stream succeeds
  */
 template<typename Controller>
 void scan( Output_Stream & stream, Controller controller ) noexcept

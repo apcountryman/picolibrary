@@ -36,6 +36,8 @@ namespace picolibrary::Testing::Interactive::Asynchronous_Serial {
  * \tparam Transmitter The type of transmitter to use.
  *
  * \param[in] transmitter The transmitter to use.
+ *
+ * \pre writing to the stream succeeds
  */
 template<template<typename> typename Output_Stream, typename Transmitter>
 void hello_world( Transmitter transmitter ) noexcept
