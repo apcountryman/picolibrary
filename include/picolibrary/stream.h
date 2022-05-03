@@ -676,7 +676,7 @@ class Output_Stream : public Stream {
      *            that type.
      * \param[in] values The values to format.
      *
-     * \pre All format specifications found in format are valid.
+     * \pre all format specifications found in format are valid
      *
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
@@ -763,7 +763,7 @@ class Output_Stream : public Stream {
      * \param[in] format The format string specifying the format to use for each value to
      *            be formatted.
      *
-     * \pre All format specifications found in format are valid.
+     * \pre all format specifications found in format are valid
      *
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
@@ -801,7 +801,7 @@ class Output_Stream : public Stream {
      * \param[in] value The value to format.
      * \param[in] values The values to format.
      *
-     * \pre All format specifications found in format are valid.
+     * \pre all format specifications found in format are valid
      *
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.

@@ -43,7 +43,7 @@ namespace picolibrary::Testing::Interactive::GPIO {
  * \param[in] delay The nullary functor to call to introduce a delay each time the pin's
  *            state is gotten.
  *
- * \pre Writing to stream succeeds.
+ * \pre writing to the stream succeeds
  */
 template<typename Input_Pin, typename Delayer>
 void state( Output_Stream & stream, Input_Pin pin, Delayer delay ) noexcept
