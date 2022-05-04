@@ -13,8 +13,8 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream automated tests CMake
-#       rules.
+# Description: picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream automated tests
+#       CMake rules.
 
 # build the picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )

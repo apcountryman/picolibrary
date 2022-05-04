@@ -13,7 +13,8 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary::Microchip::MCP23X08::Open_Drain_IO_Pin automated tests CMake rules.
+# Description: picolibrary::Microchip::MCP23X08::Open_Drain_IO_Pin automated tests CMake
+#       rules.
 
 # build the picolibrary::Microchip::MCP23X08::Open_Drain_IO_Pin automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )

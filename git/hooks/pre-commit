@@ -54,7 +54,7 @@ function display_help_text()
     echo "        - Filenames are portable"
     echo "        - No whitespace errors are present"
     echo "        - No script errors are present"
-    echo "        - No release, interactive testing, or automated testing build errors"
+    echo "        - No release, automated testing, or interactive testing build errors"
     echo "            are present"
     echo "        - No automated test errors are present"
     echo "SYNOPSIS"
