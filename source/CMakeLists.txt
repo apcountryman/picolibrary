@@ -56,12 +56,41 @@ set(
 )
 set( PICOLIBRARY_LINK_LIBRARIES )
 
-if( ${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING} OR ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} OR ${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING} )
     list(
         APPEND PICOLIBRARY_SOURCE_FILES
         "picolibrary/testing.cc"
     )
-endif( ${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING} OR ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} OR ${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING} )
+
+if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
+    list(
+        APPEND PICOLIBRARY_SOURCE_FILES
+        "picolibrary/testing/automated.cc"
+        "picolibrary/testing/automated/adc.cc"
+        "picolibrary/testing/automated/asynchronous_serial.cc"
+        "picolibrary/testing/automated/error.cc"
+        "picolibrary/testing/automated/event.cc"
+        "picolibrary/testing/automated/gpio.cc"
+        "picolibrary/testing/automated/i2c.cc"
+        "picolibrary/testing/automated/indicator.cc"
+        "picolibrary/testing/automated/interrupt.cc"
+        "picolibrary/testing/automated/microchip.cc"
+        "picolibrary/testing/automated/microchip/mcp23008.cc"
+        "picolibrary/testing/automated/microchip/mcp23s08.cc"
+        "picolibrary/testing/automated/microchip/mcp23x08.cc"
+        "picolibrary/testing/automated/microchip/mcp3008.cc"
+        "picolibrary/testing/automated/mock_handle.cc"
+        "picolibrary/testing/automated/random.cc"
+        "picolibrary/testing/automated/spi.cc"
+        "picolibrary/testing/automated/stream.cc"
+    )
+    list(
+        APPEND PICOLIBRARY_LINK_LIBRARIES
+        gmock
+        gtest
+    )
+endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
 
 if( ${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING} )
     list(
@@ -81,35 +110,6 @@ if( ${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING} )
     )
 endif( ${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING} )
 
-if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
-    list(
-        APPEND PICOLIBRARY_SOURCE_FILES
-        "picolibrary/testing/unit.cc"
-        "picolibrary/testing/unit/adc.cc"
-        "picolibrary/testing/unit/asynchronous_serial.cc"
-        "picolibrary/testing/unit/error.cc"
-        "picolibrary/testing/unit/event.cc"
-        "picolibrary/testing/unit/gpio.cc"
-        "picolibrary/testing/unit/i2c.cc"
-        "picolibrary/testing/unit/indicator.cc"
-        "picolibrary/testing/unit/interrupt.cc"
-        "picolibrary/testing/unit/microchip.cc"
-        "picolibrary/testing/unit/microchip/mcp23008.cc"
-        "picolibrary/testing/unit/microchip/mcp23s08.cc"
-        "picolibrary/testing/unit/microchip/mcp23x08.cc"
-        "picolibrary/testing/unit/microchip/mcp3008.cc"
-        "picolibrary/testing/unit/mock_handle.cc"
-        "picolibrary/testing/unit/random.cc"
-        "picolibrary/testing/unit/spi.cc"
-        "picolibrary/testing/unit/stream.cc"
-    )
-    list(
-        APPEND PICOLIBRARY_LINK_LIBRARIES
-        gmock
-        gtest
-    )
-endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
-
 add_library(
     picolibrary STATIC
     ${PICOLIBRARY_SOURCE_FILES}
@@ -120,8 +120,8 @@ target_include_directories(
 )
 target_compile_definitions(
     picolibrary
+    PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_ENABLE_AUTOMATED_TESTING}>,PICOLIBRARY_ENABLE_AUTOMATED_TESTING,>"
     PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING}>,PICOLIBRARY_ENABLE_INTERACTIVE_TESTING,>"
-    PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_ENABLE_UNIT_TESTING}>,PICOLIBRARY_ENABLE_UNIT_TESTING,>"
     PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION}>,PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION,>"
     PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION}>,PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION,>"
 )
@@ -148,13 +148,13 @@ target_include_directories(
     PUBLIC "${PROJECT_SOURCE_DIR}/include"
 )
 
-if( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_library(
-        picolibrary-testing-unit-fatal_error STATIC
-        "picolibrary/testing/unit/fatal_error.cc"
+        picolibrary-testing-automated-fatal_error STATIC
+        "picolibrary/testing/automated/fatal_error.cc"
     )
     target_include_directories(
-        picolibrary-testing-unit-fatal_error
+        picolibrary-testing-automated-fatal_error
         PUBLIC "${PROJECT_SOURCE_DIR}/include"
     )
-endif( ${PICOLIBRARY_ENABLE_UNIT_TESTING} )
+endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )

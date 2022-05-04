@@ -85,6 +85,20 @@ jobs:
               shell: bash
               run: ./ci/build --configuration release
 
+    build-testing-automated-test-automated:
+        name: Build (testing-automated) and (automated) test
+        runs-on: ubuntu-20.04
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                  submodules: recursive
+            - name: Build
+              shell: bash
+              run: ./ci/build --configuration testing-automated
+            - name: Test
+              shell: bash
+              run: ./ci/test
+
     build-testing-interactive:
         name: Build (testing-interactive)
         runs-on: ubuntu-20.04
@@ -95,20 +109,6 @@ jobs:
             - name: Build
               shell: bash
               run: ./ci/build --configuration testing-interactive
-
-    build-testing-unit-test-unit:
-        name: Build (testing-unit) and (unit) test
-        runs-on: ubuntu-20.04
-        steps:
-            - uses: actions/checkout@v2
-              with:
-                  submodules: recursive
-            - name: Build
-              shell: bash
-              run: ./ci/build --configuration testing-unit
-            - name: Test
-              shell: bash
-              run: ./ci/test
 
     format:
         name: Format

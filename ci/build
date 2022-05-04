@@ -48,8 +48,8 @@ function display_help_text()
     echo "        Specify the configuration to build. The following configurations are"
     echo "        supported:"
     echo "            release"
+    echo "            testing-automated"
     echo "            testing-interactive"
-    echo "            testing-unit"
     echo "    --help"
     echo "        Display this help text."
     echo "    --version"
@@ -58,8 +58,8 @@ function display_help_text()
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
     echo "    $mnemonic --configuration release"
+    echo "    $mnemonic --configuration testing-automated"
     echo "    $mnemonic --configuration testing-interactive"
-    echo "    $mnemonic --configuration testing-unit"
 }
 
 function display_version()
@@ -103,7 +103,7 @@ function main()
 
                 local -r configuration="$1"; shift
 
-                if [[ "$configuration" != "release" && "$configuration" != "testing-interactive" && "$configuration" != "testing-unit" ]]; then
+                if [[ "$configuration" != "release" && "$configuration" != "testing-automated" && "$configuration" != "testing-interactive" ]]; then
                     abort "'$configuration' is not a supported build configuration"
                 fi
                 ;;

@@ -521,8 +521,8 @@ constexpr auto operator>=( Address_Transmitted lhs, Address_Transmitted rhs ) no
  *         MCP23S08.
  * \tparam Device The type of device implementation used by the communication controller.
  *         The default device implementation should be used unless a mock device
- *         implementation is being injected to support unit testing of this communication
- *         controller.
+ *         implementation is being injected to support automated testing of this
+ *         communication controller.
  */
 template<typename Controller, typename Device_Selector, typename Device = SPI::Device<Controller, Device_Selector>>
 class Communication_Controller : public Device {
@@ -650,7 +650,7 @@ class Communication_Controller : public Device {
  * \tparam Communication_Controller The type of communication controller implementation
  *         used by the driver. The default communication controller implementation should
  *         be used unless a mock communication controller implementation is being injected
- *         to support unit testing of this driver.
+ *         to support automated testing of this driver.
  */
 template<typename Controller, typename Device_Selector, typename Communication_Controller = ::picolibrary::Microchip::MCP23S08::Communication_Controller<Controller, Device_Selector>>
 class Driver : public Communication_Controller {

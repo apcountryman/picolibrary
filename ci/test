@@ -15,7 +15,7 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary repository CI unit test script.
+# Description: picolibrary repository CI automated test script.
 
 function error()
 {
@@ -38,7 +38,7 @@ function abort()
 function display_help_text()
 {
     echo "NAME"
-    echo "    $mnemonic - Execute the picolibrary unit tests."
+    echo "    $mnemonic - Execute the picolibrary automated tests."
     echo "SYNOPSIS"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
@@ -59,9 +59,9 @@ function display_version()
     echo "$mnemonic, version $version"
 }
 
-function ensure_no_unit_test_errors_are_present()
+function ensure_no_automated_test_errors_are_present()
 {
-    local -r build_directory="$repository/build/testing-unit"
+    local -r build_directory="$repository/build/testing-automated"
 
     if ! cmake --build "$build_directory" --target test -- CTEST_OUTPUT_ON_FAILURE=1; then
         abort
@@ -98,7 +98,7 @@ function main()
         esac
     done
 
-    ensure_no_unit_test_errors_are_present
+    ensure_no_automated_test_errors_are_present
 }
 
 main "$@"
