@@ -54,9 +54,9 @@ function display_help_text()
     echo "        - Filenames are portable"
     echo "        - No whitespace errors are present"
     echo "        - No script errors are present"
-    echo "        - No release, interactive testing, or unit testing build errors are"
-    echo "            present"
-    echo "        - No unit test errors are present"
+    echo "        - No release, automated testing, or interactive testing build errors"
+    echo "            are present"
+    echo "        - No automated test errors are present"
     echo "SYNOPSIS"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
@@ -169,10 +169,10 @@ function ensure_no_release_build_errors_are_present()
     ensure_no_build_errors_are_present "$build_type" "$ellipsis"
 }
 
-function ensure_no_unit_testing_build_errors_are_present()
+function ensure_no_automated_testing_build_errors_are_present()
 {
-    local -r build_type="testing-unit"
-    local -r ellipsis=".........."
+    local -r build_type="testing-automated"
+    local -r ellipsis="....."
 
     ensure_no_build_errors_are_present "$build_type" "$ellipsis"
 }
@@ -185,15 +185,15 @@ function ensure_no_interactive_testing_build_errors_are_present()
     ensure_no_build_errors_are_present "$build_type" "$ellipsis"
 }
 
-function ensure_no_unit_test_errors_are_present()
+function ensure_no_automated_test_errors_are_present()
 {
-    message "checking for unit test errors ..................... "
+    message "checking for automated test errors ................ "
 
-    local -r build_directory="$repository/build/testing-unit"
+    local -r build_directory="$repository/build/testing-automated"
 
     if ! cmake --build "$build_directory" --target test > "/dev/null" 2>&1; then
         errors_found
-        error "aborting commit due to unit test error(s), listed below"
+        error "aborting commit due to automated test error(s), listed below"
         cmake --build "$build_directory" --target test -- CTEST_OUTPUT_ON_FAILURE=1
         abort
     fi
@@ -257,9 +257,9 @@ function main()
     ensure_no_whitespace_errors_are_present
     ensure_no_script_errors_are_present
     ensure_no_release_build_errors_are_present
+    ensure_no_automated_testing_build_errors_are_present
     ensure_no_interactive_testing_build_errors_are_present
-    ensure_no_unit_testing_build_errors_are_present
-    ensure_no_unit_test_errors_are_present
+    ensure_no_automated_test_errors_are_present
 }
 
 main "$@"

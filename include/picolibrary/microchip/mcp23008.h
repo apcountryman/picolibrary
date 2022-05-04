@@ -77,7 +77,7 @@ using Address_Transmitted = I2C::Device_Address_Transmitted<0b0100'000'0, 0b0100
  * \tparam Controller The type of controller used to communicate with the MCP23008.
  * \tparam Device The type of device implementation used by the driver. The default device
  *         implementation should be used unless a mock device implementation is being
- *         injected to support unit testing of this driver.
+ *         injected to support automated testing of this driver.
  */
 template<typename Bus_Multiplexer_Aligner, typename Controller, typename Device = I2C::Device<Bus_Multiplexer_Aligner, Controller>>
 class Driver : public Device {

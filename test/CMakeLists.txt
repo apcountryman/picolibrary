@@ -15,5 +15,5 @@
 
 # Description: picolibrary tests CMake rules.
 
-# build the picolibrary unit tests
-add_subdirectory( unit )
+# build the picolibrary automated tests
+add_subdirectory( automated )

@@ -35,9 +35,10 @@ namespace picolibrary {
  *            - Provide an application specific implementation
  *            - Link with the picolibrary-fatal_error static library which provides an
  *              implementation that calls std::abort()
- *            - Link with the picolibrary-testing-unit-fatal_error static library (only
- *              available if unit testing is enabled) which provides an implementation
- *              that writes error information to std::cerr before calling std::abort()
+ *            - Link with the picolibrary-testing-automated-fatal_error static library
+ *              (only available if automated testing is enabled) which provides an
+ *              implementation that writes error information to std::cerr before calling
+ *              std::abort()
  *
  * \param[in] error The fatal error.
  */

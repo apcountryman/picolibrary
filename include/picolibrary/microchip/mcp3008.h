@@ -74,7 +74,7 @@ using Sample = ADC::Sample<std::uint_fast16_t, 10>;
  *         MCP3008.
  * \tparam Device The type of device implementation used by the driver. The default device
  *         implementation should be used unless a mock device implementation is being
- *         injected to support unit testing of this driver.
+ *         injected to support automated testing of this driver.
  */
 template<typename Controller, typename Device_Selector, typename Device = SPI::Device<Controller, Device_Selector>>
 class Driver : public Device {
