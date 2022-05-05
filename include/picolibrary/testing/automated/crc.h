@@ -56,6 +56,8 @@ TYPED_TEST_SUITE_P( calculatorUint8Register );
  */
 TYPED_TEST_P( calculatorUint8Register, worksProperly )
 {
+    // #lizard forgives the length
+
     using Register   = std::uint8_t;
     using Calculator = TypeParam;
 
@@ -114,6 +116,8 @@ TYPED_TEST_SUITE_P( calculatorUint16Register );
  */
 TYPED_TEST_P( calculatorUint16Register, worksProperly )
 {
+    // #lizard forgives the length
+
     using Register   = std::uint16_t;
     using Calculator = TypeParam;
 
@@ -172,6 +176,8 @@ TYPED_TEST_SUITE_P( calculatorUint32Register );
  */
 TYPED_TEST_P( calculatorUint32Register, worksProperly )
 {
+    // #lizard forgives the length
+
     using Register   = std::uint32_t;
     using Calculator = TypeParam;
 
