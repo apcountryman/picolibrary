@@ -92,6 +92,34 @@ constexpr auto input_processor( bool input_is_reflected ) noexcept -> Input_Proc
                               : []( std::uint8_t byte ) noexcept { return byte; };
 }
 
+/**
+ * \brief Calculation output processor.
+ *
+ * \tparam Register Calculation register type.
+ *
+ * \param[in] remainder The calculation's remainder.
+ *
+ * \return The calculation's remainder or its reflection.
+ */
+template<typename Register>
+using Output_Processor = auto ( * )( Register remainder ) -> Register;
+
+/**
+ * \brief Get a calculation's output processor.
+ *
+ * \tparam Register Calculation register type.
+ *
+ * \param[in] output_is_reflected Calculation output is reflected.
+ *
+ * \return The calculation's output processor.
+ */
+template<typename Register>
+constexpr auto output_processor( bool output_is_reflected ) noexcept -> Output_Processor<Register>
+{
+    return output_is_reflected ? static_cast<Output_Processor<Register>>( reflect )
+                               : []( Register remainder ) noexcept { return remainder; };
+}
+
 } // namespace picolibrary::CRC
 
 #endif // PICOLIBRARY_CRC_H
