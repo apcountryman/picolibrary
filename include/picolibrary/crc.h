@@ -23,6 +23,10 @@
 #ifndef PICOLIBRARY_CRC_H
 #define PICOLIBRARY_CRC_H
 
+#include <cstdint>
+
+#include "picolibrary/bit_manipulation.h"
+
 /**
  * \brief Cyclic Redundancy Check (CRC) facilities.
  */
@@ -65,6 +69,28 @@ struct Calculation_Parameters {
      */
     Register xor_output;
 };
+
+/**
+ * \brief Calculation input processor.
+ *
+ * \param[in] byte A calculation input byte.
+ *
+ * \return The calculation input byte or its reflection.
+ */
+using Input_Processor = auto ( * )( std::uint8_t byte ) -> std::uint8_t;
+
+/**
+ * \brief Get a calculation's input processor.
+ *
+ * \param[in] input_is_reflected Calculation input is reflected.
+ *
+ * \return The calculation's input processor.
+ */
+constexpr auto input_processor( bool input_is_reflected ) noexcept -> Input_Processor
+{
+    return input_is_reflected ? static_cast<Input_Processor>( reflect )
+                              : []( std::uint8_t byte ) noexcept { return byte; };
+}
 
 } // namespace picolibrary::CRC
 
