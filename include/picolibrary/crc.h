@@ -24,7 +24,9 @@
 #define PICOLIBRARY_CRC_H
 
 #include <cstdint>
+#include <limits>
 
+#include "picolibrary/array.h"
 #include "picolibrary/bit_manipulation.h"
 
 /**
@@ -119,6 +121,23 @@ constexpr auto output_processor( bool output_is_reflected ) noexcept -> Output_P
     return output_is_reflected ? static_cast<Output_Processor<Register>>( reflect )
                                : []( Register remainder ) noexcept { return remainder; };
 }
+
+/**
+ * \brief Calculation message augment.
+ *
+ * \tparam Register Calculation register type.
+ */
+template<typename Register>
+using Message_Augment =
+    Array<std::uint8_t, std::numeric_limits<Register>::digits / std::numeric_limits<std::uint8_t>::digits>;
+
+/**
+ * \brief Calculation message augment.
+ *
+ * \tparam Register Calculation register type.
+ */
+template<typename Register>
+constexpr auto MESSAGE_AUGMENT = Message_Augment<Register>{};
 
 } // namespace picolibrary::CRC
 
