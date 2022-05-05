@@ -139,6 +139,83 @@ using Message_Augment =
 template<typename Register>
 constexpr auto MESSAGE_AUGMENT = Message_Augment<Register>{};
 
+/**
+ * \brief Calculator concept.
+ *
+ * \tparam Register_Type Calculation register type.
+ */
+template<typename Register_Type>
+class Calculator_Concept {
+  public:
+    /**
+     * \brief Calculation register type.
+     */
+    using Register = Register_Type;
+
+    /**
+     * \brief Constructor.
+     */
+    Calculator_Concept() noexcept;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] calculation_parameters The calculation parameters.
+     */
+    Calculator_Concept( Calculation_Parameters<Register> const & calculation_parameters ) noexcept;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Calculator_Concept( Calculator_Concept && source ) noexcept;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    Calculator_Concept( Calculator_Concept const & original ) noexcept;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Calculator_Concept() noexcept;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Calculator_Concept && expression ) noexcept -> Calculator_Concept &;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Calculator_Concept const & expression ) noexcept -> Calculator_Concept &;
+
+    /**
+     * \brief Calculate the remainder for a message.
+     *
+     * \tparam Iterator Message iterator. The iterated over type must be convertible to
+     *         std::uint8_t.
+     *
+     * \param[in] begin The beginning of the message.
+     * \param[in] end The end of the message.
+     *
+     * \return The remainder for the message.
+     */
+    template<typename Iterator>
+    auto calculate( Iterator begin, Iterator end ) noexcept -> Register;
+};
+
 } // namespace picolibrary::CRC
 
 #endif // PICOLIBRARY_CRC_H
