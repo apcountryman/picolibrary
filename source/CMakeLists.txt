@@ -70,6 +70,7 @@ if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
         "picolibrary/testing/automated.cc"
         "picolibrary/testing/automated/adc.cc"
         "picolibrary/testing/automated/asynchronous_serial.cc"
+        "picolibrary/testing/automated/crc.cc"
         "picolibrary/testing/automated/error.cc"
         "picolibrary/testing/automated/event.cc"
         "picolibrary/testing/automated/gpio.cc"
