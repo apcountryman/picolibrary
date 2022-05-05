@@ -52,7 +52,7 @@ TYPED_TEST_SUITE_P( calculatorUint8Register );
 
 /**
  * \brief Verify the calculator implementation works properly for std::uint8_t register
- *        calculations..
+ *        calculations.
  */
 TYPED_TEST_P( calculatorUint8Register, worksProperly )
 {
@@ -112,7 +112,7 @@ TYPED_TEST_SUITE_P( calculatorUint16Register );
 
 /**
  * \brief Verify the calculator implementation works properly for std::uint16_t register
- *        calculations..
+ *        calculations.
  */
 TYPED_TEST_P( calculatorUint16Register, worksProperly )
 {
@@ -172,7 +172,7 @@ TYPED_TEST_SUITE_P( calculatorUint32Register );
 
 /**
  * \brief Verify the calculator implementation works properly for std::uint32_t register
- *        calculations..
+ *        calculations.
  */
 TYPED_TEST_P( calculatorUint32Register, worksProperly )
 {

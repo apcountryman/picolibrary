@@ -38,13 +38,12 @@ using ::testing::Test;
 } // namespace
 
 /**
- * \brief Calculator implementations equivalence automated test calculation register
- *        types.
+ * \brief Calculator implementations automated test calculation register types.
  */
 using Registers = ::testing::Types<std::uint8_t, std::uint16_t, std::uint32_t>;
 
 /**
- * \brief Calculator implementations equivalence automated test fixture.
+ * \brief Calculator implementations automated test fixture.
  *
  * \tparam Register Calculation register type.
  */
@@ -53,7 +52,7 @@ class calculatorImplementations : public Test {
 };
 
 /**
- * \brief Calculator implementations equivalence automated test fixture.
+ * \brief Calculator implementations automated test fixture.
  */
 TYPED_TEST_SUITE( calculatorImplementations, Registers );
 
