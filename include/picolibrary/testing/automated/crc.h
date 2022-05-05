@@ -42,7 +42,7 @@ namespace picolibrary::Testing::Automated::CRC {
  * \tparam Calculator The calculator implementation to be tested.
  */
 template<typename Calculator>
-class calculatorUint8Register : ::testing::Test {
+class calculatorUint8Register : public ::testing::Test {
 };
 
 /**
@@ -102,7 +102,7 @@ REGISTER_TYPED_TEST_SUITE_P( calculatorUint8Register, worksProperly );
  * \tparam Calculator The calculator implementation to be tested.
  */
 template<typename Calculator>
-class calculatorUint16Register : ::testing::Test {
+class calculatorUint16Register : public ::testing::Test {
 };
 
 /**
@@ -162,7 +162,7 @@ REGISTER_TYPED_TEST_SUITE_P( calculatorUint16Register, worksProperly );
  * \tparam Calculator The calculator implementation to be tested.
  */
 template<typename Calculator>
-class calculatorUint32Register : ::testing::Test {
+class calculatorUint32Register : public ::testing::Test {
 };
 
 /**
