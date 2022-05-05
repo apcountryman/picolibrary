@@ -20,9 +20,70 @@
  * \brief picolibrary::CRC automated test program.
  */
 
+#include <cstdint>
+#include <vector>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/crc.h"
+#include "picolibrary/testing/automated/random.h"
+
+namespace {
+
+using ::picolibrary::CRC::Calculation_Parameters;
+using ::picolibrary::Testing::Automated::random;
+using ::picolibrary::Testing::Automated::random_container;
+using ::testing::Test;
+
+} // namespace
+
+/**
+ * \brief Calculator implementations equivalence automated test calculation register
+ *        types.
+ */
+using Registers = ::testing::Types<std::uint8_t, std::uint16_t, std::uint32_t>;
+
+/**
+ * \brief Calculator implementations equivalence automated test fixture.
+ *
+ * \tparam Register Calculation register type.
+ */
+template<typename Register>
+class calculatorImplementations : public Test {
+};
+
+/**
+ * \brief Calculator implementations equivalence automated test fixture.
+ */
+TYPED_TEST_SUITE( calculatorImplementations, Registers );
+
+/**
+ * \brief Verify calculator implementations are equivalent.
+ */
+TYPED_TEST( calculatorImplementations, areEquivalent )
+{
+    using Register = TypeParam;
+
+    struct {
+        Calculation_Parameters<Register> calculation_parameters;
+    } const test_cases[]{
+        // clang-format off
+
+        { { random<Register>(), random<Register>(), false, false, random<Register>() } },
+        { { random<Register>(), random<Register>(), false,  true, random<Register>() } },
+        { { random<Register>(), random<Register>(),  true, false, random<Register>() } },
+        { { random<Register>(), random<Register>(),  true,  true, random<Register>() } },
+
+        // clang-format on
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto const message = random_container<std::vector<std::uint8_t>>();
+
+        static_cast<void>( test_case );
+        static_cast<void>( message );
+    } // for
+}
 
 /**
  * \brief Execute the picolibrary::CRC automated tests.
