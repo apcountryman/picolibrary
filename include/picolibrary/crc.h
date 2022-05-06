@@ -394,6 +394,8 @@ template<typename Register>
 constexpr auto generate_byte_indexed_lookup_table( Register polynomial ) noexcept
     -> Byte_Indexed_Lookup_Table<Register>
 {
+    // #lizard forgives the length
+
     Byte_Indexed_Lookup_Table<Register> lookup_table;
 
     for ( auto i = std::uint_fast16_t{ 0 }; i < lookup_table.size(); ++i ) {
