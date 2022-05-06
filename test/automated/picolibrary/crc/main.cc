@@ -30,6 +30,7 @@
 
 namespace {
 
+using ::picolibrary::CRC::Augmented_Byte_Indexed_Lookup_Table_Calculator;
 using ::picolibrary::CRC::Bitwise_Calculator;
 using ::picolibrary::CRC::Calculation_Parameters;
 using ::picolibrary::Testing::Automated::random;
@@ -83,7 +84,10 @@ TYPED_TEST( calculatorImplementations, areEquivalent )
         auto const remainder = Bitwise_Calculator{ test_case.calculation_parameters }.calculate(
             message.begin(), message.end() );
 
-        static_cast<void>( remainder );
+        EXPECT_EQ(
+            Augmented_Byte_Indexed_Lookup_Table_Calculator{ test_case.calculation_parameters }
+                .calculate( message.begin(), message.end() ),
+            remainder );
     } // for
 }
 

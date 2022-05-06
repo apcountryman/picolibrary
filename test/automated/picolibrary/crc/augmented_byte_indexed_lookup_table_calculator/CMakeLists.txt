@@ -13,28 +13,23 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary::CRC automated tests CMake rules.
+# Description: picolibrary::CRC::Augmented_Byte_Indexed_Lookup_Table_Calculator automated
+#       tests CMake rules.
 
 # build the picolibrary::CRC::Augmented_Byte_Indexed_Lookup_Table_Calculator automated
 # tests
-add_subdirectory( augmented_byte_indexed_lookup_table_calculator )
-
-# build the picolibrary::CRC::Bitwise_Calculator automated tests
-add_subdirectory( bitwise_calculator )
-
-# build the picolibrary::CRC automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
-        test-automated-picolibrary-crc
+        test-automated-picolibrary-crc-augmented_byte_indexed_lookup_table_calculator
         main.cc
     )
     target_link_libraries(
-        test-automated-picolibrary-crc
+        test-automated-picolibrary-crc-augmented_byte_indexed_lookup_table_calculator
         picolibrary
         picolibrary-testing-automated-fatal_error
     )
     add_test(
-        NAME    test-automated-picolibrary-crc
-        COMMAND test-automated-picolibrary-crc --gtest_color=yes
+        NAME    test-automated-picolibrary-crc-augmented_byte_indexed_lookup_table_calculator
+        COMMAND test-automated-picolibrary-crc-augmented_byte_indexed_lookup_table_calculator --gtest_color=yes
     )
 endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
