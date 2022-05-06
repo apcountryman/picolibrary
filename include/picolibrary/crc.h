@@ -216,6 +216,158 @@ class Calculator_Concept {
     auto calculate( Iterator begin, Iterator end ) const noexcept -> Register;
 };
 
+/**
+ * \brief Calculator concept.
+ *
+ * \tparam Register_Type Calculation register type.
+ */
+template<typename Register_Type>
+class Bitwise_Calculator {
+  public:
+    /**
+     * \brief Calculation register type.
+     */
+    using Register = Register_Type;
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Bitwise_Calculator() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] calculation_parameters The calculation parameters.
+     */
+    constexpr Bitwise_Calculator( Calculation_Parameters<Register> const & calculation_parameters ) noexcept :
+        m_polynomial{ calculation_parameters.polynomial },
+        m_initial_remainder{ calculation_parameters.initial_remainder },
+        m_process_input{ input_processor( calculation_parameters.input_is_reflected ) },
+        m_process_output{ output_processor<Register>( calculation_parameters.output_is_reflected ) },
+        m_xor_output{ calculation_parameters.xor_output }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Bitwise_Calculator( Bitwise_Calculator && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Bitwise_Calculator( Bitwise_Calculator const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Bitwise_Calculator() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator     =( Bitwise_Calculator && expression ) noexcept
+        -> Bitwise_Calculator & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator     =( Bitwise_Calculator const & expression ) noexcept
+        -> Bitwise_Calculator & = default;
+
+    /**
+     * \brief Calculate the remainder for a message.
+     *
+     * \tparam Iterator Message iterator. The iterated over type must be convertible to
+     *         std::uint8_t.
+     *
+     * \param[in] begin The beginning of the message.
+     * \param[in] end The end of the message.
+     *
+     * \return The remainder for the message.
+     */
+    template<typename Iterator>
+    constexpr auto calculate( Iterator begin, Iterator end ) const noexcept -> Register
+    {
+        return ( *m_process_output )( feed(
+                   feed( m_initial_remainder, begin, end ),
+                   MESSAGE_AUGMENT<Register>.begin(),
+                   MESSAGE_AUGMENT<Register>.end() ) )
+               ^ m_xor_output;
+    }
+
+  private:
+    /**
+     * \brief Calculation polynomial.
+     */
+    Register m_polynomial{};
+
+    /**
+     * \brief Calculation initial remainder.
+     */
+    Register m_initial_remainder{};
+
+    /**
+     * \brief Calculation input processor.
+     */
+    Input_Processor m_process_input{};
+
+    /**
+     * \brief Calculation output processor.
+     */
+    Output_Processor<Register> m_process_output{};
+
+    /**
+     * \brief Calculation XOR output value.
+     */
+    Register m_xor_output{};
+
+    /**
+     * \brief Feed data into the calculation.
+     *
+     * \tparam Iterator Message / message augment iterator. The iterated over type must be
+     *         convertible to std::uint8_t.
+     *
+     * \param[in] remainder The current calculation remainder.
+     * \param[in] begin The beginning of the message / message augment.
+     * \param[in] end The end of the message / message augment.
+     *
+     * \return The new calculation remainder.
+     */
+    template<typename Iterator>
+    auto feed( Register remainder, Iterator begin, Iterator end ) const noexcept
+    {
+        for ( ; begin != end; ++begin ) {
+            auto const processed_input = ( *m_process_input )( *begin );
+
+            for ( auto bit = std::numeric_limits<std::uint8_t>::digits - 1; bit >= 0; --bit ) {
+                auto const xor_polynomial = static_cast<bool>(
+                    remainder & ~( std::numeric_limits<Register>::max() >> 1 ) );
+
+                remainder = ( remainder << 1 ) | ( ( processed_input >> bit ) & 0b1 );
+
+                if ( xor_polynomial ) {
+                    remainder ^= m_polynomial;
+                } // if
+            }     // for
+        }         // for
+
+        return remainder;
+    }
+};
+
 } // namespace picolibrary::CRC
 
 #endif // PICOLIBRARY_CRC_H
