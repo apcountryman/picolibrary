@@ -217,7 +217,7 @@ class Calculator_Concept {
 };
 
 /**
- * \brief Calculator concept.
+ * \brief Bitwise calculator.
  *
  * \tparam Register_Type Calculation register type.
  */
