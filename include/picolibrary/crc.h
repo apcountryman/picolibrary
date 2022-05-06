@@ -219,8 +219,8 @@ class Calculator_Concept {
 /**
  * \brief Bitwise calculator.
  *
- * This calculator implementation processes message one bit at a time, and requires a
- * message augment to push the entirety of the message through the calculation. While this
+ * This calculator implementation processes messages one bit at a time, and requires a
+ * message augment to push the entirety of a message through the calculation. While this
  * results in lower performance than table driven implementations, memory use is lower due
  * to the lack of a lookup table.
  *
