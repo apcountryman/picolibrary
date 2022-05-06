@@ -219,6 +219,11 @@ class Calculator_Concept {
 /**
  * \brief Bitwise calculator.
  *
+ * This calculator implementation processes message one bit at a time, and requires a
+ * message augment to push the entirety of the message through the calculation. While this
+ * results in lower performance than table driven implementations, memory use is lower due
+ * to the lack of a lookup table.
+ *
  * \tparam Register_Type Calculation register type.
  */
 template<typename Register_Type>
