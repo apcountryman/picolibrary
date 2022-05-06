@@ -30,6 +30,7 @@
 
 namespace {
 
+using ::picolibrary::CRC::Bitwise_Calculator;
 using ::picolibrary::CRC::Calculation_Parameters;
 using ::picolibrary::Testing::Automated::random;
 using ::picolibrary::Testing::Automated::random_container;
@@ -79,8 +80,10 @@ TYPED_TEST( calculatorImplementations, areEquivalent )
     for ( auto const test_case : test_cases ) {
         auto const message = random_container<std::vector<std::uint8_t>>();
 
-        static_cast<void>( test_case );
-        static_cast<void>( message );
+        auto const remainder = Bitwise_Calculator{ test_case.calculation_parameters }.calculate(
+            message.begin(), message.end() );
+
+        static_cast<void>( remainder );
     } // for
 }
 
