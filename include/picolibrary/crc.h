@@ -752,6 +752,50 @@ class Direct_Byte_Indexed_Lookup_Table_Calculator {
     }
 };
 
+/**
+ * \brief Nibble indexed lookup table.
+ *
+ * \tparam Register Calculation register type.
+ */
+template<typename Register>
+using Nibble_Indexed_Lookup_Table = Array<Register, 0xF + 1>;
+
+/**
+ * \brief Generate a nibble indexed lookup table.
+ *
+ * \tparam Register Calculation register type.
+ *
+ * \param[in] polynomial Calculation polynomial.
+ *
+ * \return The generated nibble indexed lookup table.
+ */
+template<typename Register>
+constexpr auto generate_nibble_indexed_lookup_table( Register polynomial ) noexcept
+    -> Nibble_Indexed_Lookup_Table<Register>
+{
+    Nibble_Indexed_Lookup_Table<Register> lookup_table;
+
+    for ( auto nibble = std::uint_fast8_t{ 0 }; nibble < lookup_table.size(); ++nibble ) {
+        auto remainder = static_cast<Register>(
+            Register{ nibble } << ( std::numeric_limits<Register>::digits - 4 ) );
+
+        for ( auto bit = 4 - 1; bit >= 0; --bit ) {
+            auto const xor_polynomial = static_cast<bool>(
+                remainder & ~( std::numeric_limits<Register>::max() >> 1 ) );
+
+            remainder <<= 1;
+
+            if ( xor_polynomial ) {
+                remainder ^= polynomial;
+            } // if
+        }     // for
+
+        lookup_table[ nibble ] = remainder;
+    } // for
+
+    return lookup_table;
+}
+
 } // namespace picolibrary::CRC
 
 #endif // PICOLIBRARY_CRC_H
