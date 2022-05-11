@@ -796,6 +796,168 @@ constexpr auto generate_nibble_indexed_lookup_table( Register polynomial ) noexc
     return lookup_table;
 }
 
+/**
+ * \brief Augmented nibble indexed lookup table calculator.
+ *
+ * This calculator implementation processes messages one nibble at a time, and requires a
+ * message augment to push the entirety of a message through the calculation. This
+ * achieves a balance between implementations that are optimized for performance (table
+ * driven implementations that process messages one or more bytes at a time), and those
+ * that are optimized for memory use (bitwise implementations).
+ *
+ * \tparam Register_Type Calculation register type.
+ */
+template<typename Register_Type>
+class Augmented_Nibble_Indexed_Lookup_Table_Calculator {
+  public:
+    /**
+     * \brief Calculation register type.
+     */
+    using Register = Register_Type;
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Augmented_Nibble_Indexed_Lookup_Table_Calculator() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] calculation_parameters The calculation parameters.
+     */
+    constexpr Augmented_Nibble_Indexed_Lookup_Table_Calculator(
+        Calculation_Parameters<Register> const & calculation_parameters ) noexcept :
+        m_lookup_table{ generate_nibble_indexed_lookup_table( calculation_parameters.polynomial ) },
+        m_initial_remainder{ calculation_parameters.initial_remainder },
+        m_process_input{ input_processor( calculation_parameters.input_is_reflected ) },
+        m_process_output{ output_processor<Register>( calculation_parameters.output_is_reflected ) },
+        m_xor_output{ calculation_parameters.xor_output }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Augmented_Nibble_Indexed_Lookup_Table_Calculator(
+        Augmented_Nibble_Indexed_Lookup_Table_Calculator && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Augmented_Nibble_Indexed_Lookup_Table_Calculator(
+        Augmented_Nibble_Indexed_Lookup_Table_Calculator const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Augmented_Nibble_Indexed_Lookup_Table_Calculator() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Augmented_Nibble_Indexed_Lookup_Table_Calculator && expression ) noexcept
+        -> Augmented_Nibble_Indexed_Lookup_Table_Calculator & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Augmented_Nibble_Indexed_Lookup_Table_Calculator const & expression ) noexcept
+        -> Augmented_Nibble_Indexed_Lookup_Table_Calculator & = default;
+
+    /**
+     * \brief Calculate the remainder for a message.
+     *
+     * \tparam Iterator Message iterator. The iterated over type must be convertible to
+     *         std::uint8_t.
+     *
+     * \param[in] begin The beginning of the message.
+     * \param[in] end The end of the message.
+     *
+     * \return The remainder for the message.
+     */
+    template<typename Iterator>
+    constexpr auto calculate( Iterator begin, Iterator end ) const noexcept -> Register
+    {
+        return ( *m_process_output )( feed(
+                   feed( m_initial_remainder, begin, end ),
+                   MESSAGE_AUGMENT<Register>.begin(),
+                   MESSAGE_AUGMENT<Register>.end() ) )
+               ^ m_xor_output;
+    }
+
+  private:
+    /**
+     * \brief Calculation lookup table.
+     */
+    Nibble_Indexed_Lookup_Table<Register> m_lookup_table{};
+
+    /**
+     * \brief Calculation initial remainder.
+     */
+    Register m_initial_remainder{};
+
+    /**
+     * \brief Calculation input processor.
+     */
+    Input_Processor m_process_input{};
+
+    /**
+     * \brief Calculation output processor.
+     */
+    Output_Processor<Register> m_process_output{};
+
+    /**
+     * \brief Calculation XOR output value.
+     */
+    Register m_xor_output{};
+
+    /**
+     * \brief Feed data into the calculation.
+     *
+     * \tparam Iterator Message / message augment iterator. The iterated over type must be
+     *         convertible to std::uint8_t.
+     *
+     * \param[in] remainder The current calculation remainder.
+     * \param[in] begin The beginning of the message / message augment.
+     * \param[in] end The end of the message / message augment.
+     *
+     * \return The new calculation remainder.
+     */
+    template<typename Iterator>
+    auto feed( Register remainder, Iterator begin, Iterator end ) const noexcept
+    {
+        for ( ; begin != end; ++begin ) {
+            auto const processed_input = ( *m_process_input )( *begin );
+
+            auto const nibbles = Array<std::uint_fast8_t, 2>{
+                static_cast<std::uint_fast8_t>( processed_input >> 4 ),
+                static_cast<std::uint_fast8_t>( processed_input & 0xF ),
+            };
+
+            for ( auto const nibble : nibbles ) {
+                auto const i = static_cast<std::uint_fast8_t>(
+                    remainder >> ( std::numeric_limits<Register>::digits - 4 ) );
+
+                remainder = ( ( remainder << 4 ) | nibble ) ^ m_lookup_table[ i ];
+            } // for
+        }     // for
+
+        return remainder;
+    }
+};
+
 } // namespace picolibrary::CRC
 
 #endif // PICOLIBRARY_CRC_H
