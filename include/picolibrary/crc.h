@@ -763,7 +763,7 @@ constexpr auto NIBBLE_DIGITS = 4;
 constexpr auto NIBBLE_MAX = std::uint_fast8_t{ 0xF };
 
 /**
- * \brief The pair of nibbles that make up a byte (most significant nibble first).
+ * \brief The pair of nibbles that make up a byte.
  */
 using Byte_Nibbles = Array<std::uint_fast8_t, std::numeric_limits<std::uint8_t>::digits / NIBBLE_DIGITS>;
 
