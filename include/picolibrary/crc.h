@@ -753,12 +753,42 @@ class Direct_Byte_Indexed_Lookup_Table_Calculator {
 };
 
 /**
+ * \brief The number of bits in a nibble.
+ */
+constexpr auto NIBBLE_DIGITS = 4;
+
+/**
+ * \brief The largest value a nibble can hold.
+ */
+constexpr auto NIBBLE_MAX = std::uint_fast8_t{ 0xF };
+
+/**
+ * \brief The pair of nibbles that make up a byte (most significant nibble first).
+ */
+using Byte_Nibbles = Array<std::uint_fast8_t, std::numeric_limits<std::uint8_t>::digits / NIBBLE_DIGITS>;
+
+/**
+ * \brief Get the pair of nibbles that make up a byte (most significant nibble first).
+ *
+ * \param[in] byte The byte to get the pair of nibbles from.
+ *
+ * \return The pair of nibbles that make up the byte (most significant nibble first).
+ */
+constexpr auto get_byte_nibbles( std::uint8_t byte ) noexcept -> Byte_Nibbles
+{
+    return Byte_Nibbles{
+        static_cast<std::uint_fast8_t>( byte >> NIBBLE_DIGITS ),
+        static_cast<std::uint_fast8_t>( byte & NIBBLE_MAX ),
+    };
+}
+
+/**
  * \brief Nibble indexed lookup table.
  *
  * \tparam Register Calculation register type.
  */
 template<typename Register>
-using Nibble_Indexed_Lookup_Table = Array<Register, 0xF + 1>;
+using Nibble_Indexed_Lookup_Table = Array<Register, NIBBLE_MAX + 1>;
 
 /**
  * \brief Generate a nibble indexed lookup table.
@@ -777,9 +807,9 @@ constexpr auto generate_nibble_indexed_lookup_table( Register polynomial ) noexc
 
     for ( auto nibble = std::uint_fast8_t{ 0 }; nibble < lookup_table.size(); ++nibble ) {
         auto remainder = static_cast<Register>(
-            Register{ nibble } << ( std::numeric_limits<Register>::digits - 4 ) );
+            Register{ nibble } << ( std::numeric_limits<Register>::digits - NIBBLE_DIGITS ) );
 
-        for ( auto bit = 4 - 1; bit >= 0; --bit ) {
+        for ( auto bit = NIBBLE_DIGITS - 1; bit >= 0; --bit ) {
             auto const xor_polynomial = static_cast<bool>(
                 remainder & ~( std::numeric_limits<Register>::max() >> 1 ) );
 
@@ -939,18 +969,13 @@ class Augmented_Nibble_Indexed_Lookup_Table_Calculator {
     auto feed( Register remainder, Iterator begin, Iterator end ) const noexcept
     {
         for ( ; begin != end; ++begin ) {
-            auto const processed_input = ( *m_process_input )( *begin );
-
-            auto const nibbles = Array<std::uint_fast8_t, 2>{
-                static_cast<std::uint_fast8_t>( processed_input >> 4 ),
-                static_cast<std::uint_fast8_t>( processed_input & 0xF ),
-            };
+            auto const nibbles = get_byte_nibbles( ( *m_process_input )( *begin ) );
 
             for ( auto const nibble : nibbles ) {
                 auto const i = static_cast<std::uint_fast8_t>(
-                    remainder >> ( std::numeric_limits<Register>::digits - 4 ) );
+                    remainder >> ( std::numeric_limits<Register>::digits - NIBBLE_DIGITS ) );
 
-                remainder = ( ( remainder << 4 ) | nibble ) ^ m_lookup_table[ i ];
+                remainder = ( ( remainder << NIBBLE_DIGITS ) | nibble ) ^ m_lookup_table[ i ];
             } // for
         }     // for
 
