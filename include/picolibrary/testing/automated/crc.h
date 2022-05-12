@@ -42,19 +42,19 @@ namespace picolibrary::Testing::Automated::CRC {
  * \tparam Calculator The calculator implementation to be tested.
  */
 template<typename Calculator>
-class calculatorUint8Register : public ::testing::Test {
+class uint8Register : public ::testing::Test {
 };
 
 /**
  * \brief Calculator implementation std::uint8_t register automated test fixture.
  */
-TYPED_TEST_SUITE_P( calculatorUint8Register );
+TYPED_TEST_SUITE_P( uint8Register );
 
 /**
  * \brief Verify the calculator implementation works properly for std::uint8_t register
  *        calculations.
  */
-TYPED_TEST_P( calculatorUint8Register, worksProperly )
+TYPED_TEST_P( uint8Register, worksProperly )
 {
     // #lizard forgives the length
 
@@ -94,7 +94,7 @@ TYPED_TEST_P( calculatorUint8Register, worksProperly )
  * \brief Calculator implementation std::uint8_t register automated test fixture test
  *        registration.
  */
-REGISTER_TYPED_TEST_SUITE_P( calculatorUint8Register, worksProperly );
+REGISTER_TYPED_TEST_SUITE_P( uint8Register, worksProperly );
 
 /**
  * \brief Calculator implementation std::uint16_t register automated test fixture.
@@ -102,19 +102,19 @@ REGISTER_TYPED_TEST_SUITE_P( calculatorUint8Register, worksProperly );
  * \tparam Calculator The calculator implementation to be tested.
  */
 template<typename Calculator>
-class calculatorUint16Register : public ::testing::Test {
+class uint16Register : public ::testing::Test {
 };
 
 /**
  * \brief Calculator implementation std::uint16_t register automated test fixture.
  */
-TYPED_TEST_SUITE_P( calculatorUint16Register );
+TYPED_TEST_SUITE_P( uint16Register );
 
 /**
  * \brief Verify the calculator implementation works properly for std::uint16_t register
  *        calculations.
  */
-TYPED_TEST_P( calculatorUint16Register, worksProperly )
+TYPED_TEST_P( uint16Register, worksProperly )
 {
     // #lizard forgives the length
 
@@ -154,7 +154,7 @@ TYPED_TEST_P( calculatorUint16Register, worksProperly )
  * \brief Calculator implementation std::uint16_t register automated test fixture test
  *        registration.
  */
-REGISTER_TYPED_TEST_SUITE_P( calculatorUint16Register, worksProperly );
+REGISTER_TYPED_TEST_SUITE_P( uint16Register, worksProperly );
 
 /**
  * \brief Calculator implementation std::uint32_t register automated test fixture.
@@ -162,19 +162,19 @@ REGISTER_TYPED_TEST_SUITE_P( calculatorUint16Register, worksProperly );
  * \tparam Calculator The calculator implementation to be tested.
  */
 template<typename Calculator>
-class calculatorUint32Register : public ::testing::Test {
+class uint32Register : public ::testing::Test {
 };
 
 /**
  * \brief Calculator implementation std::uint32_t register automated test fixture.
  */
-TYPED_TEST_SUITE_P( calculatorUint32Register );
+TYPED_TEST_SUITE_P( uint32Register );
 
 /**
  * \brief Verify the calculator implementation works properly for std::uint32_t register
  *        calculations.
  */
-TYPED_TEST_P( calculatorUint32Register, worksProperly )
+TYPED_TEST_P( uint32Register, worksProperly )
 {
     // #lizard forgives the length
 
@@ -214,6 +214,6 @@ TYPED_TEST_P( calculatorUint32Register, worksProperly )
  * \brief Calculator implementation std::uint32_t register automated test fixture test
  *        registration.
  */
-REGISTER_TYPED_TEST_SUITE_P( calculatorUint32Register, worksProperly );
+REGISTER_TYPED_TEST_SUITE_P( uint32Register, worksProperly );
 
 #endif // PICOLIBRARY_TESTING_AUTOMATED_CRC_H

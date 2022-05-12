@@ -39,8 +39,8 @@ using ::picolibrary::CRC::Augmented_Byte_Indexed_Lookup_Table_Calculator;
  *        properly.
  */
 INSTANTIATE_TYPED_TEST_SUITE_P(
-    augmentedByteIndexedLookupTable,
-    calculatorUint8Register,
+    augmentedByteIndexedLookupTableCalculator,
+    uint8Register,
     Augmented_Byte_Indexed_Lookup_Table_Calculator<std::uint8_t> );
 
 /**
@@ -48,8 +48,8 @@ INSTANTIATE_TYPED_TEST_SUITE_P(
  *        properly.
  */
 INSTANTIATE_TYPED_TEST_SUITE_P(
-    augmentedByteIndexedLookupTable,
-    calculatorUint16Register,
+    augmentedByteIndexedLookupTableCalculator,
+    uint16Register,
     Augmented_Byte_Indexed_Lookup_Table_Calculator<std::uint16_t> );
 
 /**
@@ -57,8 +57,8 @@ INSTANTIATE_TYPED_TEST_SUITE_P(
  *        properly.
  */
 INSTANTIATE_TYPED_TEST_SUITE_P(
-    augmentedByteIndexedLookupTable,
-    calculatorUint32Register,
+    augmentedByteIndexedLookupTableCalculator,
+    uint32Register,
     Augmented_Byte_Indexed_Lookup_Table_Calculator<std::uint32_t> );
 
 /**

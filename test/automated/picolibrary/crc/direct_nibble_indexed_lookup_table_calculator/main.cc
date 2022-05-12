@@ -39,8 +39,8 @@ using ::picolibrary::CRC::Direct_Nibble_Indexed_Lookup_Table_Calculator;
  *        properly.
  */
 INSTANTIATE_TYPED_TEST_SUITE_P(
-    directNibbleIndexedLookupTable,
-    calculatorUint8Register,
+    directNibbleIndexedLookupTableCalculator,
+    uint8Register,
     Direct_Nibble_Indexed_Lookup_Table_Calculator<std::uint8_t> );
 
 /**
@@ -48,8 +48,8 @@ INSTANTIATE_TYPED_TEST_SUITE_P(
  *        properly.
  */
 INSTANTIATE_TYPED_TEST_SUITE_P(
-    directNibbleIndexedLookupTable,
-    calculatorUint16Register,
+    directNibbleIndexedLookupTableCalculator,
+    uint16Register,
     Direct_Nibble_Indexed_Lookup_Table_Calculator<std::uint16_t> );
 
 /**
@@ -57,8 +57,8 @@ INSTANTIATE_TYPED_TEST_SUITE_P(
  *        properly.
  */
 INSTANTIATE_TYPED_TEST_SUITE_P(
-    directNibbleIndexedLookupTable,
-    calculatorUint32Register,
+    directNibbleIndexedLookupTableCalculator,
+    uint32Register,
     Direct_Nibble_Indexed_Lookup_Table_Calculator<std::uint32_t> );
 
 /**

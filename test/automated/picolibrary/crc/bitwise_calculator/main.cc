@@ -36,17 +36,17 @@ using ::picolibrary::CRC::Bitwise_Calculator;
 /**
  * \brief Verify picolibrary::CRC::Bitwise_Calculator works properly.
  */
-INSTANTIATE_TYPED_TEST_SUITE_P( bitwise, calculatorUint8Register, Bitwise_Calculator<std::uint8_t> );
+INSTANTIATE_TYPED_TEST_SUITE_P( bitwiseCalculator, uint8Register, Bitwise_Calculator<std::uint8_t> );
 
 /**
  * \brief Verify picolibrary::CRC::Bitwise_Calculator works properly.
  */
-INSTANTIATE_TYPED_TEST_SUITE_P( bitwise, calculatorUint16Register, Bitwise_Calculator<std::uint16_t> );
+INSTANTIATE_TYPED_TEST_SUITE_P( bitwiseCalculator, uint16Register, Bitwise_Calculator<std::uint16_t> );
 
 /**
  * \brief Verify picolibrary::CRC::Bitwise_Calculator works properly.
  */
-INSTANTIATE_TYPED_TEST_SUITE_P( bitwise, calculatorUint32Register, Bitwise_Calculator<std::uint32_t> );
+INSTANTIATE_TYPED_TEST_SUITE_P( bitwiseCalculator, uint32Register, Bitwise_Calculator<std::uint32_t> );
 
 /**
  * \brief Execute the picolibrary::CRC::Bitwise_Calculator automated tests.
