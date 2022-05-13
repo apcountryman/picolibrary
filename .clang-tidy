@@ -27,7 +27,7 @@ Checks: >
     -objc*,
     -openmp*,
     -portability-simd*,
-    -zircon*'
+    -zircon*
 
 WarningsAsErrors: '*'
 
