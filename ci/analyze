@@ -97,7 +97,7 @@ function run_clang-tidy()
 {
     generate_compilation_database
 
-    if ! run-clang-tidy -p "$build_directory"; then
+    if ! run-clang-tidy '-header-filter=.*' -p "$build_directory"; then
         abort
     fi
 }
