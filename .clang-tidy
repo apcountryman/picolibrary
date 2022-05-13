@@ -15,7 +15,19 @@
 
 # Description: clang-tidy configuration for the picolibrary repository.
 
-Checks: '*,-abseil*,-android*,-boost*,-fuchsia*,-google*,-llvm*,-mpi*,-objc*,-openmp*,-portability-simd*,-zircon*'
+Checks: >
+    *,
+    -abseil*,
+    -android*,
+    -boost*,
+    -fuchsia*,
+    -google*,
+    -llvm*,
+    -mpi*,
+    -objc*,
+    -openmp*,
+    -portability-simd*,
+    -zircon*'
 
 WarningsAsErrors: '*'
 
