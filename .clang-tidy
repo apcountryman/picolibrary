@@ -443,9 +443,9 @@ CheckOptions:
       value: '0'
 
     - key:   readability-implicit-bool-conversion.AllowIntegerConditions
-      value: '0'
+      value: '1'
     - key:   readability-implicit-bool-conversion.AllowPointerConditions
-      value: '0'
+      value: '1'
 
     - key:   readability-inconsistent-declaration-parameter-name.IgnoreMacros
       value: '0'
