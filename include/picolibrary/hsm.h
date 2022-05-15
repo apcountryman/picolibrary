@@ -330,7 +330,6 @@ class HSM {
      *
      * \return Event handled event handling result.
      */
-    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
     constexpr auto event_handled( Event const & handled_event ) const noexcept -> Event_Handling_Result
     {
         static_cast<void>( handled_event );
@@ -721,7 +720,6 @@ class HSM {
      *
      * \return Event ignored event handling result.
      */
-    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
     constexpr auto event_ignored( Event const & ignored_event ) const noexcept -> Event_Handling_Result
     {
         static_cast<void>( ignored_event );

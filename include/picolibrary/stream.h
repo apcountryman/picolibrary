@@ -888,7 +888,6 @@ class Output_Formatter<char> {
      *
      * \return format
      */
-    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
     constexpr auto parse( char const * format ) noexcept -> char const *
     {
         return format;
@@ -903,7 +902,6 @@ class Output_Formatter<char> {
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
     auto print( Output_Stream & stream, char character ) noexcept -> Result<std::size_t, Error_Code>
     {
         auto result = stream.put( character );
@@ -950,7 +948,6 @@ class Output_Formatter<char const *> {
      *
      * \return format
      */
-    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
     constexpr auto parse( char const * format ) noexcept -> char const *
     {
         return format;
@@ -965,7 +962,6 @@ class Output_Formatter<char const *> {
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
     auto print( Output_Stream & stream, char const * string ) noexcept -> Result<std::size_t, Error_Code>
     {
         auto result = stream.put( string );
@@ -1011,7 +1007,6 @@ class Output_Formatter<Void> {
      *
      * \return format
      */
-    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
     constexpr auto parse( char const * format ) noexcept -> char const *
     {
         return format;
@@ -1022,7 +1017,6 @@ class Output_Formatter<Void> {
      *
      * \return 0
      */
-    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
     constexpr auto print( Output_Stream &, Void ) noexcept -> Result<std::size_t, Void>
     {
         return std::size_t{ 0 };
@@ -1064,7 +1058,6 @@ class Output_Formatter<Error_Code> {
      *
      * \return format
      */
-    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
     constexpr auto parse( char const * format ) noexcept -> char const *
     {
         return format;
@@ -1079,7 +1072,6 @@ class Output_Formatter<Error_Code> {
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
     auto print( Output_Stream & stream, Error_Code const & error ) noexcept
         -> Result<std::size_t, Error_Code>
     {

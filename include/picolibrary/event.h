@@ -254,7 +254,6 @@ class Output_Formatter<Event> {
      *
      * \return format
      */
-    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
     constexpr auto parse( char const * format ) noexcept -> char const *
     {
         return format;
@@ -269,7 +268,6 @@ class Output_Formatter<Event> {
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
     auto print( Output_Stream & stream, Event const & event ) noexcept -> Result<std::size_t, Error_Code>
     {
         auto characters_written = std::size_t{};

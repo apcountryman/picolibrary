@@ -29,6 +29,7 @@ Checks: >
     -objc*,
     -openmp*,
     -portability-simd*,
+    -readability-convert-member-functions-to-static,
     -zircon*
 
 WarningsAsErrors: '*'

@@ -146,7 +146,6 @@ class [[nodiscard]] Result<Void, Void, true> final
      *
      * \return true (operation succeeded).
      */
-    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
     [[nodiscard]] constexpr auto is_value() const noexcept->bool
     {
         return true;
@@ -170,7 +169,6 @@ class [[nodiscard]] Result<Void, Void, true> final
      *
      * \return picolibrary::Void
      */
-    // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
     [[nodiscard]] constexpr auto error() const noexcept->Error
     {
         return Error{};
