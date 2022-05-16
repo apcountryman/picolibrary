@@ -145,7 +145,7 @@ CheckOptions:
       value: llvm
 
     - key:   cert-oop54-cpp.WarnOnlyIfThisHasSuspiciousField
-      value: '0'
+      value: '1'
 
     - key:   cppcoreguidelines-avoid-magic-numbers.IgnoredFloatingPointValues
       value: '1.0;100.0;'
