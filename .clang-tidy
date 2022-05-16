@@ -21,6 +21,7 @@ Checks: >
     -android*,
     -boost*,
     -cppcoreguidelines-avoid-c-arrays,
+    -cppcoreguidelines-avoid-magic-numbers,
     -cppcoreguidelines-pro-bounds-pointer-arithmetic,
     -cppcoreguidelines-pro-type-reinterpret-cast,
     -cppcoreguidelines-pro-type-union-access,
@@ -35,6 +36,7 @@ Checks: >
     -portability-simd*,
     -readability-convert-member-functions-to-static,
     -readability-implicit-bool-conversion,
+    -readability-magic-numbers,
     -zircon*
 
 WarningsAsErrors: '*'
