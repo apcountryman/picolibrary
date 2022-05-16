@@ -100,6 +100,7 @@ class Array {
     /**
      * \brief The underlying array.
      */
+    // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
     Value m_array[ N ];
 
     /**
