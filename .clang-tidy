@@ -39,6 +39,7 @@ Checks: >
     -readability-implicit-bool-conversion,
     -readability-magic-numbers,
     -readability-named-parameter,
+    -readability-non-const-parameter,
     -zircon*
 
 WarningsAsErrors: '*'
