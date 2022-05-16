@@ -79,7 +79,7 @@ class HSM {
          * \return The name of the pseudo-event category.
          */
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
-        virtual auto name() const noexcept -> char const * override final
+        auto name() const noexcept -> char const * override final
         {
             return "::picolibrary::HSM::Pseudo_Event";
         }
@@ -93,7 +93,7 @@ class HSM {
          * \return The pseudo-event's description.
          */
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
-        virtual auto event_description( Event_ID id ) const noexcept -> char const * override final
+        auto event_description( Event_ID id ) const noexcept -> char const * override final
         {
             switch ( static_cast<Pseudo_Event>( id ) ) {
                 case Pseudo_Event::DISCOVERY: return "DISCOVERY";

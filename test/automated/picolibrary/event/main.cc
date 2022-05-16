@@ -60,7 +60,7 @@ class Event final : public ::picolibrary::Event {
 
     constexpr Event( Event const & original ) noexcept = default;
 
-    virtual ~Event() noexcept override final = default;
+    ~Event() noexcept override final = default;
 
     constexpr auto operator=( Event && expression ) noexcept -> Event & = default;
 

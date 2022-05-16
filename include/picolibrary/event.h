@@ -329,7 +329,7 @@ class Simple_Event final : public Event {
     /**
      * \brief Destructor.
      */
-    virtual ~Simple_Event() noexcept override final = default;
+    ~Simple_Event() noexcept override final = default;
 
     /**
      * \brief Assignment operator.
