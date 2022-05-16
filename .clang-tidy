@@ -116,7 +116,7 @@ CheckOptions:
       value: '16'
 
     - key:   bugprone-unhandled-self-assignment.WarnOnlyIfThisHasSuspiciousField
-      value: '0'
+      value: '1'
 
     - key:   bugprone-unused-return-value.CheckedFunctions
       value: '::std::async;::std::launder;::std::remove;::std::remove_if;::std::unique;::std::unique_ptr::release;::std::basic_string::empty;::std::vector::empty'
