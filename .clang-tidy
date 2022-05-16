@@ -30,6 +30,7 @@ Checks: >
     -hicpp*,
     -llvm*,
     -modernize-avoid-c-arrays,
+    -modernize-use-nodiscard,
     -mpi*,
     -objc*,
     -openmp*,
@@ -37,7 +38,6 @@ Checks: >
     -readability-convert-member-functions-to-static,
     -readability-implicit-bool-conversion,
     -readability-magic-numbers,
-    -readability-use-nodiscard,
     -zircon*
 
 WarningsAsErrors: '*'
