@@ -31,6 +31,7 @@ Checks: >
     -openmp*,
     -portability-simd*,
     -readability-convert-member-functions-to-static,
+    -readability-implicit-bool-conversion,
     -zircon*
 
 WarningsAsErrors: '*'
@@ -357,11 +358,6 @@ CheckOptions:
 
     - key:   readability-identifier-naming.IgnoreFailedSplit
       value: '0'
-
-    - key:   readability-implicit-bool-conversion.AllowIntegerConditions
-      value: '1'
-    - key:   readability-implicit-bool-conversion.AllowPointerConditions
-      value: '1'
 
     - key:   readability-inconsistent-declaration-parameter-name.IgnoreMacros
       value: '0'
