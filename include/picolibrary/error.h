@@ -53,7 +53,7 @@ struct is_error_code_enum : std::false_type {
  * \tparam Enum The enum to check.
  */
 template<typename Enum>
-constexpr auto is_error_code_enum_v = is_error_code_enum<Enum>::value;
+inline constexpr auto is_error_code_enum_v = is_error_code_enum<Enum>::value;
 
 /**
  * \brief Error category.

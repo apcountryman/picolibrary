@@ -1498,7 +1498,7 @@ struct fixed_capacity_vector_capacity {
  * \tparam T The fixed capacity vector whose size is to be gotten.
  */
 template<typename T>
-constexpr auto fixed_capacity_vector_capacity_v = fixed_capacity_vector_capacity<T>::value;
+inline constexpr auto fixed_capacity_vector_capacity_v = fixed_capacity_vector_capacity<T>::value;
 
 /**
  * \brief Get the capacity of a fixed capacity vector.

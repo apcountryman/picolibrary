@@ -132,14 +132,6 @@ using Message_Augment =
     Array<std::uint8_t, std::numeric_limits<Register>::digits / std::numeric_limits<std::uint8_t>::digits>;
 
 /**
- * \brief Calculation message augment.
- *
- * \tparam Register Calculation register type.
- */
-template<typename Register>
-constexpr auto MESSAGE_AUGMENT = Message_Augment<Register>{};
-
-/**
  * \brief Calculator concept.
  *
  * \tparam Register_Type Calculation register type.
@@ -306,10 +298,12 @@ class Bitwise_Calculator {
     template<typename Iterator>
     constexpr auto calculate( Iterator begin, Iterator end ) const noexcept -> Register
     {
+        auto const message_augment = Message_Augment<Register>{};
+
         return ( *m_process_output )( feed(
                    feed( m_initial_remainder, begin, end ),
-                   MESSAGE_AUGMENT<Register>.begin(),
-                   MESSAGE_AUGMENT<Register>.end() ) )
+                   message_augment.begin(),
+                   message_augment.end() ) )
                ^ m_xor_output;
     }
 
@@ -519,10 +513,12 @@ class Augmented_Byte_Indexed_Lookup_Table_Calculator {
     template<typename Iterator>
     constexpr auto calculate( Iterator begin, Iterator end ) const noexcept -> Register
     {
+        auto const message_augment = Message_Augment<Register>{};
+
         return ( *m_process_output )( feed(
                    feed( m_initial_remainder, begin, end ),
-                   MESSAGE_AUGMENT<Register>.begin(),
-                   MESSAGE_AUGMENT<Register>.end() ) )
+                   message_augment.begin(),
+                   message_augment.end() ) )
                ^ m_xor_output;
     }
 
@@ -924,10 +920,12 @@ class Augmented_Nibble_Indexed_Lookup_Table_Calculator {
     template<typename Iterator>
     constexpr auto calculate( Iterator begin, Iterator end ) const noexcept -> Register
     {
+        auto const message_augment = Message_Augment<Register>{};
+
         return ( *m_process_output )( feed(
                    feed( m_initial_remainder, begin, end ),
-                   MESSAGE_AUGMENT<Register>.begin(),
-                   MESSAGE_AUGMENT<Register>.end() ) )
+                   message_augment.begin(),
+                   message_augment.end() ) )
                ^ m_xor_output;
     }
 
