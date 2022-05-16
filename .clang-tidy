@@ -220,7 +220,7 @@ CheckOptions:
       value: '0'
 
     - key:   hicpp-move-const-arg.CheckTriviallyCopyableMove
-      value: '1'
+      value: '0'
 
     - key:   hicpp-multiway-paths-covered.WarnOnMissingElse
       value: '1'
@@ -403,7 +403,7 @@ CheckOptions:
       value: '::std::vector'
 
     - key:   performance-move-const-arg.CheckTriviallyCopyableMove
-      value: '1'
+      value: '0'
 
     - key:   performance-move-constructor-init.IncludeStyle
       value: llvm
