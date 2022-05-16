@@ -156,11 +156,6 @@ CheckOptions:
     - key:   cert-oop54-cpp.WarnOnlyIfThisHasSuspiciousField
       value: '1'
 
-    - key:   cppcoreguidelines-avoid-magic-numbers.IgnoredFloatingPointValues
-      value: '1.0;100.0;'
-    - key:   cppcoreguidelines-avoid-magic-numbers.IgnoredIntegerValues
-      value: '1;2;3;4;'
-
     - key:   cppcoreguidelines-explicit-virtual-functions.AllowOverrideAndFinal
       value: '1'
     - key:   cppcoreguidelines-explicit-virtual-functions.FinalSpelling
@@ -281,9 +276,6 @@ CheckOptions:
 
     - key:   modernize-use-equals-delete.IgnoreMacros
       value: '0'
-
-    - key:   modernize-use-nodiscard.ReplacementString
-      value: '[[nodiscard]]'
 
     - key:   modernize-use-noexcept.ReplacementString
       value: ''
