@@ -196,7 +196,8 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
     /**
      * \brief Constructor.
      */
-    constexpr Result() noexcept : m_is_value{ true }, m_value{}
+    // NOLINTNEXTLINE(modernize-use-equals-default)
+    constexpr Result() noexcept
     {
     }
 
@@ -231,7 +232,7 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
     /**
      * \brief Constructor.
      */
-    constexpr Result( Result<Void, Void> ) noexcept : m_is_value{ true }
+    constexpr Result( Result<Void, Void> ) noexcept
     {
     }
 

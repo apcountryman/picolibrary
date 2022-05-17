@@ -58,6 +58,7 @@ namespace picolibrary::Testing::Interactive::Microchip::MCP23S08 {
  * \pre writing to the stream succeeds
  */
 template<typename Controller, typename Device_Selector, typename Delayer>
+// NOLINTNEXTLINE(readability-function-size)
 void state(
     Output_Stream &                                         stream,
     Controller                                              controller,
@@ -104,6 +105,7 @@ void state(
  *            toggled.
  */
 template<template<typename> typename Output_Pin, typename Controller, typename Device_Selector, typename Delayer>
+// NOLINTNEXTLINE(readability-function-size)
 void toggle(
     Controller                                              controller,
     typename Controller::Configuration                      configuration,

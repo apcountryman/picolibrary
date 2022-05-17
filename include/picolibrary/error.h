@@ -53,7 +53,7 @@ struct is_error_code_enum : std::false_type {
  * \tparam Enum The enum to check.
  */
 template<typename Enum>
-constexpr auto is_error_code_enum_v = is_error_code_enum<Enum>::value;
+inline constexpr auto is_error_code_enum_v = is_error_code_enum<Enum>::value;
 
 /**
  * \brief Error category.
@@ -262,7 +262,7 @@ class Error_Code final {
          *
          * \return The name of the error category.
          */
-        virtual auto name() const noexcept -> char const * override final
+        auto name() const noexcept -> char const * override final
         {
             return "::picolibrary::Default_Error";
         }
@@ -276,7 +276,7 @@ class Error_Code final {
          *
          * \return The error ID's description.
          */
-        virtual auto error_description( Error_ID id ) const noexcept -> char const * override final
+        auto error_description( Error_ID id ) const noexcept -> char const * override final
         {
             static_cast<void>( id );
 
@@ -394,7 +394,7 @@ class Generic_Error_Category final : public Error_Category {
      *
      * \return The name of the error category.
      */
-    virtual auto name() const noexcept -> char const * override final
+    auto name() const noexcept -> char const * override final
     {
         return "::picolibrary::Generic_Error";
     }
@@ -408,7 +408,7 @@ class Generic_Error_Category final : public Error_Category {
      *
      * \return The error ID's description.
      */
-    virtual auto error_description( Error_ID id ) const noexcept -> char const * override final
+    auto error_description( Error_ID id ) const noexcept -> char const * override final
     {
         switch ( static_cast<Generic_Error>( id ) ) {
                 // clang-format off

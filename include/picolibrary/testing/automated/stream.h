@@ -57,12 +57,12 @@ class Mock_Stream_Buffer : public Stream_Buffer {
     MOCK_METHOD( (Result<Void, Error_Code>), put, (char), ( noexcept, override ) );
     MOCK_METHOD( (Result<Void, Error_Code>), put, ( std::string ) );
 
-    virtual auto put( char const * begin, char const * end ) noexcept -> Result<Void, Error_Code> override
+    auto put( char const * begin, char const * end ) noexcept -> Result<Void, Error_Code> override
     {
         return put( std::string{ begin, end } );
     }
 
-    virtual auto put( char const * string ) noexcept -> Result<Void, Error_Code> override
+    auto put( char const * string ) noexcept -> Result<Void, Error_Code> override
     {
         return put( std::string{ string } );
     }
@@ -70,7 +70,7 @@ class Mock_Stream_Buffer : public Stream_Buffer {
     MOCK_METHOD( (Result<Void, Error_Code>), put, ( std::uint8_t ), ( noexcept, override ) );
     MOCK_METHOD( (Result<Void, Error_Code>), put, (std::vector<std::uint8_t>));
 
-    virtual auto put( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+    auto put( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
         -> Result<Void, Error_Code> override
     {
         return put( std::vector<std::uint8_t>{ begin, end } );
@@ -79,7 +79,7 @@ class Mock_Stream_Buffer : public Stream_Buffer {
     MOCK_METHOD( (Result<Void, Error_Code>), put, ( std::int8_t ), ( noexcept, override ) );
     MOCK_METHOD( (Result<Void, Error_Code>), put, (std::vector<std::int8_t>));
 
-    virtual auto put( std::int8_t const * begin, std::int8_t const * end ) noexcept
+    auto put( std::int8_t const * begin, std::int8_t const * end ) noexcept
         -> Result<Void, Error_Code> override
     {
         return put( std::vector<std::int8_t>{ begin, end } );
@@ -176,7 +176,7 @@ class String_Stream_Buffer final : public Stream_Buffer {
      *
      * \return Nothing.
      */
-    virtual auto put( char character ) noexcept -> Result<Void, Error_Code> override final
+    auto put( char character ) noexcept -> Result<Void, Error_Code> override final
     {
         m_string.push_back( character );
 
@@ -190,7 +190,7 @@ class String_Stream_Buffer final : public Stream_Buffer {
      *
      * \return Nothing.
      */
-    virtual auto put( std::uint8_t value ) noexcept -> Result<Void, Error_Code> override final
+    auto put( std::uint8_t value ) noexcept -> Result<Void, Error_Code> override final
     {
         m_string.push_back( value );
 
@@ -204,7 +204,7 @@ class String_Stream_Buffer final : public Stream_Buffer {
      *
      * \return Nothing.
      */
-    virtual auto put( std::int8_t value ) noexcept -> Result<Void, Error_Code> override final
+    auto put( std::int8_t value ) noexcept -> Result<Void, Error_Code> override final
     {
         m_string.push_back( value );
 
@@ -216,7 +216,7 @@ class String_Stream_Buffer final : public Stream_Buffer {
      *
      * \return Nothing.
      */
-    virtual auto flush() noexcept -> Result<Void, Error_Code> override final
+    auto flush() noexcept -> Result<Void, Error_Code> override final
     {
         return {};
     }

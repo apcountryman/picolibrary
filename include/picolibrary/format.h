@@ -319,6 +319,7 @@ class Output_Formatter<Format::Binary<Integer>> {
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     auto print( Output_Stream & stream, Integer value ) noexcept -> Result<std::size_t, Error_Code>
     {
         // #lizard forgives the length
@@ -405,6 +406,7 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_signed
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     auto print( Output_Stream & stream, Integer value ) noexcept -> Result<std::size_t, Error_Code>
     {
         // #lizard forgives the length
@@ -562,6 +564,7 @@ class Output_Formatter<Format::Hexadecimal<Integer>> {
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     auto print( Output_Stream & stream, Integer value ) noexcept -> Result<std::size_t, Error_Code>
     {
         // #lizard forgives the length

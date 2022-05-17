@@ -117,6 +117,7 @@ class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::MAIN_READS_MAIN
     /**
      * \brief Constructor.
      */
+    // NOLINTNEXTLINE(modernize-use-equals-default)
     Circular_Buffer() noexcept
     {
     }
@@ -1356,6 +1357,7 @@ class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::INTERRUPT_READS
     /**
      * \brief Constructor.
      */
+    // NOLINTNEXTLINE(modernize-use-equals-default)
     Circular_Buffer() noexcept
     {
     }

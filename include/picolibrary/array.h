@@ -100,6 +100,7 @@ class Array {
     /**
      * \brief The underlying array.
      */
+    // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
     Value m_array[ N ];
 
     /**
@@ -443,7 +444,7 @@ struct array_size {
  * \tparam T The array type whose size is to be gotten.
  */
 template<typename T>
-constexpr auto array_size_v = array_size<T>::value;
+inline constexpr auto array_size_v = array_size<T>::value;
 
 /**
  * \brief Get the size of an array.

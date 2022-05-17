@@ -136,7 +136,7 @@ class Unbuffered_Output_Stream_Buffer final : public Stream_Buffer {
      *
      * \return Nothing.
      */
-    virtual auto put( char character ) noexcept -> Result<Void, Error_Code> override final
+    auto put( char character ) noexcept -> Result<Void, Error_Code> override final
     {
         m_transmitter.transmit( character );
 
@@ -151,8 +151,7 @@ class Unbuffered_Output_Stream_Buffer final : public Stream_Buffer {
      *
      * \return Nothing.
      */
-    virtual auto put( char const * begin, char const * end ) noexcept
-        -> Result<Void, Error_Code> override final
+    auto put( char const * begin, char const * end ) noexcept -> Result<Void, Error_Code> override final
     {
         m_transmitter.transmit(
             reinterpret_cast<std::uint8_t const *>( begin ),
@@ -168,7 +167,7 @@ class Unbuffered_Output_Stream_Buffer final : public Stream_Buffer {
      *
      * \return Nothing.
      */
-    virtual auto put( char const * string ) noexcept -> Result<Void, Error_Code> override final
+    auto put( char const * string ) noexcept -> Result<Void, Error_Code> override final
     {
         while ( auto const character = *string++ ) {
             m_transmitter.transmit( character );
@@ -184,7 +183,7 @@ class Unbuffered_Output_Stream_Buffer final : public Stream_Buffer {
      *
      * \return Nothing.
      */
-    virtual auto put( std::uint8_t value ) noexcept -> Result<Void, Error_Code> override final
+    auto put( std::uint8_t value ) noexcept -> Result<Void, Error_Code> override final
     {
         m_transmitter.transmit( value );
 
@@ -199,7 +198,7 @@ class Unbuffered_Output_Stream_Buffer final : public Stream_Buffer {
      *
      * \return Nothing.
      */
-    virtual auto put( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+    auto put( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
         -> Result<Void, Error_Code> override final
     {
         m_transmitter.transmit( begin, end );
@@ -214,7 +213,7 @@ class Unbuffered_Output_Stream_Buffer final : public Stream_Buffer {
      *
      * \return Nothing.
      */
-    virtual auto put( std::int8_t value ) noexcept -> Result<Void, Error_Code> override final
+    auto put( std::int8_t value ) noexcept -> Result<Void, Error_Code> override final
     {
         m_transmitter.transmit( value );
 
@@ -229,7 +228,7 @@ class Unbuffered_Output_Stream_Buffer final : public Stream_Buffer {
      *
      * \return Nothing.
      */
-    virtual auto put( std::int8_t const * begin, std::int8_t const * end ) noexcept
+    auto put( std::int8_t const * begin, std::int8_t const * end ) noexcept
         -> Result<Void, Error_Code> override final
     {
         m_transmitter.transmit(
@@ -244,7 +243,7 @@ class Unbuffered_Output_Stream_Buffer final : public Stream_Buffer {
      *
      * \return Nothing.
      */
-    virtual auto flush() noexcept -> Result<Void, Error_Code> override final
+    auto flush() noexcept -> Result<Void, Error_Code> override final
     {
         return {};
     }

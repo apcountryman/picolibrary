@@ -24,6 +24,6 @@
 
 namespace picolibrary::Microchip::MCP23X08 {
 
-static_assert( IOCON::Bit::RESERVED6 == 6 ); // NOLINT
+static_assert( IOCON::Bit::RESERVED6 == 6 );
 
 } // namespace picolibrary::Microchip::MCP23X08

@@ -79,7 +79,7 @@ class HSM {
          * \return The name of the pseudo-event category.
          */
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
-        virtual auto name() const noexcept -> char const * override final
+        auto name() const noexcept -> char const * override final
         {
             return "::picolibrary::HSM::Pseudo_Event";
         }
@@ -93,7 +93,7 @@ class HSM {
          * \return The pseudo-event's description.
          */
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
-        virtual auto event_description( Event_ID id ) const noexcept -> char const * override final
+        auto event_description( Event_ID id ) const noexcept -> char const * override final
         {
             switch ( static_cast<Pseudo_Event>( id ) ) {
                 case Pseudo_Event::DISCOVERY: return "DISCOVERY";
@@ -738,7 +738,7 @@ class HSM {
     void enter( State_Event_Handler_Reference state ) noexcept
     {
         switch ( ( state )( *this, ENTRY ) ) {
-            case Event_Handling_Result::EVENT_HANDLED: return;
+            case Event_Handling_Result::EVENT_HANDLED: [[fallthrough]];
             case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE: return;
             default: expect( false, Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
         } // switch
@@ -770,7 +770,7 @@ class HSM {
     void exit( State_Event_Handler_Reference state ) noexcept
     {
         switch ( ( state )( *this, EXIT ) ) {
-            case Event_Handling_Result::EVENT_HANDLED: return;
+            case Event_Handling_Result::EVENT_HANDLED: [[fallthrough]];
             case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE: return;
             default: expect( false, Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
         } // switch
@@ -797,6 +797,7 @@ class HSM {
      *
      * \param[in] source_state The source state of the state transition.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     void transition_from( State_Event_Handler_Pointer source_state ) noexcept
     {
         // #lizard forgives the length

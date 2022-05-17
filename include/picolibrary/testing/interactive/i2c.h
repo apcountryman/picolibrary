@@ -46,6 +46,7 @@ namespace picolibrary::Testing::Interactive::I2C {
  * \pre writing to the stream succeeds
  */
 template<typename Controller>
+// NOLINTNEXTLINE(readability-function-size)
 void scan( Output_Stream & stream, Controller controller ) noexcept
 {
     // #lizard forgives the length

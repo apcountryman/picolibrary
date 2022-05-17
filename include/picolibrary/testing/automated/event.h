@@ -79,7 +79,7 @@ class Mock_Event : public Event {
 
     Mock_Event( Mock_Event const & ) = delete;
 
-    virtual ~Mock_Event() noexcept override = default;
+    ~Mock_Event() noexcept override = default;
 
     auto operator=( Mock_Event && ) = delete;
 
