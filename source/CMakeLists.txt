@@ -54,6 +54,7 @@ set(
     "picolibrary/stream.cc"
     "picolibrary/utility.cc"
     "picolibrary/void.cc"
+    "picolibrary/wiznet.cc"
 )
 set( PICOLIBRARY_LINK_LIBRARIES )
 
