@@ -87,6 +87,7 @@ if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
         "picolibrary/testing/automated/random.cc"
         "picolibrary/testing/automated/spi.cc"
         "picolibrary/testing/automated/stream.cc"
+        "picolibrary/testing/automated/wiznet.cc"
     )
     list(
         APPEND PICOLIBRARY_LINK_LIBRARIES
