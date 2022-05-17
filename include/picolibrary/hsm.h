@@ -738,7 +738,7 @@ class HSM {
     void enter( State_Event_Handler_Reference state ) noexcept
     {
         switch ( ( state )( *this, ENTRY ) ) {
-            case Event_Handling_Result::EVENT_HANDLED: return;
+            case Event_Handling_Result::EVENT_HANDLED: [[fallthrough]];
             case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE: return;
             default: expect( false, Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
         } // switch
@@ -770,7 +770,7 @@ class HSM {
     void exit( State_Event_Handler_Reference state ) noexcept
     {
         switch ( ( state )( *this, EXIT ) ) {
-            case Event_Handling_Result::EVENT_HANDLED: return;
+            case Event_Handling_Result::EVENT_HANDLED: [[fallthrough]];
             case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE: return;
             default: expect( false, Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
         } // switch
