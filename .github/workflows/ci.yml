@@ -26,20 +26,6 @@ on:
             - main
 
 jobs:
-    analyze-static-cppcheck:
-        name: Analyze (static) - cppcheck
-        runs-on: ubuntu-20.04
-        steps:
-            - uses: actions/checkout@v2
-              with:
-                  submodules: recursive
-            - name: Install dependencies
-              shell: bash
-              run: sudo apt update && sudo apt install cppcheck
-            - name: Analyze
-              shell: bash
-              run: ./ci/analyze --analyzer cppcheck
-
     analyze-static-clang-tidy:
         name: Analyze (static) - clang-tidy
         runs-on: ubuntu-20.04
