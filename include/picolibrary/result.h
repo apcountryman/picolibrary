@@ -196,6 +196,7 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
     /**
      * \brief Constructor.
      */
+    // NOLINTNEXTLINE(modernize-use-equals-default)
     constexpr Result() noexcept
     {
     }
