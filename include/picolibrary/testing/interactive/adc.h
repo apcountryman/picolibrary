@@ -48,6 +48,7 @@ namespace picolibrary::Testing::Interactive::ADC {
  * \pre writing to the stream succeeds
  */
 template<typename Blocking_Single_Sample_Converter, typename Delayer>
+// NOLINTNEXTLINE(readability-function-size)
 void sample_blocking_single_sample_converter( Output_Stream & stream, Blocking_Single_Sample_Converter adc, Delayer delay ) noexcept
 {
     // #lizard forgives the length

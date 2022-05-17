@@ -807,6 +807,7 @@ class Output_Stream : public Stream {
      * \return An error code if the write failed.
      */
     template<typename Type, typename... Types>
+    // NOLINTNEXTLINE(readability-function-size)
     auto print_implementation( std::size_t n, char const * format, Type && value, Types &&... values ) noexcept
         -> Result<std::size_t, Error_Code>
     {

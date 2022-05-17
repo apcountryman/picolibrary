@@ -55,6 +55,7 @@ namespace picolibrary::Testing::Interactive::Microchip::MCP3008 {
  * \pre writing to the stream succeeds
  */
 template<typename Controller, typename Device_Selector, typename Delayer>
+// NOLINTNEXTLINE(readability-function-size)
 void sample(
     Output_Stream &                          stream,
     Controller                               controller,

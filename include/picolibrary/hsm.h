@@ -797,6 +797,7 @@ class HSM {
      *
      * \param[in] source_state The source state of the state transition.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     void transition_from( State_Event_Handler_Pointer source_state ) noexcept
     {
         // #lizard forgives the length
