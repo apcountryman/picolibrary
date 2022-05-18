@@ -15,14 +15,14 @@
 
 # Description: picolibrary::Microchip automated tests CMake rules.
 
-# build the picolibrary::Asynchronous_Serial::MCP23008 automated tests
+# build the picolibrary::Microchip::MCP23008 automated tests
 add_subdirectory( mcp23008 )
 
-# build the picolibrary::Asynchronous_Serial::MCP23S08 automated tests
+# build the picolibrary::Microchip::MCP23S08 automated tests
 add_subdirectory( mcp23s08 )
 
-# build the picolibrary::Asynchronous_Serial::MCP23X08 automated tests
+# build the picolibrary::Microchip::MCP23X08 automated tests
 add_subdirectory( mcp23x08 )
 
-# build the picolibrary::Asynchronous_Serial::MCP3008 automated tests
+# build the picolibrary::Microchip::MCP3008 automated tests
 add_subdirectory( mcp3008 )
