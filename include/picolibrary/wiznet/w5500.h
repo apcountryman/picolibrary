@@ -46,7 +46,7 @@ using Offset = std::uint16_t;
  * - Block Select Bits (BSB)
  *
  * The BSB field can be split into the following fields when accessing socket memory:
- * - Socket Memory Region (REGION)
+ * - Socket Memory Block (BLOCK)
  * - Socket ID (SOCKET)
  */
 struct Control_Byte {
@@ -58,7 +58,7 @@ struct Control_Byte {
         static constexpr auto RWB = std::uint_fast8_t{ 1 }; ///< RWB.
         static constexpr auto BSB = std::uint_fast8_t{ 5 }; ///< BSB.
 
-        static constexpr auto REGION = std::uint_fast8_t{ 2 }; ///< REGION.
+        static constexpr auto BLOCK  = std::uint_fast8_t{ 2 }; ///< BLOCK.
         static constexpr auto SOCKET = std::uint_fast8_t{ 3 }; ///< SOCKET.
     };
 
@@ -70,8 +70,8 @@ struct Control_Byte {
         static constexpr auto RWB = std::uint_fast8_t{ OM + Size::OM };   ///< RWB.
         static constexpr auto BSB = std::uint_fast8_t{ RWB + Size::RWB }; ///< BSB.
 
-        static constexpr auto REGION = std::uint_fast8_t{ RWB + Size::RWB }; ///< REGION.
-        static constexpr auto SOCKET = std::uint_fast8_t{ REGION + Size::REGION }; ///< SOCKET.
+        static constexpr auto BLOCK = std::uint_fast8_t{ RWB + Size::RWB }; ///< BLOCK.
+        static constexpr auto SOCKET = std::uint_fast8_t{ BLOCK + Size::BLOCK }; ///< SOCKET.
     };
 
     /**
@@ -82,7 +82,7 @@ struct Control_Byte {
         static constexpr auto RWB = mask<std::uint8_t>( Size::RWB, Bit::RWB ); ///< RWB.
         static constexpr auto BSB = mask<std::uint8_t>( Size::BSB, Bit::BSB ); ///< BSB.
 
-        static constexpr auto REGION = mask<std::uint8_t>( Size::REGION, Bit::REGION ); ///< REGION.
+        static constexpr auto BLOCK = mask<std::uint8_t>( Size::BLOCK, Bit::BLOCK ); ///< BLOCK.
         static constexpr auto SOCKET = mask<std::uint8_t>( Size::SOCKET, Bit::SOCKET ); ///< SOCKET.
     };
 
@@ -144,12 +144,12 @@ struct Control_Byte {
     };
 
     /**
-     * \brief REGION.
+     * \brief BLOCK.
      */
-    enum REGION : std::uint8_t {
-        REGION_SOCKET_X_REGISTERS = 0b01 << Bit::REGION, ///< Socket X registers.
-        REGION_SOCKET_X_TX_BUFFER = 0b10 << Bit::REGION, ///< Socket X TX buffer.
-        REGION_SOCKET_X_RX_BUFFER = 0b11 << Bit::REGION, ///< Socket X RX buffer.
+    enum BLOCK : std::uint8_t {
+        BLOCK_SOCKET_X_REGISTERS = 0b01 << Bit::BLOCK, ///< Socket X registers.
+        BLOCK_SOCKET_X_TX_BUFFER = 0b10 << Bit::BLOCK, ///< Socket X TX buffer.
+        BLOCK_SOCKET_X_RX_BUFFER = 0b11 << Bit::BLOCK, ///< Socket X RX buffer.
     };
 
     /**
