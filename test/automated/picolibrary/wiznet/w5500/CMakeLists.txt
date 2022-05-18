@@ -13,7 +13,4 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary::WIZnet automated tests CMake rules.
-
-# build the picolibrary::WIZnet::W5500 automated tests
-add_subdirectory( w5500 )
+# Description: picolibrary::WIZnet::W5500 automated tests CMake rules.
