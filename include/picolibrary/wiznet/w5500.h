@@ -92,8 +92,8 @@ struct Control_Byte {
     enum OM : std::uint8_t {
         OM_VDM = 0b00 << Bit::OM, ///< Variable Length Data Mode (VDM), N bytes data length (N >= 1).
         OM_FDM_1_BYTE = 0b01 << Bit::OM, ///< Fixed Length Data Mode (FDM), 1 byte data length.
-        OM_FDM_2_BYTE = 0b10 << Bit::OM, ///< Fixed Length Data Mode (FDM), 2 byte data length.
-        OM_FDM_4_BYTE = 0b11 << Bit::OM, ///< Fixed Length Data Mode (FDM), 4 byte data length.
+        OM_FDM_2_BYTES = 0b10 << Bit::OM, ///< Fixed Length Data Mode (FDM), 2 bytes data length.
+        OM_FDM_4_BYTES = 0b11 << Bit::OM, ///< Fixed Length Data Mode (FDM), 4 bytes data length.
     };
 
     /**
@@ -147,9 +147,9 @@ struct Control_Byte {
      * \brief BLOCK.
      */
     enum BLOCK : std::uint8_t {
-        BLOCK_SOCKET_X_REGISTERS = 0b01 << Bit::BLOCK, ///< Socket X registers.
-        BLOCK_SOCKET_X_TX_BUFFER = 0b10 << Bit::BLOCK, ///< Socket X TX buffer.
-        BLOCK_SOCKET_X_RX_BUFFER = 0b11 << Bit::BLOCK, ///< Socket X RX buffer.
+        BLOCK_REGISTERS = 0b01 << Bit::BLOCK, ///< Registers.
+        BLOCK_TX_BUFFER = 0b10 << Bit::BLOCK, ///< TX buffer.
+        BLOCK_RX_BUFFER = 0b11 << Bit::BLOCK, ///< RX buffer.
     };
 
     /**
