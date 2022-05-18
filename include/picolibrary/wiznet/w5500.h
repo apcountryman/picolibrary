@@ -23,10 +23,18 @@
 #ifndef PICOLIBRARY_WIZNET_W5500_H
 #define PICOLIBRARY_WIZNET_W5500_H
 
+#include <cstdint>
+
 /**
  * \brief WIZnet W5500 facilities.
  */
 namespace picolibrary::WIZnet::W5500 {
+
+/**
+ * \brief Memory offset.
+ */
+using Offset = std::uint16_t;
+
 } // namespace picolibrary::WIZnet::W5500
 
 #endif // PICOLIBRARY_WIZNET_W5500_H
