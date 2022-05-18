@@ -71,3 +71,6 @@ add_subdirectory( stream )
 
 # build the picolibrary::Stream_Buffer automated tests
 add_subdirectory( stream_buffer )
+
+# build the picolibrary::WIZnet automated tests
+add_subdirectory( wiznet )
