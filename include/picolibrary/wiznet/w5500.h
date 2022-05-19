@@ -186,6 +186,15 @@ enum class Socket_ID : std::uint8_t {
     _7 = Control_Byte::SOCKET_7, ///< 7.
 };
 
+/**
+ * \brief Socket memory block.
+ */
+enum class Socket_Memory_Block : std::uint8_t {
+    REGISTERS = Control_Byte::BLOCK_REGISTERS, ///< Registers.
+    TX_BUFFER = Control_Byte::BLOCK_TX_BUFFER, ///< TX buffer.
+    RX_BUFFER = Control_Byte::BLOCK_RX_BUFFER, ///< RX buffer.
+};
+
 } // namespace picolibrary::WIZnet::W5500
 
 #endif // PICOLIBRARY_WIZNET_W5500_H

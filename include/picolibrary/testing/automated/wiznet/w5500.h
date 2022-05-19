@@ -41,6 +41,18 @@ inline auto random<WIZnet::W5500::Socket_ID>() -> WIZnet::W5500::Socket_ID
     return static_cast<WIZnet::W5500::Socket_ID>( random<std::uint_fast8_t>( 0, 7 ) << 5 );
 }
 
+/**
+ * \brief Generate a pseudo-random picolibrary::WIZnet::W5500::Socket_Memory_Block.
+ *
+ * \return A pseudo-randomly generated picolibrary::WIZnet::W5500::Socket_Memory_Block.
+ */
+template<>
+inline auto random<WIZnet::W5500::Socket_Memory_Block>() -> WIZnet::W5500::Socket_Memory_Block
+{
+    return static_cast<WIZnet::W5500::Socket_Memory_Block>(
+        random<std::uint_fast8_t>( 0b01, 0b11 ) << 3 );
+}
+
 } // namespace picolibrary::Testing::Automated
 
 /**
