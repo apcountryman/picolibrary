@@ -167,6 +167,11 @@ struct Control_Byte {
     };
 };
 
+/**
+ * \brief Sockets.
+ */
+inline constexpr auto SOCKETS = std::uint_fast8_t{ 8 };
+
 } // namespace picolibrary::WIZnet::W5500
 
 #endif // PICOLIBRARY_WIZNET_W5500_H
