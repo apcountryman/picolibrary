@@ -35,7 +35,7 @@ namespace picolibrary::WIZnet::W5500 {
 /**
  * \brief Memory offset.
  */
-using Offset = std::uint16_t;
+using Memory_Offset = std::uint16_t;
 
 /**
  * \brief Control byte.
