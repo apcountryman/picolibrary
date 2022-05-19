@@ -23,6 +23,26 @@
 #ifndef PICOLIBRARY_TESTING_AUTOMATED_WIZNET_W5500_H
 #define PICOLIBRARY_TESTING_AUTOMATED_WIZNET_W5500_H
 
+#include <cstdint>
+
+#include "picolibrary/testing/automated/random.h"
+#include "picolibrary/wiznet/w5500.h"
+
+namespace picolibrary::Testing::Automated {
+
+/**
+ * \brief Generate a pseudo-random picolibrary::WIZnet::W5500::Socket_ID.
+ *
+ * \return A pseudo-randomly generated picolibrary::WIZnet::W5500::Socket_ID.
+ */
+template<>
+inline auto random<WIZnet::W5500::Socket_ID>() -> WIZnet::W5500::Socket_ID
+{
+    return static_cast<WIZnet::W5500::Socket_ID>( random<std::uint_fast8_t>( 0, 7 ) << 5 );
+}
+
+} // namespace picolibrary::Testing::Automated
+
 /**
  * \brief WIZnet W5500 automated testing facilities.
  */
