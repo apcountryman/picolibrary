@@ -160,13 +160,15 @@ namespace picolibrary::Testing::Automated::Microchip::MCP23S08 {
  */
 class Mock_Communication_Controller : public SPI::Mock_Device {
   public:
-    Mock_Communication_Controller() = default;
+    Mock_Communication_Controller() noexcept
+    {
+    }
 
     Mock_Communication_Controller(
         SPI::Mock_Controller &,
         SPI::Mock_Controller::Configuration const &,
         SPI::Mock_Device_Selector::Handle,
-        ::picolibrary::Microchip::MCP23S08::Address_Transmitted )
+        ::picolibrary::Microchip::MCP23S08::Address_Transmitted ) noexcept
     {
     }
 

@@ -286,9 +286,11 @@ class Mock_Device_Selector {
  */
 class Mock_Device {
   public:
-    Mock_Device() = default;
+    Mock_Device() noexcept
+    {
+    }
 
-    Mock_Device( Mock_Controller &, Mock_Controller::Configuration const &, Mock_Device_Selector::Handle )
+    Mock_Device( Mock_Controller &, Mock_Controller::Configuration const &, Mock_Device_Selector::Handle ) noexcept
     {
     }
 
