@@ -172,6 +172,20 @@ struct Control_Byte {
  */
 inline constexpr auto SOCKETS = std::uint_fast8_t{ 8 };
 
+/**
+ * \brief Socket ID.
+ */
+enum class Socket_ID : std::uint8_t {
+    _0 = Control_Byte::SOCKET_0, ///< 0.
+    _1 = Control_Byte::SOCKET_1, ///< 1.
+    _2 = Control_Byte::SOCKET_2, ///< 2.
+    _3 = Control_Byte::SOCKET_3, ///< 3.
+    _4 = Control_Byte::SOCKET_4, ///< 4.
+    _5 = Control_Byte::SOCKET_5, ///< 5.
+    _6 = Control_Byte::SOCKET_6, ///< 6.
+    _7 = Control_Byte::SOCKET_7, ///< 7.
+};
+
 } // namespace picolibrary::WIZnet::W5500
 
 #endif // PICOLIBRARY_WIZNET_W5500_H
