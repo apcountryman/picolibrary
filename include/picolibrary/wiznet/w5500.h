@@ -24,8 +24,13 @@
 #define PICOLIBRARY_WIZNET_W5500_H
 
 #include <cstdint>
+#include <limits>
+#include <utility>
 
+#include "picolibrary/array.h"
 #include "picolibrary/bit_manipulation.h"
+#include "picolibrary/spi.h"
+#include "picolibrary/utility.h"
 
 /**
  * \brief WIZnet W5500 facilities.
@@ -193,6 +198,292 @@ enum class Socket_Memory_Block : std::uint8_t {
     REGISTERS = Control_Byte::BLOCK_REGISTERS, ///< Registers.
     TX_BUFFER = Control_Byte::BLOCK_TX_BUFFER, ///< TX buffer.
     RX_BUFFER = Control_Byte::BLOCK_RX_BUFFER, ///< RX buffer.
+};
+
+/**
+ * \brief Communication controller.
+ *
+ * \tparam Controller The type of controller used to communicate with the W5500.
+ * \tparam Device_Selector The type of device selector used to select and deselect the
+ *         W5500.
+ * \tparam Device The type of device implementation used by the communication controller.
+ *         The default device implementation should be used unless a mock device
+ *         implementation is being injected to support automated testing of this
+ *         communication controller.
+ */
+template<typename Controller, typename Device_Selector, typename Device = SPI::Device<Controller, Device_Selector>>
+class Communication_Controller : public Device {
+  public:
+    Communication_Controller( Communication_Controller const & ) = delete;
+
+    auto operator=( Communication_Controller const & ) = delete;
+
+    using Device::initialize;
+
+  protected:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Communication_Controller() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] controller The controller used to communicate with the W5500.
+     * \param[in] configuration The controller clock and data exchange bit order
+     *            configuration that meets the W5500's communication requirements.
+     * \param[in] device_selector The device selector used to select and deselect the
+     *            W5500.
+     */
+    constexpr Communication_Controller(
+        Controller &                               controller,
+        typename Controller::Configuration const & configuration,
+        Device_Selector                            device_selector ) noexcept :
+        Device{ controller, configuration, std::move( device_selector ) }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Communication_Controller( Communication_Controller && source ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Communication_Controller() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator           =( Communication_Controller && expression ) noexcept
+        -> Communication_Controller & = default;
+
+    /**
+     * \brief Read a byte of common register memory.
+     *
+     * \param[in] memory_offset The offset of the memory to read.
+     *
+     * \return The data read from memory.
+     */
+    auto read( Memory_Offset memory_offset ) const noexcept -> std::uint8_t
+    {
+        this->configure();
+
+        auto const guard = SPI::Device_Selection_Guard{ this->device_selector() };
+
+        transmit_frame_header( memory_offset, Operation::READ );
+
+        return this->receive();
+    }
+
+    /**
+     * \brief Read a block of common register memory.
+     *
+     * \param[in] memory_offset The offset of the memory to read.
+     * \param[out] begin The beginning of the data read from the block of memory.
+     * \param[out] end The end of the data read from the block of memory.
+     */
+    void read( Memory_Offset memory_offset, std::uint8_t * begin, std::uint8_t * end ) const noexcept
+    {
+        this->configure();
+
+        auto const guard = SPI::Device_Selection_Guard{ this->device_selector() };
+
+        transmit_frame_header( memory_offset, Operation::READ );
+
+        this->receive( begin, end );
+    }
+
+    /**
+     * \brief Write to a byte of common register memory.
+     *
+     * \param[in] memory_offset The offset of the memory to write to.
+     * \param[in] data The data to write to memory.
+     */
+    void write( Memory_Offset memory_offset, std::uint8_t data ) noexcept
+    {
+        this->configure();
+
+        auto const guard = SPI::Device_Selection_Guard{ this->device_selector() };
+
+        transmit_frame_header( memory_offset, Operation::WRITE );
+
+        this->transmit( data );
+    }
+
+    /**
+     * \brief Write to a block of common register memory.
+     *
+     * \param[in] memory_offset The offset of the memory to write to.
+     * \param[in] begin The beginning of the block of data to write to the block of
+     *            memory.
+     * \param[in] end The end of the block of data to write to the block of memory.
+     */
+    void write( Memory_Offset memory_offset, std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+    {
+        this->configure();
+
+        auto const guard = SPI::Device_Selection_Guard{ this->device_selector() };
+
+        transmit_frame_header( memory_offset, Operation::WRITE );
+
+        this->transmit( begin, end );
+    }
+
+    /**
+     * \brief Read a byte of socket register/buffer memory.
+     *
+     * \param[in] socket_id The ID of the socket whose memory will be read from.
+     * \param[in] socket_memory_block The socket memory block to read from.
+     * \param[in] memory_offset The offset of the memory to read.
+     *
+     * \return The data read from memory.
+     */
+    auto read( Socket_ID socket_id, Socket_Memory_Block socket_memory_block, Memory_Offset memory_offset ) const noexcept
+        -> std::uint8_t
+    {
+        this->configure();
+
+        auto const guard = SPI::Device_Selection_Guard{ this->device_selector() };
+
+        transmit_frame_header( socket_id, socket_memory_block, memory_offset, Operation::READ );
+
+        return this->receive();
+    }
+
+    /**
+     * \brief Read a block of socket register/buffer memory.
+     *
+     * \param[in] socket_id The ID of the socket whose memory will be read from.
+     * \param[in] socket_memory_block The socket memory block to read from.
+     * \param[in] memory_offset The offset of the memory to read.
+     * \param[out] begin The beginning of the data read from the block of memory.
+     * \param[out] end The end of the data read from the block of memory.
+     */
+    void read(
+        Socket_ID           socket_id,
+        Socket_Memory_Block socket_memory_block,
+        Memory_Offset       memory_offset,
+        std::uint8_t *      begin,
+        std::uint8_t *      end ) const noexcept
+    {
+        this->configure();
+
+        auto const guard = SPI::Device_Selection_Guard{ this->device_selector() };
+
+        transmit_frame_header( socket_id, socket_memory_block, memory_offset, Operation::READ );
+
+        this->receive( begin, end );
+    }
+
+    /**
+     * \brief Write to a byte of socket register/buffer memory.
+     *
+     * \param[in] socket_id The ID of the socket whose memory will be written to.
+     * \param[in] socket_memory_block The socket memory block to write to.
+     * \param[in] memory_offset The offset of the memory to write to.
+     * \param[in] data The data to write to memory.
+     */
+    void write( Socket_ID socket_id, Socket_Memory_Block socket_memory_block, Memory_Offset memory_offset, std::uint8_t data ) noexcept
+    {
+        this->configure();
+
+        auto const guard = SPI::Device_Selection_Guard{ this->device_selector() };
+
+        transmit_frame_header( socket_id, socket_memory_block, memory_offset, Operation::WRITE );
+
+        this->transmit( data );
+    }
+
+    /**
+     * \brief Write to a block of socket register/buffer memory.
+     *
+     * \param[in] socket_id The ID of the socket whose memory will be written to.
+     * \param[in] socket_memory_block The socket memory block to write to.
+     * \param[in] memory_offset The offset of the memory to write to.
+     * \param[in] begin The beginning of the block of data to write to the block of
+     *            memory.
+     * \param[in] end The end of the block of data to write to the block of memory.
+     */
+    void write(
+        Socket_ID            socket_id,
+        Socket_Memory_Block  socket_memory_block,
+        Memory_Offset        memory_offset,
+        std::uint8_t const * begin,
+        std::uint8_t const * end ) noexcept
+    {
+        this->configure();
+
+        auto const guard = SPI::Device_Selection_Guard{ this->device_selector() };
+
+        transmit_frame_header( socket_id, socket_memory_block, memory_offset, Operation::WRITE );
+
+        this->transmit( begin, end );
+    }
+
+  private:
+    /**
+     * \brief Operation.
+     */
+    enum class Operation : std::uint8_t {
+        READ  = Control_Byte::RWB_READ,  ///< Read.
+        WRITE = Control_Byte::RWB_WRITE, ///< Write.
+    };
+
+    /**
+     * \brief Communication frame header.
+     */
+    using Frame_Header = Array<std::uint8_t, 3>;
+
+    /**
+     * \brief Transmit a common register memory communication frame header.
+     *
+     * \param[in] memory_offset The offset of the memory to access.
+     * \param[in] operation The operation that will be performed.
+     */
+    void transmit_frame_header( Memory_Offset memory_offset, Operation operation ) const noexcept
+    {
+        auto const frame_header = Frame_Header{
+            static_cast<std::uint8_t>( memory_offset >> std::numeric_limits<std::uint8_t>::digits ),
+            static_cast<std::uint8_t>( memory_offset ),
+            static_cast<std::uint8_t>(
+                Control_Byte::BSB_COMMON_REGISTERS | to_underlying( operation ) | Control_Byte::OM_VDM ),
+        };
+
+        this->transmit( frame_header.begin(), frame_header.end() );
+    }
+
+    /**
+     * \brief Transmit a socket register/buffer memory communication frame header.
+     *
+     * \param[in] socket_id The ID of the socket whose memory will be accessed.
+     * \param[in] socket_memory_block The socket memory block to access.
+     * \param[in] memory_offset The offset of the memory to access.
+     * \param[in] operation The operation that will be performed.
+     */
+    void transmit_frame_header(
+        Socket_ID           socket_id,
+        Socket_Memory_Block socket_memory_block,
+        Memory_Offset       memory_offset,
+        Operation           operation ) const noexcept
+    {
+        auto const frame_header = Frame_Header{
+            static_cast<std::uint8_t>( memory_offset >> std::numeric_limits<std::uint8_t>::digits ),
+            static_cast<std::uint8_t>( memory_offset ),
+            static_cast<std::uint8_t>(
+                to_underlying( socket_id ) | to_underlying( socket_memory_block )
+                | to_underlying( operation ) | Control_Byte::OM_VDM ),
+        };
+
+        this->transmit( frame_header.begin(), frame_header.end() );
+    }
 };
 
 } // namespace picolibrary::WIZnet::W5500
