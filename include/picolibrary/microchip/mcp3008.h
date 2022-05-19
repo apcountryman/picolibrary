@@ -82,7 +82,7 @@ class Driver : public Device {
     /**
      * \brief Constructor.
      */
-    constexpr Driver() = default;
+    constexpr Driver() noexcept = default;
 
     /**
      * \brief Constructor.

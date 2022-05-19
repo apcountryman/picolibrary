@@ -50,7 +50,7 @@ class Communication_Controller :
         Mock_Controller &                      controller,
         Mock_Controller::Configuration const & configuration,
         Mock_Device_Selector::Handle           device_selector,
-        Address_Transmitted                    address ) :
+        Address_Transmitted                    address ) noexcept :
         ::picolibrary::Microchip::MCP23S08::Communication_Controller<Mock_Controller, Mock_Device_Selector::Handle, Mock_Device>{
             controller,
             configuration,

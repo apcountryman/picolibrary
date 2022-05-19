@@ -354,9 +354,11 @@ class Mock_Controller : public Mock_Basic_Controller {
  */
 class Mock_Device {
   public:
-    Mock_Device() = default;
+    Mock_Device() noexcept
+    {
+    }
 
-    Mock_Device( std::function<void()>, Mock_Controller &, ::picolibrary::I2C::Address_Transmitted, Error_Code const & )
+    Mock_Device( std::function<void()>, Mock_Controller &, ::picolibrary::I2C::Address_Transmitted, Error_Code const & ) noexcept
     {
     }
 

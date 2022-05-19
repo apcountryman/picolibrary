@@ -547,7 +547,7 @@ class Communication_Controller : public Device {
     /**
      * \brief Constructor.
      */
-    constexpr Communication_Controller() = default;
+    constexpr Communication_Controller() noexcept = default;
 
     /**
      * \brief Constructor.
@@ -658,7 +658,7 @@ class Driver : public Communication_Controller {
     /**
      * \brief Constructor.
      */
-    constexpr Driver() = default;
+    constexpr Driver() noexcept = default;
 
     /**
      * \brief Constructor.
