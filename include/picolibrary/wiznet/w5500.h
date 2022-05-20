@@ -445,7 +445,7 @@ class Communication_Controller : public Device {
     /**
      * \brief Transmit a common register memory communication frame header.
      *
-     * \param[in] memory_offset The offset of the memory to access.
+     * \param[in] memory_offset The offset of the memory that will be accessed.
      * \param[in] operation The operation that will be performed.
      */
     void transmit_frame_header( Memory_Offset memory_offset, Operation operation ) const noexcept
@@ -464,8 +464,8 @@ class Communication_Controller : public Device {
      * \brief Transmit a socket register/buffer memory communication frame header.
      *
      * \param[in] socket_id The ID of the socket whose memory will be accessed.
-     * \param[in] socket_memory_block The socket memory block to access.
-     * \param[in] memory_offset The offset of the memory to access.
+     * \param[in] socket_memory_block The socket memory block that will be accessed.
+     * \param[in] memory_offset The offset of the memory that will be accessed.
      * \param[in] operation The operation that will be performed.
      */
     void transmit_frame_header(
