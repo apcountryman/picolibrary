@@ -13,7 +13,22 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary::WIZnet::W5500 automated tests CMake rules.
+# Description: picolibrary::WIZnet::W5500::Communication_Controller automated tests CMake
+#       rules.
 
 # build the picolibrary::WIZnet::W5500::Communication_Controller automated tests
-add_subdirectory( communication_controller )
+if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
+    add_executable(
+        test-automated-picolibrary-wiznet-w5500-communication_controller
+        main.cc
+    )
+    target_link_libraries(
+        test-automated-picolibrary-wiznet-w5500-communication_controller
+        picolibrary
+        picolibrary-testing-automated-fatal_error
+    )
+    add_test(
+        NAME    test-automated-picolibrary-wiznet-w5500-communication_controller
+        COMMAND test-automated-picolibrary-wiznet-w5500-communication_controller --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
