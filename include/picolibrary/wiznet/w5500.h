@@ -1079,7 +1079,7 @@ struct VERSIONR {
  * - TCP No Delayed ACK Enable (ND) / UDP Multicast IGMP Version (MC) / MACRAW Multicast
  *   Blocking Enable (MMB)
  * - UDP/MACRAW Broadcast Blocking Enable (BCASTB)
- * - UDP Multicasting Enable (MULTI) / MACRAW MAC FILTER ENABLE (MFEN)
+ * - UDP Multicasting Enable (MULTI) / MACRAW MAC Filter Enable (MFEN)
  */
 struct SN_MR {
     /**
@@ -1101,7 +1101,7 @@ struct SN_MR {
      * \brief Field sizes.
      */
     struct Size {
-        static constexpr auto P      = std::uint_fast8_t{ 1 }; ///< P.
+        static constexpr auto P      = std::uint_fast8_t{ 4 }; ///< P.
         static constexpr auto UCASTB = std::uint_fast8_t{ 1 }; ///< UCASTB.
         static constexpr auto ND     = std::uint_fast8_t{ 1 }; ///< ND.
         static constexpr auto BCASTB = std::uint_fast8_t{ 1 }; ///< BCASTB.
@@ -1455,12 +1455,12 @@ struct SN_RXBUF_SIZE {
      * \brief Size.
      */
     enum SIZE : Type {
-        SIZE_0KB,  ///< 0 KiB.
-        SIZE_1KB,  ///< 1 KiB.
-        SIZE_2KB,  ///< 2 KiB.
-        SIZE_4KB,  ///< 4 KiB.
-        SIZE_8KB,  ///< 8 KiB.
-        SIZE_16KB, ///< 16 KiB.
+        SIZE_0KB = 0,  ///< 0 KiB.
+        SIZE_1KB = 1,  ///< 1 KiB.
+        SIZE_2KB = 2,  ///< 2 KiB.
+        SIZE_4KB = 4,  ///< 4 KiB.
+        SIZE_8KB = 8,  ///< 8 KiB.
+        SIZE_16KB = 16, ///< 16 KiB.
     };
 };
 
@@ -1487,12 +1487,12 @@ struct SN_TXBUF_SIZE {
      * \brief Size.
      */
     enum SIZE : Type {
-        SIZE_0KB,  ///< 0 KiB.
-        SIZE_1KB,  ///< 1 KiB.
-        SIZE_2KB,  ///< 2 KiB.
-        SIZE_4KB,  ///< 4 KiB.
-        SIZE_8KB,  ///< 8 KiB.
-        SIZE_16KB, ///< 16 KiB.
+        SIZE_0KB = 0,  ///< 0 KiB.
+        SIZE_1KB = 1,  ///< 1 KiB.
+        SIZE_2KB = 2,  ///< 2 KiB.
+        SIZE_4KB = 4,  ///< 4 KiB.
+        SIZE_8KB = 8,  ///< 8 KiB.
+        SIZE_16KB = 16, ///< 16 KiB.
     };
 };
 
@@ -1539,11 +1539,6 @@ struct SN_TX_WR {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = Memory_Offset{ 0x0024 };
-
-    /**
-     * \brief Register reset value.
-     */
-    static constexpr auto RESET = Type{ 0x0000 };
 };
 
 /**
@@ -1574,11 +1569,6 @@ struct SN_RX_RD {
      * \brief Register offset.
      */
     static constexpr auto OFFSET = Memory_Offset{ 0x0028 };
-
-    /**
-     * \brief Register reset value.
-     */
-    static constexpr auto RESET = Type{ 0x0000 };
 };
 
 /**
