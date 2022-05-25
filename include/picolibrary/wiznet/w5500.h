@@ -1455,11 +1455,11 @@ struct SN_RXBUF_SIZE {
      * \brief Size.
      */
     enum SIZE : Type {
-        SIZE_0KB = 0,  ///< 0 KiB.
-        SIZE_1KB = 1,  ///< 1 KiB.
-        SIZE_2KB = 2,  ///< 2 KiB.
-        SIZE_4KB = 4,  ///< 4 KiB.
-        SIZE_8KB = 8,  ///< 8 KiB.
+        SIZE_0KB  = 0,  ///< 0 KiB.
+        SIZE_1KB  = 1,  ///< 1 KiB.
+        SIZE_2KB  = 2,  ///< 2 KiB.
+        SIZE_4KB  = 4,  ///< 4 KiB.
+        SIZE_8KB  = 8,  ///< 8 KiB.
         SIZE_16KB = 16, ///< 16 KiB.
     };
 };
@@ -1487,11 +1487,11 @@ struct SN_TXBUF_SIZE {
      * \brief Size.
      */
     enum SIZE : Type {
-        SIZE_0KB = 0,  ///< 0 KiB.
-        SIZE_1KB = 1,  ///< 1 KiB.
-        SIZE_2KB = 2,  ///< 2 KiB.
-        SIZE_4KB = 4,  ///< 4 KiB.
-        SIZE_8KB = 8,  ///< 8 KiB.
+        SIZE_0KB  = 0,  ///< 0 KiB.
+        SIZE_1KB  = 1,  ///< 1 KiB.
+        SIZE_2KB  = 2,  ///< 2 KiB.
+        SIZE_4KB  = 4,  ///< 4 KiB.
+        SIZE_8KB  = 8,  ///< 8 KiB.
         SIZE_16KB = 16, ///< 16 KiB.
     };
 };
