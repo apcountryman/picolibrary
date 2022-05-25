@@ -503,9 +503,9 @@ struct MR {
     using Type = std::uint8_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0000 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0000 };
 
     /**
      * \brief Register reset value.
@@ -565,9 +565,9 @@ struct GAR {
     using Type = Array<std::uint8_t, 4>;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0001 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0001 };
 
     /**
      * \brief Register reset value.
@@ -585,9 +585,9 @@ struct SUBR {
     using Type = Array<std::uint8_t, 4>;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0005 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0005 };
 
     /**
      * \brief Register reset value.
@@ -605,9 +605,9 @@ struct SHAR {
     using Type = Array<std::uint8_t, 6>;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0009 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0009 };
 
     /**
      * \brief Register reset value.
@@ -625,9 +625,9 @@ struct SIPR {
     using Type = Array<std::uint8_t, 4>;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x000F };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x000F };
 
     /**
      * \brief Register reset value.
@@ -645,9 +645,9 @@ struct INTLEVEL {
     using Type = std::uint16_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0013 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0013 };
 
     /**
      * \brief Register reset value.
@@ -671,9 +671,9 @@ struct IR {
     using Type = std::uint8_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0015 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0015 };
 
     /**
      * \brief Field sizes.
@@ -725,9 +725,9 @@ struct IMR {
     using Type = std::uint8_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0016 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0016 };
 
     /**
      * \brief Register reset value.
@@ -778,9 +778,9 @@ struct SIR {
     using Type = std::uint8_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0017 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0017 };
 };
 
 /**
@@ -793,9 +793,9 @@ struct SIMR {
     using Type = std::uint8_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0018 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0018 };
 
     /**
      * \brief Register reset value.
@@ -813,9 +813,9 @@ struct RTR {
     using Type = std::uint16_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0019 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0019 };
 
     /**
      * \brief Register reset value.
@@ -833,9 +833,9 @@ struct RCR {
     using Type = std::uint8_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x001B };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x001B };
 
     /**
      * \brief Register reset value.
@@ -853,9 +853,9 @@ struct PTIMER {
     using Type = std::uint8_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x001C };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x001C };
 
     /**
      * \brief Register reset value.
@@ -873,9 +873,9 @@ struct PMAGIC {
     using Type = std::uint8_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x001D };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x001D };
 
     /**
      * \brief Register reset value.
@@ -893,9 +893,9 @@ struct PHAR {
     using Type = Array<std::uint8_t, 6>;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x001E };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x001E };
 
     /**
      * \brief Register reset value.
@@ -913,9 +913,9 @@ struct PSID {
     using Type = std::uint16_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0024 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0024 };
 
     /**
      * \brief Register reset value.
@@ -933,9 +933,9 @@ struct PMRU {
     using Type = std::uint16_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0026 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0026 };
 
     /**
      * \brief Register reset value.
@@ -953,9 +953,9 @@ struct UIPR {
     using Type = Array<std::uint8_t, 4>;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0028 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0028 };
 };
 
 /**
@@ -968,9 +968,9 @@ struct UPORTR {
     using Type = std::uint16_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x002C };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x002C };
 };
 
 /**
@@ -991,9 +991,9 @@ struct PHYCFGR {
     using Type = std::uint8_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x002E };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x002E };
 
     /**
      * \brief Register reset value.
@@ -1048,6 +1048,14 @@ struct PHYCFGR {
         OPMDC_POWER_DOWN_MODE = 0b110 << Bit::OPMDC, ///< Power down mode.
         OPMDC_ALL_CAPABLE_AUTO_NEGOTIATION_ENABLED = 0b111 << Bit::OPMDC, ///< All capable, auto-negotiation enabled.
     };
+
+    /**
+     * \brief OPMD.
+     */
+    enum OPMD : Type {
+        OPMD_CONFIGURE_USING_HW_PINS = 0b0 << Bit::OPMD, ///< Configure using HW pins.
+        OPMD_CONFIGURE_USING_OPMDC   = 0b1 << Bit::OPMD, ///< Configure using OPMDC.
+    };
 };
 
 /**
@@ -1060,9 +1068,9 @@ struct VERSIONR {
     using Type = std::uint8_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0039 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0039 };
 
     /**
      * \brief Version.
@@ -1088,9 +1096,9 @@ struct SN_MR {
     using Type = std::uint8_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0000 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0000 };
 
     /**
      * \brief Register reset value.
@@ -1180,9 +1188,9 @@ struct SN_CR {
     using Type = std::uint8_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0001 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0001 };
 
     /**
      * \brief Command.
@@ -1208,7 +1216,7 @@ struct SN_CR {
  * - Peer Disconnected (DISCON)
  * - Data Received (RECV)
  * - Timeout (TIMEOUT)
- * - Send Complete (SEND_OK)
+ * - Send Complete (SENDOK)
  */
 struct SN_IR {
     /**
@@ -1217,9 +1225,9 @@ struct SN_IR {
     using Type = std::uint8_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0002 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0002 };
 
     /**
      * \brief Field sizes.
@@ -1229,7 +1237,7 @@ struct SN_IR {
         static constexpr auto DISCON    = std::uint_fast8_t{ 1 }; ///< DISCON.
         static constexpr auto RECV      = std::uint_fast8_t{ 1 }; ///< RECV.
         static constexpr auto TIMEOUT   = std::uint_fast8_t{ 1 }; ///< TIMEOUT.
-        static constexpr auto SEND_OK   = std::uint_fast8_t{ 1 }; ///< SEND_OK.
+        static constexpr auto SENDOK    = std::uint_fast8_t{ 1 }; ///< SENDOK.
         static constexpr auto RESERVED5 = std::uint_fast8_t{ 3 }; ///< RESERVED5.
     };
 
@@ -1241,8 +1249,8 @@ struct SN_IR {
         static constexpr auto DISCON = std::uint_fast8_t{ CON + Size::CON }; ///< DISCON.
         static constexpr auto RECV = std::uint_fast8_t{ DISCON + Size::DISCON }; ///< RECV.
         static constexpr auto TIMEOUT = std::uint_fast8_t{ RECV + Size::RECV }; ///< TIMEOUT.
-        static constexpr auto SEND_OK = std::uint_fast8_t{ TIMEOUT + Size::TIMEOUT }; ///< SEND_OK.
-        static constexpr auto RESERVED5 = std::uint_fast8_t{ SEND_OK + Size::SEND_OK }; ///< RESERVED5.
+        static constexpr auto SENDOK = std::uint_fast8_t{ TIMEOUT + Size::TIMEOUT }; ///< SENDOK.
+        static constexpr auto RESERVED5 = std::uint_fast8_t{ SENDOK + Size::SENDOK }; ///< RESERVED5.
     };
 
     /**
@@ -1253,7 +1261,7 @@ struct SN_IR {
         static constexpr auto DISCON = mask<Type>( Size::DISCON, Bit::DISCON ); ///< DISCON.
         static constexpr auto RECV   = mask<Type>( Size::RECV, Bit::RECV );     ///< RECV.
         static constexpr auto TIMEOUT = mask<Type>( Size::TIMEOUT, Bit::TIMEOUT ); ///< TIMEOUT.
-        static constexpr auto SEND_OK = mask<Type>( Size::SEND_OK, Bit::SEND_OK ); ///< SEND_OK.
+        static constexpr auto SENDOK = mask<Type>( Size::SENDOK, Bit::SENDOK ); ///< SENDOK.
         static constexpr auto RESERVED5 = mask<Type>( Size::RESERVED5, Bit::RESERVED5 ); ///< RESERVED5.
     };
 };
@@ -1268,9 +1276,9 @@ struct SN_SR {
     using Type = std::uint8_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0003 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0003 };
 
     /**
      * \brief Status.
@@ -1302,9 +1310,9 @@ struct SN_PORT {
     using Type = std::uint16_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0004 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0004 };
 
     /**
      * \brief Register reset value.
@@ -1322,9 +1330,9 @@ struct SN_DHAR {
     using Type = Array<std::uint8_t, 6>;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0006 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0006 };
 
     /**
      * \brief Register reset value.
@@ -1342,9 +1350,9 @@ struct SN_DIPR {
     using Type = Array<std::uint8_t, 4>;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x000C };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x000C };
 
     /**
      * \brief Register reset value.
@@ -1362,9 +1370,9 @@ struct SN_DPORT {
     using Type = std::uint16_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0010 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0010 };
 
     /**
      * \brief Register reset value.
@@ -1382,9 +1390,9 @@ struct SN_MSSR {
     using Type = std::uint16_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0012 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0012 };
 
     /**
      * \brief Register reset value.
@@ -1402,9 +1410,9 @@ struct SN_TOS {
     using Type = std::uint8_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0015 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0015 };
 
     /**
      * \brief Register reset value.
@@ -1422,9 +1430,9 @@ struct SN_TTL {
     using Type = std::uint8_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0016 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0016 };
 
     /**
      * \brief Register reset value.
@@ -1442,9 +1450,9 @@ struct SN_RXBUF_SIZE {
     using Type = std::uint8_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x001E };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x001E };
 
     /**
      * \brief Register reset value.
@@ -1474,9 +1482,9 @@ struct SN_TXBUF_SIZE {
     using Type = std::uint8_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x001F };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x001F };
 
     /**
      * \brief Register reset value.
@@ -1506,9 +1514,9 @@ struct SN_TX_FSR {
     using Type = std::uint16_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0020 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0020 };
 };
 
 /**
@@ -1521,9 +1529,9 @@ struct SN_TX_RD {
     using Type = std::uint16_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0022 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0022 };
 };
 
 /**
@@ -1536,9 +1544,9 @@ struct SN_TX_WR {
     using Type = std::uint16_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0024 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0024 };
 };
 
 /**
@@ -1551,9 +1559,9 @@ struct SN_RX_RSR {
     using Type = std::uint16_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0026 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0026 };
 };
 
 /**
@@ -1566,9 +1574,9 @@ struct SN_RX_RD {
     using Type = std::uint16_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x0028 };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0028 };
 };
 
 /**
@@ -1581,9 +1589,9 @@ struct SN_RX_WR {
     using Type = std::uint16_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x002A };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x002A };
 };
 
 /**
@@ -1594,7 +1602,7 @@ struct SN_RX_WR {
  * - Peer Disconnected (DISCON)
  * - Data Received (RECV)
  * - Timeout (TIMEOUT)
- * - Send Complete (SEND_OK)
+ * - Send Complete (SENDOK)
  */
 struct SN_IMR {
     /**
@@ -1603,9 +1611,9 @@ struct SN_IMR {
     using Type = std::uint8_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x002C };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x002C };
 
     /**
      * \brief Register reset value.
@@ -1620,7 +1628,7 @@ struct SN_IMR {
         static constexpr auto DISCON    = std::uint_fast8_t{ 1 }; ///< DISCON.
         static constexpr auto RECV      = std::uint_fast8_t{ 1 }; ///< RECV.
         static constexpr auto TIMEOUT   = std::uint_fast8_t{ 1 }; ///< TIMEOUT.
-        static constexpr auto SEND_OK   = std::uint_fast8_t{ 1 }; ///< SEND_OK.
+        static constexpr auto SENDOK    = std::uint_fast8_t{ 1 }; ///< SENDOK.
         static constexpr auto RESERVED5 = std::uint_fast8_t{ 3 }; ///< RESERVED5.
     };
 
@@ -1632,8 +1640,8 @@ struct SN_IMR {
         static constexpr auto DISCON = std::uint_fast8_t{ CON + Size::CON }; ///< DISCON.
         static constexpr auto RECV = std::uint_fast8_t{ DISCON + Size::DISCON }; ///< RECV.
         static constexpr auto TIMEOUT = std::uint_fast8_t{ RECV + Size::RECV }; ///< TIMEOUT.
-        static constexpr auto SEND_OK = std::uint_fast8_t{ TIMEOUT + Size::TIMEOUT }; ///< SEND_OK.
-        static constexpr auto RESERVED5 = std::uint_fast8_t{ SEND_OK + Size::SEND_OK }; ///< RESERVED5.
+        static constexpr auto SENDOK = std::uint_fast8_t{ TIMEOUT + Size::TIMEOUT }; ///< SENDOK.
+        static constexpr auto RESERVED5 = std::uint_fast8_t{ SENDOK + Size::SENDOK }; ///< RESERVED5.
     };
 
     /**
@@ -1644,7 +1652,7 @@ struct SN_IMR {
         static constexpr auto DISCON = mask<Type>( Size::DISCON, Bit::DISCON ); ///< DISCON.
         static constexpr auto RECV   = mask<Type>( Size::RECV, Bit::RECV );     ///< RECV.
         static constexpr auto TIMEOUT = mask<Type>( Size::TIMEOUT, Bit::TIMEOUT ); ///< TIMEOUT.
-        static constexpr auto SEND_OK = mask<Type>( Size::SEND_OK, Bit::SEND_OK ); ///< SEND_OK.
+        static constexpr auto SENDOK = mask<Type>( Size::SENDOK, Bit::SENDOK ); ///< SENDOK.
         static constexpr auto RESERVED5 = mask<Type>( Size::RESERVED5, Bit::RESERVED5 ); ///< RESERVED5.
     };
 };
@@ -1659,9 +1667,9 @@ struct SN_FRAG {
     using Type = std::uint16_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x002D };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x002D };
 
     /**
      * \brief Register reset value.
@@ -1679,9 +1687,9 @@ struct SN_KPALVTR {
     using Type = std::uint8_t;
 
     /**
-     * \brief Register offset.
+     * \brief Register memory offset.
      */
-    static constexpr auto OFFSET = Memory_Offset{ 0x002F };
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x002F };
 
     /**
      * \brief Register reset value.
