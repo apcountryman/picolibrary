@@ -486,6 +486,1217 @@ class Communication_Controller : public Device {
     }
 };
 
+/**
+ * \brief Mode Register (MR) register.
+ *
+ * This register has the following fields:
+ * - Force ARP Request Enable (FARP)
+ * - PPPoE Enable (PPPOE)
+ * - Ping Block Enable (PB)
+ * - WoL Enable (WOL)
+ * - Reset (RST)
+ */
+struct MR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0000 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00 };
+
+    /**
+     * \brief Field sizes.
+     */
+    struct Size {
+        static constexpr auto RESERVED0 = std::uint_fast8_t{ 1 }; ///< RESERVED0.
+        static constexpr auto FARP      = std::uint_fast8_t{ 1 }; ///< FARP.
+        static constexpr auto RESERVED2 = std::uint_fast8_t{ 1 }; ///< RESERVED2.
+        static constexpr auto PPPOE     = std::uint_fast8_t{ 1 }; ///< PPPOE.
+        static constexpr auto PB        = std::uint_fast8_t{ 1 }; ///< PB.
+        static constexpr auto WOL       = std::uint_fast8_t{ 1 }; ///< WOL.
+        static constexpr auto RESERVED6 = std::uint_fast8_t{ 1 }; ///< RESERVED6.
+        static constexpr auto RST       = std::uint_fast8_t{ 1 }; ///< RST.
+    };
+
+    /**
+     * \brief Field bit positions.
+     */
+    struct Bit {
+        static constexpr auto RESERVED0 = std::uint_fast8_t{}; ///< RESERVED0.
+        static constexpr auto FARP = std::uint_fast8_t{ RESERVED0 + Size::RESERVED0 }; ///< FARP.
+        static constexpr auto RESERVED2 = std::uint_fast8_t{ FARP + Size::FARP }; ///< RESERVED2.
+        static constexpr auto PPPOE = std::uint_fast8_t{ RESERVED2 + Size::RESERVED2 }; ///< PPPOE.
+        static constexpr auto PB  = std::uint_fast8_t{ PPPOE + Size::PPPOE }; ///< PB.
+        static constexpr auto WOL = std::uint_fast8_t{ PB + Size::PB };       ///< WOL.
+        static constexpr auto RESERVED6 = std::uint_fast8_t{ WOL + Size::WOL }; ///< RESERVED6.
+        static constexpr auto RST = std::uint_fast8_t{ RESERVED6 + Size::RESERVED6 }; ///< RST.
+    };
+
+    /**
+     * \brief Field bit masks.
+     */
+    struct Mask {
+        static constexpr auto RESERVED0 = mask<Type>( Size::RESERVED0, Bit::RESERVED0 ); ///< RESERVED0.
+        static constexpr auto FARP = mask<Type>( Size::FARP, Bit::FARP ); ///< FARP.
+        static constexpr auto RESERVED2 = mask<Type>( Size::RESERVED2, Bit::RESERVED2 ); ///< RESERVED2.
+        static constexpr auto PPPOE = mask<Type>( Size::PPPOE, Bit::PPPOE ); ///< PPPOE.
+        static constexpr auto PB    = mask<Type>( Size::PB, Bit::PB );       ///< PB.
+        static constexpr auto WOL   = mask<Type>( Size::WOL, Bit::WOL );     ///< WOL.
+        static constexpr auto RESERVED6 = mask<Type>( Size::RESERVED6, Bit::RESERVED6 ); ///< RESERVED6.
+        static constexpr auto RST = mask<Type>( Size::RST, Bit::RST ); ///< RST.
+    };
+};
+
+/**
+ * \brief Gateway IP Address Register (GAR) register.
+ */
+struct GAR {
+    /**
+     * \brief Register type.
+     */
+    using Type = Array<std::uint8_t, 4>;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0001 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00, 0x00, 0x00, 0x00 };
+};
+
+/**
+ * \brief Subnet Mask Register (SUBR) register.
+ */
+struct SUBR {
+    /**
+     * \brief Register type.
+     */
+    using Type = Array<std::uint8_t, 4>;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0005 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00, 0x00, 0x00, 0x00 };
+};
+
+/**
+ * \brief Source Hardware Address Register (SHAR) register.
+ */
+struct SHAR {
+    /**
+     * \brief Register type.
+     */
+    using Type = Array<std::uint8_t, 6>;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0009 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+};
+
+/**
+ * \brief Source IP Address Register (SIPR) register.
+ */
+struct SIPR {
+    /**
+     * \brief Register type.
+     */
+    using Type = Array<std::uint8_t, 4>;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x000F };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00, 0x00, 0x00, 0x00 };
+};
+
+/**
+ * \brief Interrupt Low Level Timer Register (INTLEVEL) register.
+ */
+struct INTLEVEL {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0013 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x0000 };
+};
+
+/**
+ * \brief Interrupt Register (IR) register.
+ *
+ * This register has the following fields:
+ * - WoL UDP Magic Packet Received (MP)
+ * - PPPoE Connection Closed (PPPOE)
+ * - Destination Unreachable (UNREACH)
+ * - IP Conflict (CONFLICT)
+ */
+struct IR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0015 };
+
+    /**
+     * \brief Field sizes.
+     */
+    struct Size {
+        static constexpr auto RESERVED0 = std::uint_fast8_t{ 4 }; ///< RESERVED0.
+        static constexpr auto MP        = std::uint_fast8_t{ 1 }; ///< MP.
+        static constexpr auto PPPOE     = std::uint_fast8_t{ 1 }; ///< PPPOE.
+        static constexpr auto UNREACH   = std::uint_fast8_t{ 1 }; ///< UNREACH.
+        static constexpr auto CONFLICT  = std::uint_fast8_t{ 1 }; ///< CONFLICT.
+    };
+
+    /**
+     * \brief Field bit positions.
+     */
+    struct Bit {
+        static constexpr auto RESERVED0 = std::uint_fast8_t{}; ///< RESERVED0.
+        static constexpr auto MP = std::uint_fast8_t{ RESERVED0 + Size::RESERVED0 }; ///< MP.
+        static constexpr auto PPPOE = std::uint_fast8_t{ MP + Size::MP }; ///< PPPOE.
+        static constexpr auto UNREACH = std::uint_fast8_t{ PPPOE + Size::PPPOE }; ///< UNREACH.
+        static constexpr auto CONFLICT = std::uint_fast8_t{ UNREACH + Size::UNREACH }; ///< CONFLICT.
+    };
+
+    /**
+     * \brief Field bit masks.
+     */
+    struct Mask {
+        static constexpr auto RESERVED0 = mask<Type>( Size::RESERVED0, Bit::RESERVED0 ); ///< RESERVED0.
+        static constexpr auto MP    = mask<Type>( Size::MP, Bit::MP );       ///< MP.
+        static constexpr auto PPPOE = mask<Type>( Size::PPPOE, Bit::PPPOE ); ///< PPPOE.
+        static constexpr auto UNREACH = mask<Type>( Size::UNREACH, Bit::UNREACH ); ///< UNREACH.
+        static constexpr auto CONFLICT = mask<Type>( Size::CONFLICT, Bit::CONFLICT ); ///< CONFLICT.
+    };
+};
+
+/**
+ * \brief Interrupt Mask Register (IMR) register.
+ *
+ * This register has the following fields:
+ * - WoL UDP Magic Packet Received (MP)
+ * - PPPoE Connection Closed (PPPOE)
+ * - Destination Unreachable (UNREACH)
+ * - IP Conflict (CONFLICT)
+ */
+struct IMR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0016 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00 };
+
+    /**
+     * \brief Field sizes.
+     */
+    struct Size {
+        static constexpr auto RESERVED0 = std::uint_fast8_t{ 4 }; ///< RESERVED0.
+        static constexpr auto MP        = std::uint_fast8_t{ 1 }; ///< MP.
+        static constexpr auto PPPOE     = std::uint_fast8_t{ 1 }; ///< PPPOE.
+        static constexpr auto UNREACH   = std::uint_fast8_t{ 1 }; ///< UNREACH.
+        static constexpr auto CONFLICT  = std::uint_fast8_t{ 1 }; ///< CONFLICT.
+    };
+
+    /**
+     * \brief Field bit positions.
+     */
+    struct Bit {
+        static constexpr auto RESERVED0 = std::uint_fast8_t{}; ///< RESERVED0.
+        static constexpr auto MP = std::uint_fast8_t{ RESERVED0 + Size::RESERVED0 }; ///< MP.
+        static constexpr auto PPPOE = std::uint_fast8_t{ MP + Size::MP }; ///< PPPOE.
+        static constexpr auto UNREACH = std::uint_fast8_t{ PPPOE + Size::PPPOE }; ///< UNREACH.
+        static constexpr auto CONFLICT = std::uint_fast8_t{ UNREACH + Size::UNREACH }; ///< CONFLICT.
+    };
+
+    /**
+     * \brief Field bit masks.
+     */
+    struct Mask {
+        static constexpr auto RESERVED0 = mask<Type>( Size::RESERVED0, Bit::RESERVED0 ); ///< RESERVED0.
+        static constexpr auto MP    = mask<Type>( Size::MP, Bit::MP );       ///< MP.
+        static constexpr auto PPPOE = mask<Type>( Size::PPPOE, Bit::PPPOE ); ///< PPPOE.
+        static constexpr auto UNREACH = mask<Type>( Size::UNREACH, Bit::UNREACH ); ///< UNREACH.
+        static constexpr auto CONFLICT = mask<Type>( Size::CONFLICT, Bit::CONFLICT ); ///< CONFLICT.
+    };
+};
+
+/**
+ * \brief Socket Interrupt Register (SIR) register.
+ */
+struct SIR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0017 };
+};
+
+/**
+ * \brief Socket Interrupt Mask Register (SIMR) register.
+ */
+struct SIMR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0018 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00 };
+};
+
+/**
+ * \brief Retry Time Value Register (RTR) register.
+ */
+struct RTR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0019 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x07D0 };
+};
+
+/**
+ * \brief Retry Count Register (RCR) register.
+ */
+struct RCR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x001B };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x08 };
+};
+
+/**
+ * \brief PPPoE LCP Request Timer Register (PTIMER) register.
+ */
+struct PTIMER {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x001C };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x28 };
+};
+
+/**
+ * \brief PPPoE LCP Magic Number Register (PMAGIC) register.
+ */
+struct PMAGIC {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x001D };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00 };
+};
+
+/**
+ * \brief PPPoE Server Hardware Address Register (PHAR) register.
+ */
+struct PHAR {
+    /**
+     * \brief Register type.
+     */
+    using Type = Array<std::uint8_t, 6>;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x001E };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+};
+
+/**
+ * \brief PPPoE Server Session ID Register (PSID) register.
+ */
+struct PSID {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0024 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x0000 };
+};
+
+/**
+ * \brief PPPoE Maximum Receive Unit Register (PMRU) register.
+ */
+struct PMRU {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0026 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0xFFFF };
+};
+
+/**
+ * \brief Unreachable IP Address Register (UIPR) register.
+ */
+struct UIPR {
+    /**
+     * \brief Register type.
+     */
+    using Type = Array<std::uint8_t, 4>;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0028 };
+};
+
+/**
+ * \brief Unreachable Port Register (UPORTR) register.
+ */
+struct UPORTR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x002C };
+};
+
+/**
+ * \brief PHY Configuration Register (PHYCFGR) register.
+ *
+ * This register has the following fields:
+ * - Link Status (LNK)
+ * - Speed Status (SPD)
+ * - Duplex Status (DPX)
+ * - Operating Mode Configuration (OPMDC)
+ * - Configure Operating Mode (OPMD)
+ * - Reset (RST)
+ */
+struct PHYCFGR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x002E };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0b10111000 };
+
+    /**
+     * \brief Field sizes.
+     */
+    struct Size {
+        static constexpr auto LNK   = std::uint_fast8_t{ 1 }; ///< LNK.
+        static constexpr auto SPD   = std::uint_fast8_t{ 1 }; ///< SPD.
+        static constexpr auto DPX   = std::uint_fast8_t{ 1 }; ///< DPX.
+        static constexpr auto OPMDC = std::uint_fast8_t{ 3 }; ///< OPMDC.
+        static constexpr auto OPMD  = std::uint_fast8_t{ 1 }; ///< OPMD.
+        static constexpr auto RST   = std::uint_fast8_t{ 1 }; ///< RST.
+    };
+
+    /**
+     * \brief Field bit positions.
+     */
+    struct Bit {
+        static constexpr auto LNK   = std::uint_fast8_t{};                  ///< LNK.
+        static constexpr auto SPD   = std::uint_fast8_t{ LNK + Size::LNK }; ///< SPD.
+        static constexpr auto DPX   = std::uint_fast8_t{ SPD + Size::SPD }; ///< DPX.
+        static constexpr auto OPMDC = std::uint_fast8_t{ DPX + Size::DPX }; ///< OPMDC.
+        static constexpr auto OPMD  = std::uint_fast8_t{ OPMDC + Size::OPMDC }; ///< OPMD.
+        static constexpr auto RST   = std::uint_fast8_t{ OPMD + Size::OPMD };   ///< RST.
+    };
+
+    /**
+     * \brief Field bit masks.
+     */
+    struct Mask {
+        static constexpr auto LNK   = mask<Type>( Size::LNK, Bit::LNK );     ///< LNK.
+        static constexpr auto SPD   = mask<Type>( Size::SPD, Bit::SPD );     ///< SPD.
+        static constexpr auto DPX   = mask<Type>( Size::DPX, Bit::DPX );     ///< DPX.
+        static constexpr auto OPMDC = mask<Type>( Size::OPMDC, Bit::OPMDC ); ///< OPMDC.
+        static constexpr auto OPMD  = mask<Type>( Size::OPMD, Bit::OPMD );   ///< OPMD.
+        static constexpr auto RST   = mask<Type>( Size::RST, Bit::RST );     ///< RST.
+    };
+
+    /**
+     * \brief OPMDC.
+     */
+    enum OPMDC : Type {
+        OPMDC_10BT_HALF_DUPLEX_AUTO_NEGOTIATION_DISABLED  = 0b000 << Bit::OPMDC, ///< 10BT half-duplex, auto-negotiation disabled.
+        OPMDC_10BT_FULL_DUPLEX_AUTO_NEGOTIATION_DISABLED  = 0b001 << Bit::OPMDC, ///< 10BT full-duplex, auto-negotiation disabled.
+        OPMDC_100BT_HALF_DUPLEX_AUTO_NEGOTIATION_DISABLED = 0b010 << Bit::OPMDC, ///< 100BT half-duplex, auto-negotiation disabled.
+        OPMDC_100BT_FULL_DUPLEX_AUTO_NEGOTIATION_DISABLED = 0b011 << Bit::OPMDC, ///< 100BT full-duplex, auto-negotiation disabled.
+        OPMDC_100BT_HALF_DUPLEX_AUTO_NEGOTIATION_ENABLED  = 0b100 << Bit::OPMDC, ///< 100BT half-duplex, auto-negotiation enabled.
+        OPMDC_POWER_DOWN_MODE = 0b110 << Bit::OPMDC, ///< Power down mode.
+        OPMDC_ALL_CAPABLE_AUTO_NEGOTIATION_ENABLED = 0b111 << Bit::OPMDC, ///< All capable, auto-negotiation enabled.
+    };
+
+    /**
+     * \brief OPMD.
+     */
+    enum OPMD : Type {
+        OPMD_CONFIGURE_USING_HW_PINS = 0b0 << Bit::OPMD, ///< Configure using HW pins.
+        OPMD_CONFIGURE_USING_OPMDC   = 0b1 << Bit::OPMD, ///< Configure using OPMDC.
+    };
+};
+
+/**
+ * \brief Chip Version Register (VERSIONR) register.
+ */
+struct VERSIONR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0039 };
+
+    /**
+     * \brief Version.
+     */
+    static constexpr auto VERSION = Type{ 0x04 };
+};
+
+/**
+ * \brief Socket N Mode Register (SN_MR) register.
+ *
+ * This register has the following fields:
+ * - Protocol (P)
+ * - UDP Unicast Blocking Enable (UCASTB) / MACRAW IPv6 Packet Blocking Enable (MIP6B)
+ * - TCP No Delayed ACK Enable (ND) / UDP Multicast IGMP Version (MC) / MACRAW Multicast
+ *   Blocking Enable (MMB)
+ * - UDP/MACRAW Broadcast Blocking Enable (BCASTB)
+ * - UDP Multicasting Enable (MULTI) / MACRAW MAC Filter Enable (MFEN)
+ */
+struct SN_MR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0000 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00 };
+
+    /**
+     * \brief Field sizes.
+     */
+    struct Size {
+        static constexpr auto P      = std::uint_fast8_t{ 4 }; ///< P.
+        static constexpr auto UCASTB = std::uint_fast8_t{ 1 }; ///< UCASTB.
+        static constexpr auto ND     = std::uint_fast8_t{ 1 }; ///< ND.
+        static constexpr auto BCASTB = std::uint_fast8_t{ 1 }; ///< BCASTB.
+        static constexpr auto MULTI  = std::uint_fast8_t{ 1 }; ///< MULTI.
+
+        static constexpr auto MIP6B = UCASTB; ///< MIP6B.
+
+        static constexpr auto MC  = ND; ///< MC.
+        static constexpr auto MMB = ND; ///< MMB.
+
+        static constexpr auto MFEN = MULTI; ///< MFEN;
+    };
+
+    /**
+     * \brief Field bit positions.
+     */
+    struct Bit {
+        static constexpr auto P      = std::uint_fast8_t{};              ///< P.
+        static constexpr auto UCASTB = std::uint_fast8_t{ P + Size::P }; ///< UCASTB.
+        static constexpr auto ND = std::uint_fast8_t{ UCASTB + Size::UCASTB }; ///< ND.
+        static constexpr auto BCASTB = std::uint_fast8_t{ ND + Size::ND }; ///< BCASTB.
+        static constexpr auto MULTI = std::uint_fast8_t{ BCASTB + Size::BCASTB }; ///< MULTI.
+
+        static constexpr auto MIP6B = UCASTB; ///< MIP6B.
+
+        static constexpr auto MC  = ND; ///< MC.
+        static constexpr auto MMB = ND; ///< MMB.
+
+        static constexpr auto MFEN = MULTI; ///< MFEN;
+    };
+
+    /**
+     * \brief Field bit masks.
+     */
+    struct Mask {
+        static constexpr auto P      = mask<Type>( Size::P, Bit::P );           ///< P.
+        static constexpr auto UCASTB = mask<Type>( Size::UCASTB, Bit::UCASTB ); ///< UCASTB.
+        static constexpr auto ND     = mask<Type>( Size::ND, Bit::ND );         ///< ND.
+        static constexpr auto BCASTB = mask<Type>( Size::BCASTB, Bit::BCASTB ); ///< BCASTB.
+        static constexpr auto MULTI = mask<Type>( Size::MULTI, Bit::MULTI ); ///< MULTI.
+
+        static constexpr auto MIP6B = UCASTB; ///< MIP6B.
+
+        static constexpr auto MC  = ND; ///< MC.
+        static constexpr auto MMB = ND; ///< MMB.
+
+        static constexpr auto MFEN = MULTI; ///< MFEN;
+    };
+
+    /**
+     * \brief P.
+     */
+    enum P : Type {
+        P_CLOSED = 0b0000 << Bit::P, ///< Closed.
+        P_TCP    = 0b0001 << Bit::P, ///< TCP.
+        P_UDP    = 0b0010 << Bit::P, ///< UDP.
+        P_MACRAW = 0b0100 << Bit::P, ///< MACRAW.
+    };
+
+    /**
+     * \brief MC.
+     */
+    enum MC : Type {
+        MC_IGMP_VERSION_2 = 0 << Bit::MC, ///< IGMP version 2.
+        MC_IGMP_VERSION_1 = 1 << Bit::MC, ///< IGMP version 1.
+    };
+};
+
+/**
+ * \brief Socket N Command Register (SN_CR) register.
+ */
+struct SN_CR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0001 };
+
+    /**
+     * \brief Command.
+     */
+    enum COMMAND : Type {
+        COMMAND_OPEN      = 0x01, ///< Open.
+        COMMADN_LISTEN    = 0x02, ///< Listen.
+        COMMAND_CONNECT   = 0x04, ///< Connect.
+        COMMAND_DISCON    = 0x08, ///< Disconnect.
+        COMMAND_CLOSE     = 0x10, ///< Close.
+        COMMAND_SEND      = 0x20, ///< Send.
+        COMMAND_SEND_MAC  = 0x21, ///< Send UDP datagram using a manually configured destination MAC address instead of one obtained by ARP.
+        COMMAND_SEND_KEEP = 0x22, ///< Send TCP keepalive packet.
+        COMMAND_RECV      = 0x40, ///< Receive.
+    };
+};
+
+/**
+ * \brief Socket N Interrupt Register (SN_IR) register.
+ *
+ * This register has the following fields:
+ * - Peer Connected (CON)
+ * - Peer Disconnected (DISCON)
+ * - Data Received (RECV)
+ * - Timeout (TIMEOUT)
+ * - Send Complete (SENDOK)
+ */
+struct SN_IR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0002 };
+
+    /**
+     * \brief Field sizes.
+     */
+    struct Size {
+        static constexpr auto CON       = std::uint_fast8_t{ 1 }; ///< CON.
+        static constexpr auto DISCON    = std::uint_fast8_t{ 1 }; ///< DISCON.
+        static constexpr auto RECV      = std::uint_fast8_t{ 1 }; ///< RECV.
+        static constexpr auto TIMEOUT   = std::uint_fast8_t{ 1 }; ///< TIMEOUT.
+        static constexpr auto SENDOK    = std::uint_fast8_t{ 1 }; ///< SENDOK.
+        static constexpr auto RESERVED5 = std::uint_fast8_t{ 3 }; ///< RESERVED5.
+    };
+
+    /**
+     * \brief Field bit positions.
+     */
+    struct Bit {
+        static constexpr auto CON    = std::uint_fast8_t{};                  ///< CON.
+        static constexpr auto DISCON = std::uint_fast8_t{ CON + Size::CON }; ///< DISCON.
+        static constexpr auto RECV = std::uint_fast8_t{ DISCON + Size::DISCON }; ///< RECV.
+        static constexpr auto TIMEOUT = std::uint_fast8_t{ RECV + Size::RECV }; ///< TIMEOUT.
+        static constexpr auto SENDOK = std::uint_fast8_t{ TIMEOUT + Size::TIMEOUT }; ///< SENDOK.
+        static constexpr auto RESERVED5 = std::uint_fast8_t{ SENDOK + Size::SENDOK }; ///< RESERVED5.
+    };
+
+    /**
+     * \brief Field bit masks.
+     */
+    struct Mask {
+        static constexpr auto CON    = mask<Type>( Size::CON, Bit::CON );       ///< CON.
+        static constexpr auto DISCON = mask<Type>( Size::DISCON, Bit::DISCON ); ///< DISCON.
+        static constexpr auto RECV   = mask<Type>( Size::RECV, Bit::RECV );     ///< RECV.
+        static constexpr auto TIMEOUT = mask<Type>( Size::TIMEOUT, Bit::TIMEOUT ); ///< TIMEOUT.
+        static constexpr auto SENDOK = mask<Type>( Size::SENDOK, Bit::SENDOK ); ///< SENDOK.
+        static constexpr auto RESERVED5 = mask<Type>( Size::RESERVED5, Bit::RESERVED5 ); ///< RESERVED5.
+    };
+};
+
+/**
+ * \brief Socket N Status Register (SN_SR) register.
+ */
+struct SN_SR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0003 };
+
+    /**
+     * \brief Status.
+     */
+    enum STATUS : Type {
+        STATUS_SOCK_CLOSED = 0x00, ///< Closed.
+        STATUS_SOCK_INT    = 0x13, ///< Opened (TCP).
+        STATUS_SOCK_LISTEN = 0x14, ///< Waiting for connection request from remote endpoint.
+        STATUS_SOCK_ESTABLISHED = 0x17, ///< Established.
+        STATUS_SOCK_CLOSE_WAIT = 0x1C, ///< Waiting for connection termination request from local user.
+        STATUS_SOCK_UDP       = 0x22, ///< Opened (UDP).
+        STATUS_SOCK_MACRAW    = 0x42, ///< Opened (MACRAW).
+        STATUS_SOCK_SYNSENT   = 0x15, ///< Connection request sent, waiting for matching connection request.
+        STATUS_SOCK_SYNRECV   = 0x16, ///< Connection request sent and received, waiting for request acknowledgement.
+        STATUS_SOCK_FIN_WAIT  = 0x18, ///< Waiting for connection termination request, or acknowledgement of previously sent termination request, from remote endpoint.
+        STATUS_SOCK_CLOSING   = 0x1A, ///< Waiting for connection termination request acknowledgement from remote endpoint.
+        STATUS_SOCK_TIME_WAIT = 0x1B, ///< Waiting for enough time to pass to be sure the remote endpoint received the connection termination request acknowledgement.
+        STATUS_SOCK_LAST_ACK  = 0x1D, ///< Waiting for connection termination request acknowledgement from remote endpoint.
+    };
+};
+
+/**
+ * \brief Socket N Source Port Register (SN_PORT) register.
+ */
+struct SN_PORT {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0004 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x0000 };
+};
+
+/**
+ * \brief Socket N Destination Hardware Address Register (SN_DHAR) register.
+ */
+struct SN_DHAR {
+    /**
+     * \brief Register type.
+     */
+    using Type = Array<std::uint8_t, 6>;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0006 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+};
+
+/**
+ * \brief Socket N Destination IP Address Register (SN_DIPR) register.
+ */
+struct SN_DIPR {
+    /**
+     * \brief Register type.
+     */
+    using Type = Array<std::uint8_t, 4>;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x000C };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00, 0x00, 0x00, 0x00 };
+};
+
+/**
+ * \brief Socket N Destination Port Register (SN_DPORT) register.
+ */
+struct SN_DPORT {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0010 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x0000 };
+};
+
+/**
+ * \brief Socket N Maximum Segment Size Register (SN_MSSR) register.
+ */
+struct SN_MSSR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0012 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x0000 };
+};
+
+/**
+ * \brief Socket N TOS Register (SN_TOS) register.
+ */
+struct SN_TOS {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0015 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00 };
+};
+
+/**
+ * \brief Socket N TTL Register (SN_TTL) register.
+ */
+struct SN_TTL {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0016 };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x80 };
+};
+
+/**
+ * \brief Socket N RX Buffer Size Register (SN_RXBUF_SIZE) register.
+ */
+struct SN_RXBUF_SIZE {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x001E };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x02 };
+
+    /**
+     * \brief Size.
+     */
+    enum SIZE : Type {
+        SIZE_0KB  = 0,  ///< 0 KiB.
+        SIZE_1KB  = 1,  ///< 1 KiB.
+        SIZE_2KB  = 2,  ///< 2 KiB.
+        SIZE_4KB  = 4,  ///< 4 KiB.
+        SIZE_8KB  = 8,  ///< 8 KiB.
+        SIZE_16KB = 16, ///< 16 KiB.
+    };
+};
+
+/**
+ * \brief Socket N TX Buffer Size Register (SN_TXBUF_SIZE) register.
+ */
+struct SN_TXBUF_SIZE {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x001F };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x02 };
+
+    /**
+     * \brief Size.
+     */
+    enum SIZE : Type {
+        SIZE_0KB  = 0,  ///< 0 KiB.
+        SIZE_1KB  = 1,  ///< 1 KiB.
+        SIZE_2KB  = 2,  ///< 2 KiB.
+        SIZE_4KB  = 4,  ///< 4 KiB.
+        SIZE_8KB  = 8,  ///< 8 KiB.
+        SIZE_16KB = 16, ///< 16 KiB.
+    };
+};
+
+/**
+ * \brief Socket N TX Buffer Free Size Register (SN_TX_FSR) register.
+ */
+struct SN_TX_FSR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0020 };
+};
+
+/**
+ * \brief Socket N TX Buffer Read Pointer Register (SN_TX_RD) register.
+ */
+struct SN_TX_RD {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0022 };
+};
+
+/**
+ * \brief Socket N TX Buffer Write Pointer Register (SN_TX_WR) register.
+ */
+struct SN_TX_WR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0024 };
+};
+
+/**
+ * \brief Socket N RX Buffer Received Size Register (SN_RX_RSR) register.
+ */
+struct SN_RX_RSR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0026 };
+};
+
+/**
+ * \brief Socket N RX Buffer Read Pointer Register (SN_RX_RD) register.
+ */
+struct SN_RX_RD {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x0028 };
+};
+
+/**
+ * \brief Socket N RX Buffer Write Pointer Register (SN_RX_WR) register.
+ */
+struct SN_RX_WR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x002A };
+};
+
+/**
+ * \brief Socket N Interrupt Mask Register (SN_IMR) register.
+ *
+ * This register has the following fields:
+ * - Peer Connected (CON)
+ * - Peer Disconnected (DISCON)
+ * - Data Received (RECV)
+ * - Timeout (TIMEOUT)
+ * - Send Complete (SENDOK)
+ */
+struct SN_IMR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x002C };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0xFF };
+
+    /**
+     * \brief Field sizes.
+     */
+    struct Size {
+        static constexpr auto CON       = std::uint_fast8_t{ 1 }; ///< CON.
+        static constexpr auto DISCON    = std::uint_fast8_t{ 1 }; ///< DISCON.
+        static constexpr auto RECV      = std::uint_fast8_t{ 1 }; ///< RECV.
+        static constexpr auto TIMEOUT   = std::uint_fast8_t{ 1 }; ///< TIMEOUT.
+        static constexpr auto SENDOK    = std::uint_fast8_t{ 1 }; ///< SENDOK.
+        static constexpr auto RESERVED5 = std::uint_fast8_t{ 3 }; ///< RESERVED5.
+    };
+
+    /**
+     * \brief Field bit positions.
+     */
+    struct Bit {
+        static constexpr auto CON    = std::uint_fast8_t{};                  ///< CON.
+        static constexpr auto DISCON = std::uint_fast8_t{ CON + Size::CON }; ///< DISCON.
+        static constexpr auto RECV = std::uint_fast8_t{ DISCON + Size::DISCON }; ///< RECV.
+        static constexpr auto TIMEOUT = std::uint_fast8_t{ RECV + Size::RECV }; ///< TIMEOUT.
+        static constexpr auto SENDOK = std::uint_fast8_t{ TIMEOUT + Size::TIMEOUT }; ///< SENDOK.
+        static constexpr auto RESERVED5 = std::uint_fast8_t{ SENDOK + Size::SENDOK }; ///< RESERVED5.
+    };
+
+    /**
+     * \brief Field bit masks.
+     */
+    struct Mask {
+        static constexpr auto CON    = mask<Type>( Size::CON, Bit::CON );       ///< CON.
+        static constexpr auto DISCON = mask<Type>( Size::DISCON, Bit::DISCON ); ///< DISCON.
+        static constexpr auto RECV   = mask<Type>( Size::RECV, Bit::RECV );     ///< RECV.
+        static constexpr auto TIMEOUT = mask<Type>( Size::TIMEOUT, Bit::TIMEOUT ); ///< TIMEOUT.
+        static constexpr auto SENDOK = mask<Type>( Size::SENDOK, Bit::SENDOK ); ///< SENDOK.
+        static constexpr auto RESERVED5 = mask<Type>( Size::RESERVED5, Bit::RESERVED5 ); ///< RESERVED5.
+    };
+};
+
+/**
+ * \brief Socket N FRAG Register (SN_FRAG) register.
+ */
+struct SN_FRAG {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint16_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x002D };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x4000 };
+};
+
+/**
+ * \brief Socket N Keep Alive Time Register (SN_KPALVTR) register.
+ */
+struct SN_KPALVTR {
+    /**
+     * \brief Register type.
+     */
+    using Type = std::uint8_t;
+
+    /**
+     * \brief Register memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET = Memory_Offset{ 0x002F };
+
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = Type{ 0x00 };
+};
+
 } // namespace picolibrary::WIZnet::W5500
 
 #endif // PICOLIBRARY_WIZNET_W5500_H
