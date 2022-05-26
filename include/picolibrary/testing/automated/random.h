@@ -206,7 +206,7 @@ auto random_array( Value_Generator generate_value ) -> Array<T, N>
 template<typename T, std::size_t N>
 auto random_array() -> Array<T, N>
 {
-    return random_array( []() { return random<T>(); } );
+    return random_array<T, N>( []() { return random<T>(); } );
 }
 
 /**
