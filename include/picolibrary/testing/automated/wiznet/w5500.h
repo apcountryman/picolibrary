@@ -27,6 +27,7 @@
 #include <cstdint>
 #include <vector>
 
+#include "picolibrary/array.h"
 #include "picolibrary/testing/automated/random.h"
 #include "picolibrary/testing/automated/spi.h"
 #include "picolibrary/wiznet/w5500.h"
@@ -167,6 +168,187 @@ class Mock_Communication_Controller : public SPI::Mock_Device {
         std::uint8_t const *                              end )
     {
         write( socket_id, socket_memory_block, memory_offset, std::vector<std::uint8_t>{ begin, end } );
+    }
+};
+
+/**
+ * \brief Mock driver.
+ */
+class Mock_Driver : public Mock_Communication_Controller {
+  public:
+    Mock_Driver() noexcept
+    {
+    }
+
+    Mock_Driver( SPI::Mock_Controller &, SPI::Mock_Controller::Configuration const &, SPI::Mock_Device_Selector::Handle ) noexcept
+    {
+    }
+
+    Mock_Driver( Mock_Driver && ) = delete;
+
+    Mock_Driver( Mock_Driver const & ) = delete;
+
+    ~Mock_Driver() noexcept = default;
+
+    auto operator=( Mock_Driver && ) = delete;
+
+    auto operator=( Mock_Driver const & ) = delete;
+
+    MOCK_METHOD( std::uint8_t, read_mr, (), ( const ) );
+    MOCK_METHOD( void, write_mr, ( std::uint8_t ) );
+
+    MOCK_METHOD( (Array<std::uint8_t, 4>), read_gar, (), ( const ) );
+    MOCK_METHOD( void, write_gar, ( (Array<std::uint8_t, 4> const &)) );
+
+    MOCK_METHOD( (Array<std::uint8_t, 4>), read_subr, (), ( const ) );
+    MOCK_METHOD( void, write_subr, ( (Array<std::uint8_t, 4> const &)) );
+
+    MOCK_METHOD( (Array<std::uint8_t, 6>), read_shar, (), ( const ) );
+    MOCK_METHOD( void, write_shar, ( (Array<std::uint8_t, 6> const &)) );
+
+    MOCK_METHOD( (Array<std::uint8_t, 4>), read_sipr, (), ( const ) );
+    MOCK_METHOD( void, write_sipr, ( (Array<std::uint8_t, 4> const &)) );
+
+    MOCK_METHOD( std::uint16_t, read_intlevel, (), ( const ) );
+    MOCK_METHOD( void, write_intlevel, ( std::uint16_t ) );
+
+    MOCK_METHOD( std::uint8_t, read_ir, (), ( const ) );
+    MOCK_METHOD( void, write_ir, ( std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, read_imr, (), ( const ) );
+    MOCK_METHOD( void, write_imr, ( std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, read_sir, (), ( const ) );
+
+    MOCK_METHOD( std::uint8_t, read_simr, (), ( const ) );
+    MOCK_METHOD( void, write_simr, ( std::uint8_t ) );
+
+    MOCK_METHOD( std::uint16_t, read_rtr, (), ( const ) );
+    MOCK_METHOD( void, write_rtr, ( std::uint16_t ) );
+
+    MOCK_METHOD( std::uint8_t, read_rcr, (), ( const ) );
+    MOCK_METHOD( void, write_rcr, ( std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, read_ptimer, (), ( const ) );
+    MOCK_METHOD( void, write_ptimer, ( std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, read_pmagic, (), ( const ) );
+    MOCK_METHOD( void, write_pmagic, ( std::uint8_t ) );
+
+    MOCK_METHOD( (Array<std::uint8_t, 6>), read_phar, (), ( const ) );
+    MOCK_METHOD( void, write_phar, ( (Array<std::uint8_t, 6> const &)) );
+
+    MOCK_METHOD( std::uint16_t, read_psid, (), ( const ) );
+    MOCK_METHOD( void, write_psid, ( std::uint16_t ) );
+
+    MOCK_METHOD( std::uint16_t, read_pmru, (), ( const ) );
+    MOCK_METHOD( void, write_pmru, ( std::uint16_t ) );
+
+    MOCK_METHOD( (Array<std::uint8_t, 4>), read_uipr, (), ( const ) );
+
+    MOCK_METHOD( std::uint16_t, read_uportr, (), ( const ) );
+
+    MOCK_METHOD( std::uint8_t, read_phycfgr, (), ( const ) );
+    MOCK_METHOD( void, write_phycfgr, ( std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, read_versionr, (), ( const ) );
+
+    MOCK_METHOD( std::uint8_t, read_sn_mr, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
+    MOCK_METHOD( void, write_sn_mr, ( ::picolibrary::WIZnet::W5500::Socket_ID, std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, read_sn_cr, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
+    MOCK_METHOD( void, write_sn_cr, ( ::picolibrary::WIZnet::W5500::Socket_ID, std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, read_sn_ir, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
+    MOCK_METHOD( void, write_sn_ir, ( ::picolibrary::WIZnet::W5500::Socket_ID, std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, read_sn_sr, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
+
+    MOCK_METHOD( std::uint16_t, read_sn_port, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
+    MOCK_METHOD( void, write_sn_port, ( ::picolibrary::WIZnet::W5500::Socket_ID, std::uint16_t ) );
+
+    MOCK_METHOD( (Array<std::uint8_t, 6>), read_sn_dhar, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
+    MOCK_METHOD( void, write_sn_dhar, ( ::picolibrary::WIZnet::W5500::Socket_ID, (Array<std::uint8_t, 6> const &)) );
+
+    MOCK_METHOD( (Array<std::uint8_t, 4>), read_sn_dipr, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
+    MOCK_METHOD( void, write_sn_dipr, ( ::picolibrary::WIZnet::W5500::Socket_ID, (Array<std::uint8_t, 4> const &)) );
+
+    MOCK_METHOD( std::uint16_t, read_sn_dport, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
+    MOCK_METHOD( void, write_sn_dport, ( ::picolibrary::WIZnet::W5500::Socket_ID, std::uint16_t ) );
+
+    MOCK_METHOD( std::uint16_t, read_sn_mssr, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
+    MOCK_METHOD( void, write_sn_mssr, ( ::picolibrary::WIZnet::W5500::Socket_ID, std::uint16_t ) );
+
+    MOCK_METHOD( std::uint8_t, read_sn_tos, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
+    MOCK_METHOD( void, write_sn_tos, ( ::picolibrary::WIZnet::W5500::Socket_ID, std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, read_sn_ttl, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
+    MOCK_METHOD( void, write_sn_ttl, ( ::picolibrary::WIZnet::W5500::Socket_ID, std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, read_sn_rxbuf_size, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
+    MOCK_METHOD( void, write_sn_rxbuf_size, ( ::picolibrary::WIZnet::W5500::Socket_ID, std::uint8_t ) );
+
+    MOCK_METHOD( std::uint8_t, read_sn_txbuf_size, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
+    MOCK_METHOD( void, write_sn_txbuf_size, ( ::picolibrary::WIZnet::W5500::Socket_ID, std::uint8_t ) );
+
+    MOCK_METHOD( std::uint16_t, read_sn_tx_fsr, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
+
+    MOCK_METHOD( std::uint16_t, read_sn_tx_rd, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
+
+    MOCK_METHOD( std::uint16_t, read_sn_tx_wr, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
+    MOCK_METHOD( void, write_sn_tx_wr, ( ::picolibrary::WIZnet::W5500::Socket_ID, std::uint16_t ) );
+
+    MOCK_METHOD( std::uint16_t, read_sn_rx_rsr, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
+
+    MOCK_METHOD( std::uint16_t, read_sn_rx_rd, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
+    MOCK_METHOD( void, write_sn_rx_rd, ( ::picolibrary::WIZnet::W5500::Socket_ID, std::uint16_t ) );
+
+    MOCK_METHOD( std::uint16_t, read_sn_rx_wr, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
+
+    MOCK_METHOD( std::uint8_t, read_sn_imr, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
+    MOCK_METHOD( void, write_sn_imr, ( ::picolibrary::WIZnet::W5500::Socket_ID, std::uint8_t ) );
+
+    MOCK_METHOD( std::uint16_t, read_sn_frag, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
+    MOCK_METHOD( void, write_sn_frag, ( ::picolibrary::WIZnet::W5500::Socket_ID, std::uint16_t ) );
+
+    MOCK_METHOD( std::uint8_t, read_sn_kpalvtr, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
+    MOCK_METHOD( void, write_sn_kpalvtr, ( ::picolibrary::WIZnet::W5500::Socket_ID, std::uint8_t ) );
+
+    MOCK_METHOD(
+        std::vector<std::uint8_t>,
+        read_rx_buffer,
+        (::picolibrary::WIZnet::W5500::Socket_ID,
+         ::picolibrary::WIZnet::W5500::Memory_Offset,
+         std::vector<std::uint8_t>),
+        ( const ) );
+
+    void read_rx_buffer(
+        ::picolibrary::WIZnet::W5500::Socket_ID     socket_id,
+        ::picolibrary::WIZnet::W5500::Memory_Offset memory_offset,
+        std::uint8_t *                              begin,
+        std::uint8_t *                              end ) const
+    {
+        static_cast<void>( end );
+
+        auto const data = read_rx_buffer( socket_id, memory_offset, std::vector<std::uint8_t>{} );
+
+        std::copy( data.begin(), data.end(), begin );
+    }
+
+    MOCK_METHOD(
+        void,
+        write_tx_buffer,
+        (::picolibrary::WIZnet::W5500::Socket_ID,
+         ::picolibrary::WIZnet::W5500::Memory_Offset,
+         std::vector<std::uint8_t>));
+
+    void write_tx_buffer(
+        ::picolibrary::WIZnet::W5500::Socket_ID     socket_id,
+        ::picolibrary::WIZnet::W5500::Memory_Offset memory_offset,
+        std::uint8_t const *                        begin,
+        std::uint8_t const *                        end )
+    {
+        write_tx_buffer( socket_id, memory_offset, std::vector<std::uint8_t>{ begin, end } );
     }
 };
 

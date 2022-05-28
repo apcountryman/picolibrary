@@ -1697,6 +1697,1227 @@ struct SN_KPALVTR {
     static constexpr auto RESET = Type{ 0x00 };
 };
 
+/**
+ * \brief Driver.
+ *
+ * \tparam Controller The type of controller used to communicate with the W5500.
+ * \tparam Device_Selector The type of device selector used to select and deselect the
+ *         W5500.
+ * \tparam Communication_Controller The type of communication controller implementation
+ *         used by the driver. The default communication controller implementation should
+ *         be used unless a mock communication controller implementation is being injected
+ *         to support automated testing of this driver.
+ */
+template<typename Controller, typename Device_Selector, typename Communication_Controller = ::picolibrary::WIZnet::W5500::Communication_Controller<Controller, Device_Selector>>
+class Driver : public Communication_Controller {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Driver() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] controller The controller used to communicate with the W5500.
+     * \param[in] configuration The controller clock and data exchange bit order
+     *            configuration that meets the W5500's communication requirements.
+     * \param[in] device_selector The device selector used to select and deselect the
+     *            W5500.
+     */
+    constexpr Driver( Controller & controller, typename Controller::Configuration const & configuration, Device_Selector device_selector ) noexcept
+        :
+        Communication_Controller{ controller, configuration, std::move( device_selector ) }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Driver( Driver && source ) noexcept = default;
+
+    Driver( Driver const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Driver() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Driver && expression ) noexcept -> Driver & = default;
+
+    auto operator=( Driver const & ) = delete;
+
+    /**
+     * \brief Read the MR register.
+     *
+     * \return The data read from the MR register.
+     */
+    auto read_mr() const noexcept -> MR::Type
+    {
+        return read<MR::Type>( MR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to the MR register.
+     *
+     * \param[in] data The data to write to the MR register.
+     */
+    void write_mr( MR::Type data ) noexcept
+    {
+        write( MR::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read the GAR register.
+     *
+     * \return The data read from the GAR register.
+     */
+    auto read_gar() const noexcept -> GAR::Type
+    {
+        return read<GAR::Type>( GAR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to the GAR register.
+     *
+     * \param[in] data The data to write to the GAR register.
+     */
+    void write_gar( GAR::Type const & data ) noexcept
+    {
+        write( GAR::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read the SUBR register.
+     *
+     * \return The data read from the SUBR register.
+     */
+    auto read_subr() const noexcept -> SUBR::Type
+    {
+        return read<SUBR::Type>( SUBR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to the SUBR register.
+     *
+     * \param[in] data The data to write to the SUBR register.
+     */
+    void write_subr( SUBR::Type const & data ) noexcept
+    {
+        write( SUBR::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read the SHAR register.
+     *
+     * \return The data read from the SHAR register.
+     */
+    auto read_shar() const noexcept -> SHAR::Type
+    {
+        return read<SHAR::Type>( SHAR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to the SHAR register.
+     *
+     * \param[in] data The data to write to the SHAR register.
+     */
+    void write_shar( SHAR::Type const & data ) noexcept
+    {
+        write( SHAR::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read the SIPR register.
+     *
+     * \return The data read from the SIPR register.
+     */
+    auto read_sipr() const noexcept -> SIPR::Type
+    {
+        return read<SIPR::Type>( SIPR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to the SIPR register.
+     *
+     * \param[in] data The data to write to the SIPR register.
+     */
+    void write_sipr( SIPR::Type const & data ) noexcept
+    {
+        write( SIPR::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read the INTLEVEL register.
+     *
+     * \return The data read from the INTLEVEL register.
+     */
+    auto read_intlevel() const noexcept -> INTLEVEL::Type
+    {
+        return read<INTLEVEL::Type>( INTLEVEL::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to the INTLEVEL register.
+     *
+     * \param[in] data The data to write to the INTLEVEL register.
+     */
+    void write_intlevel( INTLEVEL::Type data ) noexcept
+    {
+        write( INTLEVEL::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read the IR register.
+     *
+     * \return The data read from the IR register.
+     */
+    auto read_ir() const noexcept -> IR::Type
+    {
+        return read<IR::Type>( IR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to the IR register.
+     *
+     * \param[in] data The data to write to the IR register.
+     */
+    void write_ir( IR::Type data ) noexcept
+    {
+        write( IR::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read the IMR register.
+     *
+     * \return The data read from the IMR register.
+     */
+    auto read_imr() const noexcept -> IMR::Type
+    {
+        return read<IMR::Type>( IMR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to the IMR register.
+     *
+     * \param[in] data The data to write to the IMR register.
+     */
+    void write_imr( IMR::Type data ) noexcept
+    {
+        write( IMR::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read the SIR register.
+     *
+     * \return The data read from the SIR register.
+     */
+    auto read_sir() const noexcept -> SIR::Type
+    {
+        return read<SIR::Type>( SIR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Read the SIMR register.
+     *
+     * \return The data read from the SIMR register.
+     */
+    auto read_simr() const noexcept -> SIMR::Type
+    {
+        return read<SIMR::Type>( SIMR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to the SIMR register.
+     *
+     * \param[in] data The data to write to the SIMR register.
+     */
+    void write_simr( SIMR::Type data ) noexcept
+    {
+        write( SIMR::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read the RTR register.
+     *
+     * \return The data read from the RTR register.
+     */
+    auto read_rtr() const noexcept -> RTR::Type
+    {
+        return read<RTR::Type>( RTR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to the RTR register.
+     *
+     * \param[in] data The data to write to the RTR register.
+     */
+    void write_rtr( RTR::Type data ) noexcept
+    {
+        write( RTR::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read the RCR register.
+     *
+     * \return The data read from the RCR register.
+     */
+    auto read_rcr() const noexcept -> RCR::Type
+    {
+        return read<RCR::Type>( RCR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to the RCR register.
+     *
+     * \param[in] data The data to write to the RCR register.
+     */
+    void write_rcr( RCR::Type data ) noexcept
+    {
+        write( RCR::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read the PTIMER register.
+     *
+     * \return The data read from the PTIMER register.
+     */
+    auto read_ptimer() const noexcept -> PTIMER::Type
+    {
+        return read<PTIMER::Type>( PTIMER::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to the PTIMER register.
+     *
+     * \param[in] data The data to write to the PTIMER register.
+     */
+    void write_ptimer( PTIMER::Type data ) noexcept
+    {
+        write( PTIMER::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read the PMAGIC register.
+     *
+     * \return The data read from the PMAGIC register.
+     */
+    auto read_pmagic() const noexcept -> PMAGIC::Type
+    {
+        return read<PMAGIC::Type>( PMAGIC::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to the PMAGIC register.
+     *
+     * \param[in] data The data to write to the PMAGIC register.
+     */
+    void write_pmagic( PMAGIC::Type data ) noexcept
+    {
+        write( PMAGIC::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read the PHAR register.
+     *
+     * \return The data read from the PHAR register.
+     */
+    auto read_phar() const noexcept -> PHAR::Type
+    {
+        return read<PHAR::Type>( PHAR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to the PHAR register.
+     *
+     * \param[in] data The data to write to the PHAR register.
+     */
+    void write_phar( PHAR::Type const & data ) noexcept
+    {
+        write( PHAR::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read the PSID register.
+     *
+     * \return The data read from the PSID register.
+     */
+    auto read_psid() const noexcept -> PSID::Type
+    {
+        return read<PSID::Type>( PSID::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to the PSID register.
+     *
+     * \param[in] data The data to write to the PSID register.
+     */
+    void write_psid( PSID::Type data ) noexcept
+    {
+        write( PSID::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read the PMRU register.
+     *
+     * \return The data read from the PMRU register.
+     */
+    auto read_pmru() const noexcept -> PMRU::Type
+    {
+        return read<PMRU::Type>( PMRU::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to the PMRU register.
+     *
+     * \param[in] data The data to write to the PMRU register.
+     */
+    void write_pmru( PMRU::Type data ) noexcept
+    {
+        write( PMRU::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read the UIPR register.
+     *
+     * \return The data read from the UIPR register.
+     */
+    auto read_uipr() const noexcept -> UIPR::Type
+    {
+        return read<UIPR::Type>( UIPR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Read the UPORTR register.
+     *
+     * \return The data read from the UPORTR register.
+     */
+    auto read_uportr() const noexcept -> UPORTR::Type
+    {
+        return read<UPORTR::Type>( UPORTR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Read the PHYCFGR register.
+     *
+     * \return The data read from the PHYCFGR register.
+     */
+    auto read_phycfgr() const noexcept -> PHYCFGR::Type
+    {
+        return read<PHYCFGR::Type>( PHYCFGR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to the PHYCFGR register.
+     *
+     * \param[in] data The data to write to the PHYCFGR register.
+     */
+    void write_phycfgr( PHYCFGR::Type data ) noexcept
+    {
+        write( PHYCFGR::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read the VERSIONR register.
+     *
+     * \return The data read from the VERSIONR register.
+     */
+    auto read_versionr() const noexcept -> VERSIONR::Type
+    {
+        return read<VERSIONR::Type>( VERSIONR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Read a socket's SN_MR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_MR register will be read.
+     *
+     * \return The data read from the socket's SN_MR register.
+     */
+    auto read_sn_mr( Socket_ID socket_id ) const noexcept -> SN_MR::Type
+    {
+        return read<SN_MR::Type>( socket_id, SN_MR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_MR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_MR register will be written to.
+     * \param[in] data The data to write to the socket's SN_MR register.
+     */
+    void write_sn_mr( Socket_ID socket_id, SN_MR::Type data ) noexcept
+    {
+        write( socket_id, SN_MR::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read a socket's SN_CR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_CR register will be read.
+     *
+     * \return The data read from the socket's SN_CR register.
+     */
+    auto read_sn_cr( Socket_ID socket_id ) const noexcept -> SN_CR::Type
+    {
+        return read<SN_CR::Type>( socket_id, SN_CR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_CR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_CR register will be written to.
+     * \param[in] data The data to write to the socket's SN_CR register.
+     */
+    void write_sn_cr( Socket_ID socket_id, SN_CR::Type data ) noexcept
+    {
+        write( socket_id, SN_CR::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read a socket's SN_IR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_IR register will be read.
+     *
+     * \return The data read from the socket's SN_IR register.
+     */
+    auto read_sn_ir( Socket_ID socket_id ) const noexcept -> SN_IR::Type
+    {
+        return read<SN_IR::Type>( socket_id, SN_IR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_IR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_IR register will be written to.
+     * \param[in] data The data to write to the socket's SN_IR register.
+     */
+    void write_sn_ir( Socket_ID socket_id, SN_IR::Type data ) noexcept
+    {
+        write( socket_id, SN_IR::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read a socket's SN_SR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_SR register will be read.
+     *
+     * \return The data read from the socket's SN_SR register.
+     */
+    auto read_sn_sr( Socket_ID socket_id ) const noexcept -> SN_SR::Type
+    {
+        return read<SN_SR::Type>( socket_id, SN_SR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Read a socket's SN_PORT register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_PORT register will be read.
+     *
+     * \return The data read from the socket's SN_PORT register.
+     */
+    auto read_sn_port( Socket_ID socket_id ) const noexcept -> SN_PORT::Type
+    {
+        return read<SN_PORT::Type>( socket_id, SN_PORT::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_PORT register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_PORT register will be written
+     *            to.
+     * \param[in] data The data to write to the socket's SN_PORT register.
+     */
+    void write_sn_port( Socket_ID socket_id, SN_PORT::Type data ) noexcept
+    {
+        write( socket_id, SN_PORT::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read a socket's SN_DHAR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_DHAR register will be read.
+     *
+     * \return The data read from the socket's SN_DHAR register.
+     */
+    auto read_sn_dhar( Socket_ID socket_id ) const noexcept -> SN_DHAR::Type
+    {
+        return read<SN_DHAR::Type>( socket_id, SN_DHAR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_DHAR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_DHAR register will be written
+     *            to.
+     * \param[in] data The data to write to the socket's SN_DHAR register.
+     */
+    void write_sn_dhar( Socket_ID socket_id, SN_DHAR::Type const & data ) noexcept
+    {
+        write( socket_id, SN_DHAR::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read a socket's SN_DIPR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_DIPR register will be read.
+     *
+     * \return The data read from the socket's SN_DIPR register.
+     */
+    auto read_sn_dipr( Socket_ID socket_id ) const noexcept -> SN_DIPR::Type
+    {
+        return read<SN_DIPR::Type>( socket_id, SN_DIPR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_DIPR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_DIPR register will be written
+     *            to.
+     * \param[in] data The data to write to the socket's SN_DIPR register.
+     */
+    void write_sn_dipr( Socket_ID socket_id, SN_DIPR::Type const & data ) noexcept
+    {
+        write( socket_id, SN_DIPR::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read a socket's SN_DPORT register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_DPORT register will be read.
+     *
+     * \return The data read from the socket's SN_DPORT register.
+     */
+    auto read_sn_dport( Socket_ID socket_id ) const noexcept -> SN_DPORT::Type
+    {
+        return read<SN_DPORT::Type>( socket_id, SN_DPORT::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_DPORT register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_DPORT register will be written
+     *            to.
+     * \param[in] data The data to write to the socket's SN_DPORT register.
+     */
+    void write_sn_dport( Socket_ID socket_id, SN_DPORT::Type data ) noexcept
+    {
+        write( socket_id, SN_DPORT::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read a socket's SN_MSSR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_MSSR register will be read.
+     *
+     * \return The data read from the socket's SN_MSSR register.
+     */
+    auto read_sn_mssr( Socket_ID socket_id ) const noexcept -> SN_MSSR::Type
+    {
+        return read<SN_MSSR::Type>( socket_id, SN_MSSR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_MSSR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_MSSR register will be written
+     *            to.
+     * \param[in] data The data to write to the socket's SN_MSSR register.
+     */
+    void write_sn_mssr( Socket_ID socket_id, SN_MSSR::Type data ) noexcept
+    {
+        write( socket_id, SN_MSSR::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read a socket's SN_TOS register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_TOS register will be read.
+     *
+     * \return The data read from the socket's SN_TOS register.
+     */
+    auto read_sn_tos( Socket_ID socket_id ) const noexcept -> SN_TOS::Type
+    {
+        return read<SN_TOS::Type>( socket_id, SN_TOS::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_TOS register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_TOS register will be written to.
+     * \param[in] data The data to write to the socket's SN_TOS register.
+     */
+    void write_sn_tos( Socket_ID socket_id, SN_TOS::Type data ) noexcept
+    {
+        write( socket_id, SN_TOS::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read a socket's SN_TTL register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_TTL register will be read.
+     *
+     * \return The data read from the socket's SN_TTL register.
+     */
+    auto read_sn_ttl( Socket_ID socket_id ) const noexcept -> SN_TTL::Type
+    {
+        return read<SN_TTL::Type>( socket_id, SN_TTL::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_TTL register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_TTL register will be written to.
+     * \param[in] data The data to write to the socket's SN_TTL register.
+     */
+    void write_sn_ttl( Socket_ID socket_id, SN_TTL::Type data ) noexcept
+    {
+        write( socket_id, SN_TTL::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read a socket's SN_RXBUF_SIZE register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_RXBUF_SIZE register will be
+     *            read.
+     *
+     * \return The data read from the socket's SN_RXBUF_SIZE register.
+     */
+    auto read_sn_rxbuf_size( Socket_ID socket_id ) const noexcept -> SN_RXBUF_SIZE::Type
+    {
+        return read<SN_RXBUF_SIZE::Type>( socket_id, SN_RXBUF_SIZE::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_RXBUF_SIZE register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_RXBUF_SIZE register will be
+     *            written to.
+     * \param[in] data The data to write to the socket's SN_RXBUF_SIZE register.
+     */
+    void write_sn_rxbuf_size( Socket_ID socket_id, SN_RXBUF_SIZE::Type data ) noexcept
+    {
+        write( socket_id, SN_RXBUF_SIZE::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read a socket's SN_TXBUF_SIZE register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_TXBUF_SIZE register will be
+     *            read.
+     *
+     * \return The data read from the socket's SN_TXBUF_SIZE register.
+     */
+    auto read_sn_txbuf_size( Socket_ID socket_id ) const noexcept -> SN_TXBUF_SIZE::Type
+    {
+        return read<SN_TXBUF_SIZE::Type>( socket_id, SN_TXBUF_SIZE::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_TXBUF_SIZE register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_TXBUF_SIZE register will be
+     *            written to.
+     * \param[in] data The data to write to the socket's SN_TXBUF_SIZE register.
+     */
+    void write_sn_txbuf_size( Socket_ID socket_id, SN_TXBUF_SIZE::Type data ) noexcept
+    {
+        write( socket_id, SN_TXBUF_SIZE::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read a socket's SN_TX_FSR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_TX_FSR register will be read.
+     *
+     * \return The data read from the socket's SN_TX_FSR register.
+     */
+    auto read_sn_tx_fsr( Socket_ID socket_id ) const noexcept -> SN_TX_FSR::Type
+    {
+        return read<SN_TX_FSR::Type>( socket_id, SN_TX_FSR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Read a socket's SN_TX_RD register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_TX_RD register will be read.
+     *
+     * \return The data read from the socket's SN_TX_RD register.
+     */
+    auto read_sn_tx_rd( Socket_ID socket_id ) const noexcept -> SN_TX_RD::Type
+    {
+        return read<SN_TX_RD::Type>( socket_id, SN_TX_RD::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Read a socket's SN_TX_WR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_TX_WR register will be read.
+     *
+     * \return The data read from the socket's SN_TX_WR register.
+     */
+    auto read_sn_tx_wr( Socket_ID socket_id ) const noexcept -> SN_TX_WR::Type
+    {
+        return read<SN_TX_WR::Type>( socket_id, SN_TX_WR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_TX_WR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_TX_WR register will be written
+     *            to.
+     * \param[in] data The data to write to the socket's SN_TX_WR register.
+     */
+    void write_sn_tx_wr( Socket_ID socket_id, SN_TX_WR::Type data ) noexcept
+    {
+        write( socket_id, SN_TX_WR::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read a socket's SN_RX_RSR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_RX_RSR register will be read.
+     *
+     * \return The data read from the socket's SN_RX_RSR register.
+     */
+    auto read_sn_rx_rsr( Socket_ID socket_id ) const noexcept -> SN_RX_RSR::Type
+    {
+        return read<SN_RX_RSR::Type>( socket_id, SN_RX_RSR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Read a socket's SN_RX_RD register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_RX_RD register will be read.
+     *
+     * \return The data read from the socket's SN_RX_RD register.
+     */
+    auto read_sn_rx_rd( Socket_ID socket_id ) const noexcept -> SN_RX_RD::Type
+    {
+        return read<SN_RX_RD::Type>( socket_id, SN_RX_RD::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_RX_RD register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_RX_RD register will be rditten
+     *            to.
+     * \param[in] data The data to write to the socket's SN_RX_RD register.
+     */
+    void write_sn_rx_rd( Socket_ID socket_id, SN_RX_RD::Type data ) noexcept
+    {
+        write( socket_id, SN_RX_RD::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read a socket's SN_RX_WR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_RX_WR register will be read.
+     *
+     * \return The data read from the socket's SN_RX_WR register.
+     */
+    auto read_sn_rx_wr( Socket_ID socket_id ) const noexcept -> SN_RX_WR::Type
+    {
+        return read<SN_RX_WR::Type>( socket_id, SN_RX_WR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Read a socket's SN_IMR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_IMR register will be read.
+     *
+     * \return The data read from the socket's SN_IMR register.
+     */
+    auto read_sn_imr( Socket_ID socket_id ) const noexcept -> SN_IMR::Type
+    {
+        return read<SN_IMR::Type>( socket_id, SN_IMR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_IMR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_IMR register will be written to.
+     * \param[in] data The data to write to the socket's SN_IMR register.
+     */
+    void write_sn_imr( Socket_ID socket_id, SN_IMR::Type data ) noexcept
+    {
+        write( socket_id, SN_IMR::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read a socket's SN_FRAG register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_FRAG register will be read.
+     *
+     * \return The data read from the socket's SN_FRAG register.
+     */
+    auto read_sn_frag( Socket_ID socket_id ) const noexcept -> SN_FRAG::Type
+    {
+        return read<SN_FRAG::Type>( socket_id, SN_FRAG::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_FRAG register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_FRAG register will be written
+     *            to.
+     * \param[in] data The data to write to the socket's SN_FRAG register.
+     */
+    void write_sn_frag( Socket_ID socket_id, SN_FRAG::Type data ) noexcept
+    {
+        write( socket_id, SN_FRAG::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read a socket's SN_KPALVTR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_KPALVTR register will be read.
+     *
+     * \return The data read from the socket's SN_KPALVTR register.
+     */
+    auto read_sn_kpalvtr( Socket_ID socket_id ) const noexcept -> SN_KPALVTR::Type
+    {
+        return read<SN_KPALVTR::Type>( socket_id, SN_KPALVTR::MEMORY_OFFSET );
+    }
+
+    /**
+     * \brief Write to a socket's SN_KPALVTR register.
+     *
+     * \param[in] socket_id The ID of the socket whose SN_KPALVTR register will be written
+     *            to.
+     * \param[in] data The data to write to the socket's SN_KPALVTR register.
+     */
+    void write_sn_kpalvtr( Socket_ID socket_id, SN_KPALVTR::Type data ) noexcept
+    {
+        write( socket_id, SN_KPALVTR::MEMORY_OFFSET, data );
+    }
+
+    /**
+     * \brief Read data from a socket's receive buffer.
+     *
+     * \param[in] socket_id The ID of the socket whose receive buffer will be read from.
+     * \param[in] memory_offset The offset of the buffer memory to read from.
+     * \param[in] begin The beginning of the data read from the receive buffer.
+     * \param[in] end The end of the data read from the receive buffer.
+     */
+    void read_rx_buffer( Socket_ID socket_id, Memory_Offset memory_offset, std::uint8_t * begin, std::uint8_t * end ) const noexcept
+    {
+        Communication_Controller::read(
+            socket_id, Socket_Memory_Block::RX_BUFFER, memory_offset, begin, end );
+    }
+
+    /**
+     * \brief Write data to a socket's receive buffer.
+     *
+     * \param[in] socket_id The ID of the socket whose transmit buffer will be written to.
+     * \param[in] memory_offset The offset of the buffer memory to write to.
+     * \param[in] begin The beginning of the data to write to the transmit buffer.
+     * \param[in] end The end of the data to write to the transmit buffer.
+     */
+    void write_tx_buffer( Socket_ID socket_id, Memory_Offset memory_offset, std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+    {
+        Communication_Controller::write(
+            socket_id, Socket_Memory_Block::TX_BUFFER, memory_offset, begin, end );
+    }
+
+  private:
+    /**
+     * \brief Read a common register.
+     *
+     * \tparam Type The type of register to read.
+     *
+     * \param[in] memory_offset The offset of the register to read.
+     *
+     * \return The data read from the register.
+     */
+    template<typename Type>
+    auto read( Memory_Offset memory_offset ) const noexcept -> Type
+    {
+        return read( memory_offset, Type{} );
+    }
+
+    /**
+     * \brief Read a common register.
+     *
+     * \param[in] memory_offset The offset of the register to read.
+     *
+     * \return The data read from the register.
+     */
+    auto read( Memory_Offset memory_offset, std::uint8_t ) const noexcept -> std::uint8_t
+    {
+        return Communication_Controller::read( memory_offset );
+    }
+
+    /**
+     * \brief Read a common register.
+     *
+     * \param[in] memory_offset The offset of the register to read.
+     *
+     * \return The data read from the register.
+     */
+    auto read( Memory_Offset memory_offset, std::uint16_t ) const noexcept -> std::uint16_t
+    {
+        Array<std::uint8_t, 2> buffer;
+
+        Communication_Controller::read( memory_offset, buffer.begin(), buffer.end() );
+
+        return static_cast<std::uint16_t>(
+            ( buffer[ 0 ] << std::numeric_limits<std::uint8_t>::digits ) | buffer[ 1 ] );
+    }
+
+    /**
+     * \brief Read a common register.
+     *
+     * \param[in] memory_offset The offset of the register to read.
+     *
+     * \return The data read from the register.
+     */
+    auto read( Memory_Offset memory_offset, Array<std::uint8_t, 4> const & ) const noexcept
+        -> Array<std::uint8_t, 4>
+    {
+        Array<std::uint8_t, 4> buffer;
+
+        Communication_Controller::read( memory_offset, buffer.begin(), buffer.end() );
+
+        return buffer;
+    }
+
+    /**
+     * \brief Read a common register.
+     *
+     * \param[in] memory_offset The offset of the register to read.
+     *
+     * \return The data read from the register.
+     */
+    auto read( Memory_Offset memory_offset, Array<std::uint8_t, 6> const & ) const noexcept
+        -> Array<std::uint8_t, 6>
+    {
+        Array<std::uint8_t, 6> buffer;
+
+        Communication_Controller::read( memory_offset, buffer.begin(), buffer.end() );
+
+        return buffer;
+    }
+
+    /**
+     * \brief Write to a common register.
+     *
+     * \param[in] memory_offset The offset of the register to write to.
+     * \param[in] data The data to write to the register.
+     */
+    void write( Memory_Offset memory_offset, std::uint8_t data ) noexcept
+    {
+        Communication_Controller::write( memory_offset, data );
+    }
+
+    /**
+     * \brief Write to a common register.
+     *
+     * \param[in] memory_offset The offset of the register to write to.
+     * \param[in] data The data to write to the register.
+     */
+    void write( Memory_Offset memory_offset, std::uint16_t data ) noexcept
+    {
+        auto const buffer = Array<std::uint8_t, 2>{
+            static_cast<std::uint8_t>( data >> std::numeric_limits<std::uint8_t>::digits ),
+            static_cast<std::uint8_t>( data ),
+        };
+
+        Communication_Controller::write( memory_offset, buffer.begin(), buffer.end() );
+    }
+
+    /**
+     * \brief Write to a common register.
+     *
+     * \param[in] memory_offset The offset of the register to write to.
+     * \param[in] data The data to write to the register.
+     */
+    void write( Memory_Offset memory_offset, Array<std::uint8_t, 4> const & data ) noexcept
+    {
+        Communication_Controller::write( memory_offset, data.begin(), data.end() );
+    }
+
+    /**
+     * \brief Write to a common register.
+     *
+     * \param[in] memory_offset The offset of the register to write to.
+     * \param[in] data The data to write to the register.
+     */
+    void write( Memory_Offset memory_offset, Array<std::uint8_t, 6> const & data ) noexcept
+    {
+        Communication_Controller::write( memory_offset, data.begin(), data.end() );
+    }
+
+    /**
+     * \brief Read a socket register.
+     *
+     * \tparam Type The type of register to read.
+     *
+     * \param[in] socket_id The ID of the socket whose register will be read.
+     * \param[in] memory_offset The offset of the register to read.
+     *
+     * \return The data read from the register.
+     */
+    template<typename Type>
+    auto read( Socket_ID socket_id, Memory_Offset memory_offset ) const noexcept -> Type
+    {
+        return read( socket_id, memory_offset, Type{} );
+    }
+
+    /**
+     * \brief Read a socket register.
+     *
+     * \param[in] socket_id The ID of the socket whose register will be read.
+     * \param[in] memory_offset The offset of the register to read.
+     *
+     * \return The data read from the register.
+     */
+    auto read( Socket_ID socket_id, Memory_Offset memory_offset, std::uint8_t ) const noexcept
+        -> std::uint8_t
+    {
+        return Communication_Controller::read( socket_id, Socket_Memory_Block::REGISTERS, memory_offset );
+    }
+
+    /**
+     * \brief Read a socket register.
+     *
+     * \param[in] socket_id The ID of the socket whose register will be read.
+     * \param[in] memory_offset The offset of the register to read.
+     *
+     * \return The data read from the register.
+     */
+    auto read( Socket_ID socket_id, Memory_Offset memory_offset, std::uint16_t ) const noexcept
+        -> std::uint16_t
+    {
+        Array<std::uint8_t, 2> buffer;
+
+        Communication_Controller::read(
+            socket_id,
+            Socket_Memory_Block::REGISTERS,
+            memory_offset,
+            buffer.begin(),
+            buffer.end() );
+
+        return static_cast<std::uint16_t>(
+            ( buffer[ 0 ] << std::numeric_limits<std::uint8_t>::digits ) | buffer[ 1 ] );
+    }
+
+    /**
+     * \brief Read a socket register.
+     *
+     * \param[in] socket_id The ID of the socket whose register will be read.
+     * \param[in] memory_offset The offset of the register to read.
+     *
+     * \return The data read from the register.
+     */
+    auto read( Socket_ID socket_id, Memory_Offset memory_offset, Array<std::uint8_t, 4> const & ) const noexcept
+        -> Array<std::uint8_t, 4>
+    {
+        Array<std::uint8_t, 4> buffer;
+
+        Communication_Controller::read(
+            socket_id,
+            Socket_Memory_Block::REGISTERS,
+            memory_offset,
+            buffer.begin(),
+            buffer.end() );
+
+        return buffer;
+    }
+
+    /**
+     * \brief Read a socket register.
+     *
+     * \param[in] socket_id The ID of the socket whose register will be read.
+     * \param[in] memory_offset The offset of the register to read.
+     *
+     * \return The data read from the register.
+     */
+    auto read( Socket_ID socket_id, Memory_Offset memory_offset, Array<std::uint8_t, 6> const & ) const noexcept
+        -> Array<std::uint8_t, 6>
+    {
+        Array<std::uint8_t, 6> buffer;
+
+        Communication_Controller::read(
+            socket_id,
+            Socket_Memory_Block::REGISTERS,
+            memory_offset,
+            buffer.begin(),
+            buffer.end() );
+
+        return buffer;
+    }
+
+    /**
+     * \brief Write to a socket register.
+     *
+     * \param[in] socket_id The ID of the socket whose register will be written to.
+     * \param[in] memory_offset The offset of the register to write to.
+     * \param[in] data The data to write to the register.
+     */
+    void write( Socket_ID socket_id, Memory_Offset memory_offset, std::uint8_t data ) noexcept
+    {
+        Communication_Controller::write(
+            socket_id, Socket_Memory_Block::REGISTERS, memory_offset, data );
+    }
+
+    /**
+     * \brief Write to a socket register.
+     *
+     * \param[in] socket_id The ID of the socket whose register will be written to.
+     * \param[in] memory_offset The offset of the register to write to.
+     * \param[in] data The data to write to the register.
+     */
+    void write( Socket_ID socket_id, Memory_Offset memory_offset, std::uint16_t data ) noexcept
+    {
+        auto const buffer = Array<std::uint8_t, 2>{
+            static_cast<std::uint8_t>( data >> std::numeric_limits<std::uint8_t>::digits ),
+            static_cast<std::uint8_t>( data ),
+        };
+
+        Communication_Controller::write(
+            socket_id,
+            Socket_Memory_Block::REGISTERS,
+            memory_offset,
+            buffer.begin(),
+            buffer.end() );
+    }
+
+    /**
+     * \brief Write to a socket register.
+     *
+     * \param[in] socket_id The ID of the socket whose register will be written to.
+     * \param[in] memory_offset The offset of the register to write to.
+     * \param[in] data The data to write to the register.
+     */
+    void write( Socket_ID socket_id, Memory_Offset memory_offset, Array<std::uint8_t, 4> const & data ) noexcept
+    {
+        Communication_Controller::write(
+            socket_id, Socket_Memory_Block::REGISTERS, memory_offset, data.begin(), data.end() );
+    }
+
+    /**
+     * \brief Write to a socket register.
+     *
+     * \param[in] socket_id The ID of the socket whose register will be written to.
+     * \param[in] memory_offset The offset of the register to write to.
+     * \param[in] data The data to write to the register.
+     */
+    void write( Socket_ID socket_id, Memory_Offset memory_offset, Array<std::uint8_t, 6> const & data ) noexcept
+    {
+        Communication_Controller::write(
+            socket_id, Socket_Memory_Block::REGISTERS, memory_offset, data.begin(), data.end() );
+    }
+};
+
 } // namespace picolibrary::WIZnet::W5500
 
 #endif // PICOLIBRARY_WIZNET_W5500_H
