@@ -20,7 +20,6 @@
  * \brief picolibrary::WIZnet::W5500::Driver automated test program.
  */
 
-#include <algorithm>
 #include <cstddef>
 #include <cstdint>
 #include <limits>

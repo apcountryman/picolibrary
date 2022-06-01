@@ -2508,7 +2508,7 @@ class Driver : public Communication_Controller {
     /**
      * \brief Write to a socket's SN_RX_RD register.
      *
-     * \param[in] socket_id The ID of the socket whose SN_RX_RD register will be rditten
+     * \param[in] socket_id The ID of the socket whose SN_RX_RD register will be written
      *            to.
      * \param[in] data The data to write to the socket's SN_RX_RD register.
      */
@@ -2615,7 +2615,7 @@ class Driver : public Communication_Controller {
     }
 
     /**
-     * \brief Write data to a socket's receive buffer.
+     * \brief Write data to a socket's transmit buffer.
      *
      * \param[in] socket_id The ID of the socket whose transmit buffer will be written to.
      * \param[in] memory_offset The offset of the buffer memory to write to.
