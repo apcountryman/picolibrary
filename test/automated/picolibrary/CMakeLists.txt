@@ -57,6 +57,9 @@ add_subdirectory( indicator )
 # build the picolibrary::Interrupt automated tests
 add_subdirectory( interrupt )
 
+# build the picolibrary::MAC_Address automated tests
+add_subdirectory( mac_address )
+
 # build the picolibrary::Microchip automated tests
 add_subdirectory( microchip )
 
