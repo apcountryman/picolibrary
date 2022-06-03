@@ -422,7 +422,7 @@ class Output_Formatter<MAC_Address> {
             };
 
             for ( auto const nibble : nibbles ) {
-                *i = nibble < 0xA ? '0' + nibble : 'A' + ( nibble - 0xA );
+                *i = static_cast<char>( nibble < 0xA ? '0' + nibble : 'A' + ( nibble - 0xA ) );
 
                 ++i;
             } // for
