@@ -402,9 +402,12 @@ class Output_Formatter<MAC_Address> {
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     auto print( Output_Stream & stream, MAC_Address const & address ) noexcept
         -> Result<std::size_t, Error_Code>
     {
+        // #lizard forgives the length
+
         constexpr auto address_bytes   = array_size_v<MAC_Address::Byte_Array>;
         constexpr auto byte_nibbles    = std::numeric_limits<std::uint8_t>::digits / 4;
         constexpr auto address_nibbles = address_bytes * byte_nibbles;
