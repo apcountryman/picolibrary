@@ -57,6 +57,9 @@ add_subdirectory( indicator )
 # build the picolibrary::Interrupt automated tests
 add_subdirectory( interrupt )
 
+# build the picolibrary::IPv4 automated tests
+add_subdirectory( ipv4 )
+
 # build the picolibrary::MAC_Address automated tests
 add_subdirectory( mac_address )
 
