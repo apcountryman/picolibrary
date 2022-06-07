@@ -41,6 +41,7 @@ set(
     "picolibrary/i2c.cc"
     "picolibrary/indicator.cc"
     "picolibrary/interrupt.cc"
+    "picolibrary/ipv4.cc"
     "picolibrary/mac_address.cc"
     "picolibrary/microchip.cc"
     "picolibrary/microchip/mcp23008.cc"
