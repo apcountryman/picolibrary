@@ -81,6 +81,7 @@ if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
         "picolibrary/testing/automated/i2c.cc"
         "picolibrary/testing/automated/indicator.cc"
         "picolibrary/testing/automated/interrupt.cc"
+        "picolibrary/testing/automated/ipv4.cc"
         "picolibrary/testing/automated/mac_address.cc"
         "picolibrary/testing/automated/microchip.cc"
         "picolibrary/testing/automated/microchip/mcp23008.cc"
