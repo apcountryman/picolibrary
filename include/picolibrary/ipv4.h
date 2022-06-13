@@ -161,6 +161,15 @@ class Address {
     constexpr auto operator=( Address && expression ) noexcept -> Address & = default;
 
     /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Address const & expression ) noexcept -> Address & = default;
+
+    /**
      * \brief Check if the address is the address that is used to represent any address
      *        (0.0.0.0).
      *
