@@ -13,7 +13,21 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary::IPv4 automated tests CMake rules.
+# Description: picolibrary::IPv4::Address automated tests CMake rules.
 
 # build the picolibrary::IPv4::Address automated tests
-add_subdirectory( address )
+if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
+    add_executable(
+        test-automated-picolibrary-ipv4-address
+        main.cc
+    )
+    target_link_libraries(
+        test-automated-picolibrary-ipv4-address
+        picolibrary
+        picolibrary-testing-automated-fatal_error
+    )
+    add_test(
+        NAME    test-automated-picolibrary-ipv4-address
+        COMMAND test-automated-picolibrary-ipv4-address --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
