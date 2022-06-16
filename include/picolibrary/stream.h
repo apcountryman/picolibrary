@@ -451,14 +451,14 @@ class Output_Formatter {
      *
      * \param[in] source The source of the move.
      */
-    Output_Formatter( Output_Formatter && source ) = default;
+    Output_Formatter( Output_Formatter && source ) noexcept = default;
 
     /**
      * \brief Constructor.
      *
      * \param[in] original The original to copy.
      */
-    Output_Formatter( Output_Formatter const & original ) = default;
+    Output_Formatter( Output_Formatter const & original ) noexcept = default;
 
     /**
      * \brief Destructor.
@@ -846,14 +846,14 @@ class Output_Formatter<char> {
      *
      * \param[in] source The source of the move.
      */
-    constexpr Output_Formatter( Output_Formatter && source ) = default;
+    constexpr Output_Formatter( Output_Formatter && source ) noexcept = default;
 
     /**
      * \brief Constructor.
      *
      * \param[in] original The original to copy.
      */
-    constexpr Output_Formatter( Output_Formatter const & original ) = default;
+    constexpr Output_Formatter( Output_Formatter const & original ) noexcept = default;
 
     /**
      * \brief Destructor.
@@ -915,14 +915,14 @@ class Output_Formatter<char const *> {
      *
      * \param[in] source The source of the move.
      */
-    constexpr Output_Formatter( Output_Formatter && source ) = default;
+    constexpr Output_Formatter( Output_Formatter && source ) noexcept = default;
 
     /**
      * \brief Constructor.
      *
      * \param[in] original The original to copy.
      */
-    constexpr Output_Formatter( Output_Formatter const & original ) = default;
+    constexpr Output_Formatter( Output_Formatter const & original ) noexcept = default;
 
     /**
      * \brief Destructor.
@@ -985,14 +985,14 @@ class Output_Formatter<Void> {
      *
      * \param[in] source The source of the move.
      */
-    constexpr Output_Formatter( Output_Formatter && source ) = default;
+    constexpr Output_Formatter( Output_Formatter && source ) noexcept = default;
 
     /**
      * \brief Constructor.
      *
      * \param[in] original The original to copy.
      */
-    constexpr Output_Formatter( Output_Formatter const & original ) = default;
+    constexpr Output_Formatter( Output_Formatter const & original ) noexcept = default;
 
     /**
      * \brief Destructor.
@@ -1045,14 +1045,14 @@ class Output_Formatter<Error_Code> {
      *
      * \param[in] source The source of the move.
      */
-    constexpr Output_Formatter( Output_Formatter && source ) = default;
+    constexpr Output_Formatter( Output_Formatter && source ) noexcept = default;
 
     /**
      * \brief Constructor.
      *
      * \param[in] original The original to copy.
      */
-    constexpr Output_Formatter( Output_Formatter const & original ) = default;
+    constexpr Output_Formatter( Output_Formatter const & original ) noexcept = default;
 
     /**
      * \brief Destructor.

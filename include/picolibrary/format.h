@@ -286,14 +286,14 @@ class Output_Formatter<Format::Binary<Integer>> {
      *
      * \param[in] source The source of the move.
      */
-    constexpr Output_Formatter( Output_Formatter && source ) = default;
+    constexpr Output_Formatter( Output_Formatter && source ) noexcept = default;
 
     /**
      * \brief Constructor.
      *
      * \param[in] original The original to copy.
      */
-    constexpr Output_Formatter( Output_Formatter const & original ) = default;
+    constexpr Output_Formatter( Output_Formatter const & original ) noexcept = default;
 
     /**
      * \brief Destructor.
@@ -381,14 +381,14 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_signed
      *
      * \param[in] source The source of the move.
      */
-    constexpr Output_Formatter( Output_Formatter && source ) = default;
+    constexpr Output_Formatter( Output_Formatter && source ) noexcept = default;
 
     /**
      * \brief Constructor.
      *
      * \param[in] original The original to copy.
      */
-    constexpr Output_Formatter( Output_Formatter const & original ) = default;
+    constexpr Output_Formatter( Output_Formatter const & original ) noexcept = default;
 
     /**
      * \brief Destructor.
@@ -475,14 +475,14 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_unsign
      *
      * \param[in] source The source of the move.
      */
-    constexpr Output_Formatter( Output_Formatter && source ) = default;
+    constexpr Output_Formatter( Output_Formatter && source ) noexcept = default;
 
     /**
      * \brief Constructor.
      *
      * \param[in] original The original to copy.
      */
-    constexpr Output_Formatter( Output_Formatter const & original ) = default;
+    constexpr Output_Formatter( Output_Formatter const & original ) noexcept = default;
 
     /**
      * \brief Destructor.
@@ -557,14 +557,14 @@ class Output_Formatter<Format::Hexadecimal<Integer>> {
      *
      * \param[in] source The source of the move.
      */
-    constexpr Output_Formatter( Output_Formatter && source ) = default;
+    constexpr Output_Formatter( Output_Formatter && source ) noexcept = default;
 
     /**
      * \brief Constructor.
      *
      * \param[in] original The original to copy.
      */
-    constexpr Output_Formatter( Output_Formatter const & original ) = default;
+    constexpr Output_Formatter( Output_Formatter const & original ) noexcept = default;
 
     /**
      * \brief Destructor.

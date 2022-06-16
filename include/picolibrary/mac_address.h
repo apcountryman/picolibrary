@@ -369,14 +369,14 @@ class Output_Formatter<MAC_Address> {
      *
      * \param[in] source The source of the move.
      */
-    constexpr Output_Formatter( Output_Formatter && source ) = default;
+    constexpr Output_Formatter( Output_Formatter && source ) noexcept = default;
 
     /**
      * \brief Constructor.
      *
      * \param[in] original The original to copy.
      */
-    constexpr Output_Formatter( Output_Formatter const & original ) = default;
+    constexpr Output_Formatter( Output_Formatter const & original ) noexcept = default;
 
     /**
      * \brief Destructor.
