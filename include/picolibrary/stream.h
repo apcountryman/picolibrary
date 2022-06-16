@@ -795,7 +795,7 @@ class Output_Stream : public Stream {
     auto print_implementation( std::size_t n, Type && value, Output_Formatter<std::decay_t<Type>> formatter, Types &&... values ) noexcept
         -> Result<std::size_t, Error_Code>
     {
-        auto result = formatter.print( *this, std::forward<Type>( value ) );
+        auto result = formatter.print( *this, value );
         if ( result.is_error() ) {
             report_fatal_error();
 
