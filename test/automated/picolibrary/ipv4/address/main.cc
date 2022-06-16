@@ -381,7 +381,7 @@ TEST( outputFormatterIPv4Address, printError )
 
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.print( "{}", Address{ random<Address::Unsigned_Integer>() } );
+    auto const result = stream.print( Address{ random<Address::Unsigned_Integer>() } );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -402,7 +402,7 @@ TEST( outputFormatterIPv4Address, worksProperly )
 
     auto const address = Address{ byte_array };
 
-    auto const result = stream.print( "{}", address );
+    auto const result = stream.print( address );
 
     ASSERT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), stream.string().size() );

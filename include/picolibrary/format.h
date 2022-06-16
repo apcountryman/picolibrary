@@ -271,8 +271,6 @@ namespace picolibrary {
 /**
  * \brief picolibrary::Format::Binary output formatter.
  *
- * picolibrary::Format::Binary only supports the default format specification ("{}").
- *
  * \tparam Integer The type of integer to print.
  */
 template<typename Integer>
@@ -283,32 +281,43 @@ class Output_Formatter<Format::Binary<Integer>> {
      */
     constexpr Output_Formatter() noexcept = default;
 
-    Output_Formatter( Output_Formatter && ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Output_Formatter( Output_Formatter && source ) = default;
 
-    Output_Formatter( Output_Formatter const & ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Output_Formatter( Output_Formatter const & original ) = default;
 
     /**
      * \brief Destructor.
      */
     ~Output_Formatter() noexcept = default;
 
-    auto operator=( Output_Formatter && ) = delete;
-
-    auto operator=( Output_Formatter const & ) = delete;
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Output_Formatter && expression ) noexcept -> Output_Formatter & = default;
 
     /**
-     * \brief Parse the format specification for the picolibrary::Format::Binary to be
-     *        formatted.
+     * \brief Assignment operator.
      *
-     * \param[in] format The format specification for the picolibrary::Format::Binary to
-     *            be formatted.
+     * \param[in] expression The expression to be assigned.
      *
-     * \return format
+     * \return The assigned to object.
      */
-    constexpr auto parse( char const * format ) noexcept -> char const *
-    {
-        return format;
-    }
+    constexpr auto operator   =( Output_Formatter const & expression ) noexcept
+        -> Output_Formatter & = default;
 
     /**
      * \brief Write the formatted picolibrary::Format::Binary to the stream.
@@ -320,7 +329,7 @@ class Output_Formatter<Format::Binary<Integer>> {
      * \return An error code if the write failed.
      */
     // NOLINTNEXTLINE(readability-function-size)
-    auto print( Output_Stream & stream, Integer value ) noexcept -> Result<std::size_t, Error_Code>
+    auto print( Output_Stream & stream, Integer value ) const noexcept -> Result<std::size_t, Error_Code>
     {
         // #lizard forgives the length
 
@@ -357,8 +366,6 @@ class Output_Formatter<Format::Binary<Integer>> {
 /**
  * \brief picolibrary::Format::Decimal output formatter.
  *
- * picolibrary::Format::Decimal only supports the default format specification ("{}").
- *
  * \tparam Integer The type of integer to print.
  */
 template<typename Integer>
@@ -369,32 +376,43 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_signed
      */
     constexpr Output_Formatter() noexcept = default;
 
-    Output_Formatter( Output_Formatter && ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Output_Formatter( Output_Formatter && source ) = default;
 
-    Output_Formatter( Output_Formatter const & ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Output_Formatter( Output_Formatter const & original ) = default;
 
     /**
      * \brief Destructor.
      */
     ~Output_Formatter() noexcept = default;
 
-    auto operator=( Output_Formatter && ) = delete;
-
-    auto operator=( Output_Formatter const & ) = delete;
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Output_Formatter && expression ) noexcept -> Output_Formatter & = default;
 
     /**
-     * \brief Parse the format specification for the picolibrary::Format::Decimal to be
-     *        formatted.
+     * \brief Assignment operator.
      *
-     * \param[in] format The format specification for the picolibrary::Format::Decimal to
-     *            be formatted.
+     * \param[in] expression The expression to be assigned.
      *
-     * \return format
+     * \return The assigned to object.
      */
-    constexpr auto parse( char const * format ) noexcept -> char const *
-    {
-        return format;
-    }
+    constexpr auto operator   =( Output_Formatter const & expression ) noexcept
+        -> Output_Formatter & = default;
 
     /**
      * \brief Write the formatted picolibrary::Format::Decimal to the stream.
@@ -407,7 +425,7 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_signed
      * \return An error code if the write failed.
      */
     // NOLINTNEXTLINE(readability-function-size)
-    auto print( Output_Stream & stream, Integer value ) noexcept -> Result<std::size_t, Error_Code>
+    auto print( Output_Stream & stream, Integer value ) const noexcept -> Result<std::size_t, Error_Code>
     {
         // #lizard forgives the length
 
@@ -442,8 +460,6 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_signed
 /**
  * \brief picolibrary::Format::Decimal output formatter.
  *
- * picolibrary::Format::Decimal only supports the default format specification ("{}").
- *
  * \tparam Integer The type of integer to print.
  */
 template<typename Integer>
@@ -454,32 +470,43 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_unsign
      */
     constexpr Output_Formatter() noexcept = default;
 
-    Output_Formatter( Output_Formatter && ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Output_Formatter( Output_Formatter && source ) = default;
 
-    Output_Formatter( Output_Formatter const & ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Output_Formatter( Output_Formatter const & original ) = default;
 
     /**
      * \brief Destructor.
      */
     ~Output_Formatter() noexcept = default;
 
-    auto operator=( Output_Formatter && ) = delete;
-
-    auto operator=( Output_Formatter const & ) = delete;
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Output_Formatter && expression ) noexcept -> Output_Formatter & = default;
 
     /**
-     * \brief Parse the format specification for the picolibrary::Format::Decimal to be
-     *        formatted.
+     * \brief Assignment operator.
      *
-     * \param[in] format The format specification for the picolibrary::Format::Decimal to
-     *            be formatted.
+     * \param[in] expression The expression to be assigned.
      *
-     * \return format
+     * \return The assigned to object.
      */
-    constexpr auto parse( char const * format ) noexcept -> char const *
-    {
-        return format;
-    }
+    constexpr auto operator   =( Output_Formatter const & expression ) noexcept
+        -> Output_Formatter & = default;
 
     /**
      * \brief Write the formatted picolibrary::Format::Decimal to the stream.
@@ -491,7 +518,7 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_unsign
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto print( Output_Stream & stream, Integer value ) noexcept -> Result<std::size_t, Error_Code>
+    auto print( Output_Stream & stream, Integer value ) const noexcept -> Result<std::size_t, Error_Code>
     {
         Array<char, std::numeric_limits<Integer>::digits10 + 1> decimal;
 
@@ -515,8 +542,6 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_unsign
 /**
  * \brief picolibrary::Format::Hexadecimal output formatter.
  *
- * picolibrary::Format::Hexadecimal only supports the default format specification ("{}").
- *
  * \tparam Integer The type of integer to print.
  */
 template<typename Integer>
@@ -527,32 +552,43 @@ class Output_Formatter<Format::Hexadecimal<Integer>> {
      */
     constexpr Output_Formatter() noexcept = default;
 
-    Output_Formatter( Output_Formatter && ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Output_Formatter( Output_Formatter && source ) = default;
 
-    Output_Formatter( Output_Formatter const & ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Output_Formatter( Output_Formatter const & original ) = default;
 
     /**
      * \brief Destructor.
      */
     ~Output_Formatter() noexcept = default;
 
-    auto operator=( Output_Formatter && ) = delete;
-
-    auto operator=( Output_Formatter const & ) = delete;
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Output_Formatter && expression ) noexcept -> Output_Formatter & = default;
 
     /**
-     * \brief Parse the format specification for the picolibrary::Format::Hexadecimal to
-     *        be formatted.
+     * \brief Assignment operator.
      *
-     * \param[in] format The format specification for the picolibrary::Format::Hexadecimal
-     *            to be formatted.
+     * \param[in] expression The expression to be assigned.
      *
-     * \return format
+     * \return The assigned to object.
      */
-    constexpr auto parse( char const * format ) noexcept -> char const *
-    {
-        return format;
-    }
+    constexpr auto operator   =( Output_Formatter const & expression ) noexcept
+        -> Output_Formatter & = default;
 
     /**
      * \brief Write the formatted picolibrary::Format::Hexadecimal to the stream.
@@ -565,7 +601,7 @@ class Output_Formatter<Format::Hexadecimal<Integer>> {
      * \return An error code if the write failed.
      */
     // NOLINTNEXTLINE(readability-function-size)
-    auto print( Output_Stream & stream, Integer value ) noexcept -> Result<std::size_t, Error_Code>
+    auto print( Output_Stream & stream, Integer value ) const noexcept -> Result<std::size_t, Error_Code>
     {
         // #lizard forgives the length
 

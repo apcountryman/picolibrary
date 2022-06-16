@@ -43,7 +43,6 @@ using ::picolibrary::Testing::Automated::Mock_Error;
 using ::picolibrary::Testing::Automated::Mock_Output_Stream;
 using ::picolibrary::Testing::Automated::Output_String_Stream;
 using ::picolibrary::Testing::Automated::random;
-using ::picolibrary::Testing::Automated::random_format_string;
 using ::testing::A;
 using ::testing::Return;
 
@@ -103,7 +102,7 @@ TYPED_TEST( outputFormatterBinary, putError )
 
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.print( "{}", Binary{ random<Integer>() } );
+    auto const result = stream.print( Binary{ random<Integer>() } );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -125,7 +124,7 @@ TYPED_TEST( outputFormatterBinary, worksProperly )
 
     auto const value = random<Integer>();
 
-    auto const result = stream.print( "{}", Binary{ value } );
+    auto const result = stream.print( Binary{ value } );
 
     ASSERT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), stream.string().size() );

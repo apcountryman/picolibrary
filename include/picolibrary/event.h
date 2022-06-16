@@ -222,8 +222,6 @@ class Event {
 
 /**
  * \brief picolibrary::Event output formatter.
- *
- * picolibrary::Event only supports the default format specification ("{}").
  */
 template<>
 class Output_Formatter<Event> {
@@ -233,31 +231,43 @@ class Output_Formatter<Event> {
      */
     constexpr Output_Formatter() noexcept = default;
 
-    Output_Formatter( Output_Formatter && ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Output_Formatter( Output_Formatter && source ) = default;
 
-    Output_Formatter( Output_Formatter const & ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Output_Formatter( Output_Formatter const & original ) = default;
 
     /**
      * \brief Destructor.
      */
     ~Output_Formatter() noexcept = default;
 
-    auto operator=( Output_Formatter && ) = delete;
-
-    auto operator=( Output_Formatter const & ) = delete;
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Output_Formatter && expression ) noexcept -> Output_Formatter & = default;
 
     /**
-     * \brief Parse the format specification for the picolibrary::Event to be formatted.
+     * \brief Assignment operator.
      *
-     * \param[in] format The format specification for the picolibrary::Event to be
-     *            formatted.
+     * \param[in] expression The expression to be assigned.
      *
-     * \return format
+     * \return The assigned to object.
      */
-    constexpr auto parse( char const * format ) noexcept -> char const *
-    {
-        return format;
-    }
+    constexpr auto operator   =( Output_Formatter const & expression ) noexcept
+        -> Output_Formatter & = default;
 
     /**
      * \brief Write the formatted picolibrary::Event to the stream.
@@ -268,12 +278,13 @@ class Output_Formatter<Event> {
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto print( Output_Stream & stream, Event const & event ) noexcept -> Result<std::size_t, Error_Code>
+    auto print( Output_Stream & stream, Event const & event ) const noexcept
+        -> Result<std::size_t, Error_Code>
     {
         auto characters_written = std::size_t{};
 
         {
-            auto result = stream.print( "{}::{}", event.category().name(), event.description() );
+            auto result = stream.print( event.category().name(), "::", event.description() );
             if ( result.is_error() ) {
                 return result.error();
             } // if

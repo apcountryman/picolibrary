@@ -63,7 +63,7 @@ void echo( Output_Stream & stream, Controller controller, typename Controller::C
         {
             auto const rx     = controller.exchange( tx );
             auto       result = stream.print(
-                "exchange( {} ) -> {}\n", Format::Hexadecimal{ tx }, Format::Hexadecimal{ rx } );
+                "exchange( ", Format::Hexadecimal{ tx }, " ) -> ", Format::Hexadecimal{ rx }, '\n' );
             expect( not result.is_error(), result.error() );
             expect( rx == tx, Generic_Error::RUNTIME_ERROR );
         }
