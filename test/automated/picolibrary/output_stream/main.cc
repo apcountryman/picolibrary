@@ -83,7 +83,7 @@ class Mock_Output_Formatter {
 template<>
 class picolibrary::Output_Formatter<::Foo> {
   public:
-    Output_Formatter() noexcept = default;
+    Output_Formatter() = delete;
 
     Output_Formatter( ::Mock_Output_Formatter const & mock_output_formatter ) noexcept :
         m_mock_output_formatter{ &mock_output_formatter }
