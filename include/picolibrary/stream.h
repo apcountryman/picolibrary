@@ -444,31 +444,44 @@ class Output_Formatter {
     /**
      * \brief Constructor.
      */
-    constexpr Output_Formatter() noexcept = default;
+    Output_Formatter() noexcept = default;
 
-    Output_Formatter( Output_Formatter && ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Output_Formatter( Output_Formatter && source ) noexcept = default;
 
-    Output_Formatter( Output_Formatter const & ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    Output_Formatter( Output_Formatter const & original ) noexcept = default;
 
     /**
      * \brief Destructor.
      */
     ~Output_Formatter() noexcept = default;
 
-    auto operator=( Output_Formatter && ) = delete;
-
-    auto operator=( Output_Formatter const & ) = delete;
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Output_Formatter && expression ) noexcept -> Output_Formatter & = default;
 
     /**
-     * \brief Parse the format specification for the value to be formatted.
+     * \brief Assignment operator.
      *
-     * \param[in] format The format specification for the value to be formatted.
+     * \param[in] expression The expression to be assigned.
      *
-     * \pre format is a valid format specification for the value to be formatted.
-     *
-     * \return A pointer to the end of the format specification ('}').
+     * \return The assigned to object.
      */
-    auto parse( char const * format ) noexcept -> char const *;
+    auto operator=( Output_Formatter const & expression ) noexcept -> Output_Formatter & = default;
 
     /**
      * \brief Write the formatted value to the stream.
@@ -479,7 +492,8 @@ class Output_Formatter {
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto print( Output_Stream & stream, T const & value ) noexcept -> Result<std::size_t, Error_Code>;
+    auto print( Output_Stream & stream, T const & value ) const noexcept
+        -> Result<std::size_t, Error_Code>;
 };
 
 /**
@@ -666,27 +680,21 @@ class Output_Stream : public Stream {
      *
      * \tparam Types The types to print.
      *
-     * \param[in] format The format string specifying the format to use for each value to
-     *            be formatted. Format string syntax is based on the Python format string
-     *            syntax. Named and positional arguments are not supported. The format
-     *            specification for each value to be formatted is delimited by '{' and
-     *            '}'. Use "{{" to write a literal '{'. Use "}}" to write a literal '}'.
-     *            The format specification syntax for a particular type is defined by the
-     *            specialization of picolibrary::Output_Formatter that is applicable to
-     *            that type.
-     * \param[in] values The values to format.
-     *
-     * \pre all format specifications found in format are valid
+     * \param[in] values The values to format. If a value is followed by an output
+     *            formatter, the output formatter will be used to format the value and
+     *            write the formatted value to the stream. If a value is not followed by
+     *            an output formatter, a default constructed output formatter will be used
+     *            to format the value and write the formatted value to the stream.
      *
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
     template<typename... Types>
-    auto print( char const * format, Types &&... values ) noexcept -> Result<std::size_t, Error_Code>
+    auto print( Types &&... values ) noexcept -> Result<std::size_t, Error_Code>
     {
         expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
-        return print_implementation( std::size_t{ 0 }, format, std::forward<Types>( values )... );
+        return print_implementation( std::size_t{ 0 }, std::forward<Types>( values )... );
     }
 
     /**
@@ -760,32 +768,11 @@ class Output_Stream : public Stream {
      * \brief Write formatted output to the stream.
      *
      * \param[in] n The number of characters that have been written to the stream.
-     * \param[in] format The format string specifying the format to use for each value to
-     *            be formatted.
      *
-     * \pre all format specifications found in format are valid
-     *
-     * \return The number of characters written to the stream if the write succeeded.
-     * \return An error code if the write failed.
+     * \return The number of characters written to the stream.
      */
-    auto print_implementation( std::size_t n, char const * format ) noexcept
-        -> Result<std::size_t, Error_Code>
+    auto print_implementation( std::size_t n ) noexcept -> Result<std::size_t, Error_Code>
     {
-        for ( ; *format; ++format ) {
-            if ( *format == '{' or *format == '}' ) {
-                expect( *( format + 1 ) == *format, Generic_Error::INVALID_FORMAT );
-
-                ++format;
-            } // if
-
-            auto result = put( *format );
-            if ( result.is_error() ) {
-                return result.error();
-            } // if
-
-            ++n;
-        } // for
-
         return n;
     }
 
@@ -796,70 +783,56 @@ class Output_Stream : public Stream {
      * \tparam Types The types to print.
      *
      * \param[in] n The number of characters that have been written to the stream.
-     * \param[in] format The format string specifying the format to use for each value to
-     *            be formatted.
      * \param[in] value The value to format.
+     * \param[in] formatter The output formatter to use to format the value and write the
+     *            formatted value to the stream.
      * \param[in] values The values to format.
-     *
-     * \pre all format specifications found in format are valid
      *
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
     template<typename Type, typename... Types>
-    // NOLINTNEXTLINE(readability-function-size)
-    auto print_implementation( std::size_t n, char const * format, Type && value, Types &&... values ) noexcept
+    auto print_implementation( std::size_t n, Type && value, Output_Formatter<std::decay_t<Type>> formatter, Types &&... values ) noexcept
         -> Result<std::size_t, Error_Code>
     {
-        // #lizard forgives the length
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
+        auto result = formatter.print( *this, value );
+        if ( result.is_error() ) {
+            report_fatal_error();
 
-        for ( ; *format; ++format ) {
-            if ( *format == '{' ) {
-                ++format;
+            return result.error();
+        } // if
 
-                if ( *format != '{' ) {
-                    auto formatter = Output_Formatter<std::decay_t<Type>>{};
+        return print_implementation( n + result.value(), std::forward<Types>( values )... );
+    }
 
-                    format = formatter.parse( format );
-                    expect( *format == '}', Generic_Error::INVALID_FORMAT );
-
-                    ++format;
-
-                    auto result = formatter.print( *this, value );
-                    if ( result.is_error() ) {
-                        report_fatal_error();
-
-                        return result.error();
-                    } // if
-
-                    n += result.value();
-
-                    return print_implementation( n, format, std::forward<Types>( values )... );
-                } // if
-            } else if ( *format == '}' ) {
-                ++format;
-
-                expect( *format == '}', Generic_Error::INVALID_FORMAT );
-            } // else if
-
-            auto result = put( *format );
-            if ( result.is_error() ) {
-                return result.error();
-            } // if
-
-            ++n;
-        } // for
-
-        expect( false, Generic_Error::INVALID_FORMAT );
-
-        return std::size_t{ 0 }; // unreachable
+    /**
+     * \brief Write formatted output to the stream.
+     *
+     * \tparam Type The type to print.
+     * \tparam Types The types to print.
+     *
+     * \param[in] n The number of characters that have been written to the stream.
+     * \param[in] value The value to format.
+     * \param[in] values The values to format.
+     *
+     * \return The number of characters written to the stream if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    template<typename Type, typename... Types>
+    auto print_implementation( std::size_t n, Type && value, Types &&... values ) noexcept
+        -> Result<std::size_t, Error_Code>
+    {
+        return print_implementation(
+            n,
+            std::forward<Type>( value ),
+            Output_Formatter<std::decay_t<Type>>{},
+            std::forward<Types>( values )... );
     }
 };
 
 /**
  * \brief Character output formatter.
- *
- * Characters only support the default format specification ("{}").
  */
 template<>
 class Output_Formatter<char> {
@@ -869,30 +842,43 @@ class Output_Formatter<char> {
      */
     constexpr Output_Formatter() noexcept = default;
 
-    Output_Formatter( Output_Formatter && ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Output_Formatter( Output_Formatter && source ) noexcept = default;
 
-    Output_Formatter( Output_Formatter const & ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Output_Formatter( Output_Formatter const & original ) noexcept = default;
 
     /**
      * \brief Destructor.
      */
     ~Output_Formatter() noexcept = default;
 
-    auto operator=( Output_Formatter && ) = delete;
-
-    auto operator=( Output_Formatter const & ) = delete;
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Output_Formatter && expression ) noexcept -> Output_Formatter & = default;
 
     /**
-     * \brief Parse the format specification for the character to be formatted.
+     * \brief Assignment operator.
      *
-     * \param[in] format The format specification for the character to be formatted.
+     * \param[in] expression The expression to be assigned.
      *
-     * \return format
+     * \return The assigned to object.
      */
-    constexpr auto parse( char const * format ) noexcept -> char const *
-    {
-        return format;
-    }
+    constexpr auto operator   =( Output_Formatter const & expression ) noexcept
+        -> Output_Formatter & = default;
 
     /**
      * \brief Write the formatted character to the stream.
@@ -903,7 +889,7 @@ class Output_Formatter<char> {
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto print( Output_Stream & stream, char character ) noexcept -> Result<std::size_t, Error_Code>
+    auto print( Output_Stream & stream, char character ) const noexcept -> Result<std::size_t, Error_Code>
     {
         auto result = stream.put( character );
         if ( result.is_error() ) {
@@ -916,8 +902,6 @@ class Output_Formatter<char> {
 
 /**
  * \brief Null-terminated string output formatter.
- *
- * Null-terminated strings only support the default format specification ("{}").
  */
 template<>
 class Output_Formatter<char const *> {
@@ -927,32 +911,43 @@ class Output_Formatter<char const *> {
      */
     constexpr Output_Formatter() noexcept = default;
 
-    Output_Formatter( Output_Formatter && ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Output_Formatter( Output_Formatter && source ) noexcept = default;
 
-    Output_Formatter( Output_Formatter const & ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Output_Formatter( Output_Formatter const & original ) noexcept = default;
 
     /**
      * \brief Destructor.
      */
     ~Output_Formatter() noexcept = default;
 
-    auto operator=( Output_Formatter && ) = delete;
-
-    auto operator=( Output_Formatter const & ) = delete;
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Output_Formatter && expression ) noexcept -> Output_Formatter & = default;
 
     /**
-     * \brief Parse the format specification for the null-terminated string to be
-     *        formatted.
+     * \brief Assignment operator.
      *
-     * \param[in] format The format specification for the null-terminated string to be
-     *            formatted.
+     * \param[in] expression The expression to be assigned.
      *
-     * \return format
+     * \return The assigned to object.
      */
-    constexpr auto parse( char const * format ) noexcept -> char const *
-    {
-        return format;
-    }
+    constexpr auto operator   =( Output_Formatter const & expression ) noexcept
+        -> Output_Formatter & = default;
 
     /**
      * \brief Write the formatted null-terminated string to the stream.
@@ -963,7 +958,8 @@ class Output_Formatter<char const *> {
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto print( Output_Stream & stream, char const * string ) noexcept -> Result<std::size_t, Error_Code>
+    auto print( Output_Stream & stream, char const * string ) const noexcept
+        -> Result<std::size_t, Error_Code>
     {
         auto result = stream.put( string );
         if ( result.is_error() ) {
@@ -976,8 +972,6 @@ class Output_Formatter<char const *> {
 
 /**
  * \brief picolibrary::Void output formatter.
- *
- * picolibrary::Void only supports the default format specification ("{}").
  */
 template<>
 class Output_Formatter<Void> {
@@ -987,38 +981,50 @@ class Output_Formatter<Void> {
      */
     constexpr Output_Formatter() noexcept = default;
 
-    Output_Formatter( Output_Formatter && ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Output_Formatter( Output_Formatter && source ) noexcept = default;
 
-    Output_Formatter( Output_Formatter const & ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Output_Formatter( Output_Formatter const & original ) noexcept = default;
 
     /**
      * \brief Destructor.
      */
     ~Output_Formatter() noexcept = default;
 
-    auto operator=( Output_Formatter && ) = delete;
-
-    auto operator=( Output_Formatter const & ) = delete;
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Output_Formatter && expression ) noexcept -> Output_Formatter & = default;
 
     /**
-     * \brief Parse the format specification for the picolibrary::Void to be formatted.
+     * \brief Assignment operator.
      *
-     * \param[in] format The format specification for the picolibrary::Void to be
-     *            formatted.
+     * \param[in] expression The expression to be assigned.
      *
-     * \return format
+     * \return The assigned to object.
      */
-    constexpr auto parse( char const * format ) noexcept -> char const *
-    {
-        return format;
-    }
+    constexpr auto operator   =( Output_Formatter const & expression ) noexcept
+        -> Output_Formatter & = default;
 
     /**
      * \brief Write nothing to the stream.
      *
      * \return 0
      */
-    constexpr auto print( Output_Stream &, Void ) noexcept -> Result<std::size_t, Void>
+    constexpr auto print( Output_Stream &, Void ) const noexcept -> Result<std::size_t, Void>
     {
         return std::size_t{ 0 };
     }
@@ -1026,8 +1032,6 @@ class Output_Formatter<Void> {
 
 /**
  * \brief picolibrary::Error_Code output formatter.
- *
- * picolibrary::Error_Code only support the default format specification ("{}").
  */
 template<>
 class Output_Formatter<Error_Code> {
@@ -1037,32 +1041,43 @@ class Output_Formatter<Error_Code> {
      */
     constexpr Output_Formatter() noexcept = default;
 
-    Output_Formatter( Output_Formatter && ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Output_Formatter( Output_Formatter && source ) noexcept = default;
 
-    Output_Formatter( Output_Formatter const & ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Output_Formatter( Output_Formatter const & original ) noexcept = default;
 
     /**
      * \brief Destructor.
      */
     ~Output_Formatter() noexcept = default;
 
-    auto operator=( Output_Formatter && ) = delete;
-
-    auto operator=( Output_Formatter const & ) = delete;
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Output_Formatter && expression ) noexcept -> Output_Formatter & = default;
 
     /**
-     * \brief Parse the format specification for the picolibrary::Error_Code to be
-     *        formatted.
+     * \brief Assignment operator.
      *
-     * \param[in] format The format specification for the picolibrary::Error_Code to be
-     *            formatted.
+     * \param[in] expression The expression to be assigned.
      *
-     * \return format
+     * \return The assigned to object.
      */
-    constexpr auto parse( char const * format ) noexcept -> char const *
-    {
-        return format;
-    }
+    constexpr auto operator   =( Output_Formatter const & expression ) noexcept
+        -> Output_Formatter & = default;
 
     /**
      * \brief Write the formatted picolibrary::Error_Code to the stream.
@@ -1073,10 +1088,10 @@ class Output_Formatter<Error_Code> {
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto print( Output_Stream & stream, Error_Code const & error ) noexcept
+    auto print( Output_Stream & stream, Error_Code const & error ) const noexcept
         -> Result<std::size_t, Error_Code>
     {
-        return stream.print( "{}::{}", error.category().name(), error.description() );
+        return stream.print( error.category().name(), "::", error.description() );
     }
 };
 

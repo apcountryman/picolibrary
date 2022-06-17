@@ -355,8 +355,6 @@ constexpr auto operator>=( MAC_Address const & lhs, MAC_Address const & rhs ) no
 
 /**
  * \brief picolibrary::MAC_Address output formatter.
- *
- * picolibrary::MAC_Address only supports the default format specification ("{}").
  */
 template<>
 class Output_Formatter<MAC_Address> {
@@ -366,32 +364,43 @@ class Output_Formatter<MAC_Address> {
      */
     constexpr Output_Formatter() noexcept = default;
 
-    Output_Formatter( Output_Formatter && ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Output_Formatter( Output_Formatter && source ) noexcept = default;
 
-    Output_Formatter( Output_Formatter const & ) = delete;
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Output_Formatter( Output_Formatter const & original ) noexcept = default;
 
     /**
      * \brief Destructor.
      */
     ~Output_Formatter() noexcept = default;
 
-    auto operator=( Output_Formatter && ) = delete;
-
-    auto operator=( Output_Formatter const & ) = delete;
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Output_Formatter && expression ) noexcept -> Output_Formatter & = default;
 
     /**
-     * \brief Parse the format specification for the picolibrary::MAC_Address to be
-     *        formatted.
+     * \brief Assignment operator.
      *
-     * \param[in] format The format specification for the picolibrary::MAC_Address to be
-     *            formatted.
+     * \param[in] expression The expression to be assigned.
      *
-     * \return format
+     * \return The assigned to object.
      */
-    constexpr auto parse( char const * format ) noexcept -> char const *
-    {
-        return format;
-    }
+    constexpr auto operator   =( Output_Formatter const & expression ) noexcept
+        -> Output_Formatter & = default;
 
     /**
      * \brief Write the formatted picolibrary::MAC_Address to the stream.
@@ -403,7 +412,7 @@ class Output_Formatter<MAC_Address> {
      * \return An error code if the write failed.
      */
     // NOLINTNEXTLINE(readability-function-size)
-    auto print( Output_Stream & stream, MAC_Address const & address ) noexcept
+    auto print( Output_Stream & stream, MAC_Address const & address ) const noexcept
         -> Result<std::size_t, Error_Code>
     {
         // #lizard forgives the length

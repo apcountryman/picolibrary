@@ -63,9 +63,11 @@ void scan( Output_Stream & stream, Controller controller ) noexcept
                 devices_found = true;
 
                 auto result = stream.print(
-                    "device found: {} ({})\n",
+                    "device found: ",
                     Format::Hexadecimal{ static_cast<std::uint8_t>( address.as_unsigned_integer() ) },
-                    operation == ::picolibrary::I2C::Operation::READ ? 'R' : 'W' );
+                    " (",
+                    operation == ::picolibrary::I2C::Operation::READ ? 'R' : 'W',
+                    ")\n" );
                 expect( not result.is_error(), result.error() );
             } // if
         } );

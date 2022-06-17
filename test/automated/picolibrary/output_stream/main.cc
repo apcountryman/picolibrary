@@ -22,7 +22,6 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <stdexcept>
 #include <string>
 #include <type_traits>
 #include <vector>
@@ -41,8 +40,7 @@
 namespace {
 
 using ::picolibrary::Error_Code;
-using ::picolibrary::Error_ID;
-using ::picolibrary::Generic_Error;
+using ::picolibrary::Output_Formatter;
 using ::picolibrary::Output_Stream;
 using ::picolibrary::Result;
 using ::picolibrary::to_underlying;
@@ -53,7 +51,6 @@ using ::picolibrary::Testing::Automated::Mock_Output_Stream;
 using ::picolibrary::Testing::Automated::Output_String_Stream;
 using ::picolibrary::Testing::Automated::random;
 using ::picolibrary::Testing::Automated::random_container;
-using ::picolibrary::Testing::Automated::random_format_string;
 using ::testing::_;
 using ::testing::A;
 using ::testing::Eq;
@@ -66,44 +63,19 @@ enum class Foo {};
 
 class Mock_Output_Formatter {
   public:
-    static auto instance() -> Mock_Output_Formatter &
-    {
-        if ( not INSTANCE ) {
-            throw std::logic_error{
-                "::Mock_Output_Formatter::instance(): no active instance"
-            };
-        } // if
-
-        return *INSTANCE;
-    }
-
-    Mock_Output_Formatter()
-    {
-        if ( INSTANCE ) {
-            throw std::logic_error{
-                "::Mock_Output_Formatter::Mock_Output_Formatter(): only one instance may "
-                "be active at a time"
-            };
-        } // if
-
-        INSTANCE = this;
-    }
-
-    ~Mock_Output_Formatter() noexcept
-    {
-        INSTANCE = nullptr;
-    }
+    Mock_Output_Formatter() = default;
 
     Mock_Output_Formatter( Mock_Output_Formatter && ) = delete;
 
     Mock_Output_Formatter( Mock_Output_Formatter const & ) = delete;
 
-    MOCK_METHOD( char const *, parse, ( std::string ) );
+    ~Mock_Output_Formatter() noexcept = default;
 
-    MOCK_METHOD( (Result<std::size_t, Error_Code>), print, (Output_Stream &, Foo const &));
+    auto operator=( Mock_Output_Formatter && ) = delete;
 
-  private:
-    inline static auto INSTANCE = static_cast<Mock_Output_Formatter *>( nullptr );
+    auto operator=( Mock_Output_Formatter const & ) = delete;
+
+    MOCK_METHOD( (Result<std::size_t, Error_Code>), print, (Output_Stream &, Foo const &), ( const ) );
 };
 
 } // namespace
@@ -111,27 +83,31 @@ class Mock_Output_Formatter {
 template<>
 class picolibrary::Output_Formatter<::Foo> {
   public:
-    constexpr Output_Formatter() noexcept = default;
+    Output_Formatter() = delete;
 
-    Output_Formatter( Output_Formatter && ) = delete;
+    Output_Formatter( ::Mock_Output_Formatter const & mock_output_formatter ) noexcept :
+        m_mock_output_formatter{ &mock_output_formatter }
+    {
+    }
 
-    Output_Formatter( Output_Formatter const & ) = delete;
+    Output_Formatter( Output_Formatter && source ) noexcept = default;
+
+    Output_Formatter( Output_Formatter const & original ) noexcept = default;
 
     ~Output_Formatter() noexcept = default;
 
-    auto operator=( Output_Formatter && ) = delete;
+    auto operator=( Output_Formatter && expression ) noexcept -> Output_Formatter & = default;
 
-    auto operator=( Output_Formatter const & ) = delete;
+    auto operator=( Output_Formatter const & expression ) noexcept -> Output_Formatter & = default;
 
-    auto parse( char const * format ) noexcept -> char const *
+    auto print( Output_Stream & stream, ::Foo const & foo ) const noexcept
+        -> Result<std::size_t, Error_Code>
     {
-        return ::Mock_Output_Formatter::instance().parse( format );
+        return m_mock_output_formatter->print( stream, foo );
     }
 
-    auto print( Output_Stream & stream, ::Foo const & foo ) noexcept -> Result<std::size_t, Error_Code>
-    {
-        return ::Mock_Output_Formatter::instance().print( stream, foo );
-    }
+  private:
+    ::Mock_Output_Formatter const * m_mock_output_formatter{};
 };
 
 template<>
@@ -416,68 +392,20 @@ TEST( putSignedByteBlock, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Stream::print() properly handles a put error.
- */
-TEST( print, putError )
-{
-    {
-        auto stream = Mock_Output_Stream{};
-
-        auto const error = random<Mock_Error>();
-
-        EXPECT_CALL( stream.buffer(), put( A<char>() ) ).WillOnce( Return( error ) );
-
-        auto const result = stream.print(
-            random_format_string( random<std::size_t>( 1, 15 ) ).c_str() );
-
-        ASSERT_TRUE( result.is_error() );
-        EXPECT_EQ( result.error(), error );
-
-        EXPECT_FALSE( stream.end_of_file_reached() );
-        EXPECT_FALSE( stream.io_error_present() );
-        EXPECT_TRUE( stream.fatal_error_present() );
-    }
-
-    {
-        auto stream = Mock_Output_Stream{};
-
-        auto const error = random<Mock_Error>();
-
-        EXPECT_CALL( stream.buffer(), put( A<char>() ) ).WillOnce( Return( error ) );
-
-        auto const result = stream.print(
-            ( random_format_string( random<std::size_t>( 1, 15 ) ) + "{}" + random_format_string() )
-                .c_str(),
-            random<Foo>() );
-
-        ASSERT_TRUE( result.is_error() );
-        EXPECT_EQ( result.error(), error );
-
-        EXPECT_FALSE( stream.end_of_file_reached() );
-        EXPECT_FALSE( stream.io_error_present() );
-        EXPECT_TRUE( stream.fatal_error_present() );
-    }
-}
-
-/**
  * \brief Verify picolibrary::Output_Stream::print() properly handles a
  *        picolibrary::Output_Formatter::print() error.
  */
 TEST( print, outputFormatterPrintError )
 {
-    auto stream = Output_String_Stream{};
+    auto stream = Mock_Output_Stream{};
 
-    auto formatter = Mock_Output_Formatter{};
+    auto const formatter = Mock_Output_Formatter{};
 
     auto const error = random<Mock_Error>();
 
-    EXPECT_CALL( formatter, parse( _ ) ).WillOnce( Return( "}" ) );
     EXPECT_CALL( formatter, print( _, _ ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.print(
-        ( random_format_string() + '{' + random_format_string() + '}' + random_format_string() )
-            .c_str(),
-        random<Foo>() );
+    auto const result = stream.print( random<Foo>(), Output_Formatter<Foo>{ formatter } );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -493,52 +421,44 @@ TEST( print, outputFormatterPrintError )
 TEST( print, worksProperly )
 {
     {
-        auto stream = Output_String_Stream{};
+        auto stream = Mock_Output_Stream{};
 
-        auto const a = random_format_string();
-        auto const b = random_format_string();
-        auto const c = random_format_string();
+        auto const foo           = random<Foo>();
+        auto const foo_formatter = Mock_Output_Formatter{};
+        auto const foo_size      = random<std::size_t>();
 
-        auto const result = stream.print( ( a + "{{" + b + "}}" + c ).c_str() );
+        EXPECT_CALL( foo_formatter, print( Ref( stream ), Ref( foo ) ) ).WillOnce( Return( foo_size ) );
+
+        auto const result = stream.print( foo, Output_Formatter<Foo>{ foo_formatter } );
 
         ASSERT_TRUE( result.is_value() );
-        EXPECT_EQ( result.value(), stream.string().size() );
+        EXPECT_EQ( result.value(), foo_size );
 
         EXPECT_TRUE( stream.is_nominal() );
-        EXPECT_EQ( stream.string(), a + '{' + b + '}' + c );
     }
 
     {
         auto const in_sequence = InSequence{};
 
-        auto stream = Output_String_Stream{};
+        auto stream = Mock_Output_Stream{};
 
-        auto formatter = Mock_Output_Formatter{};
+        auto const foo_a           = random<Foo>();
+        auto const foo_a_formatter = Mock_Output_Formatter{};
+        auto const foo_a_size      = random<std::size_t>();
+        auto const foo_b           = random<Foo>();
+        auto const foo_b_formatter = Mock_Output_Formatter{};
+        auto const foo_b_size      = random<std::size_t>();
 
-        auto const a = random_format_string();
-        auto const b = random_format_string();
-        auto const c = random_format_string();
-        auto const d = random_format_string();
-        auto const e = random_format_string();
-
-        auto const format_specification_begin = d + '}' + e;
-        auto const format_specification_end   = std::string{ '}' } + e;
-
-        auto const foo      = random<Foo>();
-        auto const foo_size = random<std::size_t>();
-
-        EXPECT_CALL( formatter, parse( format_specification_begin ) )
-            .WillOnce( Return( format_specification_end.c_str() ) );
-        EXPECT_CALL( formatter, print( Ref( stream ), Ref( foo ) ) ).WillOnce( Return( foo_size ) );
+        EXPECT_CALL( foo_a_formatter, print( Ref( stream ), Ref( foo_a ) ) ).WillOnce( Return( foo_a_size ) );
+        EXPECT_CALL( foo_b_formatter, print( Ref( stream ), Ref( foo_b ) ) ).WillOnce( Return( foo_b_size ) );
 
         auto const result = stream.print(
-            ( a + "{{" + b + "}}" + c + '{' + d + '}' + e ).c_str(), foo );
+            foo_a, Output_Formatter<Foo>{ foo_a_formatter }, foo_b, Output_Formatter<Foo>{ foo_b_formatter } );
 
         ASSERT_TRUE( result.is_value() );
-        EXPECT_EQ( result.value(), stream.string().size() + foo_size );
+        EXPECT_EQ( result.value(), foo_a_size + foo_b_size );
 
         EXPECT_TRUE( stream.is_nominal() );
-        EXPECT_EQ( stream.string(), a + '{' + b + '}' + c + e );
     }
 }
 
@@ -588,7 +508,7 @@ TEST( outputFormatterChar, putError )
 
     EXPECT_CALL( stream.buffer(), put( A<char>() ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.print( "{}", random<char>() );
+    auto const result = stream.print( random<char>() );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -607,7 +527,7 @@ TEST( outputFormatterChar, worksProperly )
 
     auto const character = random<char>();
 
-    auto const result = stream.print( "{}", character );
+    auto const result = stream.print( character );
 
     ASSERT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), stream.string().size() );
@@ -627,7 +547,7 @@ TEST( outputFormatterNullTerminatedString, putError )
 
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.print( "{}", random_container<std::string>().c_str() );
+    auto const result = stream.print( random_container<std::string>().c_str() );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -646,7 +566,7 @@ TEST( outputFormatterNullTerminatedString, worksProperly )
 
     auto const string = random_container<std::string>();
 
-    auto const result = stream.print( "{}", string.c_str() );
+    auto const result = stream.print( string.c_str() );
 
     ASSERT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), stream.string().size() );
@@ -662,7 +582,7 @@ TEST( outputFormatterVoid, worksProperly )
 {
     auto stream = Output_String_Stream{};
 
-    auto const result = stream.print( "{}", Void{} );
+    auto const result = stream.print( Void{} );
 
     ASSERT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), stream.string().size() );
@@ -690,7 +610,7 @@ TEST( outputFormatterErrorCode, putError )
         .WillOnce( Return( error_description.c_str() ) );
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.print( "{}", Error_Code{ random<Mock_Error>() } );
+    auto const result = stream.print( Error_Code{ random<Mock_Error>() } );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -716,7 +636,7 @@ TEST( outputFormatterErrorCode, worksProperly )
     EXPECT_CALL( Mock_Error_Category::instance(), error_description( to_underlying( error ) ) )
         .WillOnce( Return( error_description.c_str() ) );
 
-    auto const result = stream.print( "{}", Error_Code{ error } );
+    auto const result = stream.print( Error_Code{ error } );
 
     ASSERT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), stream.string().size() );
@@ -745,7 +665,7 @@ TEST( outputFormatterErrorCodeEnum, putError )
         .WillOnce( Return( error_description.c_str() ) );
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.print( "{}", random<Mock_Error>() );
+    auto const result = stream.print( random<Mock_Error>() );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -772,7 +692,7 @@ TEST( outputFormatterErrorCodeEnum, worksProperly )
     EXPECT_CALL( Mock_Error_Category::instance(), error_description( to_underlying( error ) ) )
         .WillOnce( Return( error_description.c_str() ) );
 
-    auto const result = stream.print( "{}", error );
+    auto const result = stream.print( error );
 
     ASSERT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), stream.string().size() );

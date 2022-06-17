@@ -373,7 +373,7 @@ TEST( outputFormatterMACAddress, putError )
 
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.print( "{}", MAC_Address{ random_array<std::uint8_t, 6>() } );
+    auto const result = stream.print( MAC_Address{ random_array<std::uint8_t, 6>() } );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -394,7 +394,7 @@ TEST( outputFormatterMACAddress, worksProperly )
 
     auto const address = MAC_Address{ byte_array };
 
-    auto const result = stream.print( "{}", address );
+    auto const result = stream.print( address );
 
     ASSERT_TRUE( result.is_value() );
     EXPECT_EQ( result.value(), stream.string().size() );
