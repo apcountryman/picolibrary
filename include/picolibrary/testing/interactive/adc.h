@@ -69,7 +69,7 @@ void sample_blocking_single_sample_converter( Output_Stream & stream, Blocking_S
         delay();
 
         {
-            auto result = stream.print( Format::Decimal{ adc.sample().as_unsigned_integer() } );
+            auto result = stream.print( Format::Decimal{ adc.sample().as_unsigned_integer() }, '\n' );
             expect( not result.is_error(), result.error() );
         }
 
