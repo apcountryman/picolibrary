@@ -832,6 +832,136 @@ class Output_Stream : public Stream {
 };
 
 /**
+ * \brief Reliable I/O stream device access buffer (basic I/O operations.
+ */
+class Reliable_Stream_Buffer {
+  public:
+    /**
+     * \brief Write a character to the put area of the buffer.
+     *
+     * \param[in] character The character to write to the put area of the buffer.
+     */
+    virtual void put( char character ) noexcept = 0;
+
+    /**
+     * \brief Write a block of characters to the put area of the buffer.
+     *
+     * \param[in] begin The beginning of the block of characters to write to the put area
+     *            of the buffer.
+     * \param[in] end The end of the block of characters to write to the put area of the
+     *            buffer.
+     */
+    virtual void put( char const * begin, char const * end ) noexcept
+    {
+        ::picolibrary::for_each(
+            begin, end, [ this ]( auto character ) noexcept { put( character ); } );
+    }
+
+    /**
+     * \brief Write a null-terminated string to the put area of the buffer.
+     *
+     * \param[in] string The null-terminated string to write to the put area of the
+     *            buffer.
+     */
+    virtual void put( char const * string ) noexcept
+    {
+        while ( auto const character = *string++ ) { put( character ); } // while
+    }
+
+    /**
+     * \brief Write an unsigned byte to the put area of the buffer.
+     *
+     * \param[in] value The unsigned byte to write to the put area of the buffer.
+     */
+    virtual void put( std::uint8_t value ) noexcept = 0;
+
+    /**
+     * \brief Write a block of unsigned bytes to the put area of the buffer.
+     *
+     * \param[in] begin The beginning of the block of unsigned bytes to write to the put
+     *            area of the buffer.
+     * \param[in] end The end of the block of unsigned bytes to write to the put area of
+     *            the buffer.
+     */
+    virtual void put( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+    {
+        ::picolibrary::for_each(
+            begin, end, [ this ]( auto value ) noexcept { put( value ); } );
+    }
+
+    /**
+     * \brief Write a signed byte to the put area of the buffer.
+     *
+     * \param[in] value The signed byte to write to the put area of the buffer.
+     */
+    virtual void put( std::int8_t value ) noexcept = 0;
+
+    /**
+     * \brief Write a block of signed bytes to the put area of the buffer.
+     *
+     * \param[in] begin The beginning of the block of signed bytes to write to the put
+     *            area of the buffer.
+     * \param[in] end The end of the block of signed bytes to write to the put area of the
+     *            buffer.
+     */
+    virtual void put( std::int8_t const * begin, std::int8_t const * end ) noexcept
+    {
+        ::picolibrary::for_each(
+            begin, end, [ this ]( auto value ) noexcept { put( value ); } );
+    }
+
+    /**
+     * \brief Write any data that is buffered in the put area of the buffer to the device.
+     */
+    virtual void flush() noexcept = 0;
+
+  protected:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Reliable_Stream_Buffer() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Reliable_Stream_Buffer( Reliable_Stream_Buffer && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Reliable_Stream_Buffer( Reliable_Stream_Buffer const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Reliable_Stream_Buffer() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator         =( Reliable_Stream_Buffer && expression ) noexcept
+        -> Reliable_Stream_Buffer & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Reliable_Stream_Buffer const & expression ) noexcept
+        -> Reliable_Stream_Buffer & = default;
+};
+
+/**
  * \brief Character output formatter.
  */
 template<>
