@@ -256,6 +256,132 @@ class Output_String_Stream : public Output_Stream {
     String_Stream_Buffer m_buffer{};
 };
 
+/**
+ * \brief Mock reliable I/O stream device access buffer.
+ */
+class Mock_Reliable_Stream_Buffer : public Reliable_Stream_Buffer {
+  public:
+    Mock_Reliable_Stream_Buffer() = default;
+
+    Mock_Reliable_Stream_Buffer( Mock_Reliable_Stream_Buffer && ) = delete;
+
+    Mock_Reliable_Stream_Buffer( Mock_Reliable_Stream_Buffer const & ) = delete;
+
+    ~Mock_Reliable_Stream_Buffer() noexcept = default;
+
+    auto operator=( Mock_Reliable_Stream_Buffer && ) = delete;
+
+    auto operator=( Mock_Reliable_Stream_Buffer const & ) = delete;
+
+    MOCK_METHOD( void, put, (char), ( noexcept, override ) );
+    MOCK_METHOD( void, put, ( std::string ) );
+
+    void put( char const * begin, char const * end ) noexcept override
+    {
+        put( std::string{ begin, end } );
+    }
+
+    void put( char const * string ) noexcept override
+    {
+        put( std::string{ string } );
+    }
+
+    MOCK_METHOD( void, put, ( std::uint8_t ), ( noexcept, override ) );
+    MOCK_METHOD( void, put, (std::vector<std::uint8_t>));
+
+    void put( std::uint8_t const * begin, std::uint8_t const * end ) noexcept override
+    {
+        put( std::vector<std::uint8_t>{ begin, end } );
+    }
+
+    MOCK_METHOD( void, put, ( std::int8_t ), ( noexcept, override ) );
+    MOCK_METHOD( void, put, (std::vector<std::int8_t>));
+
+    void put( std::int8_t const * begin, std::int8_t const * end ) noexcept override
+    {
+        put( std::vector<std::int8_t>{ begin, end } );
+    }
+
+    MOCK_METHOD( void, flush, (), ( noexcept, override ) );
+};
+
+/**
+ * \brief Automated testing reliable string stream device access buffer.
+ */
+class Reliable_String_Stream_Buffer final : public Reliable_Stream_Buffer {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    Reliable_String_Stream_Buffer() = default;
+
+    Reliable_String_Stream_Buffer( Reliable_String_Stream_Buffer && ) = delete;
+
+    Reliable_String_Stream_Buffer( Reliable_String_Stream_Buffer const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Reliable_String_Stream_Buffer() noexcept = default;
+
+    auto operator=( Reliable_String_Stream_Buffer && ) = delete;
+
+    auto operator=( Reliable_String_Stream_Buffer const & ) = delete;
+
+    /**
+     * \brief Get the string abstracted by the device access buffer.
+     *
+     * \return The string abstracted by the device access buffer.
+     */
+    auto string() const noexcept -> std::string const &
+    {
+        return m_string;
+    }
+
+    /**
+     * \brief Write a character to the string.
+     *
+     * \param[in] character The character to write to the string.
+     */
+    void put( char character ) noexcept override final
+    {
+        m_string.push_back( character );
+    }
+
+    /**
+     * \brief Write an unsigned byte to the string.
+     *
+     * \param[in] value The unsigned byte to write to the string.
+     */
+    void put( std::uint8_t value ) noexcept override final
+    {
+        m_string.push_back( value );
+    }
+
+    /**
+     * \brief Write a signed byte to the string.
+     *
+     * \param[in] value The signed byte to write to the string.
+     */
+    void put( std::int8_t value ) noexcept override final
+    {
+        m_string.push_back( value );
+    }
+
+    /**
+     * \brief Do nothing.
+     */
+    void flush() noexcept override final
+    {
+    }
+
+  private:
+    /**
+     * \brief The string abstracted by the device access buffer.
+     */
+    std::string m_string{};
+};
+
 } // namespace picolibrary::Testing::Automated
 
 #endif // PICOLIBRARY_TESTING_AUTOMATED_STREAM_H
