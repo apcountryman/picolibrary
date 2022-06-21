@@ -832,7 +832,7 @@ class Output_Stream : public Stream {
 };
 
 /**
- * \brief Reliable I/O stream device access buffer (basic I/O operations.
+ * \brief Reliable I/O stream device access buffer.
  */
 class Reliable_Stream_Buffer {
   public:

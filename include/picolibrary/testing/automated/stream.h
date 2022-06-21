@@ -306,7 +306,7 @@ class Mock_Reliable_Stream_Buffer : public Reliable_Stream_Buffer {
 };
 
 /**
- * \brief Automated testing string stream device access buffer.
+ * \brief Automated testing reliable string stream device access buffer.
  */
 class Reliable_String_Stream_Buffer final : public Reliable_Stream_Buffer {
   public:
@@ -341,7 +341,7 @@ class Reliable_String_Stream_Buffer final : public Reliable_Stream_Buffer {
     /**
      * \brief Write a character to the string.
      *
-     * \param[in] character The character to write to the stream.
+     * \param[in] character The character to write to the string.
      */
     void put( char character ) noexcept override final
     {
