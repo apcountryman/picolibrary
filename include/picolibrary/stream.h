@@ -962,6 +962,206 @@ class Reliable_Stream_Buffer {
 };
 
 /**
+ * \brief Reliable I/O stream core (base class).
+ *
+ * This class performs the following I/O stream functions:
+ * - Stores the I/O stream's state information (end-of-file reached, I/O error present)
+ * - Associates the I/O stream with an I/O stream device access buffer
+ */
+class Reliable_Stream {
+  public:
+    /**
+     * \brief Check if the stream is nominal (no errors present and end-of-file has not
+     *        been reached).
+     *
+     * \return true if the stream is nominal.
+     * \return false if the stream is not nominal.
+     */
+    constexpr auto is_nominal() const noexcept -> bool
+    {
+        return not m_state;
+    }
+
+    /**
+     * \brief Check if errors are present (I/O error present).
+     *
+     * \return true if errors are present.
+     * \return false if no errors are present.
+     */
+    constexpr auto error_present() const noexcept -> bool
+    {
+        return m_state & Mask::ERROR_PRESENT;
+    }
+
+    /**
+     * \brief Check if end-of-file has been reached.
+     *
+     * \return true if end-of-file has been reached.
+     * \return false if end-of-file has not been reached.
+     */
+    constexpr auto end_of_file_reached() const noexcept -> bool
+    {
+        return m_state & Mask::END_OF_FILE_REACHED;
+    }
+
+    /**
+     * \brief Check if an I/O error is present.
+     *
+     * \return true if an I/O error is present.
+     * \return false if an I/O error is not present.
+     */
+    constexpr auto io_error_present() const noexcept -> bool
+    {
+        return m_state & Mask::IO_ERROR_PRESENT;
+    }
+
+    /**
+     * \brief Report an I/O error.
+     */
+    constexpr void report_io_error() noexcept
+    {
+        m_state |= Mask::IO_ERROR_PRESENT;
+    }
+
+    /**
+     * \brief Clear an I/O error.
+     */
+    constexpr void clear_io_error() noexcept
+    {
+        m_state &= ~Mask::IO_ERROR_PRESENT;
+    }
+
+    /**
+     * \brief Check if the I/O stream is associated with an I/O stream device access
+     *        buffer.
+     *
+     * \return true if the I/O stream is associated with an I/O stream device access
+     *         buffer.
+     * \return false if the I/O stream is not associated with an I/O stream device access
+     *         buffer.
+     */
+    constexpr auto buffer_is_set() const noexcept -> bool
+    {
+        return m_buffer;
+    }
+
+  protected:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Reliable_Stream() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Reliable_Stream( Reliable_Stream && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Reliable_Stream( Reliable_Stream const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Reliable_Stream() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Reliable_Stream && expression ) noexcept -> Reliable_Stream & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator  =( Reliable_Stream const & expression ) noexcept
+        -> Reliable_Stream & = default;
+
+    /**
+     * \brief Report that end-of-file has been reached.
+     */
+    constexpr void report_end_of_file_reached() noexcept
+    {
+        m_state |= Mask::END_OF_FILE_REACHED;
+    }
+
+    /**
+     * \brief Clear end-of-file reached report.
+     */
+    constexpr void clear_end_of_file_reached_report() noexcept
+    {
+        m_state &= ~Mask::END_OF_FILE_REACHED;
+    }
+
+    /**
+     * \brief Get the I/O stream device access buffer associated with the I/O stream.
+     *
+     * \brief The I/O stream device access buffer associated with the I/O stream.
+     */
+    constexpr auto buffer() noexcept -> Reliable_Stream_Buffer *
+    {
+        return m_buffer;
+    }
+
+    /**
+     * \brief Associate the I/O stream with an I/O stream device access buffer.
+     *
+     * \param[in] buffer The I/O stream device access buffer to associate the I/O stream
+     *            with.
+     */
+    constexpr void set_buffer( Reliable_Stream_Buffer * buffer ) noexcept
+    {
+        m_buffer = buffer;
+    }
+
+  private:
+    /**
+     * \brief State flags.
+     */
+    using State = std::uint_fast8_t;
+
+    /**
+     * \brief State flag bit positions.
+     */
+    enum Bit : std::uint_fast8_t {
+        END_OF_FILE_REACHED, ///< End-of-file reached.
+        IO_ERROR_PRESENT,    ///< I/O error present.
+    };
+
+    /**
+     * \brief State flag bit masks.
+     */
+    struct Mask {
+        static constexpr auto END_OF_FILE_REACHED = mask<State>( 1, Bit::END_OF_FILE_REACHED ); ///< End-of-file reached.
+        static constexpr auto IO_ERROR_PRESENT = mask<State>( 1, Bit::IO_ERROR_PRESENT ); ///< I/O error present.
+
+        static constexpr auto ERROR_PRESENT = IO_ERROR_PRESENT; ///< Error present.
+    };
+
+    /**
+     * \brief The I/O stream's state flags.
+     */
+    State m_state{};
+
+    /**
+     * \brief The I/O stream device access buffer associated with the I/O stream.
+     */
+    Reliable_Stream_Buffer * m_buffer{};
+};
+
+/**
  * \brief Character output formatter.
  */
 template<>
