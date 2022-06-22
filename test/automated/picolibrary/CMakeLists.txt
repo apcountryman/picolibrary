@@ -69,6 +69,9 @@ add_subdirectory( microchip )
 # build the picolibrary::Output_Stream automated tests
 add_subdirectory( output_stream )
 
+# build the picolibrary::Reliable_Stream automated tests
+add_subdirectory( reliable_stream )
+
 # build the picolibrary::Reliable_Stream_Buffer automated tests
 add_subdirectory( reliable_stream_buffer )
 
