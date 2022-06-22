@@ -38,6 +38,74 @@
 
 namespace picolibrary {
 
+class Output_Stream;
+
+/**
+ * \brief Output formatter.
+ *
+ * \tparam T The type to print.
+ *
+ * \attention This class must be fully or partially specialized for each type that will
+ *            support formatted output.
+ */
+template<typename T, typename = void>
+class Output_Formatter {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    Output_Formatter() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Output_Formatter( Output_Formatter && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    Output_Formatter( Output_Formatter const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Output_Formatter() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Output_Formatter && expression ) noexcept -> Output_Formatter & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Output_Formatter const & expression ) noexcept -> Output_Formatter & = default;
+
+    /**
+     * \brief Write the formatted value to the stream.
+     *
+     * \param[in] stream The stream to write the formatted value to.
+     * \param[in] value The value to format.
+     *
+     * \return The number of characters written to the stream if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto print( Output_Stream & stream, T const & value ) const noexcept
+        -> Result<std::size_t, Error_Code>;
+};
+
 /**
  * \brief I/O stream device access buffer.
  */
@@ -426,74 +494,6 @@ class Stream {
      * \brief The I/O stream device access buffer associated with the I/O stream.
      */
     Stream_Buffer * m_buffer{};
-};
-
-class Output_Stream;
-
-/**
- * \brief Output formatter.
- *
- * \tparam T The type to print.
- *
- * \attention This class must be fully or partially specialized for each type that will
- *            support formatted output.
- */
-template<typename T, typename = void>
-class Output_Formatter {
-  public:
-    /**
-     * \brief Constructor.
-     */
-    Output_Formatter() noexcept = default;
-
-    /**
-     * \brief Constructor.
-     *
-     * \param[in] source The source of the move.
-     */
-    Output_Formatter( Output_Formatter && source ) noexcept = default;
-
-    /**
-     * \brief Constructor.
-     *
-     * \param[in] original The original to copy.
-     */
-    Output_Formatter( Output_Formatter const & original ) noexcept = default;
-
-    /**
-     * \brief Destructor.
-     */
-    ~Output_Formatter() noexcept = default;
-
-    /**
-     * \brief Assignment operator.
-     *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
-     */
-    auto operator=( Output_Formatter && expression ) noexcept -> Output_Formatter & = default;
-
-    /**
-     * \brief Assignment operator.
-     *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
-     */
-    auto operator=( Output_Formatter const & expression ) noexcept -> Output_Formatter & = default;
-
-    /**
-     * \brief Write the formatted value to the stream.
-     *
-     * \param[in] stream The stream to write the formatted value to.
-     * \param[in] value The value to format.
-     *
-     * \return The number of characters written to the stream if the write succeeded.
-     * \return An error code if the write failed.
-     */
-    auto print( Output_Stream & stream, T const & value ) const noexcept
-        -> Result<std::size_t, Error_Code>;
 };
 
 /**
