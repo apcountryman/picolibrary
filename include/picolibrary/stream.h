@@ -40,6 +40,8 @@ namespace picolibrary {
 
 class Output_Stream;
 
+class Reliable_Output_Stream;
+
 /**
  * \brief Output formatter.
  *
@@ -104,6 +106,16 @@ class Output_Formatter {
      */
     auto print( Output_Stream & stream, T const & value ) const noexcept
         -> Result<std::size_t, Error_Code>;
+
+    /**
+     * \brief Write the formatted value to the stream.
+     *
+     * \param[in] stream The stream to write the formatted value to.
+     * \param[in] value The value to format.
+     *
+     * \return The number of characters written to the stream.
+     */
+    auto print( Reliable_Output_Stream & stream, T const & value ) const noexcept -> std::size_t;
 };
 
 /**
@@ -1162,6 +1174,253 @@ class Reliable_Stream {
 };
 
 /**
+ * \brief Reliable output stream.
+ */
+class Reliable_Output_Stream : public Reliable_Stream {
+  public:
+    /**
+     * \brief Write a character to the stream.
+     *
+     * \pre picolibrary::Reliable_Stream::is_nominal()
+     *
+     * \param[in] character The character to write to the stream.
+     */
+    void put( char character ) noexcept
+    {
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+
+        buffer()->put( character );
+    }
+
+    /**
+     * \brief Write a block of characters to the stream.
+     *
+     * \pre picolibrary::Reliable_Stream::is_nominal()
+     *
+     * \param[in] begin The beginning of the block of characters to write to the stream.
+     * \param[in] end The end of the block of characters to write to the stream.
+     */
+    void put( char const * begin, char const * end ) noexcept
+    {
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+
+        buffer()->put( begin, end );
+    }
+
+    /**
+     * \brief Write a null-terminated string to the stream.
+     *
+     * \pre picolibrary::Reliable_Stream::is_nominal()
+     *
+     * \oaram[in] string The null-terminated string to write to the stream.
+     */
+    void put( char const * string ) noexcept
+    {
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+
+        buffer()->put( string );
+    }
+
+    /**
+     * \brief Write an unsigned byte to the stream.
+     *
+     * \pre picolibrary::Reliable_Stream::is_nominal()
+     *
+     * \param[in] value The unsigned byte to write to the stream.
+     */
+    void put( std::uint8_t value ) noexcept
+    {
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+
+        buffer()->put( value );
+    }
+
+    /**
+     * \brief Write a block of unsigned bytes to the stream.
+     *
+     * \pre picolibrary::Reliable_Stream::is_nominal()
+     *
+     * \param[in] begin The beginning of the block of unsigned bytes to write to the
+     *            stream.
+     * \param[in] end The end of the block of unsigned bytes to write to the stream.
+     */
+    void put( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+    {
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+
+        buffer()->put( begin, end );
+    }
+
+    /**
+     * \brief Write a signed byte to the stream.
+     *
+     * \pre picolibrary::Reliable_Stream::is_nominal()
+     *
+     * \param[in] value The signed byte to write to the stream.
+     */
+    void put( std::int8_t value ) noexcept
+    {
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+
+        buffer()->put( value );
+    }
+
+    /**
+     * \brief Write a block of signed bytes to the stream.
+     *
+     * \pre picolibrary::Reliable_Stream::is_nominal()
+     *
+     * \param[in] begin The beginning of the block of signed bytes to write to the stream.
+     * \param[in] end The end of the block of signed bytes to write to the stream.
+     */
+    void put( std::int8_t const * begin, std::int8_t const * end ) noexcept
+    {
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+
+        buffer()->put( begin, end );
+    }
+
+    /**
+     * \brief Write formatted output to the stream.
+     *
+     * \pre picolibrary::Reliable_Stream::is_nominal()
+     *
+     * \tparam Types The types to print.
+     *
+     * \param[in] values The values to format. If a value is followed by an output
+     *            formatter, the output formatter will be used to format the value and
+     *            write the formatted value to the stream. If a value is not followed by
+     *            an output formatter, a default constructed output formatter will be used
+     *            to format the value and write the formatted value to the stream.
+     *
+     * \return The number of characters written to the stream.
+     */
+    template<typename... Types>
+    auto print( Types &&... values ) noexcept -> std::size_t
+    {
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+
+        return print_implementation( std::size_t{ 0 }, std::forward<Types>( values )... );
+    }
+
+    /**
+     * \brief Write any output that has been buffered to the device associated with the
+     *        stream.
+     *
+     * \pre picolibrary::Reliable_Stream::is_nominal()
+     */
+    void flush() noexcept
+    {
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+
+        buffer()->flush();
+    }
+
+  protected:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Reliable_Output_Stream() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Reliable_Output_Stream( Reliable_Output_Stream && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Reliable_Output_Stream( Reliable_Output_Stream const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Reliable_Output_Stream() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator         =( Reliable_Output_Stream && expression ) noexcept
+        -> Reliable_Output_Stream & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Reliable_Output_Stream const & expression ) noexcept
+        -> Reliable_Output_Stream & = default;
+
+  private:
+    /**
+     * \brief Write formatted output to the stream.
+     *
+     * \param[in] n The number of characters that have been written to the stream.
+     *
+     * \return The number of characters written to the stream.
+     */
+    auto print_implementation( std::size_t n ) noexcept -> std::size_t
+    {
+        return n;
+    }
+
+    /**
+     * \brief Write formatted output to the stream.
+     *
+     * \tparam Type The type to print.
+     * \tparam Types The types to print.
+     *
+     * \param[in] n The number of characters that have been written to the stream.
+     * \param[in] value The value to format.
+     * \param[in] formatter The output formatter to use to format the value and write the
+     *            formatted value to the stream.
+     * \param[in] values The values to format.
+     *
+     * \return The number of characters written to the stream.
+     */
+    template<typename Type, typename... Types>
+    auto print_implementation( std::size_t n, Type && value, Output_Formatter<std::decay_t<Type>> formatter, Types &&... values ) noexcept
+        -> std::size_t
+    {
+        return print_implementation(
+            n + formatter.print( *this, value ), std::forward<Types>( values )... );
+    }
+
+    /**
+     * \brief Write formatted output to the stream.
+     *
+     * \tparam Type The type to print.
+     * \tparam Types The types to print.
+     *
+     * \param[in] n The number of characters that have been written to the stream.
+     * \param[in] value The value to format.
+     * \param[in] values The values to format.
+     *
+     * \return The number of characters written to the stream.
+     */
+    template<typename Type, typename... Types>
+    auto print_implementation( std::size_t n, Type && value, Types &&... values ) noexcept
+        -> std::size_t
+    {
+        return print_implementation(
+            n,
+            std::forward<Type>( value ),
+            Output_Formatter<std::decay_t<Type>>{},
+            std::forward<Types>( values )... );
+    }
+};
+
+/**
  * \brief Character output formatter.
  */
 template<>
@@ -1225,6 +1484,21 @@ class Output_Formatter<char> {
         if ( result.is_error() ) {
             return result.error();
         } // if
+
+        return std::size_t{ 1 };
+    }
+
+    /**
+     * \brief Write the formatted character to the stream.
+     *
+     * \param[in] stream The stream to write the formatted character to.
+     * \param[in] character The character to format.
+     *
+     * \return The number of characters written to the stream.
+     */
+    auto print( Reliable_Output_Stream & stream, char character ) const noexcept -> std::size_t
+    {
+        stream.put( character );
 
         return std::size_t{ 1 };
     }
@@ -1298,6 +1572,21 @@ class Output_Formatter<char const *> {
 
         return std::strlen( string );
     }
+
+    /**
+     * \brief Write the formatted null-terminated string to the stream.
+     *
+     * \param[in] stream The stream to write the formatted null-terminated string to.
+     * \param[in] string The null-terminated string to format.
+     *
+     * \return The number of characters written to the stream.
+     */
+    auto print( Reliable_Output_Stream & stream, char const * string ) const noexcept -> std::size_t
+    {
+        stream.put( string );
+
+        return std::strlen( string );
+    }
 };
 
 /**
@@ -1355,6 +1644,16 @@ class Output_Formatter<Void> {
      * \return 0
      */
     constexpr auto print( Output_Stream &, Void ) const noexcept -> Result<std::size_t, Void>
+    {
+        return std::size_t{ 0 };
+    }
+
+    /**
+     * \brief Write nothing to the stream.
+     *
+     * \return 0
+     */
+    constexpr auto print( Reliable_Output_Stream &, Void ) const noexcept -> std::size_t
     {
         return std::size_t{ 0 };
     }
@@ -1420,6 +1719,19 @@ class Output_Formatter<Error_Code> {
      */
     auto print( Output_Stream & stream, Error_Code const & error ) const noexcept
         -> Result<std::size_t, Error_Code>
+    {
+        return stream.print( error.category().name(), "::", error.description() );
+    }
+
+    /**
+     * \brief Write the formatted picolibrary::Error_Code to the stream.
+     *
+     * \param[in] stream The stream to write the formatted picolibrary::Error_Code to.
+     * \param[in] error The picolibrary::Error_Code to format.
+     *
+     * \return The number of characters written to the stream.
+     */
+    auto print( Reliable_Output_Stream & stream, Error_Code const & error ) const noexcept -> std::size_t
     {
         return stream.print( error.category().name(), "::", error.description() );
     }

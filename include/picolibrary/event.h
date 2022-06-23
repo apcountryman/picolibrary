@@ -163,6 +163,29 @@ class Event {
     }
 #endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
 
+    /**
+     * \brief Write the event's details to a stream.
+     *
+     * \param[in] stream The stream to write the event's details to.
+     *
+     * \return 0.
+     */
+#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
+    virtual auto print_details( Reliable_Output_Stream & stream ) const noexcept -> std::size_t
+    {
+        static_cast<void>( stream );
+
+        return size_t{ 0 };
+    }
+#else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
+    constexpr auto print_details( Reliable_Output_Stream & stream ) const noexcept -> std::size_t
+    {
+        static_cast<void>( stream );
+
+        return size_t{ 0 };
+    }
+#endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
+
   protected:
     /**
      * \brief Constructor.
@@ -302,6 +325,20 @@ class Output_Formatter<Event> {
         }
 
         return characters_written;
+    }
+
+    /**
+     * \brief Write the formatted picolibrary::Event to the stream.
+     *
+     * \param[in] stream The stream to write the formatted picolibrary::Event to.
+     * \param[in] event The event to format.
+     *
+     * \return The number of characters written to the stream.
+     */
+    auto print( Reliable_Output_Stream & stream, Event const & event ) const noexcept -> std::size_t
+    {
+        return stream.print( event.category().name(), "::", event.description() )
+               + event.print_details( stream );
     }
 };
 

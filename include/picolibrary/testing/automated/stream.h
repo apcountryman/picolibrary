@@ -306,6 +306,38 @@ class Mock_Reliable_Stream_Buffer : public Reliable_Stream_Buffer {
 };
 
 /**
+ * \brief Mock reliable output stream.
+ */
+class Mock_Reliable_Output_Stream : public Reliable_Output_Stream {
+  public:
+    Mock_Reliable_Output_Stream()
+    {
+        set_buffer( &m_buffer );
+    }
+
+    Mock_Reliable_Output_Stream( Mock_Reliable_Output_Stream && ) = delete;
+
+    Mock_Reliable_Output_Stream( Mock_Reliable_Output_Stream const & ) = delete;
+
+    ~Mock_Reliable_Output_Stream() noexcept = default;
+
+    auto operator=( Mock_Reliable_Output_Stream && ) = delete;
+
+    auto operator=( Mock_Reliable_Output_Stream const & ) = delete;
+
+    using ::picolibrary::Reliable_Stream::clear_end_of_file_reached_report;
+    using ::picolibrary::Reliable_Stream::report_end_of_file_reached;
+
+    auto buffer() noexcept -> Mock_Reliable_Stream_Buffer &
+    {
+        return m_buffer;
+    }
+
+  private:
+    Mock_Reliable_Stream_Buffer m_buffer{};
+};
+
+/**
  * \brief Automated testing reliable string stream device access buffer.
  */
 class Reliable_String_Stream_Buffer final : public Reliable_Stream_Buffer {
@@ -380,6 +412,49 @@ class Reliable_String_Stream_Buffer final : public Reliable_Stream_Buffer {
      * \brief The string abstracted by the device access buffer.
      */
     std::string m_string{};
+};
+
+/**
+ * \brief Automated testing reliable output string stream.
+ */
+class Reliable_Output_String_Stream : public Reliable_Output_Stream {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    Reliable_Output_String_Stream()
+    {
+        set_buffer( &m_buffer );
+    }
+
+    Reliable_Output_String_Stream( Reliable_Output_String_Stream && ) = delete;
+
+    Reliable_Output_String_Stream( Reliable_Output_String_Stream const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Reliable_Output_String_Stream() noexcept = default;
+
+    auto operator=( Reliable_Output_String_Stream && ) = delete;
+
+    auto operator=( Reliable_Output_String_Stream const & ) = delete;
+
+    /**
+     * \brief Get the string abstracted by the stream.
+     *
+     * \return The string abstracted by the stream.
+     */
+    auto string() const noexcept -> std::string const &
+    {
+        return m_buffer.string();
+    }
+
+  private:
+    /**
+     * \brief The stream's device access buffer.
+     */
+    Reliable_String_Stream_Buffer m_buffer{};
 };
 
 } // namespace picolibrary::Testing::Automated
