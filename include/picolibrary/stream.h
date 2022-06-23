@@ -1392,6 +1392,7 @@ class Reliable_Output_Stream : public Reliable_Stream {
     auto print_implementation( std::size_t n, Type && value, Output_Formatter<std::decay_t<Type>> formatter, Types &&... values ) noexcept
         -> std::size_t
     {
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
         return print_implementation(
             n + formatter.print( *this, value ), std::forward<Types>( values )... );
     }
