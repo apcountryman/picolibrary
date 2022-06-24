@@ -323,43 +323,97 @@ class Output_Formatter<Format::Binary<Integer>> {
      * \brief Write the formatted picolibrary::Format::Binary to the stream.
      *
      * \param[in] stream The stream to write the formatted picolibrary::Format::Binary to.
-     * \param[in] value The integer to format.
+     * \param[in] integer The integer to format.
      *
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    // NOLINTNEXTLINE(readability-function-size)
-    auto print( Output_Stream & stream, Integer value ) const noexcept -> Result<std::size_t, Error_Code>
+    auto print( Output_Stream & stream, Integer integer ) const noexcept
+        -> Result<std::size_t, Error_Code>
     {
-        // #lizard forgives the length
+        auto const formatted_integer = format( integer );
 
-        using U = std::make_unsigned_t<Integer>;
+        auto result = stream.put( formatted_integer.begin(), formatted_integer.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
 
-        constexpr auto bits = std::numeric_limits<U>::digits;
+        return formatted_integer.size();
+    }
 
-        U u;
-        static_assert( sizeof( u ) == sizeof( value ) );
-        std::memcpy( &u, &value, sizeof( value ) );
+    /**
+     * \brief Write the formatted picolibrary::Format::Binary to the stream.
+     *
+     * \param[in] stream The stream to write the formatted picolibrary::Format::Binary to.
+     * \param[in] integer The integer to format.
+     *
+     * \return The number of characters written to the stream.
+     */
+    auto print( Reliable_Output_Stream & stream, Integer integer ) const noexcept
+    {
+        auto const formatted_integer = format( integer );
 
-        Array<char, 2 + bits> binary;
+        stream.put( formatted_integer.begin(), formatted_integer.end() );
 
-        auto i = binary.rbegin();
-        for ( auto bit = 0; bit < bits; ++bit ) {
-            *i = '0' + ( u & 0b1 );
+        return formatted_integer.size();
+    }
+
+  private:
+    /**
+     * \brief Unsigned integer.
+     */
+    using Unsigned_Integer = std::make_unsigned_t<Integer>;
+
+    /**
+     * \brief The number of bits in an unsigned integer.
+     */
+    static constexpr auto DIGITS = std::numeric_limits<Unsigned_Integer>::digits;
+
+    /**
+     * \brief Formatted integer.
+     */
+    using Formatted_Integer = Array<char, 2 + DIGITS>;
+
+    /**
+     * \brief Get an unsigned integer from a potentially signed integer.
+     *
+     * \param[in] integer The potentially signed integer to get the unsigned integer from.
+     *
+     * \return The unsigned integer.
+     */
+    static constexpr auto get_unsigned_integer( Integer integer ) noexcept -> Unsigned_Integer
+    {
+        Unsigned_Integer unsigned_integer;
+        static_assert( sizeof( Unsigned_Integer ) == sizeof( Integer ) );
+        std::memcpy( &unsigned_integer, &integer, sizeof( unsigned_integer ) );
+        return unsigned_integer;
+    }
+
+    /**
+     * \brief Format an integer.
+     *
+     * \param[in] integer The integer to format.
+     *
+     * \return The formatted integer.
+     */
+    static constexpr auto format( Integer integer ) noexcept -> Formatted_Integer
+    {
+        auto unsigned_integer = get_unsigned_integer( integer );
+
+        Formatted_Integer formatted_integer;
+
+        auto i = formatted_integer.rbegin();
+        for ( auto bit = 0; bit < DIGITS; ++bit ) {
+            *i = '0' + ( unsigned_integer & 0b1 );
 
             ++i;
-            u >>= 1;
+            unsigned_integer >>= 1;
         } // for
         *i = 'b';
         ++i;
         *i = '0';
 
-        auto result = stream.put( binary.begin(), binary.end() );
-        if ( result.is_error() ) {
-            return result.error();
-        } // if
-
-        return binary.size();
+        return formatted_integer;
     }
 };
 
@@ -419,28 +473,72 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_signed
      *
      * \param[in] stream The stream to write the formatted picolibrary::Format::Decimal
      *            to.
-     * \param[in] value The integer to format.
+     * \param[in] integer The integer to format.
      *
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    // NOLINTNEXTLINE(readability-function-size)
-    auto print( Output_Stream & stream, Integer value ) const noexcept -> Result<std::size_t, Error_Code>
+    auto print( Output_Stream & stream, Integer integer ) const noexcept
+        -> Result<std::size_t, Error_Code>
     {
-        // #lizard forgives the length
+        Formatted_Integer formatted_integer;
 
-        Array<char, 1 + std::numeric_limits<Integer>::digits10 + 1> decimal;
+        auto const begin = format( integer, formatted_integer );
 
-        auto is_negative = value < 0;
+        auto result = stream.put( begin, formatted_integer.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
 
-        auto i = decimal.rbegin();
+        return static_cast<std::size_t>( formatted_integer.end() - begin );
+    }
+
+    /**
+     * \brief Write the formatted picolibrary::Format::Decimal to the stream.
+     *
+     * \param[in] stream The stream to write the formatted picolibrary::Format::Decimal
+     *            to.
+     * \param[in] integer The integer to format.
+     *
+     * \return The number of characters written to the stream.
+     */
+    auto print( Reliable_Output_Stream & stream, Integer integer ) const noexcept -> std::size_t
+    {
+        Formatted_Integer formatted_integer;
+
+        auto const begin = format( integer, formatted_integer );
+
+        stream.put( begin, formatted_integer.end() );
+
+        return static_cast<std::size_t>( formatted_integer.end() - begin );
+    }
+
+  private:
+    /**
+     * \brief Formatted integer.
+     */
+    using Formatted_Integer = Array<char, 1 + std::numeric_limits<Integer>::digits10 + 1>;
+
+    /**
+     * \brief Format an integer.
+     *
+     * \param[in] integer The integer to format.
+     * \param[out] formatted_integer The array to write the formatted integer to.
+     *
+     * \return An iterator to the beginning of the formatted integer.
+     */
+    static constexpr auto format( Integer integer, Formatted_Integer & formatted_integer ) noexcept
+    {
+        auto is_negative = integer < 0;
+
+        auto i = formatted_integer.rbegin();
 
         do {
-            *i = '0' + std::abs( value % 10 );
+            *i = '0' + std::abs( integer % 10 );
 
             ++i;
-            value /= 10;
-        } while ( value );
+            integer /= 10;
+        } while ( integer );
 
         if ( is_negative ) {
             *i = '-';
@@ -448,12 +546,7 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_signed
             ++i;
         } // if
 
-        auto result = stream.put( i.base(), decimal.end() );
-        if ( result.is_error() ) {
-            return result.error();
-        } // if
-
-        return static_cast<std::size_t>( decimal.end() - i.base() );
+        return i.base();
     }
 };
 
@@ -513,29 +606,70 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_unsign
      *
      * \param[in] stream The stream to write the formatted picolibrary::Format::Decimal
      *            to.
-     * \param[in] value The integer to format.
+     * \param[in] integer The integer to format.
      *
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto print( Output_Stream & stream, Integer value ) const noexcept -> Result<std::size_t, Error_Code>
+    auto print( Output_Stream & stream, Integer integer ) const noexcept
+        -> Result<std::size_t, Error_Code>
     {
-        Array<char, std::numeric_limits<Integer>::digits10 + 1> decimal;
+        Formatted_Integer formatted_integer;
 
-        auto i = decimal.rbegin();
-        do {
-            *i = '0' + ( value % 10 );
+        auto const begin = format( integer, formatted_integer );
 
-            ++i;
-            value /= 10;
-        } while ( value );
-
-        auto result = stream.put( i.base(), decimal.end() );
+        auto result = stream.put( begin, formatted_integer.end() );
         if ( result.is_error() ) {
             return result.error();
         } // if
 
-        return static_cast<std::size_t>( decimal.end() - i.base() );
+        return static_cast<std::size_t>( formatted_integer.end() - begin );
+    }
+
+    /**
+     * \brief Write the formatted picolibrary::Format::Decimal to the stream.
+     *
+     * \param[in] stream The stream to write the formatted picolibrary::Format::Decimal
+     *            to.
+     * \param[in] integer The integer to format.
+     *
+     * \return The number of characters written to the stream.
+     */
+    auto print( Reliable_Output_Stream & stream, Integer integer ) const noexcept -> std::size_t
+    {
+        Formatted_Integer formatted_integer;
+
+        auto const begin = format( integer, formatted_integer );
+
+        stream.put( begin, formatted_integer.end() );
+
+        return static_cast<std::size_t>( formatted_integer.end() - begin );
+    }
+
+  private:
+    /**
+     * \brief Formatted integer.
+     */
+    using Formatted_Integer = Array<char, std::numeric_limits<Integer>::digits10 + 1>;
+
+    /**
+     * \brief Format an integer.
+     *
+     * \param[in] integer The integer to format.
+     * \param[in] formatted_integer The array to write the formatted integer to.
+     *
+     * \return An iterator to the beginning of the formatted integer.
+     */
+    static constexpr auto format( Integer integer, Formatted_Integer & formatted_integer ) noexcept
+    {
+        auto i = formatted_integer.rbegin();
+        do {
+            *i = '0' + ( integer % 10 );
+
+            ++i;
+            integer /= 10;
+        } while ( integer );
+        return i.base();
     }
 };
 
@@ -595,45 +729,110 @@ class Output_Formatter<Format::Hexadecimal<Integer>> {
      *
      * \param[in] stream The stream to write the formatted
      *            picolibrary::Format::Hexadecimal to.
-     * \param[in] value The integer to format.
+     * \param[in] integer The integer to format.
      *
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    // NOLINTNEXTLINE(readability-function-size)
-    auto print( Output_Stream & stream, Integer value ) const noexcept -> Result<std::size_t, Error_Code>
+    auto print( Output_Stream & stream, Integer integer ) const noexcept
+        -> Result<std::size_t, Error_Code>
     {
-        // #lizard forgives the length
+        auto const formatted_integer = format( integer );
 
-        using U = std::make_unsigned_t<Integer>;
+        auto result = stream.put( formatted_integer.begin(), formatted_integer.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
 
-        constexpr auto nibbles = std::numeric_limits<U>::digits / 4;
+        return formatted_integer.size();
+    }
 
-        U u;
-        static_assert( sizeof( u ) == sizeof( value ) );
-        std::memcpy( &u, &value, sizeof( value ) );
+    /**
+     * \brief Write the formatted picolibrary::Format::Hexadecimal to the stream.
+     *
+     * \param[in] stream The stream to write the formatted
+     *            picolibrary::Format::Hexadecimal to.
+     * \param[in] integer The integer to format.
+     *
+     * \return The number of characters written to the stream.
+     */
+    auto print( Reliable_Output_Stream & stream, Integer integer ) const noexcept -> std::size_t
+    {
+        auto const formatted_integer = format( integer );
 
-        Array<char, 2 + nibbles> hexadecimal;
+        stream.put( formatted_integer.begin(), formatted_integer.end() );
 
-        auto i = hexadecimal.rbegin();
-        for ( auto nibble = 0; nibble < nibbles; ++nibble ) {
-            auto const n = u & 0xF;
+        return formatted_integer.size();
+    }
+
+  private:
+    /**
+     * \brief Unsigned integer.
+     */
+    using Unsigned_Integer = std::make_unsigned_t<Integer>;
+
+    /**
+     * \brief The number of bits in a nibble.
+     */
+    static constexpr auto NIBBLE_DIGITS = 4;
+
+    /**
+     * \brief The largest value a nibble can hold.
+     */
+    static constexpr auto NIBBLE_MAX = std::uint_fast8_t{ 0xF };
+
+    /**
+     * \brief The number of nibbles in an unsigned integer.
+     */
+    static constexpr auto NIBBLES = std::numeric_limits<Unsigned_Integer>::digits / NIBBLE_DIGITS;
+
+    /**
+     * \brief Formatted integer.
+     */
+    using Formatted_Integer = Array<char, 2 + NIBBLES>;
+
+    /**
+     * \brief Get an unsigned integer from a potentially signed integer.
+     *
+     * \param[in] integer The potentially signed integer to get the unsigned integer from.
+     *
+     * \return The unsigned integer.
+     */
+    static constexpr auto get_unsigned_integer( Integer integer ) noexcept -> Unsigned_Integer
+    {
+        Unsigned_Integer unsigned_integer;
+        static_assert( sizeof( Unsigned_Integer ) == sizeof( Integer ) );
+        std::memcpy( &unsigned_integer, &integer, sizeof( unsigned_integer ) );
+        return unsigned_integer;
+    }
+
+    /**
+     * \brief Format an integer.
+     *
+     * \param[in] integer The integer to format.
+     *
+     * \return The formatted integer.
+     */
+    static constexpr auto format( Integer integer ) noexcept -> Formatted_Integer
+    {
+        auto unsigned_integer = get_unsigned_integer( integer );
+
+        Formatted_Integer formatted_integer;
+
+        auto i = formatted_integer.rbegin();
+        for ( auto nibble = 0; nibble < NIBBLES; ++nibble ) {
+            auto const n = unsigned_integer & NIBBLE_MAX;
 
             *i = n < 0xA ? '0' + n : 'A' + ( n - 0xA );
 
             ++i;
-            u >>= 4;
+            unsigned_integer >>= NIBBLE_DIGITS;
         } // for
         *i = 'x';
         ++i;
         *i = '0';
 
-        auto result = stream.put( hexadecimal.begin(), hexadecimal.end() );
-        if ( result.is_error() ) {
-            return result.error();
-        } // if
-
-        return hexadecimal.size();
+        return formatted_integer;
     }
 };
 

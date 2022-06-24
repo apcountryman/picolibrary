@@ -41,6 +41,7 @@ using ::picolibrary::Testing::Automated::Output_String_Stream;
 using ::picolibrary::Testing::Automated::random;
 using ::picolibrary::Testing::Automated::random_array;
 using ::picolibrary::Testing::Automated::random_unique_pair;
+using ::picolibrary::Testing::Automated::Reliable_Output_String_Stream;
 using ::testing::A;
 using ::testing::Return;
 
@@ -396,19 +397,36 @@ TEST( outputFormatterIPv4Address, printError )
  */
 TEST( outputFormatterIPv4Address, worksProperly )
 {
-    auto stream = Output_String_Stream{};
+    {
+        auto stream = Output_String_Stream{};
 
-    auto const byte_array = random_array<std::uint8_t, 4>();
+        auto const byte_array = random_array<std::uint8_t, 4>();
 
-    auto const address = Address{ byte_array };
+        auto const address = Address{ byte_array };
 
-    auto const result = stream.print( address );
+        auto const result = stream.print( address );
 
-    ASSERT_TRUE( result.is_value() );
-    EXPECT_EQ( result.value(), stream.string().size() );
+        ASSERT_TRUE( result.is_value() );
+        EXPECT_EQ( result.value(), stream.string().size() );
 
-    EXPECT_TRUE( stream.is_nominal() );
-    EXPECT_EQ( stream.string(), dot_decimal( byte_array ) );
+        EXPECT_TRUE( stream.is_nominal() );
+        EXPECT_EQ( stream.string(), dot_decimal( byte_array ) );
+    }
+
+    {
+        auto stream = Reliable_Output_String_Stream{};
+
+        auto const byte_array = random_array<std::uint8_t, 4>();
+
+        auto const address = Address{ byte_array };
+
+        auto const n = stream.print( address );
+
+        EXPECT_EQ( n, stream.string().size() );
+
+        EXPECT_TRUE( stream.is_nominal() );
+        EXPECT_EQ( stream.string(), dot_decimal( byte_array ) );
+    }
 }
 
 /**

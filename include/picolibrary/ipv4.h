@@ -421,6 +421,27 @@ class Output_Formatter<IPv4::Address> {
             '.',
             Format::Decimal{ address.as_byte_array()[ 3 ] } );
     }
+
+    /**
+     * \brief Write the formatted picolibrary::IPv4::Address to the stream.
+     *
+     * \param[in] stream The stream to write the formatted picolibrary::IPv4::Address to.
+     * \param[in] address The picolibrary::IPv4::Address to format.
+     *
+     * \return The number of characters written to the stream.
+     */
+    auto print( Reliable_Output_Stream & stream, IPv4::Address const & address ) const noexcept
+        -> std::size_t
+    {
+        return stream.print(
+            Format::Decimal{ address.as_byte_array()[ 0 ] },
+            '.',
+            Format::Decimal{ address.as_byte_array()[ 1 ] },
+            '.',
+            Format::Decimal{ address.as_byte_array()[ 2 ] },
+            '.',
+            Format::Decimal{ address.as_byte_array()[ 3 ] } );
+    }
 };
 
 } // namespace picolibrary

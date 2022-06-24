@@ -411,24 +411,102 @@ class Output_Formatter<MAC_Address> {
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    // NOLINTNEXTLINE(readability-function-size)
     auto print( Output_Stream & stream, MAC_Address const & address ) const noexcept
         -> Result<std::size_t, Error_Code>
     {
-        // #lizard forgives the length
+        auto const formatted_address = format( address );
 
-        constexpr auto address_bytes   = array_size_v<MAC_Address::Byte_Array>;
-        constexpr auto byte_nibbles    = std::numeric_limits<std::uint8_t>::digits / 4;
-        constexpr auto address_nibbles = address_bytes * byte_nibbles;
+        auto result = stream.put( formatted_address.begin(), formatted_address.end() );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
 
-        Array<char, address_nibbles + ( address_bytes - 1 )> formatted_address;
+        return formatted_address.size();
+    }
+
+    /**
+     * \brief Write the formatted picolibrary::MAC_Address to the stream.
+     *
+     * \param[in] stream The stream to write the formatted picolibrary::MAC_Address to.
+     * \param[in] address The picolibrary::MAC_Address to format.
+     *
+     * \return The number of characters written to the stream.
+     */
+    auto print( Reliable_Output_Stream & stream, MAC_Address const & address ) const noexcept
+        -> std::size_t
+    {
+        auto const formatted_address = format( address );
+
+        stream.put( formatted_address.begin(), formatted_address.end() );
+
+        return formatted_address.size();
+    }
+
+  private:
+    /**
+     * \brief The number of bits in a nibble.
+     */
+    static constexpr auto NIBBLE_DIGITS = 4;
+
+    /**
+     * \brief The largest value a nibble can hold.
+     */
+    static constexpr auto NIBBLE_MAX = std::uint_fast8_t{ 0xF };
+
+    /**
+     * \brief The number of bits in a byte.
+     */
+    static constexpr auto BYTE_DIGITS = std::numeric_limits<std::uint8_t>::digits;
+
+    /**
+     * \brief The number of nibbles in a byte.
+     */
+    static constexpr auto BYTE_NIBBLES = BYTE_DIGITS / NIBBLE_DIGITS;
+
+    /**
+     * \brief The number of bytes in a MAC address.
+     */
+    static constexpr auto ADDRESS_BYTES = array_size_v<MAC_Address::Byte_Array>;
+
+    /**
+     * \brief The number of nibbles in a MAC address.
+     */
+    static constexpr auto ADDRESS_NIBBLES = ADDRESS_BYTES * BYTE_NIBBLES;
+
+    /**
+     * \brief Formatted MAC address.
+     */
+    using Formatted_Address = Array<char, ADDRESS_NIBBLES + ( ADDRESS_BYTES - 1 )>;
+
+    /**
+     * \brief Get the pair of nibbles that make up a byte (most significant nibble first).
+     *
+     * \param[in] byte The byte to get the pair of nibbles from.
+     *
+     * \return The pair of nibbles that make up the byte (most significant nibble first).
+     */
+    static constexpr auto get_byte_nibbles( std::uint8_t byte ) noexcept
+    {
+        return Array<std::uint_fast8_t, BYTE_NIBBLES>{
+            static_cast<std::uint_fast8_t>( byte >> NIBBLE_DIGITS ),
+            static_cast<std::uint_fast8_t>( byte & NIBBLE_MAX ),
+        };
+    }
+
+    /**
+     * \brief Format a picolibrary::MAC_Address.
+     *
+     * \param[in] address The picolibrary::MAC_Address to format.
+     *
+     * \return The formatted picolibrary::MAC_Address.
+     */
+    static auto format( MAC_Address const & address ) noexcept -> Formatted_Address
+    {
+        Formatted_Address formatted_address;
 
         auto i = formatted_address.begin();
         for ( auto const byte : address.as_byte_array() ) {
-            auto const nibbles = Array<std::uint8_t, byte_nibbles>{
-                static_cast<std::uint8_t>( byte >> 4 ),
-                static_cast<std::uint8_t>( byte & 0xF ),
-            };
+            auto const nibbles = get_byte_nibbles( byte );
 
             for ( auto const nibble : nibbles ) {
                 *i = static_cast<char>( nibble < 0xA ? '0' + nibble : 'A' + ( nibble - 0xA ) );
@@ -443,12 +521,7 @@ class Output_Formatter<MAC_Address> {
             } // if
         }     // for
 
-        auto result = stream.put( formatted_address.begin(), formatted_address.end() );
-        if ( result.is_error() ) {
-            return result.error();
-        } // if
-
-        return formatted_address.size();
+        return formatted_address;
     }
 };
 
