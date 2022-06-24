@@ -485,7 +485,7 @@ class Output_Formatter<MAC_Address> {
      *
      * \return The pair of nibbles that make up the byte (most significant nibble first).
      */
-    static auto get_byte_nibbles( std::uint8_t byte ) noexcept
+    static constexpr auto get_byte_nibbles( std::uint8_t byte ) noexcept
     {
         return Array<std::uint_fast8_t, BYTE_NIBBLES>{
             static_cast<std::uint_fast8_t>( byte >> NIBBLE_DIGITS ),
@@ -500,7 +500,7 @@ class Output_Formatter<MAC_Address> {
      *
      * \return The formatted picolibrary::MAC_Address.
      */
-    static auto format( MAC_Address const & address ) noexcept -> Formatted_Address
+    static constexpr auto format( MAC_Address const & address ) noexcept -> Formatted_Address
     {
         Formatted_Address formatted_address;
 
