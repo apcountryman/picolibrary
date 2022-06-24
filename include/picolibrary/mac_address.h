@@ -500,7 +500,7 @@ class Output_Formatter<MAC_Address> {
      *
      * \return The formatted picolibrary::MAC_Address.
      */
-    static constexpr auto format( MAC_Address const & address ) noexcept -> Formatted_Address
+    static auto format( MAC_Address const & address ) noexcept -> Formatted_Address
     {
         Formatted_Address formatted_address;
 
