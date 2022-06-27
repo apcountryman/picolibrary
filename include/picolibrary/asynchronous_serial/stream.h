@@ -79,6 +79,53 @@ class Output_Stream_Concept : public Output_Stream {
 };
 
 /**
+ * \brief Reliable output stream concept.
+ *
+ * \tparam Transmitter The type of transmitter to abstract with the stream.
+ */
+template<typename Transmitter>
+class Reliable_Output_Stream_Concept : public Reliable_Output_Stream {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    Reliable_Output_Stream_Concept() noexcept;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] transmitter The transmitter to abstract with the stream.
+     */
+    Reliable_Output_Stream_Concept( Transmitter transmitter ) noexcept;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Reliable_Output_Stream_Concept( Reliable_Output_Stream_Concept && source ) noexcept;
+
+    Reliable_Output_Stream_Concept( Reliable_Output_Stream_Concept const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Reliable_Output_Stream_Concept() noexcept;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Reliable_Output_Stream_Concept && expression ) noexcept
+        -> Reliable_Output_Stream_Concept &;
+
+    auto operator=( Reliable_Output_Stream_Concept const & ) = delete;
+};
+
+/**
  * \brief Unbuffered output stream device access buffer.
  *
  * \tparam Transmitter The type of transmitter to abstract with the stream device access
