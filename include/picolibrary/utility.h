@@ -50,7 +50,7 @@ constexpr auto to_underlying( Enum value ) noexcept
  *
  * \param[in] integer The potentially signed integer to convert.
  *
- * \return The potentially signed integer converted tot its bitwise unsigned integer
+ * \return The potentially signed integer converted to its bitwise unsigned integer
  *         equivalent.
  */
 template<typename Integer>
