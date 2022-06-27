@@ -25,7 +25,6 @@
 
 #include <cstddef>
 #include <cstdlib>
-#include <cstring>
 #include <limits>
 #include <type_traits>
 
@@ -33,6 +32,7 @@
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
+#include "picolibrary/utility.h"
 
 /**
  * \brief Formatting facilities.
@@ -360,34 +360,14 @@ class Output_Formatter<Format::Binary<Integer>> {
 
   private:
     /**
-     * \brief Unsigned integer.
-     */
-    using Unsigned_Integer = std::make_unsigned_t<Integer>;
-
-    /**
      * \brief The number of bits in an unsigned integer.
      */
-    static constexpr auto DIGITS = std::numeric_limits<Unsigned_Integer>::digits;
+    static constexpr auto DIGITS = std::numeric_limits<std::make_unsigned_t<Integer>>::digits;
 
     /**
      * \brief Formatted integer.
      */
     using Formatted_Integer = Array<char, 2 + DIGITS>;
-
-    /**
-     * \brief Get an unsigned integer from a potentially signed integer.
-     *
-     * \param[in] integer The potentially signed integer to get the unsigned integer from.
-     *
-     * \return The unsigned integer.
-     */
-    static constexpr auto get_unsigned_integer( Integer integer ) noexcept -> Unsigned_Integer
-    {
-        Unsigned_Integer unsigned_integer;
-        static_assert( sizeof( Unsigned_Integer ) == sizeof( Integer ) );
-        std::memcpy( &unsigned_integer, &integer, sizeof( unsigned_integer ) );
-        return unsigned_integer;
-    }
 
     /**
      * \brief Format an integer.
@@ -398,7 +378,7 @@ class Output_Formatter<Format::Binary<Integer>> {
      */
     static constexpr auto format( Integer integer ) noexcept -> Formatted_Integer
     {
-        auto unsigned_integer = get_unsigned_integer( integer );
+        auto unsigned_integer = to_unsigned( integer );
 
         Formatted_Integer formatted_integer;
 
@@ -767,11 +747,6 @@ class Output_Formatter<Format::Hexadecimal<Integer>> {
 
   private:
     /**
-     * \brief Unsigned integer.
-     */
-    using Unsigned_Integer = std::make_unsigned_t<Integer>;
-
-    /**
      * \brief The number of bits in a nibble.
      */
     static constexpr auto NIBBLE_DIGITS = 4;
@@ -784,27 +759,12 @@ class Output_Formatter<Format::Hexadecimal<Integer>> {
     /**
      * \brief The number of nibbles in an unsigned integer.
      */
-    static constexpr auto NIBBLES = std::numeric_limits<Unsigned_Integer>::digits / NIBBLE_DIGITS;
+    static constexpr auto NIBBLES = std::numeric_limits<std::make_unsigned_t<Integer>>::digits / NIBBLE_DIGITS;
 
     /**
      * \brief Formatted integer.
      */
     using Formatted_Integer = Array<char, 2 + NIBBLES>;
-
-    /**
-     * \brief Get an unsigned integer from a potentially signed integer.
-     *
-     * \param[in] integer The potentially signed integer to get the unsigned integer from.
-     *
-     * \return The unsigned integer.
-     */
-    static constexpr auto get_unsigned_integer( Integer integer ) noexcept -> Unsigned_Integer
-    {
-        Unsigned_Integer unsigned_integer;
-        static_assert( sizeof( Unsigned_Integer ) == sizeof( Integer ) );
-        std::memcpy( &unsigned_integer, &integer, sizeof( unsigned_integer ) );
-        return unsigned_integer;
-    }
 
     /**
      * \brief Format an integer.
@@ -815,7 +775,7 @@ class Output_Formatter<Format::Hexadecimal<Integer>> {
      */
     static constexpr auto format( Integer integer ) noexcept -> Formatted_Integer
     {
-        auto unsigned_integer = get_unsigned_integer( integer );
+        auto unsigned_integer = to_unsigned( integer );
 
         Formatted_Integer formatted_integer;
 

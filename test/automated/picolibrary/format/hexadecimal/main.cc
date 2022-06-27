@@ -22,7 +22,6 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <cstring>
 #include <iomanip>
 #include <ios>
 #include <limits>
@@ -36,9 +35,11 @@
 #include "picolibrary/testing/automated/error.h"
 #include "picolibrary/testing/automated/random.h"
 #include "picolibrary/testing/automated/stream.h"
+#include "picolibrary/utility.h"
 
 namespace {
 
+using ::picolibrary::to_unsigned;
 using ::picolibrary::Format::Hexadecimal;
 using ::picolibrary::Testing::Automated::Mock_Error;
 using ::picolibrary::Testing::Automated::Mock_Output_Stream;
@@ -53,13 +54,7 @@ auto hexadecimal( Integer value ) -> std::string
 {
     using U = std::make_unsigned_t<Integer>;
 
-    auto const unsigned_value = [ value ]() {
-        U u;
-        static_assert( sizeof( u ) == sizeof( value ) );
-        std::memcpy( &u, &value, sizeof( value ) );
-
-        return u;
-    }();
+    auto const unsigned_value = to_unsigned( value );
 
     auto stream = std::ostringstream{};
 

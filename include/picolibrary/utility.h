@@ -23,6 +23,7 @@
 #ifndef PICOLIBRARY_UTILITY_H
 #define PICOLIBRARY_UTILITY_H
 
+#include <cstring>
 #include <type_traits>
 
 namespace picolibrary {
@@ -42,6 +43,23 @@ constexpr auto to_underlying( Enum value ) noexcept
     static_assert( std::is_enum_v<Enum> );
 
     return static_cast<std::underlying_type_t<Enum>>( value );
+}
+
+/**
+ * \brief Convert a potentially signed integer its bitwise unsigned integer equivalent.
+ *
+ * \param[in] integer The potentially signed integer to convert.
+ *
+ * \return The potentially signed integer converted to its bitwise unsigned integer
+ *         equivalent.
+ */
+template<typename Integer>
+constexpr auto to_unsigned( Integer integer ) noexcept
+{
+    std::make_unsigned_t<Integer> unsigned_integer;
+    static_assert( sizeof( unsigned_integer ) == sizeof( integer ) );
+    std::memcpy( &unsigned_integer, &integer, sizeof( unsigned_integer ) );
+    return unsigned_integer;
 }
 
 } // namespace picolibrary
