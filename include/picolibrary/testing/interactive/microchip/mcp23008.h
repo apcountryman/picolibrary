@@ -29,7 +29,6 @@
 #include "picolibrary/error.h"
 #include "picolibrary/i2c.h"
 #include "picolibrary/microchip/mcp23008.h"
-#include "picolibrary/stream.h"
 #include "picolibrary/testing/interactive/gpio.h"
 
 /**
@@ -40,6 +39,7 @@ namespace picolibrary::Testing::Interactive::Microchip::MCP23008 {
 /**
  * \brief Internally pulled-up input pin state interactive test helper.
  *
+ * \tparam Output_Stream The type of output stream to use.
  * \tparam Controller The type of controller used to communicate with the MCP23008.
  * \tparam Delayer A nullary functor called to introduce a delay each time the pin's state
  *         is gotten.
@@ -53,7 +53,7 @@ namespace picolibrary::Testing::Interactive::Microchip::MCP23008 {
  *
  * \pre writing to the stream succeeds
  */
-template<typename Controller, typename Delayer>
+template<typename Output_Stream, typename Controller, typename Delayer>
 void state(
     Output_Stream &                                         stream,
     Controller                                              controller,
