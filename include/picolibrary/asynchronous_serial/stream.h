@@ -526,6 +526,85 @@ class Reliable_Unbuffered_Output_Stream_Buffer final : public Reliable_Stream_Bu
     Transmitter m_transmitter{};
 };
 
+/**
+ * \brief Reliable unbuffered output stream.
+ *
+ * \tparam Transmitter The type of transmitter to abstract with the stream.
+ */
+template<typename Transmitter>
+class Reliable_Unbuffered_Output_Stream : public Reliable_Output_Stream {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Reliable_Unbuffered_Output_Stream() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] transmitter The transmitter to abstract with the stream.
+     */
+    constexpr Reliable_Unbuffered_Output_Stream( Transmitter transmitter ) noexcept :
+        m_buffer{ std::move( transmitter ) }
+    {
+        set_buffer( &m_buffer );
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Reliable_Unbuffered_Output_Stream( Reliable_Unbuffered_Output_Stream && source ) noexcept
+    {
+        if ( source.buffer_is_set() ) {
+            set_buffer( &m_buffer );
+
+            source.set_buffer( nullptr );
+        } // if
+    }
+
+    Reliable_Unbuffered_Output_Stream( Reliable_Unbuffered_Output_Stream const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Reliable_Unbuffered_Output_Stream() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Reliable_Unbuffered_Output_Stream && expression ) noexcept
+        -> Reliable_Unbuffered_Output_Stream &
+    {
+        if ( &expression != this ) {
+            m_buffer = std::move( expression.m_buffer );
+
+            if ( expression.buffer_is_set() ) {
+                set_buffer( &m_buffer );
+
+                expression.set_buffer( nullptr );
+            } else {
+                set_buffer( nullptr );
+            } // else
+        }     // if
+
+        return *this;
+    }
+
+    auto operator=( Reliable_Unbuffered_Output_Stream const & ) = delete;
+
+  private:
+    /**
+     * \brief The stream's device access buffer.
+     */
+    Reliable_Unbuffered_Output_Stream_Buffer<Transmitter> m_buffer{};
+};
+
 } // namespace picolibrary::Asynchronous_Serial
 
 #endif // PICOLIBRARY_ASYNCHRONOUS_SERIAL_STREAM_H
