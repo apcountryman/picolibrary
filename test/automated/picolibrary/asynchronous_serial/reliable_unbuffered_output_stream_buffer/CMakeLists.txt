@@ -20,16 +20,16 @@
 # automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
-        test-automated-picolibrary-asynchronous_serial-reliable_unbufferedoutput_stream_buffer
+        test-automated-picolibrary-asynchronous_serial-reliable_unbuffered_output_stream_buffer
         main.cc
     )
     target_link_libraries(
-        test-automated-picolibrary-asynchronous_serial-reliable_unbufferedoutput_stream_buffer
+        test-automated-picolibrary-asynchronous_serial-reliable_unbuffered_output_stream_buffer
         picolibrary
         picolibrary-testing-automated-fatal_error
     )
     add_test(
-        NAME    test-automated-picolibrary-asynchronous_serial-reliable_unbufferedoutput_stream_buffer
-        COMMAND test-automated-picolibrary-asynchronous_serial-reliable_unbufferedoutput_stream_buffer --gtest_color=yes
+        NAME    test-automated-picolibrary-asynchronous_serial-reliable_unbuffered_output_stream_buffer
+        COMMAND test-automated-picolibrary-asynchronous_serial-reliable_unbuffered_output_stream_buffer --gtest_color=yes
     )
 endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
