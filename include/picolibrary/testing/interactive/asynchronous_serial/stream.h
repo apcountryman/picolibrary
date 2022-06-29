@@ -25,7 +25,7 @@
 
 #include <utility>
 
-#include "picolibrary/precondition.h"
+#include "picolibrary/testing/interactive/stream.h"
 
 namespace picolibrary::Testing::Interactive::Asynchronous_Serial {
 
@@ -46,15 +46,7 @@ void hello_world( Transmitter transmitter ) noexcept
 
     auto stream = Output_Stream{ std::move( transmitter ) };
 
-    {
-        auto result = stream.put( "Hello, world!\n" );
-        expect( not result.is_error(), result.error() );
-    }
-
-    {
-        auto result = stream.flush();
-        expect( not result.is_error(), result.error() );
-    }
+    ::picolibrary::Testing::Interactive::hello_world( stream );
 }
 
 } // namespace picolibrary::Testing::Interactive::Asynchronous_Serial
