@@ -27,7 +27,6 @@
 #include <utility>
 
 #include "picolibrary/microchip/mcp23s08.h"
-#include "picolibrary/stream.h"
 #include "picolibrary/testing/interactive/gpio.h"
 
 /**
@@ -38,6 +37,7 @@ namespace picolibrary::Testing::Interactive::Microchip::MCP23S08 {
 /**
  * \brief Internally pulled-up input pin state interactive test helper.
  *
+ * \tparam Output_Stream The type of output stream to use.
  * \tparam Controller The type of controller used to communicate with the MCP23S08.
  * \tparam Device_Selector The type of device selector used to select and deselect the
  *         MCP23S08.
@@ -57,7 +57,7 @@ namespace picolibrary::Testing::Interactive::Microchip::MCP23S08 {
  *
  * \pre writing to the stream succeeds
  */
-template<typename Controller, typename Device_Selector, typename Delayer>
+template<typename Output_Stream, typename Controller, typename Device_Selector, typename Delayer>
 // NOLINTNEXTLINE(readability-function-size)
 void state(
     Output_Stream &                                         stream,

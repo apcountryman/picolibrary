@@ -66,6 +66,32 @@ void state( Output_Stream & stream, Input_Pin pin, Delayer delay ) noexcept
 }
 
 /**
+ * \brief GPIO input pin state interactive test helper.
+ *
+ * \tparam Input_Pin The type of input pin to get the state of.
+ * \tparam Delayer A nullary functor called to introduce a delay each time the pin's state
+ *         is gotten.
+ *
+ * \param[in] stream The output stream to write the pin state to.
+ * \param[in] pin The pin to get the state of.
+ * \param[in] delay The nullary functor to call to introduce a delay each time the pin's
+ *            state is gotten.
+ */
+template<typename Input_Pin, typename Delayer>
+void state( Reliable_Output_Stream & stream, Input_Pin pin, Delayer delay ) noexcept
+{
+    pin.initialize();
+
+    for ( ;; ) {
+        delay();
+
+        stream.put( pin.is_high() ? "high\n" : "low\n" );
+
+        stream.flush();
+    } // for
+}
+
+/**
  * \brief GPIO output pin toggle interactive test helper.
  *
  * \tparam Output_Pin The type of output pin to toggle.

@@ -81,6 +81,44 @@ void scan( Output_Stream & stream, Controller controller ) noexcept
     expect( not result.is_error(), result.error() );
 }
 
+/**
+ * \brief Controller bus scan interactive test helper.
+ *
+ * \tparam Controller The type of controller used to communicate with devices on the bus.
+ *
+ * \param[in] stream The output stream to write the scan results to.
+ * \param[in] controller The controller used to communicate with devices on the bus.
+ */
+template<typename Controller>
+void scan( Reliable_Output_Stream & stream, Controller controller ) noexcept
+{
+    controller.initialize();
+
+    auto devices_found = false;
+
+    ::picolibrary::I2C::scan(
+        controller,
+        [ &stream, &devices_found ](
+            ::picolibrary::I2C::Address_Numeric address, auto operation, auto response ) noexcept {
+            if ( response == ::picolibrary::I2C::Response::ACK ) {
+                devices_found = true;
+
+                stream.print(
+                    "device found: ",
+                    Format::Hexadecimal{ static_cast<std::uint8_t>( address.as_unsigned_integer() ) },
+                    " (",
+                    operation == ::picolibrary::I2C::Operation::READ ? 'R' : 'W',
+                    ")\n" );
+            } // if
+        } );
+
+    if ( not devices_found ) {
+        stream.put( "no devices found\n" );
+    } // if
+
+    stream.flush();
+}
+
 } // namespace picolibrary::Testing::Interactive::I2C
 
 #endif // PICOLIBRARY_TESTING_INTERACTIVE_I2C_H
