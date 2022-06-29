@@ -90,8 +90,11 @@ void scan( Output_Stream & stream, Controller controller ) noexcept
  * \param[in] controller The controller used to communicate with devices on the bus.
  */
 template<typename Controller>
+// NOLINTNEXTLINE(readability-function-size)
 void scan( Reliable_Output_Stream & stream, Controller controller ) noexcept
 {
+    // #lizard forgives the length
+
     controller.initialize();
 
     auto devices_found = false;
