@@ -32,6 +32,8 @@ namespace picolibrary::Testing::Interactive {
  * \brief Output stream hello world interactive test helper.
  *
  * \param[in] stream The output stream to write "Hello, world!\n" to.
+ *
+ * \pre writing to the stream succeeds
  */
 inline void hello_world( Output_Stream & stream ) noexcept
 {
