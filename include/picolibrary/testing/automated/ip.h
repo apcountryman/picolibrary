@@ -23,6 +23,24 @@
 #ifndef PICOLIBRARY_TESTING_AUTOMATED_IP_H
 #define PICOLIBRARY_TESTING_AUTOMATED_IP_H
 
+#include "picolibrary/ip.h"
+#include "picolibrary/testing/automated/random.h"
+
+namespace picolibrary::Testing::Automated {
+
+/**
+ * \brief Generate a pseudo-random picolibrary::IP::Version.
+ *
+ * \return A pseudo-randomly generated picolibrary::IP::Version.
+ */
+template<>
+inline auto random<IP::Version>() -> IP::Version
+{
+    return random<bool>() ? IP::Version::UNSPECIFIED : IP::Version::_4;
+}
+
+} // namespace picolibrary::Testing::Automated
+
 /**
  * \brief Internet Protocol (IP) automated testing facilities.
  */
