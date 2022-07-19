@@ -54,6 +54,7 @@ class Address {
     /**
      * \brief Constructor.
      */
+    // NOLINTNEXTLINE(modernize-use-equals-default)
     constexpr Address() noexcept
     {
     }
