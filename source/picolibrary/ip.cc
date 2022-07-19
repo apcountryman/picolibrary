@@ -21,3 +21,13 @@
  */
 
 #include "picolibrary/ip.h"
+
+#include <type_traits>
+
+#include "picolibrary/ipv4.h"
+
+namespace picolibrary::IPv4 {
+
+static_assert( std::is_trivially_destructible_v<Address> );
+
+} // namespace picolibrary::IPv4
