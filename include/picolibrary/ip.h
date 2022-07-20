@@ -210,7 +210,7 @@ class Address {
      * \return false if the stored address is not an address that is used to represent any
      *         address.
      */
-    constexpr auto is_any() const noexcept
+    constexpr auto is_any() const noexcept -> bool
     {
         switch ( m_version ) {
             case Version::_4: return m_ipv4_address.is_any();
@@ -224,7 +224,7 @@ class Address {
      * \return true if the stored address is a loopback address.
      * \return false if the stored address is not a loopback address.
      */
-    constexpr auto is_loopback() const noexcept
+    constexpr auto is_loopback() const noexcept -> bool
     {
         switch ( m_version ) {
             case Version::_4: return m_ipv4_address.is_loopback();
@@ -238,7 +238,7 @@ class Address {
      * \return true if the stored address is a multicast address.
      * \return false if the stored address is not a multicast address.
      */
-    constexpr auto is_multicast() const noexcept
+    constexpr auto is_multicast() const noexcept -> bool
     {
         switch ( m_version ) {
             case Version::_4: return m_ipv4_address.is_multicast();
@@ -455,7 +455,7 @@ class Output_Formatter<IP::Address> {
     {
         if ( address.is_any() ) {
             return stream.print( "ANY" );
-        } // switch
+        } // if
 
         switch ( address.version() ) {
             case IP::Version::_4: return stream.print( address.ipv4() );
@@ -476,7 +476,7 @@ class Output_Formatter<IP::Address> {
     {
         if ( address.is_any() ) {
             return stream.print( "ANY" );
-        } // switch
+        } // if
 
         switch ( address.version() ) {
             case IP::Version::_4: return stream.print( address.ipv4() );
