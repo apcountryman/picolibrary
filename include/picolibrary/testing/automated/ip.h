@@ -24,6 +24,8 @@
 #define PICOLIBRARY_TESTING_AUTOMATED_IP_H
 
 #include "picolibrary/ip.h"
+#include "picolibrary/ipv4.h"
+#include "picolibrary/testing/automated/ipv4.h"
 #include "picolibrary/testing/automated/random.h"
 
 namespace picolibrary::Testing::Automated {
@@ -37,6 +39,20 @@ template<>
 inline auto random<IP::Version>() -> IP::Version
 {
     return random<bool>() ? IP::Version::UNSPECIFIED : IP::Version::_4;
+}
+
+/**
+ * \brief Generate a pseudo-random picolibrary::IP::Address.
+ *
+ * \return A pseudo-randomly generated picolibrary::IP::Address.
+ */
+template<>
+inline auto random<IP::Address>() -> IP::Address
+{
+    switch ( random<IP::Version>() ) {
+        case IP::Version::_4: return random<::picolibrary::IPv4::Address>();
+        default: return {};
+    } // switch
 }
 
 } // namespace picolibrary::Testing::Automated
