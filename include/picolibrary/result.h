@@ -79,6 +79,8 @@ template<>
 class [[nodiscard]] Result<Void, Void, true> final
 {
   public:
+    static_assert( std::is_trivially_destructible_v<Void> );
+
     /**
      * \brief Operation succeeded result type.
      */
@@ -183,6 +185,9 @@ template<>
 class [[nodiscard]] Result<Void, Error_Code, true> final
 {
   public:
+    static_assert( std::is_trivially_destructible_v<Void> );
+    static_assert( std::is_trivially_destructible_v<Error_Code> );
+
     /**
      * \brief Operation succeeded result type.
      */
@@ -831,6 +836,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
 {
   public:
     static_assert( std::is_trivially_destructible_v<Value_Type> );
+    static_assert( std::is_trivially_destructible_v<Error_Code> );
 
     /**
      * \brief Operation succeeded result type.
@@ -1174,6 +1180,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
 {
   public:
     static_assert( not std::is_trivially_destructible_v<Value_Type> );
+    static_assert( std::is_trivially_destructible_v<Error_Code> );
 
     /**
      * \brief Operation succeeded result type.

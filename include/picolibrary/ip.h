@@ -26,6 +26,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <new>
+#include <type_traits>
 #include <utility>
 
 #include "picolibrary/error.h"
@@ -51,6 +52,8 @@ enum class Version : std::uint_fast8_t {
  */
 class Address {
   public:
+    static_assert( std::is_trivially_destructible_v<IPv4::Address> );
+
     /**
      * \brief Constructor.
      */
