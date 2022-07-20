@@ -13,10 +13,21 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary::IP automated tests CMake rules.
-
-# build the picolibrary::IP::Address automated tests
-add_subdirectory( address )
+# Description: picolibrary::IP::Port automated tests CMake rules.
 
 # build the picolibrary::IP::Port automated tests
-add_subdirectory( port )
+if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
+    add_executable(
+        test-automated-picolibrary-ip-port
+        main.cc
+    )
+    target_link_libraries(
+        test-automated-picolibrary-ip-port
+        picolibrary
+        picolibrary-testing-automated-fatal_error
+    )
+    add_test(
+        NAME    test-automated-picolibrary-ip-port
+        COMMAND test-automated-picolibrary-ip-port --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
