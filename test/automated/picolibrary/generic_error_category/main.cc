@@ -49,7 +49,6 @@ TEST( errorDescription, worksProperly )
         { Generic_Error::BUS_ERROR,                        "BUS_ERROR"                        },
         { Generic_Error::INSUFFICIENT_CAPACITY,            "INSUFFICIENT_CAPACITY"            },
         { Generic_Error::INVALID_ARGUMENT,                 "INVALID_ARGUMENT"                 },
-        { Generic_Error::INVALID_FORMAT,                   "INVALID_FORMAT"                   },
         { Generic_Error::IO_STREAM_DEGRADED,               "IO_STREAM_DEGRADED"               },
         { Generic_Error::LOGIC_ERROR,                      "LOGIC_ERROR"                      },
         { Generic_Error::NONRESPONSIVE_DEVICE,             "NONRESPONSIVE_DEVICE"             },

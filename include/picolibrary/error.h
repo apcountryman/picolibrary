@@ -354,7 +354,6 @@ enum class Generic_Error : Error_ID {
     BUS_ERROR,                        ///< Bus error.
     INSUFFICIENT_CAPACITY,            ///< Insufficient capacity.
     INVALID_ARGUMENT,                 ///< Invalid argument.
-    INVALID_FORMAT,                   ///< Invalid format.
     IO_STREAM_DEGRADED,               ///< I/O stream degraded.
     LOGIC_ERROR,                      ///< Logic error.
     NONRESPONSIVE_DEVICE,             ///< Nonresponsive device.
@@ -417,7 +416,6 @@ class Generic_Error_Category final : public Error_Category {
             case Generic_Error::BUS_ERROR: return "BUS_ERROR";
             case Generic_Error::INSUFFICIENT_CAPACITY: return "INSUFFICIENT_CAPACITY";
             case Generic_Error::INVALID_ARGUMENT: return "INVALID_ARGUMENT";
-            case Generic_Error::INVALID_FORMAT: return "INVALID_FORMAT";
             case Generic_Error::IO_STREAM_DEGRADED: return "IO_STREAM_DEGRADED";
             case Generic_Error::LOGIC_ERROR: return "LOGIC_ERROR";
             case Generic_Error::NONRESPONSIVE_DEVICE: return "NONRESPONSIVE_DEVICE";
