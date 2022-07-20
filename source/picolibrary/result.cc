@@ -21,15 +21,3 @@
  */
 
 #include "picolibrary/result.h"
-
-#include <type_traits>
-
-#include "picolibrary/error.h"
-#include "picolibrary/void.h"
-
-namespace picolibrary {
-
-static_assert( std::is_trivially_destructible_v<Error_Code> );
-static_assert( std::is_trivially_destructible_v<Void> );
-
-} // namespace picolibrary
