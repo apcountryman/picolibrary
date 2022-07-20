@@ -341,6 +341,35 @@ TEST( assignmentOperatorMove, worksProperly )
         EXPECT_EQ( expression.is_loopback(), object.is_loopback() );
         EXPECT_EQ( expression.is_multicast(), object.is_multicast() );
     }
+
+    {
+        auto address = Address{};
+
+        address = std::move( address );
+
+        EXPECT_EQ( address.version(), Version::UNSPECIFIED );
+        EXPECT_TRUE( address.is_unspecified() );
+        EXPECT_FALSE( address.is_ipv4() );
+        EXPECT_TRUE( address.is_any() );
+        EXPECT_FALSE( address.is_loopback() );
+        EXPECT_FALSE( address.is_multicast() );
+    }
+
+    {
+        auto const ipv4_address = random<IPv4_Address>();
+
+        auto address = Address{ ipv4_address };
+
+        address = std::move( address );
+
+        EXPECT_EQ( address.version(), Version::_4 );
+        EXPECT_FALSE( address.is_unspecified() );
+        EXPECT_TRUE( address.is_ipv4() );
+        EXPECT_EQ( address.is_any(), ipv4_address.is_any() );
+        EXPECT_EQ( address.is_loopback(), ipv4_address.is_loopback() );
+        EXPECT_EQ( address.is_multicast(), ipv4_address.is_multicast() );
+        EXPECT_EQ( address.ipv4(), ipv4_address );
+    }
 }
 
 /**
@@ -439,6 +468,35 @@ TEST( assignmentOperatorCopy, worksProperly )
         EXPECT_EQ( expression.is_any(), object.is_any() );
         EXPECT_EQ( expression.is_loopback(), object.is_loopback() );
         EXPECT_EQ( expression.is_multicast(), object.is_multicast() );
+    }
+
+    {
+        auto address = Address{};
+
+        address = address;
+
+        EXPECT_EQ( address.version(), Version::UNSPECIFIED );
+        EXPECT_TRUE( address.is_unspecified() );
+        EXPECT_FALSE( address.is_ipv4() );
+        EXPECT_TRUE( address.is_any() );
+        EXPECT_FALSE( address.is_loopback() );
+        EXPECT_FALSE( address.is_multicast() );
+    }
+
+    {
+        auto const ipv4_address = random<IPv4_Address>();
+
+        auto address = Address{ ipv4_address };
+
+        address = address;
+
+        EXPECT_EQ( address.version(), Version::_4 );
+        EXPECT_FALSE( address.is_unspecified() );
+        EXPECT_TRUE( address.is_ipv4() );
+        EXPECT_EQ( address.is_any(), ipv4_address.is_any() );
+        EXPECT_EQ( address.is_loopback(), ipv4_address.is_loopback() );
+        EXPECT_EQ( address.is_multicast(), ipv4_address.is_multicast() );
+        EXPECT_EQ( address.ipv4(), ipv4_address );
     }
 }
 
