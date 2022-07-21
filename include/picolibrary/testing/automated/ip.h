@@ -55,6 +55,48 @@ inline auto random<IP::Address>() -> IP::Address
     } // switch
 }
 
+/**
+ * \brief Generate a pseudo-random picolibrary::IP::Port within the specified range.
+ *
+ * \param[in] min The lower bound of the allowable range.
+ * \param[in] max The upper bound of the allowable range.
+ *
+ * \return A pseudo-random picolibrary::IP::Port in the range [min,max].
+ */
+template<>
+inline auto random<IP::Port>( IP::Port min, IP::Port max ) -> IP::Port
+{
+    return IP::Port{ random<IP::Port::Unsigned_Integer>(
+        min.as_unsigned_integer(), max.as_unsigned_integer() ) };
+}
+
+/**
+ * \brief Generate a pseudo-random picolibrary::IP::Port greater than or equal to a
+ *        minimum picolibrary::IP::Port.
+ *
+ * \param[in] min The lower bound of the allowable range.
+ *
+ * \return A pseudo-random picolibrary::IP::Port in the range
+ *         [min,picolibrary::IP::Port::max()].
+ */
+template<>
+inline auto random<IP::Port>( IP::Port min ) -> IP::Port
+{
+    return random<IP::Port>( min, IP::Port::max() );
+}
+
+/**
+ * \brief Generate a pseudo-random picolibrary::IP::Port.
+ *
+ * \return A pseudo-random picolibrary::IP::Port in the range
+ *         [picolibrary::IP::Port::min(),picolibrary::IP::Port::max()].
+ */
+template<>
+inline auto random<IP::Port>() -> IP::Port
+{
+    return random<IP::Port>( IP::Port::min(), IP::Port::max() );
+}
+
 } // namespace picolibrary::Testing::Automated
 
 /**

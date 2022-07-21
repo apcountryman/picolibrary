@@ -25,11 +25,13 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <limits>
 #include <new>
 #include <type_traits>
 #include <utility>
 
 #include "picolibrary/error.h"
+#include "picolibrary/format.h"
 #include "picolibrary/ipv4.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
@@ -391,6 +393,224 @@ constexpr auto operator>=( Address const & lhs, Address const & rhs ) noexcept -
     return not( lhs < rhs );
 }
 
+/**
+ * \brief Protocol port number.
+ */
+class Port {
+  public:
+    /**
+     * \brief Port number unsigned integer representation.
+     */
+    using Unsigned_Integer = std::uint16_t;
+
+    /**
+     * \brief Get the minimum valid port number.
+     *
+     * \return The minimum valid port number.
+     */
+    static constexpr auto min() noexcept -> Port
+    {
+        return Port{ std::numeric_limits<Unsigned_Integer>::min() };
+    }
+
+    /**
+     * \brief Get the maximum valid port number.
+     *
+     * \return The maximum valid port number.
+     */
+    static constexpr auto max() noexcept -> Port
+    {
+        return Port{ std::numeric_limits<Unsigned_Integer>::max() };
+    }
+
+    /**
+     * \brief Get the port number that is used to represent any port number.
+     *
+     * \return The port number that is used to represent any port number.
+     */
+    static constexpr auto any() noexcept -> Port
+    {
+        return Port{ 0 };
+    }
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Port() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] port The port number.
+     */
+    constexpr Port( Unsigned_Integer port ) noexcept : m_port{ port }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Port( Port && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Port( Port const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Port() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Port && expression ) noexcept -> Port & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Port const & expression ) noexcept -> Port & = default;
+
+    /**
+     * \brief Check if the port number is the port number that is used to represent any
+     *        port number (0).
+     *
+     * \return true if the port number is the port number that is used to represent any
+     *         port number.
+     * \return false if the port number is not the port number that is used to represent
+     *         any port number.
+     */
+    constexpr auto is_any() const noexcept -> bool
+    {
+        return m_port == any().as_unsigned_integer();
+    }
+
+    /**
+     * \brief Get the port number in its unsigned integer representation.
+     *
+     * \return The port number in its unsigned integer representation.
+     */
+    constexpr auto as_unsigned_integer() const noexcept -> Unsigned_Integer
+    {
+        return m_port;
+    }
+
+  private:
+    /**
+     * \brief The port number in its unsigned integer representation.
+     */
+    Unsigned_Integer m_port{};
+};
+
+/**
+ * \brief Equality operator.
+ *
+ * \relatedalso picolibrary::IP::Port
+ *
+ * \param[in] lhs The left hand side of the comparison.
+ * \param[in] rhs The right hand side of the comparison.
+ *
+ * \return true if lhs is equal to rhs.
+ * \return false if lhs is not equal to rhs.
+ */
+constexpr auto operator==( Port lhs, Port rhs ) noexcept -> bool
+{
+    return lhs.as_unsigned_integer() == rhs.as_unsigned_integer();
+}
+
+/**
+ * \brief Inequality operator.
+ *
+ * \relatedalso picolibrary::IP::Port
+ *
+ * \param[in] lhs The left hand side of the comparison.
+ * \param[in] rhs The right hand side of the comparison.
+ *
+ * \return true if lhs is not equal to rhs.
+ * \return false if lhs is equal to rhs.
+ */
+constexpr auto operator!=( Port lhs, Port rhs ) noexcept -> bool
+{
+    return not( lhs == rhs );
+}
+
+/**
+ * \brief Less than operator.
+ *
+ * \relatedalso picolibrary::IP::Port
+ *
+ * \param[in] lhs The left hand side of the comparison.
+ * \param[in] rhs The right hand side of the comparison.
+ *
+ * \return true if lhs is less than rhs.
+ * \return false if lhs is not less than rhs.
+ */
+constexpr auto operator<( Port lhs, Port rhs ) noexcept -> bool
+{
+    return lhs.as_unsigned_integer() < rhs.as_unsigned_integer();
+}
+
+/**
+ * \brief Greater than operator.
+ *
+ * \relatedalso picolibrary::IP::Port
+ *
+ * \param[in] lhs The left hand side of the comparison.
+ * \param[in] rhs The right hand side of the comparison.
+ *
+ * \return true if lhs is greater than rhs.
+ * \return false if lhs is not greater than rhs.
+ */
+constexpr auto operator>( Port lhs, Port rhs ) noexcept -> bool
+{
+    return rhs < lhs;
+}
+
+/**
+ * \brief Less than or equal to operator.
+ *
+ * \relatedalso picolibrary::IP::Port
+ *
+ * \param[in] lhs The left hand side of the comparison.
+ * \param[in] rhs The right hand side of the comparison.
+ *
+ * \return true if lhs is less than or equal to rhs.
+ * \return false if lhs is not less than or equal to rhs.
+ */
+constexpr auto operator<=( Port lhs, Port rhs ) noexcept -> bool
+{
+    return not( lhs > rhs );
+}
+
+/**
+ * \brief Greater than or equal to operator.
+ *
+ * \relatedalso picolibrary::IP::Port
+ *
+ * \param[in] lhs The left hand side of the comparison.
+ * \param[in] rhs The right hand side of the comparison.
+ *
+ * \return true if lhs is greater than or equal to rhs.
+ * \return false if lhs is not greater than or equal to rhs.
+ */
+constexpr auto operator>=( Port lhs, Port rhs ) noexcept -> bool
+{
+    return not( lhs < rhs );
+}
+
 } // namespace picolibrary::IP
 
 namespace picolibrary {
@@ -485,6 +705,83 @@ class Output_Formatter<IP::Address> {
             case IP::Version::_4: return stream.print( address.ipv4() );
             default: return std::size_t{ 0 };
         } // switch
+    }
+};
+
+/**
+ * \brief picolibrary::IP::Port output formatter.
+ */
+template<>
+class Output_Formatter<IP::Port> {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Output_Formatter() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Output_Formatter( Output_Formatter && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Output_Formatter( Output_Formatter const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Output_Formatter() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Output_Formatter && expression ) noexcept -> Output_Formatter & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator   =( Output_Formatter const & expression ) noexcept
+        -> Output_Formatter & = default;
+
+    /**
+     * \brief Write the formatted picolibrary::IP::Port to the stream.
+     *
+     * \param[in] stream The stream to write the formatted picolibrary::IP::Port to.
+     * \param[in] port The picolibrary::IP::Port to format.
+     *
+     * \return The number of characters written to the stream if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto print( Output_Stream & stream, IP::Port port ) const noexcept -> Result<std::size_t, Error_Code>
+    {
+        return stream.print( Format::Decimal{ port.as_unsigned_integer() } );
+    }
+
+    /**
+     * \brief Write the formatted picolibrary::IP::Port to the stream.
+     *
+     * \param[in] stream The stream to write the formatted picolibrary::IP::Port to.
+     * \param[in] port The picolibrary::IP::Port to format.
+     *
+     * \return The number of characters written to the stream.
+     */
+    auto print( Reliable_Output_Stream & stream, IP::Port port ) const noexcept -> std::size_t
+    {
+        return stream.print( Format::Decimal{ port.as_unsigned_integer() } );
     }
 };
 
