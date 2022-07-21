@@ -493,7 +493,7 @@ class Port {
      * \return false if the port number is not the port number that is used to represent
      *         any port number.
      */
-    constexpr auto is_any() const noexcept
+    constexpr auto is_any() const noexcept -> bool
     {
         return m_port == any().as_unsigned_integer();
     }
