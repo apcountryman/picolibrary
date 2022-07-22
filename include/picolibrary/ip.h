@@ -626,7 +626,7 @@ class Endpoint {
      *
      * \param[in] port The endpoint's port number.
      */
-    constexpr Endpoint( Port port ) noexcept : m_port{ port }
+    constexpr Endpoint( Port port ) noexcept : m_port{ std::move( port ) }
     {
     }
 
