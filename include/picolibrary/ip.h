@@ -638,7 +638,7 @@ class Endpoint {
      */
     constexpr Endpoint( Address address, Port port ) noexcept :
         m_address{ std::move( address ) },
-        m_port{ port }
+        m_port{ std::move( port ) }
     {
     }
 
