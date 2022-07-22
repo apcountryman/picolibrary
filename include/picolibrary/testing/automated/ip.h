@@ -97,6 +97,17 @@ inline auto random<IP::Port>() -> IP::Port
     return random<IP::Port>( IP::Port::min(), IP::Port::max() );
 }
 
+/**
+ * \brief Generate a pseudo-random picolibrary::IP::Endpoint.
+ *
+ * \return A pseudo-randomly generated picolibrary::IP::Endpoint.
+ */
+template<>
+inline auto random<IP::Endpoint>() -> IP::Endpoint
+{
+    return IP::Endpoint{ random<IP::Address>(), random<IP::Port>() };
+}
+
 } // namespace picolibrary::Testing::Automated
 
 /**
