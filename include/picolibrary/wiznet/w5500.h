@@ -2442,7 +2442,7 @@ class Driver : public Communication_Controller {
      */
     auto read_sn_tx_fsr( Socket_ID socket_id ) const noexcept -> SN_TX_FSR::Type
     {
-        return read<SN_TX_FSR::Type>( socket_id, SN_TX_FSR::MEMORY_OFFSET );
+        return read_non_atomic<SN_TX_FSR::Type>( socket_id, SN_TX_FSR::MEMORY_OFFSET );
     }
 
     /**
@@ -2490,7 +2490,7 @@ class Driver : public Communication_Controller {
      */
     auto read_sn_rx_rsr( Socket_ID socket_id ) const noexcept -> SN_RX_RSR::Type
     {
-        return read<SN_RX_RSR::Type>( socket_id, SN_RX_RSR::MEMORY_OFFSET );
+        return read_non_atomic<SN_RX_RSR::Type>( socket_id, SN_RX_RSR::MEMORY_OFFSET );
     }
 
     /**
@@ -2854,6 +2854,30 @@ class Driver : public Communication_Controller {
             buffer.end() );
 
         return buffer;
+    }
+
+    /**
+     * \brief Read a non-atomic socket register.
+     *
+     * \tparam Type The type of register to read.
+     *
+     * \param[in] socket_id The ID of the socket whose register will be read.
+     * \param[in] memory_offset The offset of the register to read.
+     *
+     * \return The data read from the register.
+     */
+    template<typename Type>
+    auto read_non_atomic( Socket_ID socket_id, Memory_Offset memory_offset ) const noexcept -> Type
+    {
+        for ( auto previous_data = read<Type>( socket_id, memory_offset );; ) {
+            auto new_data = read<Type>( socket_id, memory_offset );
+
+            if ( new_data == previous_data ) {
+                return new_data;
+            } // if
+
+            previous_data = new_data;
+        } // for
     }
 
     /**
