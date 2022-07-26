@@ -39,6 +39,7 @@ using ::picolibrary::Array;
 using ::picolibrary::Testing::Automated::random;
 using ::picolibrary::Testing::Automated::random_array;
 using ::picolibrary::Testing::Automated::random_container;
+using ::picolibrary::Testing::Automated::random_unique_pair;
 using ::picolibrary::Testing::Automated::SPI::Mock_Controller;
 using ::picolibrary::Testing::Automated::SPI::Mock_Device_Selector;
 using ::picolibrary::Testing::Automated::WIZnet::W5500::Mock_Communication_Controller;
@@ -46,6 +47,7 @@ using ::picolibrary::WIZnet::W5500::Memory_Offset;
 using ::picolibrary::WIZnet::W5500::Socket_ID;
 using ::picolibrary::WIZnet::W5500::Socket_Memory_Block;
 using ::testing::_;
+using ::testing::InSequence;
 using ::testing::Return;
 
 using Driver = ::picolibrary::WIZnet::W5500::Driver<Mock_Controller, Mock_Device_Selector::Handle, Mock_Communication_Controller>;
@@ -983,15 +985,39 @@ TEST( writeSNTXBUFSIZE, worksProperly )
  */
 TEST( readSNTXFSR, worksProperly )
 {
-    auto const w5500 = Driver{};
+    {
+        auto const in_sequence = InSequence{};
 
-    auto const socket_id = random<Socket_ID>();
-    auto const data      = random<std::uint16_t>();
+        auto const w5500 = Driver{};
 
-    EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0020, _ ) )
-        .WillOnce( Return( to_vector( data ) ) );
+        auto const socket_id          = random<Socket_ID>();
+        auto const [ data_a, data_b ] = random_unique_pair<std::uint16_t>();
 
-    EXPECT_EQ( w5500.read_sn_tx_fsr( socket_id ), data );
+        EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0020, _ ) )
+            .WillOnce( Return( to_vector( data_a ) ) );
+        EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0020, _ ) )
+            .WillOnce( Return( to_vector( data_b ) ) );
+        EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0020, _ ) )
+            .WillOnce( Return( to_vector( data_b ) ) );
+
+        EXPECT_EQ( w5500.read_sn_tx_fsr( socket_id ), data_b );
+    }
+
+    {
+        auto const in_sequence = InSequence{};
+
+        auto const w5500 = Driver{};
+
+        auto const socket_id = random<Socket_ID>();
+        auto const data      = random<std::uint16_t>();
+
+        EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0020, _ ) )
+            .WillOnce( Return( to_vector( data ) ) );
+        EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0020, _ ) )
+            .WillOnce( Return( to_vector( data ) ) );
+
+        EXPECT_EQ( w5500.read_sn_tx_fsr( socket_id ), data );
+    }
 }
 
 /**
@@ -1046,15 +1072,39 @@ TEST( writeSNTXWR, worksProperly )
  */
 TEST( readSNRXRSR, worksProperly )
 {
-    auto const w5500 = Driver{};
+    {
+        auto const in_sequence = InSequence{};
 
-    auto const socket_id = random<Socket_ID>();
-    auto const data      = random<std::uint16_t>();
+        auto const w5500 = Driver{};
 
-    EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0026, _ ) )
-        .WillOnce( Return( to_vector( data ) ) );
+        auto const socket_id          = random<Socket_ID>();
+        auto const [ data_a, data_b ] = random_unique_pair<std::uint16_t>();
 
-    EXPECT_EQ( w5500.read_sn_rx_rsr( socket_id ), data );
+        EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0026, _ ) )
+            .WillOnce( Return( to_vector( data_a ) ) );
+        EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0026, _ ) )
+            .WillOnce( Return( to_vector( data_b ) ) );
+        EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0026, _ ) )
+            .WillOnce( Return( to_vector( data_b ) ) );
+
+        EXPECT_EQ( w5500.read_sn_rx_rsr( socket_id ), data_b );
+    }
+
+    {
+        auto const in_sequence = InSequence{};
+
+        auto const w5500 = Driver{};
+
+        auto const socket_id = random<Socket_ID>();
+        auto const data      = random<std::uint16_t>();
+
+        EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0026, _ ) )
+            .WillOnce( Return( to_vector( data ) ) );
+        EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0026, _ ) )
+            .WillOnce( Return( to_vector( data ) ) );
+
+        EXPECT_EQ( w5500.read_sn_rx_rsr( socket_id ), data );
+    }
 }
 
 /**
