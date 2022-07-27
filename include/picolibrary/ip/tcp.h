@@ -35,6 +35,11 @@ namespace picolibrary::IP::TCP {
  */
 using Port = ::picolibrary::IP::Port;
 
+/**
+ * \brief Endpoint.
+ */
+using Endpoint = ::picolibrary::IP::Endpoint;
+
 } // namespace picolibrary::IP::TCP
 
 #endif // PICOLIBRARY_IP_TCP_H
