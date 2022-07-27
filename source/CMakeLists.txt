@@ -42,6 +42,7 @@ set(
     "picolibrary/indicator.cc"
     "picolibrary/interrupt.cc"
     "picolibrary/ip.cc"
+    "picolibrary/ip/tcp.cc"
     "picolibrary/ipv4.cc"
     "picolibrary/mac_address.cc"
     "picolibrary/microchip.cc"
