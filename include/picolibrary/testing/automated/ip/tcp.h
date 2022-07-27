@@ -23,6 +23,8 @@
 #ifndef PICOLIBRARY_TESTING_AUTOMATED_IP_TCP_H
 #define PICOLIBRARY_TESTING_AUTOMATED_IP_TCP_H
 
+#include "picolibrary/testing/automated/ip.h"
+
 /**
  * \brief Transmission Control Protocol (TCP) over IP automated testing facilities.
  */

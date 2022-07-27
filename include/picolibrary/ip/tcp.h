@@ -23,10 +23,18 @@
 #ifndef PICOLIBRARY_IP_TCP_H
 #define PICOLIBRARY_IP_TCP_H
 
+#include "picolibrary/ip.h"
+
 /**
  * \brief Transmission Control Protocol (TCP) over IP facilities.
  */
 namespace picolibrary::IP::TCP {
+
+/**
+ * \brief Port number.
+ */
+using Port = ::picolibrary::IP::Port;
+
 } // namespace picolibrary::IP::TCP
 
 #endif // PICOLIBRARY_IP_TCP_H
