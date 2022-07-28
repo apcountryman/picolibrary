@@ -57,6 +57,7 @@ TEST( errorDescription, worksProperly )
         { Generic_Error::OUT_OF_RANGE,                     "OUT_OF_RANGE"                     },
         { Generic_Error::RUNTIME_ERROR,                    "RUNTIME_ERROR"                    },
         { Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT, "UNEXPECTED_EVENT_HANDLING_RESULT" },
+        { Generic_Error::WOULD_BLOCK,                      "WOULD_BLOCK"                      },
         { Generic_Error::WOULD_OVERFLOW,                   "WOULD_OVERFLOW"                   },
         { Generic_Error::WOULD_UNDERFLOW,                  "WOULD_UNDERFLOW"                  },
 
