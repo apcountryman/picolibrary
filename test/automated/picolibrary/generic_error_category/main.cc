@@ -52,6 +52,7 @@ TEST( errorDescription, worksProperly )
         { Generic_Error::IO_STREAM_DEGRADED,               "IO_STREAM_DEGRADED"               },
         { Generic_Error::LOGIC_ERROR,                      "LOGIC_ERROR"                      },
         { Generic_Error::NONRESPONSIVE_DEVICE,             "NONRESPONSIVE_DEVICE"             },
+        { Generic_Error::NOT_CONNECTED,                    "NOT_CONNECTED"                    },
         { Generic_Error::OPERATION_TIMEOUT,                "OPERATION_TIMEOUT"                },
         { Generic_Error::OUT_OF_RANGE,                     "OUT_OF_RANGE"                     },
         { Generic_Error::RUNTIME_ERROR,                    "RUNTIME_ERROR"                    },
