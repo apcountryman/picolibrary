@@ -357,6 +357,7 @@ enum class Generic_Error : Error_ID {
     IO_STREAM_DEGRADED,               ///< I/O stream degraded.
     LOGIC_ERROR,                      ///< Logic error.
     NONRESPONSIVE_DEVICE,             ///< Nonresponsive device.
+    OPERATION_TIMEOUT,                ///< Operation timeout.
     OUT_OF_RANGE,                     ///< Out of range.
     RUNTIME_ERROR,                    ///< Runtime error.
     UNEXPECTED_EVENT_HANDLING_RESULT, ///< Unexpected event handling result.
@@ -419,6 +420,7 @@ class Generic_Error_Category final : public Error_Category {
             case Generic_Error::IO_STREAM_DEGRADED: return "IO_STREAM_DEGRADED";
             case Generic_Error::LOGIC_ERROR: return "LOGIC_ERROR";
             case Generic_Error::NONRESPONSIVE_DEVICE: return "NONRESPONSIVE_DEVICE";
+            case Generic_Error::OPERATION_TIMEOUT: return "OPERATION_TIMEOUT";
             case Generic_Error::OUT_OF_RANGE: return "OUT_OF_RANGE";
             case Generic_Error::RUNTIME_ERROR: return "RUNTIME_ERROR";
             case Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT: return "UNEXPECTED_EVENT_HANDLING_RESULT";
