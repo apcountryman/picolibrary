@@ -53,6 +53,7 @@ TEST( errorDescription, worksProperly )
         { Generic_Error::LOGIC_ERROR,                      "LOGIC_ERROR"                      },
         { Generic_Error::NONRESPONSIVE_DEVICE,             "NONRESPONSIVE_DEVICE"             },
         { Generic_Error::OUT_OF_RANGE,                     "OUT_OF_RANGE"                     },
+        { Generic_Error::OPERATION_TIMEOUT,                "OPERATION_TIMEOUT"                },
         { Generic_Error::RUNTIME_ERROR,                    "RUNTIME_ERROR"                    },
         { Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT, "UNEXPECTED_EVENT_HANDLING_RESULT" },
         { Generic_Error::WOULD_OVERFLOW,                   "WOULD_OVERFLOW"                   },
