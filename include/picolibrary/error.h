@@ -357,9 +357,12 @@ enum class Generic_Error : Error_ID {
     IO_STREAM_DEGRADED,               ///< I/O stream degraded.
     LOGIC_ERROR,                      ///< Logic error.
     NONRESPONSIVE_DEVICE,             ///< Nonresponsive device.
+    NOT_CONNECTED,                    ///< Not connected.
+    OPERATION_TIMEOUT,                ///< Operation timeout.
     OUT_OF_RANGE,                     ///< Out of range.
     RUNTIME_ERROR,                    ///< Runtime error.
     UNEXPECTED_EVENT_HANDLING_RESULT, ///< Unexpected event handling result.
+    WOULD_BLOCK,                      ///< Would block.
     WOULD_OVERFLOW,                   ///< Would overflow.
     WOULD_UNDERFLOW,                  ///< Would underflow.
 };
@@ -407,8 +410,11 @@ class Generic_Error_Category final : public Error_Category {
      *
      * \return The error ID's description.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     auto error_description( Error_ID id ) const noexcept -> char const * override final
     {
+        // #lizard forgives the length
+
         switch ( static_cast<Generic_Error>( id ) ) {
                 // clang-format off
 
@@ -419,9 +425,12 @@ class Generic_Error_Category final : public Error_Category {
             case Generic_Error::IO_STREAM_DEGRADED: return "IO_STREAM_DEGRADED";
             case Generic_Error::LOGIC_ERROR: return "LOGIC_ERROR";
             case Generic_Error::NONRESPONSIVE_DEVICE: return "NONRESPONSIVE_DEVICE";
+            case Generic_Error::NOT_CONNECTED: return "NOT_CONNECTED";
+            case Generic_Error::OPERATION_TIMEOUT: return "OPERATION_TIMEOUT";
             case Generic_Error::OUT_OF_RANGE: return "OUT_OF_RANGE";
             case Generic_Error::RUNTIME_ERROR: return "RUNTIME_ERROR";
             case Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT: return "UNEXPECTED_EVENT_HANDLING_RESULT";
+            case Generic_Error::WOULD_BLOCK: return "WOULD_BLOCK";
             case Generic_Error::WOULD_OVERFLOW: return "WOULD_OVERFLOW";
             case Generic_Error::WOULD_UNDERFLOW: return "WOULD_UNDERFLOW";
 
