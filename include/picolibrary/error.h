@@ -412,6 +412,8 @@ class Generic_Error_Category final : public Error_Category {
      */
     auto error_description( Error_ID id ) const noexcept -> char const * override final
     {
+        // #lizard forgives the length
+
         switch ( static_cast<Generic_Error>( id ) ) {
                 // clang-format off
 
