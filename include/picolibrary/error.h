@@ -410,6 +410,7 @@ class Generic_Error_Category final : public Error_Category {
      *
      * \return The error ID's description.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     auto error_description( Error_ID id ) const noexcept -> char const * override final
     {
         // #lizard forgives the length
