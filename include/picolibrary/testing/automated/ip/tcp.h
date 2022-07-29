@@ -193,6 +193,139 @@ class Mock_Client {
     MOCK_METHOD( void, close, () );
 };
 
+/**
+ * \brief Mock server socket.
+ */
+class Mock_Server {
+  public:
+    using Size = std::size_t;
+
+    class Handle : public Mock_Handle<Mock_Server> {
+      public:
+        using Size = Mock_Server::Size;
+
+        constexpr Handle() noexcept = default;
+
+        constexpr Handle( Mock_Server & mock ) noexcept : Mock_Handle<Mock_Server>{ mock }
+        {
+        }
+
+        constexpr Handle( Handle && source ) noexcept = default;
+
+        Handle( Handle const & ) = delete;
+
+        ~Handle() noexcept = default;
+
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
+
+        auto operator=( Handle const & ) = delete;
+
+        auto is_connected() const -> bool
+        {
+            return mock().is_connected();
+        }
+
+        auto remote_endpoint() const -> ::picolibrary::IP::TCP::Endpoint
+        {
+            return mock().remote_endpoint();
+        }
+
+        auto local_endpoint() const -> ::picolibrary::IP::TCP::Endpoint
+        {
+            return mock().local_endpoint();
+        }
+
+        auto outstanding() const -> Size
+        {
+            return mock().outstanding();
+        }
+
+        auto transmit( std::uint8_t const * begin, std::uint8_t const * end )
+            -> Result<std::uint8_t const *, Error_Code>
+        {
+            return mock().transmit( begin, end );
+        }
+
+        auto available() const -> Size
+        {
+            return mock().available();
+        }
+
+        auto receive( std::uint8_t * begin, std::uint8_t * end ) -> Result<std::uint8_t *, Error_Code>
+        {
+            return mock().receive( begin, end );
+        }
+
+        void shutdown()
+        {
+            mock().shutdown();
+        }
+
+        void close()
+        {
+            mock().close();
+        }
+    };
+
+    Mock_Server() = default;
+
+    Mock_Server( Mock_Server && ) = delete;
+
+    Mock_Server( Mock_Server const & ) = delete;
+
+    ~Mock_Server() noexcept = default;
+
+    auto operator=( Mock_Server && ) = delete;
+
+    auto operator=( Mock_Server const & ) = delete;
+
+    auto handle() noexcept -> Handle
+    {
+        return Handle{ *this };
+    }
+
+    MOCK_METHOD( bool, is_connected, (), ( const ) );
+
+    MOCK_METHOD( ::picolibrary::IP::TCP::Endpoint, remote_endpoint, (), ( const ) );
+    MOCK_METHOD( ::picolibrary::IP::TCP::Endpoint, local_endpoint, (), ( const ) );
+
+    MOCK_METHOD( Size, outstanding, (), ( const ) );
+
+    MOCK_METHOD( (Result<std::uint8_t const *, Error_Code>), transmit, (std::vector<std::uint8_t>));
+
+    auto transmit( std::uint8_t const * begin, std::uint8_t const * end )
+        -> Result<std::uint8_t const *, Error_Code>
+    {
+        return transmit( std::vector<std::uint8_t>{ begin, end } );
+    }
+
+    MOCK_METHOD( Size, available, (), ( const ) );
+
+    MOCK_METHOD( (Result<std::vector<std::uint8_t>, Error_Code>), receive, () );
+
+    auto receive( std::uint8_t * begin, std::uint8_t * end ) -> Result<std::uint8_t *, Error_Code>
+    {
+        static_cast<void>( end );
+
+        auto const result = receive();
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        for ( auto const data : result.value() ) {
+            *begin = data;
+
+            ++begin;
+        } // for
+
+        return begin;
+    }
+
+    MOCK_METHOD( void, shutdown, () );
+
+    MOCK_METHOD( void, close, () );
+};
+
 } // namespace picolibrary::Testing::Automated::IP::TCP
 
 #endif // PICOLIBRARY_TESTING_AUTOMATED_IP_TCP_H
