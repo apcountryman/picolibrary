@@ -395,6 +395,113 @@ class Server_Concept {
     void close() noexcept;
 };
 
+/**
+ * \brief Acceptor socket concept.
+ */
+class Acceptor_Concept {
+  public:
+    /**
+     * \brief The type of server socket produced by the acceptor socket.
+     */
+    using Server = Server_Concept;
+
+    /**
+     * \brief Constructor.
+     */
+    Acceptor_Concept() noexcept;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Acceptor_Concept( Acceptor_Concept && source ) noexcept;
+
+    Acceptor_Concept( Acceptor_Concept const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Acceptor_Concept() noexcept;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Acceptor_Concept && expression ) noexcept -> Acceptor_Concept &;
+
+    auto operator=( Acceptor_Concept const & ) = delete;
+
+    /**
+     * \brief Bind the socket to a local endpoint.
+     *
+     * \pre the socket is not already bound to a local endpoint
+     *
+     * \param[in] endpoint The local endpoint to bind the socket to.
+     *
+     * \pre endpoint is a valid local endpoint
+     * \pre endpoint is not already in use
+     * \pre if an ephemeral port is requested, an ephemeral port is available
+     */
+    void bind( Endpoint const & endpoint = Endpoint{} ) noexcept;
+
+    /**
+     * \brief Listen for incoming connection requests.
+     *
+     * \pre the socket is in a state that allows it to listen for incoming connection
+     *      requests
+     * \pre the socket is not already listening for incoming connection requests
+     *
+     * \param[in] backlog The maximum number of simultaneously connected clients.
+     *
+     * \attention Implementations may interpret the backlog argument differently.
+     *
+     * \pre sufficient resources are available to support the requested backlog
+     */
+    void listen( std::uint_fast8_t backlog ) noexcept;
+
+    /**
+     * \brief Check if the socket is listening for incoming connection requests.
+     *
+     * \return true if the socket is listening for incoming connection requests.
+     * \return false if the socket is not listening for incoming connection requests.
+     */
+    auto is_listening() const noexcept -> bool;
+
+    /**
+     * \brief Get the local endpoint on which the socket is listening for incoming
+     *        connection requests.
+     *
+     * \return The local endpoint on which the socket is listening for incoming connection
+     *         requests.
+     */
+    auto local_endpoint() const noexcept -> Endpoint;
+
+    /**
+     * \brief Accept an incoming connection request.
+     *
+     * \pre the socket is listening for incoming connection requests
+     *
+     * \return A server socket for handling the connection if accepting an incoming
+     *         connection request succeeded.
+     * \return picolibrary::Generic_Error::WOULD_BLOCK or
+     *         picolibrary::Generic_Error::OPERATION_TIMEOUT if the socket is in a
+     *         non-blocking mode, and an incoming connection request could not be accepted
+     *         without blocking.
+     * \return picolibrary::Generic_Error::OPERATION_TIMEOUT if a timeout occurred before
+     *         an incoming connection request could be accepted.
+     */
+    auto accept() noexcept -> Result<Server, Error_Code>;
+
+    /**
+     * \brief Close the socket.
+     */
+    void close() noexcept;
+};
+
 } // namespace picolibrary::IP::TCP
 
 #endif // PICOLIBRARY_IP_TCP_H

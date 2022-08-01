@@ -326,6 +326,101 @@ class Mock_Server {
     MOCK_METHOD( void, close, () );
 };
 
+/**
+ * \brief Mock acceptor socket.
+ */
+class Mock_Acceptor {
+  public:
+    using Server = Mock_Server::Handle;
+
+    class Handle : public Mock_Handle<Mock_Acceptor> {
+      public:
+        using Server = Mock_Acceptor::Server;
+
+        constexpr Handle() noexcept = default;
+
+        constexpr Handle( Mock_Acceptor & mock ) noexcept :
+            Mock_Handle<Mock_Acceptor>{ mock }
+        {
+        }
+
+        constexpr Handle( Handle && source ) noexcept = default;
+
+        Handle( Handle const & ) = delete;
+
+        ~Handle() noexcept = default;
+
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
+
+        auto operator=( Handle const & ) = delete;
+
+        void bind()
+        {
+            mock().bind();
+        }
+
+        void bind( ::picolibrary::IP::TCP::Endpoint const & endpoint )
+        {
+            mock().bind( endpoint );
+        }
+
+        void listen( std::uint_fast8_t backlog )
+        {
+            mock().listen( backlog );
+        }
+
+        auto is_listening() const -> bool
+        {
+            return mock().is_listening();
+        }
+
+        auto local_endpoint() const -> ::picolibrary::IP::TCP::Endpoint
+        {
+            return mock().local_endpoint();
+        }
+
+        auto accept() -> Result<Server, Error_Code>
+        {
+            return mock().accept();
+        }
+
+        void close()
+        {
+            mock().close();
+        }
+    };
+
+    Mock_Acceptor() = default;
+
+    Mock_Acceptor( Mock_Acceptor && ) = delete;
+
+    Mock_Acceptor( Mock_Acceptor const & ) = delete;
+
+    ~Mock_Acceptor() noexcept = default;
+
+    auto operator=( Mock_Acceptor && ) = delete;
+
+    auto operator=( Mock_Acceptor const & ) = delete;
+
+    auto handle() noexcept -> Handle
+    {
+        return Handle{ *this };
+    }
+
+    MOCK_METHOD( void, bind, () );
+    MOCK_METHOD( void, bind, (::picolibrary::IP::TCP::Endpoint const &));
+
+    MOCK_METHOD( void, listen, ( std::uint_fast8_t ) );
+
+    MOCK_METHOD( bool, is_listening, (), ( const ) );
+
+    MOCK_METHOD( ::picolibrary::IP::TCP::Endpoint, local_endpoint, (), ( const ) );
+
+    MOCK_METHOD( (Result<Server, Error_Code>), accept, () );
+
+    MOCK_METHOD( void, close, () );
+};
+
 } // namespace picolibrary::Testing::Automated::IP::TCP
 
 #endif // PICOLIBRARY_TESTING_AUTOMATED_IP_TCP_H
