@@ -17,7 +17,7 @@
 
 /**
  * \file
- * \brief picolibrary::Testing::Automated::IP::TCP implementation.
+ * \brief picolibrary::Testing::Automated::IP::Network_Stack implementation.
  */
 
-#include "picolibrary/testing/automated/ip/tcp.h"
+#include "picolibrary/testing/automated/ip/network_stack.h"
