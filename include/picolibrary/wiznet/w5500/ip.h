@@ -73,8 +73,10 @@ class Port_Allocator_Concept {
      * \param[in] driver The driver used to interact with the W5500.
      * \param[in] port The port to allocate.
      *
-     * \pre if port is an ephemeral port, an ephemeral port is available
-     * \pre if port is not an ephemeral port, port is not already in use
+     * \pre port is not already in use
+     * \pre if an ephemeral port is requested, an ephemeral port is available
+     *
+     * \return The allocated port.
      */
     template<typename Driver>
     auto allocate( Driver const & driver, ::picolibrary::IP::Port port ) noexcept
