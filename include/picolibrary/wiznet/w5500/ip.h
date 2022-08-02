@@ -23,10 +23,71 @@
 #ifndef PICOLIBRARY_WIZNET_W5500_IP_H
 #define PICOLIBRARY_WIZNET_W5500_IP_H
 
+#include "picolibrary/ip.h"
+
 /**
  * \brief WIZnet W5500 Internet Protocol (IP) facilities.
  */
 namespace picolibrary::WIZnet::W5500::IP {
+
+/**
+ * \brief Protocol port allocator concept.
+ */
+class Port_Allocator_Concept {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    Port_Allocator_Concept() noexcept;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Port_Allocator_Concept( Port_Allocator_Concept && source ) noexcept;
+
+    Port_Allocator_Concept( Port_Allocator_Concept const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Port_Allocator_Concept() noexcept;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Port_Allocator_Concept && expression ) noexcept -> Port_Allocator_Concept &;
+
+    auto operator=( Port_Allocator_Concept const & ) = delete;
+
+    /**
+     * \brief Allocate a port.
+     *
+     * \tparam Driver The type of driver used to interact with the W5500.
+     *
+     * \param[in] driver The driver used to interact with the W5500.
+     * \param[in] port The port to allocate.
+     *
+     * \pre if port is an ephemeral port, an ephemeral port is available
+     * \pre if port is not an ephemeral port, port is not already in use
+     */
+    template<typename Driver>
+    auto allocate( Driver const & driver, ::picolibrary::IP::Port port ) noexcept
+        -> ::picolibrary::IP::Port;
+
+    /**
+     * \brief Deallocate a previously allocated port.
+     *
+     * \param[in] port The previously allocated port to deallocate.
+     */
+    void deallocate( ::picolibrary::IP::Port port ) noexcept;
+};
+
 } // namespace picolibrary::WIZnet::W5500::IP
 
 #endif // PICOLIBRARY_WIZNET_W5500_IP_H
