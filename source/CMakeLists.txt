@@ -101,6 +101,7 @@ if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
         "picolibrary/testing/automated/stream.cc"
         "picolibrary/testing/automated/wiznet.cc"
         "picolibrary/testing/automated/wiznet/w5500.cc"
+        "picolibrary/testing/automated/wiznet/w5500/ip.cc"
     )
     list(
         APPEND PICOLIBRARY_LINK_LIBRARIES
