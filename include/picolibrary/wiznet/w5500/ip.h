@@ -206,6 +206,7 @@ class Port_Allocator_Without_Ephemeral_Port_Allocation {
      *
      * \param[in] driver The driver used to interact with the W5500.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     template<typename Driver>
     auto port_is_in_use( Driver const & driver, ::picolibrary::IP::Port port ) noexcept -> bool
     {
