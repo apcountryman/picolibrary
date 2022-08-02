@@ -37,7 +37,7 @@
 namespace picolibrary::IP::TCP {
 
 /**
- * \brief Port number.
+ * \brief Port.
  */
 using Port = ::picolibrary::IP::Port;
 
