@@ -394,19 +394,19 @@ constexpr auto operator>=( Address const & lhs, Address const & rhs ) noexcept -
 }
 
 /**
- * \brief Protocol port number.
+ * \brief Protocol port.
  */
 class Port {
   public:
     /**
-     * \brief Port number unsigned integer representation.
+     * \brief Port unsigned integer representation.
      */
     using Unsigned_Integer = std::uint16_t;
 
     /**
-     * \brief Get the minimum valid port number.
+     * \brief Get the minimum valid port.
      *
-     * \return The minimum valid port number.
+     * \return The minimum valid port.
      */
     static constexpr auto min() noexcept -> Port
     {
@@ -414,9 +414,9 @@ class Port {
     }
 
     /**
-     * \brief Get the maximum valid port number.
+     * \brief Get the maximum valid port.
      *
-     * \return The maximum valid port number.
+     * \return The maximum valid port.
      */
     static constexpr auto max() noexcept -> Port
     {
@@ -424,9 +424,9 @@ class Port {
     }
 
     /**
-     * \brief Get the port number that is used to represent any port number.
+     * \brief Get the port that is used to represent any port (0).
      *
-     * \return The port number that is used to represent any port number.
+     * \return The port that is used to represent any port.
      */
     static constexpr auto any() noexcept -> Port
     {
@@ -441,7 +441,7 @@ class Port {
     /**
      * \brief Constructor.
      *
-     * \param[in] port The port number.
+     * \param[in] port The port.
      */
     constexpr Port( Unsigned_Integer port ) noexcept : m_port{ port }
     {
@@ -485,13 +485,10 @@ class Port {
     constexpr auto operator=( Port const & expression ) noexcept -> Port & = default;
 
     /**
-     * \brief Check if the port number is the port number that is used to represent any
-     *        port number (0).
+     * \brief Check if the port is the port that is used to represent any port (0).
      *
-     * \return true if the port number is the port number that is used to represent any
-     *         port number.
-     * \return false if the port number is not the port number that is used to represent
-     *         any port number.
+     * \return true if the port is the port that is used to represent any port.
+     * \return false if the port is not the port that is used to represent any port.
      */
     constexpr auto is_any() const noexcept -> bool
     {
@@ -499,9 +496,9 @@ class Port {
     }
 
     /**
-     * \brief Get the port number in its unsigned integer representation.
+     * \brief Get the port in its unsigned integer representation.
      *
-     * \return The port number in its unsigned integer representation.
+     * \return The port in its unsigned integer representation.
      */
     constexpr auto as_unsigned_integer() const noexcept -> Unsigned_Integer
     {
@@ -510,7 +507,7 @@ class Port {
 
   private:
     /**
-     * \brief The port number in its unsigned integer representation.
+     * \brief The port in its unsigned integer representation.
      */
     Unsigned_Integer m_port{};
 };
@@ -624,7 +621,7 @@ class Endpoint {
     /**
      * \brief Constructor.
      *
-     * \param[in] port The endpoint's port number.
+     * \param[in] port The endpoint's port.
      */
     constexpr Endpoint( Port port ) noexcept : m_port{ std::move( port ) }
     {
@@ -634,7 +631,7 @@ class Endpoint {
      * \brief Constructor.
      *
      * \param[in] address The endpoint's address.
-     * \param[in] port The endpoint's port number.
+     * \param[in] port The endpoint's port.
      */
     constexpr Endpoint( Address address, Port port ) noexcept :
         m_address{ std::move( address ) },
@@ -690,9 +687,9 @@ class Endpoint {
     }
 
     /**
-     * \brief Get the endpoint's port number.
+     * \brief Get the endpoint's port.
      *
-     * \return The endpoint's port number.
+     * \return The endpoint's port.
      */
     constexpr auto port() const noexcept -> Port
     {
@@ -706,7 +703,7 @@ class Endpoint {
     Address m_address{};
 
     /**
-     * \brief The endpoint's port number.
+     * \brief The endpoint's port.
      */
     Port m_port{};
 };
