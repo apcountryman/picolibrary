@@ -2942,6 +2942,16 @@ class Driver : public Communication_Controller {
     }
 };
 
+/**
+ * \brief Socket protocol.
+ */
+enum class Socket_Protocol : SN_MR::Type {
+    CLOSED = SN_MR::P_CLOSED, ///< Closed.
+    TCP    = SN_MR::P_TCP,    ///< TCP.
+    UDP    = SN_MR::P_UDP,    ///< UDP.
+    MACRAW = SN_MR::P_MACRAW, ///< MACRAW.
+};
+
 } // namespace picolibrary::WIZnet::W5500
 
 #endif // PICOLIBRARY_WIZNET_W5500_H
