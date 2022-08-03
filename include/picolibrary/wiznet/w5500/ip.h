@@ -205,6 +205,10 @@ class Port_Allocator_Without_Ephemeral_Port_Allocation {
      * \tparam Driver The type of driver used to interact with the W5500.
      *
      * \param[in] driver The driver used to interact with the W5500.
+     * \param[in] port The port to check.
+     *
+     * \return true if port is in use.
+     * \return false if port is not in use.
      */
     template<typename Driver>
     // NOLINTNEXTLINE(readability-function-size)
