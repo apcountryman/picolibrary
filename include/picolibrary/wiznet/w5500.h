@@ -2963,6 +2963,14 @@ enum class PHY_Mode : PHYCFGR::Type {
 };
 
 /**
+ * \brief Link status.
+ */
+enum class Link_Status : PHYCFGR::Type {
+    DOWN = 0b0 << PHYCFGR::Bit::LNK, ///< Down.
+    UP   = 0b1 << PHYCFGR::Bit::LNK, ///< Up.
+};
+
+/**
  * \brief Socket protocol.
  */
 enum class Socket_Protocol : SN_MR::Type {
