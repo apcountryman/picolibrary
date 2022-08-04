@@ -20,6 +20,7 @@ Checks: >
     -abseil*,
     -android*,
     -boost*,
+    -bugprone-suspicious-enum-usage,
     -cppcoreguidelines-avoid-c-arrays,
     -cppcoreguidelines-avoid-magic-numbers,
     -cppcoreguidelines-pro-bounds-pointer-arithmetic,
@@ -105,9 +106,6 @@ CheckOptions:
     - key:   bugprone-string-constructor.LargeLengthThreshold
       value: '8388608'
     - key:   bugprone-string-constructor.WarnOnLargeLength
-      value: '1'
-
-    - key:   bugprone-suspicious-enum-usage.StrictMode
       value: '1'
 
     - key:   bugprone-suspicious-missing-comma.MaxConcatenatedTokens
