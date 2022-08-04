@@ -3012,6 +3012,18 @@ enum class Socket_Protocol : SN_MR::Type {
     MACRAW = SN_MR::P_MACRAW, ///< MACRAW.
 };
 
+/**
+ * \brief Socket buffer size.
+ */
+enum class Socket_Buffer_Size : SN_RXBUF_SIZE::Type {
+    _0_KiB  = SN_RXBUF_SIZE::SIZE_0KB,  ///< 0 KiB.
+    _1_KiB  = SN_RXBUF_SIZE::SIZE_1KB,  ///< 1 KiB.
+    _2_KiB  = SN_RXBUF_SIZE::SIZE_2KB,  ///< 2 KiB.
+    _4_KiB  = SN_RXBUF_SIZE::SIZE_4KB,  ///< 4 KiB.
+    _8_KiB  = SN_RXBUF_SIZE::SIZE_8KB,  ///< 8 KiB.
+    _16_KiB = SN_RXBUF_SIZE::SIZE_16KB, ///< 16 KiB.
+};
+
 } // namespace picolibrary::WIZnet::W5500
 
 #endif // PICOLIBRARY_WIZNET_W5500_H
