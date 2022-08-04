@@ -361,6 +361,7 @@ enum class Generic_Error : Error_ID {
     LOGIC_ERROR,                      ///< Logic error.
     NONRESPONSIVE_DEVICE,             ///< Nonresponsive device.
     NOT_CONNECTED,                    ///< Not connected.
+    NO_SOCKETS_AVAILABLE,             ///< No sockets available.
     OPERATION_TIMEOUT,                ///< Operation timeout.
     OUT_OF_RANGE,                     ///< Out of range.
     RUNTIME_ERROR,                    ///< Runtime error.
@@ -432,6 +433,7 @@ class Generic_Error_Category final : public Error_Category {
             case Generic_Error::LOGIC_ERROR: return "LOGIC_ERROR";
             case Generic_Error::NONRESPONSIVE_DEVICE: return "NONRESPONSIVE_DEVICE";
             case Generic_Error::NOT_CONNECTED: return "NOT_CONNECTED";
+            case Generic_Error::NO_SOCKETS_AVAILABLE: return "NO_SOCKETS_AVAILABLE";
             case Generic_Error::OPERATION_TIMEOUT: return "OPERATION_TIMEOUT";
             case Generic_Error::OUT_OF_RANGE: return "OUT_OF_RANGE";
             case Generic_Error::RUNTIME_ERROR: return "RUNTIME_ERROR";
