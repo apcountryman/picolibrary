@@ -353,6 +353,7 @@ enum class Generic_Error : Error_ID {
     ARBITRATION_LOST,                 ///< Arbitration lost.
     BUS_ERROR,                        ///< Bus error.
     ENDPOINT_IN_USE,                  ///< Endpoint in use.
+    EPHEMERAL_PORTS_EXHAUSTED,        ///< Ephemeral ports exhausted.
     INSUFFICIENT_CAPACITY,            ///< Insufficient capacity.
     INVALID_ARGUMENT,                 ///< Invalid argument.
     IO_STREAM_DEGRADED,               ///< I/O stream degraded.
@@ -422,6 +423,7 @@ class Generic_Error_Category final : public Error_Category {
             case Generic_Error::ARBITRATION_LOST: return "ARBITRATION_LOST";
             case Generic_Error::BUS_ERROR: return "BUS_ERROR";
             case Generic_Error::ENDPOINT_IN_USE: return "ENDPOINT_IN_USE";
+            case Generic_Error::EPHEMERAL_PORTS_EXHAUSTED: return "EPHEMERAL_PORTS_EXHAUSTED";
             case Generic_Error::INSUFFICIENT_CAPACITY: return "INSUFFICIENT_CAPACITY";
             case Generic_Error::INVALID_ARGUMENT: return "INVALID_ARGUMENT";
             case Generic_Error::IO_STREAM_DEGRADED: return "IO_STREAM_DEGRADED";
