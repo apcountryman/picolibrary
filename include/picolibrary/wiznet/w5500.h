@@ -2943,6 +2943,26 @@ class Driver : public Communication_Controller {
 };
 
 /**
+ * \brief PHY mode.
+ */
+enum class PHY_Mode : PHYCFGR::Type {
+    CONFIGURED_BY_HARDWARE = PHYCFGR::OPMD_CONFIGURE_USING_HW_PINS, ///< Configured by hardware.
+    POWER_DOWN = PHYCFGR::OPMD_CONFIGURE_USING_OPMDC | PHYCFGR::OPMDC_POWER_DOWN_MODE, ///< Power down.
+    _10BT_HALF_DUPLEX_AUTO_NEGOTIATION_DISABLED = PHYCFGR::OPMD_CONFIGURE_USING_OPMDC
+                                                  | PHYCFGR::OPMDC_10BT_HALF_DUPLEX_AUTO_NEGOTIATION_DISABLED, ///< 10BT half-duplex, auto-negotiation disabled.
+    _10BT_FULL_DUPLEX_AUTO_NEGOTIATION_DISABLED = PHYCFGR::OPMD_CONFIGURE_USING_OPMDC
+                                                  | PHYCFGR::OPMDC_10BT_FULL_DUPLEX_AUTO_NEGOTIATION_DISABLED, ///< 10BT full-duplex, auto-negotiation disabled.
+    _100BT_HALF_DUPLEX_AUTO_NEGOTIATION_DISABLED = PHYCFGR::OPMD_CONFIGURE_USING_OPMDC
+                                                   | PHYCFGR::OPMDC_100BT_HALF_DUPLEX_AUTO_NEGOTIATION_DISABLED, ///< 100BT half-duplex, auto-negotiation disabled.
+    _100BT_FULL_DUPLEX_AUTO_NEGOTIATION_DISABLED = PHYCFGR::OPMD_CONFIGURE_USING_OPMDC
+                                                   | PHYCFGR::OPMDC_100BT_FULL_DUPLEX_AUTO_NEGOTIATION_DISABLED, ///< 100BT full-duplex, auto-negotiation disabled.
+    _100BT_HALF_DUPLEX_AUTO_NEGOTIATION_ENABLED = PHYCFGR::OPMD_CONFIGURE_USING_OPMDC
+                                                  | PHYCFGR::OPMDC_100BT_HALF_DUPLEX_AUTO_NEGOTIATION_ENABLED, ///< 100BT half-duplex, auto-negotiation enabled.
+    ALL_CAPABLE_AUTO_NEGOTIATION_ENABLED = PHYCFGR::OPMD_CONFIGURE_USING_OPMDC
+                                           | PHYCFGR::OPMDC_ALL_CAPABLE_AUTO_NEGOTIATION_ENABLED, ///< All capable, auto-negotiation enabled.
+};
+
+/**
  * \brief Socket protocol.
  */
 enum class Socket_Protocol : SN_MR::Type {
