@@ -2979,6 +2979,14 @@ enum class Link_Mode : PHYCFGR::Type {
 };
 
 /**
+ * \brief Link speed.
+ */
+enum class Link_Speed : PHYCFGR::Type {
+    _10_MbPs  = 0b0 << PHYCFGR::Bit::SPD, ///< 10 Mb/s.
+    _100_MbPs = 0b1 << PHYCFGR::Bit::SPD, ///< 100 Mb/s.
+};
+
+/**
  * \brief Socket protocol.
  */
 enum class Socket_Protocol : SN_MR::Type {
