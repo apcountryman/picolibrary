@@ -2971,6 +2971,14 @@ enum class Link_Status : PHYCFGR::Type {
 };
 
 /**
+ * \brief Link mode.
+ */
+enum class Link_Mode : PHYCFGR::Type {
+    HALF_DUPLEX = 0b0 << PHYCFGR::Bit::DPX, ///< Half-duplex.
+    FULL_DUPLEX = 0b1 << PHYCFGR::Bit::DPX, ///< Full-duplex.
+};
+
+/**
  * \brief Socket protocol.
  */
 enum class Socket_Protocol : SN_MR::Type {
