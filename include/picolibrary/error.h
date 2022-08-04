@@ -355,6 +355,7 @@ enum class Generic_Error : Error_ID {
     ENDPOINT_IN_USE,                  ///< Endpoint in use.
     EPHEMERAL_PORTS_EXHAUSTED,        ///< Ephemeral ports exhausted.
     INSUFFICIENT_CAPACITY,            ///< Insufficient capacity.
+    INSUFFICIENT_SOCKETS_AVAILABLE,   ///< Insufficient sockets available.
     INVALID_ARGUMENT,                 ///< Invalid argument.
     IO_STREAM_DEGRADED,               ///< I/O stream degraded.
     LOGIC_ERROR,                      ///< Logic error.
@@ -425,6 +426,7 @@ class Generic_Error_Category final : public Error_Category {
             case Generic_Error::ENDPOINT_IN_USE: return "ENDPOINT_IN_USE";
             case Generic_Error::EPHEMERAL_PORTS_EXHAUSTED: return "EPHEMERAL_PORTS_EXHAUSTED";
             case Generic_Error::INSUFFICIENT_CAPACITY: return "INSUFFICIENT_CAPACITY";
+            case Generic_Error::INSUFFICIENT_SOCKETS_AVAILABLE: return "INSUFFICIENT_SOCKETS_AVAILABLE";
             case Generic_Error::INVALID_ARGUMENT: return "INVALID_ARGUMENT";
             case Generic_Error::IO_STREAM_DEGRADED: return "IO_STREAM_DEGRADED";
             case Generic_Error::LOGIC_ERROR: return "LOGIC_ERROR";
