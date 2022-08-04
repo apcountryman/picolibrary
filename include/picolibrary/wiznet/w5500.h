@@ -2943,6 +2943,14 @@ class Driver : public Communication_Controller {
 };
 
 /**
+ * \brief Ping blocking configuration.
+ */
+enum class Ping_Blocking : MR::Type {
+    DISABLED = 0b0 << MR::Bit::PB, ///< Disabled.
+    ENABLED  = 0b1 << MR::Bit::PB, ///< Enabled.
+};
+
+/**
  * \brief PHY mode.
  */
 enum class PHY_Mode : PHYCFGR::Type {
