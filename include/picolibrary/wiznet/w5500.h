@@ -2943,6 +2943,14 @@ class Driver : public Communication_Controller {
 };
 
 /**
+ * \brief ARP forcing configuration.
+ */
+enum class ARP_Forcing : MR::Type {
+    DISABLED = 0b0 << MR::Bit::FARP, ///< Disabled.
+    ENABLED  = 0b1 << MR::Bit::FARP, ///< Enabled.
+};
+
+/**
  * \brief Ping blocking configuration.
  */
 enum class Ping_Blocking : MR::Type {
