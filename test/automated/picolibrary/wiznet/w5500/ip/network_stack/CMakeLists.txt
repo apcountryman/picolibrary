@@ -13,7 +13,21 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary::WIZnet::W5500::IP automated tests CMake rules.
+# Description: picolibrary::WIZnet::W5500::IP::Network_Stack automated tests CMake rules.
 
 # build the picolibrary::WIZnet::W5500::IP::Network_Stack automated tests
-add_subdirectory( network_stack )
+if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
+    add_executable(
+        test-automated-picolibrary-wiznet-w5500-ip-network_stack
+        main.cc
+    )
+    target_link_libraries(
+        test-automated-picolibrary-wiznet-w5500-ip-network_stack
+        picolibrary
+        picolibrary-testing-automated-fatal_error
+    )
+    add_test(
+        NAME    test-automated-picolibrary-wiznet-w5500-ip-network_stack
+        COMMAND test-automated-picolibrary-wiznet-w5500-ip-network_stack --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
