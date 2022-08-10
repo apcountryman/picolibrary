@@ -281,8 +281,11 @@ class Network_Stack {
      *
      * \pre socket_buffer_size is 2 KiB, 4 KiB, 8 KiB, or 16 KiB
      */
+    // NOLINTNEXTLINE(readability-function-size)
     void configure_socket_buffer_size( Socket_Buffer_Size socket_buffer_size ) noexcept
     {
+        // #lizard forgives the length
+
         expect( m_sockets == 0, Generic_Error::LOGIC_ERROR );
 
         auto sockets = std::uint_fast8_t{ 0 };
