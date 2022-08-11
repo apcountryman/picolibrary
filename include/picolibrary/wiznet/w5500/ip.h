@@ -24,6 +24,7 @@
 #define PICOLIBRARY_WIZNET_W5500_IP_H
 
 #include "picolibrary/error.h"
+#include "picolibrary/fatal_error.h"
 #include "picolibrary/ip.h"
 #include "picolibrary/precondition.h"
 #include "picolibrary/wiznet/w5500.h"
@@ -91,6 +92,92 @@ class Port_Allocator_Concept {
      * \param[in] port The previously allocated port to deallocate.
      */
     void deallocate( ::picolibrary::IP::Port port ) noexcept;
+};
+
+/**
+ * \brief Unsupported protocol port allocator.
+ */
+class Unsupported_Protocol_Port_Allocator {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Unsupported_Protocol_Port_Allocator() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Unsupported_Protocol_Port_Allocator( Unsupported_Protocol_Port_Allocator && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Unsupported_Protocol_Port_Allocator( Unsupported_Protocol_Port_Allocator const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Unsupported_Protocol_Port_Allocator() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Unsupported_Protocol_Port_Allocator && expression ) noexcept
+        -> Unsupported_Protocol_Port_Allocator & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Unsupported_Protocol_Port_Allocator const & expression ) noexcept
+        -> Unsupported_Protocol_Port_Allocator & = default;
+
+    /**
+     * \brief Allocate a port.
+     *
+     * \warning Calling this function will always result in a fatal error.
+     *
+     * \tparam Driver The type of driver used to interact with the W5500.
+     *
+     * \param[in] driver The driver used to interact with the W5500.
+     * \param[in] port The port to allocate.
+     *
+     * \return N/A
+     */
+    template<typename Driver>
+    [[noreturn]] auto allocate( Driver const & driver, ::picolibrary::IP::Port port ) noexcept
+        -> ::picolibrary::IP::Port
+    {
+        static_cast<void>( driver );
+        static_cast<void>( port );
+
+        trap_fatal_error( Generic_Error::LOGIC_ERROR );
+    }
+
+    /**
+     * \brief Deallocate a previously allocated port.
+     *
+     * \warning Calling this function will always result in a fatal error being reported.
+     *
+     * \param[in] port The previously allocated port to deallocate.
+     */
+    [[noreturn]] void deallocate( ::picolibrary::IP::Port port ) noexcept
+    {
+        static_cast<void>( port );
+
+        trap_fatal_error( Generic_Error::LOGIC_ERROR );
+    }
 };
 
 /**
