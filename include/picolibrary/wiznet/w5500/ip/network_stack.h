@@ -23,6 +23,7 @@
 #ifndef PICOLIBRARY_WIZNET_W5500_IP_NETWORK_STACK_H
 #define PICOLIBRARY_WIZNET_W5500_IP_NETWORK_STACK_H
 
+#include <cstdint>
 #include <utility>
 
 #include "picolibrary/array.h"
@@ -565,7 +566,7 @@ class Network_Stack {
      *
      * \return The number of sockets that are available for allocation.
      */
-    auto sockets_available_for_allocation() const noexcept -> std::uint_fast8_t
+    constexpr auto sockets_available_for_allocation() const noexcept -> std::uint_fast8_t
     {
         return m_sockets_available_for_allocation;
     }
@@ -573,14 +574,12 @@ class Network_Stack {
     /**
      * \brief Allocate a socket.
      *
-     * \pre picolibrary::WIZnet::W5500::IP::Network_Stack::sockets_available_for_allocation()
+     * \pre a socket is available
      *
      * \return The socket ID for the allocated socket.
      */
-    auto allocate_socket() noexcept -> Socket_ID
+    constexpr auto allocate_socket() noexcept -> Socket_ID
     {
-        expect( sockets_available_for_allocation(), Generic_Error::NO_SOCKETS_AVAILABLE );
-
         for ( auto socket = std::uint_fast8_t{}; socket < sockets(); ++socket ) {
             if ( m_socket_status[ socket ] == Socket_Status::AVAILABLE_FOR_ALLOCATION ) {
                 m_socket_status[ socket ] = Socket_Status::ALLOCATED;
@@ -590,7 +589,7 @@ class Network_Stack {
             } // if
         }     // for
 
-        expect( false, Generic_Error::LOGIC_ERROR );
+        expect( false, Generic_Error::NO_SOCKETS_AVAILABLE );
     }
 
     /**
@@ -602,12 +601,12 @@ class Network_Stack {
      *
      * \return socket_id
      */
-    auto allocate_socket( Socket_ID socket_id ) noexcept -> Socket_ID
+    constexpr auto allocate_socket( Socket_ID socket_id ) noexcept -> Socket_ID
     {
         auto const socket = static_cast<std::uint_fast8_t>(
             to_underlying( socket_id ) >> Control_Byte::Bit::SOCKET );
 
-        expect( m_socket_status[ socket ] == Socket_Status::AVAILABLE_FOR_ALLOCATION );
+        expect( m_socket_status[ socket ] == Socket_Status::AVAILABLE_FOR_ALLOCATION, Generic_Error::LOGIC_ERROR );
 
         m_socket_status[ socket ] = Socket_Status::ALLOCATED;
         --m_sockets_available_for_allocation;
@@ -620,7 +619,7 @@ class Network_Stack {
      *
      * \param[in] socket_id The socket ID for the socket to deallocate.
      */
-    void deallocate_socket( Socket_ID socket_id ) noexcept
+    constexpr void deallocate_socket( Socket_ID socket_id ) noexcept
     {
         m_socket_status[ to_underlying( socket_id ) >> Control_Byte::Bit::SOCKET ] = Socket_Status::AVAILABLE_FOR_ALLOCATION;
         ++m_sockets_available_for_allocation;
@@ -678,7 +677,7 @@ class Network_Stack {
     std::uint_fast8_t m_sockets_available_for_allocation{};
 
     /**
-     * \brief Socket status.
+     * \brief The socket status.
      */
     Array<Socket_Status, SOCKETS> m_socket_status{};
 };

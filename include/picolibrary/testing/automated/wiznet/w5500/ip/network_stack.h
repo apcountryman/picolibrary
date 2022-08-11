@@ -23,7 +23,10 @@
 #ifndef PICOLIBRARY_TESTING_AUTOMATED_WIZNET_W5500_IP_NETWORK_STACK_H
 #define PICOLIBRARY_TESTING_AUTOMATED_WIZNET_W5500_IP_NETWORK_STACK_H
 
+#include <cstdint>
+
 #include "gmock/gmock.h"
+#include "picolibrary/error.h"
 #include "picolibrary/ip.h"
 #include "picolibrary/ipv4.h"
 #include "picolibrary/mac_address.h"
@@ -48,6 +51,8 @@ class Mock_Network_Stack {
     auto operator=( Mock_Network_Stack && ) = delete;
 
     auto operator=( Mock_Network_Stack const & ) = delete;
+
+    MOCK_METHOD( Error_Code, nonresponsive_device_error, (), ( const ) );
 
     MOCK_METHOD( bool, w5500_is_responsive, (), ( const ) );
 

@@ -266,7 +266,7 @@ TEST( linkMode, worksProperly )
 TEST( linkSpeed, worksProperly )
 {
     struct {
-        std::uint8_t phycfgr_lnk;
+        std::uint8_t phycfgr_spd;
         Link_Speed   link_speed;
     } const test_cases[]{
         // clang-format off
@@ -286,7 +286,7 @@ TEST( linkSpeed, worksProperly )
                                                   tcp_port_allocator.handle() };
 
         EXPECT_CALL( driver, read_phycfgr() )
-            .WillOnce( Return( ( random<std::uint8_t>() & 0b1'1'111'1'0'1 ) | test_case.phycfgr_lnk ) );
+            .WillOnce( Return( ( random<std::uint8_t>() & 0b1'1'111'1'0'1 ) | test_case.phycfgr_spd ) );
 
         EXPECT_EQ( network_stack.link_speed(), test_case.link_speed );
     } // for
@@ -578,8 +578,8 @@ TEST( configureMACAddress, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_mac_address()
- *        works properly.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::mac_address() works
+ *        properly.
  */
 TEST( macAddress, worksProperly )
 {
