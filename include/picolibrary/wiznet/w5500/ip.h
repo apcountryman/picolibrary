@@ -96,12 +96,12 @@ class Port_Allocator_Concept {
 /**
  * \brief TCP/UDP over IP port allocator without ephemeral port allocation support.
  */
-class Port_Allocator_Without_Ephemeral_Port_Allocation {
+class TCP_UDP_Port_Allocator_Without_Ephemeral_Port_Allocation {
   public:
     /**
      * \brief Constructor.
      */
-    constexpr Port_Allocator_Without_Ephemeral_Port_Allocation() noexcept = default;
+    constexpr TCP_UDP_Port_Allocator_Without_Ephemeral_Port_Allocation() noexcept = default;
 
     /**
      * \brief Constructor.
@@ -111,7 +111,8 @@ class Port_Allocator_Without_Ephemeral_Port_Allocation {
      * \pre socket_protocol == picolibrary::WIZnet::W5500::Socket_Protocol::TCP or
      *      socket_protocol == picolibrary::WIZnet::W5500::Socket_Protocol::UDP
      */
-    constexpr Port_Allocator_Without_Ephemeral_Port_Allocation( Socket_Protocol socket_protocol ) noexcept :
+    constexpr TCP_UDP_Port_Allocator_Without_Ephemeral_Port_Allocation( Socket_Protocol socket_protocol ) noexcept
+        :
         m_socket_protocol{ socket_protocol }
     {
         expect(
@@ -124,21 +125,21 @@ class Port_Allocator_Without_Ephemeral_Port_Allocation {
      *
      * \param[in] source The source of the move.
      */
-    constexpr Port_Allocator_Without_Ephemeral_Port_Allocation(
-        Port_Allocator_Without_Ephemeral_Port_Allocation && source ) noexcept = default;
+    constexpr TCP_UDP_Port_Allocator_Without_Ephemeral_Port_Allocation(
+        TCP_UDP_Port_Allocator_Without_Ephemeral_Port_Allocation && source ) noexcept = default;
 
     /**
      * \brief Constructor.
      *
      * \param[in] original The original to copy.
      */
-    constexpr Port_Allocator_Without_Ephemeral_Port_Allocation(
-        Port_Allocator_Without_Ephemeral_Port_Allocation const & original ) noexcept = default;
+    constexpr TCP_UDP_Port_Allocator_Without_Ephemeral_Port_Allocation(
+        TCP_UDP_Port_Allocator_Without_Ephemeral_Port_Allocation const & original ) noexcept = default;
 
     /**
      * \brief Destructor.
      */
-    ~Port_Allocator_Without_Ephemeral_Port_Allocation() noexcept = default;
+    ~TCP_UDP_Port_Allocator_Without_Ephemeral_Port_Allocation() noexcept = default;
 
     /**
      * \brief Assignment operator.
@@ -147,8 +148,8 @@ class Port_Allocator_Without_Ephemeral_Port_Allocation {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Port_Allocator_Without_Ephemeral_Port_Allocation && expression ) noexcept
-        -> Port_Allocator_Without_Ephemeral_Port_Allocation & = default;
+    constexpr auto operator=( TCP_UDP_Port_Allocator_Without_Ephemeral_Port_Allocation && expression ) noexcept
+        -> TCP_UDP_Port_Allocator_Without_Ephemeral_Port_Allocation & = default;
 
     /**
      * \brief Assignment operator.
@@ -157,8 +158,8 @@ class Port_Allocator_Without_Ephemeral_Port_Allocation {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Port_Allocator_Without_Ephemeral_Port_Allocation const & expression ) noexcept
-        -> Port_Allocator_Without_Ephemeral_Port_Allocation & = default;
+    constexpr auto operator=( TCP_UDP_Port_Allocator_Without_Ephemeral_Port_Allocation const & expression ) noexcept
+        -> TCP_UDP_Port_Allocator_Without_Ephemeral_Port_Allocation & = default;
 
     /**
      * \brief Allocate a port.
