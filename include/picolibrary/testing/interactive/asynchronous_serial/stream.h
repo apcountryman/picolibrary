@@ -30,21 +30,19 @@
 namespace picolibrary::Testing::Interactive::Asynchronous_Serial {
 
 /**
- * \brief Asynchronous serial output stream hello world interactive test helper.
+ * \brief Asynchronous serial reliable output stream hello world interactive test helper.
  *
- * \tparam Output_Stream The type of output stream to use.
+ * \tparam Reliable_Output_Stream The type of reliable output stream to use.
  * \tparam Transmitter The type of transmitter to use.
  *
  * \param[in] transmitter The transmitter to use.
- *
- * \pre writing to the stream succeeds
  */
-template<template<typename> typename Output_Stream, typename Transmitter>
+template<template<typename> typename Reliable_Output_Stream, typename Transmitter>
 void hello_world( Transmitter transmitter ) noexcept
 {
     transmitter.initialize();
 
-    auto stream = Output_Stream{ std::move( transmitter ) };
+    auto stream = Reliable_Output_Stream{ std::move( transmitter ) };
 
     ::picolibrary::Testing::Interactive::hello_world( stream );
 }
