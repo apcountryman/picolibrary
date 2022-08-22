@@ -27,59 +27,12 @@
 
 #include "picolibrary/format.h"
 #include "picolibrary/i2c.h"
-#include "picolibrary/precondition.h"
 #include "picolibrary/stream.h"
 
 /**
  * \brief Inter-Integrated Circuit (I2C) interactive testing facilities.
  */
 namespace picolibrary::Testing::Interactive::I2C {
-
-/**
- * \brief Controller bus scan interactive test helper.
- *
- * \tparam Controller The type of controller used to communicate with devices on the bus.
- *
- * \param[in] stream The output stream to write the scan results to.
- * \param[in] controller The controller used to communicate with devices on the bus.
- *
- * \pre writing to the stream succeeds
- */
-template<typename Controller>
-// NOLINTNEXTLINE(readability-function-size)
-void scan( Output_Stream & stream, Controller controller ) noexcept
-{
-    // #lizard forgives the length
-
-    controller.initialize();
-
-    auto devices_found = false;
-
-    ::picolibrary::I2C::scan(
-        controller,
-        [ &stream, &devices_found ](
-            ::picolibrary::I2C::Address_Numeric address, auto operation, auto response ) noexcept {
-            if ( response == ::picolibrary::I2C::Response::ACK ) {
-                devices_found = true;
-
-                auto result = stream.print(
-                    "device found: ",
-                    Format::Hexadecimal{ static_cast<std::uint8_t>( address.as_unsigned_integer() ) },
-                    " (",
-                    operation == ::picolibrary::I2C::Operation::READ ? 'R' : 'W',
-                    ")\n" );
-                expect( not result.is_error(), result.error() );
-            } // if
-        } );
-
-    if ( not devices_found ) {
-        auto result = stream.put( "no devices found\n" );
-        expect( not result.is_error(), result.error() );
-    } // if
-
-    auto result = stream.flush();
-    expect( not result.is_error(), result.error() );
-}
 
 /**
  * \brief Controller bus scan interactive test helper.

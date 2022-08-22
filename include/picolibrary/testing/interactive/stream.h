@@ -23,30 +23,9 @@
 #ifndef PICOLIBRARY_TESTING_INTERACTIVE_STREAM_H
 #define PICOLIBRARY_TESTING_INTERACTIVE_STREAM_H
 
-#include "picolibrary/precondition.h"
 #include "picolibrary/stream.h"
 
 namespace picolibrary::Testing::Interactive {
-
-/**
- * \brief Output stream hello world interactive test helper.
- *
- * \param[in] stream The output stream to write "Hello, world!\n" to.
- *
- * \pre writing to the stream succeeds
- */
-inline void hello_world( Output_Stream & stream ) noexcept
-{
-    {
-        auto result = stream.put( "Hello, world!\n" );
-        expect( not result.is_error(), result.error() );
-    }
-
-    {
-        auto result = stream.flush();
-        expect( not result.is_error(), result.error() );
-    }
-}
 
 /**
  * \brief Output stream hello world interactive test helper.
