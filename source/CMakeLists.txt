@@ -131,6 +131,7 @@ if( ${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING} )
         "picolibrary/testing/interactive/wiznet.cc"
         "picolibrary/testing/interactive/wiznet/w5500.cc"
         "picolibrary/testing/interactive/wiznet/w5500/ip.cc"
+        "picolibrary/testing/interactive/wiznet/w5500/ip/network_stack.cc"
     )
 endif( ${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING} )
 
