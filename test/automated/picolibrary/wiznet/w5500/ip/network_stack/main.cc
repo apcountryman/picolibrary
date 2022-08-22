@@ -637,10 +637,10 @@ TEST( ipv4Address, worksProperly )
 
 /**
  * \brief Verify
- *        picolibrary::WIZnet::W5500::IP::Network_Stack::configure_gateway_ipv4_address()
+ *        picolibrary::WIZnet::W5500::IP::Network_Stack::configure_ipv4_gateway_address()
  *        works properly.
  */
-TEST( configureGatewayIPv4Address, worksProperly )
+TEST( configureIPv4GatewayAddress, worksProperly )
 {
     auto driver             = Mock_Driver{};
     auto tcp_port_allocator = Mock_Port_Allocator{};
@@ -651,14 +651,14 @@ TEST( configureGatewayIPv4Address, worksProperly )
 
     EXPECT_CALL( driver, write_gar( address.as_byte_array() ) );
 
-    network_stack.configure_gateway_ipv4_address( address );
+    network_stack.configure_ipv4_gateway_address( address );
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::gateway_ipv4_address()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::ipv4_gateway_address()
  *        works properly.
  */
-TEST( gatewayIPv4Address, worksProperly )
+TEST( ipv4GatewayAddress, worksProperly )
 {
     auto driver             = Mock_Driver{};
     auto tcp_port_allocator = Mock_Port_Allocator{};
@@ -671,7 +671,7 @@ TEST( gatewayIPv4Address, worksProperly )
 
     EXPECT_CALL( driver, read_gar() ).WillOnce( Return( gar ) );
 
-    EXPECT_EQ( network_stack.gateway_ipv4_address().as_byte_array(), gar );
+    EXPECT_EQ( network_stack.ipv4_gateway_address().as_byte_array(), gar );
 }
 
 /**

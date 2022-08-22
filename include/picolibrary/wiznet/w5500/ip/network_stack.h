@@ -386,21 +386,21 @@ class Network_Stack {
     }
 
     /**
-     * \brief Configure the W5500's gateway IPv4 address.
+     * \brief Configure the W5500's IPv4 gateway address.
      *
-     * \param[in] address The desired gateway IPv4 address.
+     * \param[in] address The desired IPv4 gateway address.
      */
-    void configure_gateway_ipv4_address( IPv4::Address const & address ) noexcept
+    void configure_ipv4_gateway_address( IPv4::Address const & address ) noexcept
     {
         m_driver->write_gar( address.as_byte_array() );
     }
 
     /**
-     * \brief Get the W5500's gateway IPv4 address.
+     * \brief Get the W5500's IPv4 gateway address.
      *
-     * \return The W5500's gateway IPv4 address.
+     * \return The W5500's IPv4 gateway address.
      */
-    auto gateway_ipv4_address() const noexcept -> IPv4::Address
+    auto ipv4_gateway_address() const noexcept -> IPv4::Address
     {
         return m_driver->read_gar();
     }

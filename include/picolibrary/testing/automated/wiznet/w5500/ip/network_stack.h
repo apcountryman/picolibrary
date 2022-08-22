@@ -83,8 +83,8 @@ class Mock_Network_Stack {
     MOCK_METHOD( void, configure_ipv4_address, (::picolibrary::IPv4::Address const &));
     MOCK_METHOD( ::picolibrary::IPv4::Address, ipv4_address, (), ( const ) );
 
-    MOCK_METHOD( void, configure_gateway_ipv4_address, (::picolibrary::IPv4::Address const &));
-    MOCK_METHOD( ::picolibrary::IPv4::Address, gateway_ipv4_address, (), ( const ) );
+    MOCK_METHOD( void, configure_ipv4_gateway_address, (::picolibrary::IPv4::Address const &));
+    MOCK_METHOD( ::picolibrary::IPv4::Address, ipv4_gateway_address, (), ( const ) );
 
     MOCK_METHOD( void, configure_ipv4_subnet_mask, (::picolibrary::IPv4::Address const &));
     MOCK_METHOD( ::picolibrary::IPv4::Address, ipv4_subnet_mask, (), ( const ) );

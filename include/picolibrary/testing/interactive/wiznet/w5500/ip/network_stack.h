@@ -57,7 +57,7 @@ namespace picolibrary::Testing::Interactive::WIZnet::W5500::IP::Network_Stack {
  *            register value).
  * \param[in] mac_address The desired W5500 MAC address.
  * \param[in] ipv4_address The desired W5500 IPv4 address.
- * \param[in] gateway_ipv4_address The desired W5500 gateway IPv4 address.
+ * \param[in] ipv4_gateway_address The desired W5500 IPv4 gateway address.
  * \param[in] ipv4_subnet_mask The desired W5500 IPv4 subnet mask.
  */
 template<typename Controller, typename Device_Selector>
@@ -73,7 +73,7 @@ void ping(
     std::uint8_t                              retransmission_retry_count,
     MAC_Address                               mac_address,
     IPv4::Address                             ipv4_address,
-    IPv4::Address                             gateway_ipv4_address,
+    IPv4::Address                             ipv4_gateway_address,
     IPv4::Address                             ipv4_subnet_mask ) noexcept
 {
     // #lizard forgives the length
@@ -101,7 +101,7 @@ void ping(
     network_stack.configure_mac_address( mac_address );
 
     network_stack.configure_ipv4_address( ipv4_address );
-    network_stack.configure_gateway_ipv4_address( gateway_ipv4_address );
+    network_stack.configure_ipv4_gateway_address( ipv4_gateway_address );
     network_stack.configure_ipv4_subnet_mask( ipv4_subnet_mask );
 
     stream.put( "waiting for link to be established\n" );
@@ -122,7 +122,7 @@ void ping(
                                                                                         : "unknown", "\n"
         "MAC address: ", mac_address, "\n"
         "IPv4 address: ", ipv4_address, "\n"
-        "gateway IPv4 address: ", gateway_ipv4_address, "\n"
+        "IPv4 gateway address: ", ipv4_gateway_address, "\n"
         "IPv4 subnet mask: ", ipv4_subnet_mask, "\n"
     );
     // clang-format on
