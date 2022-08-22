@@ -48,7 +48,7 @@ namespace picolibrary::Testing::Interactive::WIZnet::W5500::IP::Network_Stack {
  * \param[in] controller The controller used to communicate with the W5500.
  * \param[in] configuration The controller clock and data exchange bit order configuration
  *            that meets the W5500's communication requirements.
- * \param[in] device_selector The device_selector used to select and deselect the W5500.
+ * \param[in] device_selector The device selector used to select and deselect the W5500.
  * \param[in] phy_mode The desired W5500 PHY mode.
  * \param[in] arp_forcing_configuration The desired W5500 ARP forcing configuration.
  * \param[in] retransmission_retry_time The desired W5500 retransmission retry time (RTR
