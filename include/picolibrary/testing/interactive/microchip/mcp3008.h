@@ -26,6 +26,7 @@
 #include <utility>
 
 #include "picolibrary/microchip/mcp3008.h"
+#include "picolibrary/stream.h"
 #include "picolibrary/testing/interactive/adc.h"
 
 /**
@@ -36,7 +37,6 @@ namespace picolibrary::Testing::Interactive::Microchip::MCP3008 {
 /**
  * \brief Blocking, single sample ADC sample interactive test helper.
  *
- * \tparam Output_Stream The type of output stream to use.
  * \tparam Controller The type of controller used to communicate with the MCP3008.
  * \tparam Device_Selector The type of device selector used to select and deselect the
  *         MCP3008.
@@ -51,13 +51,11 @@ namespace picolibrary::Testing::Interactive::Microchip::MCP3008 {
  * \param[in] input The input to sample.
  * \param[in] delay The nullary functor to call to introduce a delay each time a sample is
  *            gotten.
- *
- * \pre writing to the stream succeeds
  */
-template<typename Output_Stream, typename Controller, typename Device_Selector, typename Delayer>
+template<typename Controller, typename Device_Selector, typename Delayer>
 // NOLINTNEXTLINE(readability-function-size)
 void sample(
-    Output_Stream &                          stream,
+    Reliable_Output_Stream &                 stream,
     Controller                               controller,
     typename Controller::Configuration       configuration,
     Device_Selector                          device_selector,

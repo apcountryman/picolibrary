@@ -23,47 +23,12 @@
 #ifndef PICOLIBRARY_TESTING_INTERACTIVE_GPIO_H
 #define PICOLIBRARY_TESTING_INTERACTIVE_GPIO_H
 
-#include "picolibrary/precondition.h"
 #include "picolibrary/stream.h"
 
 /**
  * \brief General Purpose Input/Output (GPIO) interactive testing facilities.
  */
 namespace picolibrary::Testing::Interactive::GPIO {
-
-/**
- * \brief GPIO input pin state interactive test helper.
- *
- * \tparam Input_Pin The type of input pin to get the state of.
- * \tparam Delayer A nullary functor called to introduce a delay each time the pin's state
- *         is gotten.
- *
- * \param[in] stream The output stream to write the pin state to.
- * \param[in] pin The pin to get the state of.
- * \param[in] delay The nullary functor to call to introduce a delay each time the pin's
- *            state is gotten.
- *
- * \pre writing to the stream succeeds
- */
-template<typename Input_Pin, typename Delayer>
-void state( Output_Stream & stream, Input_Pin pin, Delayer delay ) noexcept
-{
-    pin.initialize();
-
-    for ( ;; ) {
-        delay();
-
-        {
-            auto result = stream.put( pin.is_high() ? "high\n" : "low\n" );
-            expect( not result.is_error(), result.error() );
-        }
-
-        {
-            auto result = stream.flush();
-            expect( not result.is_error(), result.error() );
-        }
-    } // for
-}
 
 /**
  * \brief GPIO input pin state interactive test helper.

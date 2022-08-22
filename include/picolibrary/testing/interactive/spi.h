@@ -48,46 +48,6 @@ namespace picolibrary::Testing::Interactive::SPI {
  *            the test.
  * \param[in] delay The nullary functor to call to introduce a delay each time data is
  *            exchanged.
- *
- * \pre writing to the stream succeeds
- */
-template<typename Controller, typename Delayer>
-void echo( Output_Stream & stream, Controller controller, typename Controller::Configuration const & configuration, Delayer delay ) noexcept
-{
-    controller.initialize();
-    controller.configure( configuration );
-
-    for ( auto tx = std::uint8_t{};; ++tx ) {
-        delay();
-
-        {
-            auto const rx     = controller.exchange( tx );
-            auto       result = stream.print(
-                "exchange( ", Format::Hexadecimal{ tx }, " ) -> ", Format::Hexadecimal{ rx }, '\n' );
-            expect( not result.is_error(), result.error() );
-            expect( rx == tx, Generic_Error::RUNTIME_ERROR );
-        }
-
-        {
-            auto result = stream.flush();
-            expect( not result.is_error(), result.error() );
-        }
-    } // for
-}
-
-/**
- * \brief Controller echo interactive test helper.
- *
- * \tparam Controller The type of controller to test.
- * \tparam Delayer A nullary functor called to introduce a delay each time data is
- *         exchanged.
- *
- * \param[in] stream The output stream to write test output to.
- * \param[in] controller The controller to test.
- * \param[in] configuration The clock and data exchange bit order configuration to use for
- *            the test.
- * \param[in] delay The nullary functor to call to introduce a delay each time data is
- *            exchanged.
  */
 template<typename Controller, typename Delayer>
 void echo(
