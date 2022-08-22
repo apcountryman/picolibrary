@@ -26,9 +26,6 @@ add_subdirectory( reliable_unbuffered_output_stream_buffer )
 # build the picolibrary::Asynchronous_Serial::Transmitter automated tests
 add_subdirectory( transmitter )
 
-# build the picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream automated tests
-add_subdirectory( unbuffered_output_stream )
-
 # build the picolibrary::Asynchronous_Serial::Unbuffered_Output_Stream_Buffer automated
 # tests
 add_subdirectory( unbuffered_output_stream_buffer )
