@@ -61,6 +61,7 @@ namespace picolibrary::Testing::Interactive::WIZnet::W5500::IP::Network_Stack {
  * \param[in] ipv4_subnet_mask The desired W5500 IPv4 subnet mask.
  */
 template<typename Controller, typename Device_Selector>
+// NOLINTNEXTLINE(readability-function-size)
 void ping(
     Reliable_Output_Stream &                  stream,
     Controller                                controller,
@@ -75,6 +76,9 @@ void ping(
     IPv4::Address                             gateway_ipv4_address,
     IPv4::Address                             ipv4_subnet_mask ) noexcept
 {
+    // #lizard forgives the length
+    // #lizard forgives the parameter count
+
     controller.initialize();
 
     auto w5500 = ::picolibrary::WIZnet::W5500::Driver{ controller, configuration, std::move( device_selector ) };
