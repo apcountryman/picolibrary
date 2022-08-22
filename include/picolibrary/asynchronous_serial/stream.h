@@ -30,52 +30,6 @@
 namespace picolibrary::Asynchronous_Serial {
 
 /**
- * \brief Output stream concept.
- *
- * \tparam Transmitter The type of transmitter to abstract with the stream.
- */
-template<typename Transmitter>
-class Output_Stream_Concept : public Output_Stream {
-  public:
-    /**
-     * \brief Constructor.
-     */
-    Output_Stream_Concept() noexcept;
-
-    /**
-     * \brief Constructor.
-     *
-     * \param[in] transmitter The transmitter to abstract with the stream.
-     */
-    Output_Stream_Concept( Transmitter transmitter ) noexcept;
-
-    /**
-     * \brief Constructor.
-     *
-     * \param[in] source The source of the move.
-     */
-    Output_Stream_Concept( Output_Stream_Concept && source ) noexcept;
-
-    Output_Stream_Concept( Output_Stream_Concept const & ) = delete;
-
-    /**
-     * \brief Destructor.
-     */
-    ~Output_Stream_Concept() noexcept;
-
-    /**
-     * \brief Assignment operator.
-     *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
-     */
-    auto operator=( Output_Stream_Concept && expression ) noexcept -> Output_Stream_Concept &;
-
-    auto operator=( Output_Stream_Concept const & ) = delete;
-};
-
-/**
  * \brief Reliable output stream concept.
  *
  * \tparam Transmitter The type of transmitter to abstract with the stream.
