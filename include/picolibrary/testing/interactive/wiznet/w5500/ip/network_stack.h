@@ -35,7 +35,7 @@
 #include "picolibrary/wiznet/w5500/ip.h"
 #include "picolibrary/wiznet/w5500/ip/network_stack.h"
 
-namespace picolibrary::Testing::Interactive::WIZnet::W5500::IP::Network_Stack {
+namespace picolibrary::Testing::Interactive::WIZnet::W5500::IP {
 
 /**
  * \brief Network stack ping interactive test helper.
@@ -130,6 +130,6 @@ void ping(
     for ( ;; ) {} // for
 }
 
-} // namespace picolibrary::Testing::Interactive::WIZnet::W5500::IP::Network_Stack
+} // namespace picolibrary::Testing::Interactive::WIZnet::W5500::IP
 
 #endif // PICOLIBRARY_TESTING_INTERACTIVE_WIZNET_W5500_IP_NETWORK_STACK_H
