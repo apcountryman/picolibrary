@@ -47,43 +47,38 @@ list(
 if( NOT ${PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS} )
     set( CMAKE_CXX_STANDARD 17 )
 
-    set(
-        CMAKE_CXX_FLAGS
-        "${CMAKE_CXX_FLAGS} \
-        -Werror -Wall -Wextra \
-        -Wcast-qual \
-        -Wfloat-equal \
-        -Wmissing-field-initializers \
-        -Wmissing-include-dirs \
-        -Wold-style-cast \
-        -Wpointer-arith \
-        -Wshadow \
-        "
+    add_compile_options(
+        -Werror -Wall -Wextra
+        -Wcast-qual
+        -Wfloat-equal
+        -Wmissing-field-initializers
+        -Wmissing-include-dirs
+        -Wold-style-cast
+        -Wpointer-arith
+        -Wshadow
     )
 
     option( PICOLIBRARY_USE_STATIC_ANALYSIS_BUILD_FLAGS "picolibrary: use static analysis build flags" OFF )
     if( NOT ${PICOLIBRARY_USE_STATIC_ANALYSIS_BUILD_FLAGS} )
-        set(
-            CMAKE_CXX_FLAGS
-            "${CMAKE_CXX_FLAGS} \
-            -Wcast-align=strict \
-            -Wduplicated-cond \
-            -Wextra-semi \
-            -Wimplicit-fallthrough=5 \
-            -Wlogical-op \
-            -Wplacement-new=2 \
-            -Wunsafe-loop-optimizations \
-            "
+        add_compile_options(
+            -Wcast-align=strict
+            -Wduplicated-cond
+            -Wextra-semi
+            -Wimplicit-fallthrough=5
+            -Wlogical-op
+            -Wplacement-new=2
+            -Wunsafe-loop-optimizations
         )
     endif( NOT ${PICOLIBRARY_USE_STATIC_ANALYSIS_BUILD_FLAGS} )
 
     if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
-        set(
-            CMAKE_CXX_FLAGS
-            "${CMAKE_CXX_FLAGS} \
-            -fsanitize=address \
-            -fno-sanitize-recover=all \
-            "
+        add_compile_options(
+            -fsanitize=address
+            -fno-sanitize-recover=all
+        )
+        add_link_options(
+            -fsanitize=address
+            -fno-sanitize-recover=all
         )
     endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
 endif( NOT ${PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS} )
@@ -97,28 +92,16 @@ execute_git_command(
 
 # configure Google Test
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} AND NOT ${PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST} )
-    set( BUILD_GMOCK   ON  CACHE BOOL "" FORCE )
-    set( INSTALL_GTEST OFF CACHE BOOL "" FORCE )
-    mark_as_advanced(
-        BUILD_GMOCK
-        INSTALL_GTEST
-    )
+    set( BUILD_GMOCK   ON  CACHE INTERNAL "" )
+    set( INSTALL_GTEST OFF CACHE INTERNAL "" )
 
-    set( gtest_build_samples         OFF CACHE BOOL "" FORCE )
-    set( gtest_build_tests           OFF CACHE BOOL "" FORCE )
-    set( gtest_disable_pthreads      OFF CACHE BOOL "" FORCE )
-    set( gtest_force_shared_crt      OFF CACHE BOOL "" FORCE )
-    set( gtest_hide_internal_symbols OFF CACHE BOOL "" FORCE )
-    mark_as_advanced(
-        gtest_build_samples
-        gtest_build_tests
-        gtest_disable_pthreads
-        gtest_force_shared_crt
-        gtest_hide_internal_symbols
-    )
+    set( gtest_build_samples         OFF CACHE INTERNAL "" )
+    set( gtest_build_tests           OFF CACHE INTERNAL "" )
+    set( gtest_disable_pthreads      OFF CACHE INTERNAL "" )
+    set( gtest_force_shared_crt      OFF CACHE INTERNAL "" )
+    set( gtest_hide_internal_symbols OFF CACHE INTERNAL "" )
 
-    set( gmock_build_tests OFF CACHE BOOL "" FORCE )
-    mark_as_advanced( gmock_build_tests )
+    set( gmock_build_tests OFF CACHE INTERNAL "" )
 
     add_subdirectory( googletest )
 endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} AND NOT ${PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST} )
