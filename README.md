@@ -15,6 +15,11 @@ SSH:
 git clone --recurse-submodules git@github.com:apcountryman/picolibrary.git
 ```
 
+## Documentation
+Documentation for key library concepts, and major library features can be found at
+https://apcountryman.github.io/picolibrary/.
+All other documentation is embedded in the library source code.
+
 ## Usage (Dependency)
 To use this library as a dependency, simply add the subdirectory containing this
 repository to a CMake build, and link with the `picolibrary` static library.
