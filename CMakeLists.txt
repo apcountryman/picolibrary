@@ -27,7 +27,6 @@ option( PICOLIBRARY_ENABLE_INTERACTIVE_TESTING                "picolibrary: enab
 option( PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION "picolibrary: suppress human readable error information" OFF )
 option( PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION "picolibrary: suppress human readable event information" OFF )
 option( PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS            "picolibrary: use parent project's build flags"          ON  )
-option( PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST            "picolibrary: use parent project's Google Test"          ON  )
 
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} AND ${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION} )
     message( FATAL_ERROR "picolibrary automated tests require human readable error information" )
@@ -91,20 +90,23 @@ execute_git_command(
 )
 
 # configure Google Test
-if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} AND NOT ${PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST} )
-    set( BUILD_GMOCK   ON  CACHE INTERNAL "" )
-    set( INSTALL_GTEST OFF CACHE INTERNAL "" )
+if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
+    option( PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST "picolibrary: use parent project's Google Test" ON  )
+    if( NOT ${PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST} )
+        set( BUILD_GMOCK   ON  CACHE INTERNAL "" )
+        set( INSTALL_GTEST OFF CACHE INTERNAL "" )
 
-    set( gtest_build_samples         OFF CACHE INTERNAL "" )
-    set( gtest_build_tests           OFF CACHE INTERNAL "" )
-    set( gtest_disable_pthreads      OFF CACHE INTERNAL "" )
-    set( gtest_force_shared_crt      OFF CACHE INTERNAL "" )
-    set( gtest_hide_internal_symbols OFF CACHE INTERNAL "" )
+        set( gtest_build_samples         OFF CACHE INTERNAL "" )
+        set( gtest_build_tests           OFF CACHE INTERNAL "" )
+        set( gtest_disable_pthreads      OFF CACHE INTERNAL "" )
+        set( gtest_force_shared_crt      OFF CACHE INTERNAL "" )
+        set( gtest_hide_internal_symbols OFF CACHE INTERNAL "" )
 
-    set( gmock_build_tests OFF CACHE INTERNAL "" )
+        set( gmock_build_tests OFF CACHE INTERNAL "" )
 
-    add_subdirectory( googletest )
-endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} AND NOT ${PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST} )
+        add_subdirectory( googletest )
+    endif( NOT ${PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST} )
+endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
 
 # enable automated testing
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
