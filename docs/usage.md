@@ -25,5 +25,5 @@ See the `pre-commit` script's help text for usage details.
 ./git/hooks/pre-commit --help
 ```
 
-Additional checks, such as static analysis, are performed by the project's GitHub Actions
-CI workflow.
+Additional checks, such as static analysis, are performed by the repository's GitHub
+Actions CI workflow.

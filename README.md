@@ -16,8 +16,8 @@ git clone --recurse-submodules git@github.com:apcountryman/picolibrary.git
 ```
 
 ## Documentation
-Documentation for library usage, key library concepts, and major library features can be
-found at https://apcountryman.github.io/picolibrary/.
+Library usage documentation, documentation for key library concepts, and documentation for
+major library features can be found at https://apcountryman.github.io/picolibrary/.
 All other documentation is embedded in the library source code.
 
 ## Versioning
