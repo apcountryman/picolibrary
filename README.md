@@ -16,37 +16,9 @@ git clone --recurse-submodules git@github.com:apcountryman/picolibrary.git
 ```
 
 ## Documentation
-Documentation for key library concepts, and major library features can be found at
-https://apcountryman.github.io/picolibrary/.
+Documentation for library usage, key library concepts, and major library features can be
+found at https://apcountryman.github.io/picolibrary/.
 All other documentation is embedded in the library source code.
-
-## Usage (Dependency)
-To use this library as a dependency, simply add the subdirectory containing this
-repository to a CMake build, and link with the `picolibrary` static library.
-```cmake
-add_subdirectory( picolibrary )
-```
-```cmake
-target_link_libraries(
-    foo
-    picolibrary
-)
-```
-
-The `picolibrary` static library does not provide an implementation for
-`::picolibrary::trap_fatal_error()`.
-See `include/picolibrary/fatal_error.h` for more information.
-
-## Usage (Development)
-This repository's Git `pre-commit` hook script is the simplest way to configure, build,
-and test this project during development.
-See the `pre-commit` script's help text for usage details.
-```shell
-./git/hooks/pre-commit --help
-```
-
-Additional checks, such as static analysis, are performed by this project's GitHub Actions
-CI workflow.
 
 ## Versioning
 Post version 0.1.0, `picolibrary` will follow the [Abseil Live at Head
