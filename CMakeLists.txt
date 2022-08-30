@@ -28,6 +28,7 @@ option( PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION "picolibrary: supp
 option( PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION "picolibrary: suppress human readable event information" OFF )
 option( PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS            "picolibrary: use parent project's build flags"          ON  )
 option( PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST            "picolibrary: use parent project's Google Test"          ON  )
+option( PICOLIBRARY_USE_STATIC_ANALYSIS_BUILD_FLAGS           "picolibrary: use static analysis build flags"           OFF )
 
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} AND ${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION} )
     message( FATAL_ERROR "picolibrary automated tests require human readable error information" )
@@ -58,7 +59,6 @@ if( NOT ${PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS} )
         -Wshadow
     )
 
-    option( PICOLIBRARY_USE_STATIC_ANALYSIS_BUILD_FLAGS "picolibrary: use static analysis build flags" OFF )
     if( NOT ${PICOLIBRARY_USE_STATIC_ANALYSIS_BUILD_FLAGS} )
         add_compile_options(
             -Wcast-align=strict
