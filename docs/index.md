@@ -1,4 +1,2 @@
-# picolibrary Documentation
-
-## Table of Contents
-- [Usage](usage.md)
+# Table of Contents
+1. [Usage](usage.md)
