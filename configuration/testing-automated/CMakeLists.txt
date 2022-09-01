@@ -16,7 +16,7 @@
 # Description: picolibrary automated testing configuration.
 
 # install prefix is not applicable
-set( CMAKE_INSTALL_PREFIX "" CACHE INTERNAL "" )
+mark_as_advanced( CMAKE_INSTALL_PREFIX )
 
 # build configuration
 set( CMAKE_BUILD_TYPE                            "Debug" CACHE INTERNAL "" )
