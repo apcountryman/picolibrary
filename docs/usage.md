@@ -32,7 +32,7 @@ target_link_libraries(
 picolibrary supports the following project configuration options:
 - `PICOLIBRARY_ENABLE_AUTOMATED_TESTING` (defaults to `OFF`): enable automated testing
     - The following project configuration options are available if
-      `PICOLIBRARY_ENABLE_AUTOMATED_TESTING` is `ON`
+      `PICOLIBRARY_ENABLE_AUTOMATED_TESTING` is `ON`:
         - `PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST` (defaults to `ON`): use parent
           project's Google Test
 - `PICOLIBRARY_ENABLE_INTERACTIVE_TESTING` (defaults to `OFF`): enable interactive testing
@@ -45,7 +45,7 @@ picolibrary supports the following project configuration options:
 - `PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS` (defaults to `ON`): use parent project's
   build flags
     - The following project configuration options are available if
-      `PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS` is `OFF`
+      `PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS` is `OFF`:
         - `PICOLIBRARY_USE_STATIC_ANALYSIS_BUILD_FLAGS` (defaults to `OFF`): use static
           analysis build flags
 
