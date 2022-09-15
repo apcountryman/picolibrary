@@ -23,11 +23,78 @@
 #ifndef PICOLIBRARY_TESTING_AUTOMATED_WIZNET_W5500_IP_TCP_H
 #define PICOLIBRARY_TESTING_AUTOMATED_WIZNET_W5500_IP_TCP_H
 
+#include <cstdint>
+
+#include "gmock/gmock.h"
+#include "picolibrary/testing/automated/mock_handle.h"
+#include "picolibrary/wiznet/w5500.h"
+
 /**
  * \brief WIZnet W5500 Transmission Control Protocol (TCP) over IP automated testing
  *        facilities.
  */
 namespace picolibrary::Testing::Automated::WIZnet::W5500::IP::TCP {
+
+/**
+ * \brief Mock client socket.
+ */
+class Mock_Client {
+  public:
+    using Size = std::uint16_t;
+
+    class Handle : public Mock_Handle<Mock_Client> {
+      public:
+        using Size = Mock_Client::Size;
+
+        constexpr Handle() noexcept = default;
+
+        constexpr Handle( Mock_Client & mock ) noexcept : Mock_Handle<Mock_Client>{ mock }
+        {
+        }
+
+        constexpr Handle( Handle && source ) noexcept = default;
+
+        Handle( Handle const & ) = delete;
+
+        ~Handle() noexcept = default;
+
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
+
+        auto operator=( Handle const & ) = delete;
+
+        auto socket_id() const -> ::picolibrary::WIZnet::W5500::Socket_ID
+        {
+            return mock().socket_id();
+        }
+
+        auto socket_interrupt_mask() const -> std::uint8_t
+        {
+            return mock().socket_interrupt_mask();
+        }
+    };
+
+    Mock_Client() = default;
+
+    Mock_Client( Mock_Client && ) = delete;
+
+    Mock_Client( Mock_Client const & ) = delete;
+
+    ~Mock_Client() noexcept = default;
+
+    auto operator=( Mock_Client && ) = delete;
+
+    auto operator=( Mock_Client const & ) = delete;
+
+    auto handle() noexcept -> Handle
+    {
+        return Handle{ *this };
+    }
+
+    MOCK_METHOD( ::picolibrary::WIZnet::W5500::Socket_ID, socket_id, (), ( const ) );
+
+    MOCK_METHOD( std::uint8_t, socket_interrupt_mask, (), ( const ) );
+};
+
 } // namespace picolibrary::Testing::Automated::WIZnet::W5500::IP::TCP
 
 #endif // PICOLIBRARY_TESTING_AUTOMATED_WIZNET_W5500_IP_TCP_H
