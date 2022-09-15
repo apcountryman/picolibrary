@@ -3027,6 +3027,14 @@ enum class Socket_Protocol : SN_MR::Type {
 };
 
 /**
+ * \brief No delayed ACK usage configuration.
+ */
+enum class No_Delayed_ACK_Usage : SN_MR::Type {
+    DISABLED = 0b0 << SN_MR::Bit::ND, ///< Disabled.
+    ENABLED  = 0b1 << SN_MR::Bit::ND, ///< Enabled.
+};
+
+/**
  * \brief Socket buffer size.
  */
 enum class Socket_Buffer_Size : SN_RXBUF_SIZE::Type {
