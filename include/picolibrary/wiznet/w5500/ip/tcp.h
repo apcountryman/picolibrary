@@ -25,6 +25,10 @@
 
 #include <cstdint>
 
+#include "picolibrary/error.h"
+#include "picolibrary/ip.h"
+#include "picolibrary/ip/tcp.h"
+#include "picolibrary/precondition.h"
 #include "picolibrary/utility.h"
 #include "picolibrary/wiznet/w5500.h"
 
@@ -132,6 +136,47 @@ class Client {
     constexpr auto socket_interrupt_mask() const noexcept -> std::uint8_t
     {
         return 1 << ( to_underlying( m_socket_id ) >> Control_Byte::Bit::SOCKET );
+    }
+
+    /**
+     * \brief Bind the socket to a local endpoint.
+     *
+     * \pre the socket is not already bound to a local endpoint
+     * \pre the W5500 is responsive
+     *
+     * \param[in] endpoint The local endpoint to bind the socket to.
+     *
+     * \pre endpoint is a valid local endpoint
+     * \pre endpoint is not already in use
+     * \pre if an ephemeral port is requested, an ephemeral port is available
+     */
+    void bind( ::picolibrary::IP::TCP::Endpoint const & endpoint = ::picolibrary::IP::TCP::Endpoint{} ) noexcept
+    {
+        expect(
+            endpoint.address().version() == ::picolibrary::IP::Version::UNSPECIFIED
+                or endpoint.address().version() == ::picolibrary::IP::Version::_4,
+            Generic_Error::INVALID_ARGUMENT );
+
+        if ( not endpoint.address().is_any() ) {
+            expect(
+                endpoint.address().ipv4().as_byte_array() == m_driver->read_sipr(),
+                Generic_Error::INVALID_ARGUMENT );
+        } // if
+
+        m_driver->write_sn_port(
+            m_socket_id,
+            m_network_stack->tcp_port_allocator().allocate( *m_driver, endpoint.port() ).as_unsigned_integer() );
+
+        m_driver->write_sn_cr( m_socket_id, SN_CR::COMMAND_OPEN );
+        while ( m_driver->read_sn_cr( m_socket_id ) ) {} // while
+
+        for ( ;; ) {
+            switch ( m_driver->read_sn_sr( m_socket_id ) ) {
+                case SN_SR::STATUS_SOCK_CLOSED: break;
+                case SN_SR::STATUS_SOCK_INIT: return;
+                default: expect( false, m_network_stack->nonresponsive_device_error() );
+            } // switch
+        }     // for
     }
 
   private:

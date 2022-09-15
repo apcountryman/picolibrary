@@ -26,6 +26,7 @@
 #include <cstdint>
 
 #include "gmock/gmock.h"
+#include "picolibrary/ip/tcp.h"
 #include "picolibrary/testing/automated/mock_handle.h"
 #include "picolibrary/wiznet/w5500.h"
 
@@ -71,6 +72,16 @@ class Mock_Client {
         {
             return mock().socket_interrupt_mask();
         }
+
+        void bind()
+        {
+            mock().bind();
+        }
+
+        void bind( ::picolibrary::IP::TCP::Endpoint const & endpoint )
+        {
+            mock().bind( endpoint );
+        }
     };
 
     Mock_Client() = default;
@@ -93,6 +104,9 @@ class Mock_Client {
     MOCK_METHOD( ::picolibrary::WIZnet::W5500::Socket_ID, socket_id, (), ( const ) );
 
     MOCK_METHOD( std::uint8_t, socket_interrupt_mask, (), ( const ) );
+
+    MOCK_METHOD( void, bind, () );
+    MOCK_METHOD( void, bind, (::picolibrary::IP::TCP::Endpoint const &));
 };
 
 } // namespace picolibrary::Testing::Automated::WIZnet::W5500::IP::TCP
