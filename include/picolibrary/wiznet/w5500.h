@@ -3035,6 +3035,20 @@ enum class No_Delayed_ACK_Usage : SN_MR::Type {
 };
 
 /**
+ * \brief Socket interrupt masks.
+ */
+struct Socket_Interrupt {
+    static constexpr auto TCP_CONNECTION_ESTABLISHED = SN_IR::Mask::CON; ///< TCP connection established.
+    static constexpr auto TCP_CONNECTION_CLOSING = SN_IR::Mask::DISCON; ///< TCP connection closing.
+    static constexpr auto DATA_RECEIVED    = SN_IR::Mask::RECV;    ///< Data received.
+    static constexpr auto ARP_TCP_TIMEOUT  = SN_IR::Mask::TIMEOUT; ///< ARP/TCP timeout.
+    static constexpr auto DATA_TRANSMITTED = SN_IR::Mask::SENDOK;  ///< Data transmitted.
+
+    static constexpr auto ALL = SN_IR::Type{ TCP_CONNECTION_ESTABLISHED | TCP_CONNECTION_CLOSING | DATA_RECEIVED
+                                             | ARP_TCP_TIMEOUT | DATA_TRANSMITTED }; ///< All.
+};
+
+/**
  * \brief Socket buffer size.
  */
 enum class Socket_Buffer_Size : SN_RXBUF_SIZE::Type {
