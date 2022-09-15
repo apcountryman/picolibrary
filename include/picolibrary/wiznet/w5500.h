@@ -1285,7 +1285,7 @@ struct SN_SR {
      */
     enum STATUS : Type {
         STATUS_SOCK_CLOSED = 0x00, ///< Closed.
-        STATUS_SOCK_INT    = 0x13, ///< Opened (TCP).
+        STATUS_SOCK_INIT   = 0x13, ///< Opened (TCP).
         STATUS_SOCK_LISTEN = 0x14, ///< Waiting for connection request from remote endpoint.
         STATUS_SOCK_ESTABLISHED = 0x17, ///< Established.
         STATUS_SOCK_CLOSE_WAIT = 0x1C, ///< Waiting for connection termination request from local user.
