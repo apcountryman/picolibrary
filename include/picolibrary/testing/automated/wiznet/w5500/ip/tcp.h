@@ -43,9 +43,17 @@ class Mock_Client {
   public:
     using Size = std::uint16_t;
 
+    enum class State : std::uint_fast8_t {
+        UNINITIALIZED,
+        INITIALIZED,
+        BOUND,
+    };
+
     class Handle : public Mock_Handle<Mock_Client> {
       public:
         using Size = Mock_Client::Size;
+
+        using State = Mock_Client::State;
 
         constexpr Handle() noexcept = default;
 
@@ -62,6 +70,11 @@ class Mock_Client {
         constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
 
         auto operator=( Handle const & ) = delete;
+
+        auto state() const -> State
+        {
+            return mock().state();
+        }
 
         auto socket_id() const -> ::picolibrary::WIZnet::W5500::Socket_ID
         {
@@ -100,6 +113,8 @@ class Mock_Client {
     {
         return Handle{ *this };
     }
+
+    MOCK_METHOD( State, state, (), ( const ) );
 
     MOCK_METHOD( ::picolibrary::WIZnet::W5500::Socket_ID, socket_id, (), ( const ) );
 

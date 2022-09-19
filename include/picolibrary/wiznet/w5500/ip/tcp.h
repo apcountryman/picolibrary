@@ -53,6 +53,15 @@ class Client {
     using Size = std::uint16_t;
 
     /**
+     * \brief Socket state.
+     */
+    enum class State : std::uint_fast8_t {
+        UNINITIALIZED, ///< Uninitialized.
+        INITIALIZED,   ///< Initialized.
+        BOUND,         ///< Bound.
+    };
+
+    /**
      * \brief Constructor.
      */
     constexpr Client() noexcept = default;
@@ -60,16 +69,36 @@ class Client {
     /**
      * \brief Constructor.
      *
-     * \param[in] The driver used to interact with the W5500.
-     * \param[in] The socket's socket ID.
-     * \param[in] The network stack the socket is associated with.
+     * \param[in] driver The driver used to interact with the W5500.
+     * \param[in] socket_id The socket's socket ID.
+     * \param[in] network_stack The network stack the socket is associated with.
      */
     constexpr Client( Driver & driver, Socket_ID socket_id, Network_Stack & network_stack ) noexcept :
+        m_state{ State::INITIALIZED },
         m_driver{ &driver },
         m_socket_id{ socket_id },
         m_network_stack{ &network_stack }
     {
     }
+
+#ifdef PICOLIBRARY_ENABLE_UNIT_TESTING
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] state The socket's initial state.
+     * \param[in] driver The driver used to interact with the W5500.
+     * \param[in] socket_id The socket's socket ID.
+     * \param[in] network_stack The network stack the socket is associated with.
+     */
+    constexpr Client( State state, Driver & driver, Socket_ID socket_id, Network_Stack & network_stack ) noexcept
+        :
+        m_state{ state },
+        m_driver{ &driver },
+        m_socket_id{ socket_id },
+        m_network_stack{ &network_stack }
+    {
+    }
+#endif // PICOLIBRARY_ENABLE_UNIT_TESTING
 
     /**
      * \brief Constructor.
@@ -77,10 +106,12 @@ class Client {
      * \param[in] source The source of the move.
      */
     constexpr Client( Client && source ) noexcept :
+        m_state{ source.m_state },
         m_driver{ source.m_driver },
         m_socket_id{ source.m_socket_id },
         m_network_stack{ source.m_network_stack }
     {
+        source.m_state         = State::UNINITIALIZED;
         source.m_driver        = nullptr;
         source.m_network_stack = nullptr;
     }
@@ -104,10 +135,12 @@ class Client {
     constexpr auto operator=( Client && expression ) noexcept -> Client &
     {
         if ( &expression != this ) {
+            m_state         = expression.m_state;
             m_driver        = expression.m_driver;
             m_socket_id     = expression.m_socket_id;
             m_network_stack = expression.m_network_stack;
 
+            expression.m_state         = State::UNINITIALIZED;
             expression.m_driver        = nullptr;
             expression.m_network_stack = nullptr;
         } // if
@@ -116,6 +149,16 @@ class Client {
     }
 
     auto operator=( Client const & ) = delete;
+
+    /**
+     * \brief Get the socket's state.
+     *
+     * \return The socket's state.
+     */
+    constexpr auto state() const noexcept -> State
+    {
+        return m_state;
+    }
 
     /**
      * \brief Get the socket's socket ID.
@@ -141,6 +184,7 @@ class Client {
     /**
      * \brief Bind the socket to a local endpoint.
      *
+     * \pre the socket is in a state that allows it to be bound to a local endpoint
      * \pre the socket is not already bound to a local endpoint
      * \pre the W5500 is responsive
      *
@@ -152,6 +196,8 @@ class Client {
      */
     void bind( ::picolibrary::IP::TCP::Endpoint const & endpoint = ::picolibrary::IP::TCP::Endpoint{} ) noexcept
     {
+        expect( m_state == State::INITIALIZED, Generic_Error::LOGIC_ERROR );
+
         expect(
             endpoint.address().version() == ::picolibrary::IP::Version::UNSPECIFIED
                 or endpoint.address().version() == ::picolibrary::IP::Version::_4,
@@ -173,13 +219,18 @@ class Client {
         for ( ;; ) {
             switch ( m_driver->read_sn_sr( m_socket_id ) ) {
                 case SN_SR::STATUS_SOCK_CLOSED: break;
-                case SN_SR::STATUS_SOCK_INIT: return;
+                case SN_SR::STATUS_SOCK_INIT: m_state = State::BOUND; return;
                 default: expect( false, m_network_stack->nonresponsive_device_error() );
             } // switch
         }     // for
     }
 
   private:
+    /**
+     * \brief The socket's state.
+     */
+    State m_state{};
+
     /**
      * \brief The driver used to interact with the W5500.
      */

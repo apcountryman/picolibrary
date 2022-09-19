@@ -44,13 +44,24 @@ using ::picolibrary::Testing::Automated::WIZnet::W5500::Mock_Driver;
 using ::picolibrary::Testing::Automated::WIZnet::W5500::IP::Mock_Network_Stack;
 using ::picolibrary::Testing::Automated::WIZnet::W5500::IP::Mock_Port_Allocator;
 using ::picolibrary::WIZnet::W5500::Socket_ID;
-using ::picolibrary::WIZnet::W5500::IP::TCP::Client;
 using ::testing::InSequence;
 using ::testing::Ref;
 using ::testing::Return;
 using ::testing::ReturnRef;
 
+using Client = ::picolibrary::WIZnet::W5500::IP::TCP::Client<Mock_Driver, Mock_Network_Stack>;
+
 } // namespace
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::Client() works properly.
+ */
+TEST( constructorDefault, worksProperly )
+{
+    auto const client = Client{};
+
+    EXPECT_EQ( client.state(), Client::State::UNINITIALIZED );
+}
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::Client( Driver &,
@@ -82,6 +93,7 @@ TEST( constructor, worksProperly )
 
         auto const client = Client{ driver, test_case.socket_id, network_stack };
 
+        EXPECT_EQ( client.state(), Client::State::INITIALIZED );
         EXPECT_EQ( client.socket_id(), test_case.socket_id );
         EXPECT_EQ( client.socket_interrupt_mask(), test_case.socket_interrupt_mask );
     } // for
@@ -115,6 +127,8 @@ TEST( bind, worksProperly )
         EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x13 ) );
 
         client.bind();
+
+        EXPECT_EQ( client.state(), Client::State::BOUND );
     }
 
     {
@@ -140,6 +154,8 @@ TEST( bind, worksProperly )
         EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x13 ) );
 
         client.bind( Port{} );
+
+        EXPECT_EQ( client.state(), Client::State::BOUND );
     }
 
     {
@@ -165,6 +181,8 @@ TEST( bind, worksProperly )
         EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x13 ) );
 
         client.bind( port );
+
+        EXPECT_EQ( client.state(), Client::State::BOUND );
     }
 
     {
@@ -192,6 +210,8 @@ TEST( bind, worksProperly )
         EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x13 ) );
 
         client.bind( { address, {} } );
+
+        EXPECT_EQ( client.state(), Client::State::BOUND );
     }
 
     {
@@ -219,6 +239,8 @@ TEST( bind, worksProperly )
         EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x13 ) );
 
         client.bind( { address, port } );
+
+        EXPECT_EQ( client.state(), Client::State::BOUND );
     }
 }
 
