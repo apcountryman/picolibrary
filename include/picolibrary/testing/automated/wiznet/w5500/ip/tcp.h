@@ -95,6 +95,11 @@ class Mock_Client {
         {
             mock().bind( endpoint );
         }
+
+        void close()
+        {
+            mock().close();
+        }
     };
 
     Mock_Client() = default;
@@ -122,6 +127,8 @@ class Mock_Client {
 
     MOCK_METHOD( void, bind, () );
     MOCK_METHOD( void, bind, (::picolibrary::IP::TCP::Endpoint const &));
+
+    MOCK_METHOD( void, close, () );
 };
 
 } // namespace picolibrary::Testing::Automated::WIZnet::W5500::IP::TCP

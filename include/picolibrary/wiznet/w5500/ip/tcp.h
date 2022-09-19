@@ -81,7 +81,7 @@ class Client {
     {
     }
 
-#ifdef PICOLIBRARY_ENABLE_UNIT_TESTING
+#ifdef PICOLIBRARY_ENABLE_AUTOMATED_TESTING
     /**
      * \brief Constructor.
      *
@@ -98,7 +98,7 @@ class Client {
         m_network_stack{ &network_stack }
     {
     }
-#endif // PICOLIBRARY_ENABLE_UNIT_TESTING
+#endif // PICOLIBRARY_ENABLE_AUTOMATED_TESTING
 
     /**
      * \brief Constructor.
@@ -123,6 +123,7 @@ class Client {
      */
     ~Client() noexcept
     {
+        close();
     }
 
     /**
@@ -135,6 +136,8 @@ class Client {
     constexpr auto operator=( Client && expression ) noexcept -> Client &
     {
         if ( &expression != this ) {
+            close();
+
             m_state         = expression.m_state;
             m_driver        = expression.m_driver;
             m_socket_id     = expression.m_socket_id;
@@ -223,6 +226,58 @@ class Client {
                 default: expect( false, m_network_stack->nonresponsive_device_error() );
             } // switch
         }     // for
+    }
+
+    /**
+     * \brief Close the socket.
+     */
+    void close() noexcept
+    {
+        if ( m_state == Client::State::UNINITIALIZED ) {
+            return;
+        } // if
+
+        if ( m_state != Client::State::INITIALIZED ) {
+            m_driver->write_sn_cr( m_socket_id, SN_CR::COMMAND_CLOSE );
+            while ( m_driver->read_sn_cr( m_socket_id ) ) {} // while
+
+            auto closed = false;
+            do {
+                switch ( m_driver->read_sn_sr( m_socket_id ) ) {
+                    case SN_SR::STATUS_SOCK_CLOSED: closed = true; break;
+                    case SN_SR::STATUS_SOCK_INIT: break;
+                    case SN_SR::STATUS_SOCK_ESTABLISHED: break;
+                    case SN_SR::STATUS_SOCK_CLOSE_WAIT: break;
+                    case SN_SR::STATUS_SOCK_SYNSENT: break;
+                    case SN_SR::STATUS_SOCK_FIN_WAIT: break;
+                    case SN_SR::STATUS_SOCK_CLOSING: break;
+                    case SN_SR::STATUS_SOCK_TIME_WAIT: break;
+                    case SN_SR::STATUS_SOCK_LAST_ACK: break;
+                    default:
+                        expect( false, m_network_stack->nonresponsive_device_error() );
+                } // switch
+            } while ( not closed );
+
+            m_driver->write_sn_ir( m_socket_id, Socket_Interrupt::ALL );
+
+            auto const port = m_driver->read_sn_port( m_socket_id );
+            m_driver->write_sn_port( m_socket_id, SN_PORT::RESET );
+            m_network_stack->tcp_port_allocator().deallocate( port );
+
+            m_driver->write_sn_dhar( m_socket_id, SN_DHAR::RESET );
+            m_driver->write_sn_dipr( m_socket_id, SN_DIPR::RESET );
+            m_driver->write_sn_dport( m_socket_id, SN_DPORT::RESET );
+        } // if
+
+        m_driver->write_sn_mr( m_socket_id, SN_MR::RESET );
+        m_driver->write_sn_mssr( m_socket_id, SN_MSSR::RESET );
+        m_driver->write_sn_ttl( m_socket_id, SN_TTL::RESET );
+        m_driver->write_sn_imr( m_socket_id, SN_IMR::RESET );
+        m_driver->write_sn_kpalvtr( m_socket_id, SN_KPALVTR::RESET );
+
+        m_network_stack->deallocate_socket( m_socket_id );
+
+        m_state = Client::State::UNINITIALIZED;
     }
 
   private:
