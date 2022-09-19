@@ -233,6 +233,8 @@ class Client {
 
     /**
      * \brief Close the socket.
+     *
+     * \pre the W5500 is responsive
      */
     // NOLINTNEXTLINE(readability-function-size)
     void close() noexcept
