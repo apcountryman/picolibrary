@@ -197,8 +197,11 @@ class Client {
      * \pre endpoint is not already in use
      * \pre if an ephemeral port is requested, an ephemeral port is available
      */
+    // NOLINTNEXTLINE(readability-function-size)
     void bind( ::picolibrary::IP::TCP::Endpoint const & endpoint = ::picolibrary::IP::TCP::Endpoint{} ) noexcept
     {
+        // #lizard forgives the length
+
         expect( m_state == State::INITIALIZED, Generic_Error::LOGIC_ERROR );
 
         expect(
@@ -231,8 +234,11 @@ class Client {
     /**
      * \brief Close the socket.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     void close() noexcept
     {
+        // #lizard forgives the length
+
         if ( m_state == Client::State::UNINITIALIZED ) {
             return;
         } // if
@@ -244,14 +250,31 @@ class Client {
             auto closed = false;
             do {
                 switch ( m_driver->read_sn_sr( m_socket_id ) ) {
-                    case SN_SR::STATUS_SOCK_CLOSED: closed = true; break;
-                    case SN_SR::STATUS_SOCK_INIT: break;
-                    case SN_SR::STATUS_SOCK_ESTABLISHED: break;
-                    case SN_SR::STATUS_SOCK_CLOSE_WAIT: break;
-                    case SN_SR::STATUS_SOCK_SYNSENT: break;
-                    case SN_SR::STATUS_SOCK_FIN_WAIT: break;
-                    case SN_SR::STATUS_SOCK_CLOSING: break;
-                    case SN_SR::STATUS_SOCK_TIME_WAIT: break;
+                    case SN_SR::STATUS_SOCK_CLOSED:
+                        closed = true;
+                        break;
+                        // NOLINTNEXTLINE(bugprone-branch-clone)
+                    case SN_SR::STATUS_SOCK_INIT:
+                        break;
+                        // NOLINTNEXTLINE(bugprone-branch-clone)
+                    case SN_SR::STATUS_SOCK_ESTABLISHED:
+                        break;
+                        // NOLINTNEXTLINE(bugprone-branch-clone)
+                    case SN_SR::STATUS_SOCK_CLOSE_WAIT:
+                        break;
+                        // NOLINTNEXTLINE(bugprone-branch-clone)
+                    case SN_SR::STATUS_SOCK_SYNSENT:
+                        break;
+                        // NOLINTNEXTLINE(bugprone-branch-clone)
+                    case SN_SR::STATUS_SOCK_FIN_WAIT:
+                        break;
+                        // NOLINTNEXTLINE(bugprone-branch-clone)
+                    case SN_SR::STATUS_SOCK_CLOSING:
+                        break;
+                        // NOLINTNEXTLINE(bugprone-branch-clone)
+                    case SN_SR::STATUS_SOCK_TIME_WAIT:
+                        break;
+                        // NOLINTNEXTLINE(bugprone-branch-clone)
                     case SN_SR::STATUS_SOCK_LAST_ACK: break;
                     default:
                         expect( false, m_network_stack->nonresponsive_device_error() );
