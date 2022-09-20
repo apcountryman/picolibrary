@@ -363,7 +363,7 @@ class State_Machine {
                 enter( *m_target_state );
                 m_current_state = m_target_state;
                 return;
-            default: expect( false, Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
+            default: expect( Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
         } // switch
     }
 

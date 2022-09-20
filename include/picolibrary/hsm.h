@@ -477,7 +477,7 @@ class HSM {
                     state = m_superstate;
                     break;
                 case Event_Handling_Result::EVENT_IGNORED: return;
-                default: expect( false, Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
+                default: expect( Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
             } // switch
         }     // for
     }
@@ -740,7 +740,7 @@ class HSM {
         switch ( ( state )( *this, ENTRY ) ) {
             case Event_Handling_Result::EVENT_HANDLED: [[fallthrough]];
             case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE: return;
-            default: expect( false, Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
+            default: expect( Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
         } // switch
     }
 
@@ -772,7 +772,7 @@ class HSM {
         switch ( ( state )( *this, EXIT ) ) {
             case Event_Handling_Result::EVENT_HANDLED: [[fallthrough]];
             case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE: return;
-            default: expect( false, Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
+            default: expect( Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
         } // switch
     }
 
@@ -849,7 +849,7 @@ class HSM {
                     target_state = m_target_state;
                     break;
                 case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE: return;
-                default: expect( false, Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
+                default: expect( Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
             } // switch
         }     // for
     }
