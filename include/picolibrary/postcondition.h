@@ -43,6 +43,19 @@ constexpr void ensure( bool guarantee, Error error ) noexcept
     } // if
 }
 
+/**
+ * \brief Check a postcondition's guarantee.
+ *
+ * \tparam Error A type that can be implicitly converted to picolibrary::Error_Code.
+ *
+ * \param[in] error The fatal error that occurs.
+ */
+template<typename Error>
+[[noreturn]] void ensure( Error error ) noexcept
+{
+    trap_fatal_error( error );
+}
+
 } // namespace picolibrary
 
 #endif // PICOLIBRARY_POSTCONDITION_H
