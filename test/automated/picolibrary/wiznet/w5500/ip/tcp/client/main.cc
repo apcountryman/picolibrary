@@ -25,6 +25,7 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/array.h"
+#include "picolibrary/error.h"
 #include "picolibrary/ip/tcp.h"
 #include "picolibrary/ipv4.h"
 #include "picolibrary/testing/automated/ip/tcp.h"
@@ -39,6 +40,8 @@
 namespace {
 
 using ::picolibrary::Array;
+using ::picolibrary::Generic_Error;
+using ::picolibrary::IP::TCP::Endpoint;
 using ::picolibrary::IP::TCP::Port;
 using ::picolibrary::IPv4::Address;
 using ::picolibrary::Testing::Automated::random;
@@ -340,6 +343,177 @@ TEST( bind, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::connect() properly handles a
+ *        connection timeout.
+ */
+TEST( connect, connectionTimeout )
+{
+    auto driver             = Mock_Driver{};
+    auto network_stack      = Mock_Network_Stack{};
+    auto tcp_port_allocator = Mock_Port_Allocator{};
+
+    auto client = Client{ Client::State::CONNECTING, driver, random<Socket_ID>(), network_stack };
+
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
+
+    auto const result = client.connect( { random<Address>( 1 ), random<Port>( 1 ) } );
+
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), Generic_Error::OPERATION_TIMEOUT );
+
+    EXPECT_EQ( client.state(), Client::State::CONNECTING );
+
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) );
+    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
+    EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
+    EXPECT_CALL( driver, write_sn_port( _, _ ) );
+    EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+    EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
+    EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
+    EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_dport( _, _ ) );
+    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
+    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::connect() works properly.
+ */
+TEST( connect, worksProperly )
+{
+    {
+        auto const in_sequence = InSequence{};
+
+        auto driver             = Mock_Driver{};
+        auto network_stack      = Mock_Network_Stack{};
+        auto tcp_port_allocator = Mock_Port_Allocator{};
+
+        auto const socket_id = random<Socket_ID>();
+
+        auto client = Client{ Client::State::BOUND, driver, socket_id, network_stack };
+
+        auto const endpoint = Endpoint{ random<Address>( 1 ), random<Port>( 1 ) };
+
+        EXPECT_CALL( driver, write_sn_dipr( socket_id, endpoint.address().ipv4().as_byte_array() ) );
+        EXPECT_CALL( driver, write_sn_dport( socket_id, endpoint.port().as_unsigned_integer() ) );
+        EXPECT_CALL( driver, write_sn_cr( socket_id, 0x04 ) );
+        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
+        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( 0x00 ) );
+
+        auto const result = client.connect( endpoint );
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), Generic_Error::WOULD_BLOCK );
+
+        EXPECT_EQ( client.state(), Client::State::CONNECTING );
+
+        EXPECT_CALL( driver, write_sn_cr( _, _ ) );
+        EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
+        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
+        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
+        EXPECT_CALL( driver, write_sn_port( _, _ ) );
+        EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+        EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
+        EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
+        EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_dport( _, _ ) );
+        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
+        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
+        EXPECT_CALL( network_stack, deallocate_socket( _ ) );
+    }
+
+    {
+        auto driver             = Mock_Driver{};
+        auto network_stack      = Mock_Network_Stack{};
+        auto tcp_port_allocator = Mock_Port_Allocator{};
+
+        auto const socket_id = random<Socket_ID>();
+
+        auto client = Client{ Client::State::CONNECTING, driver, socket_id, network_stack };
+
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x15 ) );
+
+        auto const result = client.connect( { random<Address>( 1 ), random<Port>( 1 ) } );
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), Generic_Error::WOULD_BLOCK );
+
+        EXPECT_EQ( client.state(), Client::State::CONNECTING );
+
+        EXPECT_CALL( driver, write_sn_cr( _, _ ) );
+        EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
+        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
+        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
+        EXPECT_CALL( driver, write_sn_port( _, _ ) );
+        EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+        EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
+        EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
+        EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_dport( _, _ ) );
+        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
+        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
+        EXPECT_CALL( network_stack, deallocate_socket( _ ) );
+    }
+
+    {
+        struct {
+            std::uint8_t sn_sr;
+        } const test_cases[]{
+            // clang-format off
+
+            { 0x17 },
+            { 0x1C },
+
+            // clang-format on
+        };
+
+        for ( auto const test_case : test_cases ) {
+            auto driver             = Mock_Driver{};
+            auto network_stack      = Mock_Network_Stack{};
+            auto tcp_port_allocator = Mock_Port_Allocator{};
+
+            auto const socket_id = random<Socket_ID>();
+
+            auto client = Client{ Client::State::CONNECTING, driver, socket_id, network_stack };
+
+            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( test_case.sn_sr ) );
+
+            EXPECT_FALSE( client.connect( { random<Address>( 1 ), random<Port>( 1 ) } ).is_error() );
+
+            EXPECT_EQ( client.state(), Client::State::CONNECTED );
+
+            EXPECT_CALL( driver, write_sn_cr( _, _ ) );
+            EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
+            EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
+            EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
+            EXPECT_CALL( driver, write_sn_port( _, _ ) );
+            EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+            EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
+            EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
+            EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
+            EXPECT_CALL( driver, write_sn_dport( _, _ ) );
+            EXPECT_CALL( driver, write_sn_mr( _, _ ) );
+            EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
+            EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
+            EXPECT_CALL( driver, write_sn_imr( _, _ ) );
+            EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
+            EXPECT_CALL( network_stack, deallocate_socket( _ ) );
+        } // for
+    }
+}
+
+/**
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::close() works properly.
  */
 TEST( close, worksProperly )
@@ -381,7 +555,21 @@ TEST( close, worksProperly )
         } const test_cases[]{
             // clang-format off
 
-            { Client::State::BOUND, 0x13 },
+            { Client::State::BOUND,      0x13 },
+            { Client::State::CONNECTING, 0x17 },
+            { Client::State::CONNECTING, 0x1C },
+            { Client::State::CONNECTING, 0x15 },
+            { Client::State::CONNECTING, 0x18 },
+            { Client::State::CONNECTING, 0x1A },
+            { Client::State::CONNECTING, 0x1B },
+            { Client::State::CONNECTING, 0x1D },
+            { Client::State::CONNECTED,  0x17 },
+            { Client::State::CONNECTED,  0x1C },
+            { Client::State::CONNECTED,  0x15 },
+            { Client::State::CONNECTED,  0x18 },
+            { Client::State::CONNECTED,  0x1A },
+            { Client::State::CONNECTED,  0x1B },
+            { Client::State::CONNECTED,  0x1D },
 
             // clang-format on
         };

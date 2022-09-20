@@ -26,8 +26,11 @@
 #include <cstdint>
 
 #include "gmock/gmock.h"
+#include "picolibrary/error.h"
 #include "picolibrary/ip/tcp.h"
+#include "picolibrary/result.h"
 #include "picolibrary/testing/automated/mock_handle.h"
+#include "picolibrary/void.h"
 #include "picolibrary/wiznet/w5500.h"
 
 /**
@@ -47,6 +50,8 @@ class Mock_Client {
         UNINITIALIZED,
         INITIALIZED,
         BOUND,
+        CONNECTING,
+        CONNECTED,
     };
 
     class Handle : public Mock_Handle<Mock_Client> {
@@ -96,6 +101,11 @@ class Mock_Client {
             mock().bind( endpoint );
         }
 
+        auto connect( ::picolibrary::IP::TCP::Endpoint const & endpoint ) -> Result<Void, Error_Code>
+        {
+            return mock().connect( endpoint );
+        }
+
         void close()
         {
             mock().close();
@@ -127,6 +137,8 @@ class Mock_Client {
 
     MOCK_METHOD( void, bind, () );
     MOCK_METHOD( void, bind, (::picolibrary::IP::TCP::Endpoint const &));
+
+    MOCK_METHOD( (Result<Void, Error_Code>), connect, (::picolibrary::IP::TCP::Endpoint const &));
 
     MOCK_METHOD( void, close, () );
 };

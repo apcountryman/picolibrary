@@ -29,7 +29,9 @@
 #include "picolibrary/ip.h"
 #include "picolibrary/ip/tcp.h"
 #include "picolibrary/precondition.h"
+#include "picolibrary/result.h"
 #include "picolibrary/utility.h"
+#include "picolibrary/void.h"
 #include "picolibrary/wiznet/w5500.h"
 
 /**
@@ -59,6 +61,8 @@ class Client {
         UNINITIALIZED, ///< Uninitialized.
         INITIALIZED,   ///< Initialized.
         BOUND,         ///< Bound.
+        CONNECTING,    ///< Connecting.
+        CONNECTED,     ///< Connected.
     };
 
     /**
@@ -229,6 +233,56 @@ class Client {
                 default: expect( false, m_network_stack->nonresponsive_device_error() );
             } // switch
         }     // for
+    }
+
+    /**
+     * \brief Connect to a remote endpoint.
+     *
+     * \pre the socket is in a state that allows it to connect to a remote endpoint
+     * \pre the socket is not already connected to a remote endpoint
+     *
+     * \param[in] endpoint The remote endpoint to connect to.
+     *
+     * \pre endpoint is a valid remote endpoint
+     *
+     * \return Nothing if connection to the remote endpoint succeeded.
+     * \return picolibrary::Generic_Error::WOULD_BLOCK if connecting to the remote
+     *         endpoint cannot succeed immediately.
+     * \return picolibrary::Generic_Error::OPERATION_TIMEOUT if connecting to the remote
+     *         endpoint timed out.
+     */
+    auto connect( ::picolibrary::IP::TCP::Endpoint const & endpoint ) noexcept -> Result<Void, Error_Code>
+    {
+        if ( m_state == State::BOUND ) {
+            expect(
+                endpoint.address().is_ipv4() and not endpoint.address().is_any()
+                    and not endpoint.port().is_any(),
+                Generic_Error::INVALID_ARGUMENT );
+
+            m_driver->write_sn_dipr( m_socket_id, endpoint.address().ipv4().as_byte_array() );
+            m_driver->write_sn_dport( m_socket_id, endpoint.port().as_unsigned_integer() );
+
+            m_driver->write_sn_cr( m_socket_id, SN_CR::COMMAND_CONNECT );
+            while ( m_driver->read_sn_cr( m_socket_id ) ) {} // while
+
+            m_state = State::CONNECTING;
+
+            return Generic_Error::WOULD_BLOCK;
+        } // if
+
+        if ( m_state == State::CONNECTING ) {
+            switch ( m_driver->read_sn_sr( m_socket_id ) ) {
+                case SN_SR::STATUS_SOCK_CLOSED: return Generic_Error::OPERATION_TIMEOUT;
+                case SN_SR::STATUS_SOCK_ESTABLISHED: [[fallthrough]];
+                case SN_SR::STATUS_SOCK_CLOSE_WAIT: m_state = State::CONNECTED; return {};
+                case SN_SR::STATUS_SOCK_SYNSENT: return Generic_Error::WOULD_BLOCK;
+                default: expect( false, m_network_stack->nonresponsive_device_error() );
+            } // switch
+        }     // if
+
+        expect( false, Generic_Error::LOGIC_ERROR );
+
+        return {}; // unreachable
     }
 
     /**
