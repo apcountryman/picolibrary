@@ -514,6 +514,53 @@ TEST( connect, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::is_connected() works
+ *        properly.
+ */
+TEST( isConnected, worksProperly )
+{
+    struct {
+        std::uint8_t sn_sr;
+        bool         is_connected;
+    } const test_cases[]{
+        // clang-format off
+
+        { 0x00, false },
+        { 0x13, false },
+        { 0x17, true  },
+        { 0x1C, false },
+        { 0x15, false },
+        { 0x18, false },
+        { 0x1A, false },
+        { 0x1B, false },
+        { 0x1D, false },
+
+        // clang-format on
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver             = Mock_Driver{};
+        auto network_stack      = Mock_Network_Stack{};
+        auto tcp_port_allocator = Mock_Port_Allocator{};
+
+        auto const socket_id = random<Socket_ID>();
+
+        auto const client = Client{ driver, socket_id, network_stack };
+
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( test_case.sn_sr ) );
+
+        EXPECT_EQ( client.is_connected(), test_case.is_connected );
+
+        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
+        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
+        EXPECT_CALL( network_stack, deallocate_socket( _ ) );
+    } // for
+}
+
+/**
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::close() works properly.
  */
 TEST( close, worksProperly )

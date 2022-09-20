@@ -124,6 +124,8 @@ class Client {
 
     /**
      * \brief Destructor.
+     *
+     * \pre the W5500 is responsive
      */
     ~Client() noexcept
     {
@@ -132,6 +134,8 @@ class Client {
 
     /**
      * \brief Assignment operator.
+     *
+     * \pre the W5500 is responsive
      *
      * \param[in] expression The expression to be assigned.
      *
@@ -240,6 +244,7 @@ class Client {
      *
      * \pre the socket is in a state that allows it to connect to a remote endpoint
      * \pre the socket is not already connected to a remote endpoint
+     * \pre the W5500 is responsive
      *
      * \param[in] endpoint The remote endpoint to connect to.
      *
@@ -284,6 +289,30 @@ class Client {
         }     // if
 
         expect( Generic_Error::LOGIC_ERROR );
+    }
+
+    /**
+     * \brief Check if the socket is connected to a remote endpoint.
+     *
+     * \pre the W5500 is responsive
+     *
+     * \return true if the socket is connected to a remote endpoint.
+     * \return false if the socket is not connected to a remote endpoint.
+     */
+    auto is_connected() const noexcept -> bool
+    {
+        switch ( m_driver->read_sn_sr( m_socket_id ) ) {
+            case SN_SR::STATUS_SOCK_CLOSED: return false;
+            case SN_SR::STATUS_SOCK_INIT: return false;
+            case SN_SR::STATUS_SOCK_ESTABLISHED: return true;
+            case SN_SR::STATUS_SOCK_CLOSE_WAIT: return false;
+            case SN_SR::STATUS_SOCK_SYNSENT: return false;
+            case SN_SR::STATUS_SOCK_FIN_WAIT: return false;
+            case SN_SR::STATUS_SOCK_CLOSING: return false;
+            case SN_SR::STATUS_SOCK_TIME_WAIT: return false;
+            case SN_SR::STATUS_SOCK_LAST_ACK: return false;
+            default: expect( m_network_stack->nonresponsive_device_error() );
+        } // switch
     }
 
     /**
