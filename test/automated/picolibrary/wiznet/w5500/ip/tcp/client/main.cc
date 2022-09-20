@@ -146,6 +146,7 @@ TEST( bind, worksProperly )
         EXPECT_CALL( driver, write_sn_cr( _, _ ) );
         EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
         EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
+        EXPECT_CALL( driver, write_sn_ir( _, _ ) );
         EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
         EXPECT_CALL( driver, write_sn_port( _, _ ) );
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
@@ -190,6 +191,7 @@ TEST( bind, worksProperly )
         EXPECT_CALL( driver, write_sn_cr( _, _ ) );
         EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
         EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
+        EXPECT_CALL( driver, write_sn_ir( _, _ ) );
         EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
         EXPECT_CALL( driver, write_sn_port( _, _ ) );
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
@@ -234,6 +236,7 @@ TEST( bind, worksProperly )
         EXPECT_CALL( driver, write_sn_cr( _, _ ) );
         EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
         EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
+        EXPECT_CALL( driver, write_sn_ir( _, _ ) );
         EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
         EXPECT_CALL( driver, write_sn_port( _, _ ) );
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
@@ -280,6 +283,7 @@ TEST( bind, worksProperly )
         EXPECT_CALL( driver, write_sn_cr( _, _ ) );
         EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
         EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
+        EXPECT_CALL( driver, write_sn_ir( _, _ ) );
         EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
         EXPECT_CALL( driver, write_sn_port( _, _ ) );
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
@@ -326,6 +330,7 @@ TEST( bind, worksProperly )
         EXPECT_CALL( driver, write_sn_cr( _, _ ) );
         EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
         EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
+        EXPECT_CALL( driver, write_sn_ir( _, _ ) );
         EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
         EXPECT_CALL( driver, write_sn_port( _, _ ) );
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
@@ -366,6 +371,7 @@ TEST( connect, connectionTimeout )
     EXPECT_CALL( driver, write_sn_cr( _, _ ) );
     EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
     EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
+    EXPECT_CALL( driver, write_sn_ir( _, _ ) );
     EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
     EXPECT_CALL( driver, write_sn_port( _, _ ) );
     EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
@@ -415,6 +421,7 @@ TEST( connect, worksProperly )
         EXPECT_CALL( driver, write_sn_cr( _, _ ) );
         EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
         EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
+        EXPECT_CALL( driver, write_sn_ir( _, _ ) );
         EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
         EXPECT_CALL( driver, write_sn_port( _, _ ) );
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
@@ -451,6 +458,7 @@ TEST( connect, worksProperly )
         EXPECT_CALL( driver, write_sn_cr( _, _ ) );
         EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
         EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
+        EXPECT_CALL( driver, write_sn_ir( _, _ ) );
         EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
         EXPECT_CALL( driver, write_sn_port( _, _ ) );
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
@@ -496,6 +504,7 @@ TEST( connect, worksProperly )
             EXPECT_CALL( driver, write_sn_cr( _, _ ) );
             EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
             EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
+            EXPECT_CALL( driver, write_sn_ir( _, _ ) );
             EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
             EXPECT_CALL( driver, write_sn_port( _, _ ) );
             EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
