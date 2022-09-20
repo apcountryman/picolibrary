@@ -34,6 +34,7 @@
 #include "picolibrary/testing/automated/wiznet/w5500.h"
 #include "picolibrary/testing/automated/wiznet/w5500/ip.h"
 #include "picolibrary/testing/automated/wiznet/w5500/ip/network_stack.h"
+#include "picolibrary/utility.h"
 #include "picolibrary/wiznet/w5500.h"
 #include "picolibrary/wiznet/w5500/ip/tcp.h"
 
@@ -41,6 +42,7 @@ namespace {
 
 using ::picolibrary::Array;
 using ::picolibrary::Generic_Error;
+using ::picolibrary::to_underlying;
 using ::picolibrary::IP::TCP::Endpoint;
 using ::picolibrary::IP::TCP::Port;
 using ::picolibrary::IPv4::Address;
@@ -49,6 +51,7 @@ using ::picolibrary::Testing::Automated::random_array;
 using ::picolibrary::Testing::Automated::WIZnet::W5500::Mock_Driver;
 using ::picolibrary::Testing::Automated::WIZnet::W5500::IP::Mock_Network_Stack;
 using ::picolibrary::Testing::Automated::WIZnet::W5500::IP::Mock_Port_Allocator;
+using ::picolibrary::WIZnet::W5500::Socket_Buffer_Size;
 using ::picolibrary::WIZnet::W5500::Socket_ID;
 using ::testing::_;
 using ::testing::InSequence;
@@ -633,6 +636,50 @@ TEST( localEndpoint, worksProperly )
     EXPECT_CALL( driver, write_sn_imr( _, _ ) );
     EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
     EXPECT_CALL( network_stack, deallocate_socket( _ ) );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::outstanding() works
+ *        properly.
+ */
+TEST( outstanding, worksProperly )
+{
+    struct {
+        Socket_Buffer_Size socket_buffer_size;
+    } const test_cases[]{
+        // clang-format off
+
+        { Socket_Buffer_Size::_2_KiB  },
+        { Socket_Buffer_Size::_4_KiB  },
+        { Socket_Buffer_Size::_8_KiB  },
+        { Socket_Buffer_Size::_16_KiB },
+
+        // clang-format on
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto const socket_id = random<Socket_ID>();
+
+        auto const client = Client{ driver, socket_id, network_stack };
+
+        auto const sn_tx_fsr = random<std::uint16_t>(
+            0, to_underlying( test_case.socket_buffer_size ) * 1024 );
+
+        EXPECT_CALL( network_stack, socket_buffer_size() ).WillOnce( Return( test_case.socket_buffer_size ) );
+        EXPECT_CALL( driver, read_sn_tx_fsr( socket_id ) ).WillOnce( Return( sn_tx_fsr ) );
+
+        EXPECT_EQ( client.outstanding(), ( to_underlying( test_case.socket_buffer_size ) * 1024 ) - sn_tx_fsr );
+
+        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
+        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
+        EXPECT_CALL( network_stack, deallocate_socket( _ ) );
+    } // for
 }
 
 /**

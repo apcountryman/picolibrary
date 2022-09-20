@@ -345,6 +345,26 @@ class Client {
     }
 
     /**
+     * \brief Get the amount of data that has yet to be transmitted to the remote
+     *        endpoint.
+     *
+     * \pre the W5500 is responsive
+     *
+     * \return The amount of data that has yet to be transmitted to the remote endpoint.
+     */
+    auto outstanding() const noexcept -> Size
+    {
+        auto const buffer_size = static_cast<Size>(
+            to_underlying( m_network_stack->socket_buffer_size() ) * 1024 );
+
+        auto const free_size = m_driver->read_sn_tx_fsr( m_socket_id );
+
+        expect( free_size <= buffer_size, m_network_stack->nonresponsive_device_error() );
+
+        return buffer_size - free_size;
+    }
+
+    /**
      * \brief Close the socket.
      *
      * \pre the W5500 is responsive
