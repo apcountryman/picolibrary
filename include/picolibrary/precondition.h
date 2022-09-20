@@ -44,6 +44,19 @@ constexpr void expect( bool expectation, Error error ) noexcept
 }
 
 /**
+ * \brief Check a precondition's expectation.
+ *
+ * \tparam Error A type that can be implicitly converted to picolibrary::Error_Code.
+ *
+ * \param[in] error The fatal error that occurs.
+ */
+template<typename Error>
+[[noreturn]] void expect( Error error ) noexcept
+{
+    trap_fatal_error( error );
+}
+
+/**
  * \brief Bypass precondition expectation checks tag.
  */
 struct Bypass_Precondition_Expectation_Checks {
