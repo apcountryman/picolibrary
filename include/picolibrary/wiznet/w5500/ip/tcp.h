@@ -302,14 +302,14 @@ class Client {
     auto is_connected() const noexcept -> bool
     {
         switch ( m_driver->read_sn_sr( m_socket_id ) ) {
-            case SN_SR::STATUS_SOCK_CLOSED: return false;
-            case SN_SR::STATUS_SOCK_INIT: return false;
             case SN_SR::STATUS_SOCK_ESTABLISHED: return true;
-            case SN_SR::STATUS_SOCK_CLOSE_WAIT: return false;
-            case SN_SR::STATUS_SOCK_SYNSENT: return false;
-            case SN_SR::STATUS_SOCK_FIN_WAIT: return false;
-            case SN_SR::STATUS_SOCK_CLOSING: return false;
-            case SN_SR::STATUS_SOCK_TIME_WAIT: return false;
+            case SN_SR::STATUS_SOCK_CLOSED: [[fallthrough]];
+            case SN_SR::STATUS_SOCK_INIT: [[fallthrough]];
+            case SN_SR::STATUS_SOCK_CLOSE_WAIT: [[fallthrough]];
+            case SN_SR::STATUS_SOCK_SYNSENT: [[fallthrough]];
+            case SN_SR::STATUS_SOCK_FIN_WAIT: [[fallthrough]];
+            case SN_SR::STATUS_SOCK_CLOSING: [[fallthrough]];
+            case SN_SR::STATUS_SOCK_TIME_WAIT: [[fallthrough]];
             case SN_SR::STATUS_SOCK_LAST_ACK: return false;
             default: expect( m_network_stack->nonresponsive_device_error() );
         } // switch
@@ -336,31 +336,14 @@ class Client {
             auto closed = false;
             do {
                 switch ( m_driver->read_sn_sr( m_socket_id ) ) {
-                    case SN_SR::STATUS_SOCK_CLOSED:
-                        closed = true;
-                        break;
-                        // NOLINTNEXTLINE(bugprone-branch-clone)
-                    case SN_SR::STATUS_SOCK_INIT:
-                        break;
-                        // NOLINTNEXTLINE(bugprone-branch-clone)
-                    case SN_SR::STATUS_SOCK_ESTABLISHED:
-                        break;
-                        // NOLINTNEXTLINE(bugprone-branch-clone)
-                    case SN_SR::STATUS_SOCK_CLOSE_WAIT:
-                        break;
-                        // NOLINTNEXTLINE(bugprone-branch-clone)
-                    case SN_SR::STATUS_SOCK_SYNSENT:
-                        break;
-                        // NOLINTNEXTLINE(bugprone-branch-clone)
-                    case SN_SR::STATUS_SOCK_FIN_WAIT:
-                        break;
-                        // NOLINTNEXTLINE(bugprone-branch-clone)
-                    case SN_SR::STATUS_SOCK_CLOSING:
-                        break;
-                        // NOLINTNEXTLINE(bugprone-branch-clone)
-                    case SN_SR::STATUS_SOCK_TIME_WAIT:
-                        break;
-                        // NOLINTNEXTLINE(bugprone-branch-clone)
+                    case SN_SR::STATUS_SOCK_CLOSED: closed = true; break;
+                    case SN_SR::STATUS_SOCK_INIT: [[fallthrough]];
+                    case SN_SR::STATUS_SOCK_ESTABLISHED: [[fallthrough]];
+                    case SN_SR::STATUS_SOCK_CLOSE_WAIT: [[fallthrough]];
+                    case SN_SR::STATUS_SOCK_SYNSENT: [[fallthrough]];
+                    case SN_SR::STATUS_SOCK_FIN_WAIT: [[fallthrough]];
+                    case SN_SR::STATUS_SOCK_CLOSING: [[fallthrough]];
+                    case SN_SR::STATUS_SOCK_TIME_WAIT: [[fallthrough]];
                     case SN_SR::STATUS_SOCK_LAST_ACK: break;
                     default: expect( m_network_stack->nonresponsive_device_error() );
                 } // switch
