@@ -603,6 +603,39 @@ TEST( remoteEndpoint, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::local_endpoint() works
+ *        properly.
+ */
+TEST( localEndpoint, worksProperly )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_id = random<Socket_ID>();
+
+    auto const client = Client{ driver, socket_id, network_stack };
+
+    auto const sipr    = random_array<std::uint8_t, 4>();
+    auto const sn_port = random<std::uint16_t>();
+
+    EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( sipr ) );
+    EXPECT_CALL( driver, read_sn_port( socket_id ) ).WillOnce( Return( sn_port ) );
+
+    auto const endpoint = client.local_endpoint();
+
+    EXPECT_TRUE( endpoint.address().is_ipv4() );
+    EXPECT_EQ( endpoint.address().ipv4().as_byte_array(), sipr );
+    EXPECT_EQ( endpoint.port().as_unsigned_integer(), sn_port );
+
+    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
+    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) );
+}
+
+/**
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::close() works properly.
  */
 TEST( close, worksProperly )

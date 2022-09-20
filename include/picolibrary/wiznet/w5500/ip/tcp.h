@@ -335,6 +335,16 @@ class Client {
     }
 
     /**
+     * \brief Get the connection's local endpoint.
+     *
+     * \return The connection's local endpoint.
+     */
+    auto local_endpoint() const noexcept -> ::picolibrary::IP::TCP::Endpoint
+    {
+        return { { m_driver->read_sipr() }, m_driver->read_sn_port( m_socket_id ) };
+    }
+
+    /**
      * \brief Close the socket.
      *
      * \pre the W5500 is responsive
