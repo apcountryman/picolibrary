@@ -230,7 +230,7 @@ class Client {
             switch ( m_driver->read_sn_sr( m_socket_id ) ) {
                 case SN_SR::STATUS_SOCK_CLOSED: break;
                 case SN_SR::STATUS_SOCK_INIT: m_state = State::BOUND; return;
-                default: expect( false, m_network_stack->nonresponsive_device_error() );
+                default: expect( m_network_stack->nonresponsive_device_error() );
             } // switch
         }     // for
     }
@@ -279,13 +279,11 @@ class Client {
                 case SN_SR::STATUS_SOCK_ESTABLISHED: [[fallthrough]];
                 case SN_SR::STATUS_SOCK_CLOSE_WAIT: m_state = State::CONNECTED; return {};
                 case SN_SR::STATUS_SOCK_SYNSENT: return Generic_Error::WOULD_BLOCK;
-                default: expect( false, m_network_stack->nonresponsive_device_error() );
+                default: expect( m_network_stack->nonresponsive_device_error() );
             } // switch
         }     // if
 
-        expect( false, Generic_Error::LOGIC_ERROR );
-
-        return {}; // unreachable
+        expect( Generic_Error::LOGIC_ERROR );
     }
 
     /**
@@ -335,8 +333,7 @@ class Client {
                         break;
                         // NOLINTNEXTLINE(bugprone-branch-clone)
                     case SN_SR::STATUS_SOCK_LAST_ACK: break;
-                    default:
-                        expect( false, m_network_stack->nonresponsive_device_error() );
+                    default: expect( m_network_stack->nonresponsive_device_error() );
                 } // switch
             } while ( not closed );
 
