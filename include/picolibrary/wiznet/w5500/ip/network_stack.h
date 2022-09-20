@@ -301,7 +301,7 @@ class Network_Stack {
 
                 // clang-format on
 
-            default: expect( false, Generic_Error::INVALID_ARGUMENT );
+            default: expect( Generic_Error::INVALID_ARGUMENT );
         } // switch
 
         for ( auto socket = std::uint_fast8_t{ 0 }; socket < sockets; ++socket ) {
@@ -589,7 +589,7 @@ class Network_Stack {
             } // if
         }     // for
 
-        expect( false, Generic_Error::NO_SOCKETS_AVAILABLE );
+        expect( Generic_Error::NO_SOCKETS_AVAILABLE );
     }
 
     /**
