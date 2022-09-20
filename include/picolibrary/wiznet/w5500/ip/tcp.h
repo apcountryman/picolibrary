@@ -251,8 +251,11 @@ class Client {
      * \return picolibrary::Generic_Error::OPERATION_TIMEOUT if connecting to the remote
      *         endpoint timed out.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     auto connect( ::picolibrary::IP::TCP::Endpoint const & endpoint ) noexcept -> Result<Void, Error_Code>
     {
+        // #lizard forgives the length
+
         if ( m_state == State::BOUND ) {
             expect(
                 endpoint.address().is_ipv4() and not endpoint.address().is_any()
