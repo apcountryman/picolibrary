@@ -302,15 +302,24 @@ class Client {
     auto is_connected() const noexcept -> bool
     {
         switch ( m_driver->read_sn_sr( m_socket_id ) ) {
-            case SN_SR::STATUS_SOCK_CLOSED: return false;
-            case SN_SR::STATUS_SOCK_INIT: return false;
-            case SN_SR::STATUS_SOCK_ESTABLISHED: return true;
-            case SN_SR::STATUS_SOCK_CLOSE_WAIT: return false;
-            case SN_SR::STATUS_SOCK_SYNSENT: return false;
-            case SN_SR::STATUS_SOCK_FIN_WAIT: return false;
-            case SN_SR::STATUS_SOCK_CLOSING: return false;
-            case SN_SR::STATUS_SOCK_TIME_WAIT: return false;
-            case SN_SR::STATUS_SOCK_LAST_ACK: return false;
+            case SN_SR::STATUS_SOCK_CLOSED: // NOLINT(bugprone-branch-clone)
+                return false;
+            case SN_SR::STATUS_SOCK_INIT: // NOLINT(bugprone-branch-clone)
+                return false;
+            case SN_SR::STATUS_SOCK_ESTABLISHED: // NOLINT(bugprone-branch-clone)
+                return true;
+            case SN_SR::STATUS_SOCK_CLOSE_WAIT: // NOLINT(bugprone-branch-clone)
+                return false;
+            case SN_SR::STATUS_SOCK_SYNSENT: // NOLINT(bugprone-branch-clone)
+                return false;
+            case SN_SR::STATUS_SOCK_FIN_WAIT: // NOLINT(bugprone-branch-clone)
+                return false;
+            case SN_SR::STATUS_SOCK_CLOSING: // NOLINT(bugprone-branch-clone)
+                return false;
+            case SN_SR::STATUS_SOCK_TIME_WAIT: // NOLINT(bugprone-branch-clone)
+                return false;
+            case SN_SR::STATUS_SOCK_LAST_ACK: // NOLINT(bugprone-branch-clone)
+                return false;
             default: expect( m_network_stack->nonresponsive_device_error() );
         } // switch
     }
@@ -336,32 +345,25 @@ class Client {
             auto closed = false;
             do {
                 switch ( m_driver->read_sn_sr( m_socket_id ) ) {
-                    case SN_SR::STATUS_SOCK_CLOSED:
+                    case SN_SR::STATUS_SOCK_CLOSED: // NOLINT(bugprone-branch-clone)
                         closed = true;
                         break;
-                        // NOLINTNEXTLINE(bugprone-branch-clone)
-                    case SN_SR::STATUS_SOCK_INIT:
+                    case SN_SR::STATUS_SOCK_INIT: // NOLINT(bugprone-branch-clone)
                         break;
-                        // NOLINTNEXTLINE(bugprone-branch-clone)
-                    case SN_SR::STATUS_SOCK_ESTABLISHED:
+                    case SN_SR::STATUS_SOCK_ESTABLISHED: // NOLINT(bugprone-branch-clone)
                         break;
-                        // NOLINTNEXTLINE(bugprone-branch-clone)
-                    case SN_SR::STATUS_SOCK_CLOSE_WAIT:
+                    case SN_SR::STATUS_SOCK_CLOSE_WAIT: // NOLINT(bugprone-branch-clone)
                         break;
-                        // NOLINTNEXTLINE(bugprone-branch-clone)
-                    case SN_SR::STATUS_SOCK_SYNSENT:
+                    case SN_SR::STATUS_SOCK_SYNSENT: // NOLINT(bugprone-branch-clone)
                         break;
-                        // NOLINTNEXTLINE(bugprone-branch-clone)
-                    case SN_SR::STATUS_SOCK_FIN_WAIT:
+                    case SN_SR::STATUS_SOCK_FIN_WAIT: // NOLINT(bugprone-branch-clone)
                         break;
-                        // NOLINTNEXTLINE(bugprone-branch-clone)
-                    case SN_SR::STATUS_SOCK_CLOSING:
+                    case SN_SR::STATUS_SOCK_CLOSING: // NOLINT(bugprone-branch-clone)
                         break;
-                        // NOLINTNEXTLINE(bugprone-branch-clone)
-                    case SN_SR::STATUS_SOCK_TIME_WAIT:
+                    case SN_SR::STATUS_SOCK_TIME_WAIT: // NOLINT(bugprone-branch-clone)
                         break;
-                        // NOLINTNEXTLINE(bugprone-branch-clone)
-                    case SN_SR::STATUS_SOCK_LAST_ACK: break;
+                    case SN_SR::STATUS_SOCK_LAST_ACK: // NOLINT(bugprone-branch-clone)
+                        break;
                     default: expect( m_network_stack->nonresponsive_device_error() );
                 } // switch
             } while ( not closed );
