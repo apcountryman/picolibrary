@@ -111,6 +111,11 @@ class Mock_Client {
             return mock().is_connected();
         }
 
+        auto remote_endpoint() const -> ::picolibrary::IP::TCP::Endpoint
+        {
+            return mock().remote_endpoint();
+        }
+
         void close()
         {
             mock().close();
@@ -146,6 +151,8 @@ class Mock_Client {
     MOCK_METHOD( (Result<Void, Error_Code>), connect, (::picolibrary::IP::TCP::Endpoint const &));
 
     MOCK_METHOD( bool, is_connected, (), ( const ) );
+
+    MOCK_METHOD( ::picolibrary::IP::TCP::Endpoint, remote_endpoint, (), ( const ) );
 
     MOCK_METHOD( void, close, () );
 };

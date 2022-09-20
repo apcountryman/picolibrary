@@ -45,6 +45,7 @@ using ::picolibrary::IP::TCP::Endpoint;
 using ::picolibrary::IP::TCP::Port;
 using ::picolibrary::IPv4::Address;
 using ::picolibrary::Testing::Automated::random;
+using ::picolibrary::Testing::Automated::random_array;
 using ::picolibrary::Testing::Automated::WIZnet::W5500::Mock_Driver;
 using ::picolibrary::Testing::Automated::WIZnet::W5500::IP::Mock_Network_Stack;
 using ::picolibrary::Testing::Automated::WIZnet::W5500::IP::Mock_Port_Allocator;
@@ -548,9 +549,8 @@ TEST( isConnected, worksProperly )
     };
 
     for ( auto const test_case : test_cases ) {
-        auto driver             = Mock_Driver{};
-        auto network_stack      = Mock_Network_Stack{};
-        auto tcp_port_allocator = Mock_Port_Allocator{};
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
 
         auto const socket_id = random<Socket_ID>();
 
@@ -567,6 +567,39 @@ TEST( isConnected, worksProperly )
         EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
         EXPECT_CALL( network_stack, deallocate_socket( _ ) );
     } // for
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::remote_endpoint() works
+ *        properly.
+ */
+TEST( remoteEndpoint, worksProperly )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_id = random<Socket_ID>();
+
+    auto const client = Client{ driver, socket_id, network_stack };
+
+    auto const sn_dipr  = random_array<std::uint8_t, 4>();
+    auto const sn_dport = random<std::uint16_t>();
+
+    EXPECT_CALL( driver, read_sn_dipr( socket_id ) ).WillOnce( Return( sn_dipr ) );
+    EXPECT_CALL( driver, read_sn_dport( socket_id ) ).WillOnce( Return( sn_dport ) );
+
+    auto const endpoint = client.remote_endpoint();
+
+    EXPECT_TRUE( endpoint.address().is_ipv4() );
+    EXPECT_EQ( endpoint.address().ipv4().as_byte_array(), sn_dipr );
+    EXPECT_EQ( endpoint.port().as_unsigned_integer(), sn_dport );
+
+    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
+    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) );
 }
 
 /**
