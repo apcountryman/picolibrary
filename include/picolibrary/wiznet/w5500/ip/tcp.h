@@ -541,9 +541,12 @@ class Client {
      * \return picolibrary::Generic_Error::WOULD_BLOCK if no data could be read from the
      *         socket's receive buffer without blocking.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     auto receive( std::uint8_t * begin, std::uint8_t * end ) noexcept
         -> Result<std::uint8_t *, Error_Code>
     {
+        // #lizard forgives the length
+
         expect( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
 
         auto close_wait = false;
