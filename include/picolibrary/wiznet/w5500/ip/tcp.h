@@ -464,6 +464,44 @@ class Client {
     }
 
     /**
+     * \brief Manually transmit a keepalive packet.
+     *
+     * \pre the socket has connected to a remote endpoint
+     * \pre the W5500 is responsive
+     *
+     * \return Nothing if keepalive packet transmission succeeded.
+     * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not connected to
+     *         a remote endpoint.
+     */
+    auto transmit_keepalive() noexcept -> Result<Void, Error_Code>
+    {
+        expect( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
+
+        switch ( m_driver->read_sn_sr( m_socket_id ) ) {
+            case SN_SR::STATUS_SOCK_CLOSED: // NOLINT(bugprone-branch-clone)
+                return Generic_Error::NOT_CONNECTED;
+            case SN_SR::STATUS_SOCK_ESTABLISHED: // NOLINT(bugprone-branch-clone)
+                break;
+            case SN_SR::STATUS_SOCK_CLOSE_WAIT: // NOLINT(bugprone-branch-clone)
+                return Generic_Error::NOT_CONNECTED;
+            case SN_SR::STATUS_SOCK_FIN_WAIT: // NOLINT(bugprone-branch-clone)
+                return Generic_Error::NOT_CONNECTED;
+            case SN_SR::STATUS_SOCK_CLOSING: // NOLINT(bugprone-branch-clone)
+                return Generic_Error::NOT_CONNECTED;
+            case SN_SR::STATUS_SOCK_TIME_WAIT: // NOLINT(bugprone-branch-clone)
+                return Generic_Error::NOT_CONNECTED;
+            case SN_SR::STATUS_SOCK_LAST_ACK: // NOLINT(bugprone-branch-clone)
+                return Generic_Error::NOT_CONNECTED;
+            default: expect( m_network_stack->nonresponsive_device_error() );
+        } // switch
+
+        m_driver->write_sn_cr( m_socket_id, SN_CR::COMMAND_SEND_KEEP );
+        while ( m_driver->read_sn_cr( m_socket_id ) ) {} // while
+
+        return {};
+    }
+
+    /**
      * \brief Close the socket.
      *
      * \pre the W5500 is responsive

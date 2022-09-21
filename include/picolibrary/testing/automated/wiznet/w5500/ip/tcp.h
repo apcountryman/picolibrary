@@ -138,6 +138,11 @@ class Mock_Client {
             return mock().transmit( begin, end );
         }
 
+        auto transmit_keepalive() -> Result<Void, Error_Code>
+        {
+            return mock().transmit_keepalive();
+        }
+
         void close()
         {
             mock().close();
@@ -188,6 +193,8 @@ class Mock_Client {
     {
         return transmit( std::vector<std::uint8_t>{ begin, end } );
     }
+
+    MOCK_METHOD( (Result<Void, Error_Code>), transmit_keepalive, () );
 
     MOCK_METHOD( void, close, () );
 };

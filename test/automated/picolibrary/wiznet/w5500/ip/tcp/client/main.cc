@@ -1223,6 +1223,107 @@ TEST( transmit, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::transmit_keepalive()
+ *        properly handles connection loss.
+ */
+TEST( transmitKeepalive, connectionLost )
+{
+    struct {
+        std::uint8_t sn_sr;
+    } const test_cases[]{
+        // clang-format off
+
+        { 0x00 },
+        { 0x1C },
+        { 0x18 },
+        { 0x1A },
+        { 0x1B },
+        { 0x1D },
+
+        // clang-format on
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver             = Mock_Driver{};
+        auto network_stack      = Mock_Network_Stack{};
+        auto tcp_port_allocator = Mock_Port_Allocator{};
+
+        auto client = Client{ Client::State::CONNECTED, driver, random<Socket_ID>(), network_stack };
+
+        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( test_case.sn_sr ) );
+
+        auto const result = client.transmit_keepalive();
+
+        EXPECT_TRUE( result.is_error() );
+        EXPECT_EQ( result.error(), Generic_Error::NOT_CONNECTED );
+
+        EXPECT_EQ( client.state(), Client::State::CONNECTED );
+
+        EXPECT_CALL( driver, write_sn_cr( _, _ ) );
+        EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
+        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
+        EXPECT_CALL( driver, write_sn_ir( _, _ ) );
+        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
+        EXPECT_CALL( driver, write_sn_port( _, _ ) );
+        EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+        EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
+        EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
+        EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_dport( _, _ ) );
+        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
+        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
+        EXPECT_CALL( network_stack, deallocate_socket( _ ) );
+    } // for
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::transmit_keepalive() works
+ *        properly.
+ */
+TEST( transmitKeepalive, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto driver             = Mock_Driver{};
+    auto network_stack      = Mock_Network_Stack{};
+    auto tcp_port_allocator = Mock_Port_Allocator{};
+
+    auto const socket_id = random<Socket_ID>();
+
+    auto client = Client{ Client::State::CONNECTED, driver, socket_id, network_stack };
+
+    EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x17 ) );
+    EXPECT_CALL( driver, write_sn_cr( socket_id, 0x22 ) );
+    EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
+    EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( 0x00 ) );
+
+    EXPECT_FALSE( client.transmit_keepalive().is_error() );
+
+    EXPECT_EQ( client.state(), Client::State::CONNECTED );
+
+    EXPECT_CALL( driver, write_sn_cr( _, _ ) );
+    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
+    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
+    EXPECT_CALL( driver, write_sn_ir( _, _ ) );
+    EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
+    EXPECT_CALL( driver, write_sn_port( _, _ ) );
+    EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+    EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
+    EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
+    EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_dport( _, _ ) );
+    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
+    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) );
+}
+
+/**
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::close() works properly.
  */
 TEST( close, worksProperly )
