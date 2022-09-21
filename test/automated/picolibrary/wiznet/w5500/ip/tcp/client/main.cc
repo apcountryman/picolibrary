@@ -106,6 +106,7 @@ TEST( constructor, worksProperly )
         EXPECT_EQ( client.state(), Client::State::INITIALIZED );
         EXPECT_EQ( client.socket_id(), test_case.socket_id );
         EXPECT_EQ( client.socket_interrupt_mask(), test_case.socket_interrupt_mask );
+        EXPECT_FALSE( client.is_transmitting() );
 
         EXPECT_CALL( driver, write_sn_mr( _, _ ) );
         EXPECT_CALL( driver, write_sn_mssr( _, _ ) );

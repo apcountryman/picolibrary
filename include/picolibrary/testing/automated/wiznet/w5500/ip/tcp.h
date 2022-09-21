@@ -126,6 +126,11 @@ class Mock_Client {
             return mock().outstanding();
         }
 
+        auto is_transmitting() const -> bool
+        {
+            return mock().is_transmitting();
+        }
+
         void close()
         {
             mock().close();
@@ -166,6 +171,8 @@ class Mock_Client {
     MOCK_METHOD( ::picolibrary::IP::TCP::Endpoint, local_endpoint, (), ( const ) );
 
     MOCK_METHOD( Size, outstanding, (), ( const ) );
+
+    MOCK_METHOD( bool, is_transmitting, (), ( const ) );
 
     MOCK_METHOD( void, close, () );
 };

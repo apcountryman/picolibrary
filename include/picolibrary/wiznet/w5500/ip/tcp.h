@@ -93,13 +93,16 @@ class Client {
      * \param[in] driver The driver used to interact with the W5500.
      * \param[in] socket_id The socket's socket ID.
      * \param[in] network_stack The network stack the socket is associated with.
+     * \param[in] is_transmitting The socket's initial data transmission in progress
+     *            status.
      */
-    constexpr Client( State state, Driver & driver, Socket_ID socket_id, Network_Stack & network_stack ) noexcept
+    constexpr Client( State state, Driver & driver, Socket_ID socket_id, Network_Stack & network_stack, bool is_transmitting = false ) noexcept
         :
         m_state{ state },
         m_driver{ &driver },
         m_socket_id{ socket_id },
-        m_network_stack{ &network_stack }
+        m_network_stack{ &network_stack },
+        m_is_transmitting{ is_transmitting }
     {
     }
 #endif // PICOLIBRARY_ENABLE_AUTOMATED_TESTING
@@ -113,7 +116,8 @@ class Client {
         m_state{ source.m_state },
         m_driver{ source.m_driver },
         m_socket_id{ source.m_socket_id },
-        m_network_stack{ source.m_network_stack }
+        m_network_stack{ source.m_network_stack },
+        m_is_transmitting{ source.m_is_transmitting }
     {
         source.m_state         = State::UNINITIALIZED;
         source.m_driver        = nullptr;
@@ -146,10 +150,11 @@ class Client {
         if ( &expression != this ) {
             close();
 
-            m_state         = expression.m_state;
-            m_driver        = expression.m_driver;
-            m_socket_id     = expression.m_socket_id;
-            m_network_stack = expression.m_network_stack;
+            m_state           = expression.m_state;
+            m_driver          = expression.m_driver;
+            m_socket_id       = expression.m_socket_id;
+            m_network_stack   = expression.m_network_stack;
+            m_is_transmitting = expression.m_is_transmitting;
 
             expression.m_state         = State::UNINITIALIZED;
             expression.m_driver        = nullptr;
@@ -365,6 +370,17 @@ class Client {
     }
 
     /**
+     * \brief Check if data transmission is in progress.
+     *
+     * \return true if data transmission is in progress.
+     * \return false if data transmission is not in progress.
+     */
+    constexpr auto is_transmitting() const noexcept -> bool
+    {
+        return m_is_transmitting;
+    }
+
+    /**
      * \brief Close the socket.
      *
      * \pre the W5500 is responsive
@@ -450,6 +466,11 @@ class Client {
      * \brief The network stack the socket is associated with.
      */
     Network_Stack * m_network_stack{};
+
+    /**
+     * \brief the socket's data transmission in progress flag.
+     */
+    bool m_is_transmitting{};
 };
 
 } // namespace picolibrary::WIZnet::W5500::IP::TCP
