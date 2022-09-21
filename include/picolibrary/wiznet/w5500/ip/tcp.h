@@ -475,6 +475,8 @@ class Client {
      */
     auto transmit_keepalive() noexcept -> Result<Void, Error_Code>
     {
+        // #lizard forgives the length
+
         expect( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
 
         switch ( m_driver->read_sn_sr( m_socket_id ) ) {
