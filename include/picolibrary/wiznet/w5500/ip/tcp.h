@@ -361,11 +361,11 @@ class Client {
     {
         auto const buffer_size = static_cast<Size>(
             to_underlying( m_network_stack->socket_buffer_size() ) * 1024 );
-        auto const free_size = m_driver->read_sn_tx_fsr( m_socket_id );
+        auto const sn_tx_fsr = m_driver->read_sn_tx_fsr( m_socket_id );
 
-        expect( free_size <= buffer_size, m_network_stack->nonresponsive_device_error() );
+        expect( sn_tx_fsr <= buffer_size, m_network_stack->nonresponsive_device_error() );
 
-        return buffer_size - free_size;
+        return buffer_size - sn_tx_fsr;
     }
 
     /**
@@ -439,16 +439,16 @@ class Client {
 
         auto const buffer_size = static_cast<Size>(
             to_underlying( m_network_stack->socket_buffer_size() ) * 1024 );
-        auto const free_size = m_driver->read_sn_tx_fsr( m_socket_id );
+        auto const sn_tx_fsr = m_driver->read_sn_tx_fsr( m_socket_id );
 
-        expect( free_size <= buffer_size, m_network_stack->nonresponsive_device_error() );
+        expect( sn_tx_fsr <= buffer_size, m_network_stack->nonresponsive_device_error() );
 
-        if ( free_size == 0 ) {
+        if ( sn_tx_fsr == 0 ) {
             return Generic_Error::WOULD_BLOCK;
         } // if
 
-        if ( end - begin > free_size ) {
-            end = begin + free_size;
+        if ( end - begin > sn_tx_fsr ) {
+            end = begin + sn_tx_fsr;
         } // if
 
         auto const sn_tx_wr = m_driver->read_sn_tx_wr( m_socket_id );
@@ -502,6 +502,26 @@ class Client {
         while ( m_driver->read_sn_cr( m_socket_id ) ) {} // while
 
         return {};
+    }
+
+    /**
+     * \brief Get the amount of data that is immediately available to be received from the
+     *        remote endpoint.
+     *
+     * \pre the W5500 is responsive
+     *
+     * \return The amount of data that is immediately available to be received from the
+     *         remote endpoint.
+     */
+    auto available() const noexcept -> Size
+    {
+        auto const buffer_size = static_cast<Size>(
+            to_underlying( m_network_stack->socket_buffer_size() ) * 1024 );
+        auto const sn_rx_rsr = m_driver->read_sn_rx_rsr( m_socket_id );
+
+        expect( sn_rx_rsr <= buffer_size, m_network_stack->nonresponsive_device_error() );
+
+        return sn_rx_rsr;
     }
 
     /**

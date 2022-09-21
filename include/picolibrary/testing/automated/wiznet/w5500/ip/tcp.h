@@ -143,6 +143,11 @@ class Mock_Client {
             return mock().transmit_keepalive();
         }
 
+        auto available() const -> Size
+        {
+            return mock().available();
+        }
+
         void close()
         {
             mock().close();
@@ -195,6 +200,8 @@ class Mock_Client {
     }
 
     MOCK_METHOD( (Result<Void, Error_Code>), transmit_keepalive, () );
+
+    MOCK_METHOD( Size, available, (), ( const ) );
 
     MOCK_METHOD( void, close, () );
 };

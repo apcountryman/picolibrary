@@ -1324,6 +1324,50 @@ TEST( transmitKeepalive, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::available() works properly.
+ */
+TEST( available, worksProperly )
+{
+    struct {
+        Socket_Buffer_Size socket_buffer_size;
+    } const test_cases[]{
+        // clang-format off
+
+        { Socket_Buffer_Size::_2_KiB  },
+        { Socket_Buffer_Size::_4_KiB  },
+        { Socket_Buffer_Size::_8_KiB  },
+        { Socket_Buffer_Size::_16_KiB },
+
+        // clang-format on
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto const socket_id = random<Socket_ID>();
+
+        auto const client = Client{ driver, socket_id, network_stack };
+
+        auto const sn_rx_rsr = random<std::uint16_t>(
+            0, to_underlying( test_case.socket_buffer_size ) * 1024 );
+
+        EXPECT_CALL( network_stack, socket_buffer_size() ).WillOnce( Return( test_case.socket_buffer_size ) );
+        EXPECT_CALL( driver, read_sn_rx_rsr( socket_id ) ).WillOnce( Return( sn_rx_rsr ) );
+        EXPECT_CALL( network_stack, nonresponsive_device_error() ).WillOnce( Return( random<Mock_Error>() ) );
+
+        EXPECT_EQ( client.available(), sn_rx_rsr );
+
+        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
+        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
+        EXPECT_CALL( network_stack, deallocate_socket( _ ) );
+    } // for
+}
+
+/**
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::close() works properly.
  */
 TEST( close, worksProperly )
