@@ -361,7 +361,6 @@ class Client {
     {
         auto const buffer_size = static_cast<Size>(
             to_underlying( m_network_stack->socket_buffer_size() ) * 1024 );
-
         auto const free_size = m_driver->read_sn_tx_fsr( m_socket_id );
 
         expect( free_size <= buffer_size, m_network_stack->nonresponsive_device_error() );
@@ -378,6 +377,80 @@ class Client {
     constexpr auto is_transmitting() const noexcept -> bool
     {
         return m_is_transmitting;
+    }
+
+    /**
+     * \brief Transmit data to the remote endpoint.
+     *
+     * \pre the socket has connected to a remote endpoint
+     * \pre the W5500 is responsive
+     *
+     * \param[in] begin The beginning of the block of data to write to the socket's
+     *            transmit buffer.
+     * \param[in] end The end of the block of data to write to the socket's transmit
+     *            buffer.
+     *
+     * \return The end of the data that was written to the socket's transmit buffer if
+     *         writing data to the socket's transmit buffer succeeded.
+     * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not connected to
+     *         a remote endpoint.
+     * \return picolibrary::Generic_Error::WOULD_BLOCK if no data could be written to the
+     *         socket's transmit buffer without blocking.
+     */
+    auto transmit( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+        -> Result<std::uint8_t const *, Error_Code>
+    {
+        expect( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
+
+        switch ( m_driver->read_sn_sr( m_socket_id ) ) {
+            case SN_SR::STATUS_SOCK_CLOSED: return Generic_Error::NOT_CONNECTED;
+            case SN_SR::STATUS_SOCK_ESTABLISHED: break;
+            case SN_SR::STATUS_SOCK_CLOSE_WAIT: return Generic_Error::NOT_CONNECTED;
+            case SN_SR::STATUS_SOCK_FIN_WAIT: return Generic_Error::NOT_CONNECTED;
+            case SN_SR::STATUS_SOCK_CLOSING: return Generic_Error::NOT_CONNECTED;
+            case SN_SR::STATUS_SOCK_TIME_WAIT: return Generic_Error::NOT_CONNECTED;
+            case SN_SR::STATUS_SOCK_LAST_ACK: return Generic_Error::NOT_CONNECTED;
+            default: expect( m_network_stack->nonresponsive_device_error() );
+        } // switch
+
+        if ( m_is_transmitting ) {
+            if ( not( m_driver->read_sn_ir( m_socket_id ) & Socket_Interrupt::DATA_TRANSMITTED ) ) {
+                return Generic_Error::WOULD_BLOCK;
+            } // if
+
+            m_driver->write_sn_ir( m_socket_id, Socket_Interrupt::DATA_TRANSMITTED );
+
+            m_is_transmitting = false;
+        } // if
+
+        if ( begin == end ) {
+            return end;
+        } // if
+
+        auto const buffer_size = static_cast<Size>(
+            to_underlying( m_network_stack->socket_buffer_size() ) * 1024 );
+        auto const free_size = m_driver->read_sn_tx_fsr( m_socket_id );
+
+        expect( free_size <= buffer_size, m_network_stack->nonresponsive_device_error() );
+
+        if ( free_size == 0 ) {
+            return Generic_Error::WOULD_BLOCK;
+        } // if
+
+        if ( end - begin > free_size ) {
+            end = begin + free_size;
+        } // if
+
+        auto const sn_tx_wr = m_driver->read_sn_tx_wr( m_socket_id );
+        m_driver->write_tx_buffer( m_socket_id, sn_tx_wr, begin, end );
+        m_driver->write_sn_tx_wr( m_socket_id, sn_tx_wr + ( end - begin ) );
+
+        m_driver->write_sn_cr( m_socket_id, SN_CR::COMMAND_SEND );
+        while ( m_driver->read_sn_cr( m_socket_id ) ) {} // while
+
+        m_is_transmitting = true;
+
+        return end;
     }
 
     /**

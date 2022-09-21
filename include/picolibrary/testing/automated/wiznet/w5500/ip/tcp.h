@@ -24,6 +24,7 @@
 #define PICOLIBRARY_TESTING_AUTOMATED_WIZNET_W5500_IP_TCP_H
 
 #include <cstdint>
+#include <vector>
 
 #include "gmock/gmock.h"
 #include "picolibrary/error.h"
@@ -131,6 +132,12 @@ class Mock_Client {
             return mock().is_transmitting();
         }
 
+        auto transmit( std::uint8_t const * begin, std::uint8_t const * end )
+            -> Result<std::uint8_t const *, Error_Code>
+        {
+            return mock().transmit( begin, end );
+        }
+
         void close()
         {
             mock().close();
@@ -173,6 +180,14 @@ class Mock_Client {
     MOCK_METHOD( Size, outstanding, (), ( const ) );
 
     MOCK_METHOD( bool, is_transmitting, (), ( const ) );
+
+    MOCK_METHOD( (Result<std::uint8_t const *, Error_Code>), transmit, (std::vector<std::uint8_t>));
+
+    auto transmit( std::uint8_t const * begin, std::uint8_t const * end )
+        -> Result<std::uint8_t const *, Error_Code>
+    {
+        return transmit( std::vector<std::uint8_t>{ begin, end } );
+    }
 
     MOCK_METHOD( void, close, () );
 };
