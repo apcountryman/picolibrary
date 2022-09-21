@@ -473,6 +473,7 @@ class Client {
      * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not connected to
      *         a remote endpoint.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     auto transmit_keepalive() noexcept -> Result<Void, Error_Code>
     {
         // #lizard forgives the length
