@@ -397,19 +397,29 @@ class Client {
      * \return picolibrary::Generic_Error::WOULD_BLOCK if no data could be written to the
      *         socket's transmit buffer without blocking.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     auto transmit( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
         -> Result<std::uint8_t const *, Error_Code>
     {
+        // #lizard forgives the length
+
         expect( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
 
         switch ( m_driver->read_sn_sr( m_socket_id ) ) {
-            case SN_SR::STATUS_SOCK_CLOSED: return Generic_Error::NOT_CONNECTED;
-            case SN_SR::STATUS_SOCK_ESTABLISHED: break;
-            case SN_SR::STATUS_SOCK_CLOSE_WAIT: return Generic_Error::NOT_CONNECTED;
-            case SN_SR::STATUS_SOCK_FIN_WAIT: return Generic_Error::NOT_CONNECTED;
-            case SN_SR::STATUS_SOCK_CLOSING: return Generic_Error::NOT_CONNECTED;
-            case SN_SR::STATUS_SOCK_TIME_WAIT: return Generic_Error::NOT_CONNECTED;
-            case SN_SR::STATUS_SOCK_LAST_ACK: return Generic_Error::NOT_CONNECTED;
+            case SN_SR::STATUS_SOCK_CLOSED: // NOLINT(bugprone-branch-clone)
+                return Generic_Error::NOT_CONNECTED;
+            case SN_SR::STATUS_SOCK_ESTABLISHED: // NOLINT(bugprone-branch-clone)
+                break;
+            case SN_SR::STATUS_SOCK_CLOSE_WAIT: // NOLINT(bugprone-branch-clone)
+                return Generic_Error::NOT_CONNECTED;
+            case SN_SR::STATUS_SOCK_FIN_WAIT: // NOLINT(bugprone-branch-clone)
+                return Generic_Error::NOT_CONNECTED;
+            case SN_SR::STATUS_SOCK_CLOSING: // NOLINT(bugprone-branch-clone)
+                return Generic_Error::NOT_CONNECTED;
+            case SN_SR::STATUS_SOCK_TIME_WAIT: // NOLINT(bugprone-branch-clone)
+                return Generic_Error::NOT_CONNECTED;
+            case SN_SR::STATUS_SOCK_LAST_ACK: // NOLINT(bugprone-branch-clone)
+                return Generic_Error::NOT_CONNECTED;
             default: expect( m_network_stack->nonresponsive_device_error() );
         } // switch
 
