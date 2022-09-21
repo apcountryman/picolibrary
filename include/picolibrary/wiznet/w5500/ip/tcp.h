@@ -525,6 +525,77 @@ class Client {
     }
 
     /**
+     * \brief Receive data from the remote endpoint.
+     *
+     * \pre the socket has connected to a remote endpoint
+     * \pre the W5500 is responsive
+     *
+     * \param[out] begin The beginning of the block of data read from the socket's receive
+     *             buffer.
+     * \param[out] end The end of the block of data read from the socket's receive buffer.
+     *
+     * \return The end of the data that was read from the socket's receive buffer if
+     *         reading data from the socket's receive buffer succeeded.
+     * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not connected to
+     *         a remote endpoint.
+     * \return picolibrary::Generic_Error::WOULD_BLOCK if no data could be read from the
+     *         socket's receive buffer without blocking.
+     */
+    auto receive( std::uint8_t * begin, std::uint8_t * end ) noexcept
+        -> Result<std::uint8_t *, Error_Code>
+    {
+        expect( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
+
+        auto close_wait = false;
+
+        switch ( m_driver->read_sn_sr( m_socket_id ) ) {
+            case SN_SR::STATUS_SOCK_CLOSED: // NOLINT(bugprone-branch-clone)
+                return Generic_Error::NOT_CONNECTED;
+            case SN_SR::STATUS_SOCK_ESTABLISHED: // NOLINT(bugprone-branch-clone)
+                break;
+            case SN_SR::STATUS_SOCK_CLOSE_WAIT: // NOLINT(bugprone-branch-clone)
+                close_wait = true;
+                break;
+            case SN_SR::STATUS_SOCK_FIN_WAIT: // NOLINT(bugprone-branch-clone)
+                return Generic_Error::WOULD_BLOCK;
+            case SN_SR::STATUS_SOCK_CLOSING: // NOLINT(bugprone-branch-clone)
+                return Generic_Error::WOULD_BLOCK;
+            case SN_SR::STATUS_SOCK_TIME_WAIT: // NOLINT(bugprone-branch-clone)
+                return Generic_Error::WOULD_BLOCK;
+            case SN_SR::STATUS_SOCK_LAST_ACK: // NOLINT(bugprone-branch-clone)
+                return Generic_Error::WOULD_BLOCK;
+            default: expect( m_network_stack->nonresponsive_device_error() );
+        } // switch
+
+        auto const buffer_size = static_cast<Size>(
+            to_underlying( m_network_stack->socket_buffer_size() ) * 1024 );
+        auto const sn_rx_rsr = m_driver->read_sn_rx_rsr( m_socket_id );
+
+        expect( sn_rx_rsr <= buffer_size, m_network_stack->nonresponsive_device_error() );
+
+        if ( sn_rx_rsr == 0 ) {
+            return close_wait ? Generic_Error::NOT_CONNECTED : Generic_Error::WOULD_BLOCK;
+        } // if
+
+        if ( begin == end ) {
+            return end;
+        } // if
+
+        if ( end - begin > sn_rx_rsr ) {
+            end = begin + sn_rx_rsr;
+        } // if
+
+        auto const sn_rx_rd = m_driver->read_sn_rx_rd( m_socket_id );
+        m_driver->read_rx_buffer( m_socket_id, sn_rx_rd, begin, end );
+        m_driver->write_sn_rx_rd( m_socket_id, sn_rx_rd + ( end - begin ) );
+
+        m_driver->write_sn_cr( m_socket_id, SN_CR::COMMAND_RECV );
+        while ( m_driver->read_sn_cr( m_socket_id ) ) {} // while
+
+        return end;
+    }
+
+    /**
      * \brief Close the socket.
      *
      * \pre the W5500 is responsive

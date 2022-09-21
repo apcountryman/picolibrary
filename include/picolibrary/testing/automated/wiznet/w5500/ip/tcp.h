@@ -148,6 +148,11 @@ class Mock_Client {
             return mock().available();
         }
 
+        auto receive( std::uint8_t * begin, std::uint8_t * end ) -> Result<std::uint8_t *, Error_Code>
+        {
+            return mock().receive( begin, end );
+        }
+
         void close()
         {
             mock().close();
@@ -202,6 +207,26 @@ class Mock_Client {
     MOCK_METHOD( (Result<Void, Error_Code>), transmit_keepalive, () );
 
     MOCK_METHOD( Size, available, (), ( const ) );
+
+    MOCK_METHOD( (Result<std::vector<std::uint8_t>, Error_Code>), receive, () );
+
+    auto receive( std::uint8_t * begin, std::uint8_t * end ) -> Result<std::uint8_t *, Error_Code>
+    {
+        static_cast<void>( end );
+
+        auto const result = receive();
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        for ( auto const data : result.value() ) {
+            *begin = data;
+
+            ++begin;
+        } // for
+
+        return begin;
+    }
 
     MOCK_METHOD( void, close, () );
 };
