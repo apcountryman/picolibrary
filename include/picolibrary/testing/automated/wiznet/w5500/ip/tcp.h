@@ -153,6 +153,11 @@ class Mock_Client {
             return mock().receive( begin, end );
         }
 
+        void shutdown()
+        {
+            mock().shutdown();
+        }
+
         void close()
         {
             mock().close();
@@ -227,6 +232,8 @@ class Mock_Client {
 
         return begin;
     }
+
+    MOCK_METHOD( void, shutdown, () );
 
     MOCK_METHOD( void, close, () );
 };

@@ -599,6 +599,30 @@ class Client {
     }
 
     /**
+     * \brief Disable further data transmission and reception.
+     *
+     * \pre the socket has connected to a remote endpoint
+     * \pre the W5500 is responsive
+     */
+    void shutdown() noexcept
+    {
+        expect( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
+
+        switch ( m_driver->read_sn_sr( m_socket_id ) ) {
+            case SN_SR::STATUS_SOCK_CLOSED: // NOLINT(bugprone-branch-clone)
+                return;
+            case SN_SR::STATUS_SOCK_ESTABLISHED: // NOLINT(bugprone-branch-clone)
+                break;
+            case SN_SR::STATUS_SOCK_CLOSE_WAIT: // NOLINT(bugprone-branch-clone)
+                break;
+            default: expect( m_network_stack->nonresponsive_device_error() );
+        } // switch
+
+        m_driver->write_sn_cr( m_socket_id, SN_CR::COMMAND_DISCON );
+        while ( m_driver->read_sn_cr( m_socket_id ) ) {} // while
+    }
+
+    /**
      * \brief Close the socket.
      *
      * \pre the W5500 is responsive
@@ -608,11 +632,11 @@ class Client {
     {
         // #lizard forgives the length
 
-        if ( m_state == Client::State::UNINITIALIZED ) {
+        if ( m_state == State::UNINITIALIZED ) {
             return;
         } // if
 
-        if ( m_state != Client::State::INITIALIZED ) {
+        if ( m_state != State::INITIALIZED ) {
             m_driver->write_sn_cr( m_socket_id, SN_CR::COMMAND_CLOSE );
             while ( m_driver->read_sn_cr( m_socket_id ) ) {} // while
 
@@ -661,7 +685,7 @@ class Client {
 
         m_network_stack->deallocate_socket( m_socket_id );
 
-        m_state = Client::State::UNINITIALIZED;
+        m_state = State::UNINITIALIZED;
     }
 
   private:
