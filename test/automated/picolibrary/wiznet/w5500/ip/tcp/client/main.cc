@@ -1881,6 +1881,46 @@ TEST( close, worksProperly )
     }
 
     {
+        auto const in_sequence = InSequence{};
+
+        auto driver             = Mock_Driver{};
+        auto network_stack      = Mock_Network_Stack{};
+        auto tcp_port_allocator = Mock_Port_Allocator{};
+
+        auto const socket_id = random<Socket_ID>();
+
+        auto client = Client{ Client::State::CONNECTED, driver, socket_id, network_stack };
+
+        auto const sn_port = random<std::uint16_t>();
+
+        EXPECT_CALL( driver, write_sn_cr( socket_id, 0x10 ) );
+        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
+        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( 0x00 ) );
+        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x00 ) );
+        EXPECT_CALL( driver, write_sn_ir( socket_id, 0b000'1'1'1'1'1 ) );
+        EXPECT_CALL( driver, read_sn_port( socket_id ) ).WillOnce( Return( sn_port ) );
+        EXPECT_CALL( driver, write_sn_port( socket_id, 0x0000 ) );
+        EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+        EXPECT_CALL( tcp_port_allocator, deallocate( Port{ sn_port } ) );
+        EXPECT_CALL(
+            driver,
+            write_sn_dhar( socket_id, Array<std::uint8_t, 6>{ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF } ) );
+        EXPECT_CALL(
+            driver, write_sn_dipr( socket_id, Array<std::uint8_t, 4>{ 0x00, 0x00, 0x00, 0x00 } ) );
+        EXPECT_CALL( driver, write_sn_dport( socket_id, 0x0000 ) );
+        EXPECT_CALL( driver, write_sn_mr( socket_id, 0x00 ) );
+        EXPECT_CALL( driver, write_sn_mssr( socket_id, 0x0000 ) );
+        EXPECT_CALL( driver, write_sn_ttl( socket_id, 0x80 ) );
+        EXPECT_CALL( driver, write_sn_imr( socket_id, 0xFF ) );
+        EXPECT_CALL( driver, write_sn_kpalvtr( socket_id, 0x00 ) );
+        EXPECT_CALL( network_stack, deallocate_socket( socket_id ) );
+
+        client.close();
+
+        EXPECT_EQ( client.state(), Client::State::UNINITIALIZED );
+    }
+
+    {
         struct {
             Client::State state;
             std::uint8_t  sn_sr;
