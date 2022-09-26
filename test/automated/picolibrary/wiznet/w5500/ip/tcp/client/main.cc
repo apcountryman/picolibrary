@@ -367,6 +367,37 @@ TEST( keepalivePeriod, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::enable_interrupts() works
+ *        properly.
+ */
+TEST( enableInterrupts, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_id = random<Socket_ID>();
+
+    auto client = Client{ driver, socket_id, network_stack };
+
+    auto const sn_imr = random<std::uint8_t>();
+    auto const mask   = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, read_sn_imr( socket_id ) ).WillOnce( Return( sn_imr ) );
+    EXPECT_CALL( driver, write_sn_imr( socket_id, sn_imr | mask ) );
+
+    client.enable_interrupts( mask );
+
+    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
+    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) );
+}
+
+/**
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::bind() works properly.
  */
 TEST( bind, worksProperly )

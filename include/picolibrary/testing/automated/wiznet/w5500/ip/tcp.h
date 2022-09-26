@@ -132,6 +132,11 @@ class Mock_Client {
             return mock().keepalive_period();
         }
 
+        void enable_interrupts( std::uint8_t mask )
+        {
+            mock().enable_interrupts( mask );
+        }
+
         void bind()
         {
             mock().bind();
@@ -238,6 +243,8 @@ class Mock_Client {
 
     MOCK_METHOD( void, configure_keepalive_period, ( std::uint8_t ) );
     MOCK_METHOD( std::uint8_t, keepalive_period, (), ( const ) );
+
+    MOCK_METHOD( void, enable_interrupts, ( std::uint8_t ) );
 
     MOCK_METHOD( void, bind, () );
     MOCK_METHOD( void, bind, (::picolibrary::IP::TCP::Endpoint const &));
