@@ -337,6 +337,20 @@ class Client {
     }
 
     /**
+     * \brief Clear interrupts.
+     *
+     * \param[in] mask The mask identifying the interrupts to clear.
+     */
+    void clear_interrupts( std::uint8_t mask ) noexcept
+    {
+        m_driver->write_sn_ir( m_socket_id, mask );
+
+        if ( mask & Socket_Interrupt::DATA_TRANSMITTED ) {
+            m_is_transmitting = false;
+        } // if
+    }
+
+    /**
      * \brief Bind the socket to a local endpoint.
      *
      * \pre the socket is in a state that allows it to be bound to a local endpoint

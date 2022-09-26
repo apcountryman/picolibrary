@@ -508,6 +508,55 @@ TEST( interruptContext, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::clear_interrupts() works
+ *        properly.
+ */
+TEST( clearInterrupts, worksProperly )
+{
+    struct {
+        bool         is_transmitting_initial;
+        std::uint8_t sn_ir_sendok;
+        bool         is_transmitting_final;
+    } const test_cases[]{
+        // clang-format off
+
+        { false, 0b000'0'0'0'0'0, false },
+        { false, 0b000'1'0'0'0'0, false },
+        { true,  0b000'0'0'0'0'0, true  },
+        { true,  0b000'1'0'0'0'0, false },
+
+        // clang-format on
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto const socket_id = random<Socket_ID>();
+
+        auto client = Client{
+            Client::State::INITIALIZED, driver, socket_id, network_stack, test_case.is_transmitting_initial
+        };
+
+        auto const mask = static_cast<std::uint8_t>(
+            ( random<std::uint8_t>() & 0b111'0'1'1'1'1 ) | test_case.sn_ir_sendok );
+
+        EXPECT_CALL( driver, write_sn_ir( socket_id, mask ) );
+
+        client.clear_interrupts( mask );
+
+        EXPECT_EQ( client.is_transmitting(), test_case.is_transmitting_final );
+
+        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
+        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
+        EXPECT_CALL( network_stack, deallocate_socket( _ ) );
+    } // for
+}
+
+/**
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::bind() works properly.
  */
 TEST( bind, worksProperly )

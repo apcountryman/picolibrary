@@ -157,6 +157,11 @@ class Mock_Client {
             return mock().interrupt_context();
         }
 
+        void clear_interrupts( std::uint8_t mask )
+        {
+            mock().clear_interrupts( mask );
+        }
+
         void bind()
         {
             mock().bind();
@@ -270,6 +275,7 @@ class Mock_Client {
     MOCK_METHOD( std::uint8_t, enabled_interrupts, (), ( const ) );
 
     MOCK_METHOD( std::uint8_t, interrupt_context, (), ( const ) );
+    MOCK_METHOD( void, clear_interrupts, ( std::uint8_t ) );
 
     MOCK_METHOD( void, bind, () );
     MOCK_METHOD( void, bind, (::picolibrary::IP::TCP::Endpoint const &));
