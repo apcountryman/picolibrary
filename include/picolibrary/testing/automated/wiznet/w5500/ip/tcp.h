@@ -97,6 +97,11 @@ class Mock_Client {
             mock().configure_no_delayed_ack_usage( no_delayed_ack_usage_configuration );
         }
 
+        auto no_delayed_ack_usage_configuration() const -> ::picolibrary::WIZnet::W5500::No_Delayed_ACK_Usage
+        {
+            return mock().no_delayed_ack_usage_configuration();
+        }
+
         void bind()
         {
             mock().bind();
@@ -193,6 +198,7 @@ class Mock_Client {
     MOCK_METHOD( std::uint8_t, socket_interrupt_mask, (), ( const ) );
 
     MOCK_METHOD( void, configure_no_delayed_ack_usage, ( ::picolibrary::WIZnet::W5500::No_Delayed_ACK_Usage ) );
+    MOCK_METHOD( ::picolibrary::WIZnet::W5500::No_Delayed_ACK_Usage, no_delayed_ack_usage_configuration, (), ( const ) );
 
     MOCK_METHOD( void, bind, () );
     MOCK_METHOD( void, bind, (::picolibrary::IP::TCP::Endpoint const &));

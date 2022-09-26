@@ -137,6 +137,8 @@ TEST( configureNoDelayedACKUsage, worksProperly )
 
         { No_Delayed_ACK_Usage::DISABLED, 0b0'0'0'0'0000 },
         { No_Delayed_ACK_Usage::ENABLED,  0b0'0'1'0'0000 },
+
+        // clang-format on
     };
 
     for ( auto const test_case : test_cases ) {
@@ -150,6 +152,47 @@ TEST( configureNoDelayedACKUsage, worksProperly )
         EXPECT_CALL( driver, write_sn_mr( socket_id, test_case.sn_mr ) );
 
         client.configure_no_delayed_ack_usage( test_case.no_delayed_ack_usage_configuration );
+
+        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
+        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
+        EXPECT_CALL( network_stack, deallocate_socket( _ ) );
+    } // for
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::IP::TCP::Client::no_delayed_ack_usage_configuration()
+ *        works properly.
+ */
+TEST( noDelayedACKUsageConfiguration, worksProperly )
+{
+    struct {
+        std::uint8_t         sn_mr_nd;
+        No_Delayed_ACK_Usage no_delayed_ack_usage_configuration;
+    } const test_cases[]{
+        // clang-format off
+
+        { 0b0'0'0'0'0000, No_Delayed_ACK_Usage::DISABLED },
+        { 0b0'0'1'0'0000, No_Delayed_ACK_Usage::ENABLED  },
+
+        // clang-format on
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto const socket_id = random<Socket_ID>();
+
+        auto const client = Client{ driver, socket_id, network_stack };
+
+        EXPECT_CALL( driver, read_sn_mr( socket_id ) )
+            .WillOnce( Return( ( random<std::uint8_t>() & 0b1'1'0'1'1111 ) | test_case.sn_mr_nd ) );
+
+        EXPECT_EQ( client.no_delayed_ack_usage_configuration(), test_case.no_delayed_ack_usage_configuration );
 
         EXPECT_CALL( driver, write_sn_mr( _, _ ) );
         EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
@@ -176,7 +219,7 @@ TEST( bind, worksProperly )
 
         auto client = Client{ driver, socket_id, network_stack };
 
-        auto const port = random<Port>( 1 );
+        auto const port  = random<Port>( 1 );
         auto const sn_mr = random<std::uint8_t>();
 
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
@@ -224,7 +267,7 @@ TEST( bind, worksProperly )
 
         auto client = Client{ driver, socket_id, network_stack };
 
-        auto const port = random<Port>( 1 );
+        auto const port  = random<Port>( 1 );
         auto const sn_mr = random<std::uint8_t>();
 
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
@@ -272,7 +315,7 @@ TEST( bind, worksProperly )
 
         auto client = Client{ driver, socket_id, network_stack };
 
-        auto const port = random<Port>( 1 );
+        auto const port  = random<Port>( 1 );
         auto const sn_mr = random<std::uint8_t>();
 
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
@@ -322,7 +365,7 @@ TEST( bind, worksProperly )
 
         auto const address = random<Address>( 1 );
         auto const port    = random<Port>( 1 );
-        auto const sn_mr = random<std::uint8_t>();
+        auto const sn_mr   = random<std::uint8_t>();
 
         EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( address.as_byte_array() ) );
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
@@ -372,7 +415,7 @@ TEST( bind, worksProperly )
 
         auto const address = random<Address>( 1 );
         auto const port    = random<Port>( 1 );
-        auto const sn_mr = random<std::uint8_t>();
+        auto const sn_mr   = random<std::uint8_t>();
 
         EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( address.as_byte_array() ) );
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );

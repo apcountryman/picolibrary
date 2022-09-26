@@ -212,6 +212,16 @@ class Client {
     }
 
     /**
+     * \brief Get the socket's no delayed ACK usage configuration.
+     *
+     * \return The socket's no delayed ACK usage configuration.
+     */
+    auto no_delayed_ack_usage_configuration() const noexcept -> No_Delayed_ACK_Usage
+    {
+        return static_cast<No_Delayed_ACK_Usage>( m_driver->read_sn_mr( m_socket_id ) & SN_MR::Mask::ND );
+    }
+
+    /**
      * \brief Bind the socket to a local endpoint.
      *
      * \pre the socket is in a state that allows it to be bound to a local endpoint
