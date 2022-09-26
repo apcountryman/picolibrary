@@ -327,6 +327,16 @@ class Client {
     }
 
     /**
+     * \brief Get the interrupt context (SN_IR register value).
+     *
+     * \return The socket's interrupt context.
+     */
+    auto interrupt_context() const noexcept -> std::uint8_t
+    {
+        return m_driver->read_sn_ir( m_socket_id );
+    }
+
+    /**
      * \brief Bind the socket to a local endpoint.
      *
      * \pre the socket is in a state that allows it to be bound to a local endpoint
