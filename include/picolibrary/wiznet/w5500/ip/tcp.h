@@ -198,6 +198,20 @@ class Client {
     }
 
     /**
+     * \brief Configure the socket's no delayed ACK usage (defaults to disabled).
+     *
+     * \warning This function must not be called after the socket has been bound to a
+     *          local endpoint.
+     *
+     * \param[in] no_delayed_ack_usage_configuration The desired no delayed ACK usage
+     *            configuration.
+     */
+    void configure_no_delayed_ack_usage( No_Delayed_ACK_Usage no_delayed_ack_usage_configuration ) noexcept
+    {
+        m_driver->write_sn_mr( m_socket_id, to_underlying( no_delayed_ack_usage_configuration ) );
+    }
+
+    /**
      * \brief Bind the socket to a local endpoint.
      *
      * \pre the socket is in a state that allows it to be bound to a local endpoint

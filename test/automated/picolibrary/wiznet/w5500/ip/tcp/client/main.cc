@@ -55,6 +55,7 @@ using ::picolibrary::Testing::Automated::random_container;
 using ::picolibrary::Testing::Automated::WIZnet::W5500::Mock_Driver;
 using ::picolibrary::Testing::Automated::WIZnet::W5500::IP::Mock_Network_Stack;
 using ::picolibrary::Testing::Automated::WIZnet::W5500::IP::Mock_Port_Allocator;
+using ::picolibrary::WIZnet::W5500::No_Delayed_ACK_Usage;
 using ::picolibrary::WIZnet::W5500::Socket_Buffer_Size;
 using ::picolibrary::WIZnet::W5500::Socket_ID;
 using ::testing::_;
@@ -111,6 +112,44 @@ TEST( constructor, worksProperly )
         EXPECT_EQ( client.socket_id(), test_case.socket_id );
         EXPECT_EQ( client.socket_interrupt_mask(), test_case.socket_interrupt_mask );
         EXPECT_FALSE( client.is_transmitting() );
+
+        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
+        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
+        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
+        EXPECT_CALL( network_stack, deallocate_socket( _ ) );
+    } // for
+}
+
+/**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::IP::TCP::Client::configure_no_delayed_ack_usage()
+ *        works properly.
+ */
+TEST( configureNoDelayedACKUsage, worksProperly )
+{
+    struct {
+        No_Delayed_ACK_Usage no_delayed_ack_usage_configuration;
+        std::uint8_t         sn_mr;
+    } const test_cases[]{
+        // clang-format off
+
+        { No_Delayed_ACK_Usage::DISABLED, 0b0'0'0'0'0000 },
+        { No_Delayed_ACK_Usage::ENABLED,  0b0'0'1'0'0000 },
+    };
+
+    for ( auto const test_case : test_cases ) {
+        auto driver        = Mock_Driver{};
+        auto network_stack = Mock_Network_Stack{};
+
+        auto const socket_id = random<Socket_ID>();
+
+        auto client = Client{ driver, socket_id, network_stack };
+
+        EXPECT_CALL( driver, write_sn_mr( socket_id, test_case.sn_mr ) );
+
+        client.configure_no_delayed_ack_usage( test_case.no_delayed_ack_usage_configuration );
 
         EXPECT_CALL( driver, write_sn_mr( _, _ ) );
         EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
