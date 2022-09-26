@@ -271,7 +271,7 @@ TEST( configureTimeToLive, worksProperly )
 
     auto client = Client{ driver, socket_id, network_stack };
 
-    auto const time_to_live = random<std::uint16_t>();
+    auto const time_to_live = random<std::uint8_t>();
 
     EXPECT_CALL( driver, write_sn_ttl( socket_id, time_to_live ) );
 
@@ -303,6 +303,33 @@ TEST( timeToLive, worksProperly )
     EXPECT_CALL( driver, read_sn_ttl( socket_id ) ).WillOnce( Return( sn_ttl ) );
 
     EXPECT_EQ( client.time_to_live(), sn_ttl );
+
+    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
+    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::configure_keepalive_period()
+ *        works properly.
+ */
+TEST( configureKeepalivePeriod, worksProperly )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_id = random<Socket_ID>();
+
+    auto client = Client{ driver, socket_id, network_stack };
+
+    auto const keepalive_period = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, write_sn_kpalvtr( socket_id, keepalive_period ) );
+
+    client.configure_keepalive_period( keepalive_period );
 
     EXPECT_CALL( driver, write_sn_mr( _, _ ) );
     EXPECT_CALL( driver, write_sn_mssr( _, _ ) );

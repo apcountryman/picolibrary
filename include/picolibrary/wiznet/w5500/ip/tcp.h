@@ -266,6 +266,18 @@ class Client {
     }
 
     /**
+     * \brief Configure the socket's keepalive packet transmission period (SN_KPALVTR
+     *        register value, defaults to 0x00).
+     *
+     * \param[in] keepalive_period The desired keepalive packet transmission period
+     *            (SN_KPALVTR register value).
+     */
+    void configure_keepalive_period( std::uint8_t keepalive_period ) noexcept
+    {
+        m_driver->write_sn_kpalvtr( m_socket_id, keepalive_period );
+    }
+
+    /**
      * \brief Bind the socket to a local endpoint.
      *
      * \pre the socket is in a state that allows it to be bound to a local endpoint
