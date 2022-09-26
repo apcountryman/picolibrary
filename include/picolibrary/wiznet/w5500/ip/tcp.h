@@ -317,6 +317,16 @@ class Client {
     }
 
     /**
+     * \brief Get a mask identifying the interrupts that are enabled.
+     *
+     * \return A mask identifying the interrupts that are enabled.
+     */
+    auto enabled_interrupts() const noexcept -> std::uint8_t
+    {
+        return m_driver->read_sn_imr( m_socket_id );
+    }
+
+    /**
      * \brief Bind the socket to a local endpoint.
      *
      * \pre the socket is in a state that allows it to be bound to a local endpoint
