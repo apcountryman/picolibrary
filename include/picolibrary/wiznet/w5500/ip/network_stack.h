@@ -34,6 +34,7 @@
 #include "picolibrary/precondition.h"
 #include "picolibrary/utility.h"
 #include "picolibrary/wiznet/w5500.h"
+#include "picolibrary/wiznet/w5500/ip/tcp.h"
 
 namespace picolibrary::WIZnet::W5500::IP {
 
@@ -46,6 +47,11 @@ namespace picolibrary::WIZnet::W5500::IP {
 template<typename Driver, typename TCP_Port_Allocator>
 class Network_Stack {
   public:
+    /**
+     * \brief The type of TCP client socket that is used to interact with the network stack.
+     */
+    using TCP_Client = TCP::Client<Driver, Network_Stack>;
+
     /**
      * \brief Constructor.
      */
@@ -633,6 +639,30 @@ class Network_Stack {
     auto tcp_port_allocator() noexcept -> TCP_Port_Allocator &
     {
         return m_tcp_port_allocator;
+    }
+
+    /**
+     * \brief Construct a TCP client socket.
+     *
+     * \pre a socket is available
+     *
+     * \return A TCP client socket.
+     */
+    auto make_tcp_client() noexcept -> TCP_Client
+    {
+        return { *m_driver, allocate_socket(), *this };
+    }
+
+    /**
+     * \brief Construct a TCP client socket that uses a specific W5500 socket.
+     *
+     * \param[in] socket_id The socket ID for the W5500 socket to use.
+     *
+     * \pre the requested W5500 socket is available for allocation
+     */
+    auto make_tcp_client( Socket_ID socket_id ) noexcept -> TCP_Client
+    {
+        return { *m_driver, allocate_socket( socket_id ), *this };
     }
 
   private:
