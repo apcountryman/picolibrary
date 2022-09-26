@@ -177,10 +177,13 @@ TEST( bind, worksProperly )
         auto client = Client{ driver, socket_id, network_stack };
 
         auto const port = random<Port>( 1 );
+        auto const sn_mr = random<std::uint8_t>();
 
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
         EXPECT_CALL( tcp_port_allocator, allocate( Ref( driver ), Port{} ) ).WillOnce( Return( port ) );
         EXPECT_CALL( driver, write_sn_port( socket_id, port.as_unsigned_integer() ) );
+        EXPECT_CALL( driver, read_sn_mr( socket_id ) ).WillOnce( Return( sn_mr ) );
+        EXPECT_CALL( driver, write_sn_mr( socket_id, ( sn_mr & 0b1'1'1'1'0000 ) | 0b0001 ) );
         EXPECT_CALL( driver, write_sn_cr( socket_id, 0x01 ) );
         EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
         EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( 0x00 ) );
@@ -222,10 +225,13 @@ TEST( bind, worksProperly )
         auto client = Client{ driver, socket_id, network_stack };
 
         auto const port = random<Port>( 1 );
+        auto const sn_mr = random<std::uint8_t>();
 
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
         EXPECT_CALL( tcp_port_allocator, allocate( Ref( driver ), Port{} ) ).WillOnce( Return( port ) );
         EXPECT_CALL( driver, write_sn_port( socket_id, port.as_unsigned_integer() ) );
+        EXPECT_CALL( driver, read_sn_mr( socket_id ) ).WillOnce( Return( sn_mr ) );
+        EXPECT_CALL( driver, write_sn_mr( socket_id, ( sn_mr & 0b1'1'1'1'0000 ) | 0b0001 ) );
         EXPECT_CALL( driver, write_sn_cr( socket_id, 0x01 ) );
         EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
         EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( 0x00 ) );
@@ -267,10 +273,13 @@ TEST( bind, worksProperly )
         auto client = Client{ driver, socket_id, network_stack };
 
         auto const port = random<Port>( 1 );
+        auto const sn_mr = random<std::uint8_t>();
 
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
         EXPECT_CALL( tcp_port_allocator, allocate( Ref( driver ), port ) ).WillOnce( Return( port ) );
         EXPECT_CALL( driver, write_sn_port( socket_id, port.as_unsigned_integer() ) );
+        EXPECT_CALL( driver, read_sn_mr( socket_id ) ).WillOnce( Return( sn_mr ) );
+        EXPECT_CALL( driver, write_sn_mr( socket_id, ( sn_mr & 0b1'1'1'1'0000 ) | 0b0001 ) );
         EXPECT_CALL( driver, write_sn_cr( socket_id, 0x01 ) );
         EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
         EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( 0x00 ) );
@@ -313,11 +322,14 @@ TEST( bind, worksProperly )
 
         auto const address = random<Address>( 1 );
         auto const port    = random<Port>( 1 );
+        auto const sn_mr = random<std::uint8_t>();
 
         EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( address.as_byte_array() ) );
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
         EXPECT_CALL( tcp_port_allocator, allocate( Ref( driver ), Port{} ) ).WillOnce( Return( port ) );
         EXPECT_CALL( driver, write_sn_port( socket_id, port.as_unsigned_integer() ) );
+        EXPECT_CALL( driver, read_sn_mr( socket_id ) ).WillOnce( Return( sn_mr ) );
+        EXPECT_CALL( driver, write_sn_mr( socket_id, ( sn_mr & 0b1'1'1'1'0000 ) | 0b0001 ) );
         EXPECT_CALL( driver, write_sn_cr( socket_id, 0x01 ) );
         EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
         EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( 0x00 ) );
@@ -360,11 +372,14 @@ TEST( bind, worksProperly )
 
         auto const address = random<Address>( 1 );
         auto const port    = random<Port>( 1 );
+        auto const sn_mr = random<std::uint8_t>();
 
         EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( address.as_byte_array() ) );
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
         EXPECT_CALL( tcp_port_allocator, allocate( Ref( driver ), port ) ).WillOnce( Return( port ) );
         EXPECT_CALL( driver, write_sn_port( socket_id, port.as_unsigned_integer() ) );
+        EXPECT_CALL( driver, read_sn_mr( socket_id ) ).WillOnce( Return( sn_mr ) );
+        EXPECT_CALL( driver, write_sn_mr( socket_id, ( sn_mr & 0b1'1'1'1'0000 ) | 0b0001 ) );
         EXPECT_CALL( driver, write_sn_cr( socket_id, 0x01 ) );
         EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
         EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( 0x00 ) );

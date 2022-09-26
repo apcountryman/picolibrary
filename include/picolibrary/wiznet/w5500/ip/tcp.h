@@ -246,6 +246,9 @@ class Client {
             m_socket_id,
             m_network_stack->tcp_port_allocator().allocate( *m_driver, endpoint.port() ).as_unsigned_integer() );
 
+        m_driver->write_sn_mr(
+            m_socket_id, ( m_driver->read_sn_mr( m_socket_id ) & ~SN_MR::Mask::P ) | SN_MR::P_TCP );
+
         m_driver->write_sn_cr( m_socket_id, SN_CR::COMMAND_OPEN );
         while ( m_driver->read_sn_cr( m_socket_id ) ) {} // while
 
