@@ -107,6 +107,11 @@ class Mock_Client {
             mock().configure_maximum_segment_size( maximum_segment_size );
         }
 
+        void configure_time_to_live( std::uint8_t time_to_live )
+        {
+            mock().configure_time_to_live( time_to_live );
+        }
+
         auto maximum_segment_size() const -> std::uint16_t
         {
             return mock().maximum_segment_size();
@@ -212,6 +217,8 @@ class Mock_Client {
 
     MOCK_METHOD( void, configure_maximum_segment_size, ( std::uint16_t ) );
     MOCK_METHOD( std::uint16_t, maximum_segment_size, (), ( const ) );
+
+    MOCK_METHOD( void, configure_time_to_live, ( std::uint8_t ) );
 
     MOCK_METHOD( void, bind, () );
     MOCK_METHOD( void, bind, (::picolibrary::IP::TCP::Endpoint const &));

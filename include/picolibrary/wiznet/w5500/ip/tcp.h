@@ -245,6 +245,17 @@ class Client {
     }
 
     /**
+     * \brief Configure the socket's IPv4 packet time to live field value (defaults to
+     *        0x80).
+     *
+     * \param[in] time_to_live The desired IPv4 packet time to live field value.
+     */
+    void configure_time_to_live( std::uint8_t time_to_live ) noexcept
+    {
+        m_driver->write_sn_ttl( m_socket_id, time_to_live );
+    }
+
+    /**
      * \brief Bind the socket to a local endpoint.
      *
      * \pre the socket is in a state that allows it to be bound to a local endpoint
