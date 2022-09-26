@@ -200,8 +200,8 @@ class Client {
     /**
      * \brief Configure the socket's no delayed ACK usage (defaults to disabled).
      *
-     * \warning This function must not be called after the socket has been bound to a
-     *          local endpoint.
+     * \attention A socket's No delayed ACK usage must be configured before the socket is
+     *            bound to a local endpoint.
      *
      * \param[in] no_delayed_ack_usage_configuration The desired no delayed ACK usage
      *            configuration.
@@ -219,6 +219,19 @@ class Client {
     auto no_delayed_ack_usage_configuration() const noexcept -> No_Delayed_ACK_Usage
     {
         return static_cast<No_Delayed_ACK_Usage>( m_driver->read_sn_mr( m_socket_id ) & SN_MR::Mask::ND );
+    }
+
+    /**
+     * \brief Configure the socket's maximum segment size (defaults to 0x0000).
+     *
+     * \attention A socket's maximum segment size must be configured before the socket
+     *            connects to a remote endpoint.
+     *
+     * \param[in] maximum_segment_size The desired maximum segment size.
+     */
+    void configure_maximum_segment_size( std::uint16_t maximum_segment_size ) noexcept
+    {
+        m_driver->write_sn_mssr( m_socket_id, maximum_segment_size );
     }
 
     /**

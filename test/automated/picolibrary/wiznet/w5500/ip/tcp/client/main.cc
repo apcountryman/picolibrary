@@ -204,6 +204,34 @@ TEST( noDelayedACKUsageConfiguration, worksProperly )
 }
 
 /**
+ * \brief Verify
+ *        picolibrary::WIZnet::W5500::IP::TCP::Client::configure_maximum_segment_size()
+ *        works properly.
+ */
+TEST( configureMaximumSegmentSize, worksProperly )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_id = random<Socket_ID>();
+
+    auto client = Client{ driver, socket_id, network_stack };
+
+    auto const maximum_segment_size = random<std::uint16_t>();
+
+    EXPECT_CALL( driver, write_sn_mssr( socket_id, maximum_segment_size ) );
+
+    client.configure_maximum_segment_size( maximum_segment_size );
+
+    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
+    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) );
+}
+
+/**
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::bind() works properly.
  */
 TEST( bind, worksProperly )
