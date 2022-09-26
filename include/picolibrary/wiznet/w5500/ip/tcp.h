@@ -256,6 +256,16 @@ class Client {
     }
 
     /**
+     * \brief Get the socket's IPv4 packet time to live field value.
+     *
+     * \return The socket's IPv4 packet time to live field value.
+     */
+    auto time_to_live() const noexcept -> std::uint8_t
+    {
+        return m_driver->read_sn_ttl( m_socket_id );
+    }
+
+    /**
      * \brief Bind the socket to a local endpoint.
      *
      * \pre the socket is in a state that allows it to be bound to a local endpoint

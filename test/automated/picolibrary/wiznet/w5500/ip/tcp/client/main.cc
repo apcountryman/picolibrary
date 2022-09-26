@@ -286,6 +286,33 @@ TEST( configureTimeToLive, worksProperly )
 }
 
 /**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::time_to_live() works
+ *        properly.
+ */
+TEST( timeToLive, worksProperly )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_id = random<Socket_ID>();
+
+    auto const client = Client{ driver, socket_id, network_stack };
+
+    auto const sn_ttl = random<std::uint8_t>();
+
+    EXPECT_CALL( driver, read_sn_ttl( socket_id ) ).WillOnce( Return( sn_ttl ) );
+
+    EXPECT_EQ( client.time_to_live(), sn_ttl );
+
+    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
+    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) );
+}
+
+/**
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::bind() works properly.
  */
 TEST( bind, worksProperly )
