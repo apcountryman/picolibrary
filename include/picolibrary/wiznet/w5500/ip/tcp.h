@@ -235,6 +235,16 @@ class Client {
     }
 
     /**
+     * \brief Get the socket's maximum segment size.
+     *
+     * \return The socket's maximum segment size.
+     */
+    auto maximum_segment_size() const noexcept -> std::uint16_t
+    {
+        return m_driver->read_sn_mssr( m_socket_id );
+    }
+
+    /**
      * \brief Bind the socket to a local endpoint.
      *
      * \pre the socket is in a state that allows it to be bound to a local endpoint

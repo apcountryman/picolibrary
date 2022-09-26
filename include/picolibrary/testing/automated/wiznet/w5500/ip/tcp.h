@@ -107,6 +107,11 @@ class Mock_Client {
             mock().configure_maximum_segment_size( maximum_segment_size );
         }
 
+        auto maximum_segment_size() const -> std::uint16_t
+        {
+            return mock().maximum_segment_size();
+        }
+
         void bind()
         {
             mock().bind();
@@ -206,6 +211,7 @@ class Mock_Client {
     MOCK_METHOD( ::picolibrary::WIZnet::W5500::No_Delayed_ACK_Usage, no_delayed_ack_usage_configuration, (), ( const ) );
 
     MOCK_METHOD( void, configure_maximum_segment_size, ( std::uint16_t ) );
+    MOCK_METHOD( std::uint16_t, maximum_segment_size, (), ( const ) );
 
     MOCK_METHOD( void, bind, () );
     MOCK_METHOD( void, bind, (::picolibrary::IP::TCP::Endpoint const &));
