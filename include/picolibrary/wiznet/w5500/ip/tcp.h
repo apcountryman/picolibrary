@@ -278,6 +278,17 @@ class Client {
     }
 
     /**
+     * \brief Get the socket's keepalive packet transmission period (SN_KPALVTR register
+     *        value.
+     *
+     * \return The socket's keepalive packet transmission period.
+     */
+    auto keepalive_period() const noexcept -> std::uint8_t
+    {
+        return m_driver->read_sn_kpalvtr( m_socket_id );
+    }
+
+    /**
      * \brief Bind the socket to a local endpoint.
      *
      * \pre the socket is in a state that allows it to be bound to a local endpoint

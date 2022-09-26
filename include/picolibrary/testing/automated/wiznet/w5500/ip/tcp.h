@@ -127,6 +127,11 @@ class Mock_Client {
             mock().configure_keepalive_period( keepalive_period );
         }
 
+        auto keepalive_period() const -> std::uint8_t
+        {
+            return mock().keepalive_period();
+        }
+
         void bind()
         {
             mock().bind();
@@ -232,6 +237,7 @@ class Mock_Client {
     MOCK_METHOD( std::uint8_t, time_to_live, (), ( const ) );
 
     MOCK_METHOD( void, configure_keepalive_period, ( std::uint8_t ) );
+    MOCK_METHOD( std::uint8_t, keepalive_period, (), ( const ) );
 
     MOCK_METHOD( void, bind, () );
     MOCK_METHOD( void, bind, (::picolibrary::IP::TCP::Endpoint const &));
