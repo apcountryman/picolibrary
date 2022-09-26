@@ -398,8 +398,8 @@ TEST( enableInterrupts, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::disable_interrupts() works
- *        properly.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::disable_interrupts(
+ *        std::uint8_t ) works properly.
  */
 TEST( disableInterrupts, worksProperly )
 {
@@ -419,6 +419,31 @@ TEST( disableInterrupts, worksProperly )
     EXPECT_CALL( driver, write_sn_imr( socket_id, sn_imr & ~mask ) );
 
     client.disable_interrupts( mask );
+
+    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
+    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
+    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) );
+}
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::disable_interrupts() works
+ *        properly.
+ */
+TEST( disableAllInterrupts, worksProperly )
+{
+    auto driver        = Mock_Driver{};
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const socket_id = random<Socket_ID>();
+
+    auto client = Client{ driver, socket_id, network_stack };
+
+    EXPECT_CALL( driver, write_sn_imr( socket_id, 0x00 ) );
+
+    client.disable_interrupts();
 
     EXPECT_CALL( driver, write_sn_mr( _, _ ) );
     EXPECT_CALL( driver, write_sn_mssr( _, _ ) );

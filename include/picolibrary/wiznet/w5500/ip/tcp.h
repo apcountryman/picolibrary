@@ -309,6 +309,14 @@ class Client {
     }
 
     /**
+     * \brief Disable all interrupts.
+     */
+    void disable_interrupts() noexcept
+    {
+        m_driver->write_sn_imr( m_socket_id, 0x00 );
+    }
+
+    /**
      * \brief Bind the socket to a local endpoint.
      *
      * \pre the socket is in a state that allows it to be bound to a local endpoint
