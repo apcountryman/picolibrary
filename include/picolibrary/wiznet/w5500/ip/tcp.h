@@ -411,7 +411,7 @@ class Client {
      *
      * \pre endpoint is a valid remote endpoint
      *
-     * \return Nothing if connection to the remote endpoint succeeded.
+     * \return Nothing if connecting to the remote endpoint succeeded.
      * \return picolibrary::Generic_Error::WOULD_BLOCK if connecting to the remote
      *         endpoint cannot succeed immediately.
      * \return picolibrary::Generic_Error::OPERATION_TIMEOUT if connecting to the remote
@@ -784,7 +784,7 @@ class Client {
      * \pre the W5500 is responsive
      */
     // NOLINTNEXTLINE(readability-function-size)
-    void close() noexcept
+    constexpr void close() noexcept
     {
         // #lizard forgives the length
 

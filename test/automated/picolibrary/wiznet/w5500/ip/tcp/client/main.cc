@@ -1209,9 +1209,7 @@ TEST( transmit, transmissionNotComplete )
     auto network_stack      = Mock_Network_Stack{};
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
-    auto const socket_id = random<Socket_ID>();
-
-    auto client = Client{ Client::State::CONNECTED, driver, socket_id, network_stack, true };
+    auto client = Client{ Client::State::CONNECTED, driver, random<Socket_ID>(), network_stack, true };
 
     EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x17 ) );
     EXPECT_CALL( driver, read_sn_ir( _ ) ).WillOnce( Return( random<std::uint8_t>() & 0b111'0'1'1'1'1 ) );
@@ -1254,9 +1252,7 @@ TEST( transmit, transmitBufferFull )
     auto network_stack      = Mock_Network_Stack{};
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
-    auto const socket_id = random<Socket_ID>();
-
-    auto client = Client{ Client::State::CONNECTED, driver, socket_id, network_stack, false };
+    auto client = Client{ Client::State::CONNECTED, driver, random<Socket_ID>(), network_stack, false };
 
     EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x17 ) );
     EXPECT_CALL( network_stack, socket_buffer_size() )
@@ -1831,7 +1827,7 @@ TEST( receive, connectionLost )
 
     EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
 
-    auto       data   = std::vector<std::uint8_t>( random<std::uint_fast8_t>( 1, 15 ) );
+    auto       data   = std::vector<std::uint8_t>( random<std::uint_fast8_t>( 0, 15 ) );
     auto const result = client.receive( &*data.begin(), &*data.end() );
 
     EXPECT_TRUE( result.is_error() );
@@ -2206,7 +2202,6 @@ TEST( receive, worksProperly )
  */
 TEST( shutdown, worksProperly )
 {
-    // SOCK_CLOSED (0x00)
     {
         auto driver             = Mock_Driver{};
         auto network_stack      = Mock_Network_Stack{};
@@ -2241,7 +2236,6 @@ TEST( shutdown, worksProperly )
         EXPECT_CALL( network_stack, deallocate_socket( _ ) );
     }
 
-    // SOCK_ESTABLISHED (0x17), SOCK_CLOSE_WAIT (0x1C)
     {
         struct {
             std::uint8_t sn_sr;

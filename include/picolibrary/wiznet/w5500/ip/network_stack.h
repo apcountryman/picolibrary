@@ -646,7 +646,7 @@ class Network_Stack {
      *
      * \pre a socket is available
      *
-     * \return A TCP client socket.
+     * \return The constructed TCP client socket.
      */
     auto make_tcp_client() noexcept -> TCP_Client
     {
