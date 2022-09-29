@@ -659,6 +659,8 @@ class Network_Stack {
      * \param[in] socket_id The socket ID for the W5500 socket to use.
      *
      * \pre the requested W5500 socket is available for allocation
+     *
+     * \return The constructed TCP client socket.
      */
     auto make_tcp_client( Socket_ID socket_id ) noexcept -> TCP_Client
     {
