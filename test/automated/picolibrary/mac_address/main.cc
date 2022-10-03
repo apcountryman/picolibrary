@@ -80,7 +80,7 @@ auto random_unique_unsigned_integer_pair()
     };
 }
 
-auto hyphen_separated_hexadecimal_digit_pairs( MAC_Address::Byte_Array const & byte_array ) -> std::string
+auto hyphen_separated_hex_digit_pairs( MAC_Address::Byte_Array const & byte_array ) -> std::string
 {
     auto stream = std::ostringstream{};
 
@@ -402,7 +402,7 @@ TEST( outputFormatterMACAddress, worksProperly )
         EXPECT_EQ( result.value(), stream.string().size() );
 
         EXPECT_TRUE( stream.is_nominal() );
-        EXPECT_EQ( stream.string(), hyphen_separated_hexadecimal_digit_pairs( byte_array ) );
+        EXPECT_EQ( stream.string(), hyphen_separated_hex_digit_pairs( byte_array ) );
     }
 
     {
@@ -417,7 +417,7 @@ TEST( outputFormatterMACAddress, worksProperly )
         EXPECT_EQ( n, stream.string().size() );
 
         EXPECT_TRUE( stream.is_nominal() );
-        EXPECT_EQ( stream.string(), hyphen_separated_hexadecimal_digit_pairs( byte_array ) );
+        EXPECT_EQ( stream.string(), hyphen_separated_hex_digit_pairs( byte_array ) );
     }
 }
 

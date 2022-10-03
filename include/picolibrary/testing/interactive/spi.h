@@ -63,8 +63,7 @@ void echo(
         delay();
 
         auto const rx = controller.exchange( tx );
-        stream.print(
-            "exchange( ", Format::Hexadecimal{ tx }, " ) -> ", Format::Hexadecimal{ rx }, '\n' );
+        stream.print( "exchange( ", Format::Hex{ tx }, " ) -> ", Format::Hex{ rx }, '\n' );
         expect( rx == tx, Generic_Error::RUNTIME_ERROR );
 
         stream.flush();

@@ -17,7 +17,7 @@
 
 /**
  * \file
- * \brief picolibrary::Format::Binary automated test program.
+ * \brief picolibrary::Format::Bin automated test program.
  */
 
 #include <bitset>
@@ -39,7 +39,7 @@
 namespace {
 
 using ::picolibrary::to_unsigned;
-using ::picolibrary::Format::Binary;
+using ::picolibrary::Format::Bin;
 using ::picolibrary::Testing::Automated::Mock_Error;
 using ::picolibrary::Testing::Automated::Mock_Output_Stream;
 using ::picolibrary::Testing::Automated::Output_String_Stream;
@@ -49,7 +49,7 @@ using ::testing::A;
 using ::testing::Return;
 
 template<typename Integer>
-auto binary( Integer value ) -> std::string
+auto bin( Integer value ) -> std::string
 {
     using U = std::make_unsigned_t<Integer>;
 
@@ -65,30 +65,30 @@ auto binary( Integer value ) -> std::string
 } // namespace
 
 /**
- * \brief picolibrary::Output_Formatter<picolibrary::Binary> automated test fixture.
+ * \brief picolibrary::Output_Formatter<picolibrary::Bin> automated test fixture.
  *
  * \tparam Integer The type of integer to print.
  */
 template<typename Integer>
-class outputFormatterBinary : public ::testing::Test {
+class outputFormatterBin : public ::testing::Test {
 };
 
 /**
- * \brief picolibrary::Output_Formatter<picolibrary::Binary> automated test integer types.
+ * \brief picolibrary::Output_Formatter<picolibrary::Bin> automated test integer types.
  */
 using Integers =
     ::testing::Types<std::int8_t, std::uint8_t, std::int16_t, std::uint16_t, std::int32_t, std::uint32_t, std::int64_t, std::uint64_t>;
 
 /**
- * \brief picolibrary::Output_Formatter<picolibrary::Binary> automated test fixture.
+ * \brief picolibrary::Output_Formatter<picolibrary::Bin> automated test fixture.
  */
-TYPED_TEST_SUITE( outputFormatterBinary, Integers );
+TYPED_TEST_SUITE( outputFormatterBin, Integers );
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Binary> properly
- *        handles a put error.
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Bin> properly handles
+ *        a put error.
  */
-TYPED_TEST( outputFormatterBinary, putError )
+TYPED_TEST( outputFormatterBin, putError )
 {
     using Integer = TypeParam;
 
@@ -98,7 +98,7 @@ TYPED_TEST( outputFormatterBinary, putError )
 
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.print( Binary{ random<Integer>() } );
+    auto const result = stream.print( Bin{ random<Integer>() } );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -109,10 +109,9 @@ TYPED_TEST( outputFormatterBinary, putError )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Binary> works
- *        properly.
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Bin> works properly.
  */
-TYPED_TEST( outputFormatterBinary, worksProperly )
+TYPED_TEST( outputFormatterBin, worksProperly )
 {
     using Integer = TypeParam;
 
@@ -121,13 +120,13 @@ TYPED_TEST( outputFormatterBinary, worksProperly )
 
         auto const value = random<Integer>();
 
-        auto const result = stream.print( Binary{ value } );
+        auto const result = stream.print( Bin{ value } );
 
         ASSERT_TRUE( result.is_value() );
         EXPECT_EQ( result.value(), stream.string().size() );
 
         EXPECT_TRUE( stream.is_nominal() );
-        EXPECT_EQ( stream.string(), binary( value ) );
+        EXPECT_EQ( stream.string(), bin( value ) );
     }
 
     {
@@ -135,17 +134,17 @@ TYPED_TEST( outputFormatterBinary, worksProperly )
 
         auto const value = random<Integer>();
 
-        auto const n = stream.print( Binary{ value } );
+        auto const n = stream.print( Bin{ value } );
 
         EXPECT_EQ( n, stream.string().size() );
 
         EXPECT_TRUE( stream.is_nominal() );
-        EXPECT_EQ( stream.string(), binary( value ) );
+        EXPECT_EQ( stream.string(), bin( value ) );
     }
 }
 
 /**
- * \brief Execute the picolibrary::Format::Binary automated tests.
+ * \brief Execute the picolibrary::Format::Bin automated tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
  * \param[in] argc The array of arguments to pass to testing::InitGoogleMock().

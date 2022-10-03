@@ -962,7 +962,7 @@ class Output_Formatter<IP::Port> {
      */
     auto print( Output_Stream & stream, IP::Port port ) const noexcept -> Result<std::size_t, Error_Code>
     {
-        return stream.print( Format::Decimal{ port.as_unsigned_integer() } );
+        return stream.print( Format::Dec{ port.as_unsigned_integer() } );
     }
 
     /**
@@ -975,7 +975,7 @@ class Output_Formatter<IP::Port> {
      */
     auto print( Reliable_Output_Stream & stream, IP::Port port ) const noexcept -> std::size_t
     {
-        return stream.print( Format::Decimal{ port.as_unsigned_integer() } );
+        return stream.print( Format::Dec{ port.as_unsigned_integer() } );
     }
 };
 

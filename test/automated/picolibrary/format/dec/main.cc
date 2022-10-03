@@ -17,7 +17,7 @@
 
 /**
  * \file
- * \brief picolibrary::Format::Decimal automated test program.
+ * \brief picolibrary::Format::Dec automated test program.
  */
 
 #include <cstddef>
@@ -35,7 +35,7 @@
 
 namespace {
 
-using ::picolibrary::Format::Decimal;
+using ::picolibrary::Format::Dec;
 using ::picolibrary::Testing::Automated::Mock_Error;
 using ::picolibrary::Testing::Automated::Mock_Output_Stream;
 using ::picolibrary::Testing::Automated::Output_String_Stream;
@@ -45,7 +45,7 @@ using ::testing::A;
 using ::testing::Return;
 
 template<typename Integer>
-auto decimal( Integer value ) -> std::string
+auto dec( Integer value ) -> std::string
 {
     auto stream = std::ostringstream{};
 
@@ -59,31 +59,30 @@ auto decimal( Integer value ) -> std::string
 } // namespace
 
 /**
- * \brief picolibrary::Output_Formatter<picolibrary::Decimal> automated test fixture.
+ * \brief picolibrary::Output_Formatter<picolibrary::Dec> automated test fixture.
  *
  * \tparam Integer The type of integer to print.
  */
 template<typename Integer>
-class outputFormatterDecimal : public ::testing::Test {
+class outputFormatterDec : public ::testing::Test {
 };
 
 /**
- * \brief picolibrary::Output_Formatter<picolibrary::Decimal> automated test integer
- *        types.
+ * \brief picolibrary::Output_Formatter<picolibrary::Dec> automated test integer types.
  */
 using Integers =
     ::testing::Types<std::int8_t, std::uint8_t, std::int16_t, std::uint16_t, std::int32_t, std::uint32_t, std::int64_t, std::uint64_t>;
 
 /**
- * \brief picolibrary::Output_Formatter<picolibrary::Decimal> automated test fixture.
+ * \brief picolibrary::Output_Formatter<picolibrary::Dec> automated test fixture.
  */
-TYPED_TEST_SUITE( outputFormatterDecimal, Integers );
+TYPED_TEST_SUITE( outputFormatterDec, Integers );
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Decimal> properly
- *        handles a put error.
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Dec> properly handles
+ *        a put error.
  */
-TYPED_TEST( outputFormatterDecimal, putError )
+TYPED_TEST( outputFormatterDec, putError )
 {
     using Integer = TypeParam;
 
@@ -93,7 +92,7 @@ TYPED_TEST( outputFormatterDecimal, putError )
 
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.print( Decimal{ random<Integer>() } );
+    auto const result = stream.print( Dec{ random<Integer>() } );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -104,10 +103,9 @@ TYPED_TEST( outputFormatterDecimal, putError )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Decimal> works
- *        properly.
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Dec> works properly.
  */
-TYPED_TEST( outputFormatterDecimal, worksProperly )
+TYPED_TEST( outputFormatterDec, worksProperly )
 {
     using Integer = TypeParam;
 
@@ -116,13 +114,13 @@ TYPED_TEST( outputFormatterDecimal, worksProperly )
 
         auto const value = random<Integer>();
 
-        auto const result = stream.print( Decimal{ value } );
+        auto const result = stream.print( Dec{ value } );
 
         ASSERT_TRUE( result.is_value() );
         EXPECT_EQ( result.value(), stream.string().size() );
 
         EXPECT_TRUE( stream.is_nominal() );
-        EXPECT_EQ( stream.string(), decimal( value ) );
+        EXPECT_EQ( stream.string(), dec( value ) );
     }
 
     {
@@ -130,17 +128,17 @@ TYPED_TEST( outputFormatterDecimal, worksProperly )
 
         auto const value = random<Integer>();
 
-        auto const n = stream.print( Decimal{ value } );
+        auto const n = stream.print( Dec{ value } );
 
         EXPECT_EQ( n, stream.string().size() );
 
         EXPECT_TRUE( stream.is_nominal() );
-        EXPECT_EQ( stream.string(), decimal( value ) );
+        EXPECT_EQ( stream.string(), dec( value ) );
     }
 }
 
 /**
- * \brief Execute the picolibrary::Format::Decimal automated tests.
+ * \brief Execute the picolibrary::Format::Dec automated tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
  * \param[in] argc The array of arguments to pass to testing::InitGoogleMock().

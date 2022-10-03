@@ -42,7 +42,7 @@ using ::picolibrary::Testing::Automated::Reliable_Output_String_Stream;
 using ::testing::A;
 using ::testing::Return;
 
-auto decimal( Port::Unsigned_Integer unsigned_integer ) -> std::string
+auto dec( Port::Unsigned_Integer unsigned_integer ) -> std::string
 {
     auto stream = std::ostringstream{};
 
@@ -253,7 +253,7 @@ TEST( outputFormatterIPPort, worksProperly )
         EXPECT_EQ( result.value(), stream.string().size() );
 
         EXPECT_TRUE( stream.is_nominal() );
-        EXPECT_EQ( stream.string(), decimal( unsigned_integer ) );
+        EXPECT_EQ( stream.string(), dec( unsigned_integer ) );
     }
 
     {
@@ -268,7 +268,7 @@ TEST( outputFormatterIPPort, worksProperly )
         EXPECT_EQ( n, stream.string().size() );
 
         EXPECT_TRUE( stream.is_nominal() );
-        EXPECT_EQ( stream.string(), decimal( unsigned_integer ) );
+        EXPECT_EQ( stream.string(), dec( unsigned_integer ) );
     }
 }
 

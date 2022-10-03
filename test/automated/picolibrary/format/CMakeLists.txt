@@ -15,11 +15,11 @@
 
 # Description: picolibrary::Format automated tests CMake rules.
 
-# build the picolibrary::Format::Binary automated tests
-add_subdirectory( binary )
+# build the picolibrary::Format::Bin automated tests
+add_subdirectory( bin )
 
-# build the picolibrary::Format::Decimal automated tests
-add_subdirectory( decimal )
+# build the picolibrary::Format::Dec automated tests
+add_subdirectory( dec )
 
-# build the picolibrary::Format::Hexadecimal automated tests
-add_subdirectory( hexadecimal )
+# build the picolibrary::Format::Hex automated tests
+add_subdirectory( hex )
