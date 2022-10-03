@@ -45,18 +45,18 @@ namespace picolibrary::Format {
  * \tparam Integer The integer type to format.
  */
 template<typename Integer>
-class Binary {
+class Bin {
   public:
     static_assert( std::is_integral_v<Integer> );
 
-    Binary() = delete;
+    Bin() = delete;
 
     /**
      * \brief Constructor.
      *
      * \param[in] value The integer to be formatted.
      */
-    constexpr Binary( Integer value ) noexcept : m_value{ value }
+    constexpr Bin( Integer value ) noexcept : m_value{ value }
     {
     }
 
@@ -65,19 +65,19 @@ class Binary {
      *
      * \param[in] source The source of the move.
      */
-    constexpr Binary( Binary && source ) noexcept = default;
+    constexpr Bin( Bin && source ) noexcept = default;
 
     /**
      * \brief Constructor.
      *
      * \param[in] original The original to copy.
      */
-    constexpr Binary( Binary const & original ) noexcept = default;
+    constexpr Bin( Bin const & original ) noexcept = default;
 
     /**
      * \brief Destructor.
      */
-    ~Binary() noexcept = default;
+    ~Bin() noexcept = default;
 
     /**
      * \brief Assignment operator.
@@ -86,7 +86,7 @@ class Binary {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Binary && expression ) noexcept -> Binary & = default;
+    constexpr auto operator=( Bin && expression ) noexcept -> Bin & = default;
 
     /**
      * \brief Assignment operator.
@@ -95,7 +95,7 @@ class Binary {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Binary const & expression ) noexcept -> Binary & = default;
+    constexpr auto operator=( Bin const & expression ) noexcept -> Bin & = default;
 
     /**
      * \brief Get the integer to be formatted.
@@ -120,18 +120,18 @@ class Binary {
  * \tparam Integer The integer type to format.
  */
 template<typename Integer>
-class Decimal {
+class Dec {
   public:
     static_assert( std::is_integral_v<Integer> );
 
-    Decimal() = delete;
+    Dec() = delete;
 
     /**
      * \brief Constructor.
      *
      * \param[in] value The integer to be formatted.
      */
-    constexpr Decimal( Integer value ) noexcept : m_value{ value }
+    constexpr Dec( Integer value ) noexcept : m_value{ value }
     {
     }
 
@@ -140,19 +140,19 @@ class Decimal {
      *
      * \param[in] source The source of the move.
      */
-    constexpr Decimal( Decimal && source ) noexcept = default;
+    constexpr Dec( Dec && source ) noexcept = default;
 
     /**
      * \brief Constructor.
      *
      * \param[in] original The original to copy.
      */
-    constexpr Decimal( Decimal const & original ) noexcept = default;
+    constexpr Dec( Dec const & original ) noexcept = default;
 
     /**
      * \brief Destructor.
      */
-    ~Decimal() noexcept = default;
+    ~Dec() noexcept = default;
 
     /**
      * \brief Assignment operator.
@@ -161,7 +161,7 @@ class Decimal {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Decimal && expression ) noexcept -> Decimal & = default;
+    constexpr auto operator=( Dec && expression ) noexcept -> Dec & = default;
 
     /**
      * \brief Assignment operator.
@@ -170,7 +170,7 @@ class Decimal {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Decimal const & expression ) noexcept -> Decimal & = default;
+    constexpr auto operator=( Dec const & expression ) noexcept -> Dec & = default;
 
     /**
      * \brief Get the integer to be formatted.
@@ -195,18 +195,18 @@ class Decimal {
  * \tparam Integer The integer type to format.
  */
 template<typename Integer>
-class Hexadecimal {
+class Hex {
   public:
     static_assert( std::is_integral_v<Integer> );
 
-    Hexadecimal() = delete;
+    Hex() = delete;
 
     /**
      * \brief Constructor.
      *
      * \param[in] value The integer to be formatted.
      */
-    constexpr Hexadecimal( Integer value ) noexcept : m_value{ value }
+    constexpr Hex( Integer value ) noexcept : m_value{ value }
     {
     }
 
@@ -215,19 +215,19 @@ class Hexadecimal {
      *
      * \param[in] source The source of the move.
      */
-    constexpr Hexadecimal( Hexadecimal && source ) noexcept = default;
+    constexpr Hex( Hex && source ) noexcept = default;
 
     /**
      * \brief Constructor.
      *
      * \param[in] original The original to copy.
      */
-    constexpr Hexadecimal( Hexadecimal const & original ) noexcept = default;
+    constexpr Hex( Hex const & original ) noexcept = default;
 
     /**
      * \brief Destructor.
      */
-    ~Hexadecimal() noexcept = default;
+    ~Hex() noexcept = default;
 
     /**
      * \brief Assignment operator.
@@ -236,7 +236,7 @@ class Hexadecimal {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Hexadecimal && expression ) noexcept -> Hexadecimal & = default;
+    constexpr auto operator=( Hex && expression ) noexcept -> Hex & = default;
 
     /**
      * \brief Assignment operator.
@@ -245,7 +245,7 @@ class Hexadecimal {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Hexadecimal const & expression ) noexcept -> Hexadecimal & = default;
+    constexpr auto operator=( Hex const & expression ) noexcept -> Hex & = default;
 
     /**
      * \brief Get the integer to be formatted.
@@ -269,12 +269,12 @@ class Hexadecimal {
 namespace picolibrary {
 
 /**
- * \brief picolibrary::Format::Binary output formatter.
+ * \brief picolibrary::Format::Bin output formatter.
  *
  * \tparam Integer The type of integer to print.
  */
 template<typename Integer>
-class Output_Formatter<Format::Binary<Integer>> {
+class Output_Formatter<Format::Bin<Integer>> {
   public:
     /**
      * \brief Constructor.
@@ -320,9 +320,9 @@ class Output_Formatter<Format::Binary<Integer>> {
         -> Output_Formatter & = default;
 
     /**
-     * \brief Write the formatted picolibrary::Format::Binary to the stream.
+     * \brief Write the formatted picolibrary::Format::Bin to the stream.
      *
-     * \param[in] stream The stream to write the formatted picolibrary::Format::Binary to.
+     * \param[in] stream The stream to write the formatted picolibrary::Format::Bin to.
      * \param[in] integer The integer to format.
      *
      * \return The number of characters written to the stream if the write succeeded.
@@ -342,9 +342,9 @@ class Output_Formatter<Format::Binary<Integer>> {
     }
 
     /**
-     * \brief Write the formatted picolibrary::Format::Binary to the stream.
+     * \brief Write the formatted picolibrary::Format::Bin to the stream.
      *
-     * \param[in] stream The stream to write the formatted picolibrary::Format::Binary to.
+     * \param[in] stream The stream to write the formatted picolibrary::Format::Bin to.
      * \param[in] integer The integer to format.
      *
      * \return The number of characters written to the stream.
@@ -398,12 +398,12 @@ class Output_Formatter<Format::Binary<Integer>> {
 };
 
 /**
- * \brief picolibrary::Format::Decimal output formatter.
+ * \brief picolibrary::Format::Dec output formatter.
  *
  * \tparam Integer The type of integer to print.
  */
 template<typename Integer>
-class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_signed_v<Integer>>> {
+class Output_Formatter<Format::Dec<Integer>, std::enable_if_t<std::is_signed_v<Integer>>> {
   public:
     /**
      * \brief Constructor.
@@ -449,10 +449,9 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_signed
         -> Output_Formatter & = default;
 
     /**
-     * \brief Write the formatted picolibrary::Format::Decimal to the stream.
+     * \brief Write the formatted picolibrary::Format::Dec to the stream.
      *
-     * \param[in] stream The stream to write the formatted picolibrary::Format::Decimal
-     *            to.
+     * \param[in] stream The stream to write the formatted picolibrary::Format::Dec to.
      * \param[in] integer The integer to format.
      *
      * \return The number of characters written to the stream if the write succeeded.
@@ -474,10 +473,9 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_signed
     }
 
     /**
-     * \brief Write the formatted picolibrary::Format::Decimal to the stream.
+     * \brief Write the formatted picolibrary::Format::Dec to the stream.
      *
-     * \param[in] stream The stream to write the formatted picolibrary::Format::Decimal
-     *            to.
+     * \param[in] stream The stream to write the formatted picolibrary::Format::Dec to.
      * \param[in] integer The integer to format.
      *
      * \return The number of characters written to the stream.
@@ -531,12 +529,12 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_signed
 };
 
 /**
- * \brief picolibrary::Format::Decimal output formatter.
+ * \brief picolibrary::Format::Dec output formatter.
  *
  * \tparam Integer The type of integer to print.
  */
 template<typename Integer>
-class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_unsigned_v<Integer>>> {
+class Output_Formatter<Format::Dec<Integer>, std::enable_if_t<std::is_unsigned_v<Integer>>> {
   public:
     /**
      * \brief Constructor.
@@ -582,10 +580,9 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_unsign
         -> Output_Formatter & = default;
 
     /**
-     * \brief Write the formatted picolibrary::Format::Decimal to the stream.
+     * \brief Write the formatted picolibrary::Format::Dec to the stream.
      *
-     * \param[in] stream The stream to write the formatted picolibrary::Format::Decimal
-     *            to.
+     * \param[in] stream The stream to write the formatted picolibrary::Format::Dec to.
      * \param[in] integer The integer to format.
      *
      * \return The number of characters written to the stream if the write succeeded.
@@ -607,10 +604,9 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_unsign
     }
 
     /**
-     * \brief Write the formatted picolibrary::Format::Decimal to the stream.
+     * \brief Write the formatted picolibrary::Format::Dec to the stream.
      *
-     * \param[in] stream The stream to write the formatted picolibrary::Format::Decimal
-     *            to.
+     * \param[in] stream The stream to write the formatted picolibrary::Format::Dec to.
      * \param[in] integer The integer to format.
      *
      * \return The number of characters written to the stream.
@@ -654,12 +650,12 @@ class Output_Formatter<Format::Decimal<Integer>, std::enable_if_t<std::is_unsign
 };
 
 /**
- * \brief picolibrary::Format::Hexadecimal output formatter.
+ * \brief picolibrary::Format::Hex output formatter.
  *
  * \tparam Integer The type of integer to print.
  */
 template<typename Integer>
-class Output_Formatter<Format::Hexadecimal<Integer>> {
+class Output_Formatter<Format::Hex<Integer>> {
   public:
     /**
      * \brief Constructor.
@@ -705,10 +701,9 @@ class Output_Formatter<Format::Hexadecimal<Integer>> {
         -> Output_Formatter & = default;
 
     /**
-     * \brief Write the formatted picolibrary::Format::Hexadecimal to the stream.
+     * \brief Write the formatted picolibrary::Format::Hex to the stream.
      *
-     * \param[in] stream The stream to write the formatted
-     *            picolibrary::Format::Hexadecimal to.
+     * \param[in] stream The stream to write the formatted picolibrary::Format::Hex to.
      * \param[in] integer The integer to format.
      *
      * \return The number of characters written to the stream if the write succeeded.
@@ -728,10 +723,9 @@ class Output_Formatter<Format::Hexadecimal<Integer>> {
     }
 
     /**
-     * \brief Write the formatted picolibrary::Format::Hexadecimal to the stream.
+     * \brief Write the formatted picolibrary::Format::Hex to the stream.
      *
-     * \param[in] stream The stream to write the formatted
-     *            picolibrary::Format::Hexadecimal to.
+     * \param[in] stream The stream to write the formatted picolibrary::Format::Hex to.
      * \param[in] integer The integer to format.
      *
      * \return The number of characters written to the stream.

@@ -17,7 +17,7 @@
 
 /**
  * \file
- * \brief picolibrary::Format::Hexadecimal automated test program.
+ * \brief picolibrary::Format::Hex automated test program.
  */
 
 #include <cstddef>
@@ -40,7 +40,7 @@
 namespace {
 
 using ::picolibrary::to_unsigned;
-using ::picolibrary::Format::Hexadecimal;
+using ::picolibrary::Format::Hex;
 using ::picolibrary::Testing::Automated::Mock_Error;
 using ::picolibrary::Testing::Automated::Mock_Output_Stream;
 using ::picolibrary::Testing::Automated::Output_String_Stream;
@@ -50,7 +50,7 @@ using ::testing::A;
 using ::testing::Return;
 
 template<typename Integer>
-auto hexadecimal( Integer value ) -> std::string
+auto hex( Integer value ) -> std::string
 {
     using U = std::make_unsigned_t<Integer>;
 
@@ -68,31 +68,30 @@ auto hexadecimal( Integer value ) -> std::string
 } // namespace
 
 /**
- * \brief picolibrary::Output_Formatter<picolibrary::Hexadecimal> automated test fixture.
+ * \brief picolibrary::Output_Formatter<picolibrary::Hex> automated test fixture.
  *
  * \tparam Integer The type of integer to print.
  */
 template<typename Integer>
-class outputFormatterHexadecimal : public ::testing::Test {
+class outputFormatterHex : public ::testing::Test {
 };
 
 /**
- * \brief picolibrary::Output_Formatter<picolibrary::Hexadecimal> automated test integer
- *        types.
+ * \brief picolibrary::Output_Formatter<picolibrary::Hex> automated test integer types.
  */
 using Integers =
     ::testing::Types<std::int8_t, std::uint8_t, std::int16_t, std::uint16_t, std::int32_t, std::uint32_t, std::int64_t, std::uint64_t>;
 
 /**
- * \brief picolibrary::Output_Formatter<picolibrary::Hexadecimal> automated test fixture.
+ * \brief picolibrary::Output_Formatter<picolibrary::Hex> automated test fixture.
  */
-TYPED_TEST_SUITE( outputFormatterHexadecimal, Integers );
+TYPED_TEST_SUITE( outputFormatterHex, Integers );
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Hexadecimal> properly
- *        handles a put error.
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Hex> properly handles
+ *        a put error.
  */
-TYPED_TEST( outputFormatterHexadecimal, putError )
+TYPED_TEST( outputFormatterHex, putError )
 {
     using Integer = TypeParam;
 
@@ -102,7 +101,7 @@ TYPED_TEST( outputFormatterHexadecimal, putError )
 
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.print( Hexadecimal{ random<Integer>() } );
+    auto const result = stream.print( Hex{ random<Integer>() } );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -113,10 +112,9 @@ TYPED_TEST( outputFormatterHexadecimal, putError )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Hexadecimal> works
- *        properly.
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Hex> works properly.
  */
-TYPED_TEST( outputFormatterHexadecimal, worksProperly )
+TYPED_TEST( outputFormatterHex, worksProperly )
 {
     using Integer = TypeParam;
 
@@ -125,13 +123,13 @@ TYPED_TEST( outputFormatterHexadecimal, worksProperly )
 
         auto const value = random<Integer>();
 
-        auto const result = stream.print( Hexadecimal{ value } );
+        auto const result = stream.print( Hex{ value } );
 
         ASSERT_TRUE( result.is_value() );
         EXPECT_EQ( result.value(), stream.string().size() );
 
         EXPECT_TRUE( stream.is_nominal() );
-        EXPECT_EQ( stream.string(), hexadecimal( value ) );
+        EXPECT_EQ( stream.string(), hex( value ) );
     }
 
     {
@@ -139,17 +137,17 @@ TYPED_TEST( outputFormatterHexadecimal, worksProperly )
 
         auto const value = random<Integer>();
 
-        auto const n = stream.print( Hexadecimal{ value } );
+        auto const n = stream.print( Hex{ value } );
 
         EXPECT_EQ( n, stream.string().size() );
 
         EXPECT_TRUE( stream.is_nominal() );
-        EXPECT_EQ( stream.string(), hexadecimal( value ) );
+        EXPECT_EQ( stream.string(), hex( value ) );
     }
 }
 
 /**
- * \brief Execute the picolibrary::Format::Hexadecimal automated tests.
+ * \brief Execute the picolibrary::Format::Hex automated tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
  * \param[in] argc The array of arguments to pass to testing::InitGoogleMock().

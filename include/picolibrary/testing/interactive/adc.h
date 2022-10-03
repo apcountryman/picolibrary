@@ -51,15 +51,15 @@ void sample_blocking_single_sample_converter( Reliable_Output_Stream & stream, B
 
     stream.print(
         "ADC sample range: [",
-        Format::Decimal{ Blocking_Single_Sample_Converter::Sample::min().as_unsigned_integer() },
+        Format::Dec{ Blocking_Single_Sample_Converter::Sample::min().as_unsigned_integer() },
         ',',
-        Format::Decimal{ Blocking_Single_Sample_Converter::Sample::max().as_unsigned_integer() },
+        Format::Dec{ Blocking_Single_Sample_Converter::Sample::max().as_unsigned_integer() },
         "]\n" );
 
     for ( ;; ) {
         delay();
 
-        stream.print( Format::Decimal{ adc.sample().as_unsigned_integer() }, '\n' );
+        stream.print( Format::Dec{ adc.sample().as_unsigned_integer() }, '\n' );
 
         stream.flush();
     } // for

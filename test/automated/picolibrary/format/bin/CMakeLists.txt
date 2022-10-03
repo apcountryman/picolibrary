@@ -13,21 +13,21 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary::Format::Decimal automated tests CMake rules.
+# Description: picolibrary::Format::Bin automated tests CMake rules.
 
-# build the picolibrary::Format::Decimal automated tests
+# build the picolibrary::Format::Bin automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
-        test-automated-picolibrary-format-decimal
+        test-automated-picolibrary-format-bin
         main.cc
     )
     target_link_libraries(
-        test-automated-picolibrary-format-decimal
+        test-automated-picolibrary-format-bin
         picolibrary
         picolibrary-testing-automated-fatal_error
     )
     add_test(
-        NAME    test-automated-picolibrary-format-decimal
-        COMMAND test-automated-picolibrary-format-decimal --gtest_color=yes
+        NAME    test-automated-picolibrary-format-bin
+        COMMAND test-automated-picolibrary-format-bin --gtest_color=yes
     )
 endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )

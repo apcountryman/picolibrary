@@ -13,21 +13,21 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary::Format::Binary automated tests CMake rules.
+# Description: picolibrary::Format::Hex automated tests CMake rules.
 
-# build the picolibrary::Format::Binary automated tests
+# build the picolibrary::Format::Hex automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
-        test-automated-picolibrary-format-binary
+        test-automated-picolibrary-format-hex
         main.cc
     )
     target_link_libraries(
-        test-automated-picolibrary-format-binary
+        test-automated-picolibrary-format-hex
         picolibrary
         picolibrary-testing-automated-fatal_error
     )
     add_test(
-        NAME    test-automated-picolibrary-format-binary
-        COMMAND test-automated-picolibrary-format-binary --gtest_color=yes
+        NAME    test-automated-picolibrary-format-hex
+        COMMAND test-automated-picolibrary-format-hex --gtest_color=yes
     )
 endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )

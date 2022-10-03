@@ -61,7 +61,7 @@ void scan( Reliable_Output_Stream & stream, Controller controller ) noexcept
 
                 stream.print(
                     "device found: ",
-                    Format::Hexadecimal{ static_cast<std::uint8_t>( address.as_unsigned_integer() ) },
+                    Format::Hex{ static_cast<std::uint8_t>( address.as_unsigned_integer() ) },
                     " (",
                     operation == ::picolibrary::I2C::Operation::READ ? 'R' : 'W',
                     ")\n" );

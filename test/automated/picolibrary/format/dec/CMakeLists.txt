@@ -13,21 +13,21 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary::Format::Hexadecimal automated tests CMake rules.
+# Description: picolibrary::Format::Dec automated tests CMake rules.
 
-# build the picolibrary::Format::Hexadecimal automated tests
+# build the picolibrary::Format::Dec automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
-        test-automated-picolibrary-format-hexadecimal
+        test-automated-picolibrary-format-dec
         main.cc
     )
     target_link_libraries(
-        test-automated-picolibrary-format-hexadecimal
+        test-automated-picolibrary-format-dec
         picolibrary
         picolibrary-testing-automated-fatal_error
     )
     add_test(
-        NAME    test-automated-picolibrary-format-hexadecimal
-        COMMAND test-automated-picolibrary-format-hexadecimal --gtest_color=yes
+        NAME    test-automated-picolibrary-format-dec
+        COMMAND test-automated-picolibrary-format-dec --gtest_color=yes
     )
 endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )

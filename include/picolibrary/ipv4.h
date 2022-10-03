@@ -413,13 +413,13 @@ class Output_Formatter<IPv4::Address> {
         -> Result<std::size_t, Error_Code>
     {
         return stream.print(
-            Format::Decimal{ address.as_byte_array()[ 0 ] },
+            Format::Dec{ address.as_byte_array()[ 0 ] },
             '.',
-            Format::Decimal{ address.as_byte_array()[ 1 ] },
+            Format::Dec{ address.as_byte_array()[ 1 ] },
             '.',
-            Format::Decimal{ address.as_byte_array()[ 2 ] },
+            Format::Dec{ address.as_byte_array()[ 2 ] },
             '.',
-            Format::Decimal{ address.as_byte_array()[ 3 ] } );
+            Format::Dec{ address.as_byte_array()[ 3 ] } );
     }
 
     /**
@@ -434,13 +434,13 @@ class Output_Formatter<IPv4::Address> {
         -> std::size_t
     {
         return stream.print(
-            Format::Decimal{ address.as_byte_array()[ 0 ] },
+            Format::Dec{ address.as_byte_array()[ 0 ] },
             '.',
-            Format::Decimal{ address.as_byte_array()[ 1 ] },
+            Format::Dec{ address.as_byte_array()[ 1 ] },
             '.',
-            Format::Decimal{ address.as_byte_array()[ 2 ] },
+            Format::Dec{ address.as_byte_array()[ 2 ] },
             '.',
-            Format::Decimal{ address.as_byte_array()[ 3 ] } );
+            Format::Dec{ address.as_byte_array()[ 3 ] } );
     }
 };
 
