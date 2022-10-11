@@ -13,16 +13,21 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary::Format automated tests CMake rules.
-
-# build the picolibrary::Format::Bin automated tests
-add_subdirectory( bin )
-
-# build the picolibrary::Format::Dec automated tests
-add_subdirectory( dec )
-
-# build the picolibrary::Format::Hex automated tests
-add_subdirectory( hex )
+# Description: picolibrary::Format::Hex_Dump automated tests CMake rules.
 
 # build the picolibrary::Format::Hex_Dump automated tests
-add_subdirectory( hex_dump )
+if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
+    add_executable(
+        test-automated-picolibrary-format-hex_dump
+        main.cc
+    )
+    target_link_libraries(
+        test-automated-picolibrary-format-hex_dump
+        picolibrary
+        picolibrary-testing-automated-fatal_error
+    )
+    add_test(
+        NAME    test-automated-picolibrary-format-hex_dump
+        COMMAND test-automated-picolibrary-format-hex_dump --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
