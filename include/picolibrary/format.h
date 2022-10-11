@@ -1054,7 +1054,7 @@ class Output_Formatter<Format::Hex_Dump> {
      * \param[in] offset The offset to format.
      * \param[out] row_buffer The row buffer location to write the formatted offset to.
      */
-    static constexpr void format_hex( std::uintptr_t offset, char * row_buffer ) noexcept
+    static void format_hex( std::uintptr_t offset, char * row_buffer ) noexcept
     {
         auto i = Row_Buffer::Reverse_Iterator{ row_buffer + OFFSET_NIBBLES };
         for ( auto nibble = std::uint_fast8_t{ 0 }; nibble < OFFSET_NIBBLES; ++nibble ) {
@@ -1073,7 +1073,7 @@ class Output_Formatter<Format::Hex_Dump> {
      * \param[in] byte The byte of data to format.
      * \param[out] row_buffer The row buffer location to write the formatted byte to.
      */
-    static constexpr void format_hex( std::uint8_t byte, char * row_buffer ) noexcept
+    static void format_hex( std::uint8_t byte, char * row_buffer ) noexcept
     {
         auto i = Row_Buffer::Reverse_Iterator{ row_buffer + BYTE_NIBBLES };
         for ( auto nibble = std::uint_fast8_t{ 0 }; nibble < BYTE_NIBBLES; ++nibble ) {
@@ -1092,9 +1092,9 @@ class Output_Formatter<Format::Hex_Dump> {
      * \param[in] byte The byte of data to format.
      * \param[out] row_buffer The row buffer location to write the formatted byte to.
      */
-    static constexpr void format_ascii( std::uint8_t byte, char * row_buffer ) noexcept
+    static void format_ascii( std::uint8_t byte, char * row_buffer ) noexcept
     {
-        *row_buffer = std::isprint( byte ) ? byte : '.';
+        *row_buffer = std::isprint( byte ) ? static_cast<char>( byte ) : '.';
     }
 
     /**
@@ -1107,8 +1107,8 @@ class Output_Formatter<Format::Hex_Dump> {
      *
      * \return The beginning of the remaining block of memory.
      */
-    static constexpr auto
-    generate_row( std::uintptr_t offset, std::uint8_t const * begin, std::uint8_t const * end, Row_Buffer & row_buffer ) noexcept
+    // NOLINTNEXTLINE(readability-function-size)
+    static auto generate_row( std::uintptr_t offset, std::uint8_t const * begin, std::uint8_t const * end, Row_Buffer & row_buffer ) noexcept
         -> std::uint8_t const *
     {
         fill( row_buffer.begin() + OFFSET_NIBBLES, row_buffer.end() - 1, ' ' );
