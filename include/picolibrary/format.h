@@ -941,6 +941,7 @@ class Output_Formatter<Format::Hex_Dump> {
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     auto print( Output_Stream & stream, Format::Hex_Dump const & hex_dump ) const noexcept
         -> Result<std::size_t, Error_Code>
     {
@@ -1107,7 +1108,6 @@ class Output_Formatter<Format::Hex_Dump> {
      *
      * \return The beginning of the remaining block of memory.
      */
-    // NOLINTNEXTLINE(readability-function-size)
     static auto generate_row( std::uintptr_t offset, std::uint8_t const * begin, std::uint8_t const * end, Row_Buffer & row_buffer ) noexcept
         -> std::uint8_t const *
     {
