@@ -49,6 +49,7 @@ using ::picolibrary::Testing::Automated::random_container;
 using ::picolibrary::Testing::Automated::random_unique_container_pair;
 using ::picolibrary::Testing::Automated::random_unique_pair;
 using ::testing::_;
+using ::testing::Each;
 using ::testing::InSequence;
 using ::testing::MockFunction;
 using ::testing::Ref;
@@ -173,6 +174,19 @@ TEST( generate, functorError )
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
+}
+
+/**
+ * \brief Verify picolibrary::fill() works properly.
+ */
+TEST( fill, worksProperly )
+{
+    auto       container = random_container<std::vector<std::uint_fast8_t>>();
+    auto const value     = random<std::uint_fast8_t>();
+
+    ::picolibrary::fill( container.begin(), container.end(), value );
+
+    EXPECT_THAT( container, Each( value ) );
 }
 
 /**
