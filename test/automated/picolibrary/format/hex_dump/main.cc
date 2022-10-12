@@ -28,6 +28,7 @@
 #include "gtest/gtest.h"
 #include "picolibrary/format.h"
 #include "picolibrary/testing/automated/error.h"
+#include "picolibrary/testing/automated/random.h"
 #include "picolibrary/testing/automated/stream.h"
 
 namespace {
