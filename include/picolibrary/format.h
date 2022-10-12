@@ -23,12 +23,16 @@
 #ifndef PICOLIBRARY_FORMAT_H
 #define PICOLIBRARY_FORMAT_H
 
+#include <cctype>
 #include <cstddef>
+#include <cstdint>
 #include <cstdlib>
 #include <limits>
 #include <type_traits>
 
+#include "picolibrary/algorithm.h"
 #include "picolibrary/array.h"
+#include "picolibrary/bit_manipulation.h"
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
@@ -262,6 +266,94 @@ class Hex {
      * \brief The integer to be formatted.
      */
     Integer m_value{};
+};
+
+/**
+ * \brief Hex dump output format specifier.
+ */
+class Hex_Dump {
+  public:
+    Hex_Dump() = delete;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] begin The beginning of the block of memory to dump.
+     * \param[in] end The end of the block of memory to dump.
+     */
+    constexpr Hex_Dump( void const * begin, void const * end ) noexcept :
+        m_begin{ begin },
+        m_end{ end }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Hex_Dump( Hex_Dump && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Hex_Dump( Hex_Dump const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Hex_Dump() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Hex_Dump && expression ) noexcept -> Hex_Dump & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Hex_Dump const & expression ) noexcept -> Hex_Dump & = default;
+
+    /**
+     * \brief Get the beginning of the block of memory to dump.
+     *
+     * \return The beginning of the block of memory to dump.
+     */
+    constexpr auto begin() const noexcept -> void const *
+    {
+        return m_begin;
+    }
+
+    /**
+     * \brief Get the end of the block of memory to dump.
+     *
+     * \return The end of the block of memory to dump.
+     */
+    constexpr auto end() const noexcept -> void const *
+    {
+        return m_end;
+    }
+
+  private:
+    /**
+     * \brief The beginning of the block of memory to dump.
+     */
+    void const * m_begin{};
+
+    /**
+     * \brief The end of the block of memory to dump.
+     */
+    void const * m_end{};
 };
 
 } // namespace picolibrary::Format
@@ -787,6 +879,259 @@ class Output_Formatter<Format::Hex<Integer>> {
         *i = '0';
 
         return formatted_integer;
+    }
+};
+
+/**
+ * \brief picolibrary::Format::Hex_Dump output formatter.
+ */
+template<>
+class Output_Formatter<Format::Hex_Dump> {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Output_Formatter() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Output_Formatter( Output_Formatter && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Output_Formatter( Output_Formatter const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Output_Formatter() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Output_Formatter && expression ) noexcept -> Output_Formatter & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator   =( Output_Formatter const & expression ) noexcept
+        -> Output_Formatter & = default;
+
+    /**
+     * \brief Write the formatted picolibrary::Format::Hex_Dump to the stream.
+     *
+     * \param[in] stream The stream to write the formatted picolibrary::Format::Hex_Dump
+     *            to.
+     * \param[in] hex_dump The picolibrary::Format::Hex_Dump to format.
+     *
+     * \return The number of characters written to the stream if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    // NOLINTNEXTLINE(readability-function-size)
+    auto print( Output_Stream & stream, Format::Hex_Dump const & hex_dump ) const noexcept
+        -> Result<std::size_t, Error_Code>
+    {
+        Row row;
+
+        auto begin = static_cast<std::uint8_t const *>( hex_dump.begin() );
+        auto end   = static_cast<std::uint8_t const *>( hex_dump.end() );
+        auto n     = std::size_t{ 0 };
+
+        for ( auto memory_offset = std::uintptr_t{ 0 }; begin != end;
+              memory_offset += ROW_BYTES, n += row.size() ) {
+            begin = generate_row( memory_offset, begin, end, row );
+
+            auto result = stream.put( row.begin(), row.end() );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }     // for
+
+        return n;
+    }
+
+    /**
+     * \brief Write the formatted picolibrary::Format::Hex_Dump to the stream.
+     *
+     * \param[in] stream The stream to write the formatted picolibrary::Format::Hex_Dump
+     *            to.
+     * \param[in] hex_dump The picolibrary::Format::Hex_Dump to format.
+     *
+     * \return The number of characters written to the stream.
+     */
+    auto print( Reliable_Output_Stream & stream, Format::Hex_Dump const & hex_dump ) const noexcept
+        -> std::size_t
+    {
+        Row row;
+
+        auto begin = static_cast<std::uint8_t const *>( hex_dump.begin() );
+        auto end   = static_cast<std::uint8_t const *>( hex_dump.end() );
+        auto n     = std::size_t{ 0 };
+
+        for ( auto memory_offset = std::uintptr_t{ 0 }; begin != end;
+              memory_offset += ROW_BYTES, n += row.size() ) {
+            begin = generate_row( memory_offset, begin, end, row );
+
+            stream.put( row.begin(), row.end() );
+        } // for
+
+        return n;
+    }
+
+  private:
+    /**
+     * \brief The number of bits in a nibble.
+     */
+    static constexpr auto NIBBLE_DIGITS = std::uint_fast8_t{ 4 };
+
+    /**
+     * \brief Nibble bit mask.
+     */
+    static constexpr auto NIBBLE_MASK = mask<std::uint_fast8_t>( NIBBLE_DIGITS, 0 );
+
+    /**
+     * \brief The number of nibbles in a memory offset.
+     */
+    static constexpr auto MEMORY_OFFSET_NIBBLES = std::uint_fast8_t{
+        std::numeric_limits<std::uintptr_t>::digits / NIBBLE_DIGITS
+    };
+
+    /**
+     * \brief The number of nibbles in a byte.
+     */
+    static constexpr auto BYTE_NIBBLES = std::uint_fast8_t{ std::numeric_limits<std::uint8_t>::digits
+                                                            / NIBBLE_DIGITS };
+
+    /**
+     * \brief Group separation spaces.
+     */
+    static constexpr auto GROUP_SEPARATION = std::uint_fast8_t{ 2 };
+
+    /**
+     * \brief The number of bytes in a row.
+     */
+    static constexpr auto ROW_BYTES = std::uint_fast8_t{ 16 };
+
+    /**
+     * \brief Row buffer memory offset (hex) offset.
+     */
+    static constexpr auto MEMORY_OFFSET_HEX_OFFSET = std::uint_fast8_t{ 0 };
+
+    /**
+     * \brief Row buffer data (hex) offset.
+     */
+    static constexpr auto DATA_HEX_OFFSET = std::uint_fast8_t{ MEMORY_OFFSET_HEX_OFFSET + MEMORY_OFFSET_NIBBLES
+                                                               + GROUP_SEPARATION };
+
+    /**
+     * \brief Row buffer data (ASCII) offset.
+     */
+    static constexpr auto DATA_ASCII_OFFSET = std::uint_fast8_t{
+        DATA_HEX_OFFSET + ( ( ( BYTE_NIBBLES + 1 ) * ROW_BYTES ) - 1 ) + GROUP_SEPARATION + 1
+    };
+
+    /**
+     * \brief Row buffer.
+     */
+    using Row =
+        Array<char, MEMORY_OFFSET_NIBBLES + GROUP_SEPARATION + ( ( ( BYTE_NIBBLES + 1 ) * ROW_BYTES ) - 1 ) + GROUP_SEPARATION + 1 + ROW_BYTES + 1 + 1>;
+
+    /**
+     * \brief Format a memory offset (hex).
+     *
+     * \param[in] memory_offset The memory offset to format.
+     * \param[out] location The location to write the formatted memory offset to.
+     */
+    static void format_hex( std::uintptr_t memory_offset, Row::Iterator location ) noexcept
+    {
+        auto i = Row::Reverse_Iterator{ location + MEMORY_OFFSET_NIBBLES };
+        for ( auto nibble = std::uint_fast8_t{ 0 }; nibble < MEMORY_OFFSET_NIBBLES; ++nibble ) {
+            auto const n = memory_offset & NIBBLE_MASK;
+
+            *i = n < 0xA ? '0' + n : 'A' + ( n - 0xA );
+
+            ++i;
+            memory_offset >>= NIBBLE_DIGITS;
+        } // for
+    }
+
+    /**
+     * \brief Format a byte (hex).
+     *
+     * \param[in] byte The byte to format.
+     * \param[out] location The location to write the formatted byte to.
+     */
+    static void format_hex( std::uint8_t byte, Row::Iterator location ) noexcept
+    {
+        auto i = Row::Reverse_Iterator{ location + BYTE_NIBBLES };
+        for ( auto nibble = std::uint_fast8_t{ 0 }; nibble < BYTE_NIBBLES; ++nibble ) {
+            auto const n = byte & NIBBLE_MASK;
+
+            *i = n < 0xA ? '0' + n : 'A' + ( n - 0xA );
+
+            ++i;
+            byte >>= NIBBLE_DIGITS;
+        } // for
+    }
+
+    /**
+     * \brief Format a byte (ASCII).
+     *
+     * \param[in] byte The byte to format.
+     * \param[out] location The location to write the formatted byte to.
+     */
+    static void format_ascii( std::uint8_t byte, Row::Iterator location ) noexcept
+    {
+        *location = std::isprint( byte ) ? static_cast<char>( byte ) : '.';
+    }
+
+    /**
+     * \brief Generate a row.
+     *
+     * \param[in] memory_offset The row's memory offset.
+     * \param[in] begin The beginning of the block of memory.
+     * \param[in] end The end of the block of memory.
+     * \param[out] row The row buffer to write the generated row to.
+     *
+     * \return The beginning of the remaining block of memory.
+     */
+    static auto generate_row(
+        std::uintptr_t       memory_offset,
+        std::uint8_t const * begin,
+        std::uint8_t const * end,
+        Row &                row ) noexcept -> std::uint8_t const *
+    {
+        fill( row.begin() + MEMORY_OFFSET_NIBBLES, row.end() - 1, ' ' );
+
+        row.back() = '\n';
+
+        *( row.begin() + DATA_ASCII_OFFSET - 1 ) = '|';
+
+        format_hex( memory_offset, row.begin() + MEMORY_OFFSET_HEX_OFFSET );
+
+        auto byte = std::uint_fast8_t{ 0 };
+        for ( ; begin != end and byte < ROW_BYTES; ++begin, ++byte ) {
+            format_hex( *begin, row.begin() + DATA_HEX_OFFSET + ( ( BYTE_NIBBLES + 1 ) * byte ) );
+
+            format_ascii( *begin, row.begin() + DATA_ASCII_OFFSET + byte );
+        } // for
+        *( row.begin() + DATA_ASCII_OFFSET + byte ) = '|';
+
+        return begin;
     }
 };
 
