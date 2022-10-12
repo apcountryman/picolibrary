@@ -1027,7 +1027,7 @@ class Output_Formatter<Format::Hex_Dump> {
     static constexpr auto ROW_BYTES = std::uint_fast8_t{ 16 };
 
     /**
-     * \brief Row buffer offset (hex) offset.
+     * \brief Row buffer memory offset (hex) offset.
      */
     static constexpr auto MEMORY_OFFSET_HEX_OFFSET = std::uint_fast8_t{ 0 };
 
