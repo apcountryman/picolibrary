@@ -270,7 +270,10 @@ class Hex {
 
 /**
  * \brief Hex dump output format specifier.
+ *
+ * \tparam Iterator Data iterator. Data must be convertible to std::uint8_t.
  */
+template<typename Iterator>
 class Hex_Dump {
   public:
     Hex_Dump() = delete;
@@ -278,10 +281,10 @@ class Hex_Dump {
     /**
      * \brief Constructor.
      *
-     * \param[in] begin The beginning of the block of memory to dump.
-     * \param[in] end The end of the block of memory to dump.
+     * \param[in] begin The beginning of the data to dump.
+     * \param[in] end The end of the data to dump.
      */
-    constexpr Hex_Dump( void const * begin, void const * end ) noexcept :
+    constexpr Hex_Dump( Iterator begin, Iterator end ) noexcept :
         m_begin{ begin },
         m_end{ end }
     {
@@ -325,35 +328,35 @@ class Hex_Dump {
     constexpr auto operator=( Hex_Dump const & expression ) noexcept -> Hex_Dump & = default;
 
     /**
-     * \brief Get the beginning of the block of memory to dump.
+     * \brief Get the beginning of the data to dump.
      *
-     * \return The beginning of the block of memory to dump.
+     * \return The beginning of the data to dump.
      */
-    constexpr auto begin() const noexcept -> void const *
+    constexpr auto begin() const noexcept -> Iterator
     {
         return m_begin;
     }
 
     /**
-     * \brief Get the end of the block of memory to dump.
+     * \brief Get the end of the data to dump.
      *
-     * \return The end of the block of memory to dump.
+     * \return The end of the data to dump.
      */
-    constexpr auto end() const noexcept -> void const *
+    constexpr auto end() const noexcept -> Iterator
     {
         return m_end;
     }
 
   private:
     /**
-     * \brief The beginning of the block of memory to dump.
+     * \brief The beginning of the data to dump.
      */
-    void const * m_begin{};
+    Iterator m_begin{};
 
     /**
-     * \brief The end of the block of memory to dump.
+     * \brief The end of the data to dump.
      */
-    void const * m_end{};
+    Iterator m_end{};
 };
 
 } // namespace picolibrary::Format
@@ -884,9 +887,11 @@ class Output_Formatter<Format::Hex<Integer>> {
 
 /**
  * \brief picolibrary::Format::Hex_Dump output formatter.
+ *
+ * \tparam Iterator Data iterator. Data must be convertible to std::uint8_t.
  */
-template<>
-class Output_Formatter<Format::Hex_Dump> {
+template<typename Iterator>
+class Output_Formatter<Format::Hex_Dump<Iterator>> {
   public:
     /**
      * \brief Constructor.
@@ -942,13 +947,13 @@ class Output_Formatter<Format::Hex_Dump> {
      * \return An error code if the write failed.
      */
     // NOLINTNEXTLINE(readability-function-size)
-    auto print( Output_Stream & stream, Format::Hex_Dump const & hex_dump ) const noexcept
+    auto print( Output_Stream & stream, Format::Hex_Dump<Iterator> const & hex_dump ) const noexcept
         -> Result<std::size_t, Error_Code>
     {
         Row row;
 
-        auto begin = static_cast<std::uint8_t const *>( hex_dump.begin() );
-        auto end   = static_cast<std::uint8_t const *>( hex_dump.end() );
+        auto begin = hex_dump.begin();
+        auto end   = hex_dump.end();
         auto n     = std::size_t{ 0 };
 
         for ( auto memory_offset = std::uintptr_t{ 0 }; begin != end;
@@ -973,13 +978,13 @@ class Output_Formatter<Format::Hex_Dump> {
      *
      * \return The number of characters written to the stream.
      */
-    auto print( Reliable_Output_Stream & stream, Format::Hex_Dump const & hex_dump ) const noexcept
+    auto print( Reliable_Output_Stream & stream, Format::Hex_Dump<Iterator> const & hex_dump ) const noexcept
         -> std::size_t
     {
         Row row;
 
-        auto begin = static_cast<std::uint8_t const *>( hex_dump.begin() );
-        auto end   = static_cast<std::uint8_t const *>( hex_dump.end() );
+        auto begin = hex_dump.begin();
+        auto end   = hex_dump.end();
         auto n     = std::size_t{ 0 };
 
         for ( auto memory_offset = std::uintptr_t{ 0 }; begin != end;
@@ -1056,9 +1061,9 @@ class Output_Formatter<Format::Hex_Dump> {
      * \param[in] memory_offset The memory offset to format.
      * \param[out] location The location to write the formatted memory offset to.
      */
-    static void format_hex( std::uintptr_t memory_offset, Row::Iterator location ) noexcept
+    static void format_hex( std::uintptr_t memory_offset, typename Row::Iterator location ) noexcept
     {
-        auto i = Row::Reverse_Iterator{ location + MEMORY_OFFSET_NIBBLES };
+        auto i = typename Row::Reverse_Iterator{ location + MEMORY_OFFSET_NIBBLES };
         for ( auto nibble = std::uint_fast8_t{ 0 }; nibble < MEMORY_OFFSET_NIBBLES; ++nibble ) {
             auto const n = memory_offset & NIBBLE_MASK;
 
@@ -1075,9 +1080,9 @@ class Output_Formatter<Format::Hex_Dump> {
      * \param[in] byte The byte to format.
      * \param[out] location The location to write the formatted byte to.
      */
-    static void format_hex( std::uint8_t byte, Row::Iterator location ) noexcept
+    static void format_hex( std::uint8_t byte, typename Row::Iterator location ) noexcept
     {
-        auto i = Row::Reverse_Iterator{ location + BYTE_NIBBLES };
+        auto i = typename Row::Reverse_Iterator{ location + BYTE_NIBBLES };
         for ( auto nibble = std::uint_fast8_t{ 0 }; nibble < BYTE_NIBBLES; ++nibble ) {
             auto const n = byte & NIBBLE_MASK;
 
@@ -1094,7 +1099,7 @@ class Output_Formatter<Format::Hex_Dump> {
      * \param[in] byte The byte to format.
      * \param[out] location The location to write the formatted byte to.
      */
-    static void format_ascii( std::uint8_t byte, Row::Iterator location ) noexcept
+    static void format_ascii( std::uint8_t byte, typename Row::Iterator location ) noexcept
     {
         *location = std::isprint( byte ) ? static_cast<char>( byte ) : '.';
     }
@@ -1103,17 +1108,14 @@ class Output_Formatter<Format::Hex_Dump> {
      * \brief Generate a row.
      *
      * \param[in] memory_offset The row's memory offset.
-     * \param[in] begin The beginning of the block of memory.
-     * \param[in] end The end of the block of memory.
+     * \param[in] begin The beginning of the data.
+     * \param[in] end The end of the data.
      * \param[out] row The row buffer to write the generated row to.
      *
-     * \return The beginning of the remaining block of memory.
+     * \return The beginning of the remaining data.
      */
-    static auto generate_row(
-        std::uintptr_t       memory_offset,
-        std::uint8_t const * begin,
-        std::uint8_t const * end,
-        Row &                row ) noexcept -> std::uint8_t const *
+    static auto generate_row( std::uintptr_t memory_offset, Iterator begin, Iterator end, Row & row ) noexcept
+        -> Iterator
     {
         fill( row.begin() + MEMORY_OFFSET_NIBBLES, row.end() - 1, ' ' );
 
@@ -1125,9 +1127,11 @@ class Output_Formatter<Format::Hex_Dump> {
 
         auto byte = std::uint_fast8_t{ 0 };
         for ( ; begin != end and byte < ROW_BYTES; ++begin, ++byte ) {
-            format_hex( *begin, row.begin() + DATA_HEX_OFFSET + ( ( BYTE_NIBBLES + 1 ) * byte ) );
+            format_hex(
+                static_cast<std::uint8_t>( *begin ),
+                row.begin() + DATA_HEX_OFFSET + ( ( BYTE_NIBBLES + 1 ) * byte ) );
 
-            format_ascii( *begin, row.begin() + DATA_ASCII_OFFSET + byte );
+            format_ascii( static_cast<std::uint8_t>( *begin ), row.begin() + DATA_ASCII_OFFSET + byte );
         } // for
         *( row.begin() + DATA_ASCII_OFFSET + byte ) = '|';
 
