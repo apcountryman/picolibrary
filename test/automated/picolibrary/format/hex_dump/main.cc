@@ -58,7 +58,7 @@ TEST( outputFormatterHexDump, putError )
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
 
     auto const data   = random_container<std::string>( random<std::uint_fast8_t>( 1 ) );
-    auto const result = stream.print( Hex_Dump{ &*data.begin(), &*data.end() } );
+    auto const result = stream.print( Hex_Dump{ data.begin(), data.end() } );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -117,7 +117,7 @@ TEST( outputFormatterHexDump, worksProperly )
             auto stream = Output_String_Stream{};
 
             auto const result = stream.print(
-                Hex_Dump{ &*test_case.data.begin(), &*test_case.data.end() } );
+                Hex_Dump{ test_case.data.begin(), test_case.data.end() } );
 
             ASSERT_TRUE( result.is_value() );
             EXPECT_EQ( result.value(), stream.string().size() );
@@ -129,8 +129,7 @@ TEST( outputFormatterHexDump, worksProperly )
         {
             auto stream = Reliable_Output_String_Stream{};
 
-            auto const n = stream.print(
-                Hex_Dump{ &*test_case.data.begin(), &*test_case.data.end() } );
+            auto const n = stream.print( Hex_Dump{ test_case.data.begin(), test_case.data.end() } );
 
             EXPECT_EQ( n, stream.string().size() );
 
