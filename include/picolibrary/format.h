@@ -1061,7 +1061,7 @@ class Output_Formatter<Format::Hex_Dump<Iterator>> {
      * \param[in] memory_offset The memory offset to format.
      * \param[out] location The location to write the formatted memory offset to.
      */
-    static void format_hex( std::uintptr_t memory_offset, Row::Iterator location ) noexcept
+    static void format_hex( std::uintptr_t memory_offset, typename Row::Iterator location ) noexcept
     {
         auto i = Row::Reverse_Iterator{ location + MEMORY_OFFSET_NIBBLES };
         for ( auto nibble = std::uint_fast8_t{ 0 }; nibble < MEMORY_OFFSET_NIBBLES; ++nibble ) {
