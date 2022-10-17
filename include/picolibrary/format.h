@@ -1063,7 +1063,7 @@ class Output_Formatter<Format::Hex_Dump<Iterator>> {
      */
     static void format_hex( std::uintptr_t memory_offset, typename Row::Iterator location ) noexcept
     {
-        auto i = Row::Reverse_Iterator{ location + MEMORY_OFFSET_NIBBLES };
+        auto i = typename Row::Reverse_Iterator{ location + MEMORY_OFFSET_NIBBLES };
         for ( auto nibble = std::uint_fast8_t{ 0 }; nibble < MEMORY_OFFSET_NIBBLES; ++nibble ) {
             auto const n = memory_offset & NIBBLE_MASK;
 
@@ -1080,9 +1080,9 @@ class Output_Formatter<Format::Hex_Dump<Iterator>> {
      * \param[in] byte The byte to format.
      * \param[out] location The location to write the formatted byte to.
      */
-    static void format_hex( std::uint8_t byte, Row::Iterator location ) noexcept
+    static void format_hex( std::uint8_t byte, typename Row::Iterator location ) noexcept
     {
-        auto i = Row::Reverse_Iterator{ location + BYTE_NIBBLES };
+        auto i = typename Row::Reverse_Iterator{ location + BYTE_NIBBLES };
         for ( auto nibble = std::uint_fast8_t{ 0 }; nibble < BYTE_NIBBLES; ++nibble ) {
             auto const n = byte & NIBBLE_MASK;
 
@@ -1099,7 +1099,7 @@ class Output_Formatter<Format::Hex_Dump<Iterator>> {
      * \param[in] byte The byte to format.
      * \param[out] location The location to write the formatted byte to.
      */
-    static void format_ascii( std::uint8_t byte, Row::Iterator location ) noexcept
+    static void format_ascii( std::uint8_t byte, typename Row::Iterator location ) noexcept
     {
         *location = std::isprint( byte ) ? static_cast<char>( byte ) : '.';
     }
@@ -1127,11 +1127,11 @@ class Output_Formatter<Format::Hex_Dump<Iterator>> {
 
         auto byte = std::uint_fast8_t{ 0 };
         for ( ; begin != end and byte < ROW_BYTES; ++begin, ++byte ) {
-            auto const data = static_cast<std::uint8_t>( *begin );
+            format_hex(
+                static_cast<std::uint8_t>( *begin ),
+                row.begin() + DATA_HEX_OFFSET + ( ( BYTE_NIBBLES + 1 ) * byte ) );
 
-            format_hex( data, row.begin() + DATA_HEX_OFFSET + ( ( BYTE_NIBBLES + 1 ) * byte ) );
-
-            format_ascii( data, row.begin() + DATA_ASCII_OFFSET + byte );
+            format_ascii( static_cast<std::uint8_t>( *begin ), row.begin() + DATA_ASCII_OFFSET + byte );
         } // for
         *( row.begin() + DATA_ASCII_OFFSET + byte ) = '|';
 
