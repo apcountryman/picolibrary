@@ -123,6 +123,7 @@ if( ${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING} )
         "picolibrary/testing/interactive/asynchronous_serial/stream.cc"
         "picolibrary/testing/interactive/gpio.cc"
         "picolibrary/testing/interactive/i2c.cc"
+        "picolibrary/testing/interactive/ip.cc"
         "picolibrary/testing/interactive/microchip.cc"
         "picolibrary/testing/interactive/microchip/mcp23008.cc"
         "picolibrary/testing/interactive/microchip/mcp23s08.cc"
