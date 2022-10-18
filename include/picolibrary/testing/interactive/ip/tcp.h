@@ -54,7 +54,7 @@ namespace picolibrary::Testing::Interactive::IP::TCP {
  *         remote endpoint.
  */
 template<typename Socket>
-auto receive( Socket & socket, std::uint8_t * begin, std::uint8_t * end ) noexcept
+auto receive_some( Socket & socket, std::uint8_t * begin, std::uint8_t * end ) noexcept
     -> Result<std::uint8_t *, Error_Code>
 {
     for ( ;; ) {
@@ -91,7 +91,7 @@ auto receive( Socket & socket, std::uint8_t * begin, std::uint8_t * end ) noexce
  *         remote endpoint.
  */
 template<typename Socket>
-auto transmit( Socket & socket, std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+auto transmit_all( Socket & socket, std::uint8_t const * begin, std::uint8_t const * end ) noexcept
     -> Result<Void, Error_Code>
 {
     while ( begin != end ) {
@@ -121,7 +121,7 @@ auto transmit( Socket & socket, std::uint8_t const * begin, std::uint8_t const *
  * \pre the socket behaves as expected
  */
 template<typename Socket>
-void shutdown( Socket & socket ) noexcept
+void shutdown_gracefully( Socket & socket ) noexcept
 {
     socket.shutdown();
 
