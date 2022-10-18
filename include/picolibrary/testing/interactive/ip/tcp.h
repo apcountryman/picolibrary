@@ -28,6 +28,7 @@
 #include "picolibrary/error.h"
 #include "picolibrary/precondition.h"
 #include "picolibrary/result.h"
+#include "picolibrary/void.h"
 
 /**
  * \brief Transmission Control Protocol (TCP) over IP interactive testing facilities.
@@ -70,6 +71,44 @@ auto receive( Socket & socket, std::uint8_t * begin, std::uint8_t * end ) noexce
             result.error() == Generic_Error::WOULD_BLOCK or result.error() == Generic_Error::OPERATION_TIMEOUT,
             Generic_Error::LOGIC_ERROR );
     } // for
+}
+
+/**
+ * \brief Socket data transmission interactive testing helper
+ *
+ * \tparam Socket The type of socket used to transmit data.
+ *
+ * \param[in] socket The socket to use to transmit data.
+ * \param[in] begin The beginning of the block of data to write to the socket's transmit
+ *            buffer.
+ * \param[in] end The end of the block of data to write to the socket's transmit buffer.
+ *
+ * \pre the socket behaves as expected
+ *
+ * \return Nothing if writing all the data to the socket's transmit buffer succeeded.
+ * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not connected to a
+ *         remote endpoint.
+ */
+template<typename Socket>
+auto transmit( Socket & socket, std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+    -> Result<Void, Error_Code>
+{
+    while ( begin != end ) {
+        auto result = socket.transmit( begin, end );
+
+        if ( result.is_value() ) {
+            begin = result.value();
+        } else {
+            if ( result.error() == Generic_Error::NOT_CONNECTED ) {
+                return Generic_Error::NOT_CONNECTED;
+            } // if
+
+            expect(
+                result.error() == Generic_Error::WOULD_BLOCK
+                    or result.error() == Generic_Error::OPERATION_TIMEOUT,
+                Generic_Error::LOGIC_ERROR );
+        } // else
+    }     // while
 }
 
 } // namespace picolibrary::Testing::Interactive::IP::TCP
