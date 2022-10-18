@@ -59,19 +59,19 @@ auto receive( Socket & socket, std::uint8_t * begin, std::uint8_t * end ) noexce
 {
     for ( ;; ) {
         auto result = socket.receive( begin, end );
+        if ( result.is_error() ) {
+            if ( result.error() == Generic_Error::NOT_CONNECTED ) {
+                return Generic_Error::NOT_CONNECTED;
+            } // if
 
-        if ( result.is_value() ) {
+            expect(
+                result.error() == Generic_Error::WOULD_BLOCK
+                    or result.error() == Generic_Error::OPERATION_TIMEOUT,
+                Generic_Error::LOGIC_ERROR );
+        } else {
             return result.value();
-        } // if
-
-        if ( result.error() == Generic_Error::NOT_CONNECTED ) {
-            return Generic_Error::NOT_CONNECTED;
-        } // if
-
-        expect(
-            result.error() == Generic_Error::WOULD_BLOCK or result.error() == Generic_Error::OPERATION_TIMEOUT,
-            Generic_Error::LOGIC_ERROR );
-    } // for
+        } // else
+    }     // for
 }
 
 /**
@@ -96,10 +96,7 @@ auto transmit( Socket & socket, std::uint8_t const * begin, std::uint8_t const *
 {
     while ( begin != end ) {
         auto result = socket.transmit( begin, end );
-
-        if ( result.is_value() ) {
-            begin = result.value();
-        } else {
+        if ( result.is_error() ) {
             if ( result.error() == Generic_Error::NOT_CONNECTED ) {
                 return Generic_Error::NOT_CONNECTED;
             } // if
@@ -108,6 +105,8 @@ auto transmit( Socket & socket, std::uint8_t const * begin, std::uint8_t const *
                 result.error() == Generic_Error::WOULD_BLOCK
                     or result.error() == Generic_Error::OPERATION_TIMEOUT,
                 Generic_Error::LOGIC_ERROR );
+        } else {
+            begin = result.value();
         } // else
     }     // while
 }
@@ -127,7 +126,6 @@ void shutdown( Socket & socket ) noexcept
     socket.shutdown();
 
     Array<std::uint8_t, 64> buffer;
-
     for ( ;; ) {
         auto result = socket.receive( buffer.begin(), buffer.end() );
         if ( result.is_error() ) {
