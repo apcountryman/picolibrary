@@ -118,6 +118,8 @@ auto transmit( Socket & socket, std::uint8_t const * begin, std::uint8_t const *
  * \tparam Socket The type of socket to gracefully shutdown.
  *
  * \param[in] socket The socket to gracefully shutdown.
+ *
+ * \pre the socket behaves as expected
  */
 template<typename Socket>
 void shutdown( Socket & socket ) noexcept
