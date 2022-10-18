@@ -25,6 +25,7 @@
 
 #include <cstdint>
 
+#include "picolibrary/array.h"
 #include "picolibrary/error.h"
 #include "picolibrary/precondition.h"
 #include "picolibrary/result.h"
@@ -109,6 +110,35 @@ auto transmit( Socket & socket, std::uint8_t const * begin, std::uint8_t const *
                 Generic_Error::LOGIC_ERROR );
         } // else
     }     // while
+}
+
+/**
+ * \brief Socket graceful shutdown interactive testing helper.
+ *
+ * \tparam Socket The type of socket to gracefully shutdown.
+ *
+ * \param[in] socket The socket to gracefully shutdown.
+ */
+template<typename Socket>
+void shutdown( Socket & socket ) noexcept
+{
+    socket.shutdown();
+
+    Array<std::uint8_t, 64> buffer;
+
+    for ( ;; ) {
+        auto result = socket.receive( buffer.begin(), buffer.end() );
+        if ( result.is_error() ) {
+            if ( result.error() == Generic_Error::NOT_CONNECTED ) {
+                return;
+            } // if
+
+            expect(
+                result.error() == Generic_Error::WOULD_BLOCK
+                    or result.error() == Generic_Error::OPERATION_TIMEOUT,
+                Generic_Error::LOGIC_ERROR );
+        } // if
+    }     // for
 }
 
 } // namespace picolibrary::Testing::Interactive::IP::TCP
