@@ -190,12 +190,12 @@ void echo( Reliable_Output_Stream & stream, Socket socket ) noexcept
 /**
  * \brief Client socket remote endpoint connection interactive testing helper.
  *
- * \tparam Socket The type of socket to connect to a remote endpoint.
+ * \tparam Socket The type of client socket to connect to a remote endpoint.
  *
- * \param[in] socket The socket to connect to the remote endpoint.
+ * \param[in] socket The client socket to connect to the remote endpoint.
  * \param[in] endpoint The remote endpoint to connect to.
  *
- * \pre the socket behaves as expected
+ * \pre the client socket behaves as expected
  *
  * \return Nothing if the connecting to the remote endpoint succeeded.
  * \return picolibrary::Generic_Error::OPERATION_TIMEOUT if connecting to the remote
