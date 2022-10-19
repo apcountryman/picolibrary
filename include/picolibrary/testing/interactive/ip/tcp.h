@@ -183,21 +183,21 @@ void echo( Reliable_Output_Stream & stream, Socket socket ) noexcept
 /**
  * \brief Client socket remote endpoint connection interactive testing helper.
  *
- * \tparam Socket The type of client socket to connect to a remote endpoint.
+ * \tparam Client The type of client socket to connect to a remote endpoint.
  *
- * \param[in] socket The client socket to connect to the remote endpoint.
+ * \param[in] client The client socket to connect to the remote endpoint.
  * \param[in] endpoint The remote endpoint to connect to.
  *
  * \return Nothing if the connecting to the remote endpoint succeeded.
  * \return picolibrary::Generic_Error::OPERATION_TIMEOUT if connecting to the remote
  *         endpoint timed out.
  */
-template<typename Socket>
-auto connect( Socket & socket, ::picolibrary::IP::TCP::Endpoint const & endpoint ) noexcept
+template<typename Client>
+auto connect( Client & client, ::picolibrary::IP::TCP::Endpoint const & endpoint ) noexcept
     -> Result<Void, Error_Code>
 {
     for ( ;; ) {
-        auto result = socket.connect( endpoint );
+        auto result = client.connect( endpoint );
         if ( result.is_error() ) {
             if ( result.error() == Generic_Error::OPERATION_TIMEOUT ) {
                 return Generic_Error::OPERATION_TIMEOUT;
