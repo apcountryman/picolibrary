@@ -28,6 +28,7 @@
 #include "picolibrary/array.h"
 #include "picolibrary/error.h"
 #include "picolibrary/format.h"
+#include "picolibrary/ip/tcp.h"
 #include "picolibrary/precondition.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
@@ -184,6 +185,38 @@ void echo( Reliable_Output_Stream & stream, Socket socket ) noexcept
     stream.put( "connection lost, attempting graceful shutdown\n" );
 
     shutdown_gracefully( socket );
+}
+
+/**
+ * \brief Client socket remote endpoint connection interactive testing helper.
+ *
+ * \tparam Socket The type of client socket to connect to a remote endpoint.
+ *
+ * \param[in] socket The client socket to connect to the remote endpoint.
+ * \param[in] endpoint The remote endpoint to connect to.
+ *
+ * \pre the client socket behaves as expected
+ *
+ * \return Nothing if the connecting to the remote endpoint succeeded.
+ * \return picolibrary::Generic_Error::OPERATION_TIMEOUT if connecting to the remote
+ *         endpoint timed out.
+ */
+template<typename Socket>
+auto connect( Socket & socket, ::picolibrary::IP::TCP::Endpoint const & endpoint ) noexcept
+    -> Result<Void, Error_Code>
+{
+    for ( ;; ) {
+        auto result = socket.connect( endpoint );
+        if ( result.is_error() ) {
+            if ( result.error() == Generic_Error::OPERATION_TIMEOUT ) {
+                return Generic_Error::OPERATION_TIMEOUT;
+            } // if
+
+            expect( result.error() == Generic_Error::WOULD_BLOCK, Generic_Error::LOGIC_ERROR );
+        } else {
+            return {};
+        } // else
+    }     // for
 }
 
 } // namespace picolibrary::Testing::Interactive::IP::TCP
