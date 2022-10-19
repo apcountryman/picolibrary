@@ -154,18 +154,21 @@ void shutdown_gracefully( Socket & socket ) noexcept
  * \pre the socket behaves as expected
  */
 template<typename Socket>
+// NOLINTNEXTLINE(readability-function-size)
 void echo( Reliable_Output_Stream & stream, Socket socket ) noexcept
 {
+    // #lizard forgives the length
+
     Array<std::uint8_t, 64> buffer;
-    std::uint8_t const *    end;
+    auto                    end = static_cast<std::uint8_t const *>( nullptr );
     for ( ;; ) {
         {
             auto result = receive_some( socket, buffer.begin(), buffer.end() );
             if ( result.is_error() ) {
                 break;
-            } else {
-                end = result.value();
-            } // else
+            } // if
+
+            end = result.value();
         }
 
         stream.print( "echoing:\n", Format::Hex_Dump{ buffer.cbegin(), end } );
