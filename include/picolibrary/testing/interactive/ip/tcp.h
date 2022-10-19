@@ -50,8 +50,6 @@ namespace picolibrary::Testing::Interactive::IP::TCP {
  *             buffer.
  * \param[out] end The end of the block of data read from the socket's receive buffer.
  *
- * \pre the socket behaves as expected
- *
  * \return The end of the data that was read from the socket's receive buffer if reading
  *         data from the socket's receive buffer succeeded.
  * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not connected to a
@@ -88,8 +86,6 @@ auto receive_some( Socket & socket, std::uint8_t * begin, std::uint8_t * end ) n
  *            buffer.
  * \param[in] end The end of the block of data to write to the socket's transmit buffer.
  *
- * \pre the socket behaves as expected
- *
  * \return Nothing if writing all the data to the socket's transmit buffer succeeded.
  * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not connected to a
  *         remote endpoint.
@@ -121,8 +117,6 @@ auto transmit_all( Socket & socket, std::uint8_t const * begin, std::uint8_t con
  * \tparam Socket The type of socket to gracefully shutdown.
  *
  * \param[in] socket The socket to gracefully shutdown.
- *
- * \pre the socket behaves as expected
  */
 template<typename Socket>
 void shutdown_gracefully( Socket & socket ) noexcept
@@ -152,8 +146,6 @@ void shutdown_gracefully( Socket & socket ) noexcept
  *
  * \param[in] stream The stream to write test output to.
  * \param[in] socket The socket to use to echo received data.
- *
- * \pre the socket behaves as expected
  */
 template<typename Socket>
 // NOLINTNEXTLINE(readability-function-size)
@@ -195,8 +187,6 @@ void echo( Reliable_Output_Stream & stream, Socket socket ) noexcept
  *
  * \param[in] socket The client socket to connect to the remote endpoint.
  * \param[in] endpoint The remote endpoint to connect to.
- *
- * \pre the client socket behaves as expected
  *
  * \return Nothing if the connecting to the remote endpoint succeeded.
  * \return picolibrary::Generic_Error::OPERATION_TIMEOUT if connecting to the remote
