@@ -24,6 +24,7 @@
 #define PICOLIBRARY_TESTING_INTERACTIVE_IP_TCP_H
 
 #include <cstdint>
+#include <utility>
 
 #include "picolibrary/array.h"
 #include "picolibrary/error.h"
@@ -215,6 +216,48 @@ auto connect( Socket & socket, ::picolibrary::IP::TCP::Endpoint const & endpoint
             expect( result.error() == Generic_Error::WOULD_BLOCK, Generic_Error::LOGIC_ERROR );
         } else {
             return {};
+        } // else
+    }     // for
+}
+
+/**
+ * \brief Client socket echo interactive test helper.
+ *
+ * \tparam Network_Stack The type of network stack to use to construct client sockets.
+ * \tparam Socket_Options_Configurator A unary functor that takes the client socket whose
+ *         socket options are to be configured by reference, and configures the client
+ *         socket's socket options.
+ *
+ * \param[in] stream The stream to write test output to.
+ * \param[in] network_stack The network stack to use to construct client sockets.
+ * \param[in] configure_socket_options The functor to use to configure client socket
+ *            socket options.
+ * \param[in] local_endpoint The local endpoint to bind client sockets to.
+ * \param[in] remote_endpoint The remote endpoint to connect to.
+ */
+template<typename Network_Stack, typename Socket_Options_Configurator>
+void echo_client(
+    Reliable_Output_Stream &                 stream,
+    Network_Stack &                          network_stack,
+    Socket_Options_Configurator              configure_socket_options,
+    ::picolibrary::IP::TCP::Endpoint const & local_endpoint,
+    ::picolibrary::IP::TCP::Endpoint const & remote_endpoint ) noexcept
+{
+    for ( ;; ) {
+        auto client = network_stack.make_tcp_client();
+
+        configure_socket_options( client );
+
+        client.bind( local_endpoint );
+
+        stream.print( "attempting to connect to ", remote_endpoint, '\n' );
+        auto result = connect( client, remote_endpoint );
+        if ( result.is_error() ) {
+            stream.put( "connection failed\n" );
+        } else {
+            stream.put( "connection established\n" );
+
+            echo( stream, std::move( client ) );
         } // else
     }     // for
 }
