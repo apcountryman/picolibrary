@@ -76,6 +76,7 @@ namespace picolibrary::Testing::Interactive::WIZnet::W5500::IP::TCP {
  * \param[in] remote_endpoint The remote endpoint to connect to.
  */
 template<typename Controller, typename Device_Selector>
+// NOLINTNEXTLINE(readability-function-size)
 void echo_client(
     Reliable_Output_Stream &                           stream,
     Controller                                         controller,
@@ -97,6 +98,9 @@ void echo_client(
     ::picolibrary::IP::TCP::Endpoint const &           local_endpoint,
     ::picolibrary::IP::TCP::Endpoint const &           remote_endpoint ) noexcept
 {
+    // #lizard forgives the length
+    // #lizard forgives the parameter count
+
     controller.initialize();
 
     auto w5500 = ::picolibrary::WIZnet::W5500::Driver{ controller, configuration, std::move( device_selector ) };
