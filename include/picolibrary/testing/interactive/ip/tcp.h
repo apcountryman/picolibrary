@@ -27,8 +27,10 @@
 
 #include "picolibrary/array.h"
 #include "picolibrary/error.h"
+#include "picolibrary/format.h"
 #include "picolibrary/precondition.h"
 #include "picolibrary/result.h"
+#include "picolibrary/stream.h"
 #include "picolibrary/void.h"
 
 /**
@@ -139,6 +141,46 @@ void shutdown_gracefully( Socket & socket ) noexcept
                 Generic_Error::LOGIC_ERROR );
         } // if
     }     // for
+}
+
+/**
+ * \brief Socket echo interactive test helper.
+ *
+ * \tparam Socket The type of socket to use to echo received data.
+ *
+ * \param[in] stream The stream to write test output to.
+ * \param[in] socket The socket to use to echo received data.
+ *
+ * \pre the socket behaves as expected
+ */
+template<typename Socket>
+void echo( Reliable_Output_Stream & stream, Socket socket ) noexcept
+{
+    Array<std::uint8_t, 64> buffer;
+    std::uint8_t const *    end;
+    for ( ;; ) {
+        {
+            auto result = receive_some( socket, buffer.begin(), buffer.end() );
+            if ( result.is_error() ) {
+                break;
+            } else {
+                end = result.value();
+            } // else
+        }
+
+        stream.print( "echoing:\n", Format::Hex_Dump{ buffer.cbegin(), end } );
+
+        {
+            auto result = transmit_all( socket, buffer.cbegin(), end );
+            if ( result.is_error() ) {
+                break;
+            } // if
+        }
+    } // for
+
+    stream.put( "connection lost, attempting graceful shutdown\n" );
+
+    shutdown_gracefully( socket );
 }
 
 } // namespace picolibrary::Testing::Interactive::IP::TCP
