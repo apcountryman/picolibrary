@@ -240,7 +240,7 @@ void echo_client(
 
         client.bind( local_endpoint );
 
-        stream.print( "attempting to connect to ", remote_endpoint, '\n' );
+        stream.print( "attempting to connect to ", remote_endpoint, " from ", local_endpoint, '\n' );
         auto result = connect( client, remote_endpoint );
         if ( result.is_error() ) {
             stream.put( "connection failed\n" );
