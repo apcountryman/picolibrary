@@ -604,7 +604,7 @@ class Client {
             return Generic_Error::WOULD_BLOCK;
         } // if
 
-        if ( end - begin > sn_tx_fsr ) {
+        if ( static_cast<std::uintptr_t>( end - begin ) > sn_tx_fsr ) {
             end = begin + sn_tx_fsr;
         } // if
 
@@ -741,7 +741,7 @@ class Client {
             return end;
         } // if
 
-        if ( end - begin > sn_rx_rsr ) {
+        if ( static_cast<std::uintptr_t>( end - begin ) > sn_rx_rsr ) {
             end = begin + sn_rx_rsr;
         } // if
 
