@@ -1282,6 +1282,12 @@ struct SN_SR {
 
     /**
      * \brief Status.
+     *
+     * \warning This enum does not cover all valid register values since there are
+     *          register values that are not documented in the datasheet, and these
+     *          register values will not be disclosed due to WIZnet company policy (see
+     *          https://forum.wiznet.io/t/topic/5020/2 and
+     *          https://forum.wiznet.io/t/topic/8883/2).
      */
     enum STATUS : Type {
         STATUS_SOCK_CLOSED = 0x00, ///< Closed.
