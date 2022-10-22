@@ -109,6 +109,8 @@ auto transmit_all( Socket & socket, std::uint8_t const * begin, std::uint8_t con
             begin = result.value();
         } // else
     }     // while
+
+    return {};
 }
 
 /**
