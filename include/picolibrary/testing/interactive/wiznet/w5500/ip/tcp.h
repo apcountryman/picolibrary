@@ -124,6 +124,8 @@ void echo_client(
 
     network_stack.configure_retransmission( retransmission_retry_time, retransmission_retry_count );
 
+    network_stack.configure_socket_buffer_size( ::picolibrary::WIZnet::W5500::Socket_Buffer_Size::_2_KiB );
+
     network_stack.configure_mac_address( mac_address );
 
     network_stack.configure_ipv4_address( ipv4_address );
