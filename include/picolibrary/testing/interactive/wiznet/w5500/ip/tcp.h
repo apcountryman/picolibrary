@@ -62,6 +62,7 @@ namespace picolibrary::Testing::Interactive::WIZnet::W5500::IP::TCP {
  *            register value).
  * \param[in] retransmission_retry_count The desired W5500 retransmission retry count (RCR
  *            register value).
+ * \param[in] socket_buffer_size The desired W5500 socket buffer size.
  * \param[in] mac_address The desired W5500 MAC address.
  * \param[in] ipv4_address The desired W5500 IPv4 address.
  * \param[in] ipv4_gateway_address The desired W5500 IPv4 gateway address.
@@ -87,6 +88,7 @@ void echo_client(
     ::picolibrary::WIZnet::W5500::ARP_Forcing          arp_forcing_configuration,
     std::uint16_t                                      retransmission_retry_time,
     std::uint8_t                                       retransmission_retry_count,
+    ::picolibrary::WIZnet::W5500::Socket_Buffer_Size   socket_buffer_size,
     MAC_Address                                        mac_address,
     IPv4::Address                                      ipv4_address,
     IPv4::Address                                      ipv4_gateway_address,
@@ -123,6 +125,8 @@ void echo_client(
     network_stack.configure_arp_forcing( arp_forcing_configuration );
 
     network_stack.configure_retransmission( retransmission_retry_time, retransmission_retry_count );
+
+    network_stack.configure_socket_buffer_size( socket_buffer_size );
 
     network_stack.configure_mac_address( mac_address );
 
