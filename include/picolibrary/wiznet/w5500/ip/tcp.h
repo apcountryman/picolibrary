@@ -355,7 +355,6 @@ class Client {
      *
      * \pre the socket is in a state that allows it to be bound to a local endpoint
      * \pre the socket is not already bound to a local endpoint
-     * \pre the W5500 is responsive
      *
      * \param[in] endpoint The local endpoint to bind the socket to.
      *
@@ -363,11 +362,8 @@ class Client {
      * \pre endpoint is not already in use
      * \pre if an ephemeral port is requested, an ephemeral port is available
      */
-    // NOLINTNEXTLINE(readability-function-size)
     void bind( ::picolibrary::IP::TCP::Endpoint const & endpoint = ::picolibrary::IP::TCP::Endpoint{} ) noexcept
     {
-        // #lizard forgives the length
-
         expect( m_state == State::INITIALIZED, Generic_Error::LOGIC_ERROR );
 
         expect(
@@ -391,13 +387,9 @@ class Client {
         m_driver->write_sn_cr( m_socket_id, SN_CR::COMMAND_OPEN );
         while ( m_driver->read_sn_cr( m_socket_id ) ) {} // while
 
-        for ( ;; ) {
-            switch ( m_driver->read_sn_sr( m_socket_id ) ) {
-                case SN_SR::STATUS_SOCK_CLOSED: break;
-                case SN_SR::STATUS_SOCK_INIT: m_state = State::BOUND; return;
-                default: expect( m_network_stack->nonresponsive_device_error() );
-            } // switch
-        }     // for
+        while ( m_driver->read_sn_sr( m_socket_id ) != SN_SR::STATUS_SOCK_INIT ) {} // while
+
+        m_state = State::BOUND;
     }
 
     /**
@@ -405,7 +397,6 @@ class Client {
      *
      * \pre the socket is in a state that allows it to connect to a remote endpoint
      * \pre the socket is not already connected to a remote endpoint
-     * \pre the W5500 is responsive
      *
      * \param[in] endpoint The remote endpoint to connect to.
      *
@@ -417,11 +408,8 @@ class Client {
      * \return picolibrary::Generic_Error::OPERATION_TIMEOUT if connecting to the remote
      *         endpoint timed out.
      */
-    // NOLINTNEXTLINE(readability-function-size)
     auto connect( ::picolibrary::IP::TCP::Endpoint const & endpoint ) noexcept -> Result<Void, Error_Code>
     {
-        // #lizard forgives the length
-
         if ( m_state == State::BOUND ) {
             expect(
                 endpoint.address().is_ipv4() and not endpoint.address().is_any()
@@ -442,11 +430,9 @@ class Client {
         if ( m_state == State::CONNECTING ) {
             switch ( m_driver->read_sn_sr( m_socket_id ) ) {
                 case SN_SR::STATUS_SOCK_CLOSED: return Generic_Error::OPERATION_TIMEOUT;
-                case SN_SR::STATUS_SOCK_INIT: [[fallthrough]];
-                case SN_SR::STATUS_SOCK_SYNSENT: return Generic_Error::WOULD_BLOCK;
                 case SN_SR::STATUS_SOCK_ESTABLISHED: [[fallthrough]];
                 case SN_SR::STATUS_SOCK_CLOSE_WAIT: m_state = State::CONNECTED; return {};
-                default: expect( m_network_stack->nonresponsive_device_error() );
+                default: return Generic_Error::WOULD_BLOCK;
             } // switch
         }     // if
 
@@ -456,34 +442,12 @@ class Client {
     /**
      * \brief Check if the socket is connected to a remote endpoint.
      *
-     * \pre the W5500 is responsive
-     *
      * \return true if the socket is connected to a remote endpoint.
      * \return false if the socket is not connected to a remote endpoint.
      */
     auto is_connected() const noexcept -> bool
     {
-        switch ( m_driver->read_sn_sr( m_socket_id ) ) {
-            case SN_SR::STATUS_SOCK_CLOSED: // NOLINT(bugprone-branch-clone)
-                return false;
-            case SN_SR::STATUS_SOCK_INIT: // NOLINT(bugprone-branch-clone)
-                return false;
-            case SN_SR::STATUS_SOCK_ESTABLISHED: // NOLINT(bugprone-branch-clone)
-                return true;
-            case SN_SR::STATUS_SOCK_CLOSE_WAIT: // NOLINT(bugprone-branch-clone)
-                return false;
-            case SN_SR::STATUS_SOCK_SYNSENT: // NOLINT(bugprone-branch-clone)
-                return false;
-            case SN_SR::STATUS_SOCK_FIN_WAIT: // NOLINT(bugprone-branch-clone)
-                return false;
-            case SN_SR::STATUS_SOCK_CLOSING: // NOLINT(bugprone-branch-clone)
-                return false;
-            case SN_SR::STATUS_SOCK_TIME_WAIT: // NOLINT(bugprone-branch-clone)
-                return false;
-            case SN_SR::STATUS_SOCK_LAST_ACK: // NOLINT(bugprone-branch-clone)
-                return false;
-            default: expect( m_network_stack->nonresponsive_device_error() );
-        } // switch
+        return m_driver->read_sn_sr( m_socket_id ) == SN_SR::STATUS_SOCK_ESTABLISHED;
     }
 
     /**
@@ -554,31 +518,14 @@ class Client {
      * \return picolibrary::Generic_Error::WOULD_BLOCK if no data could be written to the
      *         socket's transmit buffer without blocking.
      */
-    // NOLINTNEXTLINE(readability-function-size)
     auto transmit( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
         -> Result<std::uint8_t const *, Error_Code>
     {
-        // #lizard forgives the length
-
         expect( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
 
-        switch ( m_driver->read_sn_sr( m_socket_id ) ) {
-            case SN_SR::STATUS_SOCK_CLOSED: // NOLINT(bugprone-branch-clone)
-                return Generic_Error::NOT_CONNECTED;
-            case SN_SR::STATUS_SOCK_ESTABLISHED: // NOLINT(bugprone-branch-clone)
-                break;
-            case SN_SR::STATUS_SOCK_CLOSE_WAIT: // NOLINT(bugprone-branch-clone)
-                return Generic_Error::NOT_CONNECTED;
-            case SN_SR::STATUS_SOCK_FIN_WAIT: // NOLINT(bugprone-branch-clone)
-                return Generic_Error::NOT_CONNECTED;
-            case SN_SR::STATUS_SOCK_CLOSING: // NOLINT(bugprone-branch-clone)
-                return Generic_Error::NOT_CONNECTED;
-            case SN_SR::STATUS_SOCK_TIME_WAIT: // NOLINT(bugprone-branch-clone)
-                return Generic_Error::NOT_CONNECTED;
-            case SN_SR::STATUS_SOCK_LAST_ACK: // NOLINT(bugprone-branch-clone)
-                return Generic_Error::NOT_CONNECTED;
-            default: expect( m_network_stack->nonresponsive_device_error() );
-        } // switch
+        if ( m_driver->read_sn_sr( m_socket_id ) != SN_SR::STATUS_SOCK_ESTABLISHED ) {
+            return Generic_Error::NOT_CONNECTED;
+        } // if
 
         if ( m_is_transmitting ) {
             if ( not( m_driver->read_sn_ir( m_socket_id ) & Socket_Interrupt::DATA_TRANSMITTED ) ) {
@@ -624,36 +571,18 @@ class Client {
      * \brief Manually transmit a keepalive packet.
      *
      * \pre the socket has connected to a remote endpoint
-     * \pre the W5500 is responsive
      *
      * \return Nothing if keepalive packet transmission succeeded.
      * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not connected to
      *         a remote endpoint.
      */
-    // NOLINTNEXTLINE(readability-function-size)
     auto transmit_keepalive() noexcept -> Result<Void, Error_Code>
     {
-        // #lizard forgives the length
-
         expect( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
 
-        switch ( m_driver->read_sn_sr( m_socket_id ) ) {
-            case SN_SR::STATUS_SOCK_CLOSED: // NOLINT(bugprone-branch-clone)
-                return Generic_Error::NOT_CONNECTED;
-            case SN_SR::STATUS_SOCK_ESTABLISHED: // NOLINT(bugprone-branch-clone)
-                break;
-            case SN_SR::STATUS_SOCK_CLOSE_WAIT: // NOLINT(bugprone-branch-clone)
-                return Generic_Error::NOT_CONNECTED;
-            case SN_SR::STATUS_SOCK_FIN_WAIT: // NOLINT(bugprone-branch-clone)
-                return Generic_Error::NOT_CONNECTED;
-            case SN_SR::STATUS_SOCK_CLOSING: // NOLINT(bugprone-branch-clone)
-                return Generic_Error::NOT_CONNECTED;
-            case SN_SR::STATUS_SOCK_TIME_WAIT: // NOLINT(bugprone-branch-clone)
-                return Generic_Error::NOT_CONNECTED;
-            case SN_SR::STATUS_SOCK_LAST_ACK: // NOLINT(bugprone-branch-clone)
-                return Generic_Error::NOT_CONNECTED;
-            default: expect( m_network_stack->nonresponsive_device_error() );
-        } // switch
+        if ( m_driver->read_sn_sr( m_socket_id ) != SN_SR::STATUS_SOCK_ESTABLISHED ) {
+            return Generic_Error::NOT_CONNECTED;
+        } // if
 
         m_driver->write_sn_cr( m_socket_id, SN_CR::COMMAND_SEND_KEEP );
         while ( m_driver->read_sn_cr( m_socket_id ) ) {} // while
@@ -698,33 +627,18 @@ class Client {
      * \return picolibrary::Generic_Error::WOULD_BLOCK if no data could be read from the
      *         socket's receive buffer without blocking.
      */
-    // NOLINTNEXTLINE(readability-function-size)
     auto receive( std::uint8_t * begin, std::uint8_t * end ) noexcept
         -> Result<std::uint8_t *, Error_Code>
     {
-        // #lizard forgives the length
-
         expect( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
 
         auto close_wait = false;
 
         switch ( m_driver->read_sn_sr( m_socket_id ) ) {
-            case SN_SR::STATUS_SOCK_CLOSED: // NOLINT(bugprone-branch-clone)
-                return Generic_Error::NOT_CONNECTED;
-            case SN_SR::STATUS_SOCK_ESTABLISHED: // NOLINT(bugprone-branch-clone)
-                break;
-            case SN_SR::STATUS_SOCK_CLOSE_WAIT: // NOLINT(bugprone-branch-clone)
-                close_wait = true;
-                break;
-            case SN_SR::STATUS_SOCK_FIN_WAIT: // NOLINT(bugprone-branch-clone)
-                return Generic_Error::WOULD_BLOCK;
-            case SN_SR::STATUS_SOCK_CLOSING: // NOLINT(bugprone-branch-clone)
-                return Generic_Error::WOULD_BLOCK;
-            case SN_SR::STATUS_SOCK_TIME_WAIT: // NOLINT(bugprone-branch-clone)
-                return Generic_Error::WOULD_BLOCK;
-            case SN_SR::STATUS_SOCK_LAST_ACK: // NOLINT(bugprone-branch-clone)
-                return Generic_Error::WOULD_BLOCK;
-            default: expect( m_network_stack->nonresponsive_device_error() );
+            case SN_SR::STATUS_SOCK_CLOSED: return Generic_Error::NOT_CONNECTED;
+            case SN_SR::STATUS_SOCK_CLOSE_WAIT: close_wait = true; [[fallthrough]];
+            case SN_SR::STATUS_SOCK_ESTABLISHED: break;
+            default: return Generic_Error::WOULD_BLOCK;
         } // switch
 
         auto const buffer_size = static_cast<Size>(
@@ -759,21 +673,14 @@ class Client {
      * \brief Disable further data transmission and reception.
      *
      * \pre the socket has connected to a remote endpoint
-     * \pre the W5500 is responsive
      */
     void shutdown() noexcept
     {
         expect( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
 
-        switch ( m_driver->read_sn_sr( m_socket_id ) ) {
-            case SN_SR::STATUS_SOCK_CLOSED: // NOLINT(bugprone-branch-clone)
-                return;
-            case SN_SR::STATUS_SOCK_ESTABLISHED: // NOLINT(bugprone-branch-clone)
-                break;
-            case SN_SR::STATUS_SOCK_CLOSE_WAIT: // NOLINT(bugprone-branch-clone)
-                break;
-            default: expect( m_network_stack->nonresponsive_device_error() );
-        } // switch
+        if ( m_driver->read_sn_sr( m_socket_id ) == SN_SR::STATUS_SOCK_CLOSED ) {
+            return;
+        } // if
 
         m_driver->write_sn_cr( m_socket_id, SN_CR::COMMAND_DISCON );
         while ( m_driver->read_sn_cr( m_socket_id ) ) {} // while
@@ -781,14 +688,9 @@ class Client {
 
     /**
      * \brief Close the socket.
-     *
-     * \pre the W5500 is responsive
      */
-    // NOLINTNEXTLINE(readability-function-size)
     constexpr void close() noexcept
     {
-        // #lizard forgives the length
-
         if ( m_state == State::UNINITIALIZED ) {
             return;
         } // if
@@ -797,31 +699,7 @@ class Client {
             m_driver->write_sn_cr( m_socket_id, SN_CR::COMMAND_CLOSE );
             while ( m_driver->read_sn_cr( m_socket_id ) ) {} // while
 
-            auto closed = false;
-            do {
-                switch ( m_driver->read_sn_sr( m_socket_id ) ) {
-                    case SN_SR::STATUS_SOCK_CLOSED: // NOLINT(bugprone-branch-clone)
-                        closed = true;
-                        break;
-                    case SN_SR::STATUS_SOCK_INIT: // NOLINT(bugprone-branch-clone)
-                        break;
-                    case SN_SR::STATUS_SOCK_ESTABLISHED: // NOLINT(bugprone-branch-clone)
-                        break;
-                    case SN_SR::STATUS_SOCK_CLOSE_WAIT: // NOLINT(bugprone-branch-clone)
-                        break;
-                    case SN_SR::STATUS_SOCK_SYNSENT: // NOLINT(bugprone-branch-clone)
-                        break;
-                    case SN_SR::STATUS_SOCK_FIN_WAIT: // NOLINT(bugprone-branch-clone)
-                        break;
-                    case SN_SR::STATUS_SOCK_CLOSING: // NOLINT(bugprone-branch-clone)
-                        break;
-                    case SN_SR::STATUS_SOCK_TIME_WAIT: // NOLINT(bugprone-branch-clone)
-                        break;
-                    case SN_SR::STATUS_SOCK_LAST_ACK: // NOLINT(bugprone-branch-clone)
-                        break;
-                    default: expect( m_network_stack->nonresponsive_device_error() );
-                } // switch
-            } while ( not closed );
+            while ( m_driver->read_sn_sr( m_socket_id ) != SN_SR::STATUS_SOCK_CLOSED ) {} // while
 
             m_driver->write_sn_ir( m_socket_id, Socket_Interrupt::ALL );
 
