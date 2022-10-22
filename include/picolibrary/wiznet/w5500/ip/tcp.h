@@ -362,8 +362,11 @@ class Client {
      * \pre endpoint is not already in use
      * \pre if an ephemeral port is requested, an ephemeral port is available
      */
+    // NOLINTNEXTLINE(readability-function-size)
     void bind( ::picolibrary::IP::TCP::Endpoint const & endpoint = ::picolibrary::IP::TCP::Endpoint{} ) noexcept
     {
+        // #lizard forgives the length
+
         expect( m_state == State::INITIALIZED, Generic_Error::LOGIC_ERROR );
 
         expect(
@@ -408,8 +411,11 @@ class Client {
      * \return picolibrary::Generic_Error::OPERATION_TIMEOUT if connecting to the remote
      *         endpoint timed out.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     auto connect( ::picolibrary::IP::TCP::Endpoint const & endpoint ) noexcept -> Result<Void, Error_Code>
     {
+        // #lizard forgives the length
+
         if ( m_state == State::BOUND ) {
             expect(
                 endpoint.address().is_ipv4() and not endpoint.address().is_any()
@@ -518,9 +524,12 @@ class Client {
      * \return picolibrary::Generic_Error::WOULD_BLOCK if no data could be written to the
      *         socket's transmit buffer without blocking.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     auto transmit( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
         -> Result<std::uint8_t const *, Error_Code>
     {
+        // #lizard forgives the length
+
         expect( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
 
         if ( m_driver->read_sn_sr( m_socket_id ) != SN_SR::STATUS_SOCK_ESTABLISHED ) {
@@ -627,9 +636,12 @@ class Client {
      * \return picolibrary::Generic_Error::WOULD_BLOCK if no data could be read from the
      *         socket's receive buffer without blocking.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     auto receive( std::uint8_t * begin, std::uint8_t * end ) noexcept
         -> Result<std::uint8_t *, Error_Code>
     {
+        // #lizard forgives the length
+
         expect( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
 
         auto close_wait = false;
@@ -689,8 +701,11 @@ class Client {
     /**
      * \brief Close the socket.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     constexpr void close() noexcept
     {
+        // #lizard forgives the length
+
         if ( m_state == State::UNINITIALIZED ) {
             return;
         } // if
