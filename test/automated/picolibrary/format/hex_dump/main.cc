@@ -74,7 +74,7 @@ TEST( outputFormatterHexDump, putError )
  */
 TEST( outputFormatterHexDump, worksProperly )
 {
-    static_assert( std::numeric_limits<std::uintptr_t>::digits == 64 );
+    static_assert( std::numeric_limits<std::size_t>::digits == 64 );
 
     struct {
         std::string data;

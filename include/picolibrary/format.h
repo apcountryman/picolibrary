@@ -956,7 +956,7 @@ class Output_Formatter<Format::Hex_Dump<Iterator>> {
         auto end   = hex_dump.end();
         auto n     = std::size_t{ 0 };
 
-        for ( auto memory_offset = std::uintptr_t{ 0 }; begin != end;
+        for ( auto memory_offset = std::size_t{ 0 }; begin != end;
               memory_offset += ROW_BYTES, n += row.size() ) {
             begin = generate_row( memory_offset, begin, end, row );
 
@@ -987,7 +987,7 @@ class Output_Formatter<Format::Hex_Dump<Iterator>> {
         auto end   = hex_dump.end();
         auto n     = std::size_t{ 0 };
 
-        for ( auto memory_offset = std::uintptr_t{ 0 }; begin != end;
+        for ( auto memory_offset = std::size_t{ 0 }; begin != end;
               memory_offset += ROW_BYTES, n += row.size() ) {
             begin = generate_row( memory_offset, begin, end, row );
 
@@ -1012,7 +1012,7 @@ class Output_Formatter<Format::Hex_Dump<Iterator>> {
      * \brief The number of nibbles in a memory offset.
      */
     static constexpr auto MEMORY_OFFSET_NIBBLES = std::uint_fast8_t{
-        std::numeric_limits<std::uintptr_t>::digits / NIBBLE_DIGITS
+        std::numeric_limits<std::size_t>::digits / NIBBLE_DIGITS
     };
 
     /**
@@ -1061,7 +1061,7 @@ class Output_Formatter<Format::Hex_Dump<Iterator>> {
      * \param[in] memory_offset The memory offset to format.
      * \param[out] location The location to write the formatted memory offset to.
      */
-    static void format_hex( std::uintptr_t memory_offset, typename Row::Iterator location ) noexcept
+    static void format_hex( std::size_t memory_offset, typename Row::Iterator location ) noexcept
     {
         auto i = typename Row::Reverse_Iterator{ location + MEMORY_OFFSET_NIBBLES };
         for ( auto nibble = std::uint_fast8_t{ 0 }; nibble < MEMORY_OFFSET_NIBBLES; ++nibble ) {
@@ -1114,7 +1114,7 @@ class Output_Formatter<Format::Hex_Dump<Iterator>> {
      *
      * \return The beginning of the remaining data.
      */
-    static auto generate_row( std::uintptr_t memory_offset, Iterator begin, Iterator end, Row & row ) noexcept
+    static auto generate_row( std::size_t memory_offset, Iterator begin, Iterator end, Row & row ) noexcept
         -> Iterator
     {
         fill( row.begin() + MEMORY_OFFSET_NIBBLES, row.end() - 1, ' ' );
