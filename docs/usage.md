@@ -15,8 +15,9 @@ target_link_libraries(
 
 The `picolibrary` static library does not provide an implementation for
 `::picolibrary::trap_fatal_error()`.
-See [`include/picolibrary/fatal_error.h`](../include/picolibrary/fatal_error.h) for more
-information.
+See
+[`include/picolibrary/fatal_error.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/fatal_error.h)
+for more information.
 
 The `picolibrary` static library does not include `::picolibrary::VERSION`.
 To use `::picolibrary::VERSION`, link with the `picolibrary-version` static library.
@@ -38,10 +39,12 @@ picolibrary supports the following project configuration options:
 - `PICOLIBRARY_ENABLE_INTERACTIVE_TESTING` (defaults to `OFF`): enable interactive testing
 - `PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION` (defaults to `OFF`): suppress
   human readable error information (see
-  [`include/picolibrary/error.h`](../include/picolibrary/error.h) for more information)
+  [`include/picolibrary/error.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/error.h)
+  for more information)
 - `PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION` (defaults to `OFF`): suppress
   human readable event information (see
-  [`include/picolibrary/event.h`](../include/picolibrary/event.h) for more information)
+  [`include/picolibrary/event.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/event.h)
+  for more information)
 - `PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS` (defaults to `ON`): use parent project's
   build flags
     - The following project configuration options are available if
