@@ -235,6 +235,8 @@ void echo_client(
     ::picolibrary::IP::TCP::Endpoint const & local_endpoint,
     ::picolibrary::IP::TCP::Endpoint const & remote_endpoint ) noexcept
 {
+    // #lizard forgives the length
+
     for ( ;; ) {
         auto client = network_stack.make_tcp_client();
 
@@ -242,7 +244,8 @@ void echo_client(
 
         client.bind( local_endpoint );
 
-        stream.print( "attempting to connect to ", remote_endpoint, " from ", local_endpoint, '\n' );
+        stream.print(
+            "attempting to connect to ", remote_endpoint, " from ", client.local_endpoint(), '\n' );
         auto result = connect( client, remote_endpoint );
         if ( result.is_error() ) {
             stream.put( "connection failed\n" );
