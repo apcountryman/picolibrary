@@ -168,6 +168,7 @@ void echo( Reliable_Output_Stream & stream, Socket socket ) noexcept
         }
 
         stream.print( "echoing:\n", Format::Hex_Dump{ buffer.cbegin(), end } );
+        stream.flush();
 
         {
             auto result = transmit_all( socket, buffer.cbegin(), end );
@@ -178,6 +179,7 @@ void echo( Reliable_Output_Stream & stream, Socket socket ) noexcept
     } // for
 
     stream.put( "connection lost, attempting graceful shutdown\n" );
+    stream.flush();
 
     shutdown_gracefully( socket );
 }
