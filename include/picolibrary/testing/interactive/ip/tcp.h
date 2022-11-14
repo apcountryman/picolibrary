@@ -235,6 +235,8 @@ void echo_client(
     ::picolibrary::IP::TCP::Endpoint const & local_endpoint,
     ::picolibrary::IP::TCP::Endpoint const & remote_endpoint ) noexcept
 {
+    // #lizard forgives the length
+
     for ( ;; ) {
         auto client = network_stack.make_tcp_client();
 
