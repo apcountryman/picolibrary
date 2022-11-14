@@ -105,6 +105,7 @@ void ping(
     network_stack.configure_ipv4_subnet_mask( ipv4_subnet_mask );
 
     stream.put( "waiting for link to be established\n" );
+    stream.flush();
 
     while ( network_stack.link_status() != ::picolibrary::WIZnet::W5500::Link_Status::UP ) {} // while
 
@@ -126,6 +127,7 @@ void ping(
         "IPv4 subnet mask: ", ipv4_subnet_mask, "\n"
     );
     // clang-format on
+    stream.flush();
 
     for ( ;; ) {} // for
 }
