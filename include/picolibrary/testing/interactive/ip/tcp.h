@@ -248,11 +248,14 @@ void echo_client(
 
         stream.print(
             "attempting to connect to ", remote_endpoint, " from ", client.local_endpoint(), '\n' );
+        stream.flush();
         auto result = connect( client, remote_endpoint );
         if ( result.is_error() ) {
             stream.put( "connection failed\n" );
+            stream.flush();
         } else {
             stream.put( "connection established\n" );
+            stream.flush();
 
             echo( stream, std::move( client ) );
         } // else
