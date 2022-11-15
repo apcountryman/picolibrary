@@ -52,7 +52,7 @@ namespace picolibrary::Testing::Interactive::Microchip::MCP23008 {
  *            state is gotten.
  */
 template<typename Controller, typename Delayer>
-void state(
+[[noreturn]] void state(
     Reliable_Output_Stream &                                stream,
     Controller                                              controller,
     ::picolibrary::Microchip::MCP23008::Address_Transmitted address,
@@ -86,7 +86,7 @@ void state(
  *            toggled.
  */
 template<template<typename> typename Output_Pin, typename Controller, typename Delayer>
-void toggle(
+[[noreturn]] void toggle(
     Controller                                              controller,
     ::picolibrary::Microchip::MCP23008::Address_Transmitted address,
     std::uint8_t                                            mask,

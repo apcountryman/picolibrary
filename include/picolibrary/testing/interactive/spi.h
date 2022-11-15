@@ -50,7 +50,7 @@ namespace picolibrary::Testing::Interactive::SPI {
  *            exchanged.
  */
 template<typename Controller, typename Delayer>
-void echo(
+[[noreturn]] void echo(
     Reliable_Output_Stream &                   stream,
     Controller                                 controller,
     typename Controller::Configuration const & configuration,

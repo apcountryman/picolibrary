@@ -45,7 +45,10 @@ namespace picolibrary::Testing::Interactive::ADC {
  *            gotten.
  */
 template<typename Blocking_Single_Sample_Converter, typename Delayer>
-void sample_blocking_single_sample_converter( Reliable_Output_Stream & stream, Blocking_Single_Sample_Converter adc, Delayer delay ) noexcept
+[[noreturn]] void sample_blocking_single_sample_converter(
+    Reliable_Output_Stream &         stream,
+    Blocking_Single_Sample_Converter adc,
+    Delayer                          delay ) noexcept
 {
     adc.initialize();
 

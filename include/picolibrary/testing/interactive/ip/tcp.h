@@ -230,7 +230,7 @@ auto connect( Client & client, ::picolibrary::IP::TCP::Endpoint const & endpoint
  * \param[in] remote_endpoint The remote endpoint to connect to.
  */
 template<typename Network_Stack, typename Socket_Options_Configurator>
-void echo_client(
+[[noreturn]] void echo_client(
     Reliable_Output_Stream &                 stream,
     Network_Stack &                          network_stack,
     Socket_Options_Configurator              configure_socket_options,

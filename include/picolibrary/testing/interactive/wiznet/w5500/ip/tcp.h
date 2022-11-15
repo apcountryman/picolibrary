@@ -78,7 +78,7 @@ namespace picolibrary::Testing::Interactive::WIZnet::W5500::IP::TCP {
  */
 template<typename Controller, typename Device_Selector>
 // NOLINTNEXTLINE(readability-function-size)
-void echo_client(
+[[noreturn]] void echo_client(
     Reliable_Output_Stream &                           stream,
     Controller                                         controller,
     typename Controller::Configuration                 configuration,

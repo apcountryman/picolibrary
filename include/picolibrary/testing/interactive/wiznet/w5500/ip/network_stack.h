@@ -62,7 +62,7 @@ namespace picolibrary::Testing::Interactive::WIZnet::W5500::IP {
  */
 template<typename Controller, typename Device_Selector>
 // NOLINTNEXTLINE(readability-function-size)
-void ping(
+[[noreturn]] void ping(
     Reliable_Output_Stream &                  stream,
     Controller                                controller,
     typename Controller::Configuration        configuration,

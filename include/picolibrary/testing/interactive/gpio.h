@@ -43,7 +43,7 @@ namespace picolibrary::Testing::Interactive::GPIO {
  *            state is gotten.
  */
 template<typename Input_Pin, typename Delayer>
-void state( Reliable_Output_Stream & stream, Input_Pin pin, Delayer delay ) noexcept
+[[noreturn]] void state( Reliable_Output_Stream & stream, Input_Pin pin, Delayer delay ) noexcept
 {
     pin.initialize();
 
@@ -68,7 +68,7 @@ void state( Reliable_Output_Stream & stream, Input_Pin pin, Delayer delay ) noex
  *            toggled.
  */
 template<typename Output_Pin, typename Delayer>
-void toggle( Output_Pin pin, Delayer delay ) noexcept
+[[noreturn]] void toggle( Output_Pin pin, Delayer delay ) noexcept
 {
     pin.initialize();
 
