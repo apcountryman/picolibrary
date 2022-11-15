@@ -51,7 +51,6 @@ template<typename Input_Pin, typename Delayer>
         delay();
 
         stream.put( pin.is_high() ? "high\n" : "low\n" );
-
         stream.flush();
     } // for
 }

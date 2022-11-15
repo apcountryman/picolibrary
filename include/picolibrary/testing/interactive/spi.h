@@ -64,9 +64,8 @@ template<typename Controller, typename Delayer>
 
         auto const rx = controller.exchange( tx );
         stream.print( "exchange( ", Format::Hex{ tx }, " ) -> ", Format::Hex{ rx }, '\n' );
-        expect( rx == tx, Generic_Error::RUNTIME_ERROR );
-
         stream.flush();
+        expect( rx == tx, Generic_Error::RUNTIME_ERROR );
     } // for
 }
 
