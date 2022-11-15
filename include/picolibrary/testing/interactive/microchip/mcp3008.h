@@ -54,7 +54,7 @@ namespace picolibrary::Testing::Interactive::Microchip::MCP3008 {
  */
 template<typename Controller, typename Device_Selector, typename Delayer>
 // NOLINTNEXTLINE(readability-function-size)
-void sample(
+[[noreturn]] void sample(
     Reliable_Output_Stream &                 stream,
     Controller                               controller,
     typename Controller::Configuration       configuration,

@@ -57,7 +57,7 @@ namespace picolibrary::Testing::Interactive::Microchip::MCP23S08 {
  */
 template<typename Controller, typename Device_Selector, typename Delayer>
 // NOLINTNEXTLINE(readability-function-size)
-void state(
+[[noreturn]] void state(
     Reliable_Output_Stream &                                stream,
     Controller                                              controller,
     typename Controller::Configuration                      configuration,
@@ -104,7 +104,7 @@ void state(
  */
 template<template<typename> typename Output_Pin, typename Controller, typename Device_Selector, typename Delayer>
 // NOLINTNEXTLINE(readability-function-size)
-void toggle(
+[[noreturn]] void toggle(
     Controller                                              controller,
     typename Controller::Configuration                      configuration,
     Device_Selector                                         device_selector,
