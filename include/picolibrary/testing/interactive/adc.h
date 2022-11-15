@@ -63,7 +63,6 @@ template<typename Blocking_Single_Sample_Converter, typename Delayer>
         delay();
 
         stream.print( Format::Dec{ adc.sample().as_unsigned_integer() }, '\n' );
-
         stream.flush();
     } // for
 }

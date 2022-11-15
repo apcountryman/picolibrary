@@ -35,7 +35,6 @@ namespace picolibrary::Testing::Interactive {
 inline void hello_world( Reliable_Output_Stream & stream ) noexcept
 {
     stream.put( "Hello, world!\n" );
-
     stream.flush();
 }
 
