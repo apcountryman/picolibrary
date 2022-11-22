@@ -701,11 +701,8 @@ class Client {
     /**
      * \brief Close the socket.
      */
-    // NOLINTNEXTLINE(readability-function-size)
     constexpr void close() noexcept
     {
-        // #lizard forgives the length
-
         if ( m_state == State::UNINITIALIZED ) {
             return;
         } // if

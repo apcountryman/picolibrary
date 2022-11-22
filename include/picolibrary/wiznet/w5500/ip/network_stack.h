@@ -627,8 +627,11 @@ class Network_Stack {
      *
      * \pre the socket has been allocated
      */
+    // NOLINTNEXTLINE(readability-function-size)
     void deallocate_socket( Socket_ID socket_id ) noexcept
     {
+        // #lizard forgives the length
+
         auto const socket = static_cast<std::uint_fast8_t>(
             to_underlying( socket_id ) >> Control_Byte::Bit::SOCKET );
 
