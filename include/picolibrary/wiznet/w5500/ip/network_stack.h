@@ -624,10 +624,35 @@ class Network_Stack {
      * \brief Deallocate a socket.
      *
      * \param[in] socket_id The socket ID for the socket to deallocate.
+     *
+     * \pre the socket has been allocated
      */
-    constexpr void deallocate_socket( Socket_ID socket_id ) noexcept
+    void deallocate_socket( Socket_ID socket_id ) noexcept
     {
-        m_socket_status[ to_underlying( socket_id ) >> Control_Byte::Bit::SOCKET ] = Socket_Status::AVAILABLE_FOR_ALLOCATION;
+        auto const socket = static_cast<std::uint_fast8_t>(
+            to_underlying( socket_id ) >> Control_Byte::Bit::SOCKET );
+
+        expect( m_socket_status[ socket ] == Socket_Status::ALLOCATED, Generic_Error::LOGIC_ERROR );
+
+        m_driver->write_sn_cr( socket_id, SN_CR::COMMAND_CLOSE );
+        while ( m_driver->read_sn_cr( socket_id ) ) {} // while
+
+        while ( m_driver->read_sn_sr( socket_id ) != SN_SR::STATUS_SOCK_CLOSED ) {} // while
+
+        m_driver->write_sn_mr( socket_id, SN_MR::RESET );
+        m_driver->write_sn_ir( socket_id, Socket_Interrupt::ALL );
+        m_driver->write_sn_port( socket_id, SN_PORT::RESET );
+        m_driver->write_sn_dhar( socket_id, SN_DHAR::RESET );
+        m_driver->write_sn_dipr( socket_id, SN_DIPR::RESET );
+        m_driver->write_sn_dport( socket_id, SN_DPORT::RESET );
+        m_driver->write_sn_mssr( socket_id, SN_MSSR::RESET );
+        m_driver->write_sn_tos( socket_id, SN_TOS::RESET );
+        m_driver->write_sn_ttl( socket_id, SN_TTL::RESET );
+        m_driver->write_sn_imr( socket_id, SN_IMR::RESET );
+        m_driver->write_sn_frag( socket_id, SN_FRAG::RESET );
+        m_driver->write_sn_kpalvtr( socket_id, SN_KPALVTR::RESET );
+
+        m_socket_status[ socket ] = Socket_Status::AVAILABLE_FOR_ALLOCATION;
         ++m_sockets_available_for_allocation;
     }
 

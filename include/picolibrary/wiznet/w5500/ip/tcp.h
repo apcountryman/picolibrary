@@ -711,27 +711,8 @@ class Client {
         } // if
 
         if ( m_state != State::INITIALIZED ) {
-            m_driver->write_sn_cr( m_socket_id, SN_CR::COMMAND_CLOSE );
-            while ( m_driver->read_sn_cr( m_socket_id ) ) {} // while
-
-            while ( m_driver->read_sn_sr( m_socket_id ) != SN_SR::STATUS_SOCK_CLOSED ) {} // while
-
-            m_driver->write_sn_ir( m_socket_id, Socket_Interrupt::ALL );
-
-            auto const port = m_driver->read_sn_port( m_socket_id );
-            m_driver->write_sn_port( m_socket_id, SN_PORT::RESET );
-            m_network_stack->tcp_port_allocator().deallocate( port );
-
-            m_driver->write_sn_dhar( m_socket_id, SN_DHAR::RESET );
-            m_driver->write_sn_dipr( m_socket_id, SN_DIPR::RESET );
-            m_driver->write_sn_dport( m_socket_id, SN_DPORT::RESET );
+            m_network_stack->tcp_port_allocator().deallocate( m_driver->read_sn_port( m_socket_id ) );
         } // if
-
-        m_driver->write_sn_mr( m_socket_id, SN_MR::RESET );
-        m_driver->write_sn_mssr( m_socket_id, SN_MSSR::RESET );
-        m_driver->write_sn_ttl( m_socket_id, SN_TTL::RESET );
-        m_driver->write_sn_imr( m_socket_id, SN_IMR::RESET );
-        m_driver->write_sn_kpalvtr( m_socket_id, SN_KPALVTR::RESET );
 
         m_network_stack->deallocate_socket( m_socket_id );
 
