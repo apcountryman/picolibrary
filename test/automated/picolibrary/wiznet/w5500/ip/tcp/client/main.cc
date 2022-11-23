@@ -1042,8 +1042,8 @@ TEST( transmit, transmitBufferFull )
     EXPECT_EQ( client.state(), Client::State::CONNECTED );
     EXPECT_FALSE( client.is_transmitting() );
 
-    EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
     EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+    EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
     EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
     EXPECT_CALL( network_stack, deallocate_socket( _ ) );
 }
