@@ -25,7 +25,6 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "picolibrary/array.h"
 #include "picolibrary/error.h"
 #include "picolibrary/ip/tcp.h"
 #include "picolibrary/ipv4.h"
@@ -42,7 +41,6 @@
 
 namespace {
 
-using ::picolibrary::Array;
 using ::picolibrary::Generic_Error;
 using ::picolibrary::to_underlying;
 using ::picolibrary::IP::TCP::Endpoint;
@@ -113,11 +111,6 @@ TEST( constructor, worksProperly )
         EXPECT_EQ( client.socket_interrupt_mask(), test_case.socket_interrupt_mask );
         EXPECT_FALSE( client.is_transmitting() );
 
-        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
         EXPECT_CALL( network_stack, deallocate_socket( _ ) );
     } // for
 }
@@ -153,11 +146,6 @@ TEST( configureNoDelayedACKUsage, worksProperly )
 
         client.configure_no_delayed_ack_usage( test_case.no_delayed_ack_usage_configuration );
 
-        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
         EXPECT_CALL( network_stack, deallocate_socket( _ ) );
     } // for
 }
@@ -194,11 +182,6 @@ TEST( noDelayedACKUsageConfiguration, worksProperly )
 
         EXPECT_EQ( client.no_delayed_ack_usage_configuration(), test_case.no_delayed_ack_usage_configuration );
 
-        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
         EXPECT_CALL( network_stack, deallocate_socket( _ ) );
     } // for
 }
@@ -223,11 +206,6 @@ TEST( configureMaximumSegmentSize, worksProperly )
 
     client.configure_maximum_segment_size( maximum_segment_size );
 
-    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
     EXPECT_CALL( network_stack, deallocate_socket( _ ) );
 }
 
@@ -250,11 +228,6 @@ TEST( maximumSegmentSize, worksProperly )
 
     EXPECT_EQ( client.maximum_segment_size(), sn_mssr );
 
-    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
     EXPECT_CALL( network_stack, deallocate_socket( _ ) );
 }
 
@@ -277,11 +250,6 @@ TEST( configureTimeToLive, worksProperly )
 
     client.configure_time_to_live( time_to_live );
 
-    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
     EXPECT_CALL( network_stack, deallocate_socket( _ ) );
 }
 
@@ -304,11 +272,6 @@ TEST( timeToLive, worksProperly )
 
     EXPECT_EQ( client.time_to_live(), sn_ttl );
 
-    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
     EXPECT_CALL( network_stack, deallocate_socket( _ ) );
 }
 
@@ -331,11 +294,6 @@ TEST( configureKeepalivePeriod, worksProperly )
 
     client.configure_keepalive_period( keepalive_period );
 
-    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
     EXPECT_CALL( network_stack, deallocate_socket( _ ) );
 }
 
@@ -358,11 +316,6 @@ TEST( keepalivePeriod, worksProperly )
 
     EXPECT_EQ( client.keepalive_period(), sn_kpalvtr );
 
-    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
     EXPECT_CALL( network_stack, deallocate_socket( _ ) );
 }
 
@@ -389,11 +342,6 @@ TEST( enableInterrupts, worksProperly )
 
     client.enable_interrupts( mask );
 
-    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
     EXPECT_CALL( network_stack, deallocate_socket( _ ) );
 }
 
@@ -420,11 +368,6 @@ TEST( disableInterrupts, worksProperly )
 
     client.disable_interrupts( mask );
 
-    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
     EXPECT_CALL( network_stack, deallocate_socket( _ ) );
 }
 
@@ -445,11 +388,6 @@ TEST( disableAllInterrupts, worksProperly )
 
     client.disable_interrupts();
 
-    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
     EXPECT_CALL( network_stack, deallocate_socket( _ ) );
 }
 
@@ -472,11 +410,6 @@ TEST( enabledInterrupts, worksProperly )
 
     EXPECT_EQ( client.enabled_interrupts(), sn_imr );
 
-    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
     EXPECT_CALL( network_stack, deallocate_socket( _ ) );
 }
 
@@ -499,11 +432,6 @@ TEST( interruptContext, worksProperly )
 
     EXPECT_EQ( client.interrupt_context(), sn_ir );
 
-    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
     EXPECT_CALL( network_stack, deallocate_socket( _ ) );
 }
 
@@ -547,11 +475,6 @@ TEST( clearInterrupts, worksProperly )
 
         EXPECT_EQ( client.is_transmitting(), test_case.is_transmitting_final );
 
-        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
         EXPECT_CALL( network_stack, deallocate_socket( _ ) );
     } // for
 }
@@ -590,22 +513,9 @@ TEST( bind, worksProperly )
 
         EXPECT_EQ( client.state(), Client::State::BOUND );
 
-        EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-        EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-        EXPECT_CALL( driver, write_sn_port( _, _ ) );
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
         EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-        EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
         EXPECT_CALL( network_stack, deallocate_socket( _ ) );
     }
 
@@ -638,22 +548,9 @@ TEST( bind, worksProperly )
 
         EXPECT_EQ( client.state(), Client::State::BOUND );
 
-        EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-        EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-        EXPECT_CALL( driver, write_sn_port( _, _ ) );
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
         EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-        EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
         EXPECT_CALL( network_stack, deallocate_socket( _ ) );
     }
 
@@ -686,22 +583,9 @@ TEST( bind, worksProperly )
 
         EXPECT_EQ( client.state(), Client::State::BOUND );
 
-        EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-        EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-        EXPECT_CALL( driver, write_sn_port( _, _ ) );
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
         EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-        EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
         EXPECT_CALL( network_stack, deallocate_socket( _ ) );
     }
 
@@ -736,22 +620,9 @@ TEST( bind, worksProperly )
 
         EXPECT_EQ( client.state(), Client::State::BOUND );
 
-        EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-        EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-        EXPECT_CALL( driver, write_sn_port( _, _ ) );
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
         EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-        EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
         EXPECT_CALL( network_stack, deallocate_socket( _ ) );
     }
 
@@ -786,22 +657,9 @@ TEST( bind, worksProperly )
 
         EXPECT_EQ( client.state(), Client::State::BOUND );
 
-        EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-        EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-        EXPECT_CALL( driver, write_sn_port( _, _ ) );
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
         EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-        EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
         EXPECT_CALL( network_stack, deallocate_socket( _ ) );
     }
 }
@@ -827,22 +685,9 @@ TEST( connect, connectionTimeout )
 
     EXPECT_EQ( client.state(), Client::State::CONNECTING );
 
-    EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-    EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-    EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-    EXPECT_CALL( driver, write_sn_port( _, _ ) );
     EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+    EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
     EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-    EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-    EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
     EXPECT_CALL( network_stack, deallocate_socket( _ ) );
 }
 
@@ -877,22 +722,9 @@ TEST( connect, worksProperly )
 
         EXPECT_EQ( client.state(), Client::State::CONNECTING );
 
-        EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-        EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-        EXPECT_CALL( driver, write_sn_port( _, _ ) );
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
         EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-        EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
         EXPECT_CALL( network_stack, deallocate_socket( _ ) );
     }
 
@@ -926,22 +758,9 @@ TEST( connect, worksProperly )
 
             EXPECT_EQ( client.state(), Client::State::CONNECTING );
 
-            EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-            EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-            EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-            EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-            EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-            EXPECT_CALL( driver, write_sn_port( _, _ ) );
             EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+            EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
             EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-            EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-            EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-            EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-            EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
             EXPECT_CALL( network_stack, deallocate_socket( _ ) );
         } // for
     }
@@ -973,22 +792,9 @@ TEST( connect, worksProperly )
 
             EXPECT_EQ( client.state(), Client::State::CONNECTED );
 
-            EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-            EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-            EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-            EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-            EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-            EXPECT_CALL( driver, write_sn_port( _, _ ) );
             EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+            EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
             EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-            EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-            EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-            EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-            EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
             EXPECT_CALL( network_stack, deallocate_socket( _ ) );
         } // for
     }
@@ -1031,11 +837,6 @@ TEST( isConnected, worksProperly )
 
         EXPECT_EQ( client.is_connected(), test_case.is_connected );
 
-        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
         EXPECT_CALL( network_stack, deallocate_socket( _ ) );
     } // for
 }
@@ -1065,11 +866,6 @@ TEST( remoteEndpoint, worksProperly )
     EXPECT_EQ( endpoint.address().ipv4().as_byte_array(), sn_dipr );
     EXPECT_EQ( endpoint.port().as_unsigned_integer(), sn_dport );
 
-    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
     EXPECT_CALL( network_stack, deallocate_socket( _ ) );
 }
 
@@ -1098,11 +894,6 @@ TEST( localEndpoint, worksProperly )
     EXPECT_EQ( endpoint.address().ipv4().as_byte_array(), sipr );
     EXPECT_EQ( endpoint.port().as_unsigned_integer(), sn_port );
 
-    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
     EXPECT_CALL( network_stack, deallocate_socket( _ ) );
 }
 
@@ -1142,11 +933,6 @@ TEST( outstanding, worksProperly )
 
         EXPECT_EQ( client.outstanding(), ( to_underlying( test_case.socket_buffer_size ) * 1024 ) - sn_tx_fsr );
 
-        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
         EXPECT_CALL( network_stack, deallocate_socket( _ ) );
     } // for
 }
@@ -1192,22 +978,9 @@ TEST( transmit, connectionLost )
         EXPECT_EQ( client.state(), Client::State::CONNECTED );
         EXPECT_EQ( client.is_transmitting(), is_transmitting );
 
-        EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-        EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-        EXPECT_CALL( driver, write_sn_port( _, _ ) );
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
         EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-        EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
         EXPECT_CALL( network_stack, deallocate_socket( _ ) );
     } // for
 }
@@ -1236,22 +1009,9 @@ TEST( transmit, transmissionNotComplete )
     EXPECT_EQ( client.state(), Client::State::CONNECTED );
     EXPECT_TRUE( client.is_transmitting() );
 
-    EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-    EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-    EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-    EXPECT_CALL( driver, write_sn_port( _, _ ) );
     EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+    EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
     EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-    EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-    EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
     EXPECT_CALL( network_stack, deallocate_socket( _ ) );
 }
 
@@ -1282,22 +1042,9 @@ TEST( transmit, transmitBufferFull )
     EXPECT_EQ( client.state(), Client::State::CONNECTED );
     EXPECT_FALSE( client.is_transmitting() );
 
-    EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-    EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-    EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-    EXPECT_CALL( driver, write_sn_port( _, _ ) );
     EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+    EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
     EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-    EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-    EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
     EXPECT_CALL( network_stack, deallocate_socket( _ ) );
 }
 
@@ -1326,22 +1073,9 @@ TEST( transmit, worksProperly )
         EXPECT_EQ( client.state(), Client::State::CONNECTED );
         EXPECT_FALSE( client.is_transmitting() );
 
-        EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-        EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-        EXPECT_CALL( driver, write_sn_port( _, _ ) );
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
         EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-        EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
         EXPECT_CALL( network_stack, deallocate_socket( _ ) );
     }
 
@@ -1369,22 +1103,9 @@ TEST( transmit, worksProperly )
         EXPECT_EQ( client.state(), Client::State::CONNECTED );
         EXPECT_FALSE( client.is_transmitting() );
 
-        EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-        EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-        EXPECT_CALL( driver, write_sn_port( _, _ ) );
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
         EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-        EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
         EXPECT_CALL( network_stack, deallocate_socket( _ ) );
     }
 
@@ -1439,22 +1160,9 @@ TEST( transmit, worksProperly )
             EXPECT_EQ( client.state(), Client::State::CONNECTED );
             EXPECT_TRUE( client.is_transmitting() );
 
-            EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-            EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-            EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-            EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-            EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-            EXPECT_CALL( driver, write_sn_port( _, _ ) );
             EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+            EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
             EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-            EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-            EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-            EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-            EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
             EXPECT_CALL( network_stack, deallocate_socket( _ ) );
         } // for
     }
@@ -1512,22 +1220,9 @@ TEST( transmit, worksProperly )
             EXPECT_EQ( client.state(), Client::State::CONNECTED );
             EXPECT_TRUE( client.is_transmitting() );
 
-            EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-            EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-            EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-            EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-            EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-            EXPECT_CALL( driver, write_sn_port( _, _ ) );
             EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+            EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
             EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-            EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-            EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-            EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-            EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
             EXPECT_CALL( network_stack, deallocate_socket( _ ) );
         } // for
     }
@@ -1585,22 +1280,9 @@ TEST( transmit, worksProperly )
             EXPECT_EQ( client.state(), Client::State::CONNECTED );
             EXPECT_TRUE( client.is_transmitting() );
 
-            EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-            EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-            EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-            EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-            EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-            EXPECT_CALL( driver, write_sn_port( _, _ ) );
             EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+            EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
             EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-            EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-            EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-            EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-            EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
             EXPECT_CALL( network_stack, deallocate_socket( _ ) );
         } // for
     }
@@ -1660,22 +1342,9 @@ TEST( transmit, worksProperly )
             EXPECT_EQ( client.state(), Client::State::CONNECTED );
             EXPECT_TRUE( client.is_transmitting() );
 
-            EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-            EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-            EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-            EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-            EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-            EXPECT_CALL( driver, write_sn_port( _, _ ) );
             EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+            EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
             EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-            EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-            EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-            EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-            EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
             EXPECT_CALL( network_stack, deallocate_socket( _ ) );
         } // for
     }
@@ -1718,22 +1387,9 @@ TEST( transmitKeepalive, connectionLost )
 
         EXPECT_EQ( client.state(), Client::State::CONNECTED );
 
-        EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-        EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-        EXPECT_CALL( driver, write_sn_port( _, _ ) );
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
         EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-        EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
         EXPECT_CALL( network_stack, deallocate_socket( _ ) );
     } // for
 }
@@ -1763,22 +1419,9 @@ TEST( transmitKeepalive, worksProperly )
 
     EXPECT_EQ( client.state(), Client::State::CONNECTED );
 
-    EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-    EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-    EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-    EXPECT_CALL( driver, write_sn_port( _, _ ) );
     EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+    EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
     EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-    EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-    EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
     EXPECT_CALL( network_stack, deallocate_socket( _ ) );
 }
 
@@ -1817,11 +1460,6 @@ TEST( available, worksProperly )
 
         EXPECT_EQ( client.available(), sn_rx_rsr );
 
-        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
         EXPECT_CALL( network_stack, deallocate_socket( _ ) );
     } // for
 }
@@ -1848,22 +1486,9 @@ TEST( receive, connectionLost )
 
     EXPECT_EQ( client.state(), Client::State::CONNECTED );
 
-    EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-    EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-    EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-    EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-    EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-    EXPECT_CALL( driver, write_sn_port( _, _ ) );
     EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+    EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
     EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-    EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-    EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-    EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-    EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-    EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
     EXPECT_CALL( network_stack, deallocate_socket( _ ) );
 }
 
@@ -1903,22 +1528,9 @@ TEST( receive, gracefulShutdown )
 
         EXPECT_EQ( client.state(), Client::State::CONNECTED );
 
-        EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-        EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-        EXPECT_CALL( driver, write_sn_port( _, _ ) );
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
         EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-        EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
         EXPECT_CALL( network_stack, deallocate_socket( _ ) );
     } // for
 }
@@ -1963,22 +1575,9 @@ TEST( receive, receiveBufferEmpty )
 
         EXPECT_EQ( client.state(), Client::State::CONNECTED );
 
-        EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-        EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-        EXPECT_CALL( driver, write_sn_port( _, _ ) );
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
         EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-        EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
         EXPECT_CALL( network_stack, deallocate_socket( _ ) );
     } // for
 }
@@ -2034,22 +1633,9 @@ TEST( receive, worksProperly )
 
             EXPECT_EQ( client.state(), Client::State::CONNECTED );
 
-            EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-            EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-            EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-            EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-            EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-            EXPECT_CALL( driver, write_sn_port( _, _ ) );
             EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+            EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
             EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-            EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-            EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-            EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-            EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
             EXPECT_CALL( network_stack, deallocate_socket( _ ) );
         } // for
     }
@@ -2112,22 +1698,9 @@ TEST( receive, worksProperly )
 
             EXPECT_EQ( client.state(), Client::State::CONNECTED );
 
-            EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-            EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-            EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-            EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-            EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-            EXPECT_CALL( driver, write_sn_port( _, _ ) );
             EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+            EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
             EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-            EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-            EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-            EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-            EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
             EXPECT_CALL( network_stack, deallocate_socket( _ ) );
         } // for
     }
@@ -2189,22 +1762,9 @@ TEST( receive, worksProperly )
 
             EXPECT_EQ( client.state(), Client::State::CONNECTED );
 
-            EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-            EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-            EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-            EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-            EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-            EXPECT_CALL( driver, write_sn_port( _, _ ) );
             EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+            EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
             EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-            EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-            EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-            EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-            EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
             EXPECT_CALL( network_stack, deallocate_socket( _ ) );
         } // for
     }
@@ -2230,22 +1790,9 @@ TEST( shutdown, worksProperly )
 
         EXPECT_EQ( client.state(), Client::State::CONNECTED );
 
-        EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-        EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-        EXPECT_CALL( driver, write_sn_port( _, _ ) );
         EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+        EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
         EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-        EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-        EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-        EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
         EXPECT_CALL( network_stack, deallocate_socket( _ ) );
     }
 
@@ -2281,22 +1828,9 @@ TEST( shutdown, worksProperly )
 
             EXPECT_EQ( client.state(), Client::State::CONNECTED );
 
-            EXPECT_CALL( driver, write_sn_cr( _, _ ) );
-            EXPECT_CALL( driver, read_sn_cr( _ ) ).WillOnce( Return( 0x00 ) );
-            EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
-            EXPECT_CALL( driver, write_sn_ir( _, _ ) );
-            EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
-            EXPECT_CALL( driver, write_sn_port( _, _ ) );
             EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+            EXPECT_CALL( driver, read_sn_port( _ ) ).WillOnce( Return( random<std::uint16_t>() ) );
             EXPECT_CALL( tcp_port_allocator, deallocate( _ ) );
-            EXPECT_CALL( driver, write_sn_dhar( _, _ ) );
-            EXPECT_CALL( driver, write_sn_dipr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_dport( _, _ ) );
-            EXPECT_CALL( driver, write_sn_mr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_mssr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_ttl( _, _ ) );
-            EXPECT_CALL( driver, write_sn_imr( _, _ ) );
-            EXPECT_CALL( driver, write_sn_kpalvtr( _, _ ) );
             EXPECT_CALL( network_stack, deallocate_socket( _ ) );
         } // for
     }
@@ -2316,8 +1850,6 @@ TEST( close, worksProperly )
     }
 
     {
-        auto const in_sequence = InSequence{};
-
         auto driver        = Mock_Driver{};
         auto network_stack = Mock_Network_Stack{};
 
@@ -2325,51 +1857,6 @@ TEST( close, worksProperly )
 
         auto client = Client{ driver, socket_id, network_stack };
 
-        EXPECT_CALL( driver, write_sn_mr( socket_id, 0x00 ) );
-        EXPECT_CALL( driver, write_sn_mssr( socket_id, 0x0000 ) );
-        EXPECT_CALL( driver, write_sn_ttl( socket_id, 0x80 ) );
-        EXPECT_CALL( driver, write_sn_imr( socket_id, 0xFF ) );
-        EXPECT_CALL( driver, write_sn_kpalvtr( socket_id, 0x00 ) );
-        EXPECT_CALL( network_stack, deallocate_socket( socket_id ) );
-
-        client.close();
-
-        EXPECT_EQ( client.state(), Client::State::UNINITIALIZED );
-    }
-
-    {
-        auto const in_sequence = InSequence{};
-
-        auto driver             = Mock_Driver{};
-        auto network_stack      = Mock_Network_Stack{};
-        auto tcp_port_allocator = Mock_Port_Allocator{};
-
-        auto const socket_id = random<Socket_ID>();
-
-        auto client = Client{ Client::State::CONNECTED, driver, socket_id, network_stack };
-
-        auto const sn_port = random<std::uint16_t>();
-
-        EXPECT_CALL( driver, write_sn_cr( socket_id, 0x10 ) );
-        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
-        EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x00 ) );
-        EXPECT_CALL( driver, write_sn_ir( socket_id, 0b000'1'1'1'1'1 ) );
-        EXPECT_CALL( driver, read_sn_port( socket_id ) ).WillOnce( Return( sn_port ) );
-        EXPECT_CALL( driver, write_sn_port( socket_id, 0x0000 ) );
-        EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
-        EXPECT_CALL( tcp_port_allocator, deallocate( Port{ sn_port } ) );
-        EXPECT_CALL(
-            driver,
-            write_sn_dhar( socket_id, Array<std::uint8_t, 6>{ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF } ) );
-        EXPECT_CALL(
-            driver, write_sn_dipr( socket_id, Array<std::uint8_t, 4>{ 0x00, 0x00, 0x00, 0x00 } ) );
-        EXPECT_CALL( driver, write_sn_dport( socket_id, 0x0000 ) );
-        EXPECT_CALL( driver, write_sn_mr( socket_id, 0x00 ) );
-        EXPECT_CALL( driver, write_sn_mssr( socket_id, 0x0000 ) );
-        EXPECT_CALL( driver, write_sn_ttl( socket_id, 0x80 ) );
-        EXPECT_CALL( driver, write_sn_imr( socket_id, 0xFF ) );
-        EXPECT_CALL( driver, write_sn_kpalvtr( socket_id, 0x00 ) );
         EXPECT_CALL( network_stack, deallocate_socket( socket_id ) );
 
         client.close();
@@ -2380,25 +1867,12 @@ TEST( close, worksProperly )
     {
         struct {
             Client::State state;
-            std::uint8_t  sn_sr;
         } const test_cases[]{
             // clang-format off
 
-            { Client::State::BOUND,      0x13 },
-            { Client::State::CONNECTING, 0x17 },
-            { Client::State::CONNECTING, 0x1C },
-            { Client::State::CONNECTING, 0x15 },
-            { Client::State::CONNECTING, 0x18 },
-            { Client::State::CONNECTING, 0x1A },
-            { Client::State::CONNECTING, 0x1B },
-            { Client::State::CONNECTING, 0x1D },
-            { Client::State::CONNECTED,  0x17 },
-            { Client::State::CONNECTED,  0x1C },
-            { Client::State::CONNECTED,  0x15 },
-            { Client::State::CONNECTED,  0x18 },
-            { Client::State::CONNECTED,  0x1A },
-            { Client::State::CONNECTED,  0x1B },
-            { Client::State::CONNECTED,  0x1D },
+            { Client::State::BOUND      },
+            { Client::State::CONNECTING },
+            { Client::State::CONNECTED  },
 
             // clang-format on
         };
@@ -2416,27 +1890,9 @@ TEST( close, worksProperly )
 
             auto const sn_port = random<std::uint16_t>();
 
-            EXPECT_CALL( driver, write_sn_cr( socket_id, 0x10 ) );
-            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( random<std::uint8_t>( 0x01 ) ) );
-            EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( 0x00 ) );
-            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( test_case.sn_sr ) );
-            EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x00 ) );
-            EXPECT_CALL( driver, write_sn_ir( socket_id, 0b000'1'1'1'1'1 ) );
-            EXPECT_CALL( driver, read_sn_port( socket_id ) ).WillOnce( Return( sn_port ) );
-            EXPECT_CALL( driver, write_sn_port( socket_id, 0x0000 ) );
             EXPECT_CALL( network_stack, tcp_port_allocator() ).WillOnce( ReturnRef( tcp_port_allocator ) );
+            EXPECT_CALL( driver, read_sn_port( socket_id ) ).WillOnce( Return( sn_port ) );
             EXPECT_CALL( tcp_port_allocator, deallocate( Port{ sn_port } ) );
-            EXPECT_CALL(
-                driver,
-                write_sn_dhar( socket_id, Array<std::uint8_t, 6>{ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF } ) );
-            EXPECT_CALL(
-                driver, write_sn_dipr( socket_id, Array<std::uint8_t, 4>{ 0x00, 0x00, 0x00, 0x00 } ) );
-            EXPECT_CALL( driver, write_sn_dport( socket_id, 0x0000 ) );
-            EXPECT_CALL( driver, write_sn_mr( socket_id, 0x00 ) );
-            EXPECT_CALL( driver, write_sn_mssr( socket_id, 0x0000 ) );
-            EXPECT_CALL( driver, write_sn_ttl( socket_id, 0x80 ) );
-            EXPECT_CALL( driver, write_sn_imr( socket_id, 0xFF ) );
-            EXPECT_CALL( driver, write_sn_kpalvtr( socket_id, 0x00 ) );
             EXPECT_CALL( network_stack, deallocate_socket( socket_id ) );
 
             client.close();
