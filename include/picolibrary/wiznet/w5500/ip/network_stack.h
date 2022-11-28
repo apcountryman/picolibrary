@@ -676,7 +676,7 @@ class Network_Stack {
 
         auto socket_ids = Fixed_Capacity_Vector<Socket_ID, SOCKETS>{};
 
-        for ( auto socket = std::uint_fast8_t{}; socket < sockets() and socket_ids.size() < n; ++socket ) {
+        for ( auto socket = std::uint_fast8_t{}; socket_ids.size() < n; ++socket ) {
             if ( m_socket_status[ socket ] == Socket_Status::AVAILABLE_FOR_ALLOCATION ) {
                 m_socket_status[ socket ] = Socket_Status::ALLOCATED;
 
