@@ -670,8 +670,7 @@ class Network_Stack {
      *
      * \return The socket IDs for the allocated sockets.
      */
-    constexpr auto allocate_sockets( std::uint_fast8_t n ) noexcept
-        -> Fixed_Capacity_Vector<Socket_ID, SOCKETS>
+    auto allocate_sockets( std::uint_fast8_t n ) noexcept -> Fixed_Capacity_Vector<Socket_ID, SOCKETS>
     {
         expect( n <= sockets_available_for_allocation(), Generic_Error::INSUFFICIENT_SOCKETS_AVAILABLE );
 
@@ -706,7 +705,7 @@ class Network_Stack {
      * \return The socket IDs for the allocated sockets.
      */
     template<typename Iterator>
-    constexpr auto allocate_sockets( Iterator begin, Iterator end ) noexcept
+    auto allocate_sockets( Iterator begin, Iterator end ) noexcept
         -> Fixed_Capacity_Vector<Socket_ID, SOCKETS>
     {
         auto socket_ids = Fixed_Capacity_Vector<Socket_ID, SOCKETS>{};
