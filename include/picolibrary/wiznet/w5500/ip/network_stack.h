@@ -26,8 +26,10 @@
 #include <cstdint>
 #include <utility>
 
+#include "picolibrary/algorithm.h"
 #include "picolibrary/array.h"
 #include "picolibrary/error.h"
+#include "picolibrary/fixed_capacity_vector.h"
 #include "picolibrary/ip.h"
 #include "picolibrary/ipv4.h"
 #include "picolibrary/mac_address.h"
@@ -657,6 +659,81 @@ class Network_Stack {
 
         m_socket_status[ socket ] = Socket_Status::AVAILABLE_FOR_ALLOCATION;
         ++m_sockets_available_for_allocation;
+    }
+
+    /**
+     * \brief Allocate sockets.
+     *
+     * \param[in] n The number of sockets to allocate.
+     *
+     * \pre at least n sockets are available
+     *
+     * \return The socket IDs for the allocated sockets.
+     */
+    auto allocate_sockets( std::uint_fast8_t n ) noexcept -> Fixed_Capacity_Vector<Socket_ID, SOCKETS>
+    {
+        expect( n <= sockets_available_for_allocation(), Generic_Error::INSUFFICIENT_SOCKETS_AVAILABLE );
+
+        auto socket_ids = Fixed_Capacity_Vector<Socket_ID, SOCKETS>{};
+
+        for ( auto socket = std::uint_fast8_t{}; socket_ids.size() < n; ++socket ) {
+            if ( m_socket_status[ socket ] == Socket_Status::AVAILABLE_FOR_ALLOCATION ) {
+                m_socket_status[ socket ] = Socket_Status::ALLOCATED;
+
+                socket_ids.push_back(
+                    BYPASS_PRECONDITION_EXPECTATION_CHECKS,
+                    static_cast<Socket_ID>( socket << Control_Byte::Bit::SOCKET ) );
+            } // if
+        }     // for
+
+        m_sockets_available_for_allocation -= n;
+
+        return socket_ids;
+    }
+
+    /**
+     * \brief Allocate specific sockets.
+     *
+     * \tparam Iterator Socket IDs range iterator.
+     *
+     * \param[in] begin The beginning of the range of socket IDs for the sockets to
+     *            allocate.
+     * \param[in] end The end of the range of socket IDs for the sockets to allocate.
+     *
+     * \pre the requested sockets are available for allocation.
+     *
+     * \return The socket IDs for the allocated sockets.
+     */
+    template<typename Iterator>
+    auto allocate_sockets( Iterator begin, Iterator end ) noexcept
+        -> Fixed_Capacity_Vector<Socket_ID, SOCKETS>
+    {
+        auto socket_ids = Fixed_Capacity_Vector<Socket_ID, SOCKETS>{};
+
+        ::picolibrary::for_each( begin, end, [ this, &socket_ids ]( auto socket_id ) noexcept {
+            socket_ids.push_back( BYPASS_PRECONDITION_EXPECTATION_CHECKS, allocate_socket( socket_id ) );
+        } );
+
+        return socket_ids;
+    }
+
+    /**
+     * \brief Deallocate sockets.
+     *
+     * \tparam Iterator Socket IDs range iterator.
+     *
+     * \param[in] begin The beginning of the range of socket IDs for the sockets to
+     *            deallocate.
+     * \param[in] end The end of the range of socket IDs for the sockets to deallocate.
+     *
+     * \pre the sockets have been allocated
+     */
+    template<typename Iterator>
+    void deallocate_sockets( Iterator begin, Iterator end ) noexcept
+    {
+        ::picolibrary::for_each( begin, end, [ this ]( auto socket_id ) noexcept {
+            deallocate_socket( socket_id );
+        } );
     }
 
     /**
