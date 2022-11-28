@@ -24,6 +24,7 @@
 #define PICOLIBRARY_TESTING_AUTOMATED_WIZNET_W5500_IP_NETWORK_STACK_H
 
 #include <cstdint>
+#include <vector>
 
 #include "gmock/gmock.h"
 #include "picolibrary/error.h"
