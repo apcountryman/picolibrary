@@ -23,6 +23,17 @@
 #ifndef PICOLIBRARY_ROM_H
 #define PICOLIBRARY_ROM_H
 
+#if __has_include( "picolibrary/hil/rom.h" )
+
+#include "picolibrary/hil/rom.h"
+
+/**
+ * \brief ROM access is specialized.
+ */
+#define PICOLIBRARY_SPECIALIZED_ROM_ACCESS
+
+#endif // __has_include( "picolibrary/hil/rom.h" )
+
 /**
  * \brief Read-Only Memory (ROM) facilities.
  */
