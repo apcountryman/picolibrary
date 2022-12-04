@@ -54,6 +54,7 @@ set(
     "picolibrary/postcondition.cc"
     "picolibrary/precondition.cc"
     "picolibrary/result.cc"
+    "picolibrary/rom.cc"
     "picolibrary/spi.cc"
     "picolibrary/state_machine.cc"
     "picolibrary/stream.cc"
