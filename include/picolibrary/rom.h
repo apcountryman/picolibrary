@@ -99,6 +99,7 @@ class Character;
  * foo( PICOLIBRARY_ROM_STRING( "foo" ) );
  * \endcode
  */
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define PICOLIBRARY_ROM_STRING( string ) ( string )
 #endif // PICOLIBRARY_SPECIALIZED_ROM_ACCESS
 
