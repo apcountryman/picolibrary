@@ -21,6 +21,7 @@ mark_as_advanced( CMAKE_INSTALL_PREFIX )
 # build configuration
 set( CMAKE_BUILD_TYPE                            "Release" CACHE INTERNAL "" )
 set( CMAKE_EXPORT_COMPILE_COMMANDS               ON        CACHE INTERNAL "" )
+set( PICOLIBRARY_HIL_INCLUDE_DIR                 ""        CACHE INTERNAL "" )
 set( PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS  OFF       CACHE INTERNAL "" )
 set( PICOLIBRARY_USE_STATIC_ANALYSIS_BUILD_FLAGS ON        CACHE INTERNAL "" )
 
