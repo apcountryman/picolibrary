@@ -147,6 +147,7 @@ add_library(
 )
 target_include_directories(
     picolibrary
+    PUBLIC "${PICOLIBRARY_HIL_INCLUDE_DIR}"
     PUBLIC "${PROJECT_SOURCE_DIR}/include"
 )
 target_compile_definitions(
@@ -167,7 +168,6 @@ add_library(
 )
 target_include_directories(
     picolibrary-fatal_error
-    PUBLIC "${PICOLIBRARY_HIL_INCLUDE_DIR}"
     PUBLIC "${PROJECT_SOURCE_DIR}/include"
 )
 
