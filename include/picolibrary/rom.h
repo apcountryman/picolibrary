@@ -61,6 +61,7 @@ using String = char const *;
  * - Provide `picolibrary/hil/rom.h`
  * - Define the macro replacement in `picolibrary/hil/rom.h`
  */
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define PICOLIBRARY_ROM_STRING( string ) ( string )
 #endif // PICOLIBRARY_ROM_STRING
 
