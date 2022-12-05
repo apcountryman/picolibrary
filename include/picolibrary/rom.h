@@ -32,21 +32,21 @@
  */
 namespace picolibrary::ROM {
 
-#ifndef PICOLIBRARY_ROM_STRING_IS_HIL_SPECIFIC
+#ifndef PICOLIBRARY_ROM_STRING_IS_HIL_DEFINED
 /**
- * \brief A handle to a null-terminated string that can be stored in ROM.
+ * \brief A handle to a null-terminated string that may be stored in ROM.
  *
  * To create a string literal that can be placed in ROM, use `PICOLIBRARY_ROM_STRING()`.
  *
  * A HIL can replace this type with a HIL specific version by doing the following:
  * - Configure the `PICOLIBRARY_HIL_INCLUDE_DIR` picolibrary project configuration option
  * - Provide `picolibrary/hil/rom.h`
- * - Define `PICOLIBRARY_ROM_STRING_IS_SPECIALIZED` in `picolibrary/hil/rom.h`
+ * - Define `PICOLIBRARY_ROM_STRING_IS_HIL_DEFINED` in `picolibrary/hil/rom.h`
  * - Define the HIL specific version of `::picolibrary::ROM::String` in
  *   `picolibrary/hil/rom.h`
  */
 using String = char const *;
-#endif // PICOLIBRARY_ROM_STRING_IS_HIL_SPECIFIC
+#endif // PICOLIBRARY_ROM_STRING_IS_HIL_DEFINED
 
 #ifndef PICOLIBRARY_ROM_STRING
 /**
@@ -54,7 +54,7 @@ using String = char const *;
  *
  * \param[in] string The string literal that can be placed in ROM.
  *
- * \return A handle to the string literal.
+ * \return A handle to the string literal that may be placed in ROM.
  *
  * A HIL can replace this macro by doing the following:
  * - Configure the `PICOLIBRARY_HIL_INCLUDE_DIR` picolibrary project configuration option
