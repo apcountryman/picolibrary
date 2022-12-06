@@ -25,6 +25,7 @@
 
 #include <utility>
 
+#include "picolibrary/rom.h"
 #include "picolibrary/stream.h"
 
 namespace picolibrary::Asynchronous_Serial {
@@ -162,6 +163,20 @@ class Reliable_Unbuffered_Output_Stream_Buffer final : public Reliable_Stream_Bu
             m_transmitter.transmit( character );
         } // while
     }
+
+#ifdef PICOLIBRARY_ROM_STRING_IS_HIL_DEFINED
+    /**
+     * \brief Transmit a null-terminated ROM string.
+     *
+     * \param[in] string The null-terminated ROM string to transmit.
+     */
+    void put( ROM::String string ) noexcept override final
+    {
+        while ( auto const character = *string++ ) {
+            m_transmitter.transmit( character );
+        } // while
+    }
+#endif // PICOLIBRARY_ROM_STRING_IS_HIL_DEFINED
 
     /**
      * \brief Transmit an unsigned byte.
