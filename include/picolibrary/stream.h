@@ -34,6 +34,7 @@
 #include "picolibrary/error.h"
 #include "picolibrary/precondition.h"
 #include "picolibrary/result.h"
+#include "picolibrary/rom.h"
 #include "picolibrary/void.h"
 
 namespace picolibrary {
@@ -170,6 +171,29 @@ class Stream_Buffer {
 
         return {};
     }
+
+#ifdef PICOLIBRARY_ROM_STRING_IS_HIL_DEFINED
+    /**
+     * \brief Write a null-terminated ROM string to the put area of the buffer.
+     *
+     * \param[in] string The null-terminated ROM string to write to the put area of the
+     *            buffer.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    virtual auto put( ROM::String string ) noexcept -> Result<Void, Error_Code>
+    {
+        while ( auto const character = *string++ ) {
+            auto result = put( character );
+            if ( result.is_error() ) {
+                return result.error();
+            } // if
+        }     // while
+
+        return {};
+    }
+#endif // PICOLIBRARY_ROM_STRING_IS_HIL_DEFINED
 
     /**
      * \brief Write an unsigned byte to the put area of the buffer.
