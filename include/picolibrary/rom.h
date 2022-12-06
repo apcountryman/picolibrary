@@ -36,7 +36,7 @@ namespace picolibrary::ROM {
 /**
  * \brief A handle to a null-terminated string that may be stored in ROM.
  *
- * To create a string literal that can be placed in ROM, use `PICOLIBRARY_ROM_STRING()`.
+ * To create a string literal that can be stored in ROM, use `PICOLIBRARY_ROM_STRING()`.
  *
  * A HIL can replace this type with a HIL specific version by doing the following:
  * - Configure the `PICOLIBRARY_HIL_INCLUDE_DIR` picolibrary project configuration option
@@ -50,11 +50,11 @@ using String = char const *;
 
 #ifndef PICOLIBRARY_ROM_STRING
 /**
- * \brief Create a string literal that can be placed in ROM.
+ * \brief Create a string literal that can be stored in ROM.
  *
- * \param[in] string The string literal that can be placed in ROM.
+ * \param[in] string The string literal that can be stored in ROM.
  *
- * \return A handle to the string literal that may be placed in ROM.
+ * \return A handle to the string literal that may be stored in ROM.
  *
  * A HIL can replace this macro by doing the following:
  * - Configure the `PICOLIBRARY_HIL_INCLUDE_DIR` picolibrary project configuration option
