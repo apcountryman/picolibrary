@@ -1284,6 +1284,22 @@ class Reliable_Output_Stream : public Reliable_Stream {
         buffer()->put( string );
     }
 
+#ifdef PICOLIBRARY_ROM_STRING_IS_HIL_DEFINED
+    /**
+     * \brief Write a null-terminated ROM string to the stream.
+     *
+     * \pre picolibrary::Reliable_Stream::is_nominal()
+     *
+     * \oaram[in] string The null-terminated ROM string to write to the stream.
+     */
+    void put( ROM::String string ) noexcept
+    {
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+
+        buffer()->put( string );
+    }
+#endif // PICOLIBRARY_ROM_STRING_IS_HIL_DEFINED
+
     /**
      * \brief Write an unsigned byte to the stream.
      *
