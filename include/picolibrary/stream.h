@@ -610,6 +610,32 @@ class Output_Stream : public Stream {
         return {};
     }
 
+#ifdef PICOLIBRARY_ROM_STRING_IS_HIL_DEFINED
+    /**
+     * \brief Write a null-terminated ROM string to the stream.
+     *
+     * \pre picolibrary::Stream::is_nominal()
+     *
+     * \param[in] string The null-terminated ROM string to write to the stream.
+     *
+     * \return Nothing if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto put( ROM::String string ) noexcept -> Result<Void, Error_Code>
+    {
+        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+
+        auto result = buffer()->put( string );
+        if ( result.is_error() ) {
+            report_fatal_error();
+
+            return result.error();
+        } // if
+
+        return {};
+    }
+#endif // PICOLIBRARY_ROM_STRING_IS_HIL_DEFINED
+
     /**
      * \brief Write an unsigned byte to the stream.
      *
