@@ -1672,10 +1672,10 @@ class Output_Formatter<char const *> {
 
 #ifdef PICOLIBRARY_ROM_STRING_IS_HIL_DEFINED
 /**
- * \brief Null-terminated string output formatter.
+ * \brief Null-terminated ROM string output formatter.
  */
 template<>
-class Output_Formatter<char const *> {
+class Output_Formatter<ROM::String> {
   public:
     /**
      * \brief Constructor.
