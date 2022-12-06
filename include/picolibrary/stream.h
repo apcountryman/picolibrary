@@ -1670,6 +1670,93 @@ class Output_Formatter<char const *> {
     }
 };
 
+#ifdef PICOLIBRARY_ROM_STRING_IS_HIL_DEFINED
+/**
+ * \brief Null-terminated string output formatter.
+ */
+template<>
+class Output_Formatter<char const *> {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Output_Formatter() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Output_Formatter( Output_Formatter && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Output_Formatter( Output_Formatter const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Output_Formatter() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Output_Formatter && expression ) noexcept -> Output_Formatter & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator   =( Output_Formatter const & expression ) noexcept
+        -> Output_Formatter & = default;
+
+    /**
+     * \brief Write the formatted null-terminated ROM string to the stream.
+     *
+     * \param[in] stream The stream to write the formatted null-terminated ROM string to.
+     * \param[in] string The null-terminated ROM string to format.
+     *
+     * \return The number of characters written to the stream if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto print( Output_Stream & stream, ROM::String string ) const noexcept
+        -> Result<std::size_t, Error_Code>
+    {
+        auto result = stream.put( string );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return ROM::length( string );
+    }
+
+    /**
+     * \brief Write the formatted null-terminated ROM string to the stream.
+     *
+     * \param[in] stream The stream to write the formatted null-terminated ROM string to.
+     * \param[in] string The null-terminated ROM string to format.
+     *
+     * \return The number of characters written to the stream.
+     */
+    auto print( Reliable_Output_Stream & stream, ROM::String string ) const noexcept -> std::size_t
+    {
+        stream.put( string );
+
+        return ROM::length( string );
+    }
+};
+#endif // PICOLIBRARY_ROM_STRING_IS_HIL_DEFINED
+
 /**
  * \brief picolibrary::Void output formatter.
  */
