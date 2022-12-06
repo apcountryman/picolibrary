@@ -23,6 +23,8 @@
 #ifndef PICOLIBRARY_ROM_H
 #define PICOLIBRARY_ROM_H
 
+#include <cstddef>
+
 #if __has_include( "picolibrary/hil/rom.h" )
 #include "picolibrary/hil/rom.h"
 #endif // __has_include( "picolibrary/hil/rom.h" )
@@ -63,6 +65,26 @@ using String = char const *;
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define PICOLIBRARY_ROM_STRING( string ) ( string )
 #endif // PICOLIBRARY_ROM_STRING
+
+/**
+ * \brief Get the length of a null-terminated string that may be stored in ROM.
+ *
+ * \relatedalso picolibrary::ROM::String
+ *
+ * \param[in] string The null-terminated string that may be stored in ROM to get the
+ *            length of.
+ *
+ * \return The length of the null-terminated string that may be stored in ROM.
+ */
+inline auto length( String string ) noexcept -> std::size_t
+{
+    auto const begin = string;
+    auto       end   = string;
+
+    for ( ; *end; ++end ) {} // for
+
+    return end - begin;
+}
 
 } // namespace picolibrary::ROM
 
