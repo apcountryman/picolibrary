@@ -53,6 +53,8 @@ using String = char const *;
 /**
  * \brief Create a string literal that can be stored in ROM.
  *
+ * \relatedalso picolibrary::ROM::String
+ *
  * \param[in] string The string literal that can be stored in ROM.
  *
  * \return A handle to the string literal that may be stored in ROM.
