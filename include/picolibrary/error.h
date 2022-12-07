@@ -91,13 +91,13 @@ class Error_Category {
      * \return The error ID's description.
      */
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
-    virtual auto error_description( Error_ID id ) const noexcept -> char const * = 0;
+    virtual auto error_description( Error_ID id ) const noexcept -> ROM::String = 0;
 #else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
-    constexpr auto error_description( Error_ID id ) const noexcept -> char const *
+    auto error_description( Error_ID id ) const noexcept -> ROM::String
     {
         static_cast<void>( id );
 
-        return "";
+        return PICOLIBRARY_ROM_STRING( "" );
     }
 #endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
 
@@ -228,7 +228,7 @@ class Error_Code final {
      *
      * \return The error's description.
      */
-    auto description() const noexcept -> char const *
+    auto description() const noexcept -> ROM::String
     {
         return category().error_description( id() );
     }
@@ -277,11 +277,11 @@ class Error_Code final {
          *
          * \return The error ID's description.
          */
-        auto error_description( Error_ID id ) const noexcept -> char const * override final
+        auto error_description( Error_ID id ) const noexcept -> ROM::String override final
         {
             static_cast<void>( id );
 
-            return "UNKNOWN";
+            return PICOLIBRARY_ROM_STRING( "UNKNOWN" );
         }
 #endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
 
@@ -416,37 +416,37 @@ class Generic_Error_Category final : public Error_Category {
      * \return The error ID's description.
      */
     // NOLINTNEXTLINE(readability-function-size)
-    auto error_description( Error_ID id ) const noexcept -> char const * override final
+    auto error_description( Error_ID id ) const noexcept -> ROM::String override final
     {
         // #lizard forgives the length
 
         switch ( static_cast<Generic_Error>( id ) ) {
                 // clang-format off
 
-            case Generic_Error::ARBITRATION_LOST: return "ARBITRATION_LOST";
-            case Generic_Error::BUS_ERROR: return "BUS_ERROR";
-            case Generic_Error::ENDPOINT_IN_USE: return "ENDPOINT_IN_USE";
-            case Generic_Error::EPHEMERAL_PORTS_EXHAUSTED: return "EPHEMERAL_PORTS_EXHAUSTED";
-            case Generic_Error::INSUFFICIENT_CAPACITY: return "INSUFFICIENT_CAPACITY";
-            case Generic_Error::INSUFFICIENT_SOCKETS_AVAILABLE: return "INSUFFICIENT_SOCKETS_AVAILABLE";
-            case Generic_Error::INVALID_ARGUMENT: return "INVALID_ARGUMENT";
-            case Generic_Error::IO_STREAM_DEGRADED: return "IO_STREAM_DEGRADED";
-            case Generic_Error::LOGIC_ERROR: return "LOGIC_ERROR";
-            case Generic_Error::NONRESPONSIVE_DEVICE: return "NONRESPONSIVE_DEVICE";
-            case Generic_Error::NOT_CONNECTED: return "NOT_CONNECTED";
-            case Generic_Error::NO_SOCKETS_AVAILABLE: return "NO_SOCKETS_AVAILABLE";
-            case Generic_Error::OPERATION_TIMEOUT: return "OPERATION_TIMEOUT";
-            case Generic_Error::OUT_OF_RANGE: return "OUT_OF_RANGE";
-            case Generic_Error::RUNTIME_ERROR: return "RUNTIME_ERROR";
-            case Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT: return "UNEXPECTED_EVENT_HANDLING_RESULT";
-            case Generic_Error::WOULD_BLOCK: return "WOULD_BLOCK";
-            case Generic_Error::WOULD_OVERFLOW: return "WOULD_OVERFLOW";
-            case Generic_Error::WOULD_UNDERFLOW: return "WOULD_UNDERFLOW";
+            case Generic_Error::ARBITRATION_LOST: return PICOLIBRARY_ROM_STRING( "ARBITRATION_LOST" );
+            case Generic_Error::BUS_ERROR: return PICOLIBRARY_ROM_STRING( "BUS_ERROR" );
+            case Generic_Error::ENDPOINT_IN_USE: return PICOLIBRARY_ROM_STRING( "ENDPOINT_IN_USE" );
+            case Generic_Error::EPHEMERAL_PORTS_EXHAUSTED: return PICOLIBRARY_ROM_STRING( "EPHEMERAL_PORTS_EXHAUSTED" );
+            case Generic_Error::INSUFFICIENT_CAPACITY: return PICOLIBRARY_ROM_STRING( "INSUFFICIENT_CAPACITY" );
+            case Generic_Error::INSUFFICIENT_SOCKETS_AVAILABLE: return PICOLIBRARY_ROM_STRING( "INSUFFICIENT_SOCKETS_AVAILABLE" );
+            case Generic_Error::INVALID_ARGUMENT: return PICOLIBRARY_ROM_STRING( "INVALID_ARGUMENT" );
+            case Generic_Error::IO_STREAM_DEGRADED: return PICOLIBRARY_ROM_STRING( "IO_STREAM_DEGRADED" );
+            case Generic_Error::LOGIC_ERROR: return PICOLIBRARY_ROM_STRING( "LOGIC_ERROR" );
+            case Generic_Error::NONRESPONSIVE_DEVICE: return PICOLIBRARY_ROM_STRING( "NONRESPONSIVE_DEVICE" );
+            case Generic_Error::NOT_CONNECTED: return PICOLIBRARY_ROM_STRING( "NOT_CONNECTED" );
+            case Generic_Error::NO_SOCKETS_AVAILABLE: return PICOLIBRARY_ROM_STRING( "NO_SOCKETS_AVAILABLE" );
+            case Generic_Error::OPERATION_TIMEOUT: return PICOLIBRARY_ROM_STRING( "OPERATION_TIMEOUT" );
+            case Generic_Error::OUT_OF_RANGE: return PICOLIBRARY_ROM_STRING( "OUT_OF_RANGE" );
+            case Generic_Error::RUNTIME_ERROR: return PICOLIBRARY_ROM_STRING( "RUNTIME_ERROR" );
+            case Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT: return PICOLIBRARY_ROM_STRING( "UNEXPECTED_EVENT_HANDLING_RESULT" );
+            case Generic_Error::WOULD_BLOCK: return PICOLIBRARY_ROM_STRING( "WOULD_BLOCK" );
+            case Generic_Error::WOULD_OVERFLOW: return PICOLIBRARY_ROM_STRING( "WOULD_OVERFLOW" );
+            case Generic_Error::WOULD_UNDERFLOW: return PICOLIBRARY_ROM_STRING( "WOULD_UNDERFLOW" );
 
                 // clang-format on
         } // switch
 
-        return "UNKNOWN";
+        return PICOLIBRARY_ROM_STRING( "UNKNOWN" );
     }
 #endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
 
