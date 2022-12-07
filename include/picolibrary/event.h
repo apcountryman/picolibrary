@@ -305,6 +305,8 @@ class Output_Formatter<Event> {
     auto print( Output_Stream & stream, Event const & event ) const noexcept
         -> Result<std::size_t, Error_Code>
     {
+        // #lizard forgives the length
+
         auto characters_written = std::size_t{};
 
         {
