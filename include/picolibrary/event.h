@@ -77,13 +77,13 @@ class Event_Category {
      * \return The event ID's description.
      */
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
-    virtual auto event_description( Event_ID id ) const noexcept -> char const * = 0;
+    virtual auto event_description( Event_ID id ) const noexcept -> ROM::String = 0;
 #else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
-    constexpr auto event_description( Event_ID id ) const noexcept -> char const *
+    auto event_description( Event_ID id ) const noexcept -> ROM::String
     {
         static_cast<void>( id );
 
-        return "";
+        return PICOLIBRARY_ROM_STRING( "" );
     }
 #endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
 
@@ -136,7 +136,7 @@ class Event {
      *
      * \return The event's description.
      */
-    auto description() const noexcept -> char const *
+    auto description() const noexcept -> ROM::String
     {
         return category().event_description( id() );
     }
