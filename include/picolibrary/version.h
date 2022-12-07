@@ -28,9 +28,11 @@
 namespace picolibrary {
 
 /**
- * \brief Library version.
+ * \brief Get the library version.
+ *
+ * \return The library version.
  */
-extern ROM::String const VERSION;
+auto version() noexcept -> ROM::String;
 
 } // namespace picolibrary
 

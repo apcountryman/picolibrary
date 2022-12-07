@@ -25,6 +25,9 @@
 
 namespace picolibrary {
 
-ROM::String const VERSION{ PICOLIBRARY_ROM_STRING( "@PICOLIBRARY_VERSION@" ) };
+auto version() noexcept -> ROM::String
+{
+    return PICOLIBRARY_ROM_STRING( "@PICOLIBRARY_VERSION@" );
+}
 
 } // namespace picolibrary
