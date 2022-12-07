@@ -308,7 +308,8 @@ class Output_Formatter<Event> {
         auto characters_written = std::size_t{};
 
         {
-            auto result = stream.print( event.category().name(), "::", event.description() );
+            auto result = stream.print(
+                event.category().name(), PICOLIBRARY_ROM_STRING( "::" ), event.description() );
             if ( result.is_error() ) {
                 return result.error();
             } // if
@@ -338,7 +339,8 @@ class Output_Formatter<Event> {
      */
     auto print( Reliable_Output_Stream & stream, Event const & event ) const noexcept -> std::size_t
     {
-        return stream.print( event.category().name(), "::", event.description() )
+        return stream.print(
+                   event.category().name(), PICOLIBRARY_ROM_STRING( "::" ), event.description() )
                + event.print_details( stream );
     }
 };

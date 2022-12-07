@@ -1888,7 +1888,8 @@ class Output_Formatter<Error_Code> {
     auto print( Output_Stream & stream, Error_Code const & error ) const noexcept
         -> Result<std::size_t, Error_Code>
     {
-        return stream.print( error.category().name(), "::", error.description() );
+        return stream.print(
+            error.category().name(), PICOLIBRARY_ROM_STRING( "::" ), error.description() );
     }
 
     /**
@@ -1901,7 +1902,8 @@ class Output_Formatter<Error_Code> {
      */
     auto print( Reliable_Output_Stream & stream, Error_Code const & error ) const noexcept -> std::size_t
     {
-        return stream.print( error.category().name(), "::", error.description() );
+        return stream.print(
+            error.category().name(), PICOLIBRARY_ROM_STRING( "::" ), error.description() );
     }
 };
 

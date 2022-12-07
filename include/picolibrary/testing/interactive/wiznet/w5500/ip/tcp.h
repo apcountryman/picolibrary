@@ -31,6 +31,7 @@
 #include "picolibrary/ipv4.h"
 #include "picolibrary/mac_address.h"
 #include "picolibrary/precondition.h"
+#include "picolibrary/rom.h"
 #include "picolibrary/stream.h"
 #include "picolibrary/testing/interactive/ip/tcp.h"
 #include "picolibrary/wiznet/w5500.h"
@@ -134,7 +135,7 @@ template<typename Controller, typename Device_Selector>
     network_stack.configure_ipv4_gateway_address( ipv4_gateway_address );
     network_stack.configure_ipv4_subnet_mask( ipv4_subnet_mask );
 
-    stream.put( "waiting for link to be established\n" );
+    stream.put( PICOLIBRARY_ROM_STRING( "waiting for link to be established\n" ) );
     stream.flush();
 
     while ( network_stack.link_status() != ::picolibrary::WIZnet::W5500::Link_Status::UP ) {} // while
@@ -144,17 +145,18 @@ template<typename Controller, typename Device_Selector>
 
     // clang-format off
     stream.print(
-        "link established:\n"
-        "    speed: ", link_speed == ::picolibrary::WIZnet::W5500::Link_Speed::_10_MbPs  ? "10 Mb/s"
-                     : link_speed == ::picolibrary::WIZnet::W5500::Link_Speed::_100_MbPs ? "100 Mb/s"
-                                                                                         : "unknown", "\n"
-        "    mode: ", link_mode == ::picolibrary::WIZnet::W5500::Link_Mode::HALF_DUPLEX ? "half duplex"
-                    : link_mode == ::picolibrary::WIZnet::W5500::Link_Mode::FULL_DUPLEX ? "full duplex"
-                                                                                        : "unknown", "\n"
-        "MAC address: ", mac_address, "\n"
-        "IPv4 address: ", ipv4_address, "\n"
-        "IPv4 gateway address: ", ipv4_gateway_address, "\n"
-        "IPv4 subnet mask: ", ipv4_subnet_mask, "\n"
+        PICOLIBRARY_ROM_STRING( "link established:" ),
+        PICOLIBRARY_ROM_STRING( "\n    speed: " ), link_speed == ::picolibrary::WIZnet::W5500::Link_Speed::_10_MbPs  ? PICOLIBRARY_ROM_STRING( "10 Mb/s" )
+                                                 : link_speed == ::picolibrary::WIZnet::W5500::Link_Speed::_100_MbPs ? PICOLIBRARY_ROM_STRING( "100 Mb/s" )
+                                                                                                                     : PICOLIBRARY_ROM_STRING( "unknown" ),
+        PICOLIBRARY_ROM_STRING( "\n    mode: " ), link_mode == ::picolibrary::WIZnet::W5500::Link_Mode::HALF_DUPLEX ? PICOLIBRARY_ROM_STRING( "half duplex" )
+                                                : link_mode == ::picolibrary::WIZnet::W5500::Link_Mode::FULL_DUPLEX ? PICOLIBRARY_ROM_STRING( "full duplex" )
+                                                                                                                    : PICOLIBRARY_ROM_STRING( "unknown" ),
+        PICOLIBRARY_ROM_STRING( "\nMAC address: " ), mac_address,
+        PICOLIBRARY_ROM_STRING( "\nIPv4 address: " ), ipv4_address,
+        PICOLIBRARY_ROM_STRING( "\nIPv4 gateway address: " ), ipv4_gateway_address,
+        PICOLIBRARY_ROM_STRING( "\nIPv4 subnet mask: " ), ipv4_subnet_mask,
+        '\n'
     );
     // clang-format on
     stream.flush();

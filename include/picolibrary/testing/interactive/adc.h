@@ -24,6 +24,7 @@
 #define PICOLIBRARY_TESTING_INTERACTIVE_ADC_H
 
 #include "picolibrary/format.h"
+#include "picolibrary/rom.h"
 #include "picolibrary/stream.h"
 
 /**
@@ -53,11 +54,11 @@ template<typename Blocking_Single_Sample_Converter, typename Delayer>
     adc.initialize();
 
     stream.print(
-        "ADC sample range: [",
+        PICOLIBRARY_ROM_STRING( "ADC sample range: [" ),
         Format::Dec{ Blocking_Single_Sample_Converter::Sample::min().as_unsigned_integer() },
         ',',
         Format::Dec{ Blocking_Single_Sample_Converter::Sample::max().as_unsigned_integer() },
-        "]\n" );
+        PICOLIBRARY_ROM_STRING( "]\n" ) );
 
     for ( ;; ) {
         delay();

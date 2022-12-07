@@ -23,6 +23,7 @@
 #ifndef PICOLIBRARY_TESTING_INTERACTIVE_STREAM_H
 #define PICOLIBRARY_TESTING_INTERACTIVE_STREAM_H
 
+#include "picolibrary/rom.h"
 #include "picolibrary/stream.h"
 
 namespace picolibrary::Testing::Interactive {
@@ -34,7 +35,7 @@ namespace picolibrary::Testing::Interactive {
  */
 inline void hello_world( Reliable_Output_Stream & stream ) noexcept
 {
-    stream.put( "Hello, world!\n" );
+    stream.put( PICOLIBRARY_ROM_STRING( "Hello, world!\n" ) );
     stream.flush();
 }
 

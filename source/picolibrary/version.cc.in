@@ -20,10 +20,11 @@
  * \brief picolibrary::VERSION implementation.
  */
 
+#include "picolibrary/rom.h"
 #include "picolibrary/version.h"
 
 namespace picolibrary {
 
-char const * const VERSION{ "@PICOLIBRARY_VERSION@" };
+char const * const VERSION{ PICOLIBRARY_ROM_STRING( "@PICOLIBRARY_VERSION@" ) };
 
 } // namespace picolibrary

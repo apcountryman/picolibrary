@@ -28,6 +28,7 @@
 #include "picolibrary/error.h"
 #include "picolibrary/format.h"
 #include "picolibrary/precondition.h"
+#include "picolibrary/rom.h"
 #include "picolibrary/stream.h"
 
 /**
@@ -63,7 +64,12 @@ template<typename Controller, typename Delayer>
         delay();
 
         auto const rx = controller.exchange( tx );
-        stream.print( "exchange( ", Format::Hex{ tx }, " ) -> ", Format::Hex{ rx }, '\n' );
+        stream.print(
+            PICOLIBRARY_ROM_STRING( "exchange( " ),
+            Format::Hex{ tx },
+            PICOLIBRARY_ROM_STRING( " ) -> " ),
+            Format::Hex{ rx },
+            '\n' );
         stream.flush();
         expect( rx == tx, Generic_Error::RUNTIME_ERROR );
     } // for

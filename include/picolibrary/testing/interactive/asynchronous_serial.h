@@ -23,6 +23,8 @@
 #ifndef PICOLIBRARY_TESTING_INTERACTIVE_ASYNCHRONOUS_SERIAL_H
 #define PICOLIBRARY_TESTING_INTERACTIVE_ASYNCHRONOUS_SERIAL_H
 
+#include "picolibrary/rom.h"
+
 /**
  * \brief Asynchronous serial interactive testing facilities.
  */
@@ -40,7 +42,8 @@ void hello_world( Transmitter transmitter ) noexcept
 {
     transmitter.initialize();
 
-    for ( auto const * string = "Hello, world!\n"; auto const character = *string++; ) {
+    for ( auto       string    = PICOLIBRARY_ROM_STRING( "Hello, world!\n" );
+          auto const character = *string++; ) {
         transmitter.transmit( character );
     } // for
 }

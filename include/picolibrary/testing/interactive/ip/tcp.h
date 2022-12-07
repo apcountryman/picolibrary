@@ -32,6 +32,7 @@
 #include "picolibrary/ip/tcp.h"
 #include "picolibrary/precondition.h"
 #include "picolibrary/result.h"
+#include "picolibrary/rom.h"
 #include "picolibrary/stream.h"
 #include "picolibrary/void.h"
 
@@ -167,7 +168,8 @@ void echo( Reliable_Output_Stream & stream, Socket socket ) noexcept
             end = result.value();
         }
 
-        stream.print( "echoing:\n", Format::Hex_Dump{ buffer.cbegin(), end } );
+        stream.print(
+            PICOLIBRARY_ROM_STRING( "echoing:\n" ), Format::Hex_Dump{ buffer.cbegin(), end } );
         stream.flush();
 
         {
@@ -178,7 +180,8 @@ void echo( Reliable_Output_Stream & stream, Socket socket ) noexcept
         }
     } // for
 
-    stream.put( "connection lost, attempting graceful shutdown\n" );
+    stream.put(
+        PICOLIBRARY_ROM_STRING( "connection lost, attempting graceful shutdown\n" ) );
     stream.flush();
 
     shutdown_gracefully( socket );
@@ -247,14 +250,18 @@ template<typename Network_Stack, typename Socket_Options_Configurator>
         client.bind( local_endpoint );
 
         stream.print(
-            "attempting to connect to ", remote_endpoint, " from ", client.local_endpoint(), '\n' );
+            PICOLIBRARY_ROM_STRING( "attempting to connect to " ),
+            remote_endpoint,
+            PICOLIBRARY_ROM_STRING( " from " ),
+            client.local_endpoint(),
+            '\n' );
         stream.flush();
         auto result = connect( client, remote_endpoint );
         if ( result.is_error() ) {
-            stream.put( "connection failed\n" );
+            stream.put( PICOLIBRARY_ROM_STRING( "connection failed\n" ) );
             stream.flush();
         } else {
-            stream.put( "connection established\n" );
+            stream.put( PICOLIBRARY_ROM_STRING( "connection established\n" ) );
             stream.flush();
 
             echo( stream, std::move( client ) );

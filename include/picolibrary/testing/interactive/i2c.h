@@ -27,6 +27,7 @@
 
 #include "picolibrary/format.h"
 #include "picolibrary/i2c.h"
+#include "picolibrary/rom.h"
 #include "picolibrary/stream.h"
 
 /**
@@ -60,16 +61,16 @@ void scan( Reliable_Output_Stream & stream, Controller controller ) noexcept
                 devices_found = true;
 
                 stream.print(
-                    "device found: ",
+                    PICOLIBRARY_ROM_STRING( "device found: " ),
                     Format::Hex{ static_cast<std::uint8_t>( address.as_unsigned_integer() ) },
-                    " (",
+                    PICOLIBRARY_ROM_STRING( " (" ),
                     operation == ::picolibrary::I2C::Operation::READ ? 'R' : 'W',
-                    ")\n" );
+                    PICOLIBRARY_ROM_STRING( ")\n" ) );
             } // if
         } );
 
     if ( not devices_found ) {
-        stream.put( "no devices found\n" );
+        stream.put( PICOLIBRARY_ROM_STRING( "no devices found\n" ) );
     } // if
 
     stream.flush();
