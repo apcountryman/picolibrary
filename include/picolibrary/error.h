@@ -26,6 +26,7 @@
 #include <cstdint>
 #include <type_traits>
 
+#include "picolibrary/rom.h"
 #include "picolibrary/utility.h"
 #include "picolibrary/void.h"
 
@@ -74,11 +75,11 @@ class Error_Category {
      * \return The name of the error category.
      */
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
-    virtual auto name() const noexcept -> char const * = 0;
+    virtual auto name() const noexcept -> ROM::String = 0;
 #else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
-    constexpr auto name() const noexcept -> char const *
+    auto name() const noexcept -> ROM::String
     {
-        return "";
+        return PICOLIBRARY_ROM_STRING( "" );
     }
 #endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
 
@@ -262,9 +263,9 @@ class Error_Code final {
          *
          * \return The name of the error category.
          */
-        auto name() const noexcept -> char const * override final
+        auto name() const noexcept -> ROM::String override final
         {
-            return "::picolibrary::Default_Error";
+            return PICOLIBRARY_ROM_STRING( "::picolibrary::Default_Error" );
         }
 #endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
 
@@ -400,9 +401,9 @@ class Generic_Error_Category final : public Error_Category {
      *
      * \return The name of the error category.
      */
-    auto name() const noexcept -> char const * override final
+    auto name() const noexcept -> ROM::String override final
     {
-        return "::picolibrary::Generic_Error";
+        return PICOLIBRARY_ROM_STRING( "::picolibrary::Generic_Error" );
     }
 #endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
 
