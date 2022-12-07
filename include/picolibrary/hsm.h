@@ -97,14 +97,12 @@ class HSM {
         auto event_description( Event_ID id ) const noexcept -> ROM::String override final
         {
             switch ( static_cast<Pseudo_Event>( id ) ) {
-                    // clang-format off
-
-                case Pseudo_Event::DISCOVERY: return PICOLIBRARY_ROM_STRING( "DISCOVERY" );
+                case Pseudo_Event::DISCOVERY:
+                    return PICOLIBRARY_ROM_STRING( "DISCOVERY" );
                 case Pseudo_Event::ENTRY: return PICOLIBRARY_ROM_STRING( "ENTRY" );
                 case Pseudo_Event::EXIT: return PICOLIBRARY_ROM_STRING( "EXIT" );
-                case Pseudo_Event::NESTED_INITIAL_TRANSITION: return PICOLIBRARY_ROM_STRING( "NESTED_INITIAL_TRANSITION" );
-
-                    // clang-format on
+                case Pseudo_Event::NESTED_INITIAL_TRANSITION:
+                    return PICOLIBRARY_ROM_STRING( "NESTED_INITIAL_TRANSITION" );
             } // switch
 
             return PICOLIBRARY_ROM_STRING( "UNKNOWN" );
