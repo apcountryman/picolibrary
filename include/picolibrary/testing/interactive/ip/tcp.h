@@ -232,8 +232,8 @@ auto connect( Client & client, ::picolibrary::IP::TCP::Endpoint const & endpoint
  * \param[in] local_endpoint The local endpoint to bind client sockets to.
  * \param[in] remote_endpoint The remote endpoint to connect to.
  */
-// NOLINTNEXTLINE(readability-function-size)
 template<typename Network_Stack, typename Socket_Options_Configurator>
+// NOLINTNEXTLINE(readability-function-size)
 [[noreturn]] void echo_client(
     Reliable_Output_Stream &                 stream,
     Network_Stack &                          network_stack,
