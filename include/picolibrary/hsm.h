@@ -32,6 +32,7 @@
 #include "picolibrary/event.h"
 #include "picolibrary/fixed_capacity_vector.h"
 #include "picolibrary/precondition.h"
+#include "picolibrary/rom.h"
 
 namespace picolibrary {
 
@@ -79,9 +80,9 @@ class HSM {
          * \return The name of the pseudo-event category.
          */
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
-        auto name() const noexcept -> char const * override final
+        auto name() const noexcept -> ROM::String override final
         {
-            return "::picolibrary::HSM::Pseudo_Event";
+            return PICOLIBRARY_ROM_STRING( "::picolibrary::HSM::Pseudo_Event" );
         }
 #endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
 

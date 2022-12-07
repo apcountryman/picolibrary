@@ -31,6 +31,7 @@
 
 #include "picolibrary/error.h"
 #include "picolibrary/result.h"
+#include "picolibrary/rom.h"
 #include "picolibrary/stream.h"
 #include "picolibrary/void.h"
 
@@ -60,11 +61,11 @@ class Event_Category {
      * \return The name of the event category.
      */
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
-    virtual auto name() const noexcept -> char const * = 0;
+    virtual auto name() const noexcept -> ROM::String = 0;
 #else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
-    constexpr auto name() const noexcept -> char const *
+    auto name() const noexcept -> ROM::String
     {
-        return "";
+        return PICOLIBRARY_ROM_STRING( "" );
     }
 #endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
 
