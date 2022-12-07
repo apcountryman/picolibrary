@@ -29,6 +29,7 @@
 #include "picolibrary/error.h"
 #include "picolibrary/event.h"
 #include "picolibrary/precondition.h"
+#include "picolibrary/rom.h"
 
 namespace picolibrary {
 
@@ -74,9 +75,9 @@ class State_Machine {
          * \return The name of the pseudo-event category.
          */
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
-        auto name() const noexcept -> char const * override final
+        auto name() const noexcept -> ROM::String override final
         {
-            return "::picolibrary::State_Machine::Pseudo_Event";
+            return PICOLIBRARY_ROM_STRING( "::picolibrary::State_Machine::Pseudo_Event" );
         }
 #endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
 
