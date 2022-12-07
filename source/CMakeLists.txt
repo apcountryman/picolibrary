@@ -179,6 +179,10 @@ target_include_directories(
     picolibrary-version
     PUBLIC "${PROJECT_SOURCE_DIR}/include"
 )
+target_link_libraries(
+    picolibrary-version
+    picolibrary
+)
 
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_library(
