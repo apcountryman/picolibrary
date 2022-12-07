@@ -23,12 +23,14 @@
 #ifndef PICOLIBRARY_VERSION_H
 #define PICOLIBRARY_VERSION_H
 
+#include "picolibrary/rom.h"
+
 namespace picolibrary {
 
 /**
  * \brief Library version.
  */
-extern char const * const VERSION;
+extern ROM::String const VERSION;
 
 } // namespace picolibrary
 
