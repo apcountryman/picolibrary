@@ -34,6 +34,7 @@
 #include "picolibrary/format.h"
 #include "picolibrary/ipv4.h"
 #include "picolibrary/result.h"
+#include "picolibrary/rom.h"
 #include "picolibrary/stream.h"
 
 /**
@@ -871,7 +872,7 @@ class Output_Formatter<IP::Address> {
         -> Result<std::size_t, Error_Code>
     {
         if ( address.is_any() ) {
-            return stream.print( "ANY" );
+            return stream.print( PICOLIBRARY_ROM_STRING( "ANY" ) );
         } // if
 
         switch ( address.version() ) {
@@ -892,7 +893,7 @@ class Output_Formatter<IP::Address> {
         -> std::size_t
     {
         if ( address.is_any() ) {
-            return stream.print( "ANY" );
+            return stream.print( PICOLIBRARY_ROM_STRING( "ANY" ) );
         } // if
 
         switch ( address.version() ) {

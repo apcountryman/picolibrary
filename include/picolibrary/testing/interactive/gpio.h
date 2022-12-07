@@ -23,6 +23,7 @@
 #ifndef PICOLIBRARY_TESTING_INTERACTIVE_GPIO_H
 #define PICOLIBRARY_TESTING_INTERACTIVE_GPIO_H
 
+#include "picolibrary/rom.h"
 #include "picolibrary/stream.h"
 
 /**
@@ -50,7 +51,7 @@ template<typename Input_Pin, typename Delayer>
     for ( ;; ) {
         delay();
 
-        stream.put( pin.is_high() ? "high\n" : "low\n" );
+        stream.put( pin.is_high() ? PICOLIBRARY_ROM_STRING( "high\n" ) : PICOLIBRARY_ROM_STRING( "low\n" ) );
         stream.flush();
     } // for
 }
