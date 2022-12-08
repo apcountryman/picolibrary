@@ -19,8 +19,8 @@ See
 [`include/picolibrary/fatal_error.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/fatal_error.h)
 for more information.
 
-The `picolibrary` static library does not include `::picolibrary::VERSION`.
-To use `::picolibrary::VERSION`, link with the `picolibrary-version` static library.
+The `picolibrary` static library does not include `::picolibrary::version()`.
+To use `::picolibrary::version()`, link with the `picolibrary-version` static library.
 ```cmake
 target_link_libraries(
     foo

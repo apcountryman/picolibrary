@@ -17,7 +17,7 @@
 
 /**
  * \file
- * \brief picolibrary::VERSION interface.
+ * \brief picolibrary::version() interface.
  */
 
 #ifndef PICOLIBRARY_VERSION_H

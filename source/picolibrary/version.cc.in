@@ -17,7 +17,7 @@
 
 /**
  * \file
- * \brief picolibrary::VERSION implementation.
+ * \brief picolibrary::version() implementation.
  */
 
 #include "picolibrary/rom.h"
