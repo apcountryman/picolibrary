@@ -154,6 +154,7 @@ target_compile_definitions(
     picolibrary
     PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_ENABLE_AUTOMATED_TESTING}>,PICOLIBRARY_ENABLE_AUTOMATED_TESTING,>"
     PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING}>,PICOLIBRARY_ENABLE_INTERACTIVE_TESTING,>"
+    PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION}>,PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION,>"
     PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION}>,PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION,>"
     PUBLIC "$<IF:$<BOOL:${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION}>,PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION,>"
 )
@@ -169,6 +170,10 @@ add_library(
 target_include_directories(
     picolibrary-fatal_error
     PUBLIC "${PROJECT_SOURCE_DIR}/include"
+)
+target_link_libraries(
+    picolibrary-fatal_error
+    picolibrary
 )
 
 add_library(
@@ -192,5 +197,9 @@ if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     target_include_directories(
         picolibrary-testing-automated-fatal_error
         PUBLIC "${PROJECT_SOURCE_DIR}/include"
+    )
+    target_link_libraries(
+        picolibrary-testing-automated-fatal_error
+        picolibrary
     )
 endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )

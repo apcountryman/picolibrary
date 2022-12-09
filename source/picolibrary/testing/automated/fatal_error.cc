@@ -26,14 +26,25 @@
 #include <iostream>
 
 #include "picolibrary/error.h"
+#include "picolibrary/rom.h"
 
 namespace picolibrary {
 
+#ifndef PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
+void trap_fatal_error( ROM::String file, int line, Error_Code const & error ) noexcept
+{
+    std::cerr << file << ':' << line << ": " << error.category().name()
+              << "::" << error.description() << '\n';
+
+    std::abort();
+}
+#else  // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
 void trap_fatal_error( Error_Code const & error ) noexcept
 {
     std::cerr << error.category().name() << "::" << error.description() << '\n';
 
     std::abort();
 }
+#endif // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
 
 } // namespace picolibrary

@@ -367,15 +367,15 @@ class Client {
     {
         // #lizard forgives the length
 
-        expect( m_state == State::INITIALIZED, Generic_Error::LOGIC_ERROR );
+        PICOLIBRARY_EXPECT( m_state == State::INITIALIZED, Generic_Error::LOGIC_ERROR );
 
-        expect(
+        PICOLIBRARY_EXPECT(
             endpoint.address().version() == ::picolibrary::IP::Version::UNSPECIFIED
                 or endpoint.address().version() == ::picolibrary::IP::Version::_4,
             Generic_Error::INVALID_ARGUMENT );
 
         if ( not endpoint.address().is_any() ) {
-            expect(
+            PICOLIBRARY_EXPECT(
                 endpoint.address().ipv4().as_byte_array() == m_driver->read_sipr(),
                 Generic_Error::INVALID_ARGUMENT );
         } // if
@@ -417,7 +417,7 @@ class Client {
         // #lizard forgives the length
 
         if ( m_state == State::BOUND ) {
-            expect(
+            PICOLIBRARY_EXPECT(
                 endpoint.address().is_ipv4() and not endpoint.address().is_any()
                     and not endpoint.port().is_any(),
                 Generic_Error::INVALID_ARGUMENT );
@@ -442,7 +442,7 @@ class Client {
             } // switch
         }     // if
 
-        expect( Generic_Error::LOGIC_ERROR );
+        PICOLIBRARY_EXPECTATION_NOT_MET( Generic_Error::LOGIC_ERROR );
     }
 
     /**
@@ -490,7 +490,7 @@ class Client {
             to_underlying( m_network_stack->socket_buffer_size() ) * 1024 );
         auto const sn_tx_fsr = m_driver->read_sn_tx_fsr( m_socket_id );
 
-        expect( sn_tx_fsr <= buffer_size, m_network_stack->nonresponsive_device_error() );
+        PICOLIBRARY_EXPECT( sn_tx_fsr <= buffer_size, m_network_stack->nonresponsive_device_error() );
 
         return buffer_size - sn_tx_fsr;
     }
@@ -530,7 +530,7 @@ class Client {
     {
         // #lizard forgives the length
 
-        expect( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
+        PICOLIBRARY_EXPECT( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
 
         if ( m_driver->read_sn_sr( m_socket_id ) != SN_SR::STATUS_SOCK_ESTABLISHED ) {
             return Generic_Error::NOT_CONNECTED;
@@ -554,7 +554,7 @@ class Client {
             to_underlying( m_network_stack->socket_buffer_size() ) * 1024 );
         auto const sn_tx_fsr = m_driver->read_sn_tx_fsr( m_socket_id );
 
-        expect( sn_tx_fsr <= buffer_size, m_network_stack->nonresponsive_device_error() );
+        PICOLIBRARY_EXPECT( sn_tx_fsr <= buffer_size, m_network_stack->nonresponsive_device_error() );
 
         if ( sn_tx_fsr == 0 ) {
             return Generic_Error::WOULD_BLOCK;
@@ -587,7 +587,7 @@ class Client {
      */
     auto transmit_keepalive() noexcept -> Result<Void, Error_Code>
     {
-        expect( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
+        PICOLIBRARY_EXPECT( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
 
         if ( m_driver->read_sn_sr( m_socket_id ) != SN_SR::STATUS_SOCK_ESTABLISHED ) {
             return Generic_Error::NOT_CONNECTED;
@@ -614,7 +614,7 @@ class Client {
             to_underlying( m_network_stack->socket_buffer_size() ) * 1024 );
         auto const sn_rx_rsr = m_driver->read_sn_rx_rsr( m_socket_id );
 
-        expect( sn_rx_rsr <= buffer_size, m_network_stack->nonresponsive_device_error() );
+        PICOLIBRARY_EXPECT( sn_rx_rsr <= buffer_size, m_network_stack->nonresponsive_device_error() );
 
         return sn_rx_rsr;
     }
@@ -642,7 +642,7 @@ class Client {
     {
         // #lizard forgives the length
 
-        expect( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
+        PICOLIBRARY_EXPECT( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
 
         auto close_wait = false;
 
@@ -657,7 +657,7 @@ class Client {
             to_underlying( m_network_stack->socket_buffer_size() ) * 1024 );
         auto const sn_rx_rsr = m_driver->read_sn_rx_rsr( m_socket_id );
 
-        expect( sn_rx_rsr <= buffer_size, m_network_stack->nonresponsive_device_error() );
+        PICOLIBRARY_EXPECT( sn_rx_rsr <= buffer_size, m_network_stack->nonresponsive_device_error() );
 
         if ( sn_rx_rsr == 0 ) {
             return close_wait ? Generic_Error::NOT_CONNECTED : Generic_Error::WOULD_BLOCK;
@@ -688,7 +688,7 @@ class Client {
      */
     void shutdown() noexcept
     {
-        expect( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
+        PICOLIBRARY_EXPECT( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
 
         if ( m_driver->read_sn_sr( m_socket_id ) == SN_SR::STATUS_SOCK_CLOSED ) {
             return;

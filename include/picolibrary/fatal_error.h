@@ -24,9 +24,30 @@
 #define PICOLIBRARY_FATAL_ERROR_H
 
 #include "picolibrary/error.h"
+#include "picolibrary/rom.h"
 
 namespace picolibrary {
 
+#ifndef PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
+/**
+ * \brief Trap a fatal error.
+ *
+ * \attention The picolibrary static library does not provide an implementation for this
+ *            function. Library users can:
+ *            - Provide an application specific implementation
+ *            - Link with the picolibrary-fatal_error static library which provides an
+ *              implementation that calls std::abort()
+ *            - Link with the picolibrary-testing-automated-fatal_error static library
+ *              (only available if automated testing is enabled) which provides an
+ *              implementation that writes error information to std::cerr before calling
+ *              std::abort()
+ *
+ * \param[in] file The file in which the fatal error occurred.
+ * \param[in] line The line on which the fatal error occurred.
+ * \param[in] error The fatal error.
+ */
+[[noreturn]] void trap_fatal_error( ROM::String file, int line, Error_Code const & error ) noexcept;
+#else  // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
 /**
  * \brief Trap a fatal error.
  *
@@ -43,6 +64,7 @@ namespace picolibrary {
  * \param[in] error The fatal error.
  */
 [[noreturn]] void trap_fatal_error( Error_Code const & error ) noexcept;
+#endif // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
 
 } // namespace picolibrary
 

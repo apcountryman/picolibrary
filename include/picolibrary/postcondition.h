@@ -24,11 +24,35 @@
 #define PICOLIBRARY_POSTCONDITION_H
 
 #include "picolibrary/fatal_error.h"
+#include "picolibrary/rom.h"
 
 namespace picolibrary {
 
+#ifndef PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
 /**
  * \brief Check a postcondition's guarantee.
+ *
+ * \attention This function should not be used directly. Use PICOLIBRARY_ENSURE() instead.
+ *
+ * \tparam Error A type that can be implicitly converted to picolibrary::Error_Code.
+ *
+ * \param[in] guarantee The guarantee to check.
+ * \param[in] file The file in which the check occurs.
+ * \param[in] line The line on which the check occurs.
+ * \param[in] error The fatal error that occurs if the guarantee is not met.
+ */
+template<typename Error>
+constexpr void ensure( bool guarantee, ROM::String file, int line, Error error ) noexcept
+{
+    if ( not guarantee ) {
+        trap_fatal_error( file, line, error );
+    } // if
+}
+#else  // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
+/**
+ * \brief Check a postcondition's guarantee.
+ *
+ * \attention This function should not be used directly. Use PICOLIBRARY_ENSURE() instead.
  *
  * \tparam Error A type that can be implicitly converted to picolibrary::Error_Code.
  *
@@ -42,19 +66,83 @@ constexpr void ensure( bool guarantee, Error error ) noexcept
         trap_fatal_error( error );
     } // if
 }
+#endif // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
 
+#ifndef PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
 /**
  * \brief Check a postcondition's guarantee.
+ *
+ * \param[in] guarantee The guarantee to check.
+ * \param[in] error The fatal error that occurs if the guarantee is not met.
+ */
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+#define PICOLIBRARY_ENSURE( guarantee, error ) \
+    ::picolibrary::ensure( guarantee, PICOLIBRARY_ROM_STRING( __FILE__ ), __LINE__, error )
+#else // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
+/**
+ * \brief Check a postcondition's guarantee.
+ *
+ * \param[in] guarantee The guarantee to check.
+ * \param[in] error The fatal error that occurs if the guarantee is not met.
+ */
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+#define PICOLIBRARY_ENSURE( guarantee, error ) ::picolibrary::ensure( guarantee, error )
+#endif // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
+
+#ifndef PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
+/**
+ * \brief Report that a postcondition's guarantee has not been met.
+ *
+ * \attention This function should not be used directly. Use
+ *            PICOLIBRARY_GUARANTEE_NOT_MET() instead.
+ *
+ * \tparam Error A type that can be implicitly converted to picolibrary::Error_Code.
+ *
+ * \param[in] file The file in which the report is made.
+ * \param[in] line The line on which the report is made.
+ * \param[in] error The fatal error that occurs.
+ */
+template<typename Error>
+[[noreturn]] void guarantee_not_met( ROM::String file, int line, Error error ) noexcept
+{
+    trap_fatal_error( file, line, error );
+}
+#else  // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
+/**
+ * \brief Report that a postcondition's guarantee has not been met.
+ *
+ * \attention This function should not be used directly. Use
+ *            PICOLIBRARY_GUARANTEE_NOT_MET() instead.
  *
  * \tparam Error A type that can be implicitly converted to picolibrary::Error_Code.
  *
  * \param[in] error The fatal error that occurs.
  */
 template<typename Error>
-[[noreturn]] void ensure( Error error ) noexcept
+[[noreturn]] void guarantee_not_met( Error error ) noexcept
 {
     trap_fatal_error( error );
 }
+#endif // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
+
+#ifndef PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
+/**
+ * \brief Report that a postcondition's guarantee has not been met.
+ *
+ * \param[in] error The fatal error that occurs.
+ */
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+#define PICOLIBRARY_GUARANTEE_NOT_MET( error ) \
+    ::picolibrary::guarantee_not_met( PICOLIBRARY_ROM_STRING( __FILE__ ), __LINE__, error )
+#else // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
+/**
+ * \brief Report that a postcondition's guarantee has not been met.
+ *
+ * \param[in] error The fatal error that occurs.
+ */
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+#define PICOLIBRARY_GUARANTEE_NOT_MET( error ) ::picolibrary::guarantee_not_met( error )
+#endif // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
 
 } // namespace picolibrary
 

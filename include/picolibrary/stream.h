@@ -549,7 +549,7 @@ class Output_Stream : public Stream {
      */
     auto put( char character ) noexcept -> Result<Void, Error_Code>
     {
-        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+        PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         auto result = buffer()->put( character );
         if ( result.is_error() ) {
@@ -574,7 +574,7 @@ class Output_Stream : public Stream {
      */
     auto put( char const * begin, char const * end ) noexcept -> Result<Void, Error_Code>
     {
-        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+        PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         auto result = buffer()->put( begin, end );
         if ( result.is_error() ) {
@@ -598,7 +598,7 @@ class Output_Stream : public Stream {
      */
     auto put( char const * string ) noexcept -> Result<Void, Error_Code>
     {
-        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+        PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         auto result = buffer()->put( string );
         if ( result.is_error() ) {
@@ -623,7 +623,7 @@ class Output_Stream : public Stream {
      */
     auto put( ROM::String string ) noexcept -> Result<Void, Error_Code>
     {
-        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+        PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         auto result = buffer()->put( string );
         if ( result.is_error() ) {
@@ -648,7 +648,7 @@ class Output_Stream : public Stream {
      */
     auto put( std::uint8_t value ) noexcept -> Result<Void, Error_Code>
     {
-        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+        PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         auto result = buffer()->put( value );
         if ( result.is_error() ) {
@@ -674,7 +674,7 @@ class Output_Stream : public Stream {
      */
     auto put( std::uint8_t const * begin, std::uint8_t const * end ) noexcept -> Result<Void, Error_Code>
     {
-        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+        PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         auto result = buffer()->put( begin, end );
         if ( result.is_error() ) {
@@ -698,7 +698,7 @@ class Output_Stream : public Stream {
      */
     auto put( std::int8_t value ) noexcept -> Result<Void, Error_Code>
     {
-        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+        PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         auto result = buffer()->put( value );
         if ( result.is_error() ) {
@@ -723,7 +723,7 @@ class Output_Stream : public Stream {
      */
     auto put( std::int8_t const * begin, std::int8_t const * end ) noexcept -> Result<Void, Error_Code>
     {
-        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+        PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         auto result = buffer()->put( begin, end );
         if ( result.is_error() ) {
@@ -754,7 +754,7 @@ class Output_Stream : public Stream {
     template<typename... Types>
     auto print( Types &&... values ) noexcept -> Result<std::size_t, Error_Code>
     {
-        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+        PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         return print_implementation( std::size_t{ 0 }, std::forward<Types>( values )... );
     }
@@ -770,7 +770,7 @@ class Output_Stream : public Stream {
      */
     auto flush() noexcept -> Result<Void, Error_Code>
     {
-        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+        PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         auto result = buffer()->flush();
         if ( result.is_error() ) {
@@ -1250,7 +1250,7 @@ class Reliable_Output_Stream : public Reliable_Stream {
      */
     void put( char character ) noexcept
     {
-        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+        PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         buffer()->put( character );
     }
@@ -1265,7 +1265,7 @@ class Reliable_Output_Stream : public Reliable_Stream {
      */
     void put( char const * begin, char const * end ) noexcept
     {
-        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+        PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         buffer()->put( begin, end );
     }
@@ -1279,7 +1279,7 @@ class Reliable_Output_Stream : public Reliable_Stream {
      */
     void put( char const * string ) noexcept
     {
-        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+        PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         buffer()->put( string );
     }
@@ -1294,7 +1294,7 @@ class Reliable_Output_Stream : public Reliable_Stream {
      */
     void put( ROM::String string ) noexcept
     {
-        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+        PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         buffer()->put( string );
     }
@@ -1309,7 +1309,7 @@ class Reliable_Output_Stream : public Reliable_Stream {
      */
     void put( std::uint8_t value ) noexcept
     {
-        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+        PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         buffer()->put( value );
     }
@@ -1325,7 +1325,7 @@ class Reliable_Output_Stream : public Reliable_Stream {
      */
     void put( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
     {
-        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+        PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         buffer()->put( begin, end );
     }
@@ -1339,7 +1339,7 @@ class Reliable_Output_Stream : public Reliable_Stream {
      */
     void put( std::int8_t value ) noexcept
     {
-        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+        PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         buffer()->put( value );
     }
@@ -1354,7 +1354,7 @@ class Reliable_Output_Stream : public Reliable_Stream {
      */
     void put( std::int8_t const * begin, std::int8_t const * end ) noexcept
     {
-        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+        PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         buffer()->put( begin, end );
     }
@@ -1377,7 +1377,7 @@ class Reliable_Output_Stream : public Reliable_Stream {
     template<typename... Types>
     auto print( Types &&... values ) noexcept -> std::size_t
     {
-        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+        PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         return print_implementation( std::size_t{ 0 }, std::forward<Types>( values )... );
     }
@@ -1390,7 +1390,7 @@ class Reliable_Output_Stream : public Reliable_Stream {
      */
     void flush() noexcept
     {
-        expect( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
+        PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
         buffer()->flush();
     }

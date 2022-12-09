@@ -67,7 +67,7 @@ auto receive_some( Socket & socket, std::uint8_t * begin, std::uint8_t * end ) n
                 return Generic_Error::NOT_CONNECTED;
             } // if
 
-            expect(
+            PICOLIBRARY_EXPECT(
                 result.error() == Generic_Error::WOULD_BLOCK
                     or result.error() == Generic_Error::OPERATION_TIMEOUT,
                 Generic_Error::LOGIC_ERROR );
@@ -102,7 +102,7 @@ auto transmit_all( Socket & socket, std::uint8_t const * begin, std::uint8_t con
                 return Generic_Error::NOT_CONNECTED;
             } // if
 
-            expect(
+            PICOLIBRARY_EXPECT(
                 result.error() == Generic_Error::WOULD_BLOCK
                     or result.error() == Generic_Error::OPERATION_TIMEOUT,
                 Generic_Error::LOGIC_ERROR );
@@ -134,7 +134,7 @@ void shutdown_gracefully( Socket & socket ) noexcept
                 return;
             } // if
 
-            expect(
+            PICOLIBRARY_EXPECT(
                 result.error() == Generic_Error::WOULD_BLOCK
                     or result.error() == Generic_Error::OPERATION_TIMEOUT,
                 Generic_Error::LOGIC_ERROR );
@@ -210,7 +210,7 @@ auto connect( Client & client, ::picolibrary::IP::TCP::Endpoint const & endpoint
                 return Generic_Error::OPERATION_TIMEOUT;
             } // if
 
-            expect( result.error() == Generic_Error::WOULD_BLOCK, Generic_Error::LOGIC_ERROR );
+            PICOLIBRARY_EXPECT( result.error() == Generic_Error::WOULD_BLOCK, Generic_Error::LOGIC_ERROR );
         } else {
             return {};
         } // else

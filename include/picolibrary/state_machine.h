@@ -334,9 +334,9 @@ class State_Machine {
      */
     void execute_initial_transition( Event const & event ) noexcept
     {
-        expect( not m_current_state and m_initial_pseudostate, Generic_Error::LOGIC_ERROR );
+        PICOLIBRARY_EXPECT( not m_current_state and m_initial_pseudostate, Generic_Error::LOGIC_ERROR );
 
-        expect(
+        PICOLIBRARY_EXPECT(
             ( *m_initial_pseudostate )( *this, event ) == Event_Handling_Result::STATE_TRANSITION_TRIGGERED,
             Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
         enter( *m_target_state );
@@ -355,7 +355,7 @@ class State_Machine {
      */
     void dispatch( Event const & event ) noexcept
     {
-        expect( m_current_state, Generic_Error::LOGIC_ERROR );
+        PICOLIBRARY_EXPECT( m_current_state, Generic_Error::LOGIC_ERROR );
 
         switch ( ( *m_current_state )( *this, event ) ) {
             case Event_Handling_Result::EVENT_HANDLED: return;
@@ -364,7 +364,8 @@ class State_Machine {
                 enter( *m_target_state );
                 m_current_state = m_target_state;
                 return;
-            default: expect( Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
+            default:
+                PICOLIBRARY_EXPECTATION_NOT_MET( Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
         } // switch
     }
 
@@ -432,7 +433,7 @@ class State_Machine {
      */
     void enter( State_Event_Handler_Reference state ) noexcept
     {
-        expect(
+        PICOLIBRARY_EXPECT(
             ( state )( *this, ENTRY ) == Event_Handling_Result::EVENT_HANDLED,
             Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
     }
@@ -447,7 +448,7 @@ class State_Machine {
      */
     void exit( State_Event_Handler_Reference state ) noexcept
     {
-        expect(
+        PICOLIBRARY_EXPECT(
             ( state )( *this, EXIT ) == Event_Handling_Result::EVENT_HANDLED,
             Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
     }
