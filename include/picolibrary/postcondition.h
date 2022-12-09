@@ -77,7 +77,7 @@ constexpr void ensure( bool guarantee, Error error ) noexcept
  */
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define PICOLIBRARY_ENSURE( guarantee, error ) \
-    ::picolibrary::ensure( guarantee, __FILE__, __LINE__, error )
+    ::picolibrary::ensure( guarantee, PICOLIBRARY_ROM_STRING( __FILE__ ), __LINE__, error )
 #else // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
 /**
  * \brief Check a postcondition's guarantee.
@@ -133,7 +133,7 @@ template<typename Error>
  */
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define PICOLIBRARY_GUARANTEE_NOT_MET( error ) \
-    ::picolibrary::guarantee_not_met( __FILE__, __LINE__, error )
+    ::picolibrary::guarantee_not_met( PICOLIBRARY_ROM_STRING( __FILE__ ), __LINE__, error )
 #else // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
 /**
  * \brief Report that a postcondition's guarantee has not been met.

@@ -77,7 +77,7 @@ constexpr void expect( bool expectation, Error error ) noexcept
  */
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define PICOLIBRARY_EXPECT( expectation, error ) \
-    ::picolibrary::expect( expectation, __FILE__, __LINE__, error )
+    ::picolibrary::expect( expectation, PICOLIBRARY_ROM_STRING( __FILE__ ), __LINE__, error )
 #else // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
 /**
  * \brief Check a precondition's expectation.
@@ -134,7 +134,7 @@ template<typename Error>
  */
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define PICOLIBRARY_EXPECTATION_NOT_MET( error ) \
-    ::picolibrary::expectation_not_met( __FILE__, __LINE__, error )
+    ::picolibrary::expectation_not_met( PICOLIBRARY_ROM_STRING( __FILE__ ), __LINE__, error )
 #else // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
 /**
  * \brief Report that a precondition's expectation has not been met.
