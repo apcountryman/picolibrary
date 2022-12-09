@@ -146,7 +146,7 @@ class Unsupported_Protocol_Port_Allocator {
     /**
      * \brief Allocate a port.
      *
-     * \warning Calling this function will always result in a fatal error.
+     * \pre this function is never called
      *
      * \tparam Driver The type of driver used to interact with the W5500.
      *
@@ -162,13 +162,13 @@ class Unsupported_Protocol_Port_Allocator {
         static_cast<void>( driver );
         static_cast<void>( port );
 
-        trap_fatal_error( Generic_Error::LOGIC_ERROR );
+        PICOLIBRARY_EXPECTATION_NOT_MET( Generic_Error::LOGIC_ERROR );
     }
 
     /**
      * \brief Deallocate a previously allocated port.
      *
-     * \warning Calling this function will always result in a fatal error being reported.
+     * \pre this function is never called
      *
      * \param[in] port The previously allocated port to deallocate.
      */
@@ -176,7 +176,7 @@ class Unsupported_Protocol_Port_Allocator {
     {
         static_cast<void>( port );
 
-        trap_fatal_error( Generic_Error::LOGIC_ERROR );
+        PICOLIBRARY_EXPECTATION_NOT_MET( Generic_Error::LOGIC_ERROR );
     }
 };
 
@@ -202,7 +202,7 @@ class TCP_UDP_Port_Allocator_Without_Ephemeral_Port_Allocation {
         :
         m_socket_protocol{ socket_protocol }
     {
-        expect(
+        PICOLIBRARY_EXPECT(
             socket_protocol == Socket_Protocol::TCP or socket_protocol == Socket_Protocol::UDP,
             Generic_Error::INVALID_ARGUMENT );
     }
@@ -265,8 +265,8 @@ class TCP_UDP_Port_Allocator_Without_Ephemeral_Port_Allocation {
     auto allocate( Driver const & driver, ::picolibrary::IP::Port port ) noexcept
         -> ::picolibrary::IP::Port
     {
-        expect( not port.is_any(), Generic_Error::LOGIC_ERROR );
-        expect( not port_is_in_use( driver, port ), Generic_Error::LOGIC_ERROR );
+        PICOLIBRARY_EXPECT( not port.is_any(), Generic_Error::LOGIC_ERROR );
+        PICOLIBRARY_EXPECT( not port_is_in_use( driver, port ), Generic_Error::LOGIC_ERROR );
 
         return port;
     }

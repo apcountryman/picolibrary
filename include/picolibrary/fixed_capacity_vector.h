@@ -116,7 +116,7 @@ class Fixed_Capacity_Vector {
      */
     constexpr Fixed_Capacity_Vector( Size n, Value const & value ) noexcept : m_size{ n }
     {
-        expect( n <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
+        PICOLIBRARY_EXPECT( n <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         while ( n-- ) { new ( &m_storage[ n ] ) Value{ value }; } // while
     }
@@ -146,7 +146,7 @@ class Fixed_Capacity_Vector {
      */
     constexpr explicit Fixed_Capacity_Vector( Size n ) noexcept : m_size{ n }
     {
-        expect( n <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
+        PICOLIBRARY_EXPECT( n <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         while ( n-- ) { new ( &m_storage[ n ] ) Value{}; } // while
     }
@@ -181,7 +181,7 @@ class Fixed_Capacity_Vector {
     constexpr Fixed_Capacity_Vector( Iterator begin, Iterator end ) noexcept :
         m_size{ static_cast<Size>( end - begin ) }
     {
-        expect( static_cast<Size>( end - begin ) <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
+        PICOLIBRARY_EXPECT( static_cast<Size>( end - begin ) <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         ::picolibrary::for_each( begin, end, [ storage = &m_storage[ 0 ] ]( auto value ) mutable noexcept {
             new ( storage++ ) Value{ value };
@@ -352,7 +352,7 @@ class Fixed_Capacity_Vector {
      */
     constexpr void assign( Size n, Value const & value ) noexcept
     {
-        expect( n <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
+        PICOLIBRARY_EXPECT( n <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         clear();
 
@@ -394,7 +394,7 @@ class Fixed_Capacity_Vector {
     {
         auto const n = static_cast<Size>( end - begin );
 
-        expect( n <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
+        PICOLIBRARY_EXPECT( n <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         clear();
 
@@ -497,7 +497,7 @@ class Fixed_Capacity_Vector {
      */
     auto at( Position position ) noexcept -> Reference
     {
-        expect( position < size(), Generic_Error::OUT_OF_RANGE );
+        PICOLIBRARY_EXPECT( position < size(), Generic_Error::OUT_OF_RANGE );
 
         return data()[ position ];
     }
@@ -513,7 +513,7 @@ class Fixed_Capacity_Vector {
      */
     auto at( Position position ) const noexcept -> Const_Reference
     {
-        expect( position < size(), Generic_Error::OUT_OF_RANGE );
+        PICOLIBRARY_EXPECT( position < size(), Generic_Error::OUT_OF_RANGE );
 
         return data()[ position ];
     }
@@ -804,7 +804,7 @@ class Fixed_Capacity_Vector {
      */
     auto insert( Const_Iterator position, Value const & value ) noexcept -> Iterator
     {
-        expect( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
+        PICOLIBRARY_EXPECT( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         auto element = --end();
 
@@ -865,7 +865,7 @@ class Fixed_Capacity_Vector {
      */
     auto insert( Const_Iterator position, Value && value ) noexcept -> Iterator
     {
-        expect( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
+        PICOLIBRARY_EXPECT( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         auto element = --end();
 
@@ -930,7 +930,7 @@ class Fixed_Capacity_Vector {
      */
     auto insert( Const_Iterator position, Size n, Value const & value ) noexcept -> Iterator
     {
-        expect( size() + n > size() and size() + n <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
+        PICOLIBRARY_EXPECT( size() + n > size() and size() + n <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         auto element = --end();
 
@@ -1004,7 +1004,7 @@ class Fixed_Capacity_Vector {
     {
         auto const n = static_cast<Size>( end - begin );
 
-        expect( size() + n > size() and size() + n <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
+        PICOLIBRARY_EXPECT( size() + n > size() and size() + n <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         auto element = --end();
 
@@ -1119,7 +1119,7 @@ class Fixed_Capacity_Vector {
     template<typename... Arguments>
     auto emplace( Const_Iterator position, Arguments &&... arguments ) noexcept -> Iterator
     {
-        expect( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
+        PICOLIBRARY_EXPECT( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         auto element = --end();
 
@@ -1233,7 +1233,7 @@ class Fixed_Capacity_Vector {
      */
     constexpr void push_back( Value const & value ) noexcept
     {
-        expect( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
+        PICOLIBRARY_EXPECT( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         new ( &m_storage[ m_size ] ) Value{ value };
 
@@ -1263,7 +1263,7 @@ class Fixed_Capacity_Vector {
      */
     constexpr void push_back( Value && value ) noexcept
     {
-        expect( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
+        PICOLIBRARY_EXPECT( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         new ( &m_storage[ m_size ] ) Value{ std::move( value ) };
 
@@ -1298,7 +1298,7 @@ class Fixed_Capacity_Vector {
     template<typename... Arguments>
     auto emplace_back( Arguments &&... arguments ) noexcept -> Reference
     {
-        expect( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
+        PICOLIBRARY_EXPECT( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         new ( &m_storage[ m_size ] ) Value{ std::forward<Arguments>( arguments )... };
 
@@ -1322,7 +1322,7 @@ class Fixed_Capacity_Vector {
     auto emplace_back( Run_Precondition_Expectation_Checks, Arguments &&... arguments ) noexcept
         -> Reference
     {
-        expect( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
+        PICOLIBRARY_EXPECT( not full(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         new ( &m_storage[ m_size ] ) Value{ std::forward<Arguments>( arguments )... };
 
@@ -1372,7 +1372,7 @@ class Fixed_Capacity_Vector {
      */
     constexpr void resize( Size size ) noexcept
     {
-        expect( size <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
+        PICOLIBRARY_EXPECT( size <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         if ( size < m_size ) {
             for ( auto element = begin() + size; element != end(); ++element ) {
@@ -1424,7 +1424,7 @@ class Fixed_Capacity_Vector {
      */
     constexpr void resize( Size size, Value const & value ) noexcept
     {
-        expect( size <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
+        PICOLIBRARY_EXPECT( size <= max_size(), Generic_Error::INSUFFICIENT_CAPACITY );
 
         if ( size < m_size ) {
             for ( auto element = begin() + size; element != end(); ++element ) {

@@ -152,7 +152,7 @@ class Array {
      */
     constexpr auto at( Position position ) noexcept -> Reference
     {
-        expect( position < size(), Generic_Error::OUT_OF_RANGE );
+        PICOLIBRARY_EXPECT( position < size(), Generic_Error::OUT_OF_RANGE );
 
         return data()[ position ];
     }
@@ -168,7 +168,7 @@ class Array {
      */
     constexpr auto at( Position position ) const noexcept -> Const_Reference
     {
-        expect( position < size(), Generic_Error::OUT_OF_RANGE );
+        PICOLIBRARY_EXPECT( position < size(), Generic_Error::OUT_OF_RANGE );
 
         return data()[ position ];
     }

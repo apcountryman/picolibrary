@@ -71,7 +71,7 @@ template<typename Controller, typename Delayer>
             Format::Hex{ rx },
             '\n' );
         stream.flush();
-        expect( rx == tx, Generic_Error::RUNTIME_ERROR );
+        PICOLIBRARY_EXPECT( rx == tx, Generic_Error::RUNTIME_ERROR );
     } // for
 }
 

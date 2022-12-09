@@ -89,7 +89,7 @@ class Address_Numeric {
      */
     constexpr Address_Numeric( Unsigned_Integer address ) noexcept : m_address{ address }
     {
-        expect( address <= max().as_unsigned_integer(), Generic_Error::INVALID_ARGUMENT );
+        PICOLIBRARY_EXPECT( address <= max().as_unsigned_integer(), Generic_Error::INVALID_ARGUMENT );
     }
 
     /**
@@ -206,7 +206,7 @@ class Address_Transmitted {
     constexpr Address_Transmitted( Unsigned_Integer address ) noexcept :
         m_address{ address }
     {
-        expect( not( address & 0b1 ), Generic_Error::INVALID_ARGUMENT );
+        PICOLIBRARY_EXPECT( not( address & 0b1 ), Generic_Error::INVALID_ARGUMENT );
     }
 
     /**
@@ -1065,7 +1065,7 @@ class Device_Address_Numeric : public Address_Numeric {
     constexpr Device_Address_Numeric( Unsigned_Integer address ) noexcept :
         Address_Numeric{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, address }
     {
-        expect(
+        PICOLIBRARY_EXPECT(
             address >= min().as_unsigned_integer() and address <= max().as_unsigned_integer(),
             Generic_Error::INVALID_ARGUMENT );
     }
@@ -1182,7 +1182,7 @@ class Device_Address_Transmitted : public Address_Transmitted {
     constexpr Device_Address_Transmitted( Unsigned_Integer address ) noexcept :
         Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, address }
     {
-        expect(
+        PICOLIBRARY_EXPECT(
             address >= min().as_unsigned_integer()
                 and address <= max().as_unsigned_integer() and not( address & 0b1 ),
             Generic_Error::INVALID_ARGUMENT );
@@ -1461,12 +1461,16 @@ class Device {
 
         auto const guard = Bus_Control_Guard{ *m_controller };
 
-        expect( m_controller->address( m_address, Operation::WRITE ) == Response::ACK, m_nonresponsive_device_error );
-        expect( m_controller->write( register_address ) == Response::ACK, m_nonresponsive_device_error );
+        PICOLIBRARY_EXPECT(
+            m_controller->address( m_address, Operation::WRITE ) == Response::ACK,
+            m_nonresponsive_device_error );
+        PICOLIBRARY_EXPECT( m_controller->write( register_address ) == Response::ACK, m_nonresponsive_device_error );
 
         m_controller->repeated_start();
 
-        expect( m_controller->address( m_address, Operation::READ ) == Response::ACK, m_nonresponsive_device_error );
+        PICOLIBRARY_EXPECT(
+            m_controller->address( m_address, Operation::READ ) == Response::ACK,
+            m_nonresponsive_device_error );
         return m_controller->read( Response::NACK );
     }
 
@@ -1490,12 +1494,16 @@ class Device {
 
         auto const guard = Bus_Control_Guard{ *m_controller };
 
-        expect( m_controller->address( m_address, Operation::WRITE ) == Response::ACK, m_nonresponsive_device_error );
-        expect( m_controller->write( register_address ) == Response::ACK, m_nonresponsive_device_error );
+        PICOLIBRARY_EXPECT(
+            m_controller->address( m_address, Operation::WRITE ) == Response::ACK,
+            m_nonresponsive_device_error );
+        PICOLIBRARY_EXPECT( m_controller->write( register_address ) == Response::ACK, m_nonresponsive_device_error );
 
         m_controller->repeated_start();
 
-        expect( m_controller->address( m_address, Operation::READ ) == Response::ACK, m_nonresponsive_device_error );
+        PICOLIBRARY_EXPECT(
+            m_controller->address( m_address, Operation::READ ) == Response::ACK,
+            m_nonresponsive_device_error );
         m_controller->read( begin, end, Response::NACK );
     }
 
@@ -1513,9 +1521,11 @@ class Device {
 
         auto const guard = Bus_Control_Guard{ *m_controller };
 
-        expect( m_controller->address( m_address, Operation::WRITE ) == Response::ACK, m_nonresponsive_device_error );
-        expect( m_controller->write( register_address ) == Response::ACK, m_nonresponsive_device_error );
-        expect( m_controller->write( data ) == Response::ACK, m_nonresponsive_device_error );
+        PICOLIBRARY_EXPECT(
+            m_controller->address( m_address, Operation::WRITE ) == Response::ACK,
+            m_nonresponsive_device_error );
+        PICOLIBRARY_EXPECT( m_controller->write( register_address ) == Response::ACK, m_nonresponsive_device_error );
+        PICOLIBRARY_EXPECT( m_controller->write( data ) == Response::ACK, m_nonresponsive_device_error );
     }
 
     /**
@@ -1533,9 +1543,11 @@ class Device {
 
         auto const guard = Bus_Control_Guard{ *m_controller };
 
-        expect( m_controller->address( m_address, Operation::WRITE ) == Response::ACK, m_nonresponsive_device_error );
-        expect( m_controller->write( register_address ) == Response::ACK, m_nonresponsive_device_error );
-        expect( m_controller->write( begin, end ) == Response::ACK, m_nonresponsive_device_error );
+        PICOLIBRARY_EXPECT(
+            m_controller->address( m_address, Operation::WRITE ) == Response::ACK,
+            m_nonresponsive_device_error );
+        PICOLIBRARY_EXPECT( m_controller->write( register_address ) == Response::ACK, m_nonresponsive_device_error );
+        PICOLIBRARY_EXPECT( m_controller->write( begin, end ) == Response::ACK, m_nonresponsive_device_error );
     }
 
   private:

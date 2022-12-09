@@ -37,6 +37,13 @@ picolibrary supports the following project configuration options:
         - `PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST` (defaults to `ON`): use parent
           project's Google Test
 - `PICOLIBRARY_ENABLE_INTERACTIVE_TESTING` (defaults to `OFF`): enable interactive testing
+- `PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION` (defaults to `OFF`):
+  suppress assertion failure location information (see
+  [`include/picolibrary/fatal_error.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/fatal_error.h),
+  [`include/picolibrary/precondition.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/precondition.h),
+  and
+  [`include/picolibrary/postcondition.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/postcondition.h),
+  for more information)
 - `PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION` (defaults to `OFF`): suppress
   human readable error information (see
   [`include/picolibrary/error.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/error.h)

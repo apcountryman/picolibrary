@@ -447,9 +447,9 @@ class HSM {
      */
     void execute_topmost_initial_transition( Event const & event ) noexcept
     {
-        expect( not m_current_state and m_initial_pseudostate, Generic_Error::LOGIC_ERROR );
+        PICOLIBRARY_EXPECT( not m_current_state and m_initial_pseudostate, Generic_Error::LOGIC_ERROR );
 
-        expect(
+        PICOLIBRARY_EXPECT(
             ( *m_initial_pseudostate )( *this, event ) == Event_Handling_Result::STATE_TRANSITION_TRIGGERED,
             Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
         m_current_state = top;
@@ -468,7 +468,7 @@ class HSM {
      */
     void dispatch( Event const & event ) noexcept
     {
-        expect( m_current_state, Generic_Error::LOGIC_ERROR );
+        PICOLIBRARY_EXPECT( m_current_state, Generic_Error::LOGIC_ERROR );
 
         auto state = m_current_state;
         for ( ;; ) {
@@ -481,7 +481,8 @@ class HSM {
                     state = m_superstate;
                     break;
                 case Event_Handling_Result::EVENT_IGNORED: return;
-                default: expect( Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
+                default:
+                    PICOLIBRARY_EXPECTATION_NOT_MET( Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
             } // switch
         }     // for
     }
@@ -580,7 +581,7 @@ class HSM {
             m_is_complete = end == top;
             m_storage.push_back( &begin );
 
-            expect(
+            PICOLIBRARY_EXPECT(
                 ( begin )( hsm, DISCOVERY ) == Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE,
                 Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
             while ( hsm.m_superstate != top ) {
@@ -592,7 +593,7 @@ class HSM {
 
                 m_storage.push_back( hsm.m_superstate );
 
-                expect(
+                PICOLIBRARY_EXPECT(
                     ( *hsm.m_superstate )( hsm, DISCOVERY )
                         == Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE,
                     Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
@@ -744,7 +745,8 @@ class HSM {
         switch ( ( state )( *this, ENTRY ) ) {
             case Event_Handling_Result::EVENT_HANDLED: [[fallthrough]];
             case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE: return;
-            default: expect( Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
+            default:
+                PICOLIBRARY_EXPECTATION_NOT_MET( Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
         } // switch
     }
 
@@ -776,7 +778,8 @@ class HSM {
         switch ( ( state )( *this, EXIT ) ) {
             case Event_Handling_Result::EVENT_HANDLED: [[fallthrough]];
             case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE: return;
-            default: expect( Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
+            default:
+                PICOLIBRARY_EXPECTATION_NOT_MET( Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
         } // switch
     }
 
@@ -853,7 +856,8 @@ class HSM {
                     target_state = m_target_state;
                     break;
                 case Event_Handling_Result::EVENT_HANDLING_DEFERRED_TO_SUPERSTATE: return;
-                default: expect( Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
+                default:
+                    PICOLIBRARY_EXPECTATION_NOT_MET( Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT );
             } // switch
         }     // for
     }

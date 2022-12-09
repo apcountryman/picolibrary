@@ -88,7 +88,7 @@ class Sample {
      */
     constexpr Sample( Unsigned_Integer sample ) noexcept : m_sample{ sample }
     {
-        expect( sample <= max().as_unsigned_integer(), Generic_Error::INVALID_ARGUMENT );
+        PICOLIBRARY_EXPECT( sample <= max().as_unsigned_integer(), Generic_Error::INVALID_ARGUMENT );
     }
 
     /**

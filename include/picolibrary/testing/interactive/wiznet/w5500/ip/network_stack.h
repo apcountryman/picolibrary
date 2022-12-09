@@ -90,7 +90,8 @@ template<typename Controller, typename Device_Selector>
         w5500, Generic_Error::NONRESPONSIVE_DEVICE, ::picolibrary::WIZnet::W5500::IP::Unsupported_Protocol_Port_Allocator{}
     };
 
-    expect( network_stack.w5500_is_responsive(), network_stack.nonresponsive_device_error() );
+    PICOLIBRARY_EXPECT(
+        network_stack.w5500_is_responsive(), network_stack.nonresponsive_device_error() );
 
     network_stack.configure_phy( phy_mode );
 

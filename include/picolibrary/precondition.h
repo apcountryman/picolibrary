@@ -24,11 +24,35 @@
 #define PICOLIBRARY_PRECONDITION_H
 
 #include "picolibrary/fatal_error.h"
+#include "picolibrary/rom.h"
 
 namespace picolibrary {
 
+#ifndef PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
 /**
  * \brief Check a precondition's expectation.
+ *
+ * \attention This function should not be used directly. Use PICOLIBRARY_EXPECT() instead.
+ *
+ * \tparam Error A type that can be implicitly converted to picolibrary::Error_Code.
+ *
+ * \param[in] expectation The expectation to check.
+ * \param[in] file The file in which the check occurs.
+ * \param[in] line The line on which the check occurs.
+ * \param[in] error The fatal error that occurs if the expectation is not met.
+ */
+template<typename Error>
+constexpr void expect( bool expectation, ROM::String file, int line, Error error ) noexcept
+{
+    if ( not expectation ) {
+        trap_fatal_error( file, line, error );
+    } // if
+}
+#else  // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
+/**
+ * \brief Check a precondition's expectation.
+ *
+ * \attention This function should not be used directly. Use PICOLIBRARY_EXPECT() instead.
  *
  * \tparam Error A type that can be implicitly converted to picolibrary::Error_Code.
  *
@@ -42,19 +66,81 @@ constexpr void expect( bool expectation, Error error ) noexcept
         trap_fatal_error( error );
     } // if
 }
+#endif // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
 
+#ifndef PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
 /**
  * \brief Check a precondition's expectation.
+ *
+ * \param[in] expectation The expectation to check.
+ * \param[in] error The fatal error that occurs if the expectation is not met.
+ */
+#define PICOLIBRARY_EXPECT( expectation, error ) \
+    ::picolibrary::expect( expectation, __FILE__, __LINE__, error )
+#else // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
+/**
+ * \brief Check a precondition's expectation.
+ *
+ * \param[in] expectation The expectation to check.
+ * \param[in] error The fatal error that occurs if the expectation is not met.
+ */
+#define PICOLIBRARY_EXPECT( expectation, error ) \
+    ::picolibrary::expect( expectation, error )
+#endif // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
+
+#ifndef PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
+/**
+ * \brief Report that a precondition's expectation has not been met.
+ *
+ * \attention This function should not be used directly. Use
+ *            PICOLIBRARY_EXPECTATION_NOT_MET() instead.
+ *
+ * \tparam Error A type that can be implicitly converted to picolibrary::Error_Code.
+ *
+ * \param[in] file The file in which the report is made.
+ * \param[in] line The line on which the report is made.
+ * \param[in] error The fatal error that occurs.
+ */
+template<typename Error>
+[[noreturn]] void expectation_not_met( ROM::String file, int line, Error error ) noexcept
+{
+    trap_fatal_error( file, line, error );
+}
+#else  // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
+/**
+ * \brief Report that a precondition's expectation has not been met.
+ *
+ * \attention This function should not be used directly. Use
+ *            PICOLIBRARY_EXPECTATION_NOT_MET() instead.
  *
  * \tparam Error A type that can be implicitly converted to picolibrary::Error_Code.
  *
  * \param[in] error The fatal error that occurs.
  */
 template<typename Error>
-[[noreturn]] void expect( Error error ) noexcept
+[[noreturn]] void expectation_not_met( Error error ) noexcept
 {
     trap_fatal_error( error );
 }
+#endif // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
+
+#ifndef PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
+/**
+ * \brief Report that a precondition's expectation has not been met.
+ *
+ * \param[in] error The fatal error that occurs.
+ */
+#define PICOLIBRARY_EXPECTATION_NOT_MET( error ) \
+    ::picolibrary::expectation_not_met( __FILE__, __LINE__, error )
+#else // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
+/**
+ * \brief Report that a precondition's expectation has not been met.
+ *
+ * \param[in] error The fatal error that occurs.
+ */
+#define PICOLIBRARY_EXPECTATION_NOT_MET( error ) \
+    ::picolibrary::expectation_not_met( error )
+#endif // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
 
 /**
  * \brief Bypass precondition expectation checks tag.

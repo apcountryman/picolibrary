@@ -295,7 +295,7 @@ class Network_Stack {
     {
         // #lizard forgives the length
 
-        expect( m_sockets == 0, Generic_Error::LOGIC_ERROR );
+        PICOLIBRARY_EXPECT( m_sockets == 0, Generic_Error::LOGIC_ERROR );
 
         auto sockets = std::uint_fast8_t{ 0 };
 
@@ -309,7 +309,7 @@ class Network_Stack {
 
                 // clang-format on
 
-            default: expect( Generic_Error::INVALID_ARGUMENT );
+            default: PICOLIBRARY_EXPECTATION_NOT_MET( Generic_Error::INVALID_ARGUMENT );
         } // switch
 
         for ( auto socket = std::uint_fast8_t{ 0 }; socket < sockets; ++socket ) {
@@ -597,7 +597,7 @@ class Network_Stack {
             } // if
         }     // for
 
-        expect( Generic_Error::NO_SOCKETS_AVAILABLE );
+        PICOLIBRARY_EXPECTATION_NOT_MET( Generic_Error::NO_SOCKETS_AVAILABLE );
     }
 
     /**
@@ -614,7 +614,9 @@ class Network_Stack {
         auto const socket = static_cast<std::uint_fast8_t>(
             to_underlying( socket_id ) >> Control_Byte::Bit::SOCKET );
 
-        expect( m_socket_status[ socket ] == Socket_Status::AVAILABLE_FOR_ALLOCATION, Generic_Error::LOGIC_ERROR );
+        PICOLIBRARY_EXPECT(
+            m_socket_status[ socket ] == Socket_Status::AVAILABLE_FOR_ALLOCATION,
+            Generic_Error::LOGIC_ERROR );
 
         m_socket_status[ socket ] = Socket_Status::ALLOCATED;
         --m_sockets_available_for_allocation;
@@ -637,7 +639,8 @@ class Network_Stack {
         auto const socket = static_cast<std::uint_fast8_t>(
             to_underlying( socket_id ) >> Control_Byte::Bit::SOCKET );
 
-        expect( m_socket_status[ socket ] == Socket_Status::ALLOCATED, Generic_Error::LOGIC_ERROR );
+        PICOLIBRARY_EXPECT(
+            m_socket_status[ socket ] == Socket_Status::ALLOCATED, Generic_Error::LOGIC_ERROR );
 
         m_driver->write_sn_cr( socket_id, SN_CR::COMMAND_CLOSE );
         while ( m_driver->read_sn_cr( socket_id ) ) {} // while
@@ -672,7 +675,7 @@ class Network_Stack {
      */
     auto allocate_sockets( std::uint_fast8_t n ) noexcept -> Fixed_Capacity_Vector<Socket_ID, SOCKETS>
     {
-        expect( n <= sockets_available_for_allocation(), Generic_Error::INSUFFICIENT_SOCKETS_AVAILABLE );
+        PICOLIBRARY_EXPECT( n <= sockets_available_for_allocation(), Generic_Error::INSUFFICIENT_SOCKETS_AVAILABLE );
 
         auto socket_ids = Fixed_Capacity_Vector<Socket_ID, SOCKETS>{};
 

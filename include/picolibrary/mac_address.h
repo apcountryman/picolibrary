@@ -95,7 +95,7 @@ class MAC_Address {
     constexpr MAC_Address( Unsigned_Integer const & address ) noexcept :
         MAC_Address{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, address }
     {
-        expect( address <= max().as_unsigned_integer(), Generic_Error::INVALID_ARGUMENT );
+        PICOLIBRARY_EXPECT( address <= max().as_unsigned_integer(), Generic_Error::INVALID_ARGUMENT );
     }
 
     /**

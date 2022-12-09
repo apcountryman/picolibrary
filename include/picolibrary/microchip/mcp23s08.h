@@ -111,7 +111,7 @@ class Address_Numeric {
      */
     constexpr Address_Numeric( Unsigned_Integer address ) noexcept : m_address{ address }
     {
-        expect(
+        PICOLIBRARY_EXPECT(
             address >= min().as_unsigned_integer() and address <= max().as_unsigned_integer(),
             Generic_Error::INVALID_ARGUMENT );
     }
@@ -232,7 +232,7 @@ class Address_Transmitted {
     constexpr Address_Transmitted( Unsigned_Integer address ) noexcept :
         m_address{ address }
     {
-        expect(
+        PICOLIBRARY_EXPECT(
             address >= min().as_unsigned_integer()
                 and address <= max().as_unsigned_integer() and not( address & 0b1 ),
             Generic_Error::INVALID_ARGUMENT );

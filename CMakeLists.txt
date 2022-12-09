@@ -33,6 +33,11 @@ option(
     OFF
 )
 option(
+    PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
+    "picolibrary: suppress assertion failure location information"
+    OFF
+)
+option(
     PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION
     "picolibrary: suppress human readable error information"
     OFF
@@ -80,6 +85,7 @@ if( NOT ${PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS} )
         -Wold-style-cast
         -Wpointer-arith
         -Wshadow
+        -ffile-prefix-map=${CMAKE_CURRENT_SOURCE_DIR}=picolibrary
     )
 
     option(

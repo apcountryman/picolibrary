@@ -243,7 +243,7 @@ class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::MAIN_READS_MAIN
      */
     void push( Value && value ) noexcept
     {
-        expect( not full(), Generic_Error::WOULD_OVERFLOW );
+        PICOLIBRARY_EXPECT( not full(), Generic_Error::WOULD_OVERFLOW );
 
         new ( &m_storage[ m_write ] ) Value{ std::move( value ) };
 
@@ -278,7 +278,7 @@ class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::MAIN_READS_MAIN
      */
     void push( Value const & value ) noexcept
     {
-        expect( not full(), Generic_Error::WOULD_OVERFLOW );
+        PICOLIBRARY_EXPECT( not full(), Generic_Error::WOULD_OVERFLOW );
 
         new ( &m_storage[ m_write ] ) Value{ value };
 
@@ -316,7 +316,7 @@ class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::MAIN_READS_MAIN
     template<typename... Arguments>
     void emplace( Arguments &&... arguments ) noexcept
     {
-        expect( not full(), Generic_Error::WOULD_OVERFLOW );
+        PICOLIBRARY_EXPECT( not full(), Generic_Error::WOULD_OVERFLOW );
 
         new ( &m_storage[ m_write ] ) Value{ std::forward<Arguments>( arguments )... };
 
@@ -337,7 +337,7 @@ class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::MAIN_READS_MAIN
     template<typename... Arguments>
     void emplace( Run_Precondition_Expectation_Checks, Arguments &&... arguments ) noexcept
     {
-        expect( not full(), Generic_Error::WOULD_OVERFLOW );
+        PICOLIBRARY_EXPECT( not full(), Generic_Error::WOULD_OVERFLOW );
 
         new ( &m_storage[ m_write ] ) Value{ std::forward<Arguments>( arguments )... };
 
@@ -373,7 +373,7 @@ class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::MAIN_READS_MAIN
      */
     void pop() noexcept
     {
-        expect( not empty(), Generic_Error::WOULD_UNDERFLOW );
+        PICOLIBRARY_EXPECT( not empty(), Generic_Error::WOULD_UNDERFLOW );
 
         front().~Value();
 
@@ -656,7 +656,7 @@ class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::MAIN_READS_INTE
      */
     void push_from_interrupt( Value && value ) noexcept
     {
-        expect( not full_from_interrupt(), Generic_Error::WOULD_OVERFLOW );
+        PICOLIBRARY_EXPECT( not full_from_interrupt(), Generic_Error::WOULD_OVERFLOW );
 
         auto const write = Index{ m_write };
 
@@ -695,7 +695,7 @@ class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::MAIN_READS_INTE
      */
     void push_from_interrupt( Value const & value ) noexcept
     {
-        expect( not full_from_interrupt(), Generic_Error::WOULD_OVERFLOW );
+        PICOLIBRARY_EXPECT( not full_from_interrupt(), Generic_Error::WOULD_OVERFLOW );
 
         auto const write = Index{ m_write };
 
@@ -737,7 +737,7 @@ class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::MAIN_READS_INTE
     template<typename... Arguments>
     void emplace_from_interrupt( Arguments &&... arguments ) noexcept
     {
-        expect( not full_from_interrupt(), Generic_Error::WOULD_OVERFLOW );
+        PICOLIBRARY_EXPECT( not full_from_interrupt(), Generic_Error::WOULD_OVERFLOW );
 
         auto const write = Index{ m_write };
 
@@ -760,7 +760,7 @@ class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::MAIN_READS_INTE
     template<typename... Arguments>
     void emplace_from_interrupt( Run_Precondition_Expectation_Checks, Arguments &&... arguments ) noexcept
     {
-        expect( not full_from_interrupt(), Generic_Error::WOULD_OVERFLOW );
+        PICOLIBRARY_EXPECT( not full_from_interrupt(), Generic_Error::WOULD_OVERFLOW );
 
         auto const write = Index{ m_write };
 
@@ -800,7 +800,7 @@ class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::MAIN_READS_INTE
      */
     void pop() noexcept
     {
-        expect( not empty(), Generic_Error::WOULD_UNDERFLOW );
+        PICOLIBRARY_EXPECT( not empty(), Generic_Error::WOULD_UNDERFLOW );
 
         front().~Value();
 
@@ -1095,7 +1095,7 @@ class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::INTERRUPT_READS
      */
     void push( Value && value ) noexcept
     {
-        expect( not full(), Generic_Error::WOULD_OVERFLOW );
+        PICOLIBRARY_EXPECT( not full(), Generic_Error::WOULD_OVERFLOW );
 
         new ( &m_storage[ m_write ] ) Value{ std::move( value ) };
 
@@ -1136,7 +1136,7 @@ class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::INTERRUPT_READS
      */
     void push( Value const & value ) noexcept
     {
-        expect( not full(), Generic_Error::WOULD_OVERFLOW );
+        PICOLIBRARY_EXPECT( not full(), Generic_Error::WOULD_OVERFLOW );
 
         new ( &m_storage[ m_write ] ) Value{ value };
 
@@ -1180,7 +1180,7 @@ class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::INTERRUPT_READS
     template<typename... Arguments>
     void emplace( Arguments &&... arguments ) noexcept
     {
-        expect( not full(), Generic_Error::WOULD_OVERFLOW );
+        PICOLIBRARY_EXPECT( not full(), Generic_Error::WOULD_OVERFLOW );
 
         new ( &m_storage[ m_write ] ) Value{ std::forward<Arguments>( arguments )... };
 
@@ -1203,7 +1203,7 @@ class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::INTERRUPT_READS
     template<typename... Arguments>
     void emplace( Run_Precondition_Expectation_Checks, Arguments &&... arguments ) noexcept
     {
-        expect( not full(), Generic_Error::WOULD_OVERFLOW );
+        PICOLIBRARY_EXPECT( not full(), Generic_Error::WOULD_OVERFLOW );
 
         new ( &m_storage[ m_write ] ) Value{ std::forward<Arguments>( arguments )... };
 
@@ -1243,7 +1243,7 @@ class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::INTERRUPT_READS
      */
     void pop_from_interrupt() noexcept
     {
-        expect( not empty_from_interrupt(), Generic_Error::WOULD_UNDERFLOW );
+        PICOLIBRARY_EXPECT( not empty_from_interrupt(), Generic_Error::WOULD_UNDERFLOW );
 
         front_from_interrupt().~Value();
 
@@ -1480,7 +1480,7 @@ class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::INTERRUPT_READS
      */
     void push_from_interrupt( Value && value ) noexcept
     {
-        expect( not full_from_interrupt(), Generic_Error::WOULD_OVERFLOW );
+        PICOLIBRARY_EXPECT( not full_from_interrupt(), Generic_Error::WOULD_OVERFLOW );
 
         auto const write = Index{ m_write };
 
@@ -1519,7 +1519,7 @@ class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::INTERRUPT_READS
      */
     void push_from_interrupt( Value const & value ) noexcept
     {
-        expect( not full_from_interrupt(), Generic_Error::WOULD_OVERFLOW );
+        PICOLIBRARY_EXPECT( not full_from_interrupt(), Generic_Error::WOULD_OVERFLOW );
 
         auto const write = Index{ m_write };
 
@@ -1561,7 +1561,7 @@ class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::INTERRUPT_READS
     template<typename... Arguments>
     void emplace_from_interrupt( Arguments &&... arguments ) noexcept
     {
-        expect( not full_from_interrupt(), Generic_Error::WOULD_OVERFLOW );
+        PICOLIBRARY_EXPECT( not full_from_interrupt(), Generic_Error::WOULD_OVERFLOW );
 
         auto const write = Index{ m_write };
 
@@ -1584,7 +1584,7 @@ class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::INTERRUPT_READS
     template<typename... Arguments>
     void emplace_from_interrupt( Run_Precondition_Expectation_Checks, Arguments &&... arguments ) noexcept
     {
-        expect( not full_from_interrupt(), Generic_Error::WOULD_OVERFLOW );
+        PICOLIBRARY_EXPECT( not full_from_interrupt(), Generic_Error::WOULD_OVERFLOW );
 
         auto const write = Index{ m_write };
 
@@ -1624,7 +1624,7 @@ class Circular_Buffer<T, Size_Type, N, Circular_Buffer_Use_Case::INTERRUPT_READS
      */
     void pop_from_interrupt() noexcept
     {
-        expect( not empty_from_interrupt(), Generic_Error::WOULD_UNDERFLOW );
+        PICOLIBRARY_EXPECT( not empty_from_interrupt(), Generic_Error::WOULD_UNDERFLOW );
 
         front_from_interrupt().~Value();
 
