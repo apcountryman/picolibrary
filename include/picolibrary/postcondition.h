@@ -75,6 +75,7 @@ constexpr void ensure( bool guarantee, Error error ) noexcept
  * \param[in] guarantee The guarantee to check.
  * \param[in] error The fatal error that occurs if the guarantee is not met.
  */
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define PICOLIBRARY_ENSURE( guarantee, error ) \
     ::picolibrary::ensure( guarantee, __FILE__, __LINE__, error )
 #else // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
@@ -84,6 +85,7 @@ constexpr void ensure( bool guarantee, Error error ) noexcept
  * \param[in] guarantee The guarantee to check.
  * \param[in] error The fatal error that occurs if the guarantee is not met.
  */
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define PICOLIBRARY_ENSURE( guarantee, error ) ::picolibrary::ensure( guarantee, error )
 #endif // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
 
@@ -129,6 +131,7 @@ template<typename Error>
  *
  * \param[in] error The fatal error that occurs.
  */
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define PICOLIBRARY_GUARANTEE_NOT_MET( error ) \
     ::picolibrary::guarantee_not_met( __FILE__, __LINE__, error )
 #else // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
@@ -137,6 +140,7 @@ template<typename Error>
  *
  * \param[in] error The fatal error that occurs.
  */
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define PICOLIBRARY_GUARANTEE_NOT_MET( error ) ::picolibrary::guarantee_not_met( error )
 #endif // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
 

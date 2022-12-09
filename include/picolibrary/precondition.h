@@ -75,6 +75,7 @@ constexpr void expect( bool expectation, Error error ) noexcept
  * \param[in] expectation The expectation to check.
  * \param[in] error The fatal error that occurs if the expectation is not met.
  */
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define PICOLIBRARY_EXPECT( expectation, error ) \
     ::picolibrary::expect( expectation, __FILE__, __LINE__, error )
 #else // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
@@ -84,6 +85,7 @@ constexpr void expect( bool expectation, Error error ) noexcept
  * \param[in] expectation The expectation to check.
  * \param[in] error The fatal error that occurs if the expectation is not met.
  */
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define PICOLIBRARY_EXPECT( expectation, error ) \
     ::picolibrary::expect( expectation, error )
 #endif // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
@@ -130,6 +132,7 @@ template<typename Error>
  *
  * \param[in] error The fatal error that occurs.
  */
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define PICOLIBRARY_EXPECTATION_NOT_MET( error ) \
     ::picolibrary::expectation_not_met( __FILE__, __LINE__, error )
 #else // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
@@ -138,6 +141,7 @@ template<typename Error>
  *
  * \param[in] error The fatal error that occurs.
  */
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define PICOLIBRARY_EXPECTATION_NOT_MET( error ) \
     ::picolibrary::expectation_not_met( error )
 #endif // PICOLIBRARY_SUPPRESS_ASSERTION_FAILURE_LOCATION_INFORMATION
