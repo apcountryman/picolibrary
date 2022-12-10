@@ -85,7 +85,7 @@ if( NOT ${PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS} )
         -Wold-style-cast
         -Wpointer-arith
         -Wshadow
-        -ffile-prefix-map=${CMAKE_CURRENT_SOURCE_DIR}=picolibrary
+        -ffile-prefix-map=${CMAKE_CURRENT_SOURCE_DIR}/=
     )
 
     option(
