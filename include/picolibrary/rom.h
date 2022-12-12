@@ -78,7 +78,7 @@ using String = char const *;
  *
  * \return The length of the null-terminated string that may be stored in ROM.
  */
-inline auto length( String string ) noexcept -> std::size_t
+inline auto strlen( String string ) noexcept -> std::size_t
 {
     auto const begin = string;
     auto       end   = string;
