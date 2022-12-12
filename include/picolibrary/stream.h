@@ -1737,7 +1737,7 @@ class Output_Formatter<ROM::String> {
             return result.error();
         } // if
 
-        return ROM::length( string );
+        return ROM::strlen( string );
     }
 
     /**
@@ -1752,7 +1752,7 @@ class Output_Formatter<ROM::String> {
     {
         stream.put( string );
 
-        return ROM::length( string );
+        return ROM::strlen( string );
     }
 };
 #endif // PICOLIBRARY_ROM_STRING_IS_HIL_DEFINED
