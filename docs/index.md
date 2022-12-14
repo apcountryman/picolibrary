@@ -4,3 +4,4 @@ microcontrollers.
 
 ## Table of Contents
 1. [Usage](usage.md)
+2. [Hardware Interface Layer (HIL)](hil.md)
