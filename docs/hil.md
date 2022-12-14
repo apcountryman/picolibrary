@@ -5,4 +5,3 @@ The following HILs are officially supported:
   Microchip megaAVR microcontrollers
 - [picolibrary-microchip-megaavr0](https://github.com/apcountryman/picolibrary-microchip-megaavr0):
   Microchip megaAVR 0-series microcontrollers
-  a
