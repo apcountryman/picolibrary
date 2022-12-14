@@ -1,5 +1,5 @@
 # Automated Testing
-picolibrary uses GoogleTest for automated testing.
+picolibrary uses [GoogleTest](https://github.com/google/googletest) for automated testing.
 
 ## Tests
 Automated tests can be found in the
