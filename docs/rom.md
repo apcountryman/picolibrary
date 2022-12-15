@@ -1,5 +1,6 @@
 # Read-Only Memory (ROM) Facilities
-ROM facilities are defined in the `include/picolibrary/rom.h`/`source/picolibrary/rom.cc`
+ROM facilities are defined in the
+[`include/picolibrary/rom.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/rom.h)/[`source/picolibrary/rom.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/rom.cc)
 header/source file pair.
 
 ## Null-Terminated Strings
