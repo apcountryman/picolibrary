@@ -6,3 +6,4 @@ microcontrollers.
 1. [Usage](usage.md)
 2. [Hardware Interface Layer (HIL)](hil.md)
 3. [Automated Testing](testing-automated.md)
+4. [Interactive Testing](testing-interactive.md)
