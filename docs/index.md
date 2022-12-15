@@ -7,3 +7,4 @@ microcontrollers.
 2. [Hardware Interface Layer (HIL)](hil.md)
 3. [Automated Testing](testing-automated.md)
 4. [Interactive Testing](testing-interactive.md)
+5. [Read-Only Memory (ROM) Facilities](rom.md)
