@@ -8,3 +8,4 @@ microcontrollers.
 3. [Automated Testing](testing-automated.md)
 4. [Interactive Testing](testing-interactive.md)
 5. [Read-Only Memory (ROM) Facilities](rom.md)
+6. [Library Version](library_version.md)
