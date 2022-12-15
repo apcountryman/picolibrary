@@ -1,6 +1,7 @@
 # Library Version
 To access the null-terminated library version string that may be stored in ROM, include
-`picolibrary/version.h` and use `::picolibrary::version()`:
+[`picolibrary/version.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/version.h)
+and use `::picolibrary::version()`:
 ```c++
 #include "picolibrary/stream.h"
 #include "picolibrary/version.h"
