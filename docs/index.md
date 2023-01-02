@@ -9,3 +9,4 @@ microcontrollers.
 4. [Interactive Testing](testing-interactive.md)
 5. [Read-Only Memory (ROM) Facilities](rom.md)
 6. [Library Version](library_version.md)
+7. [Error Handling Facilities](error_handling.md)
