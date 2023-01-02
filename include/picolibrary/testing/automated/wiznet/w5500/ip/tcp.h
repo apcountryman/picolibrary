@@ -31,7 +31,6 @@
 #include "picolibrary/ip/tcp.h"
 #include "picolibrary/result.h"
 #include "picolibrary/testing/automated/mock_handle.h"
-#include "picolibrary/void.h"
 #include "picolibrary/wiznet/w5500.h"
 
 /**
@@ -172,7 +171,7 @@ class Mock_Client {
             mock().bind( endpoint );
         }
 
-        auto connect( ::picolibrary::IP::TCP::Endpoint const & endpoint ) -> Result<Void, Error_Code>
+        auto connect( ::picolibrary::IP::TCP::Endpoint const & endpoint ) -> Result<void, Error_Code>
         {
             return mock().connect( endpoint );
         }
@@ -208,7 +207,7 @@ class Mock_Client {
             return mock().transmit( begin, end );
         }
 
-        auto transmit_keepalive() -> Result<Void, Error_Code>
+        auto transmit_keepalive() -> Result<void, Error_Code>
         {
             return mock().transmit_keepalive();
         }
@@ -280,7 +279,7 @@ class Mock_Client {
     MOCK_METHOD( void, bind, () );
     MOCK_METHOD( void, bind, (::picolibrary::IP::TCP::Endpoint const &));
 
-    MOCK_METHOD( (Result<Void, Error_Code>), connect, (::picolibrary::IP::TCP::Endpoint const &));
+    MOCK_METHOD( (Result<void, Error_Code>), connect, (::picolibrary::IP::TCP::Endpoint const &));
 
     MOCK_METHOD( bool, is_connected, (), ( const ) );
 
@@ -299,7 +298,7 @@ class Mock_Client {
         return transmit( std::vector<std::uint8_t>{ begin, end } );
     }
 
-    MOCK_METHOD( (Result<Void, Error_Code>), transmit_keepalive, () );
+    MOCK_METHOD( (Result<void, Error_Code>), transmit_keepalive, () );
 
     MOCK_METHOD( Size, available, (), ( const ) );
 

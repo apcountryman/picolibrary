@@ -59,7 +59,6 @@ set(
     "picolibrary/state_machine.cc"
     "picolibrary/stream.cc"
     "picolibrary/utility.cc"
-    "picolibrary/void.cc"
     "picolibrary/wiznet.cc"
     "picolibrary/wiznet/w5500.cc"
     "picolibrary/wiznet/w5500/ip.cc"

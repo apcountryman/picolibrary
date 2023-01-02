@@ -35,7 +35,6 @@
 #include "picolibrary/precondition.h"
 #include "picolibrary/result.h"
 #include "picolibrary/rom.h"
-#include "picolibrary/void.h"
 
 namespace picolibrary {
 
@@ -132,7 +131,7 @@ class Stream_Buffer {
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    virtual auto put( char character ) noexcept -> Result<Void, Error_Code> = 0;
+    virtual auto put( char character ) noexcept -> Result<void, Error_Code> = 0;
 
     /**
      * \brief Write a block of characters to the put area of the buffer.
@@ -145,7 +144,7 @@ class Stream_Buffer {
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    virtual auto put( char const * begin, char const * end ) noexcept -> Result<Void, Error_Code>
+    virtual auto put( char const * begin, char const * end ) noexcept -> Result<void, Error_Code>
     {
         return ::picolibrary::for_each<Functor_Can_Fail_Discard_Functor>(
             begin, end, [ this ]( auto character ) noexcept { return put( character ); } );
@@ -160,7 +159,7 @@ class Stream_Buffer {
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    virtual auto put( char const * string ) noexcept -> Result<Void, Error_Code>
+    virtual auto put( char const * string ) noexcept -> Result<void, Error_Code>
     {
         while ( auto const character = *string++ ) {
             auto result = put( character );
@@ -182,7 +181,7 @@ class Stream_Buffer {
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    virtual auto put( ROM::String string ) noexcept -> Result<Void, Error_Code>
+    virtual auto put( ROM::String string ) noexcept -> Result<void, Error_Code>
     {
         while ( auto const character = *string++ ) {
             auto result = put( character );
@@ -203,7 +202,7 @@ class Stream_Buffer {
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    virtual auto put( std::uint8_t value ) noexcept -> Result<Void, Error_Code> = 0;
+    virtual auto put( std::uint8_t value ) noexcept -> Result<void, Error_Code> = 0;
 
     /**
      * \brief Write a block of unsigned bytes to the put area of the buffer.
@@ -217,7 +216,7 @@ class Stream_Buffer {
      * \return An error code if the write failed.
      */
     virtual auto put( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
-        -> Result<Void, Error_Code>
+        -> Result<void, Error_Code>
     {
         return ::picolibrary::for_each<Functor_Can_Fail_Discard_Functor>(
             begin, end, [ this ]( auto value ) noexcept { return put( value ); } );
@@ -231,7 +230,7 @@ class Stream_Buffer {
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    virtual auto put( std::int8_t value ) noexcept -> Result<Void, Error_Code> = 0;
+    virtual auto put( std::int8_t value ) noexcept -> Result<void, Error_Code> = 0;
 
     /**
      * \brief Write a block of signed bytes to the put area of the buffer.
@@ -245,7 +244,7 @@ class Stream_Buffer {
      * \return An error code if the write failed.
      */
     virtual auto put( std::int8_t const * begin, std::int8_t const * end ) noexcept
-        -> Result<Void, Error_Code>
+        -> Result<void, Error_Code>
     {
         return ::picolibrary::for_each<Functor_Can_Fail_Discard_Functor>(
             begin, end, [ this ]( auto value ) noexcept { return put( value ); } );
@@ -257,7 +256,7 @@ class Stream_Buffer {
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    virtual auto flush() noexcept -> Result<Void, Error_Code> = 0;
+    virtual auto flush() noexcept -> Result<void, Error_Code> = 0;
 
   protected:
     /**
@@ -547,7 +546,7 @@ class Output_Stream : public Stream {
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto put( char character ) noexcept -> Result<Void, Error_Code>
+    auto put( char character ) noexcept -> Result<void, Error_Code>
     {
         PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
@@ -572,7 +571,7 @@ class Output_Stream : public Stream {
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto put( char const * begin, char const * end ) noexcept -> Result<Void, Error_Code>
+    auto put( char const * begin, char const * end ) noexcept -> Result<void, Error_Code>
     {
         PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
@@ -596,7 +595,7 @@ class Output_Stream : public Stream {
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto put( char const * string ) noexcept -> Result<Void, Error_Code>
+    auto put( char const * string ) noexcept -> Result<void, Error_Code>
     {
         PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
@@ -621,7 +620,7 @@ class Output_Stream : public Stream {
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto put( ROM::String string ) noexcept -> Result<Void, Error_Code>
+    auto put( ROM::String string ) noexcept -> Result<void, Error_Code>
     {
         PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
@@ -646,7 +645,7 @@ class Output_Stream : public Stream {
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto put( std::uint8_t value ) noexcept -> Result<Void, Error_Code>
+    auto put( std::uint8_t value ) noexcept -> Result<void, Error_Code>
     {
         PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
@@ -672,7 +671,7 @@ class Output_Stream : public Stream {
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto put( std::uint8_t const * begin, std::uint8_t const * end ) noexcept -> Result<Void, Error_Code>
+    auto put( std::uint8_t const * begin, std::uint8_t const * end ) noexcept -> Result<void, Error_Code>
     {
         PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
@@ -696,7 +695,7 @@ class Output_Stream : public Stream {
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto put( std::int8_t value ) noexcept -> Result<Void, Error_Code>
+    auto put( std::int8_t value ) noexcept -> Result<void, Error_Code>
     {
         PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
@@ -721,7 +720,7 @@ class Output_Stream : public Stream {
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto put( std::int8_t const * begin, std::int8_t const * end ) noexcept -> Result<Void, Error_Code>
+    auto put( std::int8_t const * begin, std::int8_t const * end ) noexcept -> Result<void, Error_Code>
     {
         PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
@@ -768,7 +767,7 @@ class Output_Stream : public Stream {
      * \return Nothing if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto flush() noexcept -> Result<Void, Error_Code>
+    auto flush() noexcept -> Result<void, Error_Code>
     {
         PICOLIBRARY_EXPECT( is_nominal(), Generic_Error::IO_STREAM_DEGRADED );
 
@@ -1756,76 +1755,6 @@ class Output_Formatter<ROM::String> {
     }
 };
 #endif // PICOLIBRARY_ROM_STRING_IS_HIL_DEFINED
-
-/**
- * \brief picolibrary::Void output formatter.
- */
-template<>
-class Output_Formatter<Void> {
-  public:
-    /**
-     * \brief Constructor.
-     */
-    constexpr Output_Formatter() noexcept = default;
-
-    /**
-     * \brief Constructor.
-     *
-     * \param[in] source The source of the move.
-     */
-    constexpr Output_Formatter( Output_Formatter && source ) noexcept = default;
-
-    /**
-     * \brief Constructor.
-     *
-     * \param[in] original The original to copy.
-     */
-    constexpr Output_Formatter( Output_Formatter const & original ) noexcept = default;
-
-    /**
-     * \brief Destructor.
-     */
-    ~Output_Formatter() noexcept = default;
-
-    /**
-     * \brief Assignment operator.
-     *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
-     */
-    constexpr auto operator=( Output_Formatter && expression ) noexcept -> Output_Formatter & = default;
-
-    /**
-     * \brief Assignment operator.
-     *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
-     */
-    constexpr auto operator   =( Output_Formatter const & expression ) noexcept
-        -> Output_Formatter & = default;
-
-    /**
-     * \brief Write nothing to the stream.
-     *
-     * \return 0
-     */
-    constexpr auto print( Output_Stream &, Void ) const noexcept -> Result<std::size_t, Void>
-    {
-        return std::size_t{ 0 };
-    }
-
-    /**
-     * \brief Write nothing to the stream.
-     *
-     * \return 0
-     */
-    constexpr auto print( Reliable_Output_Stream &, Void ) const noexcept -> std::size_t
-    {
-        return std::size_t{ 0 };
-    }
-};
 
 /**
  * \brief picolibrary::Error_Code output formatter.

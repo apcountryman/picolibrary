@@ -34,7 +34,6 @@
 #include "picolibrary/result.h"
 #include "picolibrary/rom.h"
 #include "picolibrary/stream.h"
-#include "picolibrary/void.h"
 
 /**
  * \brief Transmission Control Protocol (TCP) over IP interactive testing facilities.
@@ -93,7 +92,7 @@ auto receive_some( Socket & socket, std::uint8_t * begin, std::uint8_t * end ) n
  */
 template<typename Socket>
 auto transmit_all( Socket & socket, std::uint8_t const * begin, std::uint8_t const * end ) noexcept
-    -> Result<Void, Error_Code>
+    -> Result<void, Error_Code>
 {
     while ( begin != end ) {
         auto result = socket.transmit( begin, end );
@@ -201,7 +200,7 @@ void echo( Reliable_Output_Stream & stream, Socket socket ) noexcept
  */
 template<typename Client>
 auto connect( Client & client, ::picolibrary::IP::TCP::Endpoint const & endpoint ) noexcept
-    -> Result<Void, Error_Code>
+    -> Result<void, Error_Code>
 {
     for ( ;; ) {
         auto result = client.connect( endpoint );

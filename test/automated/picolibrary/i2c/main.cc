@@ -32,7 +32,6 @@
 #include "picolibrary/testing/automated/error.h"
 #include "picolibrary/testing/automated/i2c.h"
 #include "picolibrary/testing/automated/random.h"
-#include "picolibrary/void.h"
 
 namespace {
 
@@ -40,7 +39,6 @@ using ::picolibrary::Error_Code;
 using ::picolibrary::Functor_Can_Fail_Discard_Functor;
 using ::picolibrary::Functor_Can_Fail_Return_Functor;
 using ::picolibrary::Result;
-using ::picolibrary::Void;
 using ::picolibrary::I2C::Address_Numeric;
 using ::picolibrary::I2C::Address_Transmitted;
 using ::picolibrary::I2C::Operation;
@@ -169,7 +167,7 @@ TEST( scan, functorError )
 {
     {
         auto controller = Mock_Controller{};
-        auto functor = MockFunction<Result<Void, Error_Code>( Address_Transmitted, Operation, Response )>{};
+        auto functor = MockFunction<Result<void, Error_Code>( Address_Transmitted, Operation, Response )>{};
 
         auto const error = random<Mock_Error>();
 
@@ -188,7 +186,7 @@ TEST( scan, functorError )
 
     {
         auto controller = Mock_Controller{};
-        auto functor = MockFunction<Result<Void, Error_Code>( Address_Transmitted, Operation, Response )>{};
+        auto functor = MockFunction<Result<void, Error_Code>( Address_Transmitted, Operation, Response )>{};
 
         auto const error = random<Mock_Error>();
 
@@ -251,7 +249,7 @@ TEST( scan, worksProperly )
         auto const in_sequence = InSequence{};
 
         auto controller = Mock_Controller{};
-        auto functor = MockFunction<Result<Void, Error_Code>( Address_Transmitted, Operation, Response )>{};
+        auto functor = MockFunction<Result<void, Error_Code>( Address_Transmitted, Operation, Response )>{};
 
         for ( auto address_numeric = std::uint_fast8_t{ 0b0000000 }; address_numeric <= 0b1111111;
               ++address_numeric ) {
@@ -267,7 +265,7 @@ TEST( scan, worksProperly )
                 } // if
                 EXPECT_CALL( controller, stop() );
                 EXPECT_CALL( functor, Call( address_transmitted, Operation::READ, response ) )
-                    .WillOnce( Return( Result<Void, Error_Code>{} ) );
+                    .WillOnce( Return( Result<void, Error_Code>{} ) );
             }
 
             {
@@ -278,7 +276,7 @@ TEST( scan, worksProperly )
                     .WillOnce( Return( response ) );
                 EXPECT_CALL( controller, stop() );
                 EXPECT_CALL( functor, Call( address_transmitted, Operation::WRITE, response ) )
-                    .WillOnce( Return( Result<Void, Error_Code>{} ) );
+                    .WillOnce( Return( Result<void, Error_Code>{} ) );
             }
         } // for
 
@@ -289,7 +287,7 @@ TEST( scan, worksProperly )
 
         ASSERT_TRUE( result.is_value() );
 
-        EXPECT_CALL( functor, Call( _, _, _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( functor, Call( _, _, _ ) ).WillOnce( Return( Result<void, Error_Code>{} ) );
 
         EXPECT_FALSE( result
                           .value()( random<Address_Transmitted>(), random<Operation>(), random<Response>() )
@@ -300,7 +298,7 @@ TEST( scan, worksProperly )
         auto const in_sequence = InSequence{};
 
         auto controller = Mock_Controller{};
-        auto functor = MockFunction<Result<Void, Error_Code>( Address_Transmitted, Operation, Response )>{};
+        auto functor = MockFunction<Result<void, Error_Code>( Address_Transmitted, Operation, Response )>{};
 
         for ( auto address_numeric = std::uint_fast8_t{ 0b0000000 }; address_numeric <= 0b1111111;
               ++address_numeric ) {
@@ -316,7 +314,7 @@ TEST( scan, worksProperly )
                 } // if
                 EXPECT_CALL( controller, stop() );
                 EXPECT_CALL( functor, Call( address_transmitted, Operation::READ, response ) )
-                    .WillOnce( Return( Result<Void, Error_Code>{} ) );
+                    .WillOnce( Return( Result<void, Error_Code>{} ) );
             }
 
             {
@@ -327,14 +325,14 @@ TEST( scan, worksProperly )
                     .WillOnce( Return( response ) );
                 EXPECT_CALL( controller, stop() );
                 EXPECT_CALL( functor, Call( address_transmitted, Operation::WRITE, response ) )
-                    .WillOnce( Return( Result<Void, Error_Code>{} ) );
+                    .WillOnce( Return( Result<void, Error_Code>{} ) );
             }
         } // for
 
         auto const result = scan<Functor_Can_Fail_Discard_Functor>(
             controller, functor.AsStdFunction() );
 
-        static_assert( std::is_same_v<decltype( result )::Value, Void> );
+        static_assert( std::is_same_v<decltype( result )::Value, void> );
 
         EXPECT_FALSE( result.is_error() );
     }

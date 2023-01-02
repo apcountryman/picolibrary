@@ -35,7 +35,6 @@
 #include "picolibrary/testing/automated/random.h"
 #include "picolibrary/testing/automated/stream.h"
 #include "picolibrary/utility.h"
-#include "picolibrary/void.h"
 
 namespace {
 
@@ -44,7 +43,6 @@ using ::picolibrary::Output_Formatter;
 using ::picolibrary::Output_Stream;
 using ::picolibrary::Result;
 using ::picolibrary::to_underlying;
-using ::picolibrary::Void;
 using ::picolibrary::Testing::Automated::Mock_Error;
 using ::picolibrary::Testing::Automated::Mock_Error_Category;
 using ::picolibrary::Testing::Automated::Mock_Output_Stream;
@@ -147,7 +145,7 @@ TEST( putChar, worksProperly )
     auto const character = random<char>();
 
     EXPECT_CALL( stream.buffer(), put( SafeMatcherCast<char>( Eq( character ) ) ) )
-        .WillOnce( Return( Result<Void, Error_Code>{} ) );
+        .WillOnce( Return( Result<void, Error_Code>{} ) );
 
     EXPECT_FALSE( stream.put( character ).is_error() );
 
@@ -187,7 +185,7 @@ TEST( putCharBlock, worksProperly )
 
     auto const string = random_container<std::string>();
 
-    EXPECT_CALL( stream.buffer(), put( string ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( stream.buffer(), put( string ) ).WillOnce( Return( Result<void, Error_Code>{} ) );
 
     EXPECT_FALSE( stream.put( &*string.begin(), &*string.end() ).is_error() );
 
@@ -226,7 +224,7 @@ TEST( putNullTerminatedString, worksProperly )
 
     auto const string = random_container<std::string>();
 
-    EXPECT_CALL( stream.buffer(), put( string ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( stream.buffer(), put( string ) ).WillOnce( Return( Result<void, Error_Code>{} ) );
 
     EXPECT_FALSE( stream.put( string.c_str() ).is_error() );
 
@@ -265,7 +263,7 @@ TEST( putUnsignedByte, worksProperly )
     auto const value = random<std::uint8_t>();
 
     EXPECT_CALL( stream.buffer(), put( SafeMatcherCast<std::uint8_t>( Eq( value ) ) ) )
-        .WillOnce( Return( Result<Void, Error_Code>{} ) );
+        .WillOnce( Return( Result<void, Error_Code>{} ) );
 
     EXPECT_FALSE( stream.put( value ).is_error() );
 
@@ -305,7 +303,7 @@ TEST( putUnsignedByteBlock, worksProperly )
 
     auto const values = random_container<std::vector<std::uint8_t>>();
 
-    EXPECT_CALL( stream.buffer(), put( values ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( stream.buffer(), put( values ) ).WillOnce( Return( Result<void, Error_Code>{} ) );
 
     EXPECT_FALSE( stream.put( &*values.begin(), &*values.end() ).is_error() );
 
@@ -344,7 +342,7 @@ TEST( putSignedByte, worksProperly )
     auto const value = random<std::int8_t>();
 
     EXPECT_CALL( stream.buffer(), put( SafeMatcherCast<std::int8_t>( Eq( value ) ) ) )
-        .WillOnce( Return( Result<Void, Error_Code>{} ) );
+        .WillOnce( Return( Result<void, Error_Code>{} ) );
 
     EXPECT_FALSE( stream.put( value ).is_error() );
 
@@ -384,7 +382,7 @@ TEST( putSignedByteBlock, worksProperly )
 
     auto const values = random_container<std::vector<std::int8_t>>();
 
-    EXPECT_CALL( stream.buffer(), put( values ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( stream.buffer(), put( values ) ).WillOnce( Return( Result<void, Error_Code>{} ) );
 
     EXPECT_FALSE( stream.put( &*values.begin(), &*values.end() ).is_error() );
 
@@ -490,7 +488,7 @@ TEST( flush, worksProperly )
 {
     auto stream = Mock_Output_Stream{};
 
-    EXPECT_CALL( stream.buffer(), flush() ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+    EXPECT_CALL( stream.buffer(), flush() ).WillOnce( Return( Result<void, Error_Code>{} ) );
 
     EXPECT_FALSE( stream.flush().is_error() );
 
@@ -573,22 +571,6 @@ TEST( outputFormatterNullTerminatedString, worksProperly )
 
     EXPECT_TRUE( stream.is_nominal() );
     EXPECT_EQ( stream.string(), string );
-}
-
-/**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Void> works properly.
- */
-TEST( outputFormatterVoid, worksProperly )
-{
-    auto stream = Output_String_Stream{};
-
-    auto const result = stream.print( Void{} );
-
-    ASSERT_TRUE( result.is_value() );
-    EXPECT_EQ( result.value(), stream.string().size() );
-
-    EXPECT_TRUE( stream.is_nominal() );
-    EXPECT_EQ( stream.string(), "" );
 }
 
 /**
