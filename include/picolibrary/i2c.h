@@ -24,7 +24,6 @@
 #define PICOLIBRARY_I2C_H
 
 #include <cstdint>
-#include <type_traits>
 #include <utility>
 
 #include "picolibrary/algorithm.h"
