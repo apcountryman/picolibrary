@@ -116,7 +116,7 @@ TYPED_TEST( outputFormatterDec, worksProperly )
 
         auto const result = stream.print( Dec{ value } );
 
-        ASSERT_TRUE( result.is_value() );
+        ASSERT_FALSE( result.is_error() );
         EXPECT_EQ( result.value(), stream.string().size() );
 
         EXPECT_TRUE( stream.is_nominal() );

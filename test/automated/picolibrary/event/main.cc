@@ -183,7 +183,7 @@ TEST( outputFormatterEvent, worksProperly )
 
         auto const result = stream.print( static_cast<::picolibrary::Event const &>( event ) );
 
-        EXPECT_TRUE( result.is_value() );
+        EXPECT_FALSE( result.is_error() );
         EXPECT_EQ( result.value(), stream.string().size() + event_details_size );
 
         EXPECT_TRUE( stream.is_nominal() );

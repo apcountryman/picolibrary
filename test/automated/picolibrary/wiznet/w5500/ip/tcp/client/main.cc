@@ -1067,7 +1067,7 @@ TEST( transmit, worksProperly )
         auto const data   = std::vector<std::uint8_t>{};
         auto const result = client.transmit( &*data.begin(), &*data.end() );
 
-        EXPECT_TRUE( result.is_value() );
+        EXPECT_FALSE( result.is_error() );
         EXPECT_EQ( result.value(), &*data.end() );
 
         EXPECT_EQ( client.state(), Client::State::CONNECTED );
@@ -1097,7 +1097,7 @@ TEST( transmit, worksProperly )
         auto const data   = std::vector<std::uint8_t>{};
         auto const result = client.transmit( &*data.begin(), &*data.end() );
 
-        EXPECT_TRUE( result.is_value() );
+        EXPECT_FALSE( result.is_error() );
         EXPECT_EQ( result.value(), &*data.end() );
 
         EXPECT_EQ( client.state(), Client::State::CONNECTED );
@@ -1154,7 +1154,7 @@ TEST( transmit, worksProperly )
 
             auto const result = client.transmit( &*data.begin(), &*data.end() );
 
-            EXPECT_TRUE( result.is_value() );
+            EXPECT_FALSE( result.is_error() );
             EXPECT_EQ( result.value(), &*data.end() );
 
             EXPECT_EQ( client.state(), Client::State::CONNECTED );
@@ -1214,7 +1214,7 @@ TEST( transmit, worksProperly )
 
             auto const result = client.transmit( &*data.begin(), &*data.end() );
 
-            EXPECT_TRUE( result.is_value() );
+            EXPECT_FALSE( result.is_error() );
             EXPECT_EQ( result.value(), &*data.end() );
 
             EXPECT_EQ( client.state(), Client::State::CONNECTED );
@@ -1274,7 +1274,7 @@ TEST( transmit, worksProperly )
 
             auto const result = client.transmit( &*data.begin(), &*data.end() );
 
-            EXPECT_TRUE( result.is_value() );
+            EXPECT_FALSE( result.is_error() );
             EXPECT_EQ( result.value(), &*data.begin() + sn_tx_fsr );
 
             EXPECT_EQ( client.state(), Client::State::CONNECTED );
@@ -1336,7 +1336,7 @@ TEST( transmit, worksProperly )
 
             auto const result = client.transmit( &*data.begin(), &*data.end() );
 
-            EXPECT_TRUE( result.is_value() );
+            EXPECT_FALSE( result.is_error() );
             EXPECT_EQ( result.value(), &*data.begin() + sn_tx_fsr );
 
             EXPECT_EQ( client.state(), Client::State::CONNECTED );
@@ -1628,7 +1628,7 @@ TEST( receive, worksProperly )
             auto       data   = std::vector<std::uint8_t>{};
             auto const result = client.receive( &*data.begin(), &*data.end() );
 
-            EXPECT_TRUE( result.is_value() );
+            EXPECT_FALSE( result.is_error() );
             EXPECT_EQ( result.value(), &*data.end() );
 
             EXPECT_EQ( client.state(), Client::State::CONNECTED );
@@ -1691,7 +1691,7 @@ TEST( receive, worksProperly )
 
             auto const result = client.receive( &*data.begin(), &*data.end() );
 
-            EXPECT_TRUE( result.is_value() );
+            EXPECT_FALSE( result.is_error() );
             EXPECT_EQ( result.value(), &*data.end() );
 
             EXPECT_EQ( data, data_expected );
@@ -1755,7 +1755,7 @@ TEST( receive, worksProperly )
             auto data = std::vector<std::uint8_t>( random<std::uint16_t>( sn_rx_rsr + 1 ) );
             auto const result = client.receive( &*data.begin(), &*data.end() );
 
-            EXPECT_TRUE( result.is_value() );
+            EXPECT_FALSE( result.is_error() );
             EXPECT_EQ( result.value(), &*data.begin() + sn_rx_rsr );
 
             EXPECT_EQ( ( std::vector<std::uint8_t>{ &*data.begin(), result.value() } ), data_expected );

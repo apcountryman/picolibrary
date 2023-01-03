@@ -429,7 +429,7 @@ TEST( print, worksProperly )
 
         auto const result = stream.print( foo, Output_Formatter<Foo>{ foo_formatter } );
 
-        ASSERT_TRUE( result.is_value() );
+        ASSERT_FALSE( result.is_error() );
         EXPECT_EQ( result.value(), foo_size );
 
         EXPECT_TRUE( stream.is_nominal() );
@@ -453,7 +453,7 @@ TEST( print, worksProperly )
         auto const result = stream.print(
             foo_a, Output_Formatter<Foo>{ foo_a_formatter }, foo_b, Output_Formatter<Foo>{ foo_b_formatter } );
 
-        ASSERT_TRUE( result.is_value() );
+        ASSERT_FALSE( result.is_error() );
         EXPECT_EQ( result.value(), foo_a_size + foo_b_size );
 
         EXPECT_TRUE( stream.is_nominal() );
@@ -527,7 +527,7 @@ TEST( outputFormatterChar, worksProperly )
 
     auto const result = stream.print( character );
 
-    ASSERT_TRUE( result.is_value() );
+    ASSERT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
@@ -566,7 +566,7 @@ TEST( outputFormatterNullTerminatedString, worksProperly )
 
     auto const result = stream.print( string.c_str() );
 
-    ASSERT_TRUE( result.is_value() );
+    ASSERT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
@@ -620,7 +620,7 @@ TEST( outputFormatterErrorCode, worksProperly )
 
     auto const result = stream.print( Error_Code{ error } );
 
-    ASSERT_TRUE( result.is_value() );
+    ASSERT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
@@ -676,7 +676,7 @@ TEST( outputFormatterErrorCodeEnum, worksProperly )
 
     auto const result = stream.print( error );
 
-    ASSERT_TRUE( result.is_value() );
+    ASSERT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );

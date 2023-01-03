@@ -128,7 +128,7 @@ TEST( forEach, worksProperly )
 
         static_assert( std::is_same_v<decltype( result )::Value, decltype( functor.AsStdFunction() )> );
 
-        ASSERT_TRUE( result.is_value() );
+        ASSERT_FALSE( result.is_error() );
 
         EXPECT_CALL( functor, Call( _ ) ).WillOnce( Return( Result<void, Error_Code>{} ) );
 
@@ -151,7 +151,7 @@ TEST( forEach, worksProperly )
 
         static_assert( std::is_same_v<decltype( result )::Value, void> );
 
-        ASSERT_TRUE( result.is_value() );
+        ASSERT_FALSE( result.is_error() );
     }
 }
 
