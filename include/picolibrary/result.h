@@ -122,7 +122,7 @@ class [[nodiscard]] Result<void, Error_Code, false> final
      */
     template<typename... Arguments>
     constexpr Result( Error_Tag, Arguments && ... arguments ) noexcept :
-        m_is_error{ false },
+        m_is_error{ true },
         m_error{ std::forward<Arguments>( arguments )... }
     {
     }
