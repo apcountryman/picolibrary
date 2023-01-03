@@ -239,48 +239,9 @@ class [[nodiscard]] Result<void, Error_Code, false> final
      *
      * \return The error.
      */
-    [[nodiscard]] constexpr auto error() && noexcept->Error &&
+    [[nodiscard]] constexpr auto error() const noexcept->Error const &
     {
-        return static_cast<Error &&>( m_error );
-    }
-
-    /**
-     * \brief Access the result of a failed operation.
-     *
-     * \warning Calling this function on the result of a successful operation results in
-     *          undefined behavior.
-     *
-     * \return The error.
-     */
-    [[nodiscard]] constexpr auto error() const && noexcept->Error const &&
-    {
-        return static_cast<Error const &&>( m_error );
-    }
-
-    /**
-     * \brief Access the result of a failed operation.
-     *
-     * \warning Calling this function on the result of a successful operation results in
-     *          undefined behavior.
-     *
-     * \return The error.
-     */
-    [[nodiscard]] constexpr auto error() & noexcept->Error &
-    {
-        return static_cast<Error &>( m_error );
-    }
-
-    /**
-     * \brief Access the result of a failed operation.
-     *
-     * \warning Calling this function on the result of a successful operation results in
-     *          undefined behavior.
-     *
-     * \return The error.
-     */
-    [[nodiscard]] constexpr auto error() const & noexcept->Error const &
-    {
-        return static_cast<Error const &>( m_error );
+        return m_error;
     }
 
   private:
@@ -567,48 +528,9 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      *
      * \return The error.
      */
-    [[nodiscard]] constexpr auto error() && noexcept->Error &&
+    [[nodiscard]] constexpr auto error() const noexcept->Error const &
     {
-        return static_cast<Error &&>( m_error );
-    }
-
-    /**
-     * \brief Access the result of a failed operation.
-     *
-     * \warning Calling this function on the result of a successful operation results in
-     *          undefined behavior.
-     *
-     * \return The error.
-     */
-    [[nodiscard]] constexpr auto error() const && noexcept->Error const &&
-    {
-        return static_cast<Error const &&>( m_error );
-    }
-
-    /**
-     * \brief Access the result of a failed operation.
-     *
-     * \warning Calling this function on the result of a successful operation results in
-     *          undefined behavior.
-     *
-     * \return The error.
-     */
-    [[nodiscard]] constexpr auto error() & noexcept->Error &
-    {
-        return static_cast<Error &>( m_error );
-    }
-
-    /**
-     * \brief Access the result of a failed operation.
-     *
-     * \warning Calling this function on the result of a successful operation results in
-     *          undefined behavior.
-     *
-     * \return The error.
-     */
-    [[nodiscard]] constexpr auto error() const & noexcept->Error const &
-    {
-        return static_cast<Error const &>( m_error );
+        return m_error;
     }
 
   private:
@@ -896,48 +818,9 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      *
      * \return The error.
      */
-    [[nodiscard]] constexpr auto error() && noexcept->Error &&
+    [[nodiscard]] constexpr auto error() const noexcept->Error const &
     {
-        return static_cast<Error &&>( m_error );
-    }
-
-    /**
-     * \brief Access the result of a failed operation.
-     *
-     * \warning Calling this function on the result of a successful operation results in
-     *          undefined behavior.
-     *
-     * \return The error.
-     */
-    [[nodiscard]] constexpr auto error() const && noexcept->Error const &&
-    {
-        return static_cast<Error const &&>( m_error );
-    }
-
-    /**
-     * \brief Access the result of a failed operation.
-     *
-     * \warning Calling this function on the result of a successful operation results in
-     *          undefined behavior.
-     *
-     * \return The error.
-     */
-    [[nodiscard]] constexpr auto error() & noexcept->Error &
-    {
-        return static_cast<Error &>( m_error );
-    }
-
-    /**
-     * \brief Access the result of a failed operation.
-     *
-     * \warning Calling this function on the result of a successful operation results in
-     *          undefined behavior.
-     *
-     * \return The error.
-     */
-    [[nodiscard]] constexpr auto error() const & noexcept->Error const &
-    {
-        return static_cast<Error const &>( m_error );
+        return m_error;
     }
 
   private:
