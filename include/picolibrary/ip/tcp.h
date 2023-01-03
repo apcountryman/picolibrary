@@ -29,7 +29,6 @@
 #include "picolibrary/error.h"
 #include "picolibrary/ip.h"
 #include "picolibrary/result.h"
-#include "picolibrary/void.h"
 
 /**
  * \brief Transmission Control Protocol (TCP) over IP facilities.
@@ -116,7 +115,7 @@ class Client_Concept {
      * \return picolibrary::Generic_Error::OPERATION_TIMEOUT if connecting to the remote
      *         endpoint timed out.
      */
-    auto connect( Endpoint const & endpoint ) noexcept -> Result<Void, Error_Code>;
+    auto connect( Endpoint const & endpoint ) noexcept -> Result<void, Error_Code>;
 
     /**
      * \brief Check if the socket is connected to a remote endpoint.

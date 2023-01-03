@@ -33,7 +33,6 @@
 #include "picolibrary/result.h"
 #include "picolibrary/testing/automated/ip.h"
 #include "picolibrary/testing/automated/mock_handle.h"
-#include "picolibrary/void.h"
 
 /**
  * \brief Transmission Control Protocol (TCP) over IP automated testing facilities.
@@ -77,7 +76,7 @@ class Mock_Client {
             mock().bind( endpoint );
         }
 
-        auto connect( ::picolibrary::IP::TCP::Endpoint const & endpoint ) -> Result<Void, Error_Code>
+        auto connect( ::picolibrary::IP::TCP::Endpoint const & endpoint ) -> Result<void, Error_Code>
         {
             return mock().connect( endpoint );
         }
@@ -149,7 +148,7 @@ class Mock_Client {
     MOCK_METHOD( void, bind, () );
     MOCK_METHOD( void, bind, (::picolibrary::IP::TCP::Endpoint const &));
 
-    MOCK_METHOD( (Result<Void, Error_Code>), connect, (::picolibrary::IP::TCP::Endpoint const &));
+    MOCK_METHOD( (Result<void, Error_Code>), connect, (::picolibrary::IP::TCP::Endpoint const &));
 
     MOCK_METHOD( bool, is_connected, (), ( const ) );
 

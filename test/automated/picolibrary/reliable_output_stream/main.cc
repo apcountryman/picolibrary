@@ -34,7 +34,6 @@
 #include "picolibrary/testing/automated/random.h"
 #include "picolibrary/testing/automated/stream.h"
 #include "picolibrary/utility.h"
-#include "picolibrary/void.h"
 
 namespace {
 
@@ -42,7 +41,6 @@ using ::picolibrary::Error_Code;
 using ::picolibrary::Output_Formatter;
 using ::picolibrary::Reliable_Output_Stream;
 using ::picolibrary::to_underlying;
-using ::picolibrary::Void;
 using ::picolibrary::Testing::Automated::Mock_Error;
 using ::picolibrary::Testing::Automated::Mock_Error_Category;
 using ::picolibrary::Testing::Automated::Mock_Reliable_Output_Stream;
@@ -315,21 +313,6 @@ TEST( outputFormatterNullTerminatedString, worksProperly )
 
     EXPECT_TRUE( stream.is_nominal() );
     EXPECT_EQ( stream.string(), string );
-}
-
-/**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Void> works properly.
- */
-TEST( outputFormatterVoid, worksProperly )
-{
-    auto stream = Reliable_Output_String_Stream{};
-
-    auto const n = stream.print( Void{} );
-
-    EXPECT_EQ( n, stream.string().size() );
-
-    EXPECT_TRUE( stream.is_nominal() );
-    EXPECT_EQ( stream.string(), "" );
 }
 
 /**

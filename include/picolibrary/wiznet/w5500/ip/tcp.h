@@ -31,7 +31,6 @@
 #include "picolibrary/precondition.h"
 #include "picolibrary/result.h"
 #include "picolibrary/utility.h"
-#include "picolibrary/void.h"
 #include "picolibrary/wiznet/w5500.h"
 
 /**
@@ -412,7 +411,7 @@ class Client {
      *         endpoint timed out.
      */
     // NOLINTNEXTLINE(readability-function-size)
-    auto connect( ::picolibrary::IP::TCP::Endpoint const & endpoint ) noexcept -> Result<Void, Error_Code>
+    auto connect( ::picolibrary::IP::TCP::Endpoint const & endpoint ) noexcept -> Result<void, Error_Code>
     {
         // #lizard forgives the length
 
@@ -585,7 +584,7 @@ class Client {
      * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not connected to
      *         a remote endpoint.
      */
-    auto transmit_keepalive() noexcept -> Result<Void, Error_Code>
+    auto transmit_keepalive() noexcept -> Result<void, Error_Code>
     {
         PICOLIBRARY_EXPECT( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
 

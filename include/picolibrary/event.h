@@ -33,7 +33,6 @@
 #include "picolibrary/result.h"
 #include "picolibrary/rom.h"
 #include "picolibrary/stream.h"
-#include "picolibrary/void.h"
 
 namespace picolibrary {
 
@@ -156,7 +155,8 @@ class Event {
         return size_t{ 0 };
     }
 #else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
-    constexpr auto print_details( Output_Stream & stream ) const noexcept -> Result<std::size_t, Void>
+    constexpr auto print_details( Output_Stream & stream ) const noexcept
+        -> Result<std::size_t, Error_Code>
     {
         static_cast<void>( stream );
 

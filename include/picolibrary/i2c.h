@@ -24,14 +24,12 @@
 #define PICOLIBRARY_I2C_H
 
 #include <cstdint>
-#include <type_traits>
 #include <utility>
 
 #include "picolibrary/algorithm.h"
 #include "picolibrary/error.h"
 #include "picolibrary/precondition.h"
 #include "picolibrary/result.h"
-#include "picolibrary/void.h"
 
 /**
  * \brief Inter-Integrated Circuit (I2C) facilities.
@@ -892,10 +890,9 @@ auto scan( Controller & controller, Functor functor ) noexcept -> Functor
  *
  * \tparam Controller The type of controller used to communicate with devices on the bus.
  * \tparam Functor A trinary functor that takes a device address and operation pair, and
- *         the ping response for the device address and operation pair; and returns either
- *         picolibrary::Result<picolibrary::Void, picolibrary::Error_Code> or
- *         picolibrary::Result<picolibrary::Void, picolibrary::Void>. If an error is
- *         returned by the functor, the scan will halt and the error is returned.
+ *         the ping response for the device address and operation pair; and returns
+ *         picolibrary::Result<void, picolibrary::Error_Code>. If an error is returned by
+ *         the functor, the scan will halt and the error is returned.
  *
  * \param[in] controller The controller used to communicate with devices on the bus.
  * \param[in] functor The functor to pass scan results to.
@@ -905,7 +902,7 @@ auto scan( Controller & controller, Functor functor ) noexcept -> Functor
  */
 template<typename Controller, typename Functor>
 auto scan( Controller & controller, Functor functor, Functor_Can_Fail_Return_Functor ) noexcept
-    -> Result<Functor, typename std::invoke_result_t<Functor, Address_Transmitted, Operation, Response>::Error>
+    -> Result<Functor, Error_Code>
 {
     Operation const operations[]{
         Operation::READ,
@@ -934,10 +931,9 @@ auto scan( Controller & controller, Functor functor, Functor_Can_Fail_Return_Fun
  *
  * \tparam Controller The type of controller used to communicate with devices on the bus.
  * \tparam Functor A trinary functor that takes a device address and operation pair, and
- *         the ping response for the device address and operation pair; and returns either
- *         picolibrary::Result<picolibrary::Void, picolibrary::Error_Code> or
- *         picolibrary::Result<picolibrary::Void, picolibrary::Void>. If an error is
- *         returned by the functor, the scan will halt and the error is returned.
+ *         the ping response for the device address and operation pair; and returns
+ *         picolibrary::Result<void, picolibrary::Error_Code>. If an error is returned by
+ *         the functor, the scan will halt and the error is returned.
  *
  * \param[in] controller The controller used to communicate with devices on the bus.
  * \param[in] functor The functor to pass scan results to.
@@ -947,7 +943,7 @@ auto scan( Controller & controller, Functor functor, Functor_Can_Fail_Return_Fun
  */
 template<typename Controller, typename Functor>
 auto scan( Controller & controller, Functor functor, Functor_Can_Fail_Discard_Functor ) noexcept
-    -> Result<Void, typename std::invoke_result_t<Functor, Address_Transmitted, Operation, Response>::Error>
+    -> Result<void, Error_Code>
 {
     Operation const operations[]{
         Operation::READ,
@@ -979,10 +975,9 @@ auto scan( Controller & controller, Functor functor, Functor_Can_Fail_Discard_Fu
  *         picolibrary::Functor_Can_Fail_Discard_Functor).
  * \tparam Controller The type of controller used to communicate with devices on the bus.
  * \tparam Functor A trinary functor that takes a device address and operation pair, and
- *         the ping response for the device address and operation pair; and returns either
- *         picolibrary::Result<picolibrary::Void, picolibrary::Error_Code> or
- *         picolibrary::Result<picolibrary::Void, picolibrary::Void>. If an error is
- *         returned by the functor, the scan will halt and the error is returned.
+ *         the ping response for the device address and operation pair; and returns
+ *         picolibrary::Result<void, picolibrary::Error_Code>. If an error is returned by
+ *         the functor, the scan will halt and the error is returned.
  *
  * \param[in] controller The controller used to communicate with devices on the bus.
  * \param[in] functor The functor to pass scan results to.
