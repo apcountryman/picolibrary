@@ -78,7 +78,6 @@ class [[nodiscard]] Result<void, false> final
 {
   public:
     static_assert( not std::is_trivially_destructible_v<void> );
-    static_assert( std::is_trivially_destructible_v<Error_Code> );
 
     /**
      * \brief Operation succeeded result type.
@@ -88,10 +87,7 @@ class [[nodiscard]] Result<void, false> final
     /**
      * \brief Constructor.
      */
-    // NOLINTNEXTLINE(modernize-use-equals-default)
-    constexpr Result() noexcept
-    {
-    }
+    constexpr Result() noexcept = default;
 
     /**
      * \brief Constructor.
@@ -126,25 +122,14 @@ class [[nodiscard]] Result<void, false> final
      *
      * \param[in] source The source of the move.
      */
-    constexpr Result( Result && source ) noexcept : m_is_error{ source.m_is_error }
-    {
-        if ( is_error() ) {
-            new ( &m_error ) Error_Code{ std::move( source.m_error ) };
-        } // if
-    }
+    constexpr Result( Result && source ) noexcept = default;
 
     /**
      * \brief Constructor.
      *
      * \param[in] original The original to copy.
      */
-    constexpr Result( Result const & original ) noexcept :
-        m_is_error{ original.m_is_error }
-    {
-        if ( is_error() ) {
-            new ( &m_error ) Error_Code{ original.m_error };
-        } // if
-    }
+    constexpr Result( Result const & original ) noexcept = default;
 
     /**
      * \brief Destructor.
@@ -158,24 +143,7 @@ class [[nodiscard]] Result<void, false> final
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Result && expression ) noexcept->Result &
-    {
-        if ( &expression != this ) {
-            if ( is_error() == expression.is_error() ) {
-                if ( is_error() ) {
-                    m_error = std::move( expression.m_error );
-                } // if
-            } else {
-                if ( not is_error() ) {
-                    new ( &m_error ) Error_Code{ std::move( expression.m_error ) };
-                } // if
-
-                m_is_error = expression.m_is_error;
-            } // else
-        }     // if
-
-        return *this;
-    }
+    constexpr auto operator=( Result && expression ) noexcept->Result & = default;
 
     /**
      * \brief Assignment operator.
@@ -184,24 +152,7 @@ class [[nodiscard]] Result<void, false> final
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Result const & expression ) noexcept->Result &
-    {
-        if ( &expression != this ) {
-            if ( is_error() == expression.is_error() ) {
-                if ( is_error() ) {
-                    m_error = expression.m_error;
-                } // if
-            } else {
-                if ( not is_error() ) {
-                    new ( &m_error ) Error_Code{ expression.m_error };
-                } // if
-
-                m_is_error = expression.m_is_error;
-            } // else
-        }     // if
-
-        return *this;
-    }
+    constexpr auto operator=( Result const & expression ) noexcept->Result & = default;
 
     /**
      * \brief Check if the operation result is an error (operation failed).
@@ -229,27 +180,14 @@ class [[nodiscard]] Result<void, false> final
 
   private:
     /**
-     * \brief Replacement for void in contexts that require construction.
-     */
-    struct Void {
-    };
-
-    /**
      * \brief Result type flag.
      */
     bool m_is_error{ false };
 
-    union {
-        /**
-         * \brief Operation succeeded result.
-         */
-        Void m_value{};
-
-        /**
-         * \brief Operation failed result.
-         */
-        Error_Code m_error;
-    };
+    /**
+     * \brief Operation failed result.
+     */
+    Error_Code m_error;
 };
 
 /**
