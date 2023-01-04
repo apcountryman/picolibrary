@@ -108,7 +108,7 @@ class [[nodiscard]] Result<void, Error_Code, false> final
      */
     template<typename E, typename = typename std::enable_if_t<not std::is_same_v<std::decay_t<E>, Result> and std::is_convertible_v<E, Error>>>
     constexpr Result( E && error, Error_Tag = {} ) noexcept :
-        m_is_value{ false },
+        m_is_error{ true },
         m_error{ std::forward<E>( error ) }
     {
     }
@@ -122,7 +122,7 @@ class [[nodiscard]] Result<void, Error_Code, false> final
      */
     template<typename... Arguments>
     constexpr Result( Error_Tag, Arguments && ... arguments ) noexcept :
-        m_is_value{ false },
+        m_is_error{ true },
         m_error{ std::forward<Arguments>( arguments )... }
     {
     }
@@ -132,7 +132,7 @@ class [[nodiscard]] Result<void, Error_Code, false> final
      *
      * \param[in] source The source of the move.
      */
-    constexpr Result( Result && source ) noexcept : m_is_value{ source.m_is_value }
+    constexpr Result( Result && source ) noexcept : m_is_error{ source.m_is_error }
     {
         if ( is_error() ) {
             new ( &m_error ) Error{ std::move( source.m_error ) };
@@ -145,7 +145,7 @@ class [[nodiscard]] Result<void, Error_Code, false> final
      * \param[in] original The original to copy.
      */
     constexpr Result( Result const & original ) noexcept :
-        m_is_value{ original.m_is_value }
+        m_is_error{ original.m_is_error }
     {
         if ( is_error() ) {
             new ( &m_error ) Error{ original.m_error };
@@ -167,16 +167,16 @@ class [[nodiscard]] Result<void, Error_Code, false> final
     constexpr auto operator=( Result && expression ) noexcept->Result &
     {
         if ( &expression != this ) {
-            if ( is_value() == expression.is_value() ) {
+            if ( is_error() == expression.is_error() ) {
                 if ( is_error() ) {
                     m_error = std::move( expression.m_error );
                 } // if
             } else {
-                if ( is_value() ) {
+                if ( not is_error() ) {
                     new ( &m_error ) Error{ std::move( expression.m_error ) };
                 } // if
 
-                m_is_value = expression.m_is_value;
+                m_is_error = expression.m_is_error;
             } // else
         }     // if
 
@@ -193,31 +193,20 @@ class [[nodiscard]] Result<void, Error_Code, false> final
     constexpr auto operator=( Result const & expression ) noexcept->Result &
     {
         if ( &expression != this ) {
-            if ( is_value() == expression.is_value() ) {
+            if ( is_error() == expression.is_error() ) {
                 if ( is_error() ) {
                     m_error = expression.m_error;
                 } // if
             } else {
-                if ( is_value() ) {
+                if ( not is_error() ) {
                     new ( &m_error ) Error{ expression.m_error };
                 } // if
 
-                m_is_value = expression.m_is_value;
+                m_is_error = expression.m_is_error;
             } // else
         }     // if
 
         return *this;
-    }
-
-    /**
-     * \brief Check if the operation result is a value (operation succeeded).
-     *
-     * \return true if the operation result is a value (operation succeeded).
-     * \return false if the operation result is not a value (operation failed).
-     */
-    [[nodiscard]] constexpr auto is_value() const noexcept->bool
-    {
-        return m_is_value;
     }
 
     /**
@@ -228,7 +217,7 @@ class [[nodiscard]] Result<void, Error_Code, false> final
      */
     [[nodiscard]] constexpr auto is_error() const noexcept->bool
     {
-        return not is_value();
+        return m_is_error;
     }
 
     /**
@@ -254,7 +243,7 @@ class [[nodiscard]] Result<void, Error_Code, false> final
     /**
      * \brief Result type flag.
      */
-    bool m_is_value{ true };
+    bool m_is_error{ false };
 
     union {
         /**
@@ -304,7 +293,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      */
     template<typename V, typename = typename std::enable_if_t<not std::is_same_v<std::decay_t<V>, Result> and std::is_convertible_v<V, Value> and not std::is_convertible_v<V, Error>>>
     constexpr Result( V && value, Value_Tag = {} ) noexcept :
-        m_is_value{ true },
+        m_is_error{ false },
         m_value{ std::forward<V>( value ) }
     {
     }
@@ -318,7 +307,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      */
     template<typename... Arguments>
     constexpr Result( Value_Tag, Arguments && ... arguments ) noexcept :
-        m_is_value{ true },
+        m_is_error{ false },
         m_value{ std::forward<Arguments>( arguments )... }
     {
     }
@@ -333,7 +322,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      */
     template<typename E, typename = typename std::enable_if_t<not std::is_same_v<std::decay_t<E>, Result> and std::is_convertible_v<E, Error> and not std::is_convertible_v<E, Value>>>
     constexpr Result( E && error, Error_Tag = {} ) noexcept :
-        m_is_value{ false },
+        m_is_error{ true },
         m_error{ std::forward<E>( error ) }
     {
     }
@@ -347,7 +336,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      */
     template<typename... Arguments>
     constexpr Result( Error_Tag, Arguments && ... arguments ) noexcept :
-        m_is_value{ false },
+        m_is_error{ true },
         m_error{ std::forward<Arguments>( arguments )... }
     {
     }
@@ -357,12 +346,12 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      *
      * \param[in] source The source of the move.
      */
-    constexpr Result( Result && source ) noexcept : m_is_value{ source.m_is_value }
+    constexpr Result( Result && source ) noexcept : m_is_error{ source.m_is_error }
     {
-        if ( is_value() ) {
-            new ( &m_value ) Value{ std::move( source.m_value ) };
-        } else {
+        if ( is_error() ) {
             new ( &m_error ) Error{ std::move( source.m_error ) };
+        } else {
+            new ( &m_value ) Value{ std::move( source.m_value ) };
         } // else
     }
 
@@ -372,12 +361,12 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      * \param[in] original The original to copy.
      */
     constexpr Result( Result const & original ) noexcept :
-        m_is_value{ original.m_is_value }
+        m_is_error{ original.m_is_error }
     {
-        if ( is_value() ) {
-            new ( &m_value ) Value{ original.m_value };
-        } else {
+        if ( is_error() ) {
             new ( &m_error ) Error{ original.m_error };
+        } else {
+            new ( &m_value ) Value{ original.m_value };
         } // else
     }
 
@@ -396,20 +385,20 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
     constexpr auto operator=( Result && expression ) noexcept->Result &
     {
         if ( &expression != this ) {
-            if ( is_value() == expression.is_value() ) {
-                if ( is_value() ) {
-                    m_value = std::move( expression.m_value );
-                } else {
+            if ( is_error() == expression.is_error() ) {
+                if ( is_error() ) {
                     m_error = std::move( expression.m_error );
+                } else {
+                    m_value = std::move( expression.m_value );
                 } // else
             } else {
-                if ( is_value() ) {
-                    new ( &m_error ) Error{ std::move( expression.m_error ) };
-                } else {
+                if ( is_error() ) {
                     new ( &m_value ) Value{ std::move( expression.m_value ) };
+                } else {
+                    new ( &m_error ) Error{ std::move( expression.m_error ) };
                 } // else
 
-                m_is_value = expression.m_is_value;
+                m_is_error = expression.m_is_error;
             } // else
         }     // if
 
@@ -426,35 +415,24 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
     constexpr auto operator=( Result const & expression ) noexcept->Result &
     {
         if ( &expression != this ) {
-            if ( is_value() == expression.is_value() ) {
-                if ( is_value() ) {
-                    m_value = expression.m_value;
-                } else {
+            if ( is_error() == expression.is_error() ) {
+                if ( is_error() ) {
                     m_error = expression.m_error;
+                } else {
+                    m_value = expression.m_value;
                 } // else
             } else {
-                if ( is_value() ) {
-                    new ( &m_error ) Error{ expression.m_error };
-                } else {
+                if ( is_error() ) {
                     new ( &m_value ) Value{ expression.m_value };
+                } else {
+                    new ( &m_error ) Error{ expression.m_error };
                 } // else
 
-                m_is_value = expression.m_is_value;
+                m_is_error = expression.m_is_error;
             } // else
         }     // if
 
         return *this;
-    }
-
-    /**
-     * \brief Check if the operation result is a value (operation succeeded).
-     *
-     * \return true if the operation result is a value (operation succeeded).
-     * \return false if the operation result is not a value (operation failed).
-     */
-    [[nodiscard]] constexpr auto is_value() const noexcept->bool
-    {
-        return m_is_value;
     }
 
     /**
@@ -465,7 +443,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      */
     [[nodiscard]] constexpr auto is_error() const noexcept->bool
     {
-        return not is_value();
+        return m_is_error;
     }
 
     /**
@@ -537,7 +515,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
     /**
      * \brief Result type flag.
      */
-    bool m_is_value;
+    bool m_is_error;
 
     union {
         /**
@@ -587,7 +565,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      */
     template<typename V, typename = typename std::enable_if_t<not std::is_same_v<std::decay_t<V>, Result> and std::is_convertible_v<V, Value> and not std::is_convertible_v<V, Error>>>
     constexpr Result( V && value, Value_Tag = {} ) noexcept :
-        m_is_value{ true },
+        m_is_error{ false },
         m_value{ std::forward<V>( value ) }
     {
     }
@@ -601,7 +579,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      */
     template<typename... Arguments>
     constexpr Result( Value_Tag, Arguments && ... arguments ) noexcept :
-        m_is_value{ true },
+        m_is_error{ false },
         m_value{ std::forward<Arguments>( arguments )... }
     {
     }
@@ -616,7 +594,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      */
     template<typename E, typename = typename std::enable_if_t<not std::is_same_v<std::decay_t<E>, Result> and std::is_convertible_v<E, Error> and not std::is_convertible_v<E, Value>>>
     constexpr Result( E && error, Error_Tag = {} ) noexcept :
-        m_is_value{ false },
+        m_is_error{ true },
         m_error{ std::forward<E>( error ) }
     {
     }
@@ -630,7 +608,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      */
     template<typename... Arguments>
     constexpr Result( Error_Tag, Arguments && ... arguments ) noexcept :
-        m_is_value{ false },
+        m_is_error{ true },
         m_error{ std::forward<Arguments>( arguments )... }
     {
     }
@@ -640,12 +618,12 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      *
      * \param[in] source The source of the move.
      */
-    constexpr Result( Result && source ) noexcept : m_is_value{ source.m_is_value }
+    constexpr Result( Result && source ) noexcept : m_is_error{ source.m_is_error }
     {
-        if ( is_value() ) {
-            new ( &m_value ) Value{ std::move( source.m_value ) };
-        } else {
+        if ( is_error() ) {
             new ( &m_error ) Error{ std::move( source.m_error ) };
+        } else {
+            new ( &m_value ) Value{ std::move( source.m_value ) };
         } // else
     }
 
@@ -655,12 +633,12 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      * \param[in] original The original to copy.
      */
     constexpr Result( Result const & original ) noexcept :
-        m_is_value{ original.m_is_value }
+        m_is_error{ original.m_is_error }
     {
-        if ( is_value() ) {
-            new ( &m_value ) Value{ original.m_value };
-        } else {
+        if ( is_error() ) {
             new ( &m_error ) Error{ original.m_error };
+        } else {
+            new ( &m_value ) Value{ original.m_value };
         } // else
     }
 
@@ -669,7 +647,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      */
     ~Result() noexcept
     {
-        if ( is_value() ) {
+        if ( not is_error() ) {
             m_value.~Value();
         } // if
     }
@@ -684,21 +662,21 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
     constexpr auto operator=( Result && expression ) noexcept->Result &
     {
         if ( &expression != this ) {
-            if ( is_value() == expression.is_value() ) {
-                if ( is_value() ) {
-                    m_value = std::move( expression.m_value );
-                } else {
+            if ( is_error() == expression.is_error() ) {
+                if ( is_error() ) {
                     m_error = std::move( expression.m_error );
+                } else {
+                    m_value = std::move( expression.m_value );
                 } // else
             } else {
-                if ( is_value() ) {
+                if ( is_error() ) {
+                    new ( &m_value ) Value{ std::move( expression.m_value ) };
+                } else {
                     m_value.~Value();
                     new ( &m_error ) Error{ std::move( expression.m_error ) };
-                } else {
-                    new ( &m_value ) Value{ std::move( expression.m_value ) };
                 } // else
 
-                m_is_value = expression.m_is_value;
+                m_is_error = expression.m_is_error;
             } // else
         }     // if
 
@@ -715,36 +693,25 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
     constexpr auto operator=( Result const & expression ) noexcept->Result &
     {
         if ( &expression != this ) {
-            if ( is_value() == expression.is_value() ) {
-                if ( is_value() ) {
-                    m_value = expression.m_value;
-                } else {
+            if ( is_error() == expression.is_error() ) {
+                if ( is_error() ) {
                     m_error = expression.m_error;
+                } else {
+                    m_value = expression.m_value;
                 } // else
             } else {
-                if ( is_value() ) {
+                if ( is_error() ) {
+                    new ( &m_value ) Value{ expression.m_value };
+                } else {
                     m_value.~Value();
                     new ( &m_error ) Error{ expression.m_error };
-                } else {
-                    new ( &m_value ) Value{ expression.m_value };
                 } // else
 
-                m_is_value = expression.m_is_value;
+                m_is_error = expression.m_is_error;
             } // else
         }     // if
 
         return *this;
-    }
-
-    /**
-     * \brief Check if the operation result is a value (operation succeeded).
-     *
-     * \return true if the operation result is a value (operation succeeded).
-     * \return false if the operation result is not a value (operation failed).
-     */
-    [[nodiscard]] constexpr auto is_value() const noexcept->bool
-    {
-        return m_is_value;
     }
 
     /**
@@ -755,7 +722,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      */
     [[nodiscard]] constexpr auto is_error() const noexcept->bool
     {
-        return not is_value();
+        return m_is_error;
     }
 
     /**
@@ -827,7 +794,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
     /**
      * \brief Result type flag.
      */
-    bool m_is_value;
+    bool m_is_error;
 
     union {
         /**
