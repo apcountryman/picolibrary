@@ -73,7 +73,7 @@ class Mock_Output_Formatter {
 
     auto operator=( Mock_Output_Formatter const & ) = delete;
 
-    MOCK_METHOD( (Result<std::size_t, Error_Code>), print, (Output_Stream &, Foo const &), ( const ) );
+    MOCK_METHOD( (Result<std::size_t>), print, (Output_Stream &, Foo const &), ( const ) );
 };
 
 } // namespace
@@ -98,8 +98,7 @@ class picolibrary::Output_Formatter<::Foo> {
 
     auto operator=( Output_Formatter const & expression ) noexcept -> Output_Formatter & = default;
 
-    auto print( Output_Stream & stream, ::Foo const & foo ) const noexcept
-        -> Result<std::size_t, Error_Code>
+    auto print( Output_Stream & stream, ::Foo const & foo ) const noexcept -> Result<std::size_t>
     {
         return m_mock_output_formatter->print( stream, foo );
     }
@@ -145,7 +144,7 @@ TEST( putChar, worksProperly )
     auto const character = random<char>();
 
     EXPECT_CALL( stream.buffer(), put( SafeMatcherCast<char>( Eq( character ) ) ) )
-        .WillOnce( Return( Result<void, Error_Code>{} ) );
+        .WillOnce( Return( Result<void>{} ) );
 
     EXPECT_FALSE( stream.put( character ).is_error() );
 
@@ -185,7 +184,7 @@ TEST( putCharBlock, worksProperly )
 
     auto const string = random_container<std::string>();
 
-    EXPECT_CALL( stream.buffer(), put( string ) ).WillOnce( Return( Result<void, Error_Code>{} ) );
+    EXPECT_CALL( stream.buffer(), put( string ) ).WillOnce( Return( Result<void>{} ) );
 
     EXPECT_FALSE( stream.put( &*string.begin(), &*string.end() ).is_error() );
 
@@ -224,7 +223,7 @@ TEST( putNullTerminatedString, worksProperly )
 
     auto const string = random_container<std::string>();
 
-    EXPECT_CALL( stream.buffer(), put( string ) ).WillOnce( Return( Result<void, Error_Code>{} ) );
+    EXPECT_CALL( stream.buffer(), put( string ) ).WillOnce( Return( Result<void>{} ) );
 
     EXPECT_FALSE( stream.put( string.c_str() ).is_error() );
 
@@ -263,7 +262,7 @@ TEST( putUnsignedByte, worksProperly )
     auto const value = random<std::uint8_t>();
 
     EXPECT_CALL( stream.buffer(), put( SafeMatcherCast<std::uint8_t>( Eq( value ) ) ) )
-        .WillOnce( Return( Result<void, Error_Code>{} ) );
+        .WillOnce( Return( Result<void>{} ) );
 
     EXPECT_FALSE( stream.put( value ).is_error() );
 
@@ -303,7 +302,7 @@ TEST( putUnsignedByteBlock, worksProperly )
 
     auto const values = random_container<std::vector<std::uint8_t>>();
 
-    EXPECT_CALL( stream.buffer(), put( values ) ).WillOnce( Return( Result<void, Error_Code>{} ) );
+    EXPECT_CALL( stream.buffer(), put( values ) ).WillOnce( Return( Result<void>{} ) );
 
     EXPECT_FALSE( stream.put( &*values.begin(), &*values.end() ).is_error() );
 
@@ -342,7 +341,7 @@ TEST( putSignedByte, worksProperly )
     auto const value = random<std::int8_t>();
 
     EXPECT_CALL( stream.buffer(), put( SafeMatcherCast<std::int8_t>( Eq( value ) ) ) )
-        .WillOnce( Return( Result<void, Error_Code>{} ) );
+        .WillOnce( Return( Result<void>{} ) );
 
     EXPECT_FALSE( stream.put( value ).is_error() );
 
@@ -382,7 +381,7 @@ TEST( putSignedByteBlock, worksProperly )
 
     auto const values = random_container<std::vector<std::int8_t>>();
 
-    EXPECT_CALL( stream.buffer(), put( values ) ).WillOnce( Return( Result<void, Error_Code>{} ) );
+    EXPECT_CALL( stream.buffer(), put( values ) ).WillOnce( Return( Result<void>{} ) );
 
     EXPECT_FALSE( stream.put( &*values.begin(), &*values.end() ).is_error() );
 
@@ -488,7 +487,7 @@ TEST( flush, worksProperly )
 {
     auto stream = Mock_Output_Stream{};
 
-    EXPECT_CALL( stream.buffer(), flush() ).WillOnce( Return( Result<void, Error_Code>{} ) );
+    EXPECT_CALL( stream.buffer(), flush() ).WillOnce( Return( Result<void>{} ) );
 
     EXPECT_FALSE( stream.flush().is_error() );
 

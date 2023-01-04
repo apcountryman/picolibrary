@@ -29,7 +29,6 @@
 
 #include "picolibrary/array.h"
 #include "picolibrary/bit_manipulation.h"
-#include "picolibrary/error.h"
 #include "picolibrary/precondition.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
@@ -412,7 +411,7 @@ class Output_Formatter<MAC_Address> {
      * \return An error code if the write failed.
      */
     auto print( Output_Stream & stream, MAC_Address const & address ) const noexcept
-        -> Result<std::size_t, Error_Code>
+        -> Result<std::size_t>
     {
         auto const formatted_address = format( address );
 

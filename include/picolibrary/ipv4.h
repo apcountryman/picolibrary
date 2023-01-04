@@ -28,7 +28,6 @@
 #include <limits>
 
 #include "picolibrary/array.h"
-#include "picolibrary/error.h"
 #include "picolibrary/format.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
@@ -410,7 +409,7 @@ class Output_Formatter<IPv4::Address> {
      * \return An error code if the write failed.
      */
     auto print( Output_Stream & stream, IPv4::Address const & address ) const noexcept
-        -> Result<std::size_t, Error_Code>
+        -> Result<std::size_t>
     {
         return stream.print(
             Format::Dec{ address.as_byte_array()[ 0 ] },

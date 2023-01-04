@@ -26,7 +26,6 @@
 #include <cstddef>
 #include <cstdint>
 
-#include "picolibrary/error.h"
 #include "picolibrary/ip.h"
 #include "picolibrary/result.h"
 
@@ -115,7 +114,7 @@ class Client_Concept {
      * \return picolibrary::Generic_Error::OPERATION_TIMEOUT if connecting to the remote
      *         endpoint timed out.
      */
-    auto connect( Endpoint const & endpoint ) noexcept -> Result<void, Error_Code>;
+    auto connect( Endpoint const & endpoint ) noexcept -> Result<void>;
 
     /**
      * \brief Check if the socket is connected to a remote endpoint.
@@ -167,7 +166,7 @@ class Client_Concept {
      *         any data could be written to the socket's transmit buffer.
      */
     auto transmit( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
-        -> Result<std::uint8_t const *, Error_Code>;
+        -> Result<std::uint8_t const *>;
 
     /**
      * \brief Get the amount of data that is immediately available to be received from the
@@ -196,8 +195,7 @@ class Client_Concept {
      * \return picolibrary::Generic_Error::OPERATION_TIMEOUT if a timeout occurred before
      *         any data could be read from the socket's receive buffer.
      */
-    auto receive( std::uint8_t * begin, std::uint8_t * end ) noexcept
-        -> Result<std::uint8_t *, Error_Code>;
+    auto receive( std::uint8_t * begin, std::uint8_t * end ) noexcept -> Result<std::uint8_t *>;
 
     /**
      * \brief Disable further data transmission and reception.
@@ -326,7 +324,7 @@ class Server_Concept {
      *         any data could be written to the socket's transmit buffer.
      */
     auto transmit( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
-        -> Result<std::uint8_t const *, Error_Code>;
+        -> Result<std::uint8_t const *>;
 
     /**
      * \brief Get the amount of data that is immediately available to be received from the
@@ -355,8 +353,7 @@ class Server_Concept {
      * \return picolibrary::Generic_Error::OPERATION_TIMEOUT if a timeout occurred before
      *         any data could be read from the socket's receive buffer.
      */
-    auto receive( std::uint8_t * begin, std::uint8_t * end ) noexcept
-        -> Result<std::uint8_t *, Error_Code>;
+    auto receive( std::uint8_t * begin, std::uint8_t * end ) noexcept -> Result<std::uint8_t *>;
 
     /**
      * \brief Disable further data transmission and reception.
@@ -493,7 +490,7 @@ class Acceptor_Concept {
      * \return picolibrary::Generic_Error::OPERATION_TIMEOUT if a timeout occurred before
      *         an incoming connection request could be accepted.
      */
-    auto accept() noexcept -> Result<Server, Error_Code>;
+    auto accept() noexcept -> Result<Server>;
 
     /**
      * \brief Close the socket.

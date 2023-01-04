@@ -28,7 +28,6 @@
 #include <vector>
 
 #include "gmock/gmock.h"
-#include "picolibrary/error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
 
@@ -51,38 +50,36 @@ class Mock_Stream_Buffer : public Stream_Buffer {
 
     auto operator=( Mock_Stream_Buffer const & ) = delete;
 
-    MOCK_METHOD( (Result<void, Error_Code>), put, (char), ( noexcept, override ) );
-    MOCK_METHOD( (Result<void, Error_Code>), put, ( std::string ) );
+    MOCK_METHOD( (Result<void>), put, (char), ( noexcept, override ) );
+    MOCK_METHOD( (Result<void>), put, ( std::string ) );
 
-    auto put( char const * begin, char const * end ) noexcept -> Result<void, Error_Code> override
+    auto put( char const * begin, char const * end ) noexcept -> Result<void> override
     {
         return put( std::string{ begin, end } );
     }
 
-    auto put( char const * string ) noexcept -> Result<void, Error_Code> override
+    auto put( char const * string ) noexcept -> Result<void> override
     {
         return put( std::string{ string } );
     }
 
-    MOCK_METHOD( (Result<void, Error_Code>), put, ( std::uint8_t ), ( noexcept, override ) );
-    MOCK_METHOD( (Result<void, Error_Code>), put, (std::vector<std::uint8_t>));
+    MOCK_METHOD( (Result<void>), put, ( std::uint8_t ), ( noexcept, override ) );
+    MOCK_METHOD( (Result<void>), put, (std::vector<std::uint8_t>));
 
-    auto put( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
-        -> Result<void, Error_Code> override
+    auto put( std::uint8_t const * begin, std::uint8_t const * end ) noexcept -> Result<void> override
     {
         return put( std::vector<std::uint8_t>{ begin, end } );
     }
 
-    MOCK_METHOD( (Result<void, Error_Code>), put, ( std::int8_t ), ( noexcept, override ) );
-    MOCK_METHOD( (Result<void, Error_Code>), put, (std::vector<std::int8_t>));
+    MOCK_METHOD( (Result<void>), put, ( std::int8_t ), ( noexcept, override ) );
+    MOCK_METHOD( (Result<void>), put, (std::vector<std::int8_t>));
 
-    auto put( std::int8_t const * begin, std::int8_t const * end ) noexcept
-        -> Result<void, Error_Code> override
+    auto put( std::int8_t const * begin, std::int8_t const * end ) noexcept -> Result<void> override
     {
         return put( std::vector<std::int8_t>{ begin, end } );
     }
 
-    MOCK_METHOD( (Result<void, Error_Code>), flush, (), ( noexcept, override ) );
+    MOCK_METHOD( (Result<void>), flush, (), ( noexcept, override ) );
 };
 
 /**
@@ -160,7 +157,7 @@ class String_Stream_Buffer final : public Stream_Buffer {
      *
      * \return Nothing.
      */
-    auto put( char character ) noexcept -> Result<void, Error_Code> override final
+    auto put( char character ) noexcept -> Result<void> override final
     {
         m_string.push_back( character );
 
@@ -174,7 +171,7 @@ class String_Stream_Buffer final : public Stream_Buffer {
      *
      * \return Nothing.
      */
-    auto put( std::uint8_t value ) noexcept -> Result<void, Error_Code> override final
+    auto put( std::uint8_t value ) noexcept -> Result<void> override final
     {
         m_string.push_back( value );
 
@@ -188,7 +185,7 @@ class String_Stream_Buffer final : public Stream_Buffer {
      *
      * \return Nothing.
      */
-    auto put( std::int8_t value ) noexcept -> Result<void, Error_Code> override final
+    auto put( std::int8_t value ) noexcept -> Result<void> override final
     {
         m_string.push_back( value );
 
@@ -200,7 +197,7 @@ class String_Stream_Buffer final : public Stream_Buffer {
      *
      * \return Nothing.
      */
-    auto flush() noexcept -> Result<void, Error_Code> override final
+    auto flush() noexcept -> Result<void> override final
     {
         return {};
     }

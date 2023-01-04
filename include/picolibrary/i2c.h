@@ -891,8 +891,8 @@ auto scan( Controller & controller, Functor functor ) noexcept -> Functor
  * \tparam Controller The type of controller used to communicate with devices on the bus.
  * \tparam Functor A trinary functor that takes a device address and operation pair, and
  *         the ping response for the device address and operation pair; and returns
- *         picolibrary::Result<void, picolibrary::Error_Code>. If an error is returned by
- *         the functor, the scan will halt and the error is returned.
+ *         picolibrary::Result<void>. If an error is returned by the functor, the scan
+ *         will halt and the error is returned.
  *
  * \param[in] controller The controller used to communicate with devices on the bus.
  * \param[in] functor The functor to pass scan results to.
@@ -902,7 +902,7 @@ auto scan( Controller & controller, Functor functor ) noexcept -> Functor
  */
 template<typename Controller, typename Functor>
 auto scan( Controller & controller, Functor functor, Functor_Can_Fail_Return_Functor ) noexcept
-    -> Result<Functor, Error_Code>
+    -> Result<Functor>
 {
     Operation const operations[]{
         Operation::READ,
@@ -932,8 +932,8 @@ auto scan( Controller & controller, Functor functor, Functor_Can_Fail_Return_Fun
  * \tparam Controller The type of controller used to communicate with devices on the bus.
  * \tparam Functor A trinary functor that takes a device address and operation pair, and
  *         the ping response for the device address and operation pair; and returns
- *         picolibrary::Result<void, picolibrary::Error_Code>. If an error is returned by
- *         the functor, the scan will halt and the error is returned.
+ *         picolibrary::Result<void>. If an error is returned by the functor, the scan
+ *         will halt and the error is returned.
  *
  * \param[in] controller The controller used to communicate with devices on the bus.
  * \param[in] functor The functor to pass scan results to.
@@ -943,7 +943,7 @@ auto scan( Controller & controller, Functor functor, Functor_Can_Fail_Return_Fun
  */
 template<typename Controller, typename Functor>
 auto scan( Controller & controller, Functor functor, Functor_Can_Fail_Discard_Functor ) noexcept
-    -> Result<void, Error_Code>
+    -> Result<void>
 {
     Operation const operations[]{
         Operation::READ,
@@ -976,8 +976,8 @@ auto scan( Controller & controller, Functor functor, Functor_Can_Fail_Discard_Fu
  * \tparam Controller The type of controller used to communicate with devices on the bus.
  * \tparam Functor A trinary functor that takes a device address and operation pair, and
  *         the ping response for the device address and operation pair; and returns
- *         picolibrary::Result<void, picolibrary::Error_Code>. If an error is returned by
- *         the functor, the scan will halt and the error is returned.
+ *         picolibrary::Result<void>. If an error is returned by the functor, the scan
+ *         will halt and the error is returned.
  *
  * \param[in] controller The controller used to communicate with devices on the bus.
  * \param[in] functor The functor to pass scan results to.

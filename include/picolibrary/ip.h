@@ -30,7 +30,6 @@
 #include <type_traits>
 #include <utility>
 
-#include "picolibrary/error.h"
 #include "picolibrary/format.h"
 #include "picolibrary/ipv4.h"
 #include "picolibrary/result.h"
@@ -869,7 +868,7 @@ class Output_Formatter<IP::Address> {
      * \return An error code if the write failed.
      */
     auto print( Output_Stream & stream, IP::Address const & address ) const noexcept
-        -> Result<std::size_t, Error_Code>
+        -> Result<std::size_t>
     {
         if ( address.is_any() ) {
             return stream.print( PICOLIBRARY_ROM_STRING( "ANY" ) );
@@ -961,7 +960,7 @@ class Output_Formatter<IP::Port> {
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto print( Output_Stream & stream, IP::Port port ) const noexcept -> Result<std::size_t, Error_Code>
+    auto print( Output_Stream & stream, IP::Port port ) const noexcept -> Result<std::size_t>
     {
         return stream.print( Format::Dec{ port.as_unsigned_integer() } );
     }
@@ -1039,7 +1038,7 @@ class Output_Formatter<IP::Endpoint> {
      * \return An error code if the write failed.
      */
     auto print( Output_Stream & stream, IP::Endpoint const & endpoint ) const noexcept
-        -> Result<std::size_t, Error_Code>
+        -> Result<std::size_t>
     {
         return stream.print( endpoint.address(), ':', endpoint.port() );
     }
