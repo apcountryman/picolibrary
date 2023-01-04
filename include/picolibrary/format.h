@@ -33,7 +33,6 @@
 #include "picolibrary/algorithm.h"
 #include "picolibrary/array.h"
 #include "picolibrary/bit_manipulation.h"
-#include "picolibrary/error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
 #include "picolibrary/utility.h"
@@ -423,8 +422,7 @@ class Output_Formatter<Format::Bin<Integer>> {
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto print( Output_Stream & stream, Integer integer ) const noexcept
-        -> Result<std::size_t, Error_Code>
+    auto print( Output_Stream & stream, Integer integer ) const noexcept -> Result<std::size_t>
     {
         auto const formatted_integer = format( integer );
 
@@ -552,8 +550,7 @@ class Output_Formatter<Format::Dec<Integer>, std::enable_if_t<std::is_signed_v<I
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto print( Output_Stream & stream, Integer integer ) const noexcept
-        -> Result<std::size_t, Error_Code>
+    auto print( Output_Stream & stream, Integer integer ) const noexcept -> Result<std::size_t>
     {
         Formatted_Integer formatted_integer;
 
@@ -683,8 +680,7 @@ class Output_Formatter<Format::Dec<Integer>, std::enable_if_t<std::is_unsigned_v
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto print( Output_Stream & stream, Integer integer ) const noexcept
-        -> Result<std::size_t, Error_Code>
+    auto print( Output_Stream & stream, Integer integer ) const noexcept -> Result<std::size_t>
     {
         Formatted_Integer formatted_integer;
 
@@ -804,8 +800,7 @@ class Output_Formatter<Format::Hex<Integer>> {
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto print( Output_Stream & stream, Integer integer ) const noexcept
-        -> Result<std::size_t, Error_Code>
+    auto print( Output_Stream & stream, Integer integer ) const noexcept -> Result<std::size_t>
     {
         auto const formatted_integer = format( integer );
 
@@ -948,7 +943,7 @@ class Output_Formatter<Format::Hex_Dump<Iterator>> {
      */
     // NOLINTNEXTLINE(readability-function-size)
     auto print( Output_Stream & stream, Format::Hex_Dump<Iterator> const & hex_dump ) const noexcept
-        -> Result<std::size_t, Error_Code>
+        -> Result<std::size_t>
     {
         Row row;
 

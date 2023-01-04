@@ -25,7 +25,6 @@
 
 #include <cstdint>
 
-#include "picolibrary/error.h"
 #include "picolibrary/ip.h"
 #include "picolibrary/ip/tcp.h"
 #include "picolibrary/precondition.h"
@@ -411,7 +410,7 @@ class Client {
      *         endpoint timed out.
      */
     // NOLINTNEXTLINE(readability-function-size)
-    auto connect( ::picolibrary::IP::TCP::Endpoint const & endpoint ) noexcept -> Result<void, Error_Code>
+    auto connect( ::picolibrary::IP::TCP::Endpoint const & endpoint ) noexcept -> Result<void>
     {
         // #lizard forgives the length
 
@@ -525,7 +524,7 @@ class Client {
      */
     // NOLINTNEXTLINE(readability-function-size)
     auto transmit( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
-        -> Result<std::uint8_t const *, Error_Code>
+        -> Result<std::uint8_t const *>
     {
         // #lizard forgives the length
 
@@ -584,7 +583,7 @@ class Client {
      * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not connected to
      *         a remote endpoint.
      */
-    auto transmit_keepalive() noexcept -> Result<void, Error_Code>
+    auto transmit_keepalive() noexcept -> Result<void>
     {
         PICOLIBRARY_EXPECT( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
 
@@ -636,8 +635,7 @@ class Client {
      *         socket's receive buffer without blocking.
      */
     // NOLINTNEXTLINE(readability-function-size)
-    auto receive( std::uint8_t * begin, std::uint8_t * end ) noexcept
-        -> Result<std::uint8_t *, Error_Code>
+    auto receive( std::uint8_t * begin, std::uint8_t * end ) noexcept -> Result<std::uint8_t *>
     {
         // #lizard forgives the length
 

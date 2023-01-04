@@ -29,7 +29,6 @@
 #include <type_traits>
 #include <utility>
 
-#include "picolibrary/error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/rom.h"
 #include "picolibrary/stream.h"
@@ -148,15 +147,14 @@ class Event {
      * \return 0.
      */
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
-    virtual auto print_details( Output_Stream & stream ) const noexcept -> Result<std::size_t, Error_Code>
+    virtual auto print_details( Output_Stream & stream ) const noexcept -> Result<std::size_t>
     {
         static_cast<void>( stream );
 
         return size_t{ 0 };
     }
 #else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
-    constexpr auto print_details( Output_Stream & stream ) const noexcept
-        -> Result<std::size_t, Error_Code>
+    constexpr auto print_details( Output_Stream & stream ) const noexcept -> Result<std::size_t>
     {
         static_cast<void>( stream );
 
@@ -302,8 +300,7 @@ class Output_Formatter<Event> {
      * \return The number of characters written to the stream if the write succeeded.
      * \return An error code if the write failed.
      */
-    auto print( Output_Stream & stream, Event const & event ) const noexcept
-        -> Result<std::size_t, Error_Code>
+    auto print( Output_Stream & stream, Event const & event ) const noexcept -> Result<std::size_t>
     {
         // #lizard forgives the length
 

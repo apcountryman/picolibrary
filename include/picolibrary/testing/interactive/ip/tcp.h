@@ -27,7 +27,6 @@
 #include <utility>
 
 #include "picolibrary/array.h"
-#include "picolibrary/error.h"
 #include "picolibrary/format.h"
 #include "picolibrary/ip/tcp.h"
 #include "picolibrary/precondition.h"
@@ -57,7 +56,7 @@ namespace picolibrary::Testing::Interactive::IP::TCP {
  */
 template<typename Socket>
 auto receive_some( Socket & socket, std::uint8_t * begin, std::uint8_t * end ) noexcept
-    -> Result<std::uint8_t *, Error_Code>
+    -> Result<std::uint8_t *>
 {
     for ( ;; ) {
         auto result = socket.receive( begin, end );
@@ -92,7 +91,7 @@ auto receive_some( Socket & socket, std::uint8_t * begin, std::uint8_t * end ) n
  */
 template<typename Socket>
 auto transmit_all( Socket & socket, std::uint8_t const * begin, std::uint8_t const * end ) noexcept
-    -> Result<void, Error_Code>
+    -> Result<void>
 {
     while ( begin != end ) {
         auto result = socket.transmit( begin, end );
@@ -200,7 +199,7 @@ void echo( Reliable_Output_Stream & stream, Socket socket ) noexcept
  */
 template<typename Client>
 auto connect( Client & client, ::picolibrary::IP::TCP::Endpoint const & endpoint ) noexcept
-    -> Result<void, Error_Code>
+    -> Result<void>
 {
     for ( ;; ) {
         auto result = client.connect( endpoint );
