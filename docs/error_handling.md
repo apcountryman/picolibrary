@@ -105,5 +105,13 @@ postcondition guarantee has not been met, the `PICOLIBRARY_GUARANTEE_NOT_MET()` 
 be used to unconditionally call `::picolibrary::trap_fatal_error()`.
 
 ### Trapping Fatal Errors
+`::picolibrary::trap_fatal_error()` is called if a precondition expectation check or a
+postcondition guarantee check fails.
+This function is declared in
+[`include/picolibrary/fatal_error.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/fatal_error.h).
+The `picolibrary` static library does not provide an implementation for this function.
+See
+[`include/picolibrary/fatal_error.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/fatal_error.h)
+for more information.
 
 ## Error Propagation
