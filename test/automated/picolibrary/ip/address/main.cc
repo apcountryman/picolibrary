@@ -699,7 +699,7 @@ TEST( outputFormatterIPAddress, worksProperly )
 
         auto const result = stream.print( Address{} );
 
-        ASSERT_TRUE( result.is_value() );
+        ASSERT_FALSE( result.is_error() );
         EXPECT_EQ( result.value(), stream.string().size() );
 
         EXPECT_TRUE( stream.is_nominal() );
@@ -711,7 +711,7 @@ TEST( outputFormatterIPAddress, worksProperly )
 
         auto const result = stream.print( Address{ IPv4_Address::any() } );
 
-        ASSERT_TRUE( result.is_value() );
+        ASSERT_FALSE( result.is_error() );
         EXPECT_EQ( result.value(), stream.string().size() );
 
         EXPECT_TRUE( stream.is_nominal() );
@@ -725,7 +725,7 @@ TEST( outputFormatterIPAddress, worksProperly )
 
         auto const result = stream.print( Address{ ipv4_address } );
 
-        ASSERT_TRUE( result.is_value() );
+        ASSERT_FALSE( result.is_error() );
         EXPECT_EQ( result.value(), stream.string().size() );
 
         EXPECT_TRUE( stream.is_nominal() );

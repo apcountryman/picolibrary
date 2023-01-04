@@ -27,19 +27,15 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "picolibrary/error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
 #include "picolibrary/testing/automated/error.h"
 #include "picolibrary/testing/automated/random.h"
 #include "picolibrary/testing/automated/stream.h"
-#include "picolibrary/void.h"
 
 namespace {
 
-using ::picolibrary::Error_Code;
 using ::picolibrary::Result;
-using ::picolibrary::Void;
 using ::picolibrary::Testing::Automated::Mock_Error;
 using ::picolibrary::Testing::Automated::Mock_Stream_Buffer;
 using ::picolibrary::Testing::Automated::random;
@@ -85,7 +81,7 @@ TEST( putCharBlock, worksProperly )
 
     for ( auto const character : string ) {
         EXPECT_CALL( buffer, put( SafeMatcherCast<char>( Eq( character ) ) ) )
-            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+            .WillOnce( Return( Result<void>{} ) );
     } // for
 
     EXPECT_FALSE( buffer.Stream_Buffer::put( &*string.begin(), &*string.end() ).is_error() );
@@ -123,7 +119,7 @@ TEST( putNullTerminatedString, worksProperly )
 
     for ( auto const character : string ) {
         EXPECT_CALL( buffer, put( SafeMatcherCast<char>( Eq( character ) ) ) )
-            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+            .WillOnce( Return( Result<void>{} ) );
     } // for
 
     EXPECT_FALSE( buffer.Stream_Buffer::put( string.c_str() ).is_error() );
@@ -162,7 +158,7 @@ TEST( putUnsignedByteBlock, worksProperly )
 
     for ( auto const value : values ) {
         EXPECT_CALL( buffer, put( SafeMatcherCast<std::uint8_t>( Eq( value ) ) ) )
-            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+            .WillOnce( Return( Result<void>{} ) );
     } // for
 
     EXPECT_FALSE( buffer.Stream_Buffer::put( &*values.begin(), &*values.end() ).is_error() );
@@ -201,7 +197,7 @@ TEST( putSignedByteBlock, worksProperly )
 
     for ( auto const value : values ) {
         EXPECT_CALL( buffer, put( SafeMatcherCast<std::int8_t>( Eq( value ) ) ) )
-            .WillOnce( Return( Result<Void, Error_Code>{} ) );
+            .WillOnce( Return( Result<void>{} ) );
     } // for
 
     EXPECT_FALSE( buffer.Stream_Buffer::put( &*values.begin(), &*values.end() ).is_error() );

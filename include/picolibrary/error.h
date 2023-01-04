@@ -28,7 +28,6 @@
 
 #include "picolibrary/rom.h"
 #include "picolibrary/utility.h"
-#include "picolibrary/void.h"
 
 namespace picolibrary {
 
@@ -122,13 +121,6 @@ class Error_Code final {
      * \brief Constructor.
      */
     constexpr Error_Code() noexcept = default;
-
-    /**
-     * \brief Constructor.
-     */
-    constexpr Error_Code( Void ) noexcept
-    {
-    }
 
     /**
      * \brief Constructor.

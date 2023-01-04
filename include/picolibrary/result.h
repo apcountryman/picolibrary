@@ -28,7 +28,6 @@
 #include <utility>
 
 #include "picolibrary/error.h"
-#include "picolibrary/void.h"
 
 namespace picolibrary {
 
@@ -36,9 +35,8 @@ namespace picolibrary {
  * \brief Operation result wrapper.
  *
  * \tparam Value_Type Operation succeeded result type.
- * \tparam Error_Type Operation failed result type.
  */
-template<typename Value_Type, typename Error_Type, bool = std::is_trivially_destructible_v<Value_Type>>
+template<typename Value_Type, bool = std::is_trivially_destructible_v<Value_Type>>
 class Result;
 
 /**
@@ -73,23 +71,18 @@ constexpr auto ERROR = Error_Tag{};
 
 /**
  * \brief Operation result wrapper specialized for cases where no information is
- *        generated, and the operation cannot fail.
+ *        generated.
  */
 template<>
-class [[nodiscard]] Result<Void, Void, true> final
+class [[nodiscard]] Result<void, false> final
 {
   public:
-    static_assert( std::is_trivially_destructible_v<Void> );
+    static_assert( not std::is_trivially_destructible_v<void> );
 
     /**
      * \brief Operation succeeded result type.
      */
-    using Value = Void;
-
-    /**
-     * \brief Operation failed result type.
-     */
-    using Error = Void;
+    using Value = void;
 
     /**
      * \brief Constructor.
@@ -99,10 +92,28 @@ class [[nodiscard]] Result<Void, Void, true> final
     /**
      * \brief Constructor.
      *
-     * \attention This function only exists to provide a consistent interface when writing
-     *            generic code and should never actually be called.
+     * \tparam Error A type implicitly convertible to picolibrary::Error_Code.
+     *
+     * \param[in] error The object to construct from.
      */
-    constexpr Result( Void ) noexcept
+    template<typename Error, typename = typename std::enable_if_t<not std::is_same_v<std::decay_t<Error>, Result> and std::is_convertible_v<Error, Error_Code>>>
+    constexpr Result( Error && error, Error_Tag = {} ) noexcept :
+        m_is_error{ true },
+        m_error{ std::forward<Error>( error ) }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \tparam Arguments picolibrary::Error_Code construction argument types.
+     *
+     * \param[in] arguments picolibrary::Error_Code construction arguments.
+     */
+    template<typename... Arguments>
+    constexpr Result( Error_Tag, Arguments && ... arguments ) noexcept :
+        m_is_error{ true },
+        m_error{ std::forward<Arguments>( arguments )... }
     {
     }
 
@@ -144,197 +155,6 @@ class [[nodiscard]] Result<Void, Void, true> final
     constexpr auto operator=( Result const & expression ) noexcept->Result & = default;
 
     /**
-     * \brief Check if the operation result is a value (operation succeeded).
-     *
-     * \return true (operation succeeded).
-     */
-    [[nodiscard]] constexpr auto is_value() const noexcept->bool
-    {
-        return true;
-    }
-
-    /**
-     * \brief Check if the operation result is an error (operation failed).
-     *
-     * \return false (operation succeeded).
-     */
-    [[nodiscard]] constexpr auto is_error() const noexcept->bool
-    {
-        return not is_value();
-    }
-
-    /**
-     * \brief Access the result of a failed operation.
-     *
-     * \attention This function only exists to provide a consistent interface when writing
-     *            generic code.
-     *
-     * \return picolibrary::Void
-     */
-    [[nodiscard]] constexpr auto error() const noexcept->Error
-    {
-        return Error{};
-    }
-};
-
-/**
- * \brief Operation result wrapper specialized for cases where no information is
- *        generated, and the operation can fail.
- */
-template<>
-class [[nodiscard]] Result<Void, Error_Code, true> final
-{
-  public:
-    static_assert( std::is_trivially_destructible_v<Void> );
-    static_assert( std::is_trivially_destructible_v<Error_Code> );
-
-    /**
-     * \brief Operation succeeded result type.
-     */
-    using Value = Void;
-
-    /**
-     * \brief Operation failed result type.
-     */
-    using Error = Error_Code;
-
-    /**
-     * \brief Constructor.
-     */
-    // NOLINTNEXTLINE(modernize-use-equals-default)
-    constexpr Result() noexcept
-    {
-    }
-
-    /**
-     * \brief Constructor.
-     *
-     * \tparam E A type implicitly convertible to Error.
-     *
-     * \param[in] error The object to construct from.
-     */
-    template<typename E, typename = typename std::enable_if_t<not std::is_same_v<std::decay_t<E>, Result> and std::is_convertible_v<E, Error>>>
-    constexpr Result( E && error, Error_Tag = {} ) noexcept :
-        m_is_value{ false },
-        m_error{ std::forward<E>( error ) }
-    {
-    }
-
-    /**
-     * \brief Constructor.
-     *
-     * \tparam Arguments Error construction argument types.
-     *
-     * \param[in] arguments Error construction arguments.
-     */
-    template<typename... Arguments>
-    constexpr Result( Error_Tag, Arguments && ... arguments ) noexcept :
-        m_is_value{ false },
-        m_error{ std::forward<Arguments>( arguments )... }
-    {
-    }
-
-    /**
-     * \brief Constructor.
-     */
-    constexpr Result( Result<Void, Void> ) noexcept
-    {
-    }
-
-    /**
-     * \brief Constructor.
-     *
-     * \param[in] source The source of the move.
-     */
-    constexpr Result( Result && source ) noexcept : m_is_value{ source.m_is_value }
-    {
-        if ( is_error() ) {
-            new ( &m_error ) Error{ std::move( source.m_error ) };
-        } // if
-    }
-
-    /**
-     * \brief Constructor.
-     *
-     * \param[in] original The original to copy.
-     */
-    constexpr Result( Result const & original ) noexcept :
-        m_is_value{ original.m_is_value }
-    {
-        if ( is_error() ) {
-            new ( &m_error ) Error{ original.m_error };
-        } // if
-    }
-
-    /**
-     * \brief Destructor.
-     */
-    ~Result() noexcept = default;
-
-    /**
-     * \brief Assignment operator.
-     *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
-     */
-    constexpr auto operator=( Result && expression ) noexcept->Result &
-    {
-        if ( &expression != this ) {
-            if ( is_value() == expression.is_value() ) {
-                if ( is_error() ) {
-                    m_error = std::move( expression.m_error );
-                } // if
-            } else {
-                if ( is_value() ) {
-                    new ( &m_error ) Error{ std::move( expression.m_error ) };
-                } // if
-
-                m_is_value = expression.m_is_value;
-            } // else
-        }     // if
-
-        return *this;
-    }
-
-    /**
-     * \brief Assignment operator.
-     *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
-     */
-    constexpr auto operator=( Result const & expression ) noexcept->Result &
-    {
-        if ( &expression != this ) {
-            if ( is_value() == expression.is_value() ) {
-                if ( is_error() ) {
-                    m_error = expression.m_error;
-                } // if
-            } else {
-                if ( is_value() ) {
-                    new ( &m_error ) Error{ expression.m_error };
-                } // if
-
-                m_is_value = expression.m_is_value;
-            } // else
-        }     // if
-
-        return *this;
-    }
-
-    /**
-     * \brief Check if the operation result is a value (operation succeeded).
-     *
-     * \return true if the operation result is a value (operation succeeded).
-     * \return false if the operation result is not a value (operation failed).
-     */
-    [[nodiscard]] constexpr auto is_value() const noexcept->bool
-    {
-        return m_is_value;
-    }
-
-    /**
      * \brief Check if the operation result is an error (operation failed).
      *
      * \return true if the operation result is an error (operation failed).
@@ -342,7 +162,7 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
      */
     [[nodiscard]] constexpr auto is_error() const noexcept->bool
     {
-        return not is_value();
+        return m_is_error;
     }
 
     /**
@@ -353,486 +173,31 @@ class [[nodiscard]] Result<Void, Error_Code, true> final
      *
      * \return The error.
      */
-    [[nodiscard]] constexpr auto error() && noexcept->Error &&
+    [[nodiscard]] constexpr auto error() const noexcept->Error_Code const &
     {
-        return static_cast<Error &&>( m_error );
-    }
-
-    /**
-     * \brief Access the result of a failed operation.
-     *
-     * \warning Calling this function on the result of a successful operation results in
-     *          undefined behavior.
-     *
-     * \return The error.
-     */
-    [[nodiscard]] constexpr auto error() const && noexcept->Error const &&
-    {
-        return static_cast<Error const &&>( m_error );
-    }
-
-    /**
-     * \brief Access the result of a failed operation.
-     *
-     * \warning Calling this function on the result of a successful operation results in
-     *          undefined behavior.
-     *
-     * \return The error.
-     */
-    [[nodiscard]] constexpr auto error() & noexcept->Error &
-    {
-        return static_cast<Error &>( m_error );
-    }
-
-    /**
-     * \brief Access the result of a failed operation.
-     *
-     * \warning Calling this function on the result of a successful operation results in
-     *          undefined behavior.
-     *
-     * \return The error.
-     */
-    [[nodiscard]] constexpr auto error() const & noexcept->Error const &
-    {
-        return static_cast<Error const &>( m_error );
+        return m_error;
     }
 
   private:
     /**
      * \brief Result type flag.
      */
-    bool m_is_value{ true };
+    bool m_is_error{ false };
 
-    union {
-        /**
-         * \brief Operation succeeded result.
-         */
-        Value m_value{};
-
-        /**
-         * \brief Operation failed result.
-         */
-        Error m_error;
-    };
+    /**
+     * \brief Operation failed result.
+     */
+    Error_Code m_error;
 };
 
 /**
  * \brief Operation result wrapper specialized for cases where trivially destructible
- *        information is generated, and the operation cannot fail.
+ *        information is generated.
  *
  * \tparam Value_Type Operation succeeded result type.
  */
 template<typename Value_Type>
-class [[nodiscard]] Result<Value_Type, Void, true> final
-{
-  public:
-    static_assert( std::is_trivially_destructible_v<Value_Type> );
-
-    /**
-     * \brief Operation succeeded result type.
-     */
-    using Value = Value_Type;
-
-    /**
-     * \brief Operation failed result type.
-     */
-    using Error = Void;
-
-    Result() = delete;
-
-    /**
-     * \brief Constructor.
-     *
-     * \tparam V A type implicitly convertible to Value and not implicitly convertible to
-     *         Error.
-     *
-     * \param[in] value The object to construct from.
-     */
-    template<typename V, typename = typename std::enable_if_t<not std::is_same_v<std::decay_t<V>, Result> and std::is_convertible_v<V, Value> and not std::is_convertible_v<V, Error>>>
-    constexpr Result( V && value, Value_Tag = {} ) noexcept :
-        m_value{ std::forward<V>( value ) }
-    {
-    }
-
-    /**
-     * \brief Constructor.
-     *
-     * \tparam Arguments Value construction argument types.
-     *
-     * \param[in] arguments Value construction arguments.
-     */
-    template<typename... Arguments>
-    constexpr Result( Value_Tag, Arguments && ... arguments ) noexcept :
-        m_value{ std::forward<Arguments>( arguments )... }
-    {
-    }
-
-    /**
-     * \brief Constructor.
-     *
-     * \attention This function only exists to provide a consistent interface when writing
-     *            generic code and should never actually be called.
-     */
-    constexpr Result( Void ) noexcept
-    {
-    }
-
-    /**
-     * \brief Constructor.
-     *
-     * \param[in] source The source of the move.
-     */
-    constexpr Result( Result && source ) noexcept : m_value{ std::move( source.m_value ) }
-    {
-    }
-
-    /**
-     * \brief Constructor.
-     *
-     * \param[in] original The original to copy.
-     */
-    constexpr Result( Result const & original ) noexcept : m_value{ original.m_value }
-    {
-    }
-
-    /**
-     * \brief Destructor.
-     */
-    ~Result() noexcept = default;
-
-    /**
-     * \brief Assignment operator.
-     *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
-     */
-    constexpr auto operator=( Result && expression ) noexcept->Result &
-    {
-        if ( &expression != this ) {
-            m_value = std::move( expression.m_value );
-        } // if
-
-        return *this;
-    }
-
-    /**
-     * \brief Assignment operator.
-     *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
-     */
-    constexpr auto operator=( Result const & expression ) noexcept->Result &
-    {
-        if ( &expression != this ) {
-            m_value = expression.m_value;
-        } // if
-
-        return *this;
-    }
-
-    /**
-     * \brief Check if the operation result is a value (operation succeeded).
-     *
-     * \return true (operation succeeded).
-     */
-    [[nodiscard]] constexpr auto is_value() const noexcept->bool
-    {
-        return true;
-    }
-
-    /**
-     * \brief Check if the operation result is an error (operation failed).
-     *
-     * \return false (operation succeeded).
-     */
-    [[nodiscard]] constexpr auto is_error() const noexcept->bool
-    {
-        return not is_value();
-    }
-
-    /**
-     * \brief Access the result of a successful operation.
-     *
-     * \return The generated information.
-     */
-    [[nodiscard]] constexpr auto value() && noexcept->Value &&
-    {
-        return static_cast<Value &&>( m_value );
-    }
-
-    /**
-     * \brief Access the result of a successful operation.
-     *
-     * \return The generated information.
-     */
-    [[nodiscard]] constexpr auto value() const && noexcept->Value const &&
-    {
-        return static_cast<Value const &&>( m_value );
-    }
-
-    /**
-     * \brief Access the result of a successful operation.
-     *
-     * \return The generated information.
-     */
-    [[nodiscard]] constexpr auto value() & noexcept->Value &
-    {
-        return static_cast<Value &>( m_value );
-    }
-
-    /**
-     * \brief Access the result of a successful operation.
-     *
-     * \return The generated information.
-     */
-    [[nodiscard]] constexpr auto value() const & noexcept->Value const &
-    {
-        return static_cast<Value const &>( m_value );
-    }
-
-    /**
-     * \brief Access the result of a failed operation.
-     *
-     * \attention This function only exists to provide a consistent interface when writing
-     *            generic code.
-     *
-     * \return picolibrary::Void
-     */
-    [[nodiscard]] constexpr auto error() const noexcept->Error
-    {
-        return Error{};
-    }
-
-  private:
-    union {
-        /**
-         * \brief Operation succeeded result.
-         */
-        Value m_value;
-
-        /**
-         * \brief Operation failed result.
-         */
-        Error m_error{};
-    };
-};
-
-/**
- * \brief Operation result wrapper specialized for cases where non-trivially destructible
- *        information is generated, and the operation cannot fail.
- *
- * \tparam Value_Type Operation succeeded result type.
- */
-template<typename Value_Type>
-class [[nodiscard]] Result<Value_Type, Void, false> final
-{
-  public:
-    static_assert( not std::is_trivially_destructible_v<Value_Type> );
-
-    /**
-     * \brief Operation succeeded result type.
-     */
-    using Value = Value_Type;
-
-    /**
-     * \brief Operation failed result type.
-     */
-    using Error = Void;
-
-    Result() = delete;
-
-    /**
-     * \brief Constructor.
-     *
-     * \tparam V A type implicitly convertible to Value and not implicitly convertible to
-     *         Error.
-     *
-     * \param[in] value The object to construct from.
-     */
-    template<typename V, typename = typename std::enable_if_t<not std::is_same_v<std::decay_t<V>, Result> and std::is_convertible_v<V, Value> and not std::is_convertible_v<V, Error>>>
-    constexpr Result( V && value, Value_Tag = {} ) noexcept :
-        m_value{ std::forward<V>( value ) }
-    {
-    }
-
-    /**
-     * \brief Constructor.
-     *
-     * \tparam Arguments Value construction argument types.
-     *
-     * \param[in] arguments Value construction arguments.
-     */
-    template<typename... Arguments>
-    constexpr Result( Value_Tag, Arguments && ... arguments ) noexcept :
-        m_value{ std::forward<Arguments>( arguments )... }
-    {
-    }
-
-    /**
-     * \brief Constructor.
-     *
-     * \attention This function only exists to provide a consistent interface when writing
-     *            generic code and should never actually be called.
-     */
-    constexpr Result( Void ) noexcept
-    {
-    }
-
-    /**
-     * \brief Constructor.
-     *
-     * \param[in] source The source of the move.
-     */
-    constexpr Result( Result && source ) noexcept : m_value{ std::move( source.m_value ) }
-    {
-    }
-
-    /**
-     * \brief Constructor.
-     *
-     * \param[in] original The original to copy.
-     */
-    constexpr Result( Result const & original ) noexcept : m_value{ original.m_value }
-    {
-    }
-
-    /**
-     * \brief Destructor.
-     */
-    ~Result() noexcept
-    {
-        m_value.~Value();
-    }
-
-    /**
-     * \brief Assignment operator.
-     *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
-     */
-    constexpr auto operator=( Result && expression ) noexcept->Result &
-    {
-        if ( &expression != this ) {
-            m_value = std::move( expression.m_value );
-        } // if
-
-        return *this;
-    }
-
-    /**
-     * \brief Assignment operator.
-     *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
-     */
-    constexpr auto operator=( Result const & expression ) noexcept->Result &
-    {
-        if ( &expression != this ) {
-            m_value = expression.m_value;
-        } // if
-
-        return *this;
-    }
-
-    /**
-     * \brief Check if the operation result is a value (operation succeeded).
-     *
-     * \return true (operation succeeded).
-     */
-    [[nodiscard]] constexpr auto is_value() const noexcept->bool
-    {
-        return true;
-    }
-
-    /**
-     * \brief Check if the operation result is an error (operation failed).
-     *
-     * \return false (operation succeeded).
-     */
-    [[nodiscard]] constexpr auto is_error() const noexcept->bool
-    {
-        return not is_value();
-    }
-
-    /**
-     * \brief Access the result of a successful operation.
-     *
-     * \return The generated information.
-     */
-    [[nodiscard]] constexpr auto value() && noexcept->Value &&
-    {
-        return static_cast<Value &&>( m_value );
-    }
-
-    /**
-     * \brief Access the result of a successful operation.
-     *
-     * \return The generated information.
-     */
-    [[nodiscard]] constexpr auto value() const && noexcept->Value const &&
-    {
-        return static_cast<Value const &&>( m_value );
-    }
-
-    /**
-     * \brief Access the result of a successful operation.
-     *
-     * \return The generated information.
-     */
-    [[nodiscard]] constexpr auto value() & noexcept->Value &
-    {
-        return static_cast<Value &>( m_value );
-    }
-
-    /**
-     * \brief Access the result of a successful operation.
-     *
-     * \return The generated information.
-     */
-    [[nodiscard]] constexpr auto value() const & noexcept->Value const &
-    {
-        return static_cast<Value const &>( m_value );
-    }
-
-    /**
-     * \brief Access the result of a failed operation.
-     *
-     * \attention This function only exists to provide a consistent interface when writing
-     *            generic code.
-     *
-     * \return picolibrary::Void
-     */
-    [[nodiscard]] constexpr auto error() const noexcept->Error
-    {
-        return Error{};
-    }
-
-  private:
-    union {
-        /**
-         * \brief Operation succeeded result.
-         */
-        Value m_value;
-
-        /**
-         * \brief Operation failed result.
-         */
-        Error m_error{};
-    };
-};
-
-/**
- * \brief Operation result wrapper specialized for cases where trivially destructible
- *        information is generated, and the operation can fail.
- *
- * \tparam Value_Type Operation succeeded result type.
- */
-template<typename Value_Type>
-class [[nodiscard]] Result<Value_Type, Error_Code, true> final
+class [[nodiscard]] Result<Value_Type, true> final
 {
   public:
     static_assert( std::is_trivially_destructible_v<Value_Type> );
@@ -843,24 +208,19 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      */
     using Value = Value_Type;
 
-    /**
-     * \brief Operation failed result type.
-     */
-    using Error = Error_Code;
-
     Result() = delete;
 
     /**
      * \brief Constructor.
      *
      * \tparam V A type implicitly convertible to Value and not implicitly convertible to
-     *         Error.
+     *         picolibrary::Error_Code.
      *
      * \param[in] value The object to construct from.
      */
-    template<typename V, typename = typename std::enable_if_t<not std::is_same_v<std::decay_t<V>, Result> and std::is_convertible_v<V, Value> and not std::is_convertible_v<V, Error>>>
+    template<typename V, typename = typename std::enable_if_t<not std::is_same_v<std::decay_t<V>, Result> and std::is_convertible_v<V, Value> and not std::is_convertible_v<V, Error_Code>>>
     constexpr Result( V && value, Value_Tag = {} ) noexcept :
-        m_is_value{ true },
+        m_is_error{ false },
         m_value{ std::forward<V>( value ) }
     {
     }
@@ -874,7 +234,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      */
     template<typename... Arguments>
     constexpr Result( Value_Tag, Arguments && ... arguments ) noexcept :
-        m_is_value{ true },
+        m_is_error{ false },
         m_value{ std::forward<Arguments>( arguments )... }
     {
     }
@@ -882,51 +242,29 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
     /**
      * \brief Constructor.
      *
-     * \tparam E A type implicitly convertible to Error and not implicitly convertible to
-     *         Value.
+     * \tparam Error A type implicitly convertible to picolibrary::Error_Code and not
+     *         implicitly convertible to Value.
      *
      * \param[in] error The object to construct from.
      */
-    template<typename E, typename = typename std::enable_if_t<not std::is_same_v<std::decay_t<E>, Result> and std::is_convertible_v<E, Error> and not std::is_convertible_v<E, Value>>>
-    constexpr Result( E && error, Error_Tag = {} ) noexcept :
-        m_is_value{ false },
-        m_error{ std::forward<E>( error ) }
+    template<typename Error, typename = typename std::enable_if_t<not std::is_same_v<std::decay_t<Error>, Result> and std::is_convertible_v<Error, Error_Code> and not std::is_convertible_v<Error, Value>>>
+    constexpr Result( Error && error, Error_Tag = {} ) noexcept :
+        m_is_error{ true },
+        m_error{ std::forward<Error>( error ) }
     {
     }
 
     /**
      * \brief Constructor.
      *
-     * \tparam Arguments Error construction argument types.
+     * \tparam Arguments picolibrary::Error_Code construction argument types.
      *
-     * \param[in] arguments Error construction arguments.
+     * \param[in] arguments picolibrary::Error_Code construction arguments.
      */
     template<typename... Arguments>
     constexpr Result( Error_Tag, Arguments && ... arguments ) noexcept :
-        m_is_value{ false },
+        m_is_error{ true },
         m_error{ std::forward<Arguments>( arguments )... }
-    {
-    }
-
-    /**
-     * \brief Constructor.
-     *
-     * \param[in] result The operation result to construct from.
-     */
-    constexpr Result( Result<Value, Void> && result ) noexcept :
-        m_is_value{ true },
-        m_value{ std::move( result ).value() }
-    {
-    }
-
-    /**
-     * \brief Constructor.
-     *
-     * \param[in] result The operation result to construct from.
-     */
-    constexpr Result( Result<Value, Void> const & result ) noexcept :
-        m_is_value{ true },
-        m_value{ result.value() }
     {
     }
 
@@ -935,12 +273,12 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      *
      * \param[in] source The source of the move.
      */
-    constexpr Result( Result && source ) noexcept : m_is_value{ source.m_is_value }
+    constexpr Result( Result && source ) noexcept : m_is_error{ source.m_is_error }
     {
-        if ( is_value() ) {
-            new ( &m_value ) Value{ std::move( source.m_value ) };
+        if ( is_error() ) {
+            new ( &m_error ) Error_Code{ std::move( source.m_error ) };
         } else {
-            new ( &m_error ) Error{ std::move( source.m_error ) };
+            new ( &m_value ) Value{ std::move( source.m_value ) };
         } // else
     }
 
@@ -950,12 +288,12 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      * \param[in] original The original to copy.
      */
     constexpr Result( Result const & original ) noexcept :
-        m_is_value{ original.m_is_value }
+        m_is_error{ original.m_is_error }
     {
-        if ( is_value() ) {
-            new ( &m_value ) Value{ original.m_value };
+        if ( is_error() ) {
+            new ( &m_error ) Error_Code{ original.m_error };
         } else {
-            new ( &m_error ) Error{ original.m_error };
+            new ( &m_value ) Value{ original.m_value };
         } // else
     }
 
@@ -974,20 +312,20 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
     constexpr auto operator=( Result && expression ) noexcept->Result &
     {
         if ( &expression != this ) {
-            if ( is_value() == expression.is_value() ) {
-                if ( is_value() ) {
+            if ( is_error() == expression.is_error() ) {
+                if ( is_error() ) {
+                    m_error = std::move( expression.m_error );
+                } else {
                     m_value = std::move( expression.m_value );
-                } else {
-                    m_error = std::move( expression.m_error );
                 } // else
             } else {
-                if ( is_value() ) {
-                    new ( &m_error ) Error{ std::move( expression.m_error ) };
-                } else {
+                if ( is_error() ) {
                     new ( &m_value ) Value{ std::move( expression.m_value ) };
+                } else {
+                    new ( &m_error ) Error_Code{ std::move( expression.m_error ) };
                 } // else
 
-                m_is_value = expression.m_is_value;
+                m_is_error = expression.m_is_error;
             } // else
         }     // if
 
@@ -1004,35 +342,24 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
     constexpr auto operator=( Result const & expression ) noexcept->Result &
     {
         if ( &expression != this ) {
-            if ( is_value() == expression.is_value() ) {
-                if ( is_value() ) {
-                    m_value = expression.m_value;
-                } else {
+            if ( is_error() == expression.is_error() ) {
+                if ( is_error() ) {
                     m_error = expression.m_error;
+                } else {
+                    m_value = expression.m_value;
                 } // else
             } else {
-                if ( is_value() ) {
-                    new ( &m_error ) Error{ expression.m_error };
-                } else {
+                if ( is_error() ) {
                     new ( &m_value ) Value{ expression.m_value };
+                } else {
+                    new ( &m_error ) Error_Code{ expression.m_error };
                 } // else
 
-                m_is_value = expression.m_is_value;
+                m_is_error = expression.m_is_error;
             } // else
         }     // if
 
         return *this;
-    }
-
-    /**
-     * \brief Check if the operation result is a value (operation succeeded).
-     *
-     * \return true if the operation result is a value (operation succeeded).
-     * \return false if the operation result is not a value (operation failed).
-     */
-    [[nodiscard]] constexpr auto is_value() const noexcept->bool
-    {
-        return m_is_value;
     }
 
     /**
@@ -1043,7 +370,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      */
     [[nodiscard]] constexpr auto is_error() const noexcept->bool
     {
-        return not is_value();
+        return m_is_error;
     }
 
     /**
@@ -1106,55 +433,16 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
      *
      * \return The error.
      */
-    [[nodiscard]] constexpr auto error() && noexcept->Error &&
+    [[nodiscard]] constexpr auto error() const noexcept->Error_Code const &
     {
-        return static_cast<Error &&>( m_error );
-    }
-
-    /**
-     * \brief Access the result of a failed operation.
-     *
-     * \warning Calling this function on the result of a successful operation results in
-     *          undefined behavior.
-     *
-     * \return The error.
-     */
-    [[nodiscard]] constexpr auto error() const && noexcept->Error const &&
-    {
-        return static_cast<Error const &&>( m_error );
-    }
-
-    /**
-     * \brief Access the result of a failed operation.
-     *
-     * \warning Calling this function on the result of a successful operation results in
-     *          undefined behavior.
-     *
-     * \return The error.
-     */
-    [[nodiscard]] constexpr auto error() & noexcept->Error &
-    {
-        return static_cast<Error &>( m_error );
-    }
-
-    /**
-     * \brief Access the result of a failed operation.
-     *
-     * \warning Calling this function on the result of a successful operation results in
-     *          undefined behavior.
-     *
-     * \return The error.
-     */
-    [[nodiscard]] constexpr auto error() const & noexcept->Error const &
-    {
-        return static_cast<Error const &>( m_error );
+        return m_error;
     }
 
   private:
     /**
      * \brief Result type flag.
      */
-    bool m_is_value;
+    bool m_is_error;
 
     union {
         /**
@@ -1165,18 +453,18 @@ class [[nodiscard]] Result<Value_Type, Error_Code, true> final
         /**
          * \brief Operation failed result.
          */
-        Error m_error;
+        Error_Code m_error;
     };
 };
 
 /**
  * \brief Operation result wrapper specialized for cases where non-trivially destructible
- *        information is generated, and the operation can fail.
+ *        information is generated.
  *
  * \tparam Value_Type Operation succeeded result type.
  */
 template<typename Value_Type>
-class [[nodiscard]] Result<Value_Type, Error_Code, false> final
+class [[nodiscard]] Result<Value_Type, false> final
 {
   public:
     static_assert( not std::is_trivially_destructible_v<Value_Type> );
@@ -1187,24 +475,19 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      */
     using Value = Value_Type;
 
-    /**
-     * \brief Operation failed result type.
-     */
-    using Error = Error_Code;
-
     Result() = delete;
 
     /**
      * \brief Constructor.
      *
      * \tparam V A type implicitly convertible to Value and not implicitly convertible to
-     *         Error.
+     *         picolibrary::Error_Code.
      *
      * \param[in] value The object to construct from.
      */
-    template<typename V, typename = typename std::enable_if_t<not std::is_same_v<std::decay_t<V>, Result> and std::is_convertible_v<V, Value> and not std::is_convertible_v<V, Error>>>
+    template<typename V, typename = typename std::enable_if_t<not std::is_same_v<std::decay_t<V>, Result> and std::is_convertible_v<V, Value> and not std::is_convertible_v<V, Error_Code>>>
     constexpr Result( V && value, Value_Tag = {} ) noexcept :
-        m_is_value{ true },
+        m_is_error{ false },
         m_value{ std::forward<V>( value ) }
     {
     }
@@ -1218,7 +501,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      */
     template<typename... Arguments>
     constexpr Result( Value_Tag, Arguments && ... arguments ) noexcept :
-        m_is_value{ true },
+        m_is_error{ false },
         m_value{ std::forward<Arguments>( arguments )... }
     {
     }
@@ -1226,51 +509,29 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
     /**
      * \brief Constructor.
      *
-     * \tparam E A type implicitly convertible to Error and not implicitly convertible to
-     *         Value.
+     * \tparam Error A type implicitly convertible to picolibrary::Error_Code and not
+     *         implicitly convertible to Value.
      *
      * \param[in] error The object to construct from.
      */
-    template<typename E, typename = typename std::enable_if_t<not std::is_same_v<std::decay_t<E>, Result> and std::is_convertible_v<E, Error> and not std::is_convertible_v<E, Value>>>
-    constexpr Result( E && error, Error_Tag = {} ) noexcept :
-        m_is_value{ false },
-        m_error{ std::forward<E>( error ) }
+    template<typename Error, typename = typename std::enable_if_t<not std::is_same_v<std::decay_t<Error>, Result> and std::is_convertible_v<Error, Error_Code> and not std::is_convertible_v<Error, Value>>>
+    constexpr Result( Error && error, Error_Tag = {} ) noexcept :
+        m_is_error{ true },
+        m_error{ std::forward<Error>( error ) }
     {
     }
 
     /**
      * \brief Constructor.
      *
-     * \tparam Arguments Error construction argument types.
+     * \tparam Arguments picolibrary::Error_Code construction argument types.
      *
-     * \param[in] arguments Error construction arguments.
+     * \param[in] arguments picolibrary::Error_Code construction arguments.
      */
     template<typename... Arguments>
     constexpr Result( Error_Tag, Arguments && ... arguments ) noexcept :
-        m_is_value{ false },
+        m_is_error{ true },
         m_error{ std::forward<Arguments>( arguments )... }
-    {
-    }
-
-    /**
-     * \brief Constructor.
-     *
-     * \param[in] result The operation result to construct from.
-     */
-    constexpr Result( Result<Value, Void> && result ) noexcept :
-        m_is_value{ true },
-        m_value{ std::move( result ).value() }
-    {
-    }
-
-    /**
-     * \brief Constructor.
-     *
-     * \param[in] result The operation result to construct from.
-     */
-    constexpr Result( Result<Value, Void> const & result ) noexcept :
-        m_is_value{ true },
-        m_value{ result.value() }
     {
     }
 
@@ -1279,12 +540,12 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      *
      * \param[in] source The source of the move.
      */
-    constexpr Result( Result && source ) noexcept : m_is_value{ source.m_is_value }
+    constexpr Result( Result && source ) noexcept : m_is_error{ source.m_is_error }
     {
-        if ( is_value() ) {
-            new ( &m_value ) Value{ std::move( source.m_value ) };
+        if ( is_error() ) {
+            new ( &m_error ) Error_Code{ std::move( source.m_error ) };
         } else {
-            new ( &m_error ) Error{ std::move( source.m_error ) };
+            new ( &m_value ) Value{ std::move( source.m_value ) };
         } // else
     }
 
@@ -1294,12 +555,12 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      * \param[in] original The original to copy.
      */
     constexpr Result( Result const & original ) noexcept :
-        m_is_value{ original.m_is_value }
+        m_is_error{ original.m_is_error }
     {
-        if ( is_value() ) {
-            new ( &m_value ) Value{ original.m_value };
+        if ( is_error() ) {
+            new ( &m_error ) Error_Code{ original.m_error };
         } else {
-            new ( &m_error ) Error{ original.m_error };
+            new ( &m_value ) Value{ original.m_value };
         } // else
     }
 
@@ -1308,7 +569,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      */
     ~Result() noexcept
     {
-        if ( is_value() ) {
+        if ( not is_error() ) {
             m_value.~Value();
         } // if
     }
@@ -1323,21 +584,21 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
     constexpr auto operator=( Result && expression ) noexcept->Result &
     {
         if ( &expression != this ) {
-            if ( is_value() == expression.is_value() ) {
-                if ( is_value() ) {
-                    m_value = std::move( expression.m_value );
-                } else {
+            if ( is_error() == expression.is_error() ) {
+                if ( is_error() ) {
                     m_error = std::move( expression.m_error );
+                } else {
+                    m_value = std::move( expression.m_value );
                 } // else
             } else {
-                if ( is_value() ) {
-                    m_value.~Value();
-                    new ( &m_error ) Error{ std::move( expression.m_error ) };
-                } else {
+                if ( is_error() ) {
                     new ( &m_value ) Value{ std::move( expression.m_value ) };
+                } else {
+                    m_value.~Value();
+                    new ( &m_error ) Error_Code{ std::move( expression.m_error ) };
                 } // else
 
-                m_is_value = expression.m_is_value;
+                m_is_error = expression.m_is_error;
             } // else
         }     // if
 
@@ -1354,36 +615,25 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
     constexpr auto operator=( Result const & expression ) noexcept->Result &
     {
         if ( &expression != this ) {
-            if ( is_value() == expression.is_value() ) {
-                if ( is_value() ) {
-                    m_value = expression.m_value;
-                } else {
+            if ( is_error() == expression.is_error() ) {
+                if ( is_error() ) {
                     m_error = expression.m_error;
+                } else {
+                    m_value = expression.m_value;
                 } // else
             } else {
-                if ( is_value() ) {
-                    m_value.~Value();
-                    new ( &m_error ) Error{ expression.m_error };
-                } else {
+                if ( is_error() ) {
                     new ( &m_value ) Value{ expression.m_value };
+                } else {
+                    m_value.~Value();
+                    new ( &m_error ) Error_Code{ expression.m_error };
                 } // else
 
-                m_is_value = expression.m_is_value;
+                m_is_error = expression.m_is_error;
             } // else
         }     // if
 
         return *this;
-    }
-
-    /**
-     * \brief Check if the operation result is a value (operation succeeded).
-     *
-     * \return true if the operation result is a value (operation succeeded).
-     * \return false if the operation result is not a value (operation failed).
-     */
-    [[nodiscard]] constexpr auto is_value() const noexcept->bool
-    {
-        return m_is_value;
     }
 
     /**
@@ -1394,7 +644,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      */
     [[nodiscard]] constexpr auto is_error() const noexcept->bool
     {
-        return not is_value();
+        return m_is_error;
     }
 
     /**
@@ -1457,55 +707,16 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
      *
      * \return The error.
      */
-    [[nodiscard]] constexpr auto error() && noexcept->Error &&
+    [[nodiscard]] constexpr auto error() const noexcept->Error_Code const &
     {
-        return static_cast<Error &&>( m_error );
-    }
-
-    /**
-     * \brief Access the result of a failed operation.
-     *
-     * \warning Calling this function on the result of a successful operation results in
-     *          undefined behavior.
-     *
-     * \return The error.
-     */
-    [[nodiscard]] constexpr auto error() const && noexcept->Error const &&
-    {
-        return static_cast<Error const &&>( m_error );
-    }
-
-    /**
-     * \brief Access the result of a failed operation.
-     *
-     * \warning Calling this function on the result of a successful operation results in
-     *          undefined behavior.
-     *
-     * \return The error.
-     */
-    [[nodiscard]] constexpr auto error() & noexcept->Error &
-    {
-        return static_cast<Error &>( m_error );
-    }
-
-    /**
-     * \brief Access the result of a failed operation.
-     *
-     * \warning Calling this function on the result of a successful operation results in
-     *          undefined behavior.
-     *
-     * \return The error.
-     */
-    [[nodiscard]] constexpr auto error() const & noexcept->Error const &
-    {
-        return static_cast<Error const &>( m_error );
+        return m_error;
     }
 
   private:
     /**
      * \brief Result type flag.
      */
-    bool m_is_value;
+    bool m_is_error;
 
     union {
         /**
@@ -1516,7 +727,7 @@ class [[nodiscard]] Result<Value_Type, Error_Code, false> final
         /**
          * \brief Operation failed result.
          */
-        Error m_error;
+        Error_Code m_error;
     };
 };
 

@@ -29,20 +29,16 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/algorithm.h"
-#include "picolibrary/error.h"
 #include "picolibrary/result.h"
 #include "picolibrary/testing/automated/error.h"
 #include "picolibrary/testing/automated/random.h"
-#include "picolibrary/void.h"
 
 namespace {
 
-using ::picolibrary::Error_Code;
 using ::picolibrary::Functor_Can_Fail;
 using ::picolibrary::Functor_Can_Fail_Discard_Functor;
 using ::picolibrary::Functor_Can_Fail_Return_Functor;
 using ::picolibrary::Result;
-using ::picolibrary::Void;
 using ::picolibrary::Testing::Automated::Mock_Error;
 using ::picolibrary::Testing::Automated::random;
 using ::picolibrary::Testing::Automated::random_container;
@@ -63,7 +59,7 @@ using ::testing::Return;
 TEST( forEach, functorError )
 {
     {
-        auto functor = MockFunction<Result<Void, Error_Code>( std::uint_fast8_t const & )>{};
+        auto functor = MockFunction<Result<void>( std::uint_fast8_t const & )>{};
 
         auto const error = random<Mock_Error>();
 
@@ -79,7 +75,7 @@ TEST( forEach, functorError )
     }
 
     {
-        auto functor = MockFunction<Result<Void, Error_Code>( std::uint_fast8_t const & )>{};
+        auto functor = MockFunction<Result<void>( std::uint_fast8_t const & )>{};
 
         auto const error = random<Mock_Error>();
 
@@ -117,12 +113,12 @@ TEST( forEach, worksProperly )
     {
         auto const in_sequence = InSequence{};
 
-        auto functor = MockFunction<Result<Void, Error_Code>( std::uint_fast8_t const & )>{};
+        auto functor = MockFunction<Result<void>( std::uint_fast8_t const & )>{};
 
         auto const values = random_container<std::vector<std::uint_fast8_t>>();
 
         for ( auto const & value : values ) {
-            EXPECT_CALL( functor, Call( Ref( value ) ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( functor, Call( Ref( value ) ) ).WillOnce( Return( Result<void>{} ) );
         } // for
 
         auto const result = ::picolibrary::for_each<Functor_Can_Fail_Return_Functor>(
@@ -130,9 +126,9 @@ TEST( forEach, worksProperly )
 
         static_assert( std::is_same_v<decltype( result )::Value, decltype( functor.AsStdFunction() )> );
 
-        ASSERT_TRUE( result.is_value() );
+        ASSERT_FALSE( result.is_error() );
 
-        EXPECT_CALL( functor, Call( _ ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+        EXPECT_CALL( functor, Call( _ ) ).WillOnce( Return( Result<void>{} ) );
 
         EXPECT_FALSE( result.value()( random<std::uint_fast8_t>() ).is_error() );
     }
@@ -140,20 +136,20 @@ TEST( forEach, worksProperly )
     {
         auto const in_sequence = InSequence{};
 
-        auto functor = MockFunction<Result<Void, Error_Code>( std::uint_fast8_t const & )>{};
+        auto functor = MockFunction<Result<void>( std::uint_fast8_t const & )>{};
 
         auto const values = random_container<std::vector<std::uint_fast8_t>>();
 
         for ( auto const & value : values ) {
-            EXPECT_CALL( functor, Call( Ref( value ) ) ).WillOnce( Return( Result<Void, Error_Code>{} ) );
+            EXPECT_CALL( functor, Call( Ref( value ) ) ).WillOnce( Return( Result<void>{} ) );
         } // for
 
         auto const result = ::picolibrary::for_each<Functor_Can_Fail_Discard_Functor>(
             values.begin(), values.end(), functor.AsStdFunction() );
 
-        static_assert( std::is_same_v<decltype( result )::Value, Void> );
+        static_assert( std::is_same_v<decltype( result )::Value, void> );
 
-        ASSERT_TRUE( result.is_value() );
+        ASSERT_FALSE( result.is_error() );
     }
 }
 
@@ -162,7 +158,7 @@ TEST( forEach, worksProperly )
  */
 TEST( generate, functorError )
 {
-    auto functor = MockFunction<Result<std::uint_fast8_t, Error_Code>()>{};
+    auto functor = MockFunction<Result<std::uint_fast8_t>()>{};
 
     auto const error = random<Mock_Error>();
 
@@ -215,7 +211,7 @@ TEST( generate, worksProperly )
     {
         auto const in_sequence = InSequence{};
 
-        auto functor = MockFunction<Result<std::uint_fast8_t, Error_Code>()>{};
+        auto functor = MockFunction<Result<std::uint_fast8_t>()>{};
 
         auto const values = random_container<std::vector<std::uint_fast8_t>>();
 

@@ -27,13 +27,11 @@
 #include "picolibrary/error.h"
 #include "picolibrary/testing/automated/error.h"
 #include "picolibrary/testing/automated/random.h"
-#include "picolibrary/void.h"
 
 namespace {
 
 using ::picolibrary::Error_Code;
 using ::picolibrary::Error_ID;
-using ::picolibrary::Void;
 using ::picolibrary::Testing::Automated::Mock_Error;
 using ::picolibrary::Testing::Automated::Mock_Error_Category;
 using ::picolibrary::Testing::Automated::random;
@@ -49,19 +47,6 @@ using ::testing::Return;
 TEST( constructorDefault, worksProperly )
 {
     auto const error = Error_Code{};
-
-    EXPECT_NE( &error.category(), nullptr );
-    EXPECT_STREQ( error.category().name(), "::picolibrary::Default_Error" );
-    EXPECT_EQ( error.id(), 0 );
-    EXPECT_STREQ( error.description(), "UNKNOWN" );
-}
-
-/**
- * \brief Verify picolibrary::Error_Code::Error_Code( picolibrary::Void ) works properly.
- */
-TEST( constructorVoid, worksProperly )
-{
-    auto const error = Error_Code{ Void{} };
 
     EXPECT_NE( &error.category(), nullptr );
     EXPECT_STREQ( error.category().name(), "::picolibrary::Default_Error" );

@@ -27,11 +27,9 @@
 #include <vector>
 
 #include "gmock/gmock.h"
-#include "picolibrary/error.h"
 #include "picolibrary/ip/tcp.h"
 #include "picolibrary/result.h"
 #include "picolibrary/testing/automated/mock_handle.h"
-#include "picolibrary/void.h"
 #include "picolibrary/wiznet/w5500.h"
 
 /**
@@ -172,7 +170,7 @@ class Mock_Client {
             mock().bind( endpoint );
         }
 
-        auto connect( ::picolibrary::IP::TCP::Endpoint const & endpoint ) -> Result<Void, Error_Code>
+        auto connect( ::picolibrary::IP::TCP::Endpoint const & endpoint ) -> Result<void>
         {
             return mock().connect( endpoint );
         }
@@ -203,12 +201,12 @@ class Mock_Client {
         }
 
         auto transmit( std::uint8_t const * begin, std::uint8_t const * end )
-            -> Result<std::uint8_t const *, Error_Code>
+            -> Result<std::uint8_t const *>
         {
             return mock().transmit( begin, end );
         }
 
-        auto transmit_keepalive() -> Result<Void, Error_Code>
+        auto transmit_keepalive() -> Result<void>
         {
             return mock().transmit_keepalive();
         }
@@ -218,7 +216,7 @@ class Mock_Client {
             return mock().available();
         }
 
-        auto receive( std::uint8_t * begin, std::uint8_t * end ) -> Result<std::uint8_t *, Error_Code>
+        auto receive( std::uint8_t * begin, std::uint8_t * end ) -> Result<std::uint8_t *>
         {
             return mock().receive( begin, end );
         }
@@ -280,7 +278,7 @@ class Mock_Client {
     MOCK_METHOD( void, bind, () );
     MOCK_METHOD( void, bind, (::picolibrary::IP::TCP::Endpoint const &));
 
-    MOCK_METHOD( (Result<Void, Error_Code>), connect, (::picolibrary::IP::TCP::Endpoint const &));
+    MOCK_METHOD( (Result<void>), connect, (::picolibrary::IP::TCP::Endpoint const &));
 
     MOCK_METHOD( bool, is_connected, (), ( const ) );
 
@@ -291,21 +289,21 @@ class Mock_Client {
 
     MOCK_METHOD( bool, is_transmitting, (), ( const ) );
 
-    MOCK_METHOD( (Result<std::uint8_t const *, Error_Code>), transmit, (std::vector<std::uint8_t>));
+    MOCK_METHOD( (Result<std::uint8_t const *>), transmit, (std::vector<std::uint8_t>));
 
     auto transmit( std::uint8_t const * begin, std::uint8_t const * end )
-        -> Result<std::uint8_t const *, Error_Code>
+        -> Result<std::uint8_t const *>
     {
         return transmit( std::vector<std::uint8_t>{ begin, end } );
     }
 
-    MOCK_METHOD( (Result<Void, Error_Code>), transmit_keepalive, () );
+    MOCK_METHOD( (Result<void>), transmit_keepalive, () );
 
     MOCK_METHOD( Size, available, (), ( const ) );
 
-    MOCK_METHOD( (Result<std::vector<std::uint8_t>, Error_Code>), receive, () );
+    MOCK_METHOD( (Result<std::vector<std::uint8_t>>), receive, () );
 
-    auto receive( std::uint8_t * begin, std::uint8_t * end ) -> Result<std::uint8_t *, Error_Code>
+    auto receive( std::uint8_t * begin, std::uint8_t * end ) -> Result<std::uint8_t *>
     {
         static_cast<void>( end );
 

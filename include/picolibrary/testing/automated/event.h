@@ -26,7 +26,6 @@
 #include <cstddef>
 
 #include "gmock/gmock.h"
-#include "picolibrary/error.h"
 #include "picolibrary/event.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
@@ -85,7 +84,7 @@ class Mock_Event : public Event {
 
     auto operator=( Mock_Event const & ) = delete;
 
-    MOCK_METHOD( (Result<std::size_t, Error_Code>), print_details, (Output_Stream &), ( const, noexcept, override ) );
+    MOCK_METHOD( (Result<std::size_t>), print_details, (Output_Stream &), ( const, noexcept, override ) );
 
     MOCK_METHOD( std::size_t, print_details, (Reliable_Output_Stream &), ( const, noexcept, override ) );
 };

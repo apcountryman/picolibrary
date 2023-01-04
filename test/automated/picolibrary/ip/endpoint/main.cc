@@ -321,7 +321,7 @@ TEST( outputFormatterIPEndpoint, worksProperly )
 
         auto const result = stream.print( Endpoint{ port } );
 
-        ASSERT_TRUE( result.is_value() );
+        ASSERT_FALSE( result.is_error() );
         EXPECT_EQ( result.value(), stream.string().size() );
 
         EXPECT_TRUE( stream.is_nominal() );
@@ -335,7 +335,7 @@ TEST( outputFormatterIPEndpoint, worksProperly )
 
         auto const result = stream.print( Endpoint{ IPv4_Address::any(), port } );
 
-        ASSERT_TRUE( result.is_value() );
+        ASSERT_FALSE( result.is_error() );
         EXPECT_EQ( result.value(), stream.string().size() );
 
         EXPECT_TRUE( stream.is_nominal() );
@@ -350,7 +350,7 @@ TEST( outputFormatterIPEndpoint, worksProperly )
 
         auto const result = stream.print( Endpoint{ ipv4_address, port } );
 
-        ASSERT_TRUE( result.is_value() );
+        ASSERT_FALSE( result.is_error() );
         EXPECT_EQ( result.value(), stream.string().size() );
 
         EXPECT_TRUE( stream.is_nominal() );
