@@ -5,13 +5,69 @@ Error identification facilities are defined in the
 [`include/picolibrary/error.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/error.h)/[`source/picolibrary/error.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/error.cc)
 header/source file pair.
 
-The `::picolibrary::Error_Code` type is used to identify errors.
+The `::picolibrary::Error_Code` class is used to identify errors.
 An error can be identified using the combination of the address of the error's error
 category (`::picolibrary::Error_Category`) and the error's error ID
 (`::picolibrary::Error_ID`).
 To get a reference to an error's error category, use the
 `::picolibrary::Error_Code::category()` member function.
 To get an error's error ID, use the `::picolibrary::Error_Code::id()` member function.
+Direct comparison for equality or inequality is also supported.
+Implicit conversion from an enum class to a `::picolibrary::Error_Code` is enabled if
+`::picolibrary::is_error_code_enum` has been appropriately specialized for the enum class.
+
+The `::picolibrary::Error_Category` class is used to get human readable error information.
+To get an error category's name, use the `::picolibrary::Error_Category::name()` member
+function.
+To get an error ID's description, use the
+`::picolibrary::Error_Category::error_description()` member function.
+If the `PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION` project configuration
+option is `ON`, these functions will return empty strings.
+
+### Library Defined Errors
+picolibrary defines the following error sets:
+- Generic errors
+- Mock errors
+
+The generic error set is defined in the
+[`include/picolibrary/error.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/error.h)/[`source/picolibrary/error.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/error.cc)
+header/source file pair.
+The `::picolibrary::Generic_Error` enum class's enumerators identify the specific errors
+in the set.
+The `::picolibrary::Generic_Error_Category` class is the error category for the set.
+To get a reference to the `::picolibrary::Generic_Error_Category` instance, use the
+`::picolibrary::Generic_Error_Category::instance()` static member function.
+Implicit conversion from `::picolibrary::Generic_Error` to `::picolibrary::Error_Code` is
+enabled.
+
+The mock error set is available if automated testing is enabled.
+The mock error set is defined in the
+[`include/picolibrary/testing/automated/error.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/error.h)/[`source/picolibrary/testing/automated/error.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/error.cc)
+header/source file pair.
+The `::picolibrary::Testing::Automated::Mock_Error` enum class is used to identify
+"specific" errors in the set.
+`::picolibrary::Testing::Automated::random()` is specialized for the
+`::picolibrary::Testing::Automated::Mock_Error` enum class so that "specific"
+pseudo-random mock errors can be generated at runtime for use in automated tests.
+The `::picolibrary::Testing::Automated::Mock_Error_Category` class is the error category
+for the set.
+To get a reference to a common `::picolibrary::Testing::Automated::Mock_Error_Category`
+instance, use the `::picolibrary::Testing::Automated::Mock_Error_Category::instance()`
+static member function.
+Additional `::picolibrary::Testing::Automated::Mock_Error_Category` instances can be
+constructed as needed to support automated testing.
+
+### Defining Additional Errors
+To create an additional error set, do the following:
+1. Define an enum class whose enumerators identify the specific errors in the set.
+   The underlying type for the enum class should be `::picolibrary::Error_ID`.
+2. Create an error category class for the error set.
+   `::picolibrary::Error_Category` must be a public base of this class.
+   This class should be a singleton.
+3. Define a `make_error_code()` function in the same namespace as the enum class that
+   takes the enum class and returns a `::picolibrary::Error_Code`.
+4. Register the enum class as an error code enum by specializing
+   `::picolibrary::is_error_code_enum` for the enum class.
 
 ## Assertions
 
