@@ -30,6 +30,10 @@ namespace picolibrary {
 /**
  * \brief Get the library version.
  *
+ * \attention The picolibrary static library does not include the implementation for this
+ *            function. To use this function, link with the picolibrary-version static
+ *            library.
+ *
  * \return The library version.
  */
 auto version() noexcept -> ROM::String;
