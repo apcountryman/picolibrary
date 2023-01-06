@@ -16,3 +16,13 @@ Git command:
 ```shell
 git describe --match=none --always --dirty --broken
 ```
+
+The `picolibrary` static library does not include `::picolibrary::version()`.
+To use `::picolibrary::version()`, link with the `picolibrary-version` static library.
+```cmake
+target_link_libraries(
+    foo
+    picolibrary
+    picolibrary-version
+)
+```
