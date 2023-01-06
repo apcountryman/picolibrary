@@ -12,9 +12,9 @@ category (`::picolibrary::Error_Category`) and the error's error ID
 To get a reference to an error's error category, use the
 `::picolibrary::Error_Code::category()` member function.
 To get an error's error ID, use the `::picolibrary::Error_Code::id()` member function.
-Direct comparison for equality or inequality is also supported.
 Implicit conversion from an enum class to a `::picolibrary::Error_Code` is enabled if
 `::picolibrary::is_error_code_enum` has been appropriately specialized for the enum class.
+Direct comparison for equality or inequality is supported.
 
 The `::picolibrary::Error_Category` class is used to get human readable error information.
 To get an error category's name, use the `::picolibrary::Error_Category::name()` member
@@ -40,7 +40,8 @@ To get a reference to the `::picolibrary::Generic_Error_Category` instance, use 
 Implicit conversion from `::picolibrary::Generic_Error` to `::picolibrary::Error_Code` is
 enabled.
 
-The mock error set is available if automated testing is enabled.
+The mock error set is available if the `PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project
+configuration option is `ON`.
 The mock error set is defined in the
 [`include/picolibrary/testing/automated/error.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/error.h)/[`source/picolibrary/testing/automated/error.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/error.cc)
 header/source file pair.
@@ -80,7 +81,7 @@ To check a function precondition expectation, use the `PICOLIBRARY_EXPECT()` mac
 If the `expectation` macro argument evaluates to `false`,
 `::picolibrary::trap_fatal_error()` will be called.
 If code is structured in a way that an execution path being taken indicates a precondition
-expectation has not been met, the `PICOLIBRARY_EXPECTATION_NOT_MET()` macro can be used to
+expectation has not been met, use the `PICOLIBRARY_EXPECTATION_NOT_MET()` macro to
 unconditionally call `::picolibrary::trap_fatal_error()`.
 
 To create a function overload that lets the user bypass precondition expectation checks,
@@ -157,8 +158,8 @@ To check a function postcondition guarantee, use the `PICOLIBRARY_ENSURE()` macr
 If the `guarantee` macro argument evaluates to `false`,
 `::picolibrary::trap_fatal_error()` will be called.
 If code is structured in a way that an execution path being taken indicates a
-postcondition guarantee has not been met, the `PICOLIBRARY_GUARANTEE_NOT_MET()` macro can
-be used to unconditionally call `::picolibrary::trap_fatal_error()`.
+postcondition guarantee has not been met, use the `PICOLIBRARY_GUARANTEE_NOT_MET()` macro
+to unconditionally call `::picolibrary::trap_fatal_error()`.
 
 ### Trapping Fatal Errors
 `::picolibrary::trap_fatal_error()` is called if a precondition expectation check or a
