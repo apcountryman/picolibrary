@@ -10,3 +10,4 @@ microcontrollers.
 5. [Read-Only Memory (ROM) Facilities](rom.md)
 6. [Library Version](library_version.md)
 7. [Error Handling Facilities](error_handling.md)
+8. [Input/Output (I/O) Facilities](io.md)
