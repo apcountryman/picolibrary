@@ -77,9 +77,9 @@ To check if a stream is associated with an I/O stream device access buffer, use 
 To associate an I/O stream with an I/O stream device access buffer from a derived class,
 use the `::picolibrary::Stream::set_buffer()` and
 `::picolibrary::Reliable_Stream::set_buffer()` member functions.
-To get the I/O stream device access buffer associated with an I/O stream, use the
-`::picolibrary::Stream::buffer()` and `::picolibrary::Reliable_Stream::buffer()` member
-functions.
+To get the I/O stream device access buffer associated with an I/O stream from a derived
+class, use the `::picolibrary::Stream::buffer()` and
+`::picolibrary::Reliable_Stream::buffer()` member functions.
 
 ## Output Stream
 The `::picolibrary::Output_Stream` and `::picolibrary::Reliable_Output_Stream` output
@@ -266,8 +266,8 @@ does not support user formatting configuration.
 
 void foo( ::picolibrary::Reliable_Output_Stream & stream ) noexcept
 {
-    // output will be "0xA4"
-    stream.print( ::picolibrary::Format::Bin{ std::uint8_t{ 0xA4 } } );
+    // output will be "0x0A"
+    stream.print( ::picolibrary::Format::Bin{ std::uint8_t{ 0x0A } } );
 }
 ```
 
