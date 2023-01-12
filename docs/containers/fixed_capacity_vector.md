@@ -1,5 +1,6 @@
 # Fixed Capacity Vector
-The fixed capacity vector class (`::picolibrary::Fixed_Capacity_Vector`) is defined in the
+The fixed capacity vector container class (`::picolibrary::Fixed_Capacity_Vector`) is
+defined in the
 [`include/picolibrary/fixed_capacity_vector.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/fixed_capacity_vector.h)/[`source/picolibrary/fixed_capacity_vector.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/fixed_capacity_vector.cc)
 header/source file pair.
 
