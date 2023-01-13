@@ -35,6 +35,7 @@ using ::picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator;
 using ::picolibrary::CRC::Bitwise_Calculator;
 using ::picolibrary::CRC::Calculation_Parameters;
 using ::picolibrary::CRC::Direct_Byte_Indexed_Lookup_Table_Calculator;
+using ::picolibrary::CRC::Direct_Nibble_Indexed_Lookup_Table_Calculator;
 using ::picolibrary::Testing::Automated::random;
 using ::picolibrary::Testing::Automated::random_container;
 using ::testing::Test;
@@ -97,6 +98,10 @@ TYPED_TEST( calculatorImplementations, areEquivalent )
 
         EXPECT_EQ(
             Augmented_Nibble_Indexed_Lookup_Table_Calculator{ test_case.calculation_parameters }
+                .calculate( message.begin(), message.end() ),
+            remainder );
+        EXPECT_EQ(
+            Direct_Nibble_Indexed_Lookup_Table_Calculator{ test_case.calculation_parameters }
                 .calculate( message.begin(), message.end() ),
             remainder );
     } // for
