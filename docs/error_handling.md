@@ -15,6 +15,9 @@ To get an error's error ID, use the `::picolibrary::Error_Code::id()` member fun
 Implicit conversion from an enum class to a `::picolibrary::Error_Code` is enabled if
 `::picolibrary::is_error_code_enum` has been appropriately specialized for the enum class.
 Direct comparison for equality or inequality is supported.
+`::picolibrary::Error_Code` automated tests are defined in the
+[`test/automated/picolibrary/error_code/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/error_code/main.cc)
+source file.
 
 The `::picolibrary::Error_Category` class is used to get human readable error information.
 To get an error category's name, use the `::picolibrary::Error_Category::name()` member
@@ -39,6 +42,11 @@ To get a reference to the `::picolibrary::Generic_Error_Category` instance, use 
 `::picolibrary::Generic_Error_Category::instance()` static member function.
 Implicit conversion from `::picolibrary::Generic_Error` to `::picolibrary::Error_Code` is
 enabled.
+Generic error set automated tests are defined in the
+[`test/automated/picolibrary/generic_error/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/generic_error/main.cc)
+and
+[`test/automated/picolibrary/generic_error_category/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/generic_error_category/main.cc)
+source files.
 
 The mock error set is available if the `PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project
 configuration option is `ON`.
