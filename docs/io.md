@@ -18,6 +18,12 @@ device access buffer abstract classes are defined in the
 [`include/picolibrary/stream.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/stream.h)/[`source/picolibrary/stream.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/stream.cc)
 header/source file pair.
 These classes define the standard interface that streams use to interact with devices.
+`::picolibrary::Stream_Buffer` automated tests are defined in the
+[`test/automated/picolibrary/stream_buffer/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/stream_buffer/main.cc)
+source file.
+`::picolibrary::Reliable_Stream_Buffer` automated tests are defined in the
+[`test/automated/picolibrary/reliable_stream_buffer/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/reliable_stream_buffer/main.cc)
+source file.
 
 The `::picolibrary::Testing::Automated::Mock_Stream_Buffer` and
 `::picolibrary::Testing::Automated::Mock_Reliable_Stream_Buffer` mock I/O stream device
@@ -34,6 +40,13 @@ are defined in the
 header/source file pair.
 These classes store an I/O stream's state information and associate an I/O stream with an
 I/O stream device access buffer.
+`::picolibrary::Stream` automated tests are defined in the
+[`test/automated/picolibrary/stream/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/stream/main.cc)
+source file.
+`::picolibrary::Reliable_Stream` automated tests are defined in the
+[`test/automated/picolibrary/reliable_stream/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/reliable_stream/main.cc)
+source file.
+
 An I/O stream's state includes the following:
 - End-of-file reached
 - I/O error present
@@ -88,6 +101,12 @@ stream classes are defined in the
 header/source file pair.
 These classes define stream unformatted and formatted output operations.
 The stream being nominal is a precondition for all output operations.
+`::picolibrary::Output_Stream` automated tests are defined in the
+[`test/automated/picolibrary/output_stream/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/output_stream/main.cc)
+source file.
+`::picolibrary::Reliable_Output_Stream` automated tests are defined in the
+[`test/automated/picolibrary/reliable_output_stream/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/reliable_output_stream/main.cc)
+source file.
 
 To write any output that has been buffered to the device associated with a stream, use the
 `::picolibrary::Output_Stream::flush()` and
@@ -164,15 +183,31 @@ header/source file pair:
 
 The `::picolibrary::Output_Formatter<char>` specialization does not support user
 formatting configuration.
+`::picolibrary::Output_Formatter<char>` automated tests are defined in the
+[`test/automated/picolibrary/output_stream/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/output_stream/main.cc)
+and
+[`test/automated/picolibrary/reliable_output_stream/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/reliable_output_stream/main.cc)
+source files.
 
 The `::picolibrary::Output_Formatter<char const *>` specialization does not support user
 formatting configuration.
+`::picolibrary::Output_Formatter<char const *>` automated tests are defined in the
+[`test/automated/picolibrary/output_stream/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/output_stream/main.cc)
+and
+[`test/automated/picolibrary/reliable_output_stream/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/reliable_output_stream/main.cc)
+source files.
 
 The `::picolibrary::Output_Formatter<::picolibrary::ROM::String>` specialization does not
 support user formatting configuration.
 
 The `::picolibrary::Output_Formatter<::picolibrary::Error_Code>` specialization does not
 support user formatting configuration.
+`::picolibrary::Output_Formatter<::picolibrary::Error_Code>` automated tests are defined
+in the
+[`test/automated/picolibrary/output_stream/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/output_stream/main.cc)
+and
+[`test/automated/picolibrary/reliable_output_stream/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/reliable_output_stream/main.cc)
+source files.
 ```c++
 #include "picolibrary/error.h"
 #include "picolibrary/stream.h"
@@ -187,6 +222,13 @@ void foo( ::picolibrary::Reliable_Output_Stream & stream ) noexcept
 The `::picolibrary::Output_Formatter<Enum,
 std::enable_if_t<::picolibrary::is_error_code_enum_v<Enum>>>` specialization does not
 support user formatting configuration.
+`::picolibrary::Output_Formatter<Enum,
+std::enable_if_t<::picolibrary::is_error_code_enum_v<Enum>>>` automated tests are defined
+in the
+[`test/automated/picolibrary/output_stream/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/output_stream/main.cc)
+and
+[`test/automated/picolibrary/reliable_output_stream/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/reliable_output_stream/main.cc)
+source files.
 ```c++
 #include "picolibrary/error.h"
 #include "picolibrary/stream.h"
@@ -217,6 +259,10 @@ header/source file pair:
 The `::picolibrary::Format::Bin` class is used to print an integer type in binary.
 The `::picolibrary::Output_Formatter<::picolibrary::Format::Bin<Integer>>` specialization
 does not support user formatting configuration.
+`::picolibrary::Output_Formatter<::picolibrary::Format::Bin<Integer>>` automated tests are
+defined in the
+[`test/automated/picolibrary/format/bin/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/format/bin/main.cc)
+source file.
 ```c++
 #include <cstdint>
 
@@ -236,6 +282,11 @@ std::enable_if_t<std::is_signed_v<Integer>>>` and
 `::picolibrary::Output_Formatter<::picolibrary::Format::Dec<Integer>,
 std::enable_if_t<std::is_unsigned_v<Integer>>>` specializations do not support user
 formatting configuration.
+`::picolibrary::Output_Formatter<::picolibrary::Format::Dec<Integer,
+std::enable_if_t<std::is_signed_v<Integer>>>` and `::picolibrary::Format::Dec<Integer,
+std::enable_if_t<std::is_unsigned_v<Integer>>>` automated tests are defined in the
+[`test/automated/picolibrary/format/dec/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/format/dec/main.cc)
+source file.
 ```c++
 #include <cstdint>
 
@@ -258,6 +309,10 @@ void foo( ::picolibrary::Reliable_Output_Stream & stream ) noexcept
 The `::picolibrary::Format::Hex` class is used to print an integer type in hexadecimal.
 The `::picolibrary::Output_Formatter<::picolibrary::Format::Hex<Integer>>` specialization
 does not support user formatting configuration.
+`::picolibrary::Output_Formatter<::picolibrary::Format::Hex<Integer>>` automated tests are
+defined in the
+[`test/automated/picolibrary/format/hex/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/format/hex/main.cc)
+source file.
 ```c++
 #include <cstdint>
 
@@ -274,6 +329,10 @@ void foo( ::picolibrary::Reliable_Output_Stream & stream ) noexcept
 The `::picolibrary::Format::Hex_Dump` class is used to print a hex dump of data.
 The `::picolibrary::Output_Formatter<::picolibrary::Format::Hex_Dump<Iterator>>`
 specialization does not support user formatting configuration.
+`::picolibrary::Output_Formatter<::picolibrary::Format::Hex_Dump<Iterator>>` automated
+tests are defined in the
+[`test/automated/picolibrary/format/hex_dump/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/format/hex_dump/main.cc)
+source file.
 ```c++
 #include <string>
 
