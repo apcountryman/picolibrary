@@ -2,6 +2,9 @@
 Algorithms are defined in the
 [`include/picolibrary/algorithm.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/algorithm.h)/[`source/picolibrary/algorithm.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/algorithm.cc)
 header/source file pair.
+Algorithm automated tests are defined in the
+[`test/automated/picolibrary/algorithm/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/algorithm/main.cc)
+source file.
 
 ## `for_each()`
 To apply a unary functor to a range, use the `::picolibrary::for_each()` algorithm.
