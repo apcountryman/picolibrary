@@ -16,3 +16,4 @@ microcontrollers.
     1. [Array](containers/array.md)
     2. [Circular Buffer](containers/circular_buffer.md)
     3. [Fixed Capacity Vector](containers/fixed_capacity_vector.md)
+11. [General Utilities](general_utilities.md)
