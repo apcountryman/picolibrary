@@ -17,3 +17,4 @@ microcontrollers.
     2. [Circular Buffer](containers/circular_buffer.md)
     3. [Fixed Capacity Vector](containers/fixed_capacity_vector.md)
 11. [General Utilities](general_utilities.md)
+12. [Bit Manipulation Utilities](bit_manipulation_utilities.md)
