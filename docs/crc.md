@@ -22,7 +22,7 @@ picolibrary provides the following CRC calculator implementations:
 An automated test that verifies that all provide CRC calculator implementations produce
 the same result is defined in the
 [`test/automated/picolibrary/crc/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/crc/main.cc)
-header/source file pair.
+source file.
 
 The `::picolibrary::CRC::Bitwise_Calculator` CRC calculator implementation processes
 messages one bit at a time, and requires a message augment to push the entirety of a
@@ -74,9 +74,9 @@ defined in the
 [`test/automated/picolibrary/crc/augmented_nibble_indexed_lookup_table_calculator/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/crc/augmented_nibble_indexed_lookup_table_calculator/main.cc)
 source file.
 
-The `::picolibrary::CRC::Direct_Nibble_Indexed_Lookup_Table_Calculator` CRC This
-calculator implementation processes messages one nibble at a time, and does not require a
-message augment to push the entirety of a message through the calculation.
+The `::picolibrary::CRC::Direct_Nibble_Indexed_Lookup_Table_Calculator` CRC calculator
+implementation processes messages one nibble at a time, and does not require a message
+augment to push the entirety of a message through the calculation.
 This achieves a balance between implementations that are optimized for performance (table
 driven implementations that process messages one or more bytes at a time), and those that
 are optimized for memory use (bitwise implementations).
