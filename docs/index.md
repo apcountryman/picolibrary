@@ -18,3 +18,4 @@ microcontrollers.
     3. [Fixed Capacity Vector](containers/fixed_capacity_vector.md)
 11. [General Utilities](general_utilities.md)
 12. [Bit Manipulation Utilities](bit_manipulation_utilities.md)
+13. [Cyclic Redundancy Check (CRC) Facilities](crc.md)
