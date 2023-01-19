@@ -34,6 +34,7 @@
 
 namespace {
 
+using ::picolibrary::Event;
 using ::picolibrary::Event_Category;
 using ::picolibrary::Event_ID;
 using ::picolibrary::Output_Stream;
@@ -52,26 +53,6 @@ using ::testing::Matcher;
 using ::testing::Ref;
 using ::testing::Return;
 
-class Event final : public ::picolibrary::Event {
-  public:
-    Event() = delete;
-
-    constexpr Event( Event_Category const & category, Event_ID id ) noexcept :
-        ::picolibrary::Event{ category, id }
-    {
-    }
-
-    constexpr Event( Event && source ) noexcept = default;
-
-    constexpr Event( Event const & original ) noexcept = default;
-
-    ~Event() noexcept override final = default;
-
-    constexpr auto operator=( Event && expression ) noexcept -> Event & = default;
-
-    constexpr auto operator=( Event const & expression ) noexcept -> Event & = default;
-};
-
 } // namespace
 
 /**
@@ -83,7 +64,7 @@ TEST( constructor, worksProperly )
     auto const category = Mock_Event_Category{};
     auto const id       = random<Event_ID>();
 
-    auto const event = Event{ category, id };
+    auto const event = Mock_Event{ category, id };
 
     EXPECT_EQ( &event.category(), &category );
     EXPECT_EQ( event.id(), id );
@@ -117,7 +98,7 @@ TEST( outputFormatterEvent, putError )
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
     EXPECT_CALL( event, print_details( Matcher<Output_Stream &>( _ ) ) ).Times( 0 );
 
-    auto const result = stream.print( static_cast<::picolibrary::Event const &>( event ) );
+    auto const result = stream.print( static_cast<Event const &>( event ) );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -148,7 +129,7 @@ TEST( outputFormatterEvent, detailsPrintError )
     EXPECT_CALL( category, event_description( _ ) ).WillOnce( Return( event_description.c_str() ) );
     EXPECT_CALL( event, print_details( Matcher<Output_Stream &>( _ ) ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.print( static_cast<::picolibrary::Event const &>( event ) );
+    auto const result = stream.print( static_cast<Event const &>( event ) );
 
     EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -181,7 +162,7 @@ TEST( outputFormatterEvent, worksProperly )
         EXPECT_CALL( event, print_details( Matcher<Output_Stream &>( Ref( stream ) ) ) )
             .WillOnce( Return( event_details_size ) );
 
-        auto const result = stream.print( static_cast<::picolibrary::Event const &>( event ) );
+        auto const result = stream.print( static_cast<Event const &>( event ) );
 
         EXPECT_FALSE( result.is_error() );
         EXPECT_EQ( result.value(), stream.string().size() + event_details_size );
@@ -208,7 +189,7 @@ TEST( outputFormatterEvent, worksProperly )
         EXPECT_CALL( event, print_details( Matcher<Reliable_Output_Stream &>( Ref( stream ) ) ) )
             .WillOnce( Return( event_details_size ) );
 
-        auto const n = stream.print( static_cast<::picolibrary::Event const &>( event ) );
+        auto const n = stream.print( static_cast<Event const &>( event ) );
 
         EXPECT_EQ( n, stream.string().size() + event_details_size );
 
