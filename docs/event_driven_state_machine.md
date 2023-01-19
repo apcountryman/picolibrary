@@ -71,7 +71,7 @@ To access a stored event, use the `::picolibrary::Event_Storage::event()` member
 
 ## Non-Hierarchical State Machines
 The `::picolibrary::State_Machine` non-hierarchical state machine with support for state
-entry and exit actions state machine base class is defined in the
+entry and exit actions base class is defined in the
 [`include/picolibrary/state_machine.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/state_machine.h)/[`source/picolibrary/state_machine.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/state_machine.cc)
 header/source file pair.
 
@@ -270,13 +270,11 @@ class Example_State_Machine : public ::picolibrary::State_Machine {
 
 Example_State_Machine::Event_Category const Example_State_Machine::Event_Category::INSTANCE{};
 
-// clang-format off
 ::picolibrary::Simple_Event const Example_State_Machine::INITIAL_TRANSITION_TRIGGER{ Event_Category::instance(), ::picolibrary::to_underlying( Event::INITIAL_TRANSITION_TRIGGER ) };
 ::picolibrary::Simple_Event const Example_State_Machine::A{ Event_Category::instance(), ::picolibrary::to_underlying( Event::A ) };
 ::picolibrary::Simple_Event const Example_State_Machine::B{ Event_Category::instance(), ::picolibrary::to_underlying( Event::B ) };
 ::picolibrary::Simple_Event const Example_State_Machine::C{ Event_Category::instance(), ::picolibrary::to_underlying( Event::C ) };
 ::picolibrary::Simple_Event const Example_State_Machine::TERMINATE{ Event_Category::instance(), ::picolibrary::to_underlying( Event::TERMINATE ) };
-// clang-format on
 
 } // namespace
 
@@ -288,7 +286,6 @@ int main()
     std::cout << '\n';
 
     ::picolibrary::Simple_Event const event_sequence[]{
-        // clang-format off
         ::Example_State_Machine::A,
         ::Example_State_Machine::B,
         ::Example_State_Machine::C,
@@ -296,7 +293,6 @@ int main()
         ::Example_State_Machine::B,
         ::Example_State_Machine::C,
         ::Example_State_Machine::TERMINATE,
-        // clang-format on
     };
 
     for ( auto const & event : event_sequence ) {
@@ -323,8 +319,8 @@ header/source file pair.
 
 The maximum state depth (not including the implicit "top" superstate) is 8.
 
-The `::picolibrary::HSM::State_Event_Handler` member type alias defines the state state
-event handler function signature.
+The `::picolibrary::HSM::State_Event_Handler` member type alias defines the state event
+handler function signature.
 See
 [`include/picolibrary/hsm.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/hsm.h)
 for more information about state event handlers.
