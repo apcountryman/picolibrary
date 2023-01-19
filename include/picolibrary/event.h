@@ -144,15 +144,11 @@ class Event {
      *
      * \param[in] stream The stream to write the event's details to.
      *
-     * \return 0.
+     * \return The number of characters written to the stream if the write succeeded.
+     * \return An error code if the write failed.
      */
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
-    virtual auto print_details( Output_Stream & stream ) const noexcept -> Result<std::size_t>
-    {
-        static_cast<void>( stream );
-
-        return size_t{ 0 };
-    }
+    virtual auto print_details( Output_Stream & stream ) const noexcept -> Result<std::size_t> = 0;
 #else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
     constexpr auto print_details( Output_Stream & stream ) const noexcept -> Result<std::size_t>
     {
@@ -167,15 +163,10 @@ class Event {
      *
      * \param[in] stream The stream to write the event's details to.
      *
-     * \return 0.
+     * \return The number of characters written to the stream.
      */
 #ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
-    virtual auto print_details( Reliable_Output_Stream & stream ) const noexcept -> std::size_t
-    {
-        static_cast<void>( stream );
-
-        return size_t{ 0 };
-    }
+    virtual auto print_details( Reliable_Output_Stream & stream ) const noexcept -> std::size_t = 0;
 #else  // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
     constexpr auto print_details( Reliable_Output_Stream & stream ) const noexcept -> std::size_t
     {
@@ -398,6 +389,38 @@ class Simple_Event final : public Event {
      * \return The assigned to object.
      */
     auto operator=( Simple_Event const & expression ) noexcept -> Simple_Event & = default;
+
+#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
+    /**
+     * \brief Write the event's details to a stream.
+     *
+     * \param[in] stream The stream to write the event's details to.
+     *
+     * \return 0
+     */
+    auto print_details( Output_Stream & stream ) const noexcept -> Result<std::size_t> override final
+    {
+        static_cast<void>( stream );
+
+        return size_t{ 0 };
+    }
+#endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
+
+#ifndef PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
+    /**
+     * \brief Write the event's details to a stream.
+     *
+     * \param[in] stream The stream to write the event's details to.
+     *
+     * \return 0
+     */
+    auto print_details( Reliable_Output_Stream & stream ) const noexcept -> std::size_t override final
+    {
+        static_cast<void>( stream );
+
+        return size_t{ 0 };
+    }
+#endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
 };
 
 /**
