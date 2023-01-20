@@ -336,6 +336,23 @@ class Output_Formatter<Event> {
 };
 
 /**
+ * \brief Check if an enum is a simple event enum.
+ *
+ * \tparam Enum The enum to check.
+ */
+template<typename Enum>
+struct is_simple_event_enum : std::false_type {
+};
+
+/**
+ * \brief Check if an enum is a simple event enum.
+ *
+ * \tparam Enum The enum to check.
+ */
+template<typename Enum>
+inline constexpr auto is_simple_event_enum_v = is_simple_event_enum<Enum>::value;
+
+/**
  * \brief Simple event (event that contains no information beyond its identity).
  */
 class Simple_Event final : public Event {
@@ -351,6 +368,32 @@ class Simple_Event final : public Event {
     constexpr Simple_Event( Event_Category const & category, Event_ID id ) noexcept :
         Event{ category, id }
     {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \tparam Simple_Event_Enum The type of simple event enum to construct from.
+     *
+     * \attention Simple_Event_Enum must have been registered as a simple event enum by
+     *            specializing picolibrary::is_simple_event_enum for this constructor to
+     *            be considered during overload resolution.
+     * \attention Simple_Event_Enum's underlying integer type must be
+     *            picolibrary::Event_ID.
+     * \attention A simple event construction helper function with the following name and
+     *            signature must be provided.
+     * \code
+     * auto make_simple_event( Simple_Event_Enum event ) noexcept
+     *     -> picolibrary::Simple_Event;
+     * \endcode
+     *
+     * \param[in] event The event.
+     */
+    template<typename Simple_Event_Enum, typename = std::enable_if_t<is_simple_event_enum_v<Simple_Event_Enum>>>
+    constexpr Simple_Event( Simple_Event_Enum event ) noexcept :
+        Simple_Event{ make_simple_event( event ) }
+    {
+        static_assert( std::is_same_v<std::underlying_type_t<Simple_Event_Enum>, Event_ID> );
     }
 
     /**

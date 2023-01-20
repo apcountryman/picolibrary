@@ -47,6 +47,9 @@ header/source file pair.
 
 The `::picolibrary::Simple_Event` class is used to easily define simple events (events
 that contain no information beyond their type.
+Implicit conversion from an enum class to a `::picolibrary::Simple_Event` is enabled if
+`::picolibrary::is_simple_event_enum` has been appropriately specialized for the enum
+class.
 
 ### Defining Events
 To define an event set, do the following:
@@ -60,6 +63,11 @@ To define an event set, do the following:
    `::picolibrary::Event` must be a public base of these classes.
    The additional information is made printable by overriding the
    `::picolibrary::Event::print_details()` member function.
+4. If all events in the event set are simple events (optional):
+    1. Define a `make_simple_event()` function in the same namespace as the enum class
+       that takes the enum class and returns a `::picolibrary::Simple_Event`.
+    2. Register the enum class as a simple event enum by specializing
+       `::picolibrary::is_simple_event_enum` for the enum class.
 
 ## Event Storage
 The `::picolibrary::Event_Storage` class is used to store multiple types of events.
