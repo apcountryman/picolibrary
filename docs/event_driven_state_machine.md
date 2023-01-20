@@ -46,7 +46,7 @@ defined in the
 header/source file pair.
 
 The `::picolibrary::Simple_Event` class is used to easily define simple events (events
-that contain no information beyond their type.
+that contain no information beyond their type).
 Implicit conversion from an enum class to a `::picolibrary::Simple_Event` is enabled if
 `::picolibrary::is_simple_event_enum` has been appropriately specialized for the enum
 class.
