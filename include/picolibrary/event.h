@@ -383,8 +383,8 @@ class Simple_Event final : public Event {
      * \attention A simple event construction helper function with the following name and
      *            signature must be provided.
      * \code
-     * auto make_simple_event( Simple_Event_Enum event ) noexcept ->
-     * picolibrary::Simple_Event; \endcode
+     * auto make_simple_event( Simple_Event_Enum event ) noexcept -> picolibrary::Simple_Event;
+     * \endcode
      *
      * \param[in] event The event.
      */
