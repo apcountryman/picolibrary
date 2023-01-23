@@ -4,7 +4,7 @@ ADC facilities are defined in the
 header/source file pair.
 
 ## Sample
-The `::picolibrary::ADC::Sample` class is used to store ADC samples.
+The `::picolibrary::ADC::Sample` template class is used to store ADC samples.
 To get the minimum valid sample, use the `::picolibrary::ADC::Sample::min()` static member
 function.
 To get the maximum valid sample, use the `::picolibrary::ADC::Sample::max()` static member
@@ -33,7 +33,7 @@ following `::picolibrary::ADC::Sample` types:
 - `::picolibrary::ADC::Sample<std::uint_fast32_t, 20>`
 - `::picolibrary::ADC::Sample<std::uint_fast32_t, 24>`
 
-## Converter Types
+## ADC Types
 
 ### Blocking, Single Sample ADC
 The `::picolibrary::ADC::Blocking_Single_Sample_Converter_Concept` concept class defines
