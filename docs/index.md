@@ -20,3 +20,4 @@ microcontrollers.
 12. [Bit Manipulation Utilities](bit_manipulation_utilities.md)
 13. [Cyclic Redundancy Check (CRC) Facilities](crc.md)
 14. [Event Driven State Machine Facilities](event_driven_state_machine.md)
+15. [Analog-to-Digital Converter (ADC) Facilities](adc.md)
