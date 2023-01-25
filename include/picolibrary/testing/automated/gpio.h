@@ -26,22 +26,6 @@
 #include "gmock/gmock.h"
 #include "picolibrary/gpio.h"
 #include "picolibrary/testing/automated/mock_handle.h"
-#include "picolibrary/testing/automated/random.h"
-
-namespace picolibrary::Testing::Automated {
-
-/**
- * \brief Generate a pseudo-random picolibrary::GPIO::Initial_Pin_State.
- *
- * \return A pseudo-randomly generated picolibrary::GPIO::Initial_Pin_State.
- */
-template<>
-inline auto random<GPIO::Initial_Pin_State>() -> GPIO::Initial_Pin_State
-{
-    return random<bool>() ? GPIO::Initial_Pin_State::LOW : GPIO::Initial_Pin_State::HIGH;
-}
-
-} // namespace picolibrary::Testing::Automated
 
 /**
  * \brief General Purpose Input/Output (GPIO) automated testing facilities.
