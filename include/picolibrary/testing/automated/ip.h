@@ -31,17 +31,6 @@
 namespace picolibrary::Testing::Automated {
 
 /**
- * \brief Generate a pseudo-random picolibrary::IP::Version.
- *
- * \return A pseudo-randomly generated picolibrary::IP::Version.
- */
-template<>
-inline auto random<IP::Version>() -> IP::Version
-{
-    return random<bool>() ? IP::Version::UNSPECIFIED : IP::Version::_4;
-}
-
-/**
  * \brief Generate a pseudo-random picolibrary::IP::Address.
  *
  * \return A pseudo-randomly generated picolibrary::IP::Address.
@@ -49,7 +38,9 @@ inline auto random<IP::Version>() -> IP::Version
 template<>
 inline auto random<IP::Address>() -> IP::Address
 {
-    switch ( random<IP::Version>() ) {
+    auto const version = random<bool>() ? IP::Version::UNSPECIFIED : IP::Version::_4;
+
+    switch ( version ) {
         case IP::Version::_4: return random<::picolibrary::IPv4::Address>();
         default: return {};
     } // switch
