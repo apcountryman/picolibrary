@@ -127,17 +127,6 @@ inline auto random<I2C::Address_Transmitted>() -> I2C::Address_Transmitted
 }
 
 /**
- * \brief Generate a pseudo-random picolibrary::I2C::Operation.
- *
- * \return A pseudo-randomly generated picolibrary::I2C::Operation.
- */
-template<>
-inline auto random<I2C::Operation>() -> I2C::Operation
-{
-    return random<bool>() ? I2C::Operation::READ : I2C::Operation::WRITE;
-}
-
-/**
  * \brief Generate a pseudo-random picolibrary::I2C::Response.
  *
  * \return A pseudo-randomly generated picolibrary::I2C::Response.

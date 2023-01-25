@@ -288,7 +288,7 @@ TEST( scan, worksProperly )
         EXPECT_CALL( functor, Call( _, _, _ ) ).WillOnce( Return( Result<void>{} ) );
 
         EXPECT_FALSE( result
-                          .value()( random<Address_Transmitted>(), random<Operation>(), random<Response>() )
+                          .value()( random<Address_Transmitted>(), Operation::READ, random<Response>() )
                           .is_error() );
     }
 
