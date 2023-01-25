@@ -26,23 +26,6 @@
 #include "gmock/gmock.h"
 #include "picolibrary/indicator.h"
 #include "picolibrary/testing/automated/mock_handle.h"
-#include "picolibrary/testing/automated/random.h"
-
-namespace picolibrary::Testing::Automated {
-
-/**
- * \brief Generate a pseudo-random picolibrary::Indicator::Initial_Indicator_State.
- *
- * \return A pseudo-randomly generated picolibrary::Indicator::Initial_Indicator_State.
- */
-template<>
-inline auto random<Indicator::Initial_Indicator_State>() -> Indicator::Initial_Indicator_State
-{
-    return random<bool>() ? Indicator::Initial_Indicator_State::EXTINGUISHED
-                          : Indicator::Initial_Indicator_State::ILLUMINATED;
-}
-
-} // namespace picolibrary::Testing::Automated
 
 /**
  * \brief Indicator automated testing facilities.
