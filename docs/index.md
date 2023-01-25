@@ -22,3 +22,4 @@ microcontrollers.
 14. [Event Driven State Machine Facilities](event_driven_state_machine.md)
 15. [Analog-to-Digital Converter (ADC) Facilities](adc.md)
 16. [Asynchronous Serial Facilities](asynchronous_serial.md)
+17. [General Purpose Input/Output (GPIO) Facilities](gpio.md)
