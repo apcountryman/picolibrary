@@ -51,6 +51,11 @@ using ::testing::InSequence;
 using ::testing::MockFunction;
 using ::testing::Return;
 
+auto random_response() noexcept -> Response
+{
+    return random<bool>() ? Response::ACK : Response::NACK;
+}
+
 } // namespace
 
 /**
@@ -170,7 +175,7 @@ TEST( scan, functorError )
         auto const error = random<Mock_Error>();
 
         EXPECT_CALL( controller, start() );
-        EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( random<Response>() ) );
+        EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( random_response() ) );
         EXPECT_CALL( controller, read( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
         EXPECT_CALL( controller, stop() );
         EXPECT_CALL( functor, Call( _, _, _ ) ).WillOnce( Return( error ) );
@@ -189,7 +194,7 @@ TEST( scan, functorError )
         auto const error = random<Mock_Error>();
 
         EXPECT_CALL( controller, start() );
-        EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( random<Response>() ) );
+        EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( random_response() ) );
         EXPECT_CALL( controller, read( _ ) ).WillRepeatedly( Return( random<std::uint8_t>() ) );
         EXPECT_CALL( controller, stop() );
         EXPECT_CALL( functor, Call( _, _, _ ) ).WillOnce( Return( error ) );
@@ -218,7 +223,7 @@ TEST( scan, worksProperly )
             auto const address_transmitted = Address_Transmitted{ Address_Numeric{ address_numeric } };
 
             {
-                auto const response = random<Response>();
+                auto const response = random_response();
 
                 EXPECT_CALL( controller, start() );
                 EXPECT_CALL( controller, address( address_transmitted, Operation::READ ) ).WillOnce( Return( response ) );
@@ -230,7 +235,7 @@ TEST( scan, worksProperly )
             }
 
             {
-                auto const response = random<Response>();
+                auto const response = random_response();
 
                 EXPECT_CALL( controller, start() );
                 EXPECT_CALL( controller, address( address_transmitted, Operation::WRITE ) )
@@ -254,7 +259,7 @@ TEST( scan, worksProperly )
             auto const address_transmitted = Address_Transmitted{ Address_Numeric{ address_numeric } };
 
             {
-                auto const response = random<Response>();
+                auto const response = random_response();
 
                 EXPECT_CALL( controller, start() );
                 EXPECT_CALL( controller, address( address_transmitted, Operation::READ ) ).WillOnce( Return( response ) );
@@ -267,7 +272,7 @@ TEST( scan, worksProperly )
             }
 
             {
-                auto const response = random<Response>();
+                auto const response = random_response();
 
                 EXPECT_CALL( controller, start() );
                 EXPECT_CALL( controller, address( address_transmitted, Operation::WRITE ) )
@@ -288,7 +293,7 @@ TEST( scan, worksProperly )
         EXPECT_CALL( functor, Call( _, _, _ ) ).WillOnce( Return( Result<void>{} ) );
 
         EXPECT_FALSE( result
-                          .value()( random<Address_Transmitted>(), Operation::READ, random<Response>() )
+                          .value()( random<Address_Transmitted>(), Operation::READ, Response::ACK )
                           .is_error() );
     }
 
@@ -303,7 +308,7 @@ TEST( scan, worksProperly )
             auto const address_transmitted = Address_Transmitted{ Address_Numeric{ address_numeric } };
 
             {
-                auto const response = random<Response>();
+                auto const response = random_response();
 
                 EXPECT_CALL( controller, start() );
                 EXPECT_CALL( controller, address( address_transmitted, Operation::READ ) ).WillOnce( Return( response ) );
@@ -316,7 +321,7 @@ TEST( scan, worksProperly )
             }
 
             {
-                auto const response = random<Response>();
+                auto const response = random_response();
 
                 EXPECT_CALL( controller, start() );
                 EXPECT_CALL( controller, address( address_transmitted, Operation::WRITE ) )

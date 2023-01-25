@@ -50,12 +50,25 @@ using Controller = ::picolibrary::I2C::Controller<::picolibrary::Testing::Automa
 TEST( read, worksProperly )
 {
     {
-        auto controller = Controller{};
+        struct {
+            Response response;
+        } const test_cases[]{
+            // clang-format off
 
-        EXPECT_CALL( controller, read( _ ) ).Times( 0 );
+            { Response::ACK  },
+            { Response::NACK },
 
-        auto data = std::vector<std::uint8_t>{};
-        controller.read( &*data.begin(), &*data.end(), random<Response>() );
+            // clang-format on
+        };
+
+        for ( auto const test_case : test_cases ) {
+            auto controller = Controller{};
+
+            EXPECT_CALL( controller, read( _ ) ).Times( 0 );
+
+            auto data = std::vector<std::uint8_t>{};
+            controller.read( &*data.begin(), &*data.end(), test_case.response );
+        } // for
     }
 
     {
