@@ -31,18 +31,6 @@
 namespace picolibrary::Testing::Automated {
 
 /**
- * \brief Generate a pseudo-random picolibrary::GPIO::Initial_Pull_Up_State.
- *
- * \return A pseudo-randomly generated picolibrary::GPIO::Initial_Pull_Up_State.
- */
-template<>
-inline auto random<GPIO::Initial_Pull_Up_State>() -> GPIO::Initial_Pull_Up_State
-{
-    return random<bool>() ? GPIO::Initial_Pull_Up_State::DISABLED
-                          : GPIO::Initial_Pull_Up_State::ENABLED;
-}
-
-/**
  * \brief Generate a pseudo-random picolibrary::GPIO::Initial_Pin_State.
  *
  * \return A pseudo-randomly generated picolibrary::GPIO::Initial_Pin_State.
