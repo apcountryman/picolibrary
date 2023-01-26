@@ -3,7 +3,7 @@ Asynchronous serial facilities are defined in the
 [`include/picolibrary/asynchronous_serial.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/asynchronous_serial.h)/[`source/picolibrary/asynchronous_serial.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/asynchronous_serial.cc)
 header/source file pair.
 
-## Basic Transmitter
+## Transmitter
 The `::picolibrary::Asynchronous_Serial::Basic_Transmitter_Concept` concept class defines
 the expected interface of an asynchronous serial basic transmitter.
 To initialize a basic transmitter's hardware, use a basic transmitter implementation's
@@ -17,7 +17,6 @@ The mock is defined in the
 [`include/picolibrary/testing/automated/asynchronous_serial.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/asynchronous_serial.h)/[`source/picolibrary/testing/automated/asynchronous_serial.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/asynchronous_serial.cc)
 header/source file pair.
 
-## Transmitter
 The `::picolibrary::Asynchronous_Serial::Transmitter_Concept` concept class defines the
 expected interface of an asynchronous serial transmitter.
 To initialize a transmitter's hardware, use a transmitter implementation's `initialize()`
