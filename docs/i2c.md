@@ -38,22 +38,6 @@ The specializations are defined in the
 [`include/picolibrary/testing/automated/i2c.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/i2c.h)/[`source/picolibrary/testing/automated/i2c.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/i2c.cc)
 header/source file pair.
 
-The `::picolibrary::I2C::Device_Address_Numeric` class is used to restrict
-`::picolibrary::I2C::Address_Numeric` to the range of I<sup>2</sup>C device addresses used
-by a specific type of I<sup>2</sup>C device.
-To get the minimum valid address, use the
-`::picolibrary::I2C::Device_Address_Numeric::min()` static member function.
-To get the maximum valid address, use the
-`::picolibrary::I2C::Device_Address_Numeric::max()` static member function.
-
-The `::picolibrary::I2C::Device_Address_Transmitted` class is used to restrict
-`::picolibrary::I2C::Address_Transmitted` to the range of I<sup>2</sup>C device addresses
-used by a specific type of I<sup>2</sup>C device.
-To get the minimum valid address, use the
-`::picolibrary::I2C::Device_Address_Transmitted::min()` static member function.
-To get the maximum valid address, use the
-`::picolibrary::I2C::Device_Address_Transmitted::max()` static member function.
-
 ## Controller
 picolibrary I<sup>2</sup>C controllers should consider the following to be fatal errors:
 - Encountering a bus error while attempting to interact with a device
@@ -187,6 +171,22 @@ void wubble( Controller & controller ) noexcept
 ```
 
 ## Device
+The `::picolibrary::I2C::Device_Address_Numeric` class is used to restrict
+`::picolibrary::I2C::Address_Numeric` to the range of I<sup>2</sup>C device addresses used
+by a specific type of I<sup>2</sup>C device.
+To get the minimum valid address, use the
+`::picolibrary::I2C::Device_Address_Numeric::min()` static member function.
+To get the maximum valid address, use the
+`::picolibrary::I2C::Device_Address_Numeric::max()` static member function.
+
+The `::picolibrary::I2C::Device_Address_Transmitted` class is used to restrict
+`::picolibrary::I2C::Address_Transmitted` to the range of I<sup>2</sup>C device addresses
+used by a specific type of I<sup>2</sup>C device.
+To get the minimum valid address, use the
+`::picolibrary::I2C::Device_Address_Transmitted::min()` static member function.
+To get the maximum valid address, use the
+`::picolibrary::I2C::Device_Address_Transmitted::max()` static member function.
+
 The `::picolibrary::I2C::Device` template class implements low level functionality for
 interacting with an I<sup>2</sup>C device.
 If an I<sup>2</sup>C bus does not have any multiplexers, use the
