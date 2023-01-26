@@ -38,7 +38,7 @@ The mock is defined in the
 [`include/picolibrary/testing/automated/asynchronous_serial.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/asynchronous_serial.h)/[`source/picolibrary/testing/automated/asynchronous_serial.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/asynchronous_serial.cc)
 header/source file pair.
 
-The `::picolibrary::Testing::Automated::Asynchronous_Serial::hello_world()` interactive
+The `::picolibrary::Testing::Interactive::Asynchronous_Serial::hello_world()` interactive
 test helper is available if the `PICOLIBRARY_ENABLE_INTERACTIVE_TESTING` project
 configuration option is `ON`.
 The interactive test helper is defined in the
