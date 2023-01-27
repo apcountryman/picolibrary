@@ -17,7 +17,7 @@ function.
 
 The `::picolibrary::Indicator::GPIO_Output_Pin_Fixed_Intensity_Indicator` template class
 is a GPIO output pin based fixed intensity indicator implementation.
-`::picolibrary::Indicator::GPIO::Output_Pin_Fixed_Intensity_Indicator` automated tests are
+`::picolibrary::Indicator::GPIO_Output_Pin_Fixed_Intensity_Indicator` automated tests are
 defined in the
 [`test/automated/picolibrary/indicator/gpio_output_pin_fixed_intensity_indicator/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/indicator/gpio_output_pin_fixed_intensity_indicator/main.cc)
 source file.
