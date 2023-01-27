@@ -24,3 +24,4 @@ microcontrollers.
 16. [Asynchronous Serial Facilities](asynchronous_serial.md)
 17. [General Purpose Input/Output (GPIO) Facilities](gpio.md)
 18. [Inter-Integrated Circuit (I<sup>2</sup>C) Facilities](i2c.md)
+19. [Indicator Facilities](indicator.md)
