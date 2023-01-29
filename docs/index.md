@@ -25,3 +25,4 @@ microcontrollers.
 17. [General Purpose Input/Output (GPIO) Facilities](gpio.md)
 18. [Inter-Integrated Circuit (I<sup>2</sup>C) Facilities](i2c.md)
 19. [Indicator Facilities](indicator.md)
+20. [Interrupt Facilities](interrupt.md)
