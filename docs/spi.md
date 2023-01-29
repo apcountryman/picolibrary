@@ -80,7 +80,7 @@ To ensure that SPI devices are deselected, use the
 `::picolibrary::SPI::Device_Selection_Guard` RAII device selection guard template class to
 select and deselect devices.
 `::picolibrary::SPI::Device_Selection_Guard` automated tests are defined in the
-[`test/automated/picolibrary/spi/gpio_output_pin_device_selector/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/spi/gpio_output_pin_device_selector/main.cc)
+[`test/automated/picolibrary/spi/device_selection_guard/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/spi/device_selection_guard/main.cc)
 source file.
 
 ## Device
@@ -100,7 +100,7 @@ To receive data from a device from a derived class, use the
 To transmit data to a device from a derived class, use the
 `::picolibrary::SPI::Device::transmit()` member functions.
 `::picolibrary::SPI::Device` automated tests are defined in the
-[`test/automated/picolibrary/spi/gpio_output_pin_device_selector/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/spi/gpio_output_pin_device_selector/main.cc)
+[`test/automated/picolibrary/spi/device/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/spi/device/main.cc)
 source file.
 
 The `::picolibrary::Testing::Automated::SPI::Mock_Device` mock SPI device class is
