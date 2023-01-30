@@ -5,7 +5,7 @@ header/source file pair.
 
 ## Address
 The `::picolibrary::IP::Address` class is used to store an IP address.
-To get the version of a stored address, use the `::picolibrary::IP::Address:version()`
+To get the version of a stored address, use the `::picolibrary::IP::Address::version()`
 member function.
 To check if the version of a stored address is unspecified, use the
 `::picolibrary::IP::Address::is_unspecified()` member function.
@@ -84,7 +84,7 @@ source file.
 
 `::picolibrary::Output_Formatter` is specialized for `::picolibrary::IP::Endpoint`.
 The `::picolibrary::Output_Formatter<::picolibrary::IP::Endpoint>` specialization does not
-supendpoint user formatting configuration.
+support user formatting configuration.
 `::picolibrary::Output_Formatter<::picolibrary::IP::Endpoint>` automated tests are defined
 in the
 [`test/automated/picolibrary/ip/endpoint/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/ip/endpoint/main.cc)
