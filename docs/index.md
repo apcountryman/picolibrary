@@ -27,3 +27,4 @@ microcontrollers.
 1. [Serial Peripheral Interface (SPI) Facilities](spi.md)
 1. [Analog-to-Digital Converter (ADC) Facilities](adc.md)
 1. [Indicator Facilities](indicator.md)
+1. Network Facilities
