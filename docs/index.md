@@ -29,3 +29,4 @@ microcontrollers.
 1. [Indicator Facilities](indicator.md)
 1. Network Facilities
     1. [Media Access Control (MAC) Address](network/mac_address.md)
+    1. [Internet Protocol (IP) Facilities](network/ip.md)
