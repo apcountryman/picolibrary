@@ -21,7 +21,7 @@ To check if an address is a loopback address (127.0.0.0-127.255.255.255), use th
 `::picolibrary::IPv4::Address::is_loopback()` member function.
 To check if an address is the local network broadcast address (255.255.255.255), use the
 `::picolibrary::IPv4::Address::is_broadcast()` member function.
-To check if an address is a mutlicast address (224.0.0.0-239.255.255.255), use the
+To check if an address is a multicast address (224.0.0.0-239.255.255.255), use the
 `::picolibrary::IPv4::Address::is_multicast()` member function.
 To get an address in its byte array representation, use the
 `::picolibrary::IPv4::Address::as_byte_array()` member function.
