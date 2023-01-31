@@ -34,3 +34,4 @@ microcontrollers.
     1. [Transmission Control Protocol (TCP) Over IP Facilities](network/tcp_over_ip.md)
 1. Device Facilities
     1. Microchip
+        1. [MCP3008 Facilities](device/microchip/mcp3008.md)
