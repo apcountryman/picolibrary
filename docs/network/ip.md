@@ -45,7 +45,7 @@ To get the minimum valid port, use the `::picolibrary::IP::Port::min()` static m
 function.
 To get the maximum valid port, use the `::picolibrary::IP::Port::max()` static member
 function.
-To Get the port that is used to represent any port (0), use the
+To get the port that is used to represent any port (0), use the
 `::picolibrary::IP::Port::any()` static member function.
 To check if a port is the port that is used to represent any port (0), use the
 `::picolibrary::IP::Port::is_any()` member function.
