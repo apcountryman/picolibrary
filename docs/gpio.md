@@ -6,12 +6,12 @@ header/source file pair.
 ## Input Pin
 The `::picolibrary::GPIO::Input_Pin_Concept` concept class defines the expected interface
 of a GPIO input pin.
-To initialize an input pin's hardware, use an input pin implementation's `initialize()`
-member function.
-To check if an input pin is in the low state, use an input pin implementation's `is_low()`
-member function.
-To check if an input pin is in the high state, use an input pin implementation's
-`is_high()` member function.
+- To initialize an input pin's hardware, use an input pin implementation's `initialize()`
+  member function.
+- To check if an input pin is in the low state, use an input pin implementation's
+  `is_low()` member function.
+- To check if an input pin is in the high state, use an input pin implementation's
+  `is_high()` member function.
 
 picolibrary assumes that the high pin/signals state is the active pin/signal state.
 All input pin implementations should use this assumption.
@@ -39,21 +39,22 @@ header/source file pair.
 ## Internally Pulled-Up Input Pin
 The `::picolibrary::GPIO::Internally_Pulled_Up_Input_Pin_Concept` concept class defines
 the expected interface of a GPIO internally pulled-up input pin.
-To initialize an internally pulled-up input pin's hardware, use an internally pulled-up
-input pin implementation's `initialize()` member function.
-To check if an internally pulled-up input pin's internal pull-up resistor is disabled, use
-an internally pulled-up input pin implementation's `pull_up_is_disabled()` member
-function.
-To check if an internally pulled-up input pin's internal pull-up resistor is enabled, use
-an internally pulled-up input pin implementation's `pull_up_is_enabled()` member function.
-To disable an internally pulled-up input pin's internal pull-up resistor, use an
-internally pulled-up input pin implementation's `disable_pull_up()` member function.
-To enable an internally pulled-up input pin's internal pull-up resistor, use an internally
-pulled-up input pin implementation's `enable_pull_up()` member function.
-To check if an internally pulled-up input pin is in the low state, use an internally
-pulled-up input pin implementation's `is_low()` member function.
-To check if an internally pulled-up input pin is in the high state, use an internally
-pulled-up input pin implementation's `is_high()` member function.
+- To initialize an internally pulled-up input pin's hardware, use an internally pulled-up
+  input pin implementation's `initialize()` member function.
+- To check if an internally pulled-up input pin's internal pull-up resistor is disabled,
+  use an internally pulled-up input pin implementation's `pull_up_is_disabled()` member
+  function.
+- To check if an internally pulled-up input pin's internal pull-up resistor is enabled,
+  use an internally pulled-up input pin implementation's `pull_up_is_enabled()` member
+  function.
+- To disable an internally pulled-up input pin's internal pull-up resistor, use an
+  internally pulled-up input pin implementation's `disable_pull_up()` member function.
+- To enable an internally pulled-up input pin's internal pull-up resistor, use an
+  internally pulled-up input pin implementation's `enable_pull_up()` member function.
+- To check if an internally pulled-up input pin is in the low state, use an internally
+  pulled-up input pin implementation's `is_low()` member function.
+- To check if an internally pulled-up input pin is in the high state, use an internally
+  pulled-up input pin implementation's `is_high()` member function.
 
 picolibrary assumes that the high pin/signals state is the active pin/signal state.
 All internally pulled-up input pin implementations should use this assumption.
@@ -81,14 +82,14 @@ header/source file pair.
 ## Output Pin
 The `::picolibrary::GPIO::Output_Pin_Concept` concept class defines the expected interface
 of a GPIO output pin.
-To initialize an output pin's hardware, use an output pin implementation's `initialize()`
-member function.
-To transition an output pin to the low state, use an output pin implementation's
-`transition_to_low()` member function.
-To transition an output pin to the high state, use an output pin implementation's
-`transition_to_high()` member function.
-To toggle the state of an output pin, use an output pin implementation's `toggle()` member
-function.
+- To initialize an output pin's hardware, use an output pin implementation's
+  `initialize()` member function.
+- To transition an output pin to the low state, use an output pin implementation's
+  `transition_to_low()` member function.
+- To transition an output pin to the high state, use an output pin implementation's
+  `transition_to_high()` member function.
+- To toggle the state of an output pin, use an output pin implementation's `toggle()`
+  member function.
 
 picolibrary assumes that the high pin/signals state is the active pin/signal state.
 All output pin implementations should use this assumption.
@@ -116,18 +117,18 @@ header/source file pair.
 ## Input/Output (I/O) Pin
 The `::picolibrary::GPIO::IO_Pin_Concept` concept class defines the expected interface of
 a GPIO I/O pin.
-To initialize an I/O pin's hardware, use an I/O pin implementation's `initialize()` member
-function.
-To check if an I/O pin is in the low state, use an I/O pin implementation's `is_low()`
-member function.
-To check if an I/O pin is in the high state, use an I/O pin implementation's `is_high()`
-member function.
-To transition an I/O pin to the low state, use an I/O pin implementation's
-`transition_to_low()` member function.
-To transition an I/O pin to the high state, use an I/O pin implementation's
-`transition_to_high()` member function.
-To toggle the state of an I/O pin, use an I/O pin implementation's `toggle()` member
-function.
+- To initialize an I/O pin's hardware, use an I/O pin implementation's `initialize()`
+  member function.
+- To check if an I/O pin is in the low state, use an I/O pin implementation's `is_low()`
+  member function.
+- To check if an I/O pin is in the high state, use an I/O pin implementation's `is_high()`
+  member function.
+- To transition an I/O pin to the low state, use an I/O pin implementation's
+  `transition_to_low()` member function.
+- To transition an I/O pin to the high state, use an I/O pin implementation's
+  `transition_to_high()` member function.
+- To toggle the state of an I/O pin, use an I/O pin implementation's `toggle()` member
+  function.
 
 picolibrary assumes that the high pin/signals state is the active pin/signal state.
 All I/O pin implementations should use this assumption.

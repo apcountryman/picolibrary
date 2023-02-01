@@ -52,47 +52,44 @@ An I/O stream's state includes the following:
 - I/O error present
 - Fatal error present (normal I/O streams only)
 
-To check if a stream is nominal (no errors present and end-of-file has not been reached),
-use the `::picolibrary::Stream::is_nominal()` and
-`::picolibrary::Reliable_Stream::is_nominal()` member functions.
-
-To check if errors are present (I/O error and/or fatal error present), use the
-`::picolibrary::Stream::error_present()` and
-`::picolibrary::Reliable_Stream::error_present()` member functions.
-
-To check if end-of-file has been reached, use the
-`::picolibrary::Stream::end_of_file_reached()` and
-`::picolibrary::Reliable_Stream::end_of_file_reached()` member functions.
-To report that end-of-file has been reached from a derived class, use the
-`::picolibrary::Stream::report_end_of_file_reached()` and
-`::picolibrary::Reliable_Stream::report_end_of_file_reached()` member functions.
-To clear an end-of-file reached report from a derived class, use the
-`::picolibrary::Stream::clear_end_of_file_reached_report()` and
-`::picolibrary::Reliable_Stream::clear_end_of_file_reached_report()` member functions.
-
-To check if an I/O error is present, use the `::picolibrary::Stream::io_error_present()`
-and `::picolibrary::Reliable_Stream::io_error_present()` member functions.
-To report an I/O error, use the `::picolibrary::Stream::report_io_error()` and
-`::picolibrary::Reliable_Stream::report_io_error()` member functions.
-To clear an I/O error, use the `::picolibrary::Stream::clear_io_error()` and
-`::picolibrary::Reliable_Stream::clear_io_error()` member functions.
-
-To check if a fatal error is present, use the
-`::picolibrary::Stream::fatal_error_present()` member function.
-To report a fatal error from a derived class, use the
-`::picolibrary::Stream::report_fatal_error()` member function.
-To clear a fatal error from a derived class, use the
-`::picolibrary::Stream::clear_fatal_error()` member function.
-
-To check if a stream is associated with an I/O stream device access buffer, use the
-`::picolibrary::Stream::buffer_is_set()` and
-`::picolibrary::Reliable_Stream::buffer_is_set()` member functions.
-To associate an I/O stream with an I/O stream device access buffer from a derived class,
-use the `::picolibrary::Stream::set_buffer()` and
-`::picolibrary::Reliable_Stream::set_buffer()` member functions.
-To get the I/O stream device access buffer associated with an I/O stream from a derived
-class, use the `::picolibrary::Stream::buffer()` and
-`::picolibrary::Reliable_Stream::buffer()` member functions.
+`::picolibrary::Stream` and `::picolibrary::Reliable_Stream` support the following
+operations:
+- To check if a stream is nominal (no errors present and end-of-file has not been
+  reached), use the `::picolibrary::Stream::is_nominal()` and
+  `::picolibrary::Reliable_Stream::is_nominal()` member functions.
+- To check if errors are present (I/O error and/or fatal error present), use the
+  `::picolibrary::Stream::error_present()` and
+  `::picolibrary::Reliable_Stream::error_present()` member functions.
+- To check if end-of-file has been reached, use the
+  `::picolibrary::Stream::end_of_file_reached()` and
+  `::picolibrary::Reliable_Stream::end_of_file_reached()` member functions.
+- To report that end-of-file has been reached from a derived class, use the
+  `::picolibrary::Stream::report_end_of_file_reached()` and
+  `::picolibrary::Reliable_Stream::report_end_of_file_reached()` member functions.
+- To clear an end-of-file reached report from a derived class, use the
+  `::picolibrary::Stream::clear_end_of_file_reached_report()` and
+  `::picolibrary::Reliable_Stream::clear_end_of_file_reached_report()` member functions.
+- To check if an I/O error is present, use the `::picolibrary::Stream::io_error_present()`
+  and `::picolibrary::Reliable_Stream::io_error_present()` member functions.
+- To report an I/O error, use the `::picolibrary::Stream::report_io_error()` and
+  `::picolibrary::Reliable_Stream::report_io_error()` member functions.
+- To clear an I/O error, use the `::picolibrary::Stream::clear_io_error()` and
+  `::picolibrary::Reliable_Stream::clear_io_error()` member functions.
+- To check if a fatal error is present, use the
+  `::picolibrary::Stream::fatal_error_present()` member function.
+- To report a fatal error from a derived class, use the
+  `::picolibrary::Stream::report_fatal_error()` member function.
+- To clear a fatal error from a derived class, use the
+  `::picolibrary::Stream::clear_fatal_error()` member function.
+- To check if a stream is associated with an I/O stream device access buffer, use the
+  `::picolibrary::Stream::buffer_is_set()` and
+  `::picolibrary::Reliable_Stream::buffer_is_set()` member functions.
+- To associate an I/O stream with an I/O stream device access buffer from a derived class,
+  use the `::picolibrary::Stream::set_buffer()` and
+  `::picolibrary::Reliable_Stream::set_buffer()` member functions.
+- To get the I/O stream device access buffer associated with an I/O stream from a derived
+  class, use the `::picolibrary::Stream::buffer()` and
+  `::picolibrary::Reliable_Stream::buffer()` member functions.
 
 ## Output Stream
 The `::picolibrary::Output_Stream` and `::picolibrary::Reliable_Output_Stream` output
@@ -108,17 +105,17 @@ source file.
 [`test/automated/picolibrary/reliable_output_stream/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/reliable_output_stream/main.cc)
 source file.
 
-To write any output that has been buffered to the device associated with a stream, use the
-`::picolibrary::Output_Stream::flush()` and
-`::picolibrary::Reliable_Output_Stream::flush()` member functions.
-
-To write unformatted data to a stream, use the `::picolibrary::Output_Stream::put()` and
-`::picolibrary::Reliable_Output_Stream::put()` member functions.
-
-To write formatted data to a stream, use the `::picolibrary::Output_Stream::print()` and
-`::picolibrary::Reliable_Output_Stream::print()` member functions.
-Formatting is controlled by the `::picolibrary::Output_Formatter` preceding each argument
-or a default constructed `::picolibrary::Output_Formatter` if one isn't provided.
+`::picolibrary::Output_Stream` and `::picolibrary::Reliable_Output_Stream` support the
+following operations:
+- To write any output that has been buffered to the device associated with a stream, use
+  the `::picolibrary::Output_Stream::flush()` and
+  `::picolibrary::Reliable_Output_Stream::flush()` member functions.
+- To write unformatted data to a stream, use the `::picolibrary::Output_Stream::put()` and
+  `::picolibrary::Reliable_Output_Stream::put()` member functions.
+- To write formatted data to a stream, use the `::picolibrary::Output_Stream::print()` and
+  `::picolibrary::Reliable_Output_Stream::print()` member functions. Formatting is
+  controlled by the `::picolibrary::Output_Formatter` preceding each argument or a default
+  constructed `::picolibrary::Output_Formatter` if one isn't provided.
 ```c++
 #include "picolibrary/stream.h"
 
@@ -139,10 +136,10 @@ option is `ON`.
 The mocks are defined in the
 [`include/picolibrary/testing/automated/stream.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/stream.h)/[`source/picolibrary/testing/automated/stream.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/stream.cc)
 header/source file pair.
-To access a stream's mock I/O stream device access buffer, use the
-`::picolibrary::Testing::Automated::Mock_Output_Stream::buffer()` and
-`::picolibrary::Testing::Automated::Mock_Reliable_Output_Stream::buffer()` member
-functions.
+- To access a stream's mock I/O stream device access buffer, use the
+  `::picolibrary::Testing::Automated::Mock_Output_Stream::buffer()` and
+  `::picolibrary::Testing::Automated::Mock_Reliable_Output_Stream::buffer()` member
+  functions.
 
 The `::picolibrary::Testing::Automated::Output_String_Stream` and
 `::picolibrary::Testing::Automated::Reliable_Output_String_Stream` string stream classes
@@ -151,10 +148,10 @@ is `ON`.
 The string streams are define in the
 [`include/picolibrary/testing/automated/stream.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/stream.h)/[`source/picolibrary/testing/automated/stream.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/stream.cc)
 header/source file pair.
-To access the `std::string` abstracted by the stream, use the
-`::picolibrary::Testing::Automated::Output_String_Stream::string()` and
-`::picolibrary::Testing::Automated::Reliable_Output_String_Stream::string()` member
-functions.
+- To access the `std::string` abstracted by the stream, use the
+  `::picolibrary::Testing::Automated::Output_String_Stream::string()` and
+  `::picolibrary::Testing::Automated::Reliable_Output_String_Stream::string()` member
+  functions.
 
 The `::picolibrary::Testing::Interactive::hello_world()` output stream interactive test
 helper is available if the `PICOLIBRARY_ENABLE_INTERACTIVE_TESTING` project configuration
