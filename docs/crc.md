@@ -9,8 +9,8 @@ parameters.
 
 The `::picolibrary::CRC::Calculator_Concept` defines the expected interface of a CRC
 calculator implementation.
-To calculate the remainder for a message, use a CRC calculator implementation's
-`calculate()` member function.
+- To calculate the remainder for a message, use a CRC calculator implementation's
+  `calculate()` member function.
 
 picolibrary provides the following CRC calculator implementations:
 - `::picolibrary::CRC::Bitwise_Calculator`

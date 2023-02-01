@@ -23,52 +23,45 @@ interact with the circular buffer):
   One or more other interrupts write to the circular buffer.
   The main thread of execution does not interrupt with the circular buffer.
 
-To access the element at the front of a circular buffer from the main thread of execution,
-use the `::picolibrary::Circular_Buffer::front()` member functions.
-To access the element at the front of a circular buffer from an interrupt, use the
-`::picolibrary::Circular_Buffer::front_from_interrupt()` member functions.
-
-To access the element at the back of a circular buffer from the main thread of execution,
-use the `::picolibrary::Circular_Buffer::back()` member functions.
-To access the element at the back of a circular buffer from an interrupt, use the
-`::picolibrary::Circular_Buffer::back_from_interrupt()` member function.
-
-To check if a circular buffer is empty from the main thread of execution, use the
-`::picolibrary::Circular_Buffer::empty()` member function.
-To check if a circular buffer is empty from an interrupt, use the
-`::picolibrary::Circular_Buffer::empty_from_interrupt()` member function.
-
-To check if a circular buffer is full from the main thread of execution, use the
-`::picolibrary::Circular_Buffer::full()` member function.
-To check if a circular buffer is full from an interrupt, use the
-`::picolibrary::Circular_Buffer::full_from_interrupt()` member function.
-
-To get the number of elements in a circular buffer from the main thread of execution, use
-the `::picolibrary::Circular_Buffer::size()` member function.
-To get the number of elements in a circular buffer from an interrupt, use the
-`::picolibrary::Circular_Buffer::size_from_interrupt()` member function.
-
-To get the maximum number of elements a circular buffer is able to hold from the main
-thread of execution, use the `::picolibrary::Circular_Buffer::max_size()` member function.
-To get the maximum number of elements a circular buffer is able to hold from an interrupt,
-use the `::picolibrary::Circular_Buffer::max_size_from_interrupt()` member function.
-
-To insert a value at the back of a circular buffer from the main thread of execution, use
-the `::picolibrary::Circular_Buffer::push()` member functions.
-To insert a value at the back of a circular buffer from an interrupt, use the
-`::picolibrary::Circular_Buffer::push_from_interrupt()` member functions.
-
-To emplace a value at the back of a circular buffer from the main thread of execution, use
-the `::picolibrary::Circular_Buffer::emplace()` member functions.
-To emplace a value at the back of a circular buffer from an interrupt, use the
-`::picolibrary::Circular_Buffer::emplace_from_interrupt()` member functions.
-
-To remove the element at the front of a circular buffer from the main thread of execution,
-use the `::picolibrary::Circular_Buffer::pop()` member function.
-To remove the element at the front of a circular buffer from an interrupt, use the
-`::picolibrary::Circular_Buffer::pop_from_interrupt()` member function.
-
-To remove all circular buffer elements from the main thread of execution, use the
-`::picolibrary::Circular_Buffer::clear()` member function.
-To remove all circular buffer elements from an interrupt, use the
-`::picolibrary::Circular_Buffer::clear_from_interrupt()` member function.
+- To access the element at the front of a circular buffer from the main thread of
+  execution, use the `::picolibrary::Circular_Buffer::front()` member functions.
+- To access the element at the front of a circular buffer from an interrupt, use the
+  `::picolibrary::Circular_Buffer::front_from_interrupt()` member functions.
+- To access the element at the back of a circular buffer from the main thread of
+  execution, use the `::picolibrary::Circular_Buffer::back()` member functions.
+- To access the element at the back of a circular buffer from an interrupt, use the
+  `::picolibrary::Circular_Buffer::back_from_interrupt()` member function.
+- To check if a circular buffer is empty from the main thread of execution, use the
+  `::picolibrary::Circular_Buffer::empty()` member function.
+- To check if a circular buffer is empty from an interrupt, use the
+  `::picolibrary::Circular_Buffer::empty_from_interrupt()` member function.
+- To check if a circular buffer is full from the main thread of execution, use the
+  `::picolibrary::Circular_Buffer::full()` member function.
+- To check if a circular buffer is full from an interrupt, use the
+  `::picolibrary::Circular_Buffer::full_from_interrupt()` member function.
+- To get the number of elements in a circular buffer from the main thread of execution,
+  use the `::picolibrary::Circular_Buffer::size()` member function.
+- To get the number of elements in a circular buffer from an interrupt, use the
+  `::picolibrary::Circular_Buffer::size_from_interrupt()` member function.
+- To get the maximum number of elements a circular buffer is able to hold from the main
+  thread of execution, use the `::picolibrary::Circular_Buffer::max_size()` member
+  function.
+- To get the maximum number of elements a circular buffer is able to hold from an
+  interrupt, use the `::picolibrary::Circular_Buffer::max_size_from_interrupt()` member
+  function.
+- To insert a value at the back of a circular buffer from the main thread of execution,
+  use the `::picolibrary::Circular_Buffer::push()` member functions.
+- To insert a value at the back of a circular buffer from an interrupt, use the
+  `::picolibrary::Circular_Buffer::push_from_interrupt()` member functions.
+- To emplace a value at the back of a circular buffer from the main thread of execution,
+  use the `::picolibrary::Circular_Buffer::emplace()` member functions.
+- To emplace a value at the back of a circular buffer from an interrupt, use the
+  `::picolibrary::Circular_Buffer::emplace_from_interrupt()` member functions.
+- To remove the element at the front of a circular buffer from the main thread of
+  execution, use the `::picolibrary::Circular_Buffer::pop()` member function.
+- To remove the element at the front of a circular buffer from an interrupt, use the
+  `::picolibrary::Circular_Buffer::pop_from_interrupt()` member function.
+- To remove all circular buffer elements from the main thread of execution, use the
+  `::picolibrary::Circular_Buffer::clear()` member function.
+- To remove all circular buffer elements from an interrupt, use the
+  `::picolibrary::Circular_Buffer::clear_from_interrupt()` member function.

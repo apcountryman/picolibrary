@@ -9,16 +9,16 @@ The `::picolibrary::Event` class is used to identify events.
 An event's type can be determined using the combination of the address of the event's
 event category (`::picolibrary::Event_Category`) and the event's event ID
 (`::picolibrary::Event_ID`).
-To get a reference to an event's event category, use the
-`::picolibrary::Event::category()` member function.
-To get an event's event ID, use the `::picolibrary::Event::id()` member function.
-Additional information can be added to an event type by creating a class that derives from
-`::picolibrary::Event`.
-The additional information can be made printable by overriding the
-`::picolibrary::Event::print_details()` member function.
-The `::picolibrary::Event::print_details()` member function can only be overridden if the
-`PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION` project configuration option is
-`OFF`.
+- To get a reference to an event's event category, use the
+  `::picolibrary::Event::category()` member function.
+- To get an event's event ID, use the `::picolibrary::Event::id()` member function.
+- Additional information can be added to an event type by creating a class that derives
+  from `::picolibrary::Event`. The additional information can be made printable by
+  overriding the `::picolibrary::Event::print_details()` member function. The
+  `::picolibrary::Event::print_details()` member function can only be overridden if the
+  `PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION` project configuration option is
+  `OFF`.
+
 A mock event class (`::picolibrary::Testing::Automated::Mock_Event`) is defined in the
 [`include/picolibrary/testing/automated/event.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/event.h)/[`source/picolibrary/testing/automated/event.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/event.cc)
 header/source file pair.
@@ -34,10 +34,11 @@ support user formatting configuration.
 source file.
 
 The `::picolibrary::Event_Category` class is used to get human readable event information.
-To get an event category's name, use the `::picolibrary::Event_Category::name()` member
-function.
-To get an event ID's description, use the
-`::picolibrary::Event_Category::event_description()` member function.
+- To get an event category's name, use the `::picolibrary::Event_Category::name()` member
+  function.
+- To get an event ID's description, use the
+  `::picolibrary::Event_Category::event_description()` member function.
+
 If the `PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION` project configuration
 option is `ON`, these functions will return empty strings.
 A mock event category class (`::picolibrary::Testing::Automated::Mock_Event_Category`) is
@@ -74,8 +75,8 @@ The `::picolibrary::Event_Storage` class is used to store multiple types of even
 The `::picolibrary::Event_Storage` class is defined in the
 [`include/picolibrary/event.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/event.h)/[`source/picolibrary/event.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/event.cc)
 header/source file pair.
-
-To access a stored event, use the `::picolibrary::Event_Storage::event()` member function.
+- To access a stored event, use the `::picolibrary::Event_Storage::event()` member
+  function.
 
 ## Non-Hierarchical State Machines
 The `::picolibrary::State_Machine` non-hierarchical state machine with support for state
@@ -89,18 +90,16 @@ See
 [`include/picolibrary/state_machine.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/state_machine.h)
 for more information about state event handlers.
 
-To execute a state machine's initial transition from a derived class, use the
-`::picolibrary::State_Machine::execute_initial_transition()` member function.
-
-To dispatch an event to the event handler for a state machine's currently active state
-from a derived class, use the `::picolibrary::State_Machine::dispatch()` member function.
-
-To get the state event handler for a state machine's currently active state from a derived
-class, use the `::picolibrary::State_Machine::current_state()` member function.
-
-To check if a state event handler is the state event handler for a state machine's
-currently active state from a derived class, use the
-`::picolibrary::State_Machine::is_in()` member function.
+- To execute a state machine's initial transition from a derived class, use the
+  `::picolibrary::State_Machine::execute_initial_transition()` member function.
+- To dispatch an event to the event handler for a state machine's currently active state
+  from a derived class, use the `::picolibrary::State_Machine::dispatch()` member
+  function.
+- To get the state event handler for a state machine's currently active state from a
+  derived class, use the `::picolibrary::State_Machine::current_state()` member function.
+- To check if a state event handler is the state event handler for a state machine's
+  currently active state from a derived class, use the
+  `::picolibrary::State_Machine::is_in()` member function.
 
 The following example assumes that the
 `PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION` project configuration option is
@@ -333,18 +332,15 @@ See
 [`include/picolibrary/hsm.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/hsm.h)
 for more information about state event handlers.
 
-To execute an HSM's topmost initial transition from a derived class, use the
-`::picolibrary::HSM::execute_topmost_initial_transition()` member function.
-
-To dispatch an event to the event handler for an HSM's currently active state from a
-derived class, use the `::picolibrary::HSM::dispatch()` member function.
-
-To get the state event handler for an HSM's currently active state from a derived class,
-use the `::picolibrary::HSM::current_state()` member function.
-
-To check if a state event handler is the state event handler for an HSM's currently active
-state or one of its superstates from a derived class, use the
-`::picolibrary::HSM::is_in()` member function.
+- To execute an HSM's topmost initial transition from a derived class, use the
+  `::picolibrary::HSM::execute_topmost_initial_transition()` member function.
+- To dispatch an event to the event handler for an HSM's currently active state from a
+  derived class, use the `::picolibrary::HSM::dispatch()` member function.
+- To get the state event handler for an HSM's currently active state from a derived class,
+  use the `::picolibrary::HSM::current_state()` member function.
+- To check if a state event handler is the state event handler for an HSM's currently
+  active state or one of its superstates from a derived class, use the
+  `::picolibrary::HSM::is_in()` member function.
 
 The following example is based on "Practical UML Statecharts in C/C++, Second Edition:
 Event-Driven Programming for Embedded Systems" Figure 2.11.
