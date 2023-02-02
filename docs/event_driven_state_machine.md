@@ -20,12 +20,14 @@ The additional information can be made printable by overriding the
 The `::picolibrary::Event::print_details()` member function can only be overridden if the
 `PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION` project configuration option is
 `OFF`.
-A mock event class (`::picolibrary::Testing::Automated::Mock_Event`) is defined in the
-[`include/picolibrary/testing/automated/event.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/event.h)/[`source/picolibrary/testing/automated/event.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/event.cc)
-header/source file pair.
+
 `::picolibrary::Event` automated tests are defined in the
 [`test/automated/picolibrary/event/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/event/main.cc)
 source file.
+
+A mock event class (`::picolibrary::Testing::Automated::Mock_Event`) is defined in the
+[`include/picolibrary/testing/automated/event.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/event.h)/[`source/picolibrary/testing/automated/event.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/event.cc)
+header/source file pair.
 
 `::picolibrary::Output_Formatter` is specialized for `::picolibrary::Event`.
 The `::picolibrary::Output_Formatter<::picolibrary::Event>` specialization does not
@@ -42,6 +44,7 @@ The `::picolibrary::Event_Category` class is used to get human readable event in
 
 If the `PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION` project configuration
 option is `ON`, these functions will return empty strings.
+
 A mock event category class (`::picolibrary::Testing::Automated::Mock_Event_Category`) is
 defined in the
 [`include/picolibrary/testing/automated/event.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/event.h)/[`source/picolibrary/testing/automated/event.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/event.cc)
