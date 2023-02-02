@@ -6,9 +6,9 @@ header/source file pair.
 ## Transmitter
 The `::picolibrary::Asynchronous_Serial::Basic_Transmitter_Concept` concept class defines
 the expected interface of an asynchronous serial basic transmitter.
-To initialize a basic transmitter's hardware, use a basic transmitter implementation's
-`initialize()` member function.
-To transmit data, use a basic transmitter implementation's `transmit()` member function.
+- To initialize a basic transmitter's hardware, use a basic transmitter implementation's
+  `initialize()` member function.
+- To transmit data, use a basic transmitter implementation's `transmit()` member function.
 
 The `::picolibrary::Testing::Automated::Asynchronous_Serial::Mock_Basic_Transmitter` mock
 asynchronous serial basic transmitter class is available if the
@@ -19,9 +19,9 @@ header/source file pair.
 
 The `::picolibrary::Asynchronous_Serial::Transmitter_Concept` concept class defines the
 expected interface of an asynchronous serial transmitter.
-To initialize a transmitter's hardware, use a transmitter implementation's `initialize()`
-member function.
-To transmit data, use a transmitter implementation's `transmit()` member functions.
+- To initialize a transmitter's hardware, use a transmitter implementation's
+  `initialize()` member function.
+- To transmit data, use a transmitter implementation's `transmit()` member functions.
 
 To add asynchronous serial transmitter functionality to an asynchronous serial basic
 transmitter implementation, use the `::picolibrary::Asynchronous_Serial::Transmitter`
