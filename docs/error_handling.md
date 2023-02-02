@@ -38,13 +38,15 @@ picolibrary defines the following error sets:
 The generic error set is defined in the
 [`include/picolibrary/error.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/error.h)/[`source/picolibrary/error.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/error.cc)
 header/source file pair.
+
 The `::picolibrary::Generic_Error` enum class's enumerators identify the specific errors
 in the set.
+Implicit conversion from `::picolibrary::Generic_Error` to `::picolibrary::Error_Code` is
+enabled.
+
 The `::picolibrary::Generic_Error_Category` class is the error category for the set.
 - To get a reference to the `::picolibrary::Generic_Error_Category` instance, use the
   `::picolibrary::Generic_Error_Category::instance()` static member function.
-- Implicit conversion from `::picolibrary::Generic_Error` to `::picolibrary::Error_Code`
-  is enabled.
 
 Generic error set automated tests are defined in the
 [`test/automated/picolibrary/generic_error/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/generic_error/main.cc)
@@ -57,11 +59,13 @@ configuration option is `ON`.
 The mock error set is defined in the
 [`include/picolibrary/testing/automated/error.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/error.h)/[`source/picolibrary/testing/automated/error.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/error.cc)
 header/source file pair.
+
 The `::picolibrary::Testing::Automated::Mock_Error` enum class is used to identify
 "specific" errors in the set.
 `::picolibrary::Testing::Automated::random()` is specialized for the
 `::picolibrary::Testing::Automated::Mock_Error` enum class so that "specific"
 pseudo-random mock errors can be generated at runtime for use in automated tests.
+
 The `::picolibrary::Testing::Automated::Mock_Error_Category` class is the error category
 for the set.
 - To get a reference to a common `::picolibrary::Testing::Automated::Mock_Error_Category`
