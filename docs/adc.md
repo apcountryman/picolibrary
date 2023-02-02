@@ -5,13 +5,14 @@ header/source file pair.
 
 ## Sample
 The `::picolibrary::ADC::Sample` template class is used to store ADC samples.
-To get the minimum valid sample, use the `::picolibrary::ADC::Sample::min()` static member
-function.
-To get the maximum valid sample, use the `::picolibrary::ADC::Sample::max()` static member
-function.
-To get a sample in its unsigned integer representation, use the
-`::picolibrary::ADC::Sample::as_unsigned_integer()` member function.
-Direct comparison is supported.
+- To get the minimum valid sample, use the `::picolibrary::ADC::Sample::min()` static
+  member function.
+- To get the maximum valid sample, use the `::picolibrary::ADC::Sample::max()` static
+  member function.
+- To get a sample in its unsigned integer representation, use the
+  `::picolibrary::ADC::Sample::as_unsigned_integer()` member function.
+- Direct comparison is supported.
+
 `::picolibrary::ADC::Sample` automated tests are defined in the
 [`test/automated/picolibrary/adc/sample/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/adc/sample/main.cc)
 source file.
@@ -38,9 +39,9 @@ following `::picolibrary::ADC::Sample` types:
 ### Blocking, Single Sample ADC
 The `::picolibrary::ADC::Blocking_Single_Sample_Converter_Concept` concept class defines
 the expected interface of a blocking, single sample ADC implementation.
-To initialize an ADC's hardware, use an ADC implementation's `initialize()` member
-function.
-To get a sample, use an ADC implementation's `sample()` member function.
+- To initialize an ADC's hardware, use an ADC implementation's `initialize()` member
+  function.
+- To get a sample, use an ADC implementation's `sample()` member function.
 
 The `::picolibrary::Testing::Automated::ADC::Mock_Blocking_Single_Sample_Converter` mock
 blocking, single sample ADC class is available if the
@@ -59,13 +60,13 @@ header/source file pair.
 ### Non-Blocking, Single Sample ADC
 The `::picolibrary::ADC::Non_Blocking_Single_Sample_Converter_Concept` concept class
 defines the expected interface of a non-blocking, single sample ADC implementation.
-To initialize an ADC's hardware, use an ADC implementation's `initialize()` member
-function.
-To initiate a conversion, use an ADC implementation's `initiate_conversion()` member
-function.
-To check if a sample is available, use an ADC implementation's `sample_is_available()`
-member function.
-To get a sample, use an ADC implementation's `sample()` member function.
+- To initialize an ADC's hardware, use an ADC implementation's `initialize()` member
+  function.
+- To initiate a conversion, use an ADC implementation's `initiate_conversion()` member
+  function.
+- To check if a sample is available, use an ADC implementation's `sample_is_available()`
+  member function.
+- To get a sample, use an ADC implementation's `sample()` member function.
 
 The `::picolibrary::Testing::Automated::ADC::Mock_Non_Blocking_Single_Sample_Converter`
 mock non-blocking, single sample ADC class is available if the
@@ -77,11 +78,11 @@ header/source file pair.
 ### Blocking, Free Running ADC
 The `::picolibrary::ADC::Blocking_Free_Running_Converter_Concept` concept class defines
 the expected interface of a blocking, free running ADC implementation.
-To initialize an ADC's hardware, use an ADC implementation's `initialize()` member
-function.
-To start an ADC, use an ADC implementation's `start_converter()` member function.
-To stop an ADC, use an ADC implementation's `stop_converter()` member function.
-To get a sample, use an ADC implementation's `sample()` member function.
+- To initialize an ADC's hardware, use an ADC implementation's `initialize()` member
+  function.
+- To start an ADC, use an ADC implementation's `start_converter()` member function.
+- To stop an ADC, use an ADC implementation's `stop_converter()` member function.
+- To get a sample, use an ADC implementation's `sample()` member function.
 
 The `::picolibrary::Testing::Automated::ADC::Mock_Blocking_Free_Running_Converter` mock
 blocking, free running ADC class is available if the
@@ -93,13 +94,13 @@ header/source file pair.
 ### Non-Blocking, Free Running ADC
 The `::picolibrary::ADC::Non_Blocking_Free_Running_Converter_Concept` concept class
 defines the expected interface of a non-blocking, free running ADC implementation.
-To initialize an ADC's hardware, use an ADC implementation's `initialize()` member
-function.
-To start an ADC, use an ADC implementation's `start_converter()` member function.
-To stop an ADC, use an ADC implementation's `stop_converter()` member function.
-To check if a sample is available, use an ADC implementation's `sample_is_available()`
-member function.
-To get a sample, use an ADC implementation's `sample()` member function.
+- To initialize an ADC's hardware, use an ADC implementation's `initialize()` member
+  function.
+- To start an ADC, use an ADC implementation's `start_converter()` member function.
+- To stop an ADC, use an ADC implementation's `stop_converter()` member function.
+- To check if a sample is available, use an ADC implementation's `sample_is_available()`
+  member function.
+- To get a sample, use an ADC implementation's `sample()` member function.
 
 The `::picolibrary::Testing::Automated::ADC::Mock_Non_Blocking_Free_Running_Converter`
 mock non-blocking, free running ADC class is available if the

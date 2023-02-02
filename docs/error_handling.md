@@ -9,21 +9,24 @@ The `::picolibrary::Error_Code` class is used to identify errors.
 An error can be identified using the combination of the address of the error's error
 category (`::picolibrary::Error_Category`) and the error's error ID
 (`::picolibrary::Error_ID`).
-To get a reference to an error's error category, use the
-`::picolibrary::Error_Code::category()` member function.
-To get an error's error ID, use the `::picolibrary::Error_Code::id()` member function.
-Implicit conversion from an enum class to a `::picolibrary::Error_Code` is enabled if
-`::picolibrary::is_error_code_enum` has been appropriately specialized for the enum class.
-Direct comparison for equality or inequality is supported.
+- To get a reference to an error's error category, use the
+  `::picolibrary::Error_Code::category()` member function.
+- To get an error's error ID, use the `::picolibrary::Error_Code::id()` member function.
+- Implicit conversion from an enum class to a `::picolibrary::Error_Code` is enabled if
+  `::picolibrary::is_error_code_enum` has been appropriately specialized for the enum
+  class.
+- Direct comparison for equality or inequality is supported.
+
 `::picolibrary::Error_Code` automated tests are defined in the
 [`test/automated/picolibrary/error_code/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/error_code/main.cc)
 source file.
 
 The `::picolibrary::Error_Category` class is used to get human readable error information.
-To get an error category's name, use the `::picolibrary::Error_Category::name()` member
-function.
-To get an error ID's description, use the
-`::picolibrary::Error_Category::error_description()` member function.
+- To get an error category's name, use the `::picolibrary::Error_Category::name()` member
+  function.
+- To get an error ID's description, use the
+  `::picolibrary::Error_Category::error_description()` member function.
+
 If the `PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION` project configuration
 option is `ON`, these functions will return empty strings.
 
@@ -38,10 +41,11 @@ header/source file pair.
 The `::picolibrary::Generic_Error` enum class's enumerators identify the specific errors
 in the set.
 The `::picolibrary::Generic_Error_Category` class is the error category for the set.
-To get a reference to the `::picolibrary::Generic_Error_Category` instance, use the
-`::picolibrary::Generic_Error_Category::instance()` static member function.
-Implicit conversion from `::picolibrary::Generic_Error` to `::picolibrary::Error_Code` is
-enabled.
+- To get a reference to the `::picolibrary::Generic_Error_Category` instance, use the
+  `::picolibrary::Generic_Error_Category::instance()` static member function.
+- Implicit conversion from `::picolibrary::Generic_Error` to `::picolibrary::Error_Code`
+  is enabled.
+
 Generic error set automated tests are defined in the
 [`test/automated/picolibrary/generic_error/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/generic_error/main.cc)
 and
@@ -60,11 +64,11 @@ The `::picolibrary::Testing::Automated::Mock_Error` enum class is used to identi
 pseudo-random mock errors can be generated at runtime for use in automated tests.
 The `::picolibrary::Testing::Automated::Mock_Error_Category` class is the error category
 for the set.
-To get a reference to a common `::picolibrary::Testing::Automated::Mock_Error_Category`
-instance, use the `::picolibrary::Testing::Automated::Mock_Error_Category::instance()`
-static member function.
-Additional `::picolibrary::Testing::Automated::Mock_Error_Category` instances can be
-constructed as needed to support automated testing.
+- To get a reference to a common `::picolibrary::Testing::Automated::Mock_Error_Category`
+  instance, use the `::picolibrary::Testing::Automated::Mock_Error_Category::instance()`
+  static member function.
+  Additional `::picolibrary::Testing::Automated::Mock_Error_Category` instances can be
+  constructed as needed to support automated testing.
 
 ### Defining Additional Errors
 To create an additional error set, do the following:
@@ -202,9 +206,10 @@ the `::picolibrary::Result` must be explicitly constructed using the
 The `::picolibrary::VALUE` and `::picolibrary::ERROR` constants are provide to support
 this.
 
-To check if an operation failed, use the `::picolibrary::Result::is_error()` member
-function.
-To get the result of a failed operation, use the `::picolibrary::Result::error()` member
-function.
-To get the result of a successful operation that generated information, use the
-`::picolibrary::Result::value()` member function.
+`::picolibrary::Result` supports the following operations:
+- To check if an operation failed, use the `::picolibrary::Result::is_error()` member
+  function.
+- To get the result of a failed operation, use the `::picolibrary::Result::error()` member
+  function.
+- To get the result of a successful operation that generated information, use the
+  `::picolibrary::Result::value()` member function.

@@ -6,14 +6,14 @@ header/source file pair.
 ## Fixed Intensity Indicator
 The `::picolibrary::Indicator::Fixed_Intensity_Indicator_Concept` concept class defines
 the expected interface of a fixed intensity indicator.
-To initialize an indicator's hardware, use an indicator implementation's `initialize()`
-member function.
-To extinguish an indicator, use an indicator implementation's `extinguish()` member
-function.
-To illuminate an indicator, use an indicator implementation's `illuminate()` member
-function.
-To toggle the state of an indicator, use an indicator implementation's `toggle()` member
-function.
+- To initialize an indicator's hardware, use an indicator implementation's `initialize()`
+  member function.
+- To extinguish an indicator, use an indicator implementation's `extinguish()` member
+  function.
+- To illuminate an indicator, use an indicator implementation's `illuminate()` member
+  function.
+- To toggle the state of an indicator, use an indicator implementation's `toggle()` member
+  function.
 
 The `::picolibrary::Indicator::GPIO_Output_Pin_Fixed_Intensity_Indicator` template class
 is a GPIO output pin based fixed intensity indicator implementation.

@@ -6,13 +6,13 @@ header/source file pair.
 ## Controller
 The `::picolibrary::SPI::Basic_Controller_Concept` concept class defines the expected
 interface of an SPI basic controller.
-To initialize a basic controller's hardware, use a basic controller implementation's
-`initialize()` member function.
-To configure a basic controller's clock and data exchange bit order to meet a specific
-device's communication requirements, use a basic controller implementation's `configure()`
-member function.
-To exchange data with a device, use a basic controller implementation's `exchange()`
-member function.
+- To initialize a basic controller's hardware, use a basic controller implementation's
+  `initialize()` member function.
+- To configure a basic controller's clock and data exchange bit order to meet a specific
+  device's communication requirements, use a basic controller implementation's
+  `configure()` member function.
+- To exchange data with a device, use a basic controller implementation's `exchange()`
+  member function.
 
 The `::picolibrary::Testing::Automated::SPI::Mock_Basic_Controller` mock SPI basic
 controller class is available if the `PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project
@@ -23,17 +23,17 @@ header/source file pair.
 
 The `::picolibrary::SPI::Controller_Concept` concept class defines the expected interface
 of an SPI controller.
-To initialize a controller's hardware, use a controller implementation's `initialize()`
-member function.
-To configure a controller's clock and data exchange bit order to meet a specific device's
-communication requirements, use a controller implementation's `configure()` member
-function.
-To exchange data with a device, use a controller implementation's `exchange()` member
-functions.
-To receive data from a device, use a controller implementation's `receive()` member
-functions.
-To transmit data to a device, use a controller implementation's `transmit()` member
-functions.
+- To initialize a controller's hardware, use a controller implementation's `initialize()`
+  member function.
+- To configure a controller's clock and data exchange bit order to meet a specific
+  device's communication requirements, use a controller implementation's `configure()`
+  member function.
+- To exchange data with a device, use a controller implementation's `exchange()` member
+  functions.
+- To receive data from a device, use a controller implementation's `receive()` member
+  functions.
+- To transmit data to a device, use a controller implementation's `transmit()` member
+  functions.
 
 To add SPI controller functionality to an SPI basic controller implementation, use the
 `::picolibrary::SPI::Controller` template class.
@@ -58,10 +58,11 @@ header/source file pair.
 ## Device Selection
 The `::picolibrary::SPI::Device_Selector_Concept` concept class defines the expected
 interface of an SPI device selector.
-To initialize a device selector's hardware, use a device selector implementation's
-`initialize()` member function.
-To select a device, use a device selector implementation's `select()` member function.
-To deselect a device, use a device selector implementation's `deselect()` member function.
+- To initialize a device selector's hardware, use a device selector implementation's
+  `initialize()` member function.
+- To select a device, use a device selector implementation's `select()` member function.
+- To deselect a device, use a device selector implementation's `deselect()` member
+  function.
 
 The `::picolibrary::SPI::GPIO_Output_Pin_Device_Selector` template class is a GPIO output
 pin based SPI device selector implementation.
@@ -86,19 +87,20 @@ source file.
 ## Device
 The `::picolibrary::SPI::Device` template class implements low level functionality for
 interacting with an SPI device.
-To initialize a device's device selection hardware from a derived class, use the
-`::picolibrary::SPI::Device::initialize()` member function.
-To configure the controller's clock and data exchange bit order to meet a device's
-communication requirements from a derived class, use the
-`::picolibrary::SPI::Device::configure()` member function.
-To access the device selector used to select and deselect a device from a derived class,
-use the `::picolibrary::SPI::Device::device_selector()` member function.
-To exchange data with a device from a derived class, use the
-`::picolibrary::SPI::Device::exchange()` member functions.
-To receive data from a device from a derived class, use the
-`::picolibrary::SPI::Device::receive()` member functions.
-To transmit data to a device from a derived class, use the
-`::picolibrary::SPI::Device::transmit()` member functions.
+- To initialize a device's device selection hardware from a derived class, use the
+  `::picolibrary::SPI::Device::initialize()` member function.
+- To configure the controller's clock and data exchange bit order to meet a device's
+  communication requirements from a derived class, use the
+  `::picolibrary::SPI::Device::configure()` member function.
+- To access the device selector used to select and deselect a device from a derived class,
+  use the `::picolibrary::SPI::Device::device_selector()` member function.
+- To exchange data with a device from a derived class, use the
+  `::picolibrary::SPI::Device::exchange()` member functions.
+- To receive data from a device from a derived class, use the
+  `::picolibrary::SPI::Device::receive()` member functions.
+- To transmit data to a device from a derived class, use the
+  `::picolibrary::SPI::Device::transmit()` member functions.
+
 `::picolibrary::SPI::Device` automated tests are defined in the
 [`test/automated/picolibrary/spi/device/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/spi/device/main.cc)
 source file.

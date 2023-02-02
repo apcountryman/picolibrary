@@ -6,14 +6,14 @@ header/source file pair.
 ## Controller
 The `::picolibrary::Interrupt::Controller_Concept` concept class defines the expected
 interface of an interrupt controller.
-To disable an interrupt, use a controller implementation's `disable_interrupt()` member
-function.
-To enable an interrupt, use a controller implementation's `enable_interrupt()` member
-function.
-To save a current interrupt enable state, use a controller implementation's
-`save_interrupt_enable_state()` member function.
-To restore a previously saved interrupt enable state, use a controller implementation's
-`restore_interrupt_enable_state()` member function.
+- To disable an interrupt, use a controller implementation's `disable_interrupt()` member
+  function.
+- To enable an interrupt, use a controller implementation's `enable_interrupt()` member
+  function.
+- To save a current interrupt enable state, use a controller implementation's
+  `save_interrupt_enable_state()` member function.
+- To restore a previously saved interrupt enable state, use a controller implementation's
+  `restore_interrupt_enable_state()` member function.
 
 The `::picolibrary::Testing::Automated::Interrupt::Mock_Controller` mock interrupt
 controller class is available if the `PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project
