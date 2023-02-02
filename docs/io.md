@@ -18,6 +18,7 @@ device access buffer abstract classes are defined in the
 [`include/picolibrary/stream.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/stream.h)/[`source/picolibrary/stream.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/stream.cc)
 header/source file pair.
 These classes define the standard interface that streams use to interact with devices.
+
 `::picolibrary::Stream_Buffer` automated tests are defined in the
 [`test/automated/picolibrary/stream_buffer/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/stream_buffer/main.cc)
 source file.
@@ -40,13 +41,6 @@ are defined in the
 header/source file pair.
 These classes store an I/O stream's state information and associate an I/O stream with an
 I/O stream device access buffer.
-`::picolibrary::Stream` automated tests are defined in the
-[`test/automated/picolibrary/stream/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/stream/main.cc)
-source file.
-`::picolibrary::Reliable_Stream` automated tests are defined in the
-[`test/automated/picolibrary/reliable_stream/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/reliable_stream/main.cc)
-source file.
-
 An I/O stream's state includes the following:
 - End-of-file reached
 - I/O error present
@@ -91,6 +85,13 @@ operations:
   class, use the `::picolibrary::Stream::buffer()` and
   `::picolibrary::Reliable_Stream::buffer()` member functions.
 
+`::picolibrary::Stream` automated tests are defined in the
+[`test/automated/picolibrary/stream/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/stream/main.cc)
+source file.
+`::picolibrary::Reliable_Stream` automated tests are defined in the
+[`test/automated/picolibrary/reliable_stream/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/reliable_stream/main.cc)
+source file.
+
 ## Output Stream
 The `::picolibrary::Output_Stream` and `::picolibrary::Reliable_Output_Stream` output
 stream classes are defined in the
@@ -98,12 +99,6 @@ stream classes are defined in the
 header/source file pair.
 These classes define stream unformatted and formatted output operations.
 The stream being nominal is a precondition for all output operations.
-`::picolibrary::Output_Stream` automated tests are defined in the
-[`test/automated/picolibrary/output_stream/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/output_stream/main.cc)
-source file.
-`::picolibrary::Reliable_Output_Stream` automated tests are defined in the
-[`test/automated/picolibrary/reliable_output_stream/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/reliable_output_stream/main.cc)
-source file.
 
 `::picolibrary::Output_Stream` and `::picolibrary::Reliable_Output_Stream` support the
 following operations:
@@ -128,6 +123,13 @@ void foo( ::picolibrary::Reliable_Output_Stream & stream, char const * string ) 
     stream.print( ::picolibrary::Output_Formatter<char const *>{}, string );
 }
 ```
+
+`::picolibrary::Output_Stream` automated tests are defined in the
+[`test/automated/picolibrary/output_stream/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/output_stream/main.cc)
+source file.
+`::picolibrary::Reliable_Output_Stream` automated tests are defined in the
+[`test/automated/picolibrary/reliable_output_stream/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/reliable_output_stream/main.cc)
+source file.
 
 The `::picolibrary::Testing::Automated::Mock_Output_Stream` and
 `::picolibrary::Testing::Automated::Mock_Reliable_Output_Stream` mock output stream
