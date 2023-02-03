@@ -36,3 +36,4 @@ microcontrollers.
     1. Microchip
         1. [MCP3008 Facilities](device/microchip/mcp3008.md)
         1. [MCP23008/MCP23S08 Facilities](device/microchip/mcp23x08.md)
+        1. [MCP23008 Facilities](device/microchip/mcp23008.md)
