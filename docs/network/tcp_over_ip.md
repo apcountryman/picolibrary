@@ -7,6 +7,12 @@ header/source file pair.
 The `::picolibrary::IP::TCP::Port` type alias is used to store a TCP port.
 See the [`::picolibrary::IP::Port` documentation](ip.md#port) for more information.
 
+## Endpoint
+The `::picolibrary::IP::TCP::Endpoint` type alias is used to store a TCP endpoint (IP
+address, TCP port pair).
+See the [`::picolibrary::IP::Endpoint` documentation](ip.md#endpoint) for more
+information.
+
 ## Client Socket
 The `::picolibrary::IP::TCP::Client_Concept` concept class defines the expected interface
 of a TCP over IP client socket.
