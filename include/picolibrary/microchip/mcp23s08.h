@@ -532,9 +532,9 @@ class Communication_Controller : public Device {
     auto operator=( Communication_Controller const & ) = delete;
 
     /**
-     * \brief Get the device's address.
+     * \brief Get the MCP23S08's address.
      *
-     * \return The device's address.
+     * \return The MCP23S08's address.
      */
     constexpr auto address() const noexcept -> Address_Transmitted
     {
