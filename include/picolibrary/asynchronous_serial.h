@@ -227,7 +227,7 @@ class Reliable_Output_Stream_Concept : public Reliable_Output_Stream {
 };
 
 /**
- * \brief Reliable output stream device access buffer.
+ * \brief Reliable unbuffered output stream device access buffer.
  *
  * \tpamara Transmitter The type of transmitter to abstract with the stream device access
  *          buffer.
