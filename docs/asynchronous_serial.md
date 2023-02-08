@@ -45,9 +45,6 @@ The interactive test helper is defined in the
 header/source file pair.
 
 ## Streams
-Asynchronous serial streams are defined in the
-[`include/picolibrary/asynchronous_serial/stream.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/asynchronous_serial/stream.h)/[`source/picolibrary/asynchronous_serial/stream.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/asynchronous_serial/stream.cc)
-header/source file pair.
 
 ### Reliable Output Streams
 The `::picolibrary::Asynchronous_Serial::Reliable_Output_Stream_Concept` concept class
@@ -74,5 +71,5 @@ The `::picolibrary::Testing::Automated::Asynchronous_Serial::hello_world()` inte
 test helper is available if the `PICOLIBRARY_ENABLE_INTERACTIVE_TESTING` project
 configuration option is `ON`.
 The interactive test helper is defined in the
-[`include/picolibrary/testing/interactive/asynchronous_serial/stream.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/interactive/asynchronous_serial/stream.h)/[`source/picolibrary/testing/interactive/asynchronous_serial/stream.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/interactive/asynchronous_serial/stream.cc)
+[`include/picolibrary/testing/interactive/asynchronous_serial.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/interactive/asynchronous_serial.h)/[`source/picolibrary/testing/interactive/asynchronous_serial.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/interactive/asynchronous_serial.cc)
 header/source file pair.

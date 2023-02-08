@@ -27,7 +27,7 @@
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "picolibrary/asynchronous_serial/stream.h"
+#include "picolibrary/asynchronous_serial.h"
 #include "picolibrary/testing/automated/asynchronous_serial.h"
 #include "picolibrary/testing/automated/random.h"
 
