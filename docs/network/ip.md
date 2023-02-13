@@ -3,6 +3,12 @@ IP facilities are defined in the
 [`include/picolibrary/ip.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/ip.h)/[`source/picolibrary/ip.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/ip.cc)
 header/source file pair.
 
+## Table of Contents
+1. [Address](#address)
+1. [Port](#port)
+1. [Endpoint](#endpoint)
+1. [Network Stack](#network-stack)
+
 ## Address
 The `::picolibrary::IP::Address` class is used to store an IP address.
 - To get the version of a stored address, use the `::picolibrary::IP::Address::version()`

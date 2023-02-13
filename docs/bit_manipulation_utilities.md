@@ -6,6 +6,12 @@ Bit manipulation utility automated tests are defined in the
 [`test/automated/picolibrary/bit_manipulation/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/bit_manipulation/main.cc)
 source file.
 
+## Table of Contents
+1. [`highest_bit_set()`](#highest_bit_set)
+1. [`mask()`](#mask)
+1. [`reflect()`](#reflect)
+1. [`is_power_of_two()`](#is_power_of_two)
+
 ## `highest_bit_set()`
 To lookup an unsigned integer's highest bit set, use the
 `::picolibrary::highest_bit_set()` utility.

@@ -3,6 +3,9 @@ ROM facilities are defined in the
 [`include/picolibrary/rom.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/rom.h)/[`source/picolibrary/rom.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/rom.cc)
 header/source file pair.
 
+## Table of Contents
+1. [Null-Terminated Strings](#null-terminated-strings)
+
 ## Null-Terminated Strings
 The `::picolibrary::ROM::String` type is used for handles to null-terminated strings that
 may be stored in ROM.

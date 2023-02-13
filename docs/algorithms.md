@@ -6,6 +6,14 @@ Algorithm automated tests are defined in the
 [`test/automated/picolibrary/algorithm/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/algorithm/main.cc)
 source file.
 
+## Table of Contents
+1. [`for_each()`](#for_each)
+1. [`fill()`](#fill)
+1. [`generate()`](#generate)
+1. [`min()`](#min)
+1. [`max()`](#max)
+1. [`equal()`](#equal)
+
 ## `for_each()`
 To apply a unary functor to a range, use the `::picolibrary::for_each()` algorithm.
 To report functor errors to the caller, use the

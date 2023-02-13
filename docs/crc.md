@@ -3,6 +3,10 @@ CRC facilities are defined in the
 [`include/picolibrary/crc.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/crc.h)/[`source/picolibrary/crc.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/crc.cc)
 header/source file pair.
 
+## Table of Contents
+1. [Calculators](#calculators)
+1. [Calculator Utilities](#calculator-utilities)
+
 ## Calculators
 The `::picolibrary::CRC::Calculation_Parameters` struct captures a CRC calculation's
 parameters.

@@ -1,5 +1,12 @@
 # Event Driven State Machine Facilities
 
+## Table of Contents
+1. [Event Identification](#event-identification)
+    1. [Defining Events](#defining-events)
+1. [Event Storage](#event-storage)
+1. [Non-Hierarchical State Machines](#non-hierarchical-state-machines)
+1. [Hierarchical State Machines (HSMs)](#hierarchical-state-machines-hsms)
+
 ## Event Identification
 Event identification facilities are defined in the
 [`include/picolibrary/event.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/event.h)/[`source/picolibrary/event.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/event.cc)

@@ -3,6 +3,9 @@ IPv4 facilities are defined in the
 [`include/picolibrary/ipv4.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/ipv4.h)/[`source/picolibrary/ipv4.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/ipv4.cc)
 header/source file pair.
 
+## Table of Contents
+1. [Address](#address)
+
 ## Address
 The `::picolibrary::IPv4::Address` class is used to store an IPv4 address.
 - To get the minimum valid address, use the `::picolibrary::IPv4::Address::min()` static

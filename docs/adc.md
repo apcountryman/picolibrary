@@ -3,6 +3,14 @@ ADC facilities are defined in the
 [`include/picolibrary/adc.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/adc.h)/[`source/picolibrary/adc.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/adc.cc)
 header/source file pair.
 
+## Table of Contents
+1. [Sample](#sample)
+1. [ADC Types](#adc-types)
+    1. [Blocking, Single Sample ADC](#blocking-single-sample-adc)
+    1. [Non-Blocking, Single Sample ADC](#non-blocking-single-sample-adc)
+    1. [Blocking, Free Running ADC](#blocking-free-running-adc)
+    1. [Non-Blocking, Free Running ADC](#non-blocking-free-running-adc)
+
 ## Sample
 The `::picolibrary::ADC::Sample` template class is used to store ADC samples.
 - To get the minimum valid sample, use the `::picolibrary::ADC::Sample::min()` static

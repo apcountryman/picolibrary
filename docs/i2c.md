@@ -3,6 +3,11 @@ I<sup>2</sup>C facilities are defined in the
 [`include/picolibrary/i2c.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/i2c.h)/[`source/picolibrary/i2c.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/i2c.cc)
 header/source file pair.
 
+## Table of Contents
+1. [Device Addressing](#device-addressing)
+1. [Controller](#controller)
+1. [Device](#device)
+
 ## Device Addressing
 The `::picolibrary::I2C::Address_Numeric` class is used to store an I<sup>2</sup>C device
 address in numeric (right justified) format.
