@@ -106,21 +106,13 @@ docuentation](../../../network/ip.md#network-stack) for more information.
   `::picolibrary::WIZnet::W5500::IP::Network_Stack::configure_interrupt_assert_wait_time()`
   member function.
 - To get a W5500's interrupt assert wait time (INTLEVEL register value), use the
-  `::picolibrary::WIZnet::W5500::IP::Network_Stack::interrupt_assert_wait_time() member
+  `::picolibrary::WIZnet::W5500::IP::Network_Stack::interrupt_assert_wait_time()` member
   function.
 - To enable interrupts, use the
   `::picolibrary::WIZnet::W5500::IP::Network_Stack::enable_interrupts()` member function.
-  Interrupt masks are defined in the `::picolibrary::WIZnet::W5500::Interrupt` structure.
-  The `::picolibrary::WIZnet::W5500::Interrupt` structure is defined in the
-  [`include/picolibrary/wiznet/w5500.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/wiznet/w5500.h)/[`source/picolibrary/wiznet/w5500.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/wiznet/w5500.cc)
-  header/source file pair.
 - To disable interrupts, use the
   `::picolibrary::WIZnet::W5500::IP::Network_Stack::disable_interrupts()` member
   functions.
-  Interrupt masks are defined in the `::picolibrary::WIZnet::W5500::Interrupt` structure.
-  The `::picolibrary::WIZnet::W5500::Interrupt` structure is defined in the
-  [`include/picolibrary/wiznet/w5500.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/wiznet/w5500.h)/[`source/picolibrary/wiznet/w5500.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/wiznet/w5500.cc)
-  header/source file pair.
 - To get a mask identifying the interrupts that are enabled, use the
   `::picolibrary::WIZnet::W5500::IP::Network_Stack::enabled_interrupts()` member function.
 - To get the interrupt context (IR register value), use the
