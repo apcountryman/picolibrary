@@ -1,4 +1,7 @@
 # Input/Output (I/O) Facilities
+I/O facilities are defined in the
+[`include/picolibrary/stream.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/stream.h)/[`source/picolibrary/stream.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/stream.cc)
+header/source file pair.
 
 ## Table of Contents
 1. [Device Error Handling](#device-error-handling)
@@ -21,11 +24,8 @@ device error occurs.
 
 ## I/O Stream Device Access Buffer
 The `::picolibrary::Stream_Buffer` and `::picolibrary::Reliable_Stream_Buffer` I/O stream
-device access buffer abstract classes are defined in the
-[`include/picolibrary/stream.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/stream.h)/[`source/picolibrary/stream.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/stream.cc)
-header/source file pair.
-These classes define the standard interface that streams use to interact with devices.
-
+device access buffer abstract classes define the standard interfaces that streams use to
+interact with devices.
 `::picolibrary::Stream_Buffer` automated tests are defined in the
 [`test/automated/picolibrary/stream_buffer/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/stream_buffer/main.cc)
 source file.
@@ -43,11 +43,8 @@ header/source file pair.
 
 ## I/O Stream Core
 The `::picolibrary::Stream` and `::picolibrary::Reliable_Stream` I/O stream core classes
-are defined in the
-[`include/picolibrary/stream.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/stream.h)/[`source/picolibrary/stream.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/stream.cc)
-header/source file pair.
-These classes store an I/O stream's state information and associate an I/O stream with an
-I/O stream device access buffer.
+store an I/O stream's state information and associate an I/O stream with an I/O stream
+device access buffer.
 An I/O stream's state includes the following:
 - End-of-file reached
 - I/O error present
@@ -101,12 +98,8 @@ source file.
 
 ## Output Stream
 The `::picolibrary::Output_Stream` and `::picolibrary::Reliable_Output_Stream` output
-stream classes are defined in the
-[`include/picolibrary/stream.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/stream.h)/[`source/picolibrary/stream.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/stream.cc)
-header/source file pair.
-These classes define stream unformatted and formatted output operations.
+stream classes define stream unformatted and formatted output operations.
 The stream being nominal is a precondition for all output operations.
-
 `::picolibrary::Output_Stream` and `::picolibrary::Reliable_Output_Stream` support the
 following operations:
 - To write any output that has been buffered to the device associated with a stream, use
@@ -170,11 +163,8 @@ The interactive test helper is defined in the
 header/source file pair.
 
 ### Output Formatters
-The `::picolibrary::Output_Formatter` template class is defined in the
-[`include/picolibrary/stream.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/stream.h)/[`source/picolibrary/stream.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/stream.cc)
-header/source file pair.
-This template class must be fully or partially specialized for each type that will support
-formatted output.
+The `::picolibrary::Output_Formatter` template class must be fully or partially
+specialized for each type that will support formatted output.
 Specialization constructor parameters can be used to let the user configure formatting.
 
 The following `::picolibrary::Output_Formatter` specializations are defined in the
