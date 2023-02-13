@@ -41,3 +41,4 @@ microcontrollers.
     1. WIZnet
         1. [W5500 Facilities](device/wiznet/w5500.md)
             1. [IP Facilities](device/wiznet/w5500/ip.md)
+            1. [TCP Over IP Facilities](device/wiznet/w5500/tcp_over_ip.md)
