@@ -1,5 +1,12 @@
 # Input/Output (I/O) Facilities
 
+## Table of Contents
+1. [Device Error Handling](#device-error-handling)
+1. [I/O Stream Device Access Buffer](#io-stream-device-access-buffer)
+1. [I/O Stream Core](#io-stream-core)
+1. [Output Stream](#output-stream)
+    1. [Output Formatters](#output-formatters)
+
 ## Device Error Handling
 Two different styles of I/O streams (normal and reliable) are supported that are
 differentiated by how device errors are handled.

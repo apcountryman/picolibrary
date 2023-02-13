@@ -3,6 +3,9 @@ Indicator facilities are defined in the
 [`include/picolibrary/indicator.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/indicator.h)/[`source/picolibrary/indicator.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/indicator.cc)
 header/source file pair.
 
+## Table of Contents
+1. [Fixed Intensity Indicator](#fixed-intensity-indicator)
+
 ## Fixed Intensity Indicator
 The `::picolibrary::Indicator::Fixed_Intensity_Indicator_Concept` concept class defines
 the expected interface of a fixed intensity indicator.

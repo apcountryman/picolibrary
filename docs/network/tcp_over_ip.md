@@ -3,6 +3,13 @@ TCP over IP facilities are defined in the
 [`include/picolibrary/ip/tcp.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/ip/tcp.h)/[`source/picolibrary/ip/tcp.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/ip/tcp.cc)
 header/source file pair.
 
+## Table of Contents
+1. [Port](#port)
+1. [Endpoint](#endpoint)
+1. [Client Socket](#client-socket)
+1. [Acceptor Socket](#acceptor-socket)
+1. [Server Socket](#server-socket)
+
 ## Port
 The `::picolibrary::IP::TCP::Port` type alias is used to store a TCP port.
 See the [`::picolibrary::IP::Port` documentation](ip.md#port) for more information.

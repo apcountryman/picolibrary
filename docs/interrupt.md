@@ -3,6 +3,10 @@ Interrupt facilities are defined in the
 [`include/picolibrary/interrupt.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/interrupt.h)/[`source/picolibrary/interrupt.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/interrupt.cc)
 header/source file pair.
 
+## Table of Contents
+1. [Controller](#controller)
+1. [Critical Section Guard](#critical-section-guard)
+
 ## Controller
 The `::picolibrary::Interrupt::Controller_Concept` concept class defines the expected
 interface of an interrupt controller.

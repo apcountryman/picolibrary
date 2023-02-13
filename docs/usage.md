@@ -1,5 +1,10 @@
 # Usage
 
+## Table of Contents
+1. [Dependency](#dependency)
+    1. [Configuration Options](#configuration-options)
+1. [Development](#development)
+
 ## Dependency
 To use picolibrary as a dependency, simply add the subdirectory containing the repository
 to a CMake build, and link with the `picolibrary` static library.

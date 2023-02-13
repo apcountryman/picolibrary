@@ -1,5 +1,15 @@
 # Error Handling Facilities
 
+## Table of Contents
+1. [Error Identification](#error-identification)
+    1. [Library Defined Errors](#library-defined-errors)
+    1. [Defining Additional Errors](#defining-additional-errors)
+1. [Assertions](#assertions)
+    1. [Checking Precondition Expectations](#checking-precondition-expectations)
+    1. [Checking Postcondition Guarantees](#checking-postcondition-guarantees)
+    1. [Trapping Fatal Errors](#trapping-fatal-errors)
+1. [Error Propagation](#error-propagation)
+
 ## Error Identification
 Error identification facilities are defined in the
 [`include/picolibrary/error.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/error.h)/[`source/picolibrary/error.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/error.cc)

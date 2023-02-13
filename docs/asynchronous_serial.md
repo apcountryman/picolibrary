@@ -3,6 +3,11 @@ Asynchronous serial facilities are defined in the
 [`include/picolibrary/asynchronous_serial.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/asynchronous_serial.h)/[`source/picolibrary/asynchronous_serial.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/asynchronous_serial.cc)
 header/source file pair.
 
+## Table of Contents
+1. [Transmitter](#transmitter)
+1. [Streams](#streams)
+    1. [Reliable Output Streams](#reliable-output-streams)
+
 ## Transmitter
 The `::picolibrary::Asynchronous_Serial::Basic_Transmitter_Concept` concept class defines
 the expected interface of an asynchronous serial basic transmitter.

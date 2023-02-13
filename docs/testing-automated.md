@@ -1,6 +1,12 @@
 # Automated Testing
 picolibrary uses [GoogleTest](https://github.com/google/googletest) for automated testing.
 
+## Table of Contents
+1. [Tests](#tests)
+1. [Utilities](#utilities)
+    1. [Movable Mock Handles](#movable-mock-handles)
+    1. [Runtime Pseudo-Random Value Generation](#runtime-pseudo-random-value-generation)
+
 ## Tests
 Automated tests can be found in the
 [`test/automated/picolibrary/`](https://github.com/apcountryman/picolibrary/tree/main/test/automated/picolibrary)

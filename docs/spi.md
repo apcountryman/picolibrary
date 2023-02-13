@@ -3,6 +3,11 @@ SPI facilities are defined in the
 [`include/picolibrary/spi.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/spi.h)/[`source/picolibrary/spi.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/spi.cc)
 header/source file pair.
 
+## Table of Contents
+1. [Controller](#controller)
+1. [Device Selection](#device-selection)
+1. [Device](#device)
+
 ## Controller
 The `::picolibrary::SPI::Basic_Controller_Concept` concept class defines the expected
 interface of an SPI basic controller.
