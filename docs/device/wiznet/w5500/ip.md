@@ -24,7 +24,7 @@ WIZnet W5500 IP protocol port allocator is used to allocate TCP or UDP over IP p
 Ephemeral port allocation is not supported.
 
 The `::picolibrary::Testing::Automated::WIZnet::W5500::IP::Mock_Port_Allocator` mock
-WIZnet W5500 IP protocol port allocator is available if the
+WIZnet W5500 IP protocol port allocator class is available if the
 `PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration option is `ON`.
 The mock is defined in the
 [`include/picolibrary/testing/automated/wiznet/w5500/ip.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/wiznet/w5500/ip.h)/[`source/picolibrary/testing/automated/wiznet/w5500/ip.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/wiznet/w5500/ip.cc)
@@ -155,8 +155,8 @@ docuentation](../../../network/ip.md#network-stack) for more information.
 source file.
 
 The `::picolibrary::Testing::Automated::WIZnet::W5500::IP::Mock_Network_Stack` mock WIZnet
-W5500 IP network stack is available if the `PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project
-configuration option is `ON`.
+W5500 IP network stack class is available if the `PICOLIBRARY_ENABLE_AUTOMATED_TESTING`
+project configuration option is `ON`.
 The mock is defined in the
 [`include/picolibrary/testing/automated/wiznet/w5500/ip/network_stack.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/wiznet/w5500/ip/network_stack.h)/[`source/picolibrary/testing/automated/wiznet/w5500/ip/network_stack.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/wiznet/w5500/ip/network_stack.cc)
 header/source file pair.
