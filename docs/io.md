@@ -43,8 +43,8 @@ header/source file pair.
 
 ## I/O Stream Core
 The `::picolibrary::Stream` and `::picolibrary::Reliable_Stream` I/O stream core classes
-store an I/O stream's state information and associate an I/O stream with an
-I/O stream device access buffer.
+store an I/O stream's state information and associate an I/O stream with an I/O stream
+device access buffer.
 An I/O stream's state includes the following:
 - End-of-file reached
 - I/O error present
