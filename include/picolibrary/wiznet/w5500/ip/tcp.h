@@ -33,7 +33,7 @@
 #include "picolibrary/wiznet/w5500.h"
 
 /**
- * \brief WIZnet W5500 Transmission Control Protocol (TCP) over IP facilities.
+ * \brief WIZnet W5500 TCP over IP facilities.
  */
 namespace picolibrary::WIZnet::W5500::IP::TCP {
 

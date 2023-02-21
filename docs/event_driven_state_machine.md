@@ -5,7 +5,7 @@
     1. [Defining Events](#defining-events)
 1. [Event Storage](#event-storage)
 1. [Non-Hierarchical State Machines](#non-hierarchical-state-machines)
-1. [Hierarchical State Machines (HSMs)](#hierarchical-state-machines-hsms)
+1. [HSMs](#hsms)
 
 ## Event Identification
 Event identification facilities are defined in the
@@ -331,7 +331,7 @@ s2-C;s2-EXIT;s1-ENTRY;
 s1-TERMINATE;
 ```
 
-## Hierarchical State Machines (HSMs)
+## HSMs
 The `::picolibrary::HSM` HSM base class is defined in the
 [`include/picolibrary/hsm.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/hsm.h)/[`source/picolibrary/hsm.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/hsm.cc)
 header/source file pair.

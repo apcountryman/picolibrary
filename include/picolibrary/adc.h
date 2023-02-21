@@ -32,7 +32,7 @@
 #include "picolibrary/precondition.h"
 
 /**
- * \brief Analog-to-Digital Converter (ADC) facilities.
+ * \brief ADC facilities.
  */
 namespace picolibrary::ADC {
 

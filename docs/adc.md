@@ -1,4 +1,4 @@
-# Analog-to-Digital Converter (ADC) Facilities
+# ADC Facilities
 ADC facilities are defined in the
 [`include/picolibrary/adc.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/adc.h)/[`source/picolibrary/adc.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/adc.cc)
 header/source file pair.

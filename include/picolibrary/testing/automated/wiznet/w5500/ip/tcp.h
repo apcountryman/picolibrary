@@ -33,8 +33,7 @@
 #include "picolibrary/wiznet/w5500.h"
 
 /**
- * \brief WIZnet W5500 Transmission Control Protocol (TCP) over IP automated testing
- *        facilities.
+ * \brief WIZnet W5500 TCP over IP automated testing facilities.
  */
 namespace picolibrary::Testing::Automated::WIZnet::W5500::IP::TCP {
 

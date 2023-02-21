@@ -73,7 +73,7 @@ inline auto random<IPv4::Address>() -> IPv4::Address
 } // namespace picolibrary::Testing::Automated
 
 /**
- * \brief Internet Protocol version 4 (IPv4) automated testing facilities.
+ * \brief IPv4 automated testing facilities.
  */
 namespace picolibrary::Testing::Automated::IPv4 {
 } // namespace picolibrary::Testing::Automated::IPv4

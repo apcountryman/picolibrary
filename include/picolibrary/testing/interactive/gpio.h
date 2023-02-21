@@ -27,7 +27,7 @@
 #include "picolibrary/stream.h"
 
 /**
- * \brief General Purpose Input/Output (GPIO) interactive testing facilities.
+ * \brief GPIO interactive testing facilities.
  */
 namespace picolibrary::Testing::Interactive::GPIO {
 

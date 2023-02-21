@@ -30,7 +30,7 @@
 #include "picolibrary/bit_manipulation.h"
 
 /**
- * \brief Cyclic Redundancy Check (CRC) facilities.
+ * \brief CRC facilities.
  */
 namespace picolibrary::CRC {
 

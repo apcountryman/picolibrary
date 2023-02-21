@@ -1,4 +1,4 @@
-# Hardware Interface Layer (HIL)
+# HIL
 The HIL implements microcontroller or microcontroller family specific functionality.
 The following HILs are officially supported:
 - [picolibrary-microchip-megaavr](https://github.com/apcountryman/picolibrary-microchip-megaavr):

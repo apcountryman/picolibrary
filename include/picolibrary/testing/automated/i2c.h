@@ -129,7 +129,7 @@ inline auto random<I2C::Address_Transmitted>() -> I2C::Address_Transmitted
 } // namespace picolibrary::Testing::Automated
 
 /**
- * \brief Inter-Integrated Circuit (I2C) automated testing facilities.
+ * \brief I2C automated testing facilities.
  */
 namespace picolibrary::Testing::Automated::I2C {
 

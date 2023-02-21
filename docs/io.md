@@ -1,4 +1,4 @@
-# Input/Output (I/O) Facilities
+# I/O Facilities
 I/O facilities are defined in the
 [`include/picolibrary/stream.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/stream.h)/[`source/picolibrary/stream.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/stream.cc)
 header/source file pair.

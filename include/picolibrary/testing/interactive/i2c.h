@@ -31,7 +31,7 @@
 #include "picolibrary/stream.h"
 
 /**
- * \brief Inter-Integrated Circuit (I2C) interactive testing facilities.
+ * \brief I2C interactive testing facilities.
  */
 namespace picolibrary::Testing::Interactive::I2C {
 

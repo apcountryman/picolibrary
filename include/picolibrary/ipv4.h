@@ -33,7 +33,7 @@
 #include "picolibrary/stream.h"
 
 /**
- * \brief Internet Protocol version 4 (IPv4) facilities.
+ * \brief IPv4 facilities.
  */
 namespace picolibrary::IPv4 {
 

@@ -32,7 +32,7 @@
 #include "picolibrary/result.h"
 
 /**
- * \brief Inter-Integrated Circuit (I2C) facilities.
+ * \brief I2C facilities.
  */
 namespace picolibrary::I2C {
 

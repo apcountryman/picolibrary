@@ -102,7 +102,7 @@ inline auto random<IP::Endpoint>() -> IP::Endpoint
 } // namespace picolibrary::Testing::Automated
 
 /**
- * \brief Internet Protocol (IP) automated testing facilities.
+ * \brief IP automated testing facilities.
  */
 namespace picolibrary::Testing::Automated::IP {
 } // namespace picolibrary::Testing::Automated::IP

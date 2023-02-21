@@ -1,0 +1,14 @@
+## Definitions
+- ADC: Analog-to-Digital Converter
+- CRC: Cyclic Redundancy Check
+- GPIO: General Purpose Input/Output
+- HIL: Hardware Interface Layer
+- HSM: Hierarchical State Machine
+- I/O: Input/Output
+- I<sup>2</sup>C: Inter-Integrated Circuit
+- IP: Internet Protocol
+- IPv4: Internet Protocol version 4
+- MAC: Media Access Control
+- ROM: Read-Only Memory
+- SPI: Serial Peripheral Interface
+- TCP: Transmission Control Protocol

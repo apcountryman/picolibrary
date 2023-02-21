@@ -31,7 +31,7 @@
 #include "picolibrary/crc.h"
 
 /**
- * \brief Cyclic Redundancy Check (CRC) automated testing facilities.
+ * \brief CRC automated testing facilities.
  */
 namespace picolibrary::Testing::Automated::CRC {
 } // namespace picolibrary::Testing::Automated::CRC

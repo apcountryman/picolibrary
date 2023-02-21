@@ -37,7 +37,7 @@
 #include "picolibrary/stream.h"
 
 /**
- * \brief Internet Protocol (IP) facilities.
+ * \brief IP facilities.
  */
 namespace picolibrary::IP {
 

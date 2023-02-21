@@ -28,7 +28,7 @@
 #include "picolibrary/testing/automated/mock_handle.h"
 
 /**
- * \brief General Purpose Input/Output (GPIO) automated testing facilities.
+ * \brief GPIO automated testing facilities.
  */
 namespace picolibrary::Testing::Automated::GPIO {
 
@@ -263,7 +263,7 @@ class Mock_Output_Pin {
 };
 
 /**
- * \brief Mock Input/Output (I/O) pin.
+ * \brief Mock I/O pin.
  */
 class Mock_IO_Pin {
   public:

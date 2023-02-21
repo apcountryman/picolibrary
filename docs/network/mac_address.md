@@ -1,4 +1,4 @@
-# Media Access Control (MAC) Address
+# MAC Address
 The `::picolibrary::MAC_Address` MAC address class is defined in the
 [`include/picolibrary/mac_address.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/mac_address.h)/[`source/picolibrary/mac_address.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/mac_address.cc)
 header/source file pair.

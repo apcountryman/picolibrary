@@ -24,7 +24,7 @@
 #define PICOLIBRARY_TESTING_INTERACTIVE_IP_H
 
 /**
- * \brief Internet Protocol (IP) interactive testing facilities.
+ * \brief IP interactive testing facilities.
  */
 namespace picolibrary::Testing::Interactive::IP {
 } // namespace picolibrary::Testing::Interactive::IP

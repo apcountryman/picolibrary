@@ -1,4 +1,4 @@
-# Serial Peripheral Interface (SPI) Facilities
+# SPI Facilities
 SPI facilities are defined in the
 [`include/picolibrary/spi.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/spi.h)/[`source/picolibrary/spi.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/spi.cc)
 header/source file pair.

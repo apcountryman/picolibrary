@@ -29,7 +29,7 @@
 #include "picolibrary/testing/automated/wiznet/w5500.h"
 
 /**
- * \brief WIZnet W5500 Internet Protocol (IP) automated testing facilities.
+ * \brief WIZnet W5500 IP automated testing facilities.
  */
 namespace picolibrary::Testing::Automated::WIZnet::W5500::IP {
 

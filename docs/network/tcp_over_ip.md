@@ -1,4 +1,4 @@
-# Transmission Control Protocol (TCP) Over IP Facilities
+# TCP Over IP Facilities
 TCP over IP facilities are defined in the
 [`include/picolibrary/ip/tcp.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/ip/tcp.h)/[`source/picolibrary/ip/tcp.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/ip/tcp.cc)
 header/source file pair.

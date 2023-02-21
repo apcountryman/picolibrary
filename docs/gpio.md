@@ -1,4 +1,4 @@
-# General Purpose Input/Output (GPIO) Facilities
+# GPIO Facilities
 GPIO facilities are defined in the
 [`include/picolibrary/gpio.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/gpio.h)/[`source/picolibrary/gpio.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/gpio.cc)
 header/source file pair.
@@ -7,7 +7,7 @@ header/source file pair.
 1. [Input Pin](#input-pin)
 1. [Internally Pulled-Up Input Pin](#internally-pulled-up-input-pin)
 1. [Output Pin](#output-pin)
-1. [Input/Output (I/O) Pin](#inputoutput-io-pin)
+1. [I/O Pin](#io-pin)
 
 ## Input Pin
 The `::picolibrary::GPIO::Input_Pin_Concept` concept class defines the expected interface
@@ -120,7 +120,7 @@ The interactive test helper is defined in the
 [`include/picolibrary/testing/interactive/gpio.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/interactive/gpio.h)/[`source/picolibrary/testing/interactive/gpio.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/interactive/gpio.cc)
 header/source file pair.
 
-## Input/Output (I/O) Pin
+## I/O Pin
 The `::picolibrary::GPIO::IO_Pin_Concept` concept class defines the expected interface of
 a GPIO I/O pin.
 - To initialize an I/O pin's hardware, use an I/O pin implementation's `initialize()`

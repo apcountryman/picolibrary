@@ -30,7 +30,7 @@
 #include "picolibrary/wiznet/w5500.h"
 
 /**
- * \brief WIZnet W5500 Internet Protocol (IP) facilities.
+ * \brief WIZnet W5500 IP facilities.
  */
 namespace picolibrary::WIZnet::W5500::IP {
 

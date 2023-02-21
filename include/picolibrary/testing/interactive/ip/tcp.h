@@ -35,7 +35,7 @@
 #include "picolibrary/stream.h"
 
 /**
- * \brief Transmission Control Protocol (TCP) over IP interactive testing facilities.
+ * \brief TCP over IP interactive testing facilities.
  */
 namespace picolibrary::Testing::Interactive::IP::TCP {
 

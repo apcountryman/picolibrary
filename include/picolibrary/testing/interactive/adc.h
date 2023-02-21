@@ -28,7 +28,7 @@
 #include "picolibrary/stream.h"
 
 /**
- * \brief Analog-to-Digital Converter (ADC) interactive testing facilities.
+ * \brief ADC interactive testing facilities.
  */
 namespace picolibrary::Testing::Interactive::ADC {
 
