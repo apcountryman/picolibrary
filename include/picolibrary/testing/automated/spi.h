@@ -31,7 +31,7 @@
 #include "picolibrary/testing/automated/mock_handle.h"
 
 /**
- * \brief Serial Peripheral Interface (SPI) automated testing facilities.
+ * \brief SPI automated testing facilities.
  */
 namespace picolibrary::Testing::Automated::SPI {
 

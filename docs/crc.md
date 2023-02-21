@@ -1,4 +1,4 @@
-# Cyclic Redundancy Check (CRC) Facilities
+# CRC Facilities
 CRC facilities are defined in the
 [`include/picolibrary/crc.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/crc.h)/[`source/picolibrary/crc.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/crc.cc)
 header/source file pair.

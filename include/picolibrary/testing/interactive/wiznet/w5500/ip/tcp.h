@@ -39,8 +39,7 @@
 #include "picolibrary/wiznet/w5500/ip/network_stack.h"
 
 /**
- * \brief WIZnet W5500 Transmission Control Protocol (TCP) over IP interactive testing
- *        facilities.
+ * \brief WIZnet W5500 TCP over IP interactive testing facilities.
  */
 namespace picolibrary::Testing::Interactive::WIZnet::W5500::IP::TCP {
 

@@ -37,7 +37,7 @@
 namespace picolibrary {
 
 /**
- * \brief Hierarchical State Machine (HSM).
+ * \brief HSM.
  */
 class HSM {
   public:

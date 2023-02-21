@@ -1,4 +1,4 @@
-# Internet Protocol version 4 (IPv4) Facilities
+# IPv4 Facilities
 IPv4 facilities are defined in the
 [`include/picolibrary/ipv4.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/ipv4.h)/[`source/picolibrary/ipv4.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/ipv4.cc)
 header/source file pair.

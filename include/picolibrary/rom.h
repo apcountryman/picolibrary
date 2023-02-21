@@ -30,7 +30,7 @@
 #endif // __has_include( "picolibrary/hil/rom.h" )
 
 /**
- * \brief Read-Only Memory (ROM) facilities.
+ * \brief ROM facilities.
  */
 namespace picolibrary::ROM {
 

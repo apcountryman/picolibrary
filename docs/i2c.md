@@ -1,4 +1,4 @@
-# Inter-Integrated Circuit (I<sup>2</sup>C) Facilities
+# I<sup>2</sup>C Facilities
 I<sup>2</sup>C facilities are defined in the
 [`include/picolibrary/i2c.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/i2c.h)/[`source/picolibrary/i2c.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/i2c.cc)
 header/source file pair.

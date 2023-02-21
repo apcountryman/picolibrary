@@ -32,7 +32,7 @@
 #include "picolibrary/stream.h"
 
 /**
- * \brief Serial Peripheral Interface (SPI) interactive testing facilities.
+ * \brief SPI interactive testing facilities.
  */
 namespace picolibrary::Testing::Interactive::SPI {
 

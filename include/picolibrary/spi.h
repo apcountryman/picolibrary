@@ -29,7 +29,7 @@
 #include "picolibrary/algorithm.h"
 
 /**
- * \brief Serial Peripheral Interface (SPI) facilities.
+ * \brief SPI facilities.
  */
 namespace picolibrary::SPI {
 

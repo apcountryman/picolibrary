@@ -1,4 +1,4 @@
-# Internet Protocol (IP) Facilities
+# IP Facilities
 IP facilities are defined in the
 [`include/picolibrary/ip.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/ip.h)/[`source/picolibrary/ip.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/ip.cc)
 header/source file pair.

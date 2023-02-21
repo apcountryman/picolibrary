@@ -441,7 +441,7 @@ inline auto random<ADC::Sample<std::uint_fast32_t, 24>>() -> ADC::Sample<std::ui
 } // namespace picolibrary::Testing::Automated
 
 /**
- * \brief Analog-to-Digital Converter (ADC) automated testing facilities.
+ * \brief ADC automated testing facilities.
  */
 namespace picolibrary::Testing::Automated::ADC {
 

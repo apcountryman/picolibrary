@@ -34,7 +34,7 @@
 #include "picolibrary/testing/automated/mock_handle.h"
 
 /**
- * \brief Transmission Control Protocol (TCP) over IP automated testing facilities.
+ * \brief TCP over IP automated testing facilities.
  */
 namespace picolibrary::Testing::Automated::IP::TCP {
 

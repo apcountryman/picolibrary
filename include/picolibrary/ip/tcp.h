@@ -30,7 +30,7 @@
 #include "picolibrary/result.h"
 
 /**
- * \brief Transmission Control Protocol (TCP) over IP facilities.
+ * \brief TCP over IP facilities.
  */
 namespace picolibrary::IP::TCP {
 

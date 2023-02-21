@@ -24,7 +24,7 @@
 #define PICOLIBRARY_TESTING_INTERACTIVE_WIZNET_W5500_IP_H
 
 /**
- * \brief WIZnet W5500 Internet Protocol (IP) interactive testing facilities.
+ * \brief WIZnet W5500 IP interactive testing facilities.
  */
 namespace picolibrary::Testing::Interactive::WIZnet::W5500::IP {
 } // namespace picolibrary::Testing::Interactive::WIZnet::W5500::IP

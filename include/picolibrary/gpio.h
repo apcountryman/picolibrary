@@ -26,7 +26,7 @@
 #include <cstdint>
 
 /**
- * \brief General Purpose Input/Output (GPIO) facilities.
+ * \brief GPIO facilities.
  */
 namespace picolibrary::GPIO {
 
@@ -267,7 +267,7 @@ class Output_Pin_Concept {
 };
 
 /**
- * \brief Input/Output (I/O) pin concept.
+ * \brief I/O pin concept.
  *
  * \attention picolibrary assumes that the high pin/signal state is the active pin/signal
  *            state. All I/O pin implementations should use this assumption. If the high
