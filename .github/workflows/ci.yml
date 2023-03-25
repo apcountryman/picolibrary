@@ -30,7 +30,7 @@ jobs:
         name: Analyze (static) - clang-tidy
         runs-on: ubuntu-20.04
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
               with:
                   submodules: recursive
             - name: Install dependencies
@@ -44,7 +44,7 @@ jobs:
         name: Analyze (static) - lizard
         runs-on: ubuntu-20.04
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
               with:
                   submodules: recursive
             - name: Analyze
@@ -55,7 +55,7 @@ jobs:
         name: Analyze (static) - shellcheck
         runs-on: ubuntu-20.04
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
             - name: Analyze
               shell: bash
               run: ./ci/analyze --analyzer shellcheck
@@ -64,7 +64,7 @@ jobs:
         name: Build (release)
         runs-on: ubuntu-20.04
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
               with:
                   submodules: recursive
             - name: Build
@@ -75,7 +75,7 @@ jobs:
         name: Build (testing-automated) and (automated) test
         runs-on: ubuntu-20.04
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
               with:
                   submodules: recursive
             - name: Build
@@ -89,7 +89,7 @@ jobs:
         name: Build (testing-interactive)
         runs-on: ubuntu-20.04
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
               with:
                   submodules: recursive
             - name: Build
@@ -100,7 +100,7 @@ jobs:
         name: Format
         runs-on: ubuntu-20.04
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
             - name: Configure dependencies
               shell: bash
               run: sudo update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-10 100 && sudo update-alternatives --set clang-format /usr/bin/clang-format-10
