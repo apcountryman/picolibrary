@@ -21,6 +21,7 @@ microcontrollers.
 1. [Bit Manipulation Utilities](bit_manipulation_utilities.md)
 1. [CRC Facilities](crc.md)
 1. [Event Driven State Machine Facilities](event_driven_state_machine.md)
+1. [RGB Facilities](rgb.md)
 1. [Interrupt Facilities](interrupt.md)
 1. [GPIO Facilities](gpio.md)
 1. [Asynchronous Serial Facilities](asynchronous_serial.md)
