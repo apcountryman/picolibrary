@@ -9,6 +9,7 @@
 - IP: Internet Protocol
 - IPv4: Internet Protocol version 4
 - MAC: Media Access Control
+- RGB: Red, Green, Blue
 - ROM: Read-Only Memory
 - SPI: Serial Peripheral Interface
 - TCP: Transmission Control Protocol
