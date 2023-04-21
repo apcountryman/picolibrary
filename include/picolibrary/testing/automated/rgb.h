@@ -23,6 +23,26 @@
 #ifndef PICOLIBRARY_TESTING_AUTOMATED_RGB_H
 #define PICOLIBRARY_TESTING_AUTOMATED_RGB_H
 
+#include <cstdint>
+
+#include "picolibrary/rgb.h"
+#include "picolibrary/testing/automated/random.h"
+
+namespace picolibrary::Testing::Automated {
+
+/**
+ * \brief Generate a pseudo-random picolibrary::RGB::Color.
+ *
+ * \brief  A pseudo-randomly generated picolibrary::RGB::Color.
+ */
+template<>
+inline auto random<RGB::Color>() -> RGB::Color
+{
+    return RGB::Color{ random<std::uint8_t>(), random<std::uint8_t>(), random<std::uint8_t>() };
+}
+
+} // namespace picolibrary::Testing::Automated
+
 /**
  * \brief RGB automated testing facilities.
  */

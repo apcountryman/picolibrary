@@ -23,10 +23,33 @@
 #ifndef PICOLIBRARY_RGB_H
 #define PICOLIBRARY_RGB_H
 
+#include <cstdint>
+
 /**
  * \brief RGB facilities.
  */
 namespace picolibrary::RGB {
+
+/**
+ * \brief Color.
+ */
+struct Color {
+    /**
+     * \brief The red component of the color.
+     */
+    std::uint8_t r;
+
+    /**
+     * \brief The green component of the color.
+     */
+    std::uint8_t g;
+
+    /**
+     * \brief The blue component of the color.
+     */
+    std::uint8_t b;
+};
+
 } // namespace picolibrary::RGB
 
 #endif // PICOLIBRARY_RGB_H
