@@ -81,6 +81,7 @@ if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
         APPEND PICOLIBRARY_SOURCE_FILES
         "picolibrary/testing/automated.cc"
         "picolibrary/testing/automated/adafruit.cc"
+        "picolibrary/testing/automated/adafruit/pid781.cc"
         "picolibrary/testing/automated/adc.cc"
         "picolibrary/testing/automated/asynchronous_serial.cc"
         "picolibrary/testing/automated/crc.cc"
