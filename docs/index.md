@@ -36,6 +36,7 @@ microcontrollers.
     1. [TCP Over IP Facilities](network/tcp_over_ip.md)
 1. Device Facilities
     1. Adafruit
+        1. [PID781 Facilities](device/adafruit/pid781.md)
     1. Microchip
         1. [MCP3008 Facilities](device/microchip/mcp3008.md)
         1. [MCP23008/MCP23S08 Facilities](device/microchip/mcp23x08.md)
