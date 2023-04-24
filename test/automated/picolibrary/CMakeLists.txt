@@ -15,6 +15,9 @@
 
 # Description: picolibrary automated tests CMake rules.
 
+# build the picolibrary::Adafruit automated tests
+add_subdirectory( adafruit )
+
 # build the picolibrary::ADC automated tests
 add_subdirectory( adc )
 
