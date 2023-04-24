@@ -25,6 +25,7 @@ set(
     PICOLIBRARY_SOURCE_FILES
     "picolibrary.cc"
     "picolibrary/adafruit.cc"
+    "picolibrary/adafruit/pid781.cc"
     "picolibrary/adc.cc"
     "picolibrary/algorithm.cc"
     "picolibrary/array.cc"
