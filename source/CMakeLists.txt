@@ -24,6 +24,7 @@ configure_file(
 set(
     PICOLIBRARY_SOURCE_FILES
     "picolibrary.cc"
+    "picolibrary/adafruit.cc"
     "picolibrary/adc.cc"
     "picolibrary/algorithm.cc"
     "picolibrary/array.cc"
