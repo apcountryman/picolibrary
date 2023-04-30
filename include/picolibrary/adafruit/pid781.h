@@ -23,10 +23,28 @@
 #ifndef PICOLIBRARY_ADAFRUIT_PID781_H
 #define PICOLIBRARY_ADAFRUIT_PID781_H
 
+#include <cstdint>
+
 /**
  * \brief Adafruit PID781 facilities.
  */
 namespace picolibrary::Adafruit::PID781 {
+
+/**
+ * \brief Bit rate.
+ */
+enum class Bit_Rate : std::uint8_t {
+    _1200   = 0x53, ///< 1200 bits/second.
+    _2400   = 0x29, ///< 2400 bits/second.
+    _4800   = 0xCF, ///< 4800 bits/second.
+    _9600   = 0x67, ///< 9600 bits/second.
+    _19200  = 0x33, ///< 19200 bits/second.
+    _28800  = 0x22, ///< 28800 bits/second.
+    _38400  = 0x19, ///< 38400 bits/second.
+    _57600  = 0x10, ///< 57600 bits/second.
+    _115200 = 0x08, ///< 115200 bits/second.
+};
+
 } // namespace picolibrary::Adafruit::PID781
 
 #endif // PICOLIBRARY_ADAFRUIT_PID781_H
