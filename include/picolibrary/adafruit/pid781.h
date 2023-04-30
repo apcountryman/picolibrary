@@ -51,7 +51,7 @@ enum class Bit_Rate : std::uint8_t {
  */
 enum class LCD_Size : std::uint16_t {
     _16X2 = ( 16 << std::numeric_limits<std::uint8_t>::digits ) | 2, ///< 16 columns, 2 rows.
-    _20X2 = ( 20 << std::numeric_limits<std::uint8_t>::digits ) | 4, ///< 20 columns, 4 rows.
+    _20X4 = ( 20 << std::numeric_limits<std::uint8_t>::digits ) | 4, ///< 20 columns, 4 rows.
 };
 
 } // namespace picolibrary::Adafruit::PID781
