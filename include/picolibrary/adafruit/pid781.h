@@ -24,6 +24,7 @@
 #define PICOLIBRARY_ADAFRUIT_PID781_H
 
 #include <cstdint>
+#include <limits>
 
 /**
  * \brief Adafruit PID781 facilities.
@@ -43,6 +44,14 @@ enum class Bit_Rate : std::uint8_t {
     _38400  = 0x19, ///< 38400 bits/second.
     _57600  = 0x10, ///< 57600 bits/second.
     _115200 = 0x08, ///< 115200 bits/second.
+};
+
+/**
+ * \brief LCD size.
+ */
+enum class LCD_Size : std::uint16_t {
+    _16X2 = ( 16 << std::numeric_limits<std::uint8_t>::digits ) | 2, ///< 16 columns, 2 rows.
+    _20X4 = ( 20 << std::numeric_limits<std::uint8_t>::digits ) | 4, ///< 20 columns, 4 rows.
 };
 
 } // namespace picolibrary::Adafruit::PID781
