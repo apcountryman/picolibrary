@@ -80,6 +80,21 @@ constexpr auto rows( LCD_Size lcd_size ) noexcept -> std::uint8_t
     return to_underlying( lcd_size );
 }
 
+/**
+ * \brief Cursor position.
+ */
+struct Cursor_Position {
+    /**
+     * \brief The column component of the cursor position.
+     */
+    std::uint8_t column;
+
+    /**
+     * \brief The row component of the cursor position.
+     */
+    std::uint8_t row;
+};
+
 } // namespace picolibrary::Adafruit::PID781
 
 #endif // PICOLIBRARY_ADAFRUIT_PID781_H
