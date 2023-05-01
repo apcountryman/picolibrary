@@ -68,22 +68,14 @@ INSTANTIATE_TEST_SUITE_P(
     Values( lcdSize_Test_Case{ LCD_Size::_16X2, 16, 2 }, lcdSize_Test_Case{ LCD_Size::_20X4, 20, 4 } ) );
 
 /**
- * \brief Verify picolibrary::Adafruit::PID781::columns() works properly.
+ * \brief Verify picolibrary::Adafruit::PID781::columns() and
+ *        picolibrary::Adafruit::PID781::rows() work properly.
  */
-TEST_P( lcdSize, columnsWorksProperly )
+TEST_P( lcdSize, worksProperly )
 {
     auto const test_case = GetParam();
 
     EXPECT_EQ( columns( test_case.lcd_size ), test_case.columns );
-}
-
-/**
- * \brief Verify picolibrary::Adafruit::PID781::rows() works properly.
- */
-TEST_P( lcdSize, rowsWorksProperly )
-{
-    auto const test_case = GetParam();
-
     EXPECT_EQ( rows( test_case.lcd_size ), test_case.rows );
 }
 
