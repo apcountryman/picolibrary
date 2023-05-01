@@ -26,6 +26,8 @@
 #include <cstdint>
 #include <limits>
 
+#include "picolibrary/utility.h"
+
 /**
  * \brief Adafruit PID781 facilities.
  */
@@ -53,6 +55,30 @@ enum class LCD_Size : std::uint16_t {
     _16X2 = ( 16 << std::numeric_limits<std::uint8_t>::digits ) | 2, ///< 16 columns, 2 rows.
     _20X4 = ( 20 << std::numeric_limits<std::uint8_t>::digits ) | 4, ///< 20 columns, 4 rows.
 };
+
+/**
+ * \brief Get the number of columns an LCD has.
+ *
+ * \param[in] lcd_size The size of the LCD.
+ *
+ * \return The number of columns the LCD has.
+ */
+constexpr auto columns( LCD_Size lcd_size ) noexcept -> std::uint8_t
+{
+    return to_underlying( lcd_size ) >> std::numeric_limits<std::uint8_t>::digits;
+}
+
+/**
+ * \brief Get the number of rows an LCD has.
+ *
+ * \param[in] lcd_size The size of the LCD.
+ *
+ * \return The number of rows the LCD has.
+ */
+constexpr auto rows( LCD_Size lcd_size ) noexcept -> std::uint8_t
+{
+    return to_underlying( lcd_size );
+}
 
 } // namespace picolibrary::Adafruit::PID781
 
