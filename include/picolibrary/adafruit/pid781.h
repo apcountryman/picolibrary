@@ -82,6 +82,8 @@ constexpr auto rows( LCD_Size lcd_size ) noexcept -> std::uint8_t
 
 /**
  * \brief Cursor position.
+ *
+ * \attention Cursor positions are 1-indexed (e.g. (1,1) is the top left position).
  */
 struct Cursor_Position {
     /**
