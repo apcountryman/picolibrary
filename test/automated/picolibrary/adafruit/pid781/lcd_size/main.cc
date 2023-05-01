@@ -62,6 +62,9 @@ struct lcdSize_Test_Case {
 class lcdSize : public TestWithParam<lcdSize_Test_Case> {
 };
 
+/**
+ * \brief picolibrary::Adafruit::PID781::LCD_Size test cases.
+ */
 INSTANTIATE_TEST_SUITE_P(
     lcdSizes,
     lcdSize,
