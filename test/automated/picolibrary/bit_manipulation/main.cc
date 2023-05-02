@@ -54,7 +54,7 @@ struct highestBitSet_Test_Case {
     T value;
 
     /**
-     * \brief Highest bit set in input.
+     * \brief value's highest bit set.
      */
     std::uint_fast8_t highest_bit_set;
 };
@@ -1325,6 +1325,8 @@ reflect_Test_Case<std::uint8_t> const reflect8_TEST_CASES[]{
     { 0b11100000, 0b00000111 },
     { 0b11000000, 0b00000011 },
 
+    { 0b11011100, 0b00111011 },
+
     // clang-format on
 };
 
@@ -1401,6 +1403,8 @@ reflect_Test_Case<std::uint16_t> const reflect16_TEST_CASES[]{
     { 0b1111000000000000, 0b0000000000001111 },
     { 0b1110000000000000, 0b0000000000000111 },
     { 0b1100000000000000, 0b0000000000000011 },
+
+    { 0b0010101011011100, 0b0011101101010100 },
 
     // clang-format on
 };
@@ -1526,6 +1530,8 @@ reflect_Test_Case<std::uint32_t> const reflect32_TEST_CASES[]{
     { 0b11110000000000000000000000000000, 0b00000000000000000000000000001111 },
     { 0b11100000000000000000000000000000, 0b00000000000000000000000000000111 },
     { 0b11000000000000000000000000000000, 0b00000000000000000000000000000011 },
+
+    { 0b10101011000011110010101011011100, 0b00111011010101001111000011010101 },
 
     // clang-format on
 };
