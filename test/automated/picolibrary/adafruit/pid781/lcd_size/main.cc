@@ -21,6 +21,7 @@
  */
 
 #include <cstdint>
+#include <ostream>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -32,7 +33,7 @@ using ::picolibrary::Adafruit::PID781::columns;
 using ::picolibrary::Adafruit::PID781::LCD_Size;
 using ::picolibrary::Adafruit::PID781::rows;
 using ::testing::TestWithParam;
-using ::testing::Values;
+using ::testing::ValuesIn;
 
 } // namespace
 
@@ -56,19 +57,38 @@ struct lcdSize_Test_Case {
     std::uint8_t rows;
 };
 
-/**
- * \brief picolibrary::Adafruit::PID781::LCD_Size automated test fixture.
- */
-class lcdSize : public TestWithParam<lcdSize_Test_Case> {
-};
+auto operator<<( std::ostream & stream, lcdSize_Test_Case const & test_case ) -> std::ostream &
+{
+    // clang-format off
+
+    return stream << "{ "
+                  << ".columns = " << static_cast<std::uint_fast16_t>( test_case.columns )
+                  << ", "
+                  << ".rows = " << static_cast<std::uint_fast16_t>( test_case.rows )
+                  << " }";
+
+    // clang-format on
+}
 
 /**
  * \brief picolibrary::Adafruit::PID781::LCD_Size test cases.
  */
-INSTANTIATE_TEST_SUITE_P(
-    lcdSizes,
-    lcdSize,
-    Values( lcdSize_Test_Case{ LCD_Size::_16X2, 16, 2 }, lcdSize_Test_Case{ LCD_Size::_20X4, 20, 4 } ) );
+lcdSize_Test_Case const lcdSize_TEST_CASES[]{
+    // clang-format off
+
+    { LCD_Size::_16X2, 16, 2 },
+    { LCD_Size::_20X4, 20, 4 },
+
+    // clang-format on
+};
+
+/**
+ * \brief picolibrary::Adafruit::PID781::LCD_Size test fixture.
+ */
+class lcdSize : public TestWithParam<lcdSize_Test_Case> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, lcdSize, ValuesIn( lcdSize_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::Adafruit::PID781::columns() and
