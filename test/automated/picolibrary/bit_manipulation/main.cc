@@ -75,7 +75,7 @@ auto operator<<( std::ostream & stream, highestBitSet_Test_Case<T> const & test_
 }
 
 /**
- * \brief picolibrary::highest_bit_set<std::uint8_t>() test cases.
+ * \brief picolibrary::highest_bit_set() std::uint8_t test cases.
  */
 highestBitSet_Test_Case<std::uint8_t> const highestBitSet8_TEST_CASES[]{
     // clang-format off
@@ -109,7 +109,7 @@ highestBitSet_Test_Case<std::uint8_t> const highestBitSet8_TEST_CASES[]{
 };
 
 /**
- * \brief picolibrary::highest_bit_set<std::uint8_t>() test fixture.
+ * \brief picolibrary::highest_bit_set() std::uint8_t test fixture.
  */
 class highestBitSet8 : public TestWithParam<highestBitSet_Test_Case<std::uint8_t>> {
 };
@@ -117,7 +117,7 @@ class highestBitSet8 : public TestWithParam<highestBitSet_Test_Case<std::uint8_t
 INSTANTIATE_TEST_SUITE_P( testCases, highestBitSet8, ValuesIn( highestBitSet8_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::highest_bit_set<std::uint8_t>() works properly.
+ * \brief Verify picolibrary::highest_bit_set() works properly.
  */
 TEST_P( highestBitSet8, worksProperly )
 {
@@ -127,7 +127,7 @@ TEST_P( highestBitSet8, worksProperly )
 }
 
 /**
- * \brief picolibrary::highest_bit_set<std::uint16_t>() test cases.
+ * \brief picolibrary::highest_bit_set() std::uint16_t test cases.
  */
 highestBitSet_Test_Case<std::uint16_t> const highestBitSet16_TEST_CASES[]{
     // clang-format off
@@ -185,7 +185,7 @@ highestBitSet_Test_Case<std::uint16_t> const highestBitSet16_TEST_CASES[]{
 };
 
 /**
- * \brief picolibrary::highest_bit_set<std::uint16_t>() test fixture.
+ * \brief picolibrary::highest_bit_set() std::uint16_t test fixture.
  */
 class highestBitSet16 : public TestWithParam<highestBitSet_Test_Case<std::uint16_t>> {
 };
@@ -193,7 +193,7 @@ class highestBitSet16 : public TestWithParam<highestBitSet_Test_Case<std::uint16
 INSTANTIATE_TEST_SUITE_P( testCases, highestBitSet16, ValuesIn( highestBitSet16_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::highest_bit_set<std::uint16_t>() works properly.
+ * \brief Verify picolibrary::highest_bit_set() works properly.
  */
 TEST_P( highestBitSet16, worksProperly )
 {
@@ -203,7 +203,7 @@ TEST_P( highestBitSet16, worksProperly )
 }
 
 /**
- * \brief picolibrary::highest_bit_set<std::uint32_t>() test cases.
+ * \brief picolibrary::highest_bit_set() std::uint32_t test cases.
  */
 highestBitSet_Test_Case<std::uint32_t> const highestBitSet32_TEST_CASES[]{
     // clang-format off
@@ -309,7 +309,7 @@ highestBitSet_Test_Case<std::uint32_t> const highestBitSet32_TEST_CASES[]{
 };
 
 /**
- * \brief picolibrary::highest_bit_set<std::uint32_t>() test fixture.
+ * \brief picolibrary::highest_bit_set() std::uint32_t test fixture.
  */
 class highestBitSet32 : public TestWithParam<highestBitSet_Test_Case<std::uint32_t>> {
 };
@@ -317,7 +317,7 @@ class highestBitSet32 : public TestWithParam<highestBitSet_Test_Case<std::uint32
 INSTANTIATE_TEST_SUITE_P( testCases, highestBitSet32, ValuesIn( highestBitSet32_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::highest_bit_set<std::uint32_t>() works properly.
+ * \brief Verify picolibrary::highest_bit_set() works properly.
  */
 TEST_P( highestBitSet32, worksProperly )
 {
@@ -366,7 +366,7 @@ auto operator<<( std::ostream & stream, mask_Test_Case<T> const & test_case ) ->
 }
 
 /**
- * \brief picolibrary::mask<std::uint8_t>() test cases.
+ * \brief picolibrary::mask() std::uint8_t test cases.
  */
 mask_Test_Case<std::uint8_t> const mask8_TEST_CASES[]{
     // clang-format off
@@ -428,7 +428,7 @@ mask_Test_Case<std::uint8_t> const mask8_TEST_CASES[]{
 };
 
 /**
- * \brief picolibrary::mask<std::uint8_t>() test fixture.
+ * \brief picolibrary::mask() std::uint8_t test fixture.
  */
 class mask8 : public TestWithParam<mask_Test_Case<std::uint8_t>> {
 };
@@ -436,7 +436,7 @@ class mask8 : public TestWithParam<mask_Test_Case<std::uint8_t>> {
 INSTANTIATE_TEST_SUITE_P( testCases, mask8, ValuesIn( mask8_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::mask<std::uint8_t>() works properly.
+ * \brief Verify picolibrary::mask() works properly.
  */
 TEST_P( mask8, worksProperly )
 {
@@ -446,7 +446,7 @@ TEST_P( mask8, worksProperly )
 }
 
 /**
- * \brief picolibrary::mask<std::uint16_t>() test cases.
+ * \brief picolibrary::mask() std::uint16_t test cases.
  */
 mask_Test_Case<std::uint16_t> const mask16_TEST_CASES[]{
     // clang-format off
@@ -624,7 +624,7 @@ mask_Test_Case<std::uint16_t> const mask16_TEST_CASES[]{
 };
 
 /**
- * \brief picolibrary::mask<std::uint16_t>() test fixture.
+ * \brief picolibrary::mask() std::uint16_t test fixture.
  */
 class mask16 : public TestWithParam<mask_Test_Case<std::uint16_t>> {
 };
@@ -632,7 +632,7 @@ class mask16 : public TestWithParam<mask_Test_Case<std::uint16_t>> {
 INSTANTIATE_TEST_SUITE_P( testCases, mask16, ValuesIn( mask16_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::mask<std::uint16_t>() works properly.
+ * \brief Verify picolibrary::mask() works properly.
  */
 TEST_P( mask16, worksProperly )
 {
@@ -642,7 +642,7 @@ TEST_P( mask16, worksProperly )
 }
 
 /**
- * \brief picolibrary::mask<std::uint32_t>() test cases.
+ * \brief picolibrary::mask() std::uint32_t test cases.
  */
 mask_Test_Case<std::uint32_t> const mask32_TEST_CASES[]{
     // clang-format off
@@ -1244,7 +1244,7 @@ mask_Test_Case<std::uint32_t> const mask32_TEST_CASES[]{
 };
 
 /**
- * \brief picolibrary::mask<std::uint32_t>() test fixture.
+ * \brief picolibrary::mask() std::uint32_t test fixture.
  */
 class mask32 : public TestWithParam<mask_Test_Case<std::uint32_t>> {
 };
@@ -1252,7 +1252,7 @@ class mask32 : public TestWithParam<mask_Test_Case<std::uint32_t>> {
 INSTANTIATE_TEST_SUITE_P( testCases, mask32, ValuesIn( mask32_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::mask<std::uint32_t>() works properly.
+ * \brief Verify picolibrary::mask() works properly.
  */
 TEST_P( mask32, worksProperly )
 {
@@ -1294,7 +1294,7 @@ auto operator<<( std::ostream & stream, reflect_Test_Case<T> const & test_case )
 }
 
 /**
- * \brief picolibrary::reflect<std::uint8_t>() test cases.
+ * \brief picolibrary::reflect() std::uint8_t test cases.
  */
 reflect_Test_Case<std::uint8_t> const reflect8_TEST_CASES[]{
     // clang-format off
@@ -1331,7 +1331,7 @@ reflect_Test_Case<std::uint8_t> const reflect8_TEST_CASES[]{
 };
 
 /**
- * \brief picolibrary::reflect<std::uint8_t>() test fixture.
+ * \brief picolibrary::reflect() std::uint8_t test fixture.
  */
 class reflect8 : public TestWithParam<reflect_Test_Case<std::uint8_t>> {
 };
@@ -1339,7 +1339,7 @@ class reflect8 : public TestWithParam<reflect_Test_Case<std::uint8_t>> {
 INSTANTIATE_TEST_SUITE_P( testCases, reflect8, ValuesIn( reflect8_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::reflect<std::uint8_t>() works properly.
+ * \brief Verify picolibrary::reflect() works properly.
  */
 TEST_P( reflect8, worksProperly )
 {
@@ -1349,7 +1349,7 @@ TEST_P( reflect8, worksProperly )
 }
 
 /**
- * \brief picolibrary::reflect<std::uint16_t>() test cases.
+ * \brief picolibrary::reflect() std::uint16_t test cases.
  */
 reflect_Test_Case<std::uint16_t> const reflect16_TEST_CASES[]{
     // clang-format off
@@ -1410,7 +1410,7 @@ reflect_Test_Case<std::uint16_t> const reflect16_TEST_CASES[]{
 };
 
 /**
- * \brief picolibrary::reflect<std::uint16_t>() test fixture.
+ * \brief picolibrary::reflect() std::uint16_t test fixture.
  */
 class reflect16 : public TestWithParam<reflect_Test_Case<std::uint16_t>> {
 };
@@ -1418,7 +1418,7 @@ class reflect16 : public TestWithParam<reflect_Test_Case<std::uint16_t>> {
 INSTANTIATE_TEST_SUITE_P( testCases, reflect16, ValuesIn( reflect16_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::reflect<std::uint16_t>() works properly.
+ * \brief Verify picolibrary::reflect() works properly.
  */
 TEST_P( reflect16, worksProperly )
 {
@@ -1428,7 +1428,7 @@ TEST_P( reflect16, worksProperly )
 }
 
 /**
- * \brief picolibrary::reflect<std::uint32_t>() test cases.
+ * \brief picolibrary::reflect() std::uint32_t test cases.
  */
 reflect_Test_Case<std::uint32_t> const reflect32_TEST_CASES[]{
     // clang-format off
@@ -1537,7 +1537,7 @@ reflect_Test_Case<std::uint32_t> const reflect32_TEST_CASES[]{
 };
 
 /**
- * \brief picolibrary::reflect<std::uint32_t>() test fixture.
+ * \brief picolibrary::reflect() std::uint32_t test fixture.
  */
 class reflect32 : public TestWithParam<reflect_Test_Case<std::uint32_t>> {
 };
@@ -1545,7 +1545,7 @@ class reflect32 : public TestWithParam<reflect_Test_Case<std::uint32_t>> {
 INSTANTIATE_TEST_SUITE_P( testCases, reflect32, ValuesIn( reflect32_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::reflect<std::uint32_t>() works properly.
+ * \brief Verify picolibrary::reflect() works properly.
  */
 TEST_P( reflect32, worksProperly )
 {
@@ -1588,7 +1588,7 @@ auto operator<<( std::ostream & stream, isPowerOfTwo_Test_Case<T> const & test_c
 }
 
 /**
- * \brief picolibrary::is_power_of_two<std::uint8_t>() test cases.
+ * \brief picolibrary::is_power_of_two() std::uint8_t test cases.
  */
 isPowerOfTwo_Test_Case<std::uint8_t> const isPowerOfTwo8_TEST_CASES[]{
     // clang-format off
@@ -1632,7 +1632,7 @@ isPowerOfTwo_Test_Case<std::uint8_t> const isPowerOfTwo8_TEST_CASES[]{
 };
 
 /**
- * \brief picolibrary::is_power_of_two<std::uint8_t>() test fixture.
+ * \brief picolibrary::is_power_of_two() std::uint8_t test fixture.
  */
 class isPowerOfTwo8 : public TestWithParam<isPowerOfTwo_Test_Case<std::uint8_t>> {
 };
@@ -1640,7 +1640,7 @@ class isPowerOfTwo8 : public TestWithParam<isPowerOfTwo_Test_Case<std::uint8_t>>
 INSTANTIATE_TEST_SUITE_P( testCases, isPowerOfTwo8, ValuesIn( isPowerOfTwo8_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::is_power_of_two<std::uint8_t>() works properly.
+ * \brief Verify picolibrary::is_power_of_two() works properly.
  */
 TEST_P( isPowerOfTwo8, worksProperly )
 {
@@ -1650,7 +1650,7 @@ TEST_P( isPowerOfTwo8, worksProperly )
 }
 
 /**
- * \brief picolibrary::is_power_of_two<std::uint16_t>() test cases.
+ * \brief picolibrary::is_power_of_two() std::uint16_t test cases.
  */
 isPowerOfTwo_Test_Case<std::uint16_t> const isPowerOfTwo16_TEST_CASES[]{
     // clang-format off
@@ -1726,7 +1726,7 @@ isPowerOfTwo_Test_Case<std::uint16_t> const isPowerOfTwo16_TEST_CASES[]{
 };
 
 /**
- * \brief picolibrary::is_power_of_two<std::uint16_t>() test fixture.
+ * \brief picolibrary::is_power_of_two() std::uint16_t test fixture.
  */
 class isPowerOfTwo16 : public TestWithParam<isPowerOfTwo_Test_Case<std::uint16_t>> {
 };
@@ -1734,7 +1734,7 @@ class isPowerOfTwo16 : public TestWithParam<isPowerOfTwo_Test_Case<std::uint16_t
 INSTANTIATE_TEST_SUITE_P( testCases, isPowerOfTwo16, ValuesIn( isPowerOfTwo16_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::is_power_of_two<std::uint16_t>() works properly.
+ * \brief Verify picolibrary::is_power_of_two() works properly.
  */
 TEST_P( isPowerOfTwo16, worksProperly )
 {
@@ -1744,7 +1744,7 @@ TEST_P( isPowerOfTwo16, worksProperly )
 }
 
 /**
- * \brief picolibrary::is_power_of_two<std::uint32_t>() test cases.
+ * \brief picolibrary::is_power_of_two() std::uint32_t test cases.
  */
 isPowerOfTwo_Test_Case<std::uint32_t> const isPowerOfTwo32_TEST_CASES[]{
     // clang-format off
@@ -1884,7 +1884,7 @@ isPowerOfTwo_Test_Case<std::uint32_t> const isPowerOfTwo32_TEST_CASES[]{
 };
 
 /**
- * \brief picolibrary::is_power_of_two<std::uint32_t>() test fixture.
+ * \brief picolibrary::is_power_of_two() std::uint32_t test fixture.
  */
 class isPowerOfTwo32 : public TestWithParam<isPowerOfTwo_Test_Case<std::uint32_t>> {
 };
@@ -1892,7 +1892,7 @@ class isPowerOfTwo32 : public TestWithParam<isPowerOfTwo_Test_Case<std::uint32_t
 INSTANTIATE_TEST_SUITE_P( testCases, isPowerOfTwo32, ValuesIn( isPowerOfTwo32_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::is_power_of_two<std::uint32_t>() works properly.
+ * \brief Verify picolibrary::is_power_of_two() works properly.
  */
 TEST_P( isPowerOfTwo32, worksProperly )
 {
