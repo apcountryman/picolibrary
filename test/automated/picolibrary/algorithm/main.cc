@@ -22,7 +22,6 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <limits>
 #include <type_traits>
 #include <vector>
 
@@ -31,7 +30,6 @@
 #include "picolibrary/algorithm.h"
 #include "picolibrary/result.h"
 #include "picolibrary/testing/automated/error.h"
-#include "picolibrary/testing/automated/random.h"
 
 namespace {
 
@@ -40,312 +38,707 @@ using ::picolibrary::Functor_Can_Fail_Discard_Functor;
 using ::picolibrary::Functor_Can_Fail_Return_Functor;
 using ::picolibrary::Result;
 using ::picolibrary::Testing::Automated::Mock_Error;
-using ::picolibrary::Testing::Automated::random;
-using ::picolibrary::Testing::Automated::random_container;
-using ::picolibrary::Testing::Automated::random_unique_container_pair;
-using ::picolibrary::Testing::Automated::random_unique_pair;
 using ::testing::_;
 using ::testing::Each;
 using ::testing::InSequence;
 using ::testing::MockFunction;
 using ::testing::Ref;
 using ::testing::Return;
+using ::testing::TestWithParam;
+using ::testing::ValuesIn;
 
 } // namespace
 
 /**
- * \brief Verify picolibrary::for_each() properly handles a functor error.
+ * \brief picolibrary::for_each() test cases.
  */
-TEST( forEach, functorError )
-{
+std::vector<std::uint_fast8_t> const forEach_TEST_CASES[]{
+    // clang-format off
+
+    {},
     {
-        auto functor = MockFunction<Result<void>( std::uint_fast8_t const & )>{};
-
-        auto const error = random<Mock_Error>();
-
-        EXPECT_CALL( functor, Call( _ ) ).WillOnce( Return( error ) );
-
-        auto const values = random_container<std::vector<std::uint_fast8_t>>(
-            random<std::size_t>( 1, 15 ) );
-        auto const result = ::picolibrary::for_each<Functor_Can_Fail_Return_Functor>(
-            values.begin(), values.end(), functor.AsStdFunction() );
-
-        ASSERT_TRUE( result.is_error() );
-        EXPECT_EQ( result.error(), error );
+        0x1C,
+        0x0C,
+        0xE6,
+        0xEC,
+        0x99,
     }
 
-    {
-        auto functor = MockFunction<Result<void>( std::uint_fast8_t const & )>{};
+    // clang-format on
+};
 
-        auto const error = random<Mock_Error>();
+/**
+ * \brief picolibrary::for_each( Iterator, Iterator, Functor ) test fixture.
+ */
+class forEach : public TestWithParam<std::vector<std::uint_fast8_t>> {
+};
 
-        EXPECT_CALL( functor, Call( _ ) ).WillOnce( Return( error ) );
-
-        auto const values = random_container<std::vector<std::uint_fast8_t>>(
-            random<std::size_t>( 1, 15 ) );
-        auto const result = ::picolibrary::for_each<Functor_Can_Fail_Discard_Functor>(
-            values.begin(), values.end(), functor.AsStdFunction() );
-
-        ASSERT_TRUE( result.is_error() );
-        EXPECT_EQ( result.error(), error );
-    }
-}
+INSTANTIATE_TEST_SUITE_P( testCases, forEach, ValuesIn( forEach_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::for_each() works properly.
  */
-TEST( forEach, worksProperly )
+TEST_P( forEach, worksProperly )
 {
-    {
-        auto const in_sequence = InSequence{};
+    auto const in_sequence = InSequence{};
 
-        auto functor = MockFunction<void( std::uint_fast8_t const & )>{};
+    auto functor = MockFunction<void( std::uint_fast8_t const & )>{};
 
-        auto const values = random_container<std::vector<std::uint_fast8_t>>();
+    auto const values = GetParam();
 
-        for ( auto const & value : values ) {
-            EXPECT_CALL( functor, Call( Ref( value ) ) );
-        } // for
+    for ( auto const & value : values ) {
+        EXPECT_CALL( functor, Call( Ref( value ) ) );
+    } // for
 
-        ::picolibrary::for_each( values.begin(), values.end(), functor.AsStdFunction() );
-    }
-
-    {
-        auto const in_sequence = InSequence{};
-
-        auto functor = MockFunction<Result<void>( std::uint_fast8_t const & )>{};
-
-        auto const values = random_container<std::vector<std::uint_fast8_t>>();
-
-        for ( auto const & value : values ) {
-            EXPECT_CALL( functor, Call( Ref( value ) ) ).WillOnce( Return( Result<void>{} ) );
-        } // for
-
-        auto const result = ::picolibrary::for_each<Functor_Can_Fail_Return_Functor>(
-            values.begin(), values.end(), functor.AsStdFunction() );
-
-        static_assert( std::is_same_v<decltype( result )::Value, decltype( functor.AsStdFunction() )> );
-
-        ASSERT_FALSE( result.is_error() );
-
-        EXPECT_CALL( functor, Call( _ ) ).WillOnce( Return( Result<void>{} ) );
-
-        EXPECT_FALSE( result.value()( random<std::uint_fast8_t>() ).is_error() );
-    }
-
-    {
-        auto const in_sequence = InSequence{};
-
-        auto functor = MockFunction<Result<void>( std::uint_fast8_t const & )>{};
-
-        auto const values = random_container<std::vector<std::uint_fast8_t>>();
-
-        for ( auto const & value : values ) {
-            EXPECT_CALL( functor, Call( Ref( value ) ) ).WillOnce( Return( Result<void>{} ) );
-        } // for
-
-        auto const result = ::picolibrary::for_each<Functor_Can_Fail_Discard_Functor>(
-            values.begin(), values.end(), functor.AsStdFunction() );
-
-        static_assert( std::is_same_v<decltype( result )::Value, void> );
-
-        ASSERT_FALSE( result.is_error() );
-    }
+    ::picolibrary::for_each( values.begin(), values.end(), functor.AsStdFunction() );
 }
 
 /**
- * \brief Verify picolibrary::generate() properly handles a functor error.
+ * \brief Verify picolibrary::for_each( Iterator, Iterator, Functor,
+ *        picolibrary::Functor_Can_Fail_Return_Functor ) properly handles a functor error.
  */
-TEST( generate, functorError )
+TEST( forEachFunctorCanFailReturnFunctorErrorHandling, functorError )
 {
-    auto functor = MockFunction<Result<std::uint_fast8_t>()>{};
+    auto functor = MockFunction<Result<void>( std::uint_fast8_t const & )>{};
 
-    auto const error = random<Mock_Error>();
+    auto const error = Mock_Error{ 0xA2 };
 
-    EXPECT_CALL( functor, Call() ).WillOnce( Return( error ) );
+    EXPECT_CALL( functor, Call( _ ) ).WillOnce( Return( error ) );
 
-    auto       output = std::vector<std::uint_fast8_t>( random<std::size_t>( 1, 15 ) );
-    auto const result = ::picolibrary::generate<Functor_Can_Fail>(
-        output.begin(), output.end(), functor.AsStdFunction() );
+    auto const values = std::vector<std::uint_fast8_t>{
+        // clang-format off
+
+        0x1C,
+        0x0C,
+        0xE6,
+        0xEC,
+        0x99,
+
+        // clang-format on
+    };
+
+    auto const result = ::picolibrary::for_each<Functor_Can_Fail_Return_Functor>(
+        values.begin(), values.end(), functor.AsStdFunction() );
 
     ASSERT_TRUE( result.is_error() );
-    EXPECT_EQ( result.error(), error );
+    ASSERT_EQ( result.error(), error );
 }
+
+/**
+ * \brief picolibrary::for_each( Iterator, Iterator, Functor,
+ *        picolibrary::Functor_Can_Fail_Return_Functor ) test fixture.
+ */
+class forEachFunctorCanFailReturnFunctor : public TestWithParam<std::vector<std::uint_fast8_t>> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, forEachFunctorCanFailReturnFunctor, ValuesIn( forEach_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::for_each( Iterator, Iterator, Functor,
+ *        picolibrary::Functor_Can_Fail_Return_Functor ) works properly.
+ */
+TEST_P( forEachFunctorCanFailReturnFunctor, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto functor = MockFunction<Result<void>( std::uint_fast8_t const & )>{};
+
+    auto const values = GetParam();
+
+    for ( auto const & value : values ) {
+        EXPECT_CALL( functor, Call( Ref( value ) ) ).WillOnce( Return( Result<void>{} ) );
+    } // for
+
+    auto const result = ::picolibrary::for_each<Functor_Can_Fail_Return_Functor>(
+        values.begin(), values.end(), functor.AsStdFunction() );
+
+    static_assert( std::is_same_v<decltype( result )::Value, decltype( functor.AsStdFunction() )> );
+
+    ASSERT_FALSE( result.is_error() );
+
+    EXPECT_CALL( functor, Call( _ ) ).WillOnce( Return( Result<void>{} ) );
+
+    ASSERT_FALSE( result.value()( 0x06 ).is_error() );
+}
+
+/**
+ * \brief Verify picolibrary::for_each( Iterator, Iterator, Functor,
+ *        picolibrary::Functor_Can_Fail_Discard_Functor ) properly handles a functor error.
+ */
+TEST( forEachFunctorCanFailDiscardFunctorErrorHandling, functorError )
+{
+    auto functor = MockFunction<Result<void>( std::uint_fast8_t const & )>{};
+
+    auto const error = Mock_Error{ 0xA2 };
+
+    EXPECT_CALL( functor, Call( _ ) ).WillOnce( Return( error ) );
+
+    auto const values = std::vector<std::uint_fast8_t>{
+        // clang-format off
+
+        0x1C,
+        0x0C,
+        0xE6,
+        0xEC,
+        0x99,
+
+        // clang-format on
+    };
+
+    auto const result = ::picolibrary::for_each<Functor_Can_Fail_Discard_Functor>(
+        values.begin(), values.end(), functor.AsStdFunction() );
+
+    ASSERT_TRUE( result.is_error() );
+    ASSERT_EQ( result.error(), error );
+}
+
+/**
+ * \brief picolibrary::for_each( Iterator, Iterator, Functor,
+ *        picolibrary::Functor_Can_Fail_Discard_Functor ) test fixture.
+ */
+class forEachFunctorCanFailDiscardFunctor : public TestWithParam<std::vector<std::uint_fast8_t>> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, forEachFunctorCanFailDiscardFunctor, ValuesIn( forEach_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::for_each( Iterator, Iterator, Functor,
+ *        picolibrary::Functor_Can_Fail_Discard_Functor ) works properly.
+ */
+TEST_P( forEachFunctorCanFailDiscardFunctor, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto functor = MockFunction<Result<void>( std::uint_fast8_t const & )>{};
+
+    auto const values = GetParam();
+
+    for ( auto const & value : values ) {
+        EXPECT_CALL( functor, Call( Ref( value ) ) ).WillOnce( Return( Result<void>{} ) );
+    } // for
+
+    auto const result = ::picolibrary::for_each<Functor_Can_Fail_Discard_Functor>(
+        values.begin(), values.end(), functor.AsStdFunction() );
+
+    static_assert( std::is_same_v<decltype( result )::Value, void> );
+
+    ASSERT_FALSE( result.is_error() );
+}
+
+/**
+ * \brief picolibrary::fill() test cases.
+ */
+std::size_t const fill_TEST_CASES[]{
+    // clang-format off
+
+    0,
+    5,
+
+    // clang-format on
+};
+
+/**
+ * \brief picolibrary::fill() test fixture.
+ */
+class fill : public TestWithParam<std::size_t> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, fill, ValuesIn( fill_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::fill() works properly.
  */
-TEST( fill, worksProperly )
+TEST_P( fill, worksProperly )
 {
-    auto       container = random_container<std::vector<std::uint_fast8_t>>();
-    auto const value     = random<std::uint_fast8_t>();
+    auto const size = GetParam();
+
+    auto       container = std::vector<std::uint_fast8_t>( size );
+    auto const value     = std::uint_fast8_t{ 0xCB };
 
     ::picolibrary::fill( container.begin(), container.end(), value );
 
-    EXPECT_THAT( container, Each( value ) );
+    ASSERT_THAT( container, Each( value ) );
 }
 
 /**
- * \brief Verify picolibrary::generate() works properly.
+ * \brief picolibrary::generate() test cases.
  */
-TEST( generate, worksProperly )
+std::vector<std::uint_fast8_t> const generate_TEST_CASES[]{
+    // clang-format off
+
+    {},
+    {
+        0x1C,
+        0x0C,
+        0xE6,
+        0xEC,
+        0x99,
+    }
+
+    // clang-format on
+};
+
+/**
+ * \brief picolibrary::generate( Iterator, Iterator, Functor ) test fixture.
+ */
+class generate : public TestWithParam<std::vector<std::uint_fast8_t>> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, generate, ValuesIn( generate_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::generate( Iterator, Iterator, Functor ) works properly.
+ */
+TEST_P( generate, worksProperly )
 {
-    {
-        auto const in_sequence = InSequence{};
+    auto const in_sequence = InSequence{};
 
-        auto functor = MockFunction<std::uint_fast8_t()>{};
+    auto functor = MockFunction<std::uint_fast8_t()>{};
 
-        auto const values = random_container<std::vector<std::uint_fast8_t>>();
+    auto const values = GetParam();
 
-        for ( auto const value : values ) {
-            EXPECT_CALL( functor, Call() ).WillOnce( Return( value ) );
-        } // for
+    for ( auto const value : values ) {
+        EXPECT_CALL( functor, Call() ).WillOnce( Return( value ) );
+    } // for
 
-        auto output = std::vector<std::uint_fast8_t>( values.size() );
+    auto output = std::vector<std::uint_fast8_t>( values.size() );
 
-        ::picolibrary::generate( output.begin(), output.end(), functor.AsStdFunction() );
+    ::picolibrary::generate( output.begin(), output.end(), functor.AsStdFunction() );
 
-        EXPECT_EQ( output, values );
-    }
-
-    {
-        auto const in_sequence = InSequence{};
-
-        auto functor = MockFunction<Result<std::uint_fast8_t>()>{};
-
-        auto const values = random_container<std::vector<std::uint_fast8_t>>();
-
-        for ( auto const value : values ) {
-            EXPECT_CALL( functor, Call() ).WillOnce( Return( value ) );
-        } // for
-
-        auto output = std::vector<std::uint_fast8_t>( values.size() );
-
-        EXPECT_FALSE( ::picolibrary::generate<Functor_Can_Fail>(
-                          output.begin(), output.end(), functor.AsStdFunction() )
-                          .is_error() );
-
-        EXPECT_EQ( output, values );
-    }
+    ASSERT_EQ( output, values );
 }
 
 /**
- * \brief picolibrary::min() works properly.
+ * \brief Verify picolibrary::generate( Iterator, Iterator, Functor,
+ *        picolibrary::Functor_Can_Fail ) properly handles a functor error.
  */
-TEST( min, worksProperly )
+TEST( generateFunctorCanFailErrorHandling, functorError )
 {
-    {
-        auto const a = random<std::uint_fast8_t>(
-            0, std::numeric_limits<std::uint_fast8_t>::max() - 1 );
-        auto const b = random<std::uint_fast8_t>( a + 1 );
+    auto functor = MockFunction<Result<std::uint_fast8_t>()>{};
 
-        EXPECT_THAT( ::picolibrary::min( a, b ), Ref( a ) );
-    }
+    auto const error = Mock_Error{ 0xA2 };
 
-    {
-        auto const b = random<std::uint_fast8_t>(
-            0, std::numeric_limits<std::uint_fast8_t>::max() - 1 );
-        auto const a = random<std::uint_fast8_t>( b + 1 );
+    EXPECT_CALL( functor, Call() ).WillOnce( Return( error ) );
 
-        EXPECT_THAT( ::picolibrary::min( a, b ), Ref( b ) );
-    }
+    auto       output = std::vector<std::uint_fast8_t>( 5 );
+    auto const result = ::picolibrary::generate<Functor_Can_Fail>(
+        output.begin(), output.end(), functor.AsStdFunction() );
 
-    {
-        auto const a = random<std::uint_fast8_t>();
-        auto const b = a;
-
-        EXPECT_THAT( ::picolibrary::min( a, b ), Ref( a ) );
-    }
+    ASSERT_TRUE( result.is_error() );
+    ASSERT_EQ( result.error(), error );
 }
 
 /**
- * \brief picolibrary::max() works properly.
+ * \brief picolibrary::generate( Iterator, Iterator, Functor,
+ *        picolibrary::Functor_Can_Fail ) test fixture.
  */
-TEST( max, worksProperly )
+class generateFunctorCanFail : public TestWithParam<std::vector<std::uint_fast8_t>> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, generateFunctorCanFail, ValuesIn( generate_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::generate( Iterator, Iterator, Functor,
+ *        picolibrary::Functor_Can_Fail ) works properly.
+ */
+TEST_P( generateFunctorCanFail, functorError )
 {
-    {
-        auto const a = random<std::uint_fast8_t>(
-            0, std::numeric_limits<std::uint_fast8_t>::max() - 1 );
-        auto const b = random<std::uint_fast8_t>( a + 1 );
+    auto const in_sequence = InSequence{};
 
-        EXPECT_THAT( ::picolibrary::max( a, b ), Ref( b ) );
-    }
+    auto functor = MockFunction<Result<std::uint_fast8_t>()>{};
 
-    {
-        auto const b = random<std::uint_fast8_t>(
-            0, std::numeric_limits<std::uint_fast8_t>::max() - 1 );
-        auto const a = random<std::uint_fast8_t>( b + 1 );
+    auto const values = GetParam();
 
-        EXPECT_THAT( ::picolibrary::max( a, b ), Ref( a ) );
-    }
+    for ( auto const value : values ) {
+        EXPECT_CALL( functor, Call() ).WillOnce( Return( value ) );
+    } // for
 
-    {
-        auto const a = random<std::uint_fast8_t>();
-        auto const b = a;
+    auto output = std::vector<std::uint_fast8_t>( values.size() );
 
-        EXPECT_THAT( ::picolibrary::max( a, b ), Ref( a ) );
-    }
+    EXPECT_FALSE( ::picolibrary::generate<Functor_Can_Fail>(
+                      output.begin(), output.end(), functor.AsStdFunction() )
+                      .is_error() );
+
+    ASSERT_EQ( output, values );
 }
 
 /**
- * \brief Verify picolibrary::equal() works properly.
+ * \brief Verify picolibrary::min() works properly when a is less than b, and a and b are
+ *        not adjacent.
  */
-TEST( equal, worksProperly )
+TEST( min, worksProperlyALessBNotAdjacent )
 {
-    {
-        auto const values = random_container<std::vector<std::uint_fast8_t>>();
+    auto const a = std::uint_fast8_t{ 28 };
+    auto const b = std::uint_fast8_t{ 199 };
 
-        EXPECT_TRUE( ::picolibrary::equal( values.begin(), values.end(), values.begin() ) );
-        EXPECT_TRUE( ::picolibrary::equal(
-            values.begin(), values.end(), values.begin(), []( auto a, auto b ) {
-                return a == b;
-            } ) );
-    }
+    ASSERT_THAT( ::picolibrary::min( a, b ), Ref( a ) );
+}
 
-    {
-        auto const [ values_1, values_2 ] = random_unique_container_pair<std::vector<std::uint_fast8_t>>();
+/**
+ * \brief Verify picolibrary::min() works properly when a is less than b, and a and b are
+ *        adjacent.
+ */
+TEST( min, worksProperlyALessBAdjacent )
+{
+    auto const a = std::uint_fast8_t{ 198 };
+    auto const b = std::uint_fast8_t{ 199 };
 
-        EXPECT_FALSE( ::picolibrary::equal( values_1.begin(), values_1.end(), values_2.begin() ) );
-        EXPECT_FALSE( ::picolibrary::equal(
-            values_1.begin(), values_1.end(), values_2.begin(), []( auto a, auto b ) {
-                return a == b;
-            } ) );
-    }
+    ASSERT_THAT( ::picolibrary::min( a, b ), Ref( a ) );
+}
 
-    {
-        auto const values = random_container<std::vector<std::uint_fast8_t>>();
+/**
+ * \brief Verify picolibrary::min() works properly when a equals b.
+ */
+TEST( min, worksProperlyAEqualB )
+{
+    auto const a = std::uint_fast8_t{ 199 };
+    auto const b = std::uint_fast8_t{ 199 };
 
-        EXPECT_TRUE( ::picolibrary::equal(
-            values.begin(), values.end(), values.begin(), values.end() ) );
-        EXPECT_TRUE( ::picolibrary::equal(
-            values.begin(), values.end(), values.begin(), values.end(), []( auto a, auto b ) {
-                return a == b;
-            } ) );
-    }
+    ASSERT_THAT( ::picolibrary::min( a, b ), Ref( a ) );
+}
 
-    {
-        auto const [ size_1, size_2 ] = random_unique_pair<std::uint8_t>();
-        auto const values_1 = random_container<std::vector<std::uint_fast8_t>>( size_1 );
-        auto const values_2 = random_container<std::vector<std::uint_fast8_t>>( size_2 );
+/**
+ * \brief Verify picolibrary::min() works properly when a is greater than b, and a and b
+ *        are adjacent.
+ */
+TEST( min, worksProperlyAGreaterBAdjacent )
+{
+    auto const a = std::uint_fast8_t{ 200 };
+    auto const b = std::uint_fast8_t{ 199 };
 
-        EXPECT_FALSE( ::picolibrary::equal(
-            values_1.begin(), values_1.end(), values_2.begin(), values_2.end() ) );
-        EXPECT_FALSE( ::picolibrary::equal(
-            values_1.begin(), values_1.end(), values_2.begin(), values_2.end(), []( auto a, auto b ) {
-                return a == b;
-            } ) );
-    }
+    ASSERT_THAT( ::picolibrary::min( a, b ), Ref( b ) );
+}
 
-    {
-        auto const [ values_1, values_2 ] = random_unique_container_pair<std::vector<std::uint_fast8_t>>();
+/**
+ * \brief Verify picolibrary::min() works properly when a is greater than b, and a and b
+ *        are not adjacent.
+ */
+TEST( min, worksProperlyAGreaterBNotAdjacent )
+{
+    auto const a = std::uint_fast8_t{ 232 };
+    auto const b = std::uint_fast8_t{ 199 };
 
-        EXPECT_FALSE( ::picolibrary::equal(
-            values_1.begin(), values_1.end(), values_2.begin(), values_2.end() ) );
-        EXPECT_FALSE( ::picolibrary::equal(
-            values_1.begin(), values_1.end(), values_2.begin(), values_2.end(), []( auto a, auto b ) {
-                return a == b;
-            } ) );
-    }
+    ASSERT_THAT( ::picolibrary::min( a, b ), Ref( b ) );
+}
+
+/**
+ * \brief Verify picolibrary::max() works properly when a is less than b, and a and b are
+ *        not adjacent.
+ */
+TEST( max, worksProperlyALessBNotAdjacent )
+{
+    auto const a = std::uint_fast8_t{ 28 };
+    auto const b = std::uint_fast8_t{ 199 };
+
+    ASSERT_THAT( ::picolibrary::max( a, b ), Ref( b ) );
+}
+
+/**
+ * \brief Verify picolibrary::max() works properly when a is less than b, and a and b are
+ *        adjacent.
+ */
+TEST( max, worksProperlyALessBAdjacent )
+{
+    auto const a = std::uint_fast8_t{ 198 };
+    auto const b = std::uint_fast8_t{ 199 };
+
+    ASSERT_THAT( ::picolibrary::max( a, b ), Ref( b ) );
+}
+
+/**
+ * \brief Verify picolibrary::max() works properly when a equals b.
+ */
+TEST( max, worksProperlyAEqualB )
+{
+    auto const a = std::uint_fast8_t{ 199 };
+    auto const b = std::uint_fast8_t{ 199 };
+
+    ASSERT_THAT( ::picolibrary::max( a, b ), Ref( a ) );
+}
+
+/**
+ * \brief Verify picolibrary::max() works properly when a is greater than b, and a and b
+ *        are adjacent.
+ */
+TEST( max, worksProperlyAGreaterBAdjacent )
+{
+    auto const a = std::uint_fast8_t{ 200 };
+    auto const b = std::uint_fast8_t{ 199 };
+
+    ASSERT_THAT( ::picolibrary::max( a, b ), Ref( a ) );
+}
+
+/**
+ * \brief Verify picolibrary::max() works properly when a is greater than b, and a and b
+ *        are not adjacent.
+ */
+TEST( max, worksProperlyAGreaterBNotAdjacent )
+{
+    auto const a = std::uint_fast8_t{ 232 };
+    auto const b = std::uint_fast8_t{ 199 };
+
+    ASSERT_THAT( ::picolibrary::max( a, b ), Ref( a ) );
+}
+
+/**
+ * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2 ) works properly
+ *        when the range is empty.
+ */
+TEST( equal3Iterators, worksProperlyEmpty )
+{
+    // clang-format off
+    auto const range_1 = std::vector<std::uint_fast8_t>{};
+    auto const range_2 = std::vector<std::uint_fast8_t>{};
+    // clang-format on
+
+    ASSERT_TRUE( ::picolibrary::equal( range_1.begin(), range_1.end(), range_2.begin() ) );
+}
+
+/**
+ * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2 ) works properly
+ *        when the contents of the ranges are not equal.
+ */
+TEST( equal3Iterators, worksProperlyContentsNotEqual )
+{
+    // clang-format off
+    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
+    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6C, 0x4A, 0x32, };
+    // clang-format on
+
+    ASSERT_FALSE( ::picolibrary::equal( range_1.begin(), range_1.end(), range_2.begin() ) );
+}
+
+/**
+ * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2 ) works properly
+ *        when the contents of the ranges are equal.
+ */
+TEST( equal3Iterators, worksProperlyContentsEqual )
+{
+    // clang-format off
+    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
+    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
+    // clang-format on
+
+    ASSERT_TRUE( ::picolibrary::equal( range_1.begin(), range_1.end(), range_2.begin() ) );
+}
+
+/**
+ * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2 )
+ *        works properly when both ranges are empty.
+ */
+TEST( equal4Iterators, worksProperlyEmpty )
+{
+    // clang-format off
+    auto const range_1 = std::vector<std::uint_fast8_t>{};
+    auto const range_2 = std::vector<std::uint_fast8_t>{};
+    // clang-format on
+
+    ASSERT_TRUE( ::picolibrary::equal(
+        range_1.begin(), range_1.end(), range_2.begin(), range_2.end() ) );
+}
+
+/**
+ * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2 )
+ *        works properly when the sizes of the ranges are not equal, and the contents of
+ *        the ranges are not equal.
+ */
+TEST( equal4Iterators, worksProperlySizesNotEqualContentsNotEqual )
+{
+    // clang-format off
+    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, };
+    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6C, 0x4A, 0x32, };
+    // clang-format on
+
+    ASSERT_FALSE( ::picolibrary::equal(
+        range_1.begin(), range_1.end(), range_2.begin(), range_2.end() ) );
+}
+
+/**
+ * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2 )
+ *        works properly when the sizes of the ranges are not equal, and the contents of
+ *        the ranges are equal.
+ */
+TEST( equal4Iterators, worksProperlySizesNotEqualContentsEqual )
+{
+    // clang-format off
+    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, };
+    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
+    // clang-format on
+
+    ASSERT_FALSE( ::picolibrary::equal(
+        range_1.begin(), range_1.end(), range_2.begin(), range_2.end() ) );
+}
+
+/**
+ * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2 )
+ *        works properly when the sizes of the ranges are equal, and the contents of the
+ *        ranges are not equal.
+ */
+TEST( equal4Iterators, worksProperlySizesEqualContentsNotEqual )
+{
+    // clang-format off
+    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
+    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6C, 0x4A, 0x32, };
+    // clang-format on
+
+    ASSERT_FALSE( ::picolibrary::equal(
+        range_1.begin(), range_1.end(), range_2.begin(), range_2.end() ) );
+}
+
+/**
+ * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2 )
+ *        works properly when the sizes of the ranges are equal, and the contents of the
+ *        ranges are equal.
+ */
+TEST( equal4Iterators, worksProperlySizesEqualContentsEqual )
+{
+    // clang-format off
+    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
+    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
+    // clang-format on
+
+    ASSERT_TRUE( ::picolibrary::equal(
+        range_1.begin(), range_1.end(), range_2.begin(), range_2.end() ) );
+}
+
+/**
+ * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Predicate ) works
+ *        properly when the range is empty.
+ */
+TEST( equal3IteratorsPredicate, worksProperlyEmpty )
+{
+    // clang-format off
+    auto const range_1 = std::vector<std::uint_fast8_t>{};
+    auto const range_2 = std::vector<std::uint_fast8_t>{};
+    // clang-format on
+
+    ASSERT_TRUE( ::picolibrary::equal(
+        range_1.begin(), range_1.end(), range_2.begin(), []( auto a, auto b ) {
+            return a == b;
+        } ) );
+}
+
+/**
+ * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Predicate ) works
+ *        properly when the contents of the ranges are not equal.
+ */
+TEST( equal3IteratorsPredicate, worksProperlyContentsNotEqual )
+{
+    // clang-format off
+    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
+    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6C, 0x4A, 0x32, };
+    // clang-format on
+
+    ASSERT_FALSE( ::picolibrary::equal(
+        range_1.begin(), range_1.end(), range_2.begin(), []( auto a, auto b ) {
+            return a == b;
+        } ) );
+}
+
+/**
+ * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Predicate ) works
+ *        properly when the contents of the ranges are equal.
+ */
+TEST( equal3IteratorsPredicate, worksProperlyContentsEqual )
+{
+    // clang-format off
+    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
+    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
+    // clang-format on
+
+    ASSERT_TRUE( ::picolibrary::equal(
+        range_1.begin(), range_1.end(), range_2.begin(), []( auto a, auto b ) {
+            return a == b;
+        } ) );
+}
+
+/**
+ * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2,
+ *        Predicate ) works properly when both ranges are empty.
+ */
+TEST( equal4IteratorsPredicate, worksProperlyEmpty )
+{
+    // clang-format off
+    auto const range_1 = std::vector<std::uint_fast8_t>{};
+    auto const range_2 = std::vector<std::uint_fast8_t>{};
+    // clang-format on
+
+    ASSERT_TRUE( ::picolibrary::equal(
+        range_1.begin(), range_1.end(), range_2.begin(), range_2.end(), []( auto a, auto b ) {
+            return a == b;
+        } ) );
+}
+
+/**
+ * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2,
+ *        Predicate ) works properly when the sizes of the ranges are not equal, and the
+ *        contents of the ranges are not equal.
+ */
+TEST( equal4IteratorsPredicate, worksProperlySizesNotEqualContentsNotEqual )
+{
+    // clang-format off
+    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, };
+    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6C, 0x4A, 0x32, };
+    // clang-format on
+
+    ASSERT_FALSE( ::picolibrary::equal(
+        range_1.begin(), range_1.end(), range_2.begin(), range_2.end(), []( auto a, auto b ) {
+            return a == b;
+        } ) );
+}
+
+/**
+ * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2,
+ *        Predicate ) works properly when the sizes of the ranges are not equal, and the
+ *        contents of the ranges are equal.
+ */
+TEST( equal4IteratorsPredicate, worksProperlySizesNotEqualContentsEqual )
+{
+    // clang-format off
+    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, };
+    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
+    // clang-format on
+
+    ASSERT_FALSE( ::picolibrary::equal(
+        range_1.begin(), range_1.end(), range_2.begin(), range_2.end(), []( auto a, auto b ) {
+            return a == b;
+        } ) );
+}
+
+/**
+ * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2,
+ *        Predicate ) works properly when the sizes of the ranges are equal, and the
+ *        contents of the ranges are not equal.
+ */
+TEST( equal4IteratorsPredicate, worksProperlySizesEqualContentsNotEqual )
+{
+    // clang-format off
+    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
+    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6C, 0x4A, 0x32, };
+    // clang-format on
+
+    ASSERT_FALSE( ::picolibrary::equal(
+        range_1.begin(), range_1.end(), range_2.begin(), range_2.end(), []( auto a, auto b ) {
+            return a == b;
+        } ) );
+}
+
+/**
+ * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2,
+ *        Predicate ) works properly when the sizes of the ranges are equal, and the
+ *        contents of the ranges are equal.
+ */
+TEST( equal4IteratorsPredicate, worksProperlySizesEqualContentsEqual )
+{
+    // clang-format off
+    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
+    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
+    // clang-format on
+
+    ASSERT_TRUE( ::picolibrary::equal(
+        range_1.begin(), range_1.end(), range_2.begin(), range_2.end(), []( auto a, auto b ) {
+            return a == b;
+        } ) );
 }
 
 /**
