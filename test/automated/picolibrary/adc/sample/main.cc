@@ -60,11 +60,9 @@ TEST( constructorDefault, worksProperly )
  * \tparam N The number of bits in the sample.
  * \tparam MIN_VALUE The minimum valid sample.
  * \tparam MAX_VALUE The maximum valid sample.
- * \tparam MAX_ADJACENT_VALUE The valid sample that is adjacent to the maximum valid
- *         sample.
  * \tparam OTHER_VALUE An arbitrary valid sample.
  */
-template<typename T, std::uint_fast8_t N, T MIN_VALUE, T MAX_VALUE, T MAX_ADJACENT_VALUE, T OTHER_VALUE>
+template<typename T, std::uint_fast8_t N, T MIN_VALUE, T MAX_VALUE, T OTHER_VALUE>
 struct constructorUnsignedInteger_Test_Case {
     /**
      * \brief The sample type.
@@ -82,11 +80,6 @@ struct constructorUnsignedInteger_Test_Case {
     static constexpr auto MAX = MAX_VALUE;
 
     /**
-     * \brief The valid sample that is adjacent to the maximum valid sample.
-     */
-    static constexpr auto MAX_ADJACENT = MAX_ADJACENT_VALUE;
-
-    /**
      * \brief An arbitrary valid sample.
      */
     static constexpr auto OTHER = OTHER_VALUE;
@@ -101,14 +94,14 @@ struct constructorUnsignedInteger_Test_Case {
 using constructorUnsignedInteger_Test_Cases = Types<
     // clang-format off
 
-    constructorUnsignedInteger_Test_Case<std::uint_fast8_t,   8, 0,      255,      254,       51>,
-    constructorUnsignedInteger_Test_Case<std::uint_fast16_t, 10, 0,     1023,     1022,      167>,
-    constructorUnsignedInteger_Test_Case<std::uint_fast16_t, 12, 0,     4095,     4094,     3700>,
-    constructorUnsignedInteger_Test_Case<std::uint_fast16_t, 14, 0,    16383,    16382,     8533>,
-    constructorUnsignedInteger_Test_Case<std::uint_fast16_t, 16, 0,    65535,    65534,    52593>,
-    constructorUnsignedInteger_Test_Case<std::uint_fast32_t, 18, 0,   262143,   262142,   102396>,
-    constructorUnsignedInteger_Test_Case<std::uint_fast32_t, 20, 0,  1048575,  1048574,   407638>,
-    constructorUnsignedInteger_Test_Case<std::uint_fast32_t, 24, 0, 16777215, 16777214, 12395235>
+    constructorUnsignedInteger_Test_Case<std::uint_fast8_t,   8, 0,      255,       51>,
+    constructorUnsignedInteger_Test_Case<std::uint_fast16_t, 10, 0,     1023,      167>,
+    constructorUnsignedInteger_Test_Case<std::uint_fast16_t, 12, 0,     4095,     3700>,
+    constructorUnsignedInteger_Test_Case<std::uint_fast16_t, 14, 0,    16383,     8533>,
+    constructorUnsignedInteger_Test_Case<std::uint_fast16_t, 16, 0,    65535,    52593>,
+    constructorUnsignedInteger_Test_Case<std::uint_fast32_t, 18, 0,   262143,   102396>,
+    constructorUnsignedInteger_Test_Case<std::uint_fast32_t, 20, 0,  1048575,   407638>,
+    constructorUnsignedInteger_Test_Case<std::uint_fast32_t, 24, 0, 16777215, 12395235>
 
     // clang-format on
     >;
@@ -168,9 +161,9 @@ TYPED_TEST( constructorUnsignedInteger, worksProperlyMaxAdjacent )
 
     using Sample = typename Test_Case::Sample;
 
-    auto const sample = Sample{ Test_Case::MAX_ADJACENT };
+    auto const sample = Sample{ Test_Case::MAX - 1 };
 
-    ASSERT_EQ( sample.as_unsigned_integer(), Test_Case::MAX_ADJACENT );
+    ASSERT_EQ( sample.as_unsigned_integer(), Test_Case::MAX - 1 );
 }
 
 /**
@@ -248,9 +241,9 @@ TYPED_TEST( constructorBypassPreconditionExpectationChecksUnsignedInteger, works
 
     using Sample = typename Test_Case::Sample;
 
-    auto const sample = Sample{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, Test_Case::MAX_ADJACENT };
+    auto const sample = Sample{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, Test_Case::MAX - 1 };
 
-    ASSERT_EQ( sample.as_unsigned_integer(), Test_Case::MAX_ADJACENT );
+    ASSERT_EQ( sample.as_unsigned_integer(), Test_Case::MAX - 1 );
 }
 
 /**
