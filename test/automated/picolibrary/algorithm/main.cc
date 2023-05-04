@@ -54,13 +54,7 @@ using ::testing::ValuesIn;
  */
 std::vector<std::uint_fast8_t> const forEach_TEST_CASES[]{
     {},
-    {
-        0x1C,
-        0x0C,
-        0xE6,
-        0xEC,
-        0x99,
-    },
+    { 0x1C, 0x0C, 0xE6, 0xEC, 0x99 },
 };
 
 /**
@@ -101,9 +95,7 @@ TEST( forEachFunctorCanFailReturnFunctorErrorHandling, functorError )
 
     EXPECT_CALL( functor, Call( _ ) ).WillOnce( Return( error ) );
 
-    auto const values = std::vector<std::uint_fast8_t>{
-        0x1C, 0x0C, 0xE6, 0xEC, 0x99,
-    };
+    auto const values = std::vector<std::uint_fast8_t>{ 0x1C, 0x0C, 0xE6, 0xEC, 0x99 };
 
     auto const result = ::picolibrary::for_each<Functor_Can_Fail_Return_Functor>(
         values.begin(), values.end(), functor.AsStdFunction() );
@@ -161,9 +153,7 @@ TEST( forEachFunctorCanFailDiscardFunctorErrorHandling, functorError )
 
     EXPECT_CALL( functor, Call( _ ) ).WillOnce( Return( error ) );
 
-    auto const values = std::vector<std::uint_fast8_t>{
-        0x1C, 0x0C, 0xE6, 0xEC, 0x99,
-    };
+    auto const values = std::vector<std::uint_fast8_t>{ 0x1C, 0x0C, 0xE6, 0xEC, 0x99 };
 
     auto const result = ::picolibrary::for_each<Functor_Can_Fail_Discard_Functor>(
         values.begin(), values.end(), functor.AsStdFunction() );
@@ -241,13 +231,7 @@ TEST_P( fill, worksProperly )
  */
 std::vector<std::uint_fast8_t> const generate_TEST_CASES[]{
     {},
-    {
-        0x1C,
-        0x0C,
-        0xE6,
-        0xEC,
-        0x99,
-    },
+    { 0x1C, 0x0C, 0xE6, 0xEC, 0x99 },
 };
 
 /**
