@@ -21,376 +21,505 @@
  */
 
 #include <cstdint>
-#include <utility>
+#include <ios>
+#include <ostream>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/adc.h"
 #include "picolibrary/precondition.h"
-#include "picolibrary/testing/automated/random.h"
 
 namespace {
 
 using ::picolibrary::BYPASS_PRECONDITION_EXPECTATION_CHECKS;
 using ::picolibrary::ADC::Sample;
-using ::picolibrary::Testing::Automated::random;
 using ::testing::Test;
-
-template<typename Sample>
-auto random_unsigned_integer(
-    typename Sample::Unsigned_Integer min = Sample::min().as_unsigned_integer(),
-    typename Sample::Unsigned_Integer max = Sample::max().as_unsigned_integer() )
-{
-    return random<typename Sample::Unsigned_Integer>( min, max );
-}
-
-template<typename Sample>
-auto random_unique_unsigned_integer_pair()
-{
-    auto const a = random_unsigned_integer<Sample>();
-    auto const b = random_unsigned_integer<Sample>();
-
-    return std::pair<typename Sample::Unsigned_Integer, typename Sample::Unsigned_Integer>{
-        a, b != a ? b : b ^ random_unsigned_integer<Sample>( 1 )
-    };
-}
+using ::testing::TestWithParam;
+using ::testing::Types;
+using ::testing::ValuesIn;
 
 } // namespace
 
 /**
- * \brief picolibrary::ADC::Sample automated test sample types.
- */
-using Samples = ::testing::Types<
-    Sample<std::uint_fast8_t, 8>,
-    Sample<std::uint_fast16_t, 10>,
-    Sample<std::uint_fast16_t, 12>,
-    Sample<std::uint_fast16_t, 14>,
-    Sample<std::uint_fast16_t, 16>,
-    Sample<std::uint_fast32_t, 18>,
-    Sample<std::uint_fast32_t, 20>,
-    Sample<std::uint_fast32_t, 24>>;
-
-/**
- * \brief picolibrary::ADC::Sample::Sample() automated test fixture.
- *
- * \tparam Sample The picolibrary::ADC::Sample instantiation to be tested.
- */
-template<typename Sample>
-class constructorDefault : public Test {
-};
-
-/**
- * \brief picolibrary::ADC::Sample::Sample() automated test fixture.
- */
-TYPED_TEST_SUITE( constructorDefault, Samples );
-
-/**
  * \brief Verify picolibrary::ADC::Sample::Sample() works properly.
  */
-TYPED_TEST( constructorDefault, worksProperly )
+TEST( constructorDefault, worksProperly )
 {
-    using Sample = TypeParam;
+    auto const sample = Sample<std::uint_fast16_t, 10>{};
 
-    auto const sample = Sample{};
-
-    EXPECT_EQ( sample.as_unsigned_integer(), 0 );
+    ASSERT_EQ( sample.as_unsigned_integer(), 0 );
 }
 
 /**
  * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
- *        automated test fixture.
+ *        and picolibrary::ADC::Sample::Sample(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) test case.
  *
- * \tparam Sample The picolibrary::ADC::Sample instantiation to be tested.
+ * \tparam T The sample unsigned integer representation.
+ * \tparam N The number of bits in the sample.
+ * \tparam MIN_VALUE The minimum valid sample.
+ * \tparam MAX_VALUE The maximum valid sample.
+ * \tparam OTHER_VALUE An arbitrary valid sample.
  */
-template<typename Sample>
+template<typename T, std::uint_fast8_t N, T MIN_VALUE, T MAX_VALUE, T OTHER_VALUE>
+struct constructorUnsignedInteger_Test_Case {
+    /**
+     * \brief The sample type.
+     */
+    using Sample = ::picolibrary::ADC::Sample<T, N>;
+
+    /**
+     * \brief The minimum valid sample value.
+     */
+    static constexpr auto MIN = MIN_VALUE;
+
+    /**
+     * \brief The maximum valid sample value.
+     */
+    static constexpr auto MAX = MAX_VALUE;
+
+    /**
+     * \brief An arbitrary valid sample.
+     */
+    static constexpr auto OTHER = OTHER_VALUE;
+};
+
+/**
+ * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
+ *        and picolibrary::ADC::Sample::Sample(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) test cases.
+ */
+using constructorUnsignedInteger_Test_Cases = Types<
+    // clang-format off
+
+    constructorUnsignedInteger_Test_Case<std::uint_fast8_t,   8, 0,      255,       51>,
+    constructorUnsignedInteger_Test_Case<std::uint_fast16_t, 10, 0,     1023,      167>,
+    constructorUnsignedInteger_Test_Case<std::uint_fast16_t, 12, 0,     4095,     3700>,
+    constructorUnsignedInteger_Test_Case<std::uint_fast16_t, 14, 0,    16383,     8533>,
+    constructorUnsignedInteger_Test_Case<std::uint_fast16_t, 16, 0,    65535,    52593>,
+    constructorUnsignedInteger_Test_Case<std::uint_fast32_t, 18, 0,   262143,   102396>,
+    constructorUnsignedInteger_Test_Case<std::uint_fast32_t, 20, 0,  1048575,   407638>,
+    constructorUnsignedInteger_Test_Case<std::uint_fast32_t, 24, 0, 16777215, 12395235>
+
+    // clang-format on
+    >;
+
+/**
+ * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
+ *        test fixture.
+ *
+ * \tparam Test_Case The test case.
+ */
+template<typename Test_Case>
 class constructorUnsignedInteger : public Test {
 };
 
-/**
- * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
- *        automated test fixture.
- */
-TYPED_TEST_SUITE( constructorUnsignedInteger, Samples );
+TYPED_TEST_SUITE( constructorUnsignedInteger, constructorUnsignedInteger_Test_Cases );
 
 /**
  * \brief Verify picolibrary::ADC::Sample::Sample(
- *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly with the minimum
+ *        valid sample.
  */
-TYPED_TEST( constructorUnsignedInteger, worksProperly )
+TYPED_TEST( constructorUnsignedInteger, worksProperlyMin )
 {
-    using Sample = TypeParam;
+    using Test_Case = TypeParam;
 
-    auto const unsigned_integer = random_unsigned_integer<Sample>();
+    using Sample = typename Test_Case::Sample;
 
-    auto const sample = Sample{ unsigned_integer };
+    auto const sample = Sample{ Test_Case::MIN };
 
-    EXPECT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+    ASSERT_EQ( sample.as_unsigned_integer(), Test_Case::MIN );
+}
+
+/**
+ * \brief Verify picolibrary::ADC::Sample::Sample(
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly with the maximum
+ *        valid sample.
+ */
+TYPED_TEST( constructorUnsignedInteger, worksProperlyMax )
+{
+    using Test_Case = TypeParam;
+
+    using Sample = typename Test_Case::Sample;
+
+    auto const sample = Sample{ Test_Case::MAX };
+
+    ASSERT_EQ( sample.as_unsigned_integer(), Test_Case::MAX );
+}
+
+/**
+ * \brief Verify picolibrary::ADC::Sample::Sample(
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly with the valid
+ *        sample that is adjacent to the maximum valid sample.
+ */
+TYPED_TEST( constructorUnsignedInteger, worksProperlyMaxAdjacent )
+{
+    using Test_Case = TypeParam;
+
+    using Sample = typename Test_Case::Sample;
+
+    auto const sample = Sample{ Test_Case::MAX - 1 };
+
+    ASSERT_EQ( sample.as_unsigned_integer(), Test_Case::MAX - 1 );
+}
+
+/**
+ * \brief Verify picolibrary::ADC::Sample::Sample(
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly with an arbitrary
+ *        valid sample.
+ */
+TYPED_TEST( constructorUnsignedInteger, worksProperlyOther )
+{
+    using Test_Case = TypeParam;
+
+    using Sample = typename Test_Case::Sample;
+
+    auto const sample = Sample{ Test_Case::OTHER };
+
+    ASSERT_EQ( sample.as_unsigned_integer(), Test_Case::OTHER );
 }
 
 /**
  * \brief picolibrary::ADC::Sample::Sample(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
- *        picolibrary::ADC::Sample::Unsigned_Integer ) automated test fixture.
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) test fixture.
  *
- * \tparam Sample The picolibrary::ADC::Sample instantiation to be tested.
+ * \tparam Test_Case The test case.
  */
-template<typename Sample>
+template<typename Test_Case>
 class constructorBypassPreconditionExpectationChecksUnsignedInteger : public Test {
 };
 
-/**
- * \brief picolibrary::ADC::Sample::Sample(
- *        picolibrary::Bypass_Precondition_Expectation_Checks,
- *        picolibrary::ADC::Sample::Unsigned_Integer ) automated test fixture.
- */
-TYPED_TEST_SUITE( constructorBypassPreconditionExpectationChecksUnsignedInteger, Samples );
+TYPED_TEST_SUITE( constructorBypassPreconditionExpectationChecksUnsignedInteger, constructorUnsignedInteger_Test_Cases );
 
 /**
  * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
- *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly with the minimum
+ *        valid sample.
  */
-TYPED_TEST( constructorBypassPreconditionExpectationChecksUnsignedInteger, worksProperly )
+TYPED_TEST( constructorBypassPreconditionExpectationChecksUnsignedInteger, worksProperlyMin )
 {
-    using Sample = TypeParam;
+    using Test_Case = TypeParam;
 
-    auto const unsigned_integer = random_unsigned_integer<Sample>();
+    using Sample = typename Test_Case::Sample;
 
-    auto const sample = Sample{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, unsigned_integer };
+    auto const sample = Sample{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, Test_Case::MIN };
 
-    EXPECT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+    ASSERT_EQ( sample.as_unsigned_integer(), Test_Case::MIN );
 }
 
 /**
- * \brief picolibrary::ADC::Sample::operator==( picolibrary::ADC::Sample,
- *        picolibrary::ADC::Sample ) automated test fixture.
- *
- * \tparam Sample The picolibrary::ADC::Sample instantiation to be tested.
+ * \brief Verify picolibrary::ADC::Sample::Sample(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly with the maximum
+ *        valid sample.
  */
-template<typename Sample>
-class equalityOperator : public Test {
-};
-
-/**
- * \brief picolibrary::ADC::Sample::operator==( picolibrary::ADC::Sample,
- *        picolibrary::ADC::Sample ) automated test fixture.
- */
-TYPED_TEST_SUITE( equalityOperator, Samples );
-
-/**
- * \brief Verify picolibrary::ADC::Sample::operator==( picolibrary::ADC::Sample,
- *        picolibrary::ADC::Sample ) works properly.
- */
-TYPED_TEST( equalityOperator, worksProperly )
+TYPED_TEST( constructorBypassPreconditionExpectationChecksUnsignedInteger, worksProperlyMax )
 {
-    using Sample = TypeParam;
+    using Test_Case = TypeParam;
 
-    {
-        auto const lhs = random_unsigned_integer<Sample>();
-        auto const rhs = lhs;
+    using Sample = typename Test_Case::Sample;
 
-        EXPECT_TRUE( Sample{ lhs } == Sample{ rhs } );
-    }
+    auto const sample = Sample{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, Test_Case::MAX };
 
-    {
-        auto const [ lhs, rhs ] = random_unique_unsigned_integer_pair<Sample>();
-
-        EXPECT_FALSE( Sample{ lhs } == Sample{ rhs } );
-    }
+    ASSERT_EQ( sample.as_unsigned_integer(), Test_Case::MAX );
 }
 
 /**
- * \brief picolibrary::ADC::Sample::operator!=( picolibrary::ADC::Sample,
- *        picolibrary::ADC::Sample ) automated test fixture.
- *
- * \tparam Sample The picolibrary::ADC::Sample instantiation to be tested.
+ * \brief Verify picolibrary::ADC::Sample::Sample(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly with the valid
+ *        sample that is adjacent to the maximum valid sample.
  */
-template<typename Sample>
-class inequalityOperator : public Test {
-};
-
-/**
- * \brief picolibrary::ADC::Sample::operator!=( picolibrary::ADC::Sample,
- *        picolibrary::ADC::Sample ) automated test fixture.
- */
-TYPED_TEST_SUITE( inequalityOperator, Samples );
-
-/**
- * \brief Verify picolibrary::ADC::Sample::operator!=( picolibrary::ADC::Sample,
- *        picolibrary::ADC::Sample ) works properly.
- */
-TYPED_TEST( inequalityOperator, worksProperly )
+TYPED_TEST( constructorBypassPreconditionExpectationChecksUnsignedInteger, worksProperlyMaxAdjacent )
 {
-    using Sample = TypeParam;
+    using Test_Case = TypeParam;
 
-    {
-        auto const lhs = random_unsigned_integer<Sample>();
-        auto const rhs = lhs;
+    using Sample = typename Test_Case::Sample;
 
-        EXPECT_FALSE( Sample{ lhs } != Sample{ rhs } );
-    }
+    auto const sample = Sample{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, Test_Case::MAX - 1 };
 
-    {
-        auto const [ lhs, rhs ] = random_unique_unsigned_integer_pair<Sample>();
-
-        EXPECT_TRUE( Sample{ lhs } != Sample{ rhs } );
-    }
+    ASSERT_EQ( sample.as_unsigned_integer(), Test_Case::MAX - 1 );
 }
 
 /**
- * \brief picolibrary::ADC::Sample::operator<( picolibrary::ADC::Sample,
- *        picolibrary::ADC::Sample ) automated test fixture.
- *
- * \tparam Sample The picolibrary::ADC::Sample instantiation to be tested.
+ * \brief Verify picolibrary::ADC::Sample::Sample(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly with an arbitrary
+ *        valid sample.
  */
-template<typename Sample>
-class lessThanOperator : public Test {
-};
-
-/**
- * \brief picolibrary::ADC::Sample::operator<( picolibrary::ADC::Sample,
- *        picolibrary::ADC::Sample ) automated test fixture.
- */
-TYPED_TEST_SUITE( lessThanOperator, Samples );
-
-/**
- * \brief Verify picolibrary::ADC::Sample::operator<( picolibrary::ADC::Sample,
- *        picolibrary::ADC::Sample ) works properly.
- */
-TYPED_TEST( lessThanOperator, worksProperly )
+TYPED_TEST( constructorBypassPreconditionExpectationChecksUnsignedInteger, worksProperlyOther )
 {
-    using Sample = TypeParam;
+    using Test_Case = TypeParam;
 
-    {
-        auto const rhs = random_unsigned_integer<Sample>( 0 + 1 );
-        auto const lhs = random_unsigned_integer<Sample>( 0, rhs - 1 );
+    using Sample = typename Test_Case::Sample;
 
-        EXPECT_TRUE( Sample{ lhs } < Sample{ rhs } );
-    }
+    auto const sample = Sample{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, Test_Case::OTHER };
 
-    {
-        auto const rhs = random_unsigned_integer<Sample>();
-        auto const lhs = random_unsigned_integer<Sample>( rhs );
-
-        EXPECT_FALSE( Sample{ lhs } < Sample{ rhs } );
-    }
+    ASSERT_EQ( sample.as_unsigned_integer(), Test_Case::OTHER );
 }
 
 /**
- * \brief picolibrary::ADC::Sample::operator>( picolibrary::ADC::Sample,
- *        picolibrary::ADC::Sample ) automated test fixture.
- *
- * \tparam Sample The picolibrary::ADC::Sample instantiation to be tested.
+ * \brief picolibrary::ADC::operator==( picolibrary::ADC::Sample, picolibrary::ADC::Sample
+ *        ), picolibrary::ADC::operator!=( picolibrary::ADC::Sample,
+ *        picolibrary::ADC::Sample ), picolibrary::ADC::operator<(
+ *        picolibrary::ADC::Sample, picolibrary::ADC::Sample ),
+ *        picolibrary::ADC::operator>( picolibrary::ADC::Sample, picolibrary::ADC::Sample
+ *        ), picolibrary::ADC::operator<=( picolibrary::ADC::Sample,
+ *        picolibrary::ADC::Sample ), and picolibrary::ADC::operator>=(
+ *        picolibrary::ADC::Sample, picolibrary::ADC::Sample ) test case.
  */
-template<typename Sample>
-class greaterThanOperator : public Test {
+struct comparisonOperator_Test_Case {
+    /**
+     * \brief The left hand size of the comparison.
+     */
+    Sample<std::uint_fast16_t, 10> lhs;
+
+    /**
+     * \brief The right hand size of the comparison.
+     */
+    Sample<std::uint_fast16_t, 10> rhs;
+
+    /**
+     * \brief The result of the comparison.
+     */
+    bool comparison_result;
 };
 
-/**
- * \brief picolibrary::ADC::Sample::operator>( picolibrary::ADC::Sample,
- *        picolibrary::ADC::Sample ) automated test fixture.
- */
-TYPED_TEST_SUITE( greaterThanOperator, Samples );
-
-/**
- * \brief Verify picolibrary::ADC::Sample::operator>( picolibrary::ADC::Sample,
- *        picolibrary::ADC::Sample ) works properly.
- */
-TYPED_TEST( greaterThanOperator, worksProperly )
+auto operator<<( std::ostream & stream, comparisonOperator_Test_Case const & test_case )
+    -> std::ostream &
 {
-    using Sample = TypeParam;
+    // clang-format off
 
-    {
-        auto const lhs = random_unsigned_integer<Sample>( 0 + 1 );
-        auto const rhs = random_unsigned_integer<Sample>( 0, lhs - 1 );
+    return stream << "{ "
+                  << ".lhs = " << test_case.lhs.as_unsigned_integer()
+                  << ", "
+                  << ".rhs = " << test_case.rhs.as_unsigned_integer()
+                  << ", "
+                  << ".comparison_result = " << std::boolalpha << test_case.comparison_result
+                  << " }";
 
-        EXPECT_TRUE( Sample{ lhs } > Sample{ rhs } );
-    }
-
-    {
-        auto const lhs = random_unsigned_integer<Sample>();
-        auto const rhs = random_unsigned_integer<Sample>( lhs );
-
-        EXPECT_FALSE( Sample{ lhs } > Sample{ rhs } );
-    }
+    // clang-format on
 }
 
 /**
- * \brief picolibrary::ADC::Sample::operator<=( picolibrary::ADC::Sample,
- *        picolibrary::ADC::Sample ) automated test fixture.
- *
- * \tparam Sample The picolibrary::ADC::Sample instantiation to be tested.
+ * \brief picolibrary::ADC::operator==( picolibrary::ADC::Sample, picolibrary::ADC::Sample
+ *        ) test cases.
  */
-template<typename Sample>
-class lessThanOrEqualToOperator : public Test {
+comparisonOperator_Test_Case const equalityOperator_TEST_CASES[]{
+    // clang-format off
+
+    {  21, 448, false },
+    { 448, 449, false },
+    { 449, 449, true  },
+    { 449, 450, false },
+    { 450, 944, false },
+
+    // clang-format on
 };
 
 /**
- * \brief picolibrary::ADC::Sample::operator<=( picolibrary::ADC::Sample,
- *        picolibrary::ADC::Sample ) automated test fixture.
+ * \brief picolibrary::ADC::operator==( picolibrary::ADC::Sample, picolibrary::ADC::Sample
+ *        ) test fixture.
  */
-TYPED_TEST_SUITE( lessThanOrEqualToOperator, Samples );
+class equalityOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, equalityOperator, ValuesIn( equalityOperator_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::ADC::Sample::operator<=( picolibrary::ADC::Sample,
- *        picolibrary::ADC::Sample ) works properly.
+ * \brief Verify picolibrary::ADC::operator==( picolibrary::ADC::Sample,
+ *        picolibrary::ADC::Sample) works properly.
  */
-TYPED_TEST( lessThanOrEqualToOperator, worksProperly )
+TEST_P( equalityOperator, worksProperly )
 {
-    using Sample = TypeParam;
+    auto const test_case = GetParam();
 
-    {
-        auto const lhs = random_unsigned_integer<Sample>();
-        auto const rhs = random_unsigned_integer<Sample>( lhs );
-
-        EXPECT_TRUE( Sample{ lhs } <= Sample{ rhs } );
-    }
-
-    {
-        auto const lhs = random_unsigned_integer<Sample>( 0 + 1 );
-        auto const rhs = random_unsigned_integer<Sample>( 0, lhs - 1 );
-
-        EXPECT_FALSE( Sample{ lhs } <= Sample{ rhs } );
-    }
+    ASSERT_EQ( test_case.lhs == test_case.rhs, test_case.comparison_result );
 }
 
 /**
- * \brief picolibrary::ADC::Sample::operator>=( picolibrary::ADC::Sample,
- *        picolibrary::ADC::Sample ) automated test fixture.
- *
- * \tparam Sample The picolibrary::ADC::Sample instantiation to be tested.
+ * \brief picolibrary::ADC::operator!=( picolibrary::ADC::Sample, picolibrary::ADC::Sample
+ *        ) test cases.
  */
-template<typename Sample>
-class greaterThanOrEqualToOperator : public Test {
+comparisonOperator_Test_Case const inequalityOperator_TEST_CASES[]{
+    // clang-format off
+
+    {  21, 448, true  },
+    { 448, 449, true  },
+    { 449, 449, false },
+    { 449, 450, true  },
+    { 450, 944, true  },
+
+    // clang-format on
 };
 
 /**
- * \brief picolibrary::ADC::Sample::operator>=( picolibrary::ADC::Sample,
- *        picolibrary::ADC::Sample ) automated test fixture.
+ * \brief picolibrary::ADC::operator!=( picolibrary::ADC::Sample, picolibrary::ADC::Sample
+ *        ) test fixture.
  */
-TYPED_TEST_SUITE( greaterThanOrEqualToOperator, Samples );
+class inequalityOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, inequalityOperator, ValuesIn( inequalityOperator_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::ADC::Sample::operator>=( picolibrary::ADC::Sample,
- *        picolibrary::ADC::Sample ) works properly.
+ * \brief Verify picolibrary::ADC::operator!=( picolibrary::ADC::Sample,
+ *        picolibrary::ADC::Sample) works properly.
  */
-TYPED_TEST( greaterThanOrEqualToOperator, worksProperly )
+TEST_P( inequalityOperator, worksProperly )
 {
-    using Sample = TypeParam;
+    auto const test_case = GetParam();
 
-    {
-        auto const rhs = random_unsigned_integer<Sample>();
-        auto const lhs = random_unsigned_integer<Sample>( rhs );
+    ASSERT_EQ( test_case.lhs != test_case.rhs, test_case.comparison_result );
+}
 
-        EXPECT_TRUE( Sample{ lhs } >= Sample{ rhs } );
-    }
+/**
+ * \brief picolibrary::ADC::operator<( picolibrary::ADC::Sample, picolibrary::ADC::Sample)
+ *        test cases.
+ */
+comparisonOperator_Test_Case const lessThanOperator_TEST_CASES[]{
+    // clang-format off
 
-    {
-        auto const rhs = random_unsigned_integer<Sample>( 0 + 1 );
-        auto const lhs = random_unsigned_integer<Sample>( 0, rhs - 1 );
+    {  21, 448, true  },
+    { 447, 448, true  },
+    { 448, 448, false },
+    { 449, 448, false },
+    { 829, 448, false },
 
-        EXPECT_FALSE( Sample{ lhs } >= Sample{ rhs } );
-    }
+    // clang-format on
+};
+
+/**
+ * \brief picolibrary::ADC::operator<( picolibrary::ADC::Sample, picolibrary::ADC::Sample)
+ *        test fixture.
+ */
+class lessThanOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, lessThanOperator, ValuesIn( lessThanOperator_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::ADC::operator<( picolibrary::ADC::Sample,
+ *        picolibrary::ADC::Sample) works properly.
+ */
+TEST_P( lessThanOperator, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    ASSERT_EQ( test_case.lhs < test_case.rhs, test_case.comparison_result );
+}
+
+/**
+ * \brief picolibrary::ADC::operator>( picolibrary::ADC::Sample, picolibrary::ADC::Sample)
+ *        test cases.
+ */
+comparisonOperator_Test_Case const greaterThanOperator_TEST_CASES[]{
+    // clang-format off
+
+    {  21, 448, false },
+    { 447, 448, false },
+    { 448, 448, false },
+    { 449, 448, true  },
+    { 829, 448, true  },
+
+    // clang-format on
+};
+
+/**
+ * \brief picolibrary::ADC::operator>( picolibrary::ADC::Sample, picolibrary::ADC::Sample)
+ *        test fixture.
+ */
+class greaterThanOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, greaterThanOperator, ValuesIn( greaterThanOperator_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::ADC::operator>( picolibrary::ADC::Sample,
+ *        picolibrary::ADC::Sample) works properly.
+ */
+TEST_P( greaterThanOperator, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    ASSERT_EQ( test_case.lhs > test_case.rhs, test_case.comparison_result );
+}
+
+/**
+ * \brief picolibrary::ADC::operator<=( picolibrary::ADC::Sample,
+ *        picolibrary::ADC::Sample) test cases.
+ */
+comparisonOperator_Test_Case const lessThanOrEqualToOperator_TEST_CASES[]{
+    // clang-format off
+
+    {  21, 448, true  },
+    { 447, 448, true  },
+    { 448, 448, true  },
+    { 449, 448, false },
+    { 829, 448, false },
+
+    // clang-format on
+};
+
+/**
+ * \brief picolibrary::ADC::operator<=( picolibrary::ADC::Sample,
+ *        picolibrary::ADC::Sample) test fixture.
+ */
+class lessThanOrEqualToOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, lessThanOrEqualToOperator, ValuesIn( lessThanOrEqualToOperator_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::ADC::operator<=( picolibrary::ADC::Sample,
+ *        picolibrary::ADC::Sample) works properly.
+ */
+TEST_P( lessThanOrEqualToOperator, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    ASSERT_EQ( test_case.lhs <= test_case.rhs, test_case.comparison_result );
+}
+
+/**
+ * \brief picolibrary::ADC::operator>=( picolibrary::ADC::Sample,
+ *        picolibrary::ADC::Sample) test cases.
+ */
+comparisonOperator_Test_Case const greaterThanOrEqualToOperator_TEST_CASES[]{
+    // clang-format off
+
+    {  21, 448, false },
+    { 447, 448, false },
+    { 448, 448, true  },
+    { 449, 448, true  },
+    { 829, 448, true  },
+
+    // clang-format on
+};
+
+/**
+ * \brief picolibrary::ADC::operator>=( picolibrary::ADC::Sample,
+ *        picolibrary::ADC::Sample) test fixture.
+ */
+class greaterThanOrEqualToOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, greaterThanOrEqualToOperator, ValuesIn( greaterThanOrEqualToOperator_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::ADC::operator>=( picolibrary::ADC::Sample,
+ *        picolibrary::ADC::Sample) works properly.
+ */
+TEST_P( greaterThanOrEqualToOperator, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    ASSERT_EQ( test_case.lhs >= test_case.rhs, test_case.comparison_result );
 }
 
 /**
