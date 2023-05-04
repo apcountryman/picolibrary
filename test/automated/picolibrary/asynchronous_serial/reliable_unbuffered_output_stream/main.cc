@@ -65,100 +65,150 @@ TEST( constructorTransmitter, worksProperly )
  * \brief Verify
  *        picolibrary::Asynchronous_Serial::Reliable_Unbuffered_Output_Stream::Reliable_Unbuffered_Output_Stream(
  *        picolibrary::Asynchronous_Serial::Reliable_Unbuffered_Output_Stream && ) works
- *        properly.
+ *        properly when the source of the move is not associated with an I/O stream device
+ *        access buffer.
  */
-TEST( constructorMove, worksProperly )
+TEST( constructorMove, worksProperlySourceBufferNotSet )
 {
-    {
-        auto source = Reliable_Unbuffered_Output_Stream<Mock_Transmitter<std::uint8_t>::Handle>{};
-        auto const destination = Reliable_Unbuffered_Output_Stream{ std::move( source ) };
+    auto source = Reliable_Unbuffered_Output_Stream<Mock_Transmitter<std::uint8_t>::Handle>{};
+    auto const destination = Reliable_Unbuffered_Output_Stream{ std::move( source ) };
 
-        EXPECT_FALSE( source.buffer_is_set() );
-        EXPECT_FALSE( destination.buffer_is_set() );
-    }
+    EXPECT_FALSE( source.buffer_is_set() );
+    EXPECT_FALSE( destination.buffer_is_set() );
+}
 
-    {
-        auto transmitter = Mock_Transmitter<std::uint8_t>{};
+/**
+ * \brief Verify
+ *        picolibrary::Asynchronous_Serial::Reliable_Unbuffered_Output_Stream::Reliable_Unbuffered_Output_Stream(
+ *        picolibrary::Asynchronous_Serial::Reliable_Unbuffered_Output_Stream && ) works
+ *        properly when the source of the move is associated with an I/O stream device
+ *        access buffer.
+ */
+TEST( constructorMove, worksProperlySourceBufferSet )
+{
+    auto transmitter = Mock_Transmitter<std::uint8_t>{};
 
-        auto       source = Reliable_Unbuffered_Output_Stream{ transmitter.handle() };
-        auto const destination = Reliable_Unbuffered_Output_Stream{ std::move( source ) };
+    auto       source      = Reliable_Unbuffered_Output_Stream{ transmitter.handle() };
+    auto const destination = Reliable_Unbuffered_Output_Stream{ std::move( source ) };
 
-        EXPECT_FALSE( source.buffer_is_set() );
-        EXPECT_TRUE( destination.buffer_is_set() );
-    }
+    EXPECT_FALSE( source.buffer_is_set() );
+    EXPECT_TRUE( destination.buffer_is_set() );
 }
 
 /**
  * \brief Verify
  *        picolibrary::Asynchronous_Serial::Reliable_Unbuffered_Output_Stream::operator=(
  *        picolibrary::Asynchronous_Serial::Reliable_Unbuffered_Output_Stream && ) works
- *        properly.
+ *        properly when the expression to be assigned is not associated with an I/O stream
+ *        device access buffer, and the assigned to object is not associated with an I/O
+ *        stream device access buffer.
  */
-TEST( assignmentOperatorMove, worksProperly )
+TEST( assignmentOperatorMove, worksProperlyExpressionBufferNotSetObjectBufferNotSet )
 {
-    {
-        auto expression = Reliable_Unbuffered_Output_Stream<Mock_Transmitter<std::uint8_t>::Handle>{};
-        auto object = Reliable_Unbuffered_Output_Stream<Mock_Transmitter<std::uint8_t>::Handle>{};
+    auto expression = Reliable_Unbuffered_Output_Stream<Mock_Transmitter<std::uint8_t>::Handle>{};
+    auto object = Reliable_Unbuffered_Output_Stream<Mock_Transmitter<std::uint8_t>::Handle>{};
 
-        object = std::move( expression );
+    object = std::move( expression );
 
-        EXPECT_FALSE( expression.buffer_is_set() );
-        EXPECT_FALSE( object.buffer_is_set() );
-    }
+    EXPECT_FALSE( expression.buffer_is_set() );
+    EXPECT_FALSE( object.buffer_is_set() );
+}
 
-    {
-        auto transmitter = Mock_Transmitter<std::uint8_t>{};
+/**
+ * \brief Verify
+ *        picolibrary::Asynchronous_Serial::Reliable_Unbuffered_Output_Stream::operator=(
+ *        picolibrary::Asynchronous_Serial::Reliable_Unbuffered_Output_Stream && ) works
+ *        properly when the expression to be assigned is associated with an I/O stream
+ *        device access buffer, and the assigned to object is not associated with an I/O
+ *        stream device access buffer.
+ */
+TEST( assignmentOperatorMove, worksProperlyExpressionBufferSetObjectBufferNotSet )
+{
+    auto transmitter = Mock_Transmitter<std::uint8_t>{};
 
-        auto expression = Reliable_Unbuffered_Output_Stream{ transmitter.handle() };
-        auto object = Reliable_Unbuffered_Output_Stream<Mock_Transmitter<std::uint8_t>::Handle>{};
+    auto expression = Reliable_Unbuffered_Output_Stream{ transmitter.handle() };
+    auto object = Reliable_Unbuffered_Output_Stream<Mock_Transmitter<std::uint8_t>::Handle>{};
 
-        object = std::move( expression );
+    object = std::move( expression );
 
-        EXPECT_FALSE( expression.buffer_is_set() );
-        EXPECT_TRUE( object.buffer_is_set() );
-    }
+    EXPECT_FALSE( expression.buffer_is_set() );
+    EXPECT_TRUE( object.buffer_is_set() );
+}
 
-    {
-        auto transmitter = Mock_Transmitter<std::uint8_t>{};
+/**
+ * \brief Verify
+ *        picolibrary::Asynchronous_Serial::Reliable_Unbuffered_Output_Stream::operator=(
+ *        picolibrary::Asynchronous_Serial::Reliable_Unbuffered_Output_Stream && ) works
+ *        properly when the expression to be assigned is not associated with an I/O stream
+ *        device access buffer, and the assigned to object is associated with an I/O
+ *        stream device access buffer.
+ */
+TEST( assignmentOperatorMove, worksProperlyExpressionBufferNotSetObjectBufferSet )
+{
+    auto transmitter = Mock_Transmitter<std::uint8_t>{};
 
-        auto expression = Reliable_Unbuffered_Output_Stream<Mock_Transmitter<std::uint8_t>::Handle>{};
-        auto object = Reliable_Unbuffered_Output_Stream{ transmitter.handle() };
+    auto expression = Reliable_Unbuffered_Output_Stream<Mock_Transmitter<std::uint8_t>::Handle>{};
+    auto object = Reliable_Unbuffered_Output_Stream{ transmitter.handle() };
 
-        object = std::move( expression );
+    object = std::move( expression );
 
-        EXPECT_FALSE( expression.buffer_is_set() );
-        EXPECT_FALSE( object.buffer_is_set() );
-    }
+    EXPECT_FALSE( expression.buffer_is_set() );
+    EXPECT_FALSE( object.buffer_is_set() );
+}
 
-    {
-        auto transmitter = Mock_Transmitter<std::uint8_t>{};
+/**
+ * \brief Verify
+ *        picolibrary::Asynchronous_Serial::Reliable_Unbuffered_Output_Stream::operator=(
+ *        picolibrary::Asynchronous_Serial::Reliable_Unbuffered_Output_Stream && ) works
+ *        properly when the expression to be assigned is associated with an I/O stream
+ *        device access buffer, and the assigned to object is associated with an I/O
+ *        stream device access buffer.
+ */
+TEST( assignmentOperatorMove, worksProperlyExpressionBufferSetObjectBufferSet )
+{
+    auto transmitter = Mock_Transmitter<std::uint8_t>{};
 
-        auto expression = Reliable_Unbuffered_Output_Stream{ transmitter.handle() };
-        auto object     = Reliable_Unbuffered_Output_Stream{ transmitter.handle() };
+    auto expression = Reliable_Unbuffered_Output_Stream{ transmitter.handle() };
+    auto object     = Reliable_Unbuffered_Output_Stream{ transmitter.handle() };
 
-        object = std::move( expression );
+    object = std::move( expression );
 
-        EXPECT_FALSE( expression.buffer_is_set() );
-        EXPECT_TRUE( object.buffer_is_set() );
-    }
+    EXPECT_FALSE( expression.buffer_is_set() );
+    EXPECT_TRUE( object.buffer_is_set() );
+}
 
-    {
-        auto stream = Reliable_Unbuffered_Output_Stream<Mock_Transmitter<std::uint8_t>::Handle>{};
+/**
+ * \brief Verify
+ *        picolibrary::Asynchronous_Serial::Reliable_Unbuffered_Output_Stream::operator=(
+ *        picolibrary::Asynchronous_Serial::Reliable_Unbuffered_Output_Stream && ) works
+ *        properly when self assignment occurs, and the stream is not associated with an
+ *        I/O stream device access buffer.
+ */
+TEST( assignmentOperatorMove, worksProperlySelfAssignmentBufferNotSet )
+{
+    auto stream = Reliable_Unbuffered_Output_Stream<Mock_Transmitter<std::uint8_t>::Handle>{};
 
-        stream = std::move( stream );
+    stream = std::move( stream );
 
-        EXPECT_FALSE( stream.buffer_is_set() );
-    }
+    EXPECT_FALSE( stream.buffer_is_set() );
+}
 
-    {
-        auto transmitter = Mock_Transmitter<std::uint8_t>{};
+/**
+ * \brief Verify
+ *        picolibrary::Asynchronous_Serial::Reliable_Unbuffered_Output_Stream::operator=(
+ *        picolibrary::Asynchronous_Serial::Reliable_Unbuffered_Output_Stream && ) works
+ *        properly when self assignment occurs, and the stream is associated with an I/O
+ *        stream device access buffer.
+ */
+TEST( assignmentOperatorMove, worksProperlySelfAssignmentBufferSet )
+{
+    auto transmitter = Mock_Transmitter<std::uint8_t>{};
 
-        auto stream = Reliable_Unbuffered_Output_Stream{ transmitter.handle() };
+    auto stream = Reliable_Unbuffered_Output_Stream{ transmitter.handle() };
 
-        stream = std::move( stream );
+    stream = std::move( stream );
 
-        EXPECT_TRUE( stream.buffer_is_set() );
-    }
+    EXPECT_TRUE( stream.buffer_is_set() );
 }
 
 /**
