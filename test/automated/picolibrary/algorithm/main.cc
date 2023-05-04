@@ -53,8 +53,6 @@ using ::testing::ValuesIn;
  * \brief picolibrary::for_each() test cases.
  */
 std::vector<std::uint_fast8_t> const forEach_TEST_CASES[]{
-    // clang-format off
-
     {},
     {
         0x1C,
@@ -62,9 +60,7 @@ std::vector<std::uint_fast8_t> const forEach_TEST_CASES[]{
         0xE6,
         0xEC,
         0x99,
-    }
-
-    // clang-format on
+    },
 };
 
 /**
@@ -106,15 +102,7 @@ TEST( forEachFunctorCanFailReturnFunctorErrorHandling, functorError )
     EXPECT_CALL( functor, Call( _ ) ).WillOnce( Return( error ) );
 
     auto const values = std::vector<std::uint_fast8_t>{
-        // clang-format off
-
-        0x1C,
-        0x0C,
-        0xE6,
-        0xEC,
-        0x99,
-
-        // clang-format on
+        0x1C, 0x0C, 0xE6, 0xEC, 0x99,
     };
 
     auto const result = ::picolibrary::for_each<Functor_Can_Fail_Return_Functor>(
@@ -174,15 +162,7 @@ TEST( forEachFunctorCanFailDiscardFunctorErrorHandling, functorError )
     EXPECT_CALL( functor, Call( _ ) ).WillOnce( Return( error ) );
 
     auto const values = std::vector<std::uint_fast8_t>{
-        // clang-format off
-
-        0x1C,
-        0x0C,
-        0xE6,
-        0xEC,
-        0x99,
-
-        // clang-format on
+        0x1C, 0x0C, 0xE6, 0xEC, 0x99,
     };
 
     auto const result = ::picolibrary::for_each<Functor_Can_Fail_Discard_Functor>(
@@ -229,12 +209,8 @@ TEST_P( forEachFunctorCanFailDiscardFunctor, worksProperly )
  * \brief picolibrary::fill() test cases.
  */
 std::size_t const fill_TEST_CASES[]{
-    // clang-format off
-
     0,
     5,
-
-    // clang-format on
 };
 
 /**
@@ -264,8 +240,6 @@ TEST_P( fill, worksProperly )
  * \brief picolibrary::generate() test cases.
  */
 std::vector<std::uint_fast8_t> const generate_TEST_CASES[]{
-    // clang-format off
-
     {},
     {
         0x1C,
@@ -273,9 +247,7 @@ std::vector<std::uint_fast8_t> const generate_TEST_CASES[]{
         0xE6,
         0xEC,
         0x99,
-    }
-
-    // clang-format on
+    },
 };
 
 /**
@@ -486,10 +458,8 @@ TEST( max, worksProperlyAGreaterBNotAdjacent )
  */
 TEST( equal3Iterators, worksProperlyEmpty )
 {
-    // clang-format off
     auto const range_1 = std::vector<std::uint_fast8_t>{};
     auto const range_2 = std::vector<std::uint_fast8_t>{};
-    // clang-format on
 
     ASSERT_TRUE( ::picolibrary::equal( range_1.begin(), range_1.end(), range_2.begin() ) );
 }
@@ -500,10 +470,8 @@ TEST( equal3Iterators, worksProperlyEmpty )
  */
 TEST( equal3Iterators, worksProperlyContentsNotEqual )
 {
-    // clang-format off
-    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
-    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6C, 0x4A, 0x32, };
-    // clang-format on
+    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
+    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6C, 0x4A, 0x32 };
 
     ASSERT_FALSE( ::picolibrary::equal( range_1.begin(), range_1.end(), range_2.begin() ) );
 }
@@ -514,10 +482,8 @@ TEST( equal3Iterators, worksProperlyContentsNotEqual )
  */
 TEST( equal3Iterators, worksProperlyContentsEqual )
 {
-    // clang-format off
-    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
-    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
-    // clang-format on
+    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
+    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
 
     ASSERT_TRUE( ::picolibrary::equal( range_1.begin(), range_1.end(), range_2.begin() ) );
 }
@@ -528,10 +494,8 @@ TEST( equal3Iterators, worksProperlyContentsEqual )
  */
 TEST( equal4Iterators, worksProperlyEmpty )
 {
-    // clang-format off
     auto const range_1 = std::vector<std::uint_fast8_t>{};
     auto const range_2 = std::vector<std::uint_fast8_t>{};
-    // clang-format on
 
     ASSERT_TRUE( ::picolibrary::equal(
         range_1.begin(), range_1.end(), range_2.begin(), range_2.end() ) );
@@ -544,10 +508,8 @@ TEST( equal4Iterators, worksProperlyEmpty )
  */
 TEST( equal4Iterators, worksProperlySizesNotEqualContentsNotEqual )
 {
-    // clang-format off
-    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, };
-    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6C, 0x4A, 0x32, };
-    // clang-format on
+    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A };
+    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6C, 0x4A, 0x32 };
 
     ASSERT_FALSE( ::picolibrary::equal(
         range_1.begin(), range_1.end(), range_2.begin(), range_2.end() ) );
@@ -560,10 +522,8 @@ TEST( equal4Iterators, worksProperlySizesNotEqualContentsNotEqual )
  */
 TEST( equal4Iterators, worksProperlySizesNotEqualContentsEqual )
 {
-    // clang-format off
-    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, };
-    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
-    // clang-format on
+    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A };
+    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
 
     ASSERT_FALSE( ::picolibrary::equal(
         range_1.begin(), range_1.end(), range_2.begin(), range_2.end() ) );
@@ -576,10 +536,8 @@ TEST( equal4Iterators, worksProperlySizesNotEqualContentsEqual )
  */
 TEST( equal4Iterators, worksProperlySizesEqualContentsNotEqual )
 {
-    // clang-format off
-    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
-    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6C, 0x4A, 0x32, };
-    // clang-format on
+    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
+    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6C, 0x4A, 0x32 };
 
     ASSERT_FALSE( ::picolibrary::equal(
         range_1.begin(), range_1.end(), range_2.begin(), range_2.end() ) );
@@ -592,10 +550,8 @@ TEST( equal4Iterators, worksProperlySizesEqualContentsNotEqual )
  */
 TEST( equal4Iterators, worksProperlySizesEqualContentsEqual )
 {
-    // clang-format off
-    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
-    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
-    // clang-format on
+    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
+    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
 
     ASSERT_TRUE( ::picolibrary::equal(
         range_1.begin(), range_1.end(), range_2.begin(), range_2.end() ) );
@@ -607,10 +563,8 @@ TEST( equal4Iterators, worksProperlySizesEqualContentsEqual )
  */
 TEST( equal3IteratorsPredicate, worksProperlyEmpty )
 {
-    // clang-format off
     auto const range_1 = std::vector<std::uint_fast8_t>{};
     auto const range_2 = std::vector<std::uint_fast8_t>{};
-    // clang-format on
 
     ASSERT_TRUE( ::picolibrary::equal(
         range_1.begin(), range_1.end(), range_2.begin(), []( auto a, auto b ) {
@@ -624,10 +578,8 @@ TEST( equal3IteratorsPredicate, worksProperlyEmpty )
  */
 TEST( equal3IteratorsPredicate, worksProperlyContentsNotEqual )
 {
-    // clang-format off
-    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
-    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6C, 0x4A, 0x32, };
-    // clang-format on
+    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
+    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6C, 0x4A, 0x32 };
 
     ASSERT_FALSE( ::picolibrary::equal(
         range_1.begin(), range_1.end(), range_2.begin(), []( auto a, auto b ) {
@@ -641,10 +593,8 @@ TEST( equal3IteratorsPredicate, worksProperlyContentsNotEqual )
  */
 TEST( equal3IteratorsPredicate, worksProperlyContentsEqual )
 {
-    // clang-format off
-    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
-    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
-    // clang-format on
+    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
+    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
 
     ASSERT_TRUE( ::picolibrary::equal(
         range_1.begin(), range_1.end(), range_2.begin(), []( auto a, auto b ) {
@@ -658,10 +608,8 @@ TEST( equal3IteratorsPredicate, worksProperlyContentsEqual )
  */
 TEST( equal4IteratorsPredicate, worksProperlyEmpty )
 {
-    // clang-format off
     auto const range_1 = std::vector<std::uint_fast8_t>{};
     auto const range_2 = std::vector<std::uint_fast8_t>{};
-    // clang-format on
 
     ASSERT_TRUE( ::picolibrary::equal(
         range_1.begin(), range_1.end(), range_2.begin(), range_2.end(), []( auto a, auto b ) {
@@ -676,10 +624,8 @@ TEST( equal4IteratorsPredicate, worksProperlyEmpty )
  */
 TEST( equal4IteratorsPredicate, worksProperlySizesNotEqualContentsNotEqual )
 {
-    // clang-format off
-    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, };
-    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6C, 0x4A, 0x32, };
-    // clang-format on
+    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A };
+    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6C, 0x4A, 0x32 };
 
     ASSERT_FALSE( ::picolibrary::equal(
         range_1.begin(), range_1.end(), range_2.begin(), range_2.end(), []( auto a, auto b ) {
@@ -694,10 +640,8 @@ TEST( equal4IteratorsPredicate, worksProperlySizesNotEqualContentsNotEqual )
  */
 TEST( equal4IteratorsPredicate, worksProperlySizesNotEqualContentsEqual )
 {
-    // clang-format off
-    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, };
-    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
-    // clang-format on
+    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A };
+    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
 
     ASSERT_FALSE( ::picolibrary::equal(
         range_1.begin(), range_1.end(), range_2.begin(), range_2.end(), []( auto a, auto b ) {
@@ -712,10 +656,8 @@ TEST( equal4IteratorsPredicate, worksProperlySizesNotEqualContentsEqual )
  */
 TEST( equal4IteratorsPredicate, worksProperlySizesEqualContentsNotEqual )
 {
-    // clang-format off
-    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
-    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6C, 0x4A, 0x32, };
-    // clang-format on
+    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
+    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6C, 0x4A, 0x32 };
 
     ASSERT_FALSE( ::picolibrary::equal(
         range_1.begin(), range_1.end(), range_2.begin(), range_2.end(), []( auto a, auto b ) {
@@ -730,10 +672,8 @@ TEST( equal4IteratorsPredicate, worksProperlySizesEqualContentsNotEqual )
  */
 TEST( equal4IteratorsPredicate, worksProperlySizesEqualContentsEqual )
 {
-    // clang-format off
-    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
-    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32, };
-    // clang-format on
+    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
+    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
 
     ASSERT_TRUE( ::picolibrary::equal(
         range_1.begin(), range_1.end(), range_2.begin(), range_2.end(), []( auto a, auto b ) {
