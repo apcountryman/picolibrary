@@ -29,13 +29,10 @@
 #include "gtest/gtest.h"
 #include "picolibrary/asynchronous_serial.h"
 #include "picolibrary/testing/automated/asynchronous_serial.h"
-#include "picolibrary/testing/automated/random.h"
 
 namespace {
 
 using ::picolibrary::Asynchronous_Serial::Reliable_Unbuffered_Output_Stream_Buffer;
-using ::picolibrary::Testing::Automated::random;
-using ::picolibrary::Testing::Automated::random_container;
 using ::picolibrary::Testing::Automated::Asynchronous_Serial::Mock_Transmitter;
 using ::testing::InSequence;
 
@@ -52,7 +49,7 @@ TEST( putChar, worksProperly )
 
     auto buffer = Reliable_Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
 
-    auto const character = random<char>();
+    auto const character = 'L';
 
     EXPECT_CALL( transmitter, transmit( character ) );
 
@@ -70,7 +67,7 @@ TEST( putCharBlock, worksProperly )
 
     auto buffer = Reliable_Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
 
-    auto const string = random_container<std::string>();
+    auto const string = std::string{ "12OA2mCrC1GL" };
 
     EXPECT_CALL( transmitter, transmit( std::vector<std::uint8_t>{ string.begin(), string.end() } ) );
 
@@ -90,7 +87,7 @@ TEST( putNullTerminatedString, worksProperly )
 
     auto buffer = Reliable_Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
 
-    auto const string = random_container<std::string>();
+    auto const string = std::string{ "hpT6C7BvWvUBk" };
 
     for ( auto const character : string ) {
         EXPECT_CALL( transmitter, transmit( character ) );
@@ -110,7 +107,7 @@ TEST( putUnsignedByte, worksProperly )
 
     auto buffer = Reliable_Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
 
-    auto const value = random<std::uint8_t>();
+    auto const value = std::uint8_t{ 0xDE };
 
     EXPECT_CALL( transmitter, transmit( value ) );
 
@@ -128,7 +125,7 @@ TEST( putUnsignedByteBlock, worksProperly )
 
     auto buffer = Reliable_Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
 
-    auto const values = random_container<std::vector<std::uint8_t>>();
+    auto const values = std::vector<std::uint8_t>{ 0x50, 0x2D, 0xD2, 0xA9, 0x90, 0xDC };
 
     EXPECT_CALL( transmitter, transmit( values ) );
 
@@ -146,7 +143,7 @@ TEST( putSignedByte, worksProperly )
 
     auto buffer = Reliable_Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
 
-    auto const value = random<std::int8_t>();
+    auto const value = std::int8_t{ 0x25 };
 
     EXPECT_CALL( transmitter, transmit( value ) );
 
@@ -164,7 +161,7 @@ TEST( putSignedByteBlock, worksProperly )
 
     auto buffer = Reliable_Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
 
-    auto const values = random_container<std::vector<std::int8_t>>();
+    auto const values = std::vector<std::int8_t>{ 0x59, 0x5F, 0x70, 0x60, 0x4D };
 
     EXPECT_CALL( transmitter, transmit( std::vector<std::uint8_t>{ values.begin(), values.end() } ) );
 
