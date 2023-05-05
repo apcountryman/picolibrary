@@ -27,12 +27,10 @@
 #include "gtest/gtest.h"
 #include "picolibrary/asynchronous_serial.h"
 #include "picolibrary/testing/automated/asynchronous_serial.h"
-#include "picolibrary/testing/automated/random.h"
 
 namespace {
 
 using ::picolibrary::Asynchronous_Serial::Transmitter;
-using ::picolibrary::Testing::Automated::random_container;
 using ::picolibrary::Testing::Automated::Asynchronous_Serial::Mock_Basic_Transmitter;
 using ::testing::InSequence;
 
@@ -47,7 +45,7 @@ TEST( transmit, worksProperly )
 
     auto transmitter = Transmitter<Mock_Basic_Transmitter<std::uint8_t>>{};
 
-    auto const values = random_container<std::vector<std::uint8_t>>();
+    auto const values = std::vector<std::uint8_t>{ 0x49, 0xB0, 0xDE, 0xAF, 0x31, 0xFC };
 
     for ( auto const value : values ) {
         EXPECT_CALL( transmitter, transmit( value ) );
