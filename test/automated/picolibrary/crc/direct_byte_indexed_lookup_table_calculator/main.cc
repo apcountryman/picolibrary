@@ -34,31 +34,19 @@ using ::picolibrary::CRC::Direct_Byte_Indexed_Lookup_Table_Calculator;
 
 } // namespace
 
-/**
- * \brief Verify picolibrary::CRC::Direct_Byte_Indexed_Lookup_Table_Calculator works
- *        properly.
- */
 INSTANTIATE_TYPED_TEST_SUITE_P(
     directByteIndexedLookupTableCalculator,
-    uint8Register,
+    calculatorImplementation8,
     Direct_Byte_Indexed_Lookup_Table_Calculator<std::uint8_t> );
 
-/**
- * \brief Verify picolibrary::CRC::Direct_Byte_Indexed_Lookup_Table_Calculator works
- *        properly.
- */
 INSTANTIATE_TYPED_TEST_SUITE_P(
     directByteIndexedLookupTableCalculator,
-    uint16Register,
+    calculatorImplementation16,
     Direct_Byte_Indexed_Lookup_Table_Calculator<std::uint16_t> );
 
-/**
- * \brief Verify picolibrary::CRC::Direct_Byte_Indexed_Lookup_Table_Calculator works
- *        properly.
- */
 INSTANTIATE_TYPED_TEST_SUITE_P(
     directByteIndexedLookupTableCalculator,
-    uint32Register,
+    calculatorImplementation32,
     Direct_Byte_Indexed_Lookup_Table_Calculator<std::uint32_t> );
 
 /**

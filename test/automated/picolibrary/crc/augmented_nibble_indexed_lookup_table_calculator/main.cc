@@ -34,31 +34,19 @@ using ::picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator;
 
 } // namespace
 
-/**
- * \brief Verify picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator works
- *        properly.
- */
 INSTANTIATE_TYPED_TEST_SUITE_P(
     augmentedNibbleIndexedLookupTableCalculator,
-    uint8Register,
+    calculatorImplementation8,
     Augmented_Nibble_Indexed_Lookup_Table_Calculator<std::uint8_t> );
 
-/**
- * \brief Verify picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator works
- *        properly.
- */
 INSTANTIATE_TYPED_TEST_SUITE_P(
     augmentedNibbleIndexedLookupTableCalculator,
-    uint16Register,
+    calculatorImplementation16,
     Augmented_Nibble_Indexed_Lookup_Table_Calculator<std::uint16_t> );
 
-/**
- * \brief Verify picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator works
- *        properly.
- */
 INSTANTIATE_TYPED_TEST_SUITE_P(
     augmentedNibbleIndexedLookupTableCalculator,
-    uint32Register,
+    calculatorImplementation32,
     Augmented_Nibble_Indexed_Lookup_Table_Calculator<std::uint32_t> );
 
 /**
