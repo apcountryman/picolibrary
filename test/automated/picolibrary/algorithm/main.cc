@@ -22,6 +22,9 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <ios>
+#include <ostream>
+#include <string>
 #include <type_traits>
 #include <vector>
 
@@ -437,232 +440,193 @@ TEST( max, worksProperlyAGreaterBNotAdjacent )
 }
 
 /**
- * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2 ) works properly
- *        when the range is empty.
+ * \brief picolibrary::equal() test case.
  */
-TEST( equal3Iterators, worksProperlyEmpty )
-{
-    auto const range_1 = std::vector<std::uint_fast8_t>{};
-    auto const range_2 = std::vector<std::uint_fast8_t>{};
+struct equal_Test_Case {
+    /**
+     * \brief Range 1.
+     */
+    std::string range_1;
 
-    ASSERT_TRUE( ::picolibrary::equal( range_1.begin(), range_1.end(), range_2.begin() ) );
+    /**
+     * \brief Range 2.
+     */
+    std::string range_2;
+
+    /**
+     * \brief Range 1 and range 2 are equal.
+     */
+    bool equal;
+};
+
+auto operator<<( std::ostream & stream, equal_Test_Case const & test_case ) -> std::ostream &
+{
+    // clang-format off
+
+    return stream << "{ "
+                  << ".range_1 = \"" << test_case.range_1 << '"'
+                  << ", "
+                  << ".range_2 = \"" << test_case.range_2 << '"'
+                  << ", "
+                  << ".equal = " << std::boolalpha << test_case.equal
+                  << " }";
+
+    // clang-format on
 }
 
 /**
- * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2 ) works properly
- *        when the contents of the ranges are not equal.
+ * \brief picolibrary::equal( Iterator_1, Iterator_1, Iterator_2 ) and picolibrary::equal(
+ *        Iterator_1, Iterator_1, Iterator_2, Predicate ) test cases.
  */
-TEST( equal3Iterators, worksProperlyContentsNotEqual )
-{
-    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
-    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6C, 0x4A, 0x32 };
+equal_Test_Case const equal3Iterators_TEST_CASES[]{
+    // clang-format off
 
-    ASSERT_FALSE( ::picolibrary::equal( range_1.begin(), range_1.end(), range_2.begin() ) );
+    {
+        "",
+        "",
+        true },
+    {
+        "xlC8WWhQqaVcM3",
+        "xlC8WWhQqbVcM3",
+        false },
+    {
+        "xlC8WWhQqaVcM3",
+        "xlC8WWhQqaVcM3",
+        true },
+
+    // clang-format on
+};
+
+/**
+ * \brief picolibrary::equal( Iterator_1, Iterator_1, Iterator_2 ) test fixture.
+ */
+class equal3Iterators : public TestWithParam<equal_Test_Case> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, equal3Iterators, ValuesIn( equal3Iterators_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2 ) works properly.
+ */
+TEST_P( equal3Iterators, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    ASSERT_EQ(
+        ::picolibrary::equal(
+            test_case.range_1.begin(), test_case.range_1.end(), test_case.range_2.begin() ),
+        test_case.equal );
 }
 
 /**
- * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2 ) works properly
- *        when the contents of the ranges are equal.
+ * \brief picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Predicate ) test
+ *        fixture.
  */
-TEST( equal3Iterators, worksProperlyContentsEqual )
-{
-    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
-    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
+class equal3IteratorsPredicate : public TestWithParam<equal_Test_Case> {
+};
 
-    ASSERT_TRUE( ::picolibrary::equal( range_1.begin(), range_1.end(), range_2.begin() ) );
-}
-
-/**
- * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2 )
- *        works properly when both ranges are empty.
- */
-TEST( equal4Iterators, worksProperlyEmpty )
-{
-    auto const range_1 = std::vector<std::uint_fast8_t>{};
-    auto const range_2 = std::vector<std::uint_fast8_t>{};
-
-    ASSERT_TRUE( ::picolibrary::equal(
-        range_1.begin(), range_1.end(), range_2.begin(), range_2.end() ) );
-}
-
-/**
- * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2 )
- *        works properly when the sizes of the ranges are not equal, and the contents of
- *        the ranges are not equal.
- */
-TEST( equal4Iterators, worksProperlySizesNotEqualContentsNotEqual )
-{
-    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A };
-    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6C, 0x4A, 0x32 };
-
-    ASSERT_FALSE( ::picolibrary::equal(
-        range_1.begin(), range_1.end(), range_2.begin(), range_2.end() ) );
-}
-
-/**
- * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2 )
- *        works properly when the sizes of the ranges are not equal, and the contents of
- *        the ranges are equal.
- */
-TEST( equal4Iterators, worksProperlySizesNotEqualContentsEqual )
-{
-    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A };
-    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
-
-    ASSERT_FALSE( ::picolibrary::equal(
-        range_1.begin(), range_1.end(), range_2.begin(), range_2.end() ) );
-}
-
-/**
- * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2 )
- *        works properly when the sizes of the ranges are equal, and the contents of the
- *        ranges are not equal.
- */
-TEST( equal4Iterators, worksProperlySizesEqualContentsNotEqual )
-{
-    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
-    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6C, 0x4A, 0x32 };
-
-    ASSERT_FALSE( ::picolibrary::equal(
-        range_1.begin(), range_1.end(), range_2.begin(), range_2.end() ) );
-}
-
-/**
- * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2 )
- *        works properly when the sizes of the ranges are equal, and the contents of the
- *        ranges are equal.
- */
-TEST( equal4Iterators, worksProperlySizesEqualContentsEqual )
-{
-    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
-    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
-
-    ASSERT_TRUE( ::picolibrary::equal(
-        range_1.begin(), range_1.end(), range_2.begin(), range_2.end() ) );
-}
+INSTANTIATE_TEST_SUITE_P( testCases, equal3IteratorsPredicate, ValuesIn( equal3Iterators_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Predicate ) works
- *        properly when the range is empty.
+ *        properly.
  */
-TEST( equal3IteratorsPredicate, worksProperlyEmpty )
+TEST_P( equal3IteratorsPredicate, worksProperly )
 {
-    auto const range_1 = std::vector<std::uint_fast8_t>{};
-    auto const range_2 = std::vector<std::uint_fast8_t>{};
+    auto const test_case = GetParam();
 
-    ASSERT_TRUE( ::picolibrary::equal(
-        range_1.begin(), range_1.end(), range_2.begin(), []( auto a, auto b ) {
-            return a == b;
-        } ) );
+    ASSERT_EQ(
+        ::picolibrary::equal(
+            test_case.range_1.begin(),
+            test_case.range_1.end(),
+            test_case.range_2.begin(),
+            []( auto a, auto b ) { return a == b; } ),
+        test_case.equal );
 }
 
 /**
- * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Predicate ) works
- *        properly when the contents of the ranges are not equal.
+ * \brief picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2 ) and
+ *        picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2, Predicate )
+ *        test cases.
  */
-TEST( equal3IteratorsPredicate, worksProperlyContentsNotEqual )
-{
-    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
-    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6C, 0x4A, 0x32 };
+equal_Test_Case const equal4Iterators_TEST_CASES[]{
+    // clang-format off
 
-    ASSERT_FALSE( ::picolibrary::equal(
-        range_1.begin(), range_1.end(), range_2.begin(), []( auto a, auto b ) {
-            return a == b;
-        } ) );
+    {
+        "",
+        "",
+        true },
+    {
+        "xlC8WWhQqaVcM3",
+        "xlC8WWhQqbVcM3fAjJ",
+        false },
+    {
+        "xlC8WWhQqaVcM3",
+        "xlC8WWhQqaVcM3fAjJ",
+        false },
+    {
+        "xlC8WWhQqaVcM3",
+        "xlC8WWhQqbVcM3",
+        false },
+    {
+        "xlC8WWhQqaVcM3",
+        "xlC8WWhQqaVcM3",
+        true },
+
+    // clang-format on
+};
+
+/**
+ * \brief picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2 ) test
+ *        fixture.
+ */
+class equal4Iterators : public TestWithParam<equal_Test_Case> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, equal4Iterators, ValuesIn( equal4Iterators_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2 )
+ *        works properly.
+ */
+TEST_P( equal4Iterators, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    ASSERT_EQ(
+        ::picolibrary::equal(
+            test_case.range_1.begin(),
+            test_case.range_1.end(),
+            test_case.range_2.begin(),
+            test_case.range_2.end() ),
+        test_case.equal );
 }
 
 /**
- * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Predicate ) works
- *        properly when the contents of the ranges are equal.
+ * \brief picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2, Predicate )
+ *        test fixture.
  */
-TEST( equal3IteratorsPredicate, worksProperlyContentsEqual )
-{
-    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
-    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
+class equal4IteratorsPredicate : public TestWithParam<equal_Test_Case> {
+};
 
-    ASSERT_TRUE( ::picolibrary::equal(
-        range_1.begin(), range_1.end(), range_2.begin(), []( auto a, auto b ) {
-            return a == b;
-        } ) );
-}
-
-/**
- * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2,
- *        Predicate ) works properly when both ranges are empty.
- */
-TEST( equal4IteratorsPredicate, worksProperlyEmpty )
-{
-    auto const range_1 = std::vector<std::uint_fast8_t>{};
-    auto const range_2 = std::vector<std::uint_fast8_t>{};
-
-    ASSERT_TRUE( ::picolibrary::equal(
-        range_1.begin(), range_1.end(), range_2.begin(), range_2.end(), []( auto a, auto b ) {
-            return a == b;
-        } ) );
-}
-
-/**
- * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2,
- *        Predicate ) works properly when the sizes of the ranges are not equal, and the
- *        contents of the ranges are not equal.
- */
-TEST( equal4IteratorsPredicate, worksProperlySizesNotEqualContentsNotEqual )
-{
-    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A };
-    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6C, 0x4A, 0x32 };
-
-    ASSERT_FALSE( ::picolibrary::equal(
-        range_1.begin(), range_1.end(), range_2.begin(), range_2.end(), []( auto a, auto b ) {
-            return a == b;
-        } ) );
-}
-
-/**
- * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2,
- *        Predicate ) works properly when the sizes of the ranges are not equal, and the
- *        contents of the ranges are equal.
- */
-TEST( equal4IteratorsPredicate, worksProperlySizesNotEqualContentsEqual )
-{
-    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A };
-    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
-
-    ASSERT_FALSE( ::picolibrary::equal(
-        range_1.begin(), range_1.end(), range_2.begin(), range_2.end(), []( auto a, auto b ) {
-            return a == b;
-        } ) );
-}
+INSTANTIATE_TEST_SUITE_P( testCases, equal4IteratorsPredicate, ValuesIn( equal4Iterators_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2,
- *        Predicate ) works properly when the sizes of the ranges are equal, and the
- *        contents of the ranges are not equal.
+ *        Predicate ) works properly.
  */
-TEST( equal4IteratorsPredicate, worksProperlySizesEqualContentsNotEqual )
+TEST_P( equal4IteratorsPredicate, worksProperly )
 {
-    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
-    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6C, 0x4A, 0x32 };
+    auto const test_case = GetParam();
 
-    ASSERT_FALSE( ::picolibrary::equal(
-        range_1.begin(), range_1.end(), range_2.begin(), range_2.end(), []( auto a, auto b ) {
-            return a == b;
-        } ) );
-}
-
-/**
- * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2,
- *        Predicate ) works properly when the sizes of the ranges are equal, and the
- *        contents of the ranges are equal.
- */
-TEST( equal4IteratorsPredicate, worksProperlySizesEqualContentsEqual )
-{
-    auto const range_1 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
-    auto const range_2 = std::vector<std::uint_fast8_t>{ 0x9B, 0x50, 0x6B, 0x4A, 0x32 };
-
-    ASSERT_TRUE( ::picolibrary::equal(
-        range_1.begin(), range_1.end(), range_2.begin(), range_2.end(), []( auto a, auto b ) {
-            return a == b;
-        } ) );
+    ASSERT_EQ(
+        ::picolibrary::equal(
+            test_case.range_1.begin(),
+            test_case.range_1.end(),
+            test_case.range_2.begin(),
+            test_case.range_2.end(),
+            []( auto a, auto b ) { return a == b; } ),
+        test_case.equal );
 }
 
 /**
