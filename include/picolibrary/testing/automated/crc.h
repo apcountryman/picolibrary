@@ -27,6 +27,7 @@
 #include <cstdint>
 #include <iomanip>
 #include <ios>
+#include <limits>
 #include <ostream>
 #include <string_view>
 

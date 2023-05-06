@@ -16,6 +16,19 @@ calculator implementation.
 - To calculate the remainder for a message, use a CRC calculator implementation's
   `calculate()` member function.
 
+Data for creating data driven automated tests for CRC calculator implementations is
+defined in the
+[`include/picolibrary/testing/automated/crc.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/crc.h)/[`source/picolibrary/testing/automated/crc.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/crc.cc)
+header/source file pair.
+The `::picolibrary::Testing::Automated::CRC::Calculator_Test_Case` struct is used to store
+the data for a calculator test case.
+`std::uint8_t` register calculator test cases are defined in the
+`::picolibrary::Testing::Automated::CRC::CALCULATOR_TEST_CASES_8` array.
+`std::uint16_t` register calculator test cases are defined in the
+`::picolibrary::Testing::Automated::CRC::CALCULATOR_TEST_CASES_16` array.
+`std::uint32_t` register calculator test cases are defined in the
+`::picolibrary::Testing::Automated::CRC::CALCULATOR_TEST_CASES_32` array.
+
 picolibrary provides the following CRC calculator implementations:
 - `::picolibrary::CRC::Bitwise_Calculator`
 - `::picolibrary::CRC::Augmented_Byte_Indexed_Lookup_Table_Calculator`
