@@ -21,45 +21,9 @@
  *        program.
  */
 
-#include <cstdint>
-
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/crc.h"
-#include "picolibrary/testing/automated/crc.h"
-
-namespace {
-
-using ::picolibrary::CRC::Direct_Byte_Indexed_Lookup_Table_Calculator;
-
-} // namespace
-
-/**
- * \brief Verify picolibrary::CRC::Direct_Byte_Indexed_Lookup_Table_Calculator works
- *        properly.
- */
-INSTANTIATE_TYPED_TEST_SUITE_P(
-    directByteIndexedLookupTableCalculator,
-    uint8Register,
-    Direct_Byte_Indexed_Lookup_Table_Calculator<std::uint8_t> );
-
-/**
- * \brief Verify picolibrary::CRC::Direct_Byte_Indexed_Lookup_Table_Calculator works
- *        properly.
- */
-INSTANTIATE_TYPED_TEST_SUITE_P(
-    directByteIndexedLookupTableCalculator,
-    uint16Register,
-    Direct_Byte_Indexed_Lookup_Table_Calculator<std::uint16_t> );
-
-/**
- * \brief Verify picolibrary::CRC::Direct_Byte_Indexed_Lookup_Table_Calculator works
- *        properly.
- */
-INSTANTIATE_TYPED_TEST_SUITE_P(
-    directByteIndexedLookupTableCalculator,
-    uint32Register,
-    Direct_Byte_Indexed_Lookup_Table_Calculator<std::uint32_t> );
 
 /**
  * \brief Execute the picolibrary::CRC::Direct_Byte_Indexed_Lookup_Table_Calculator

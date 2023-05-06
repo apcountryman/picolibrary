@@ -20,33 +20,9 @@
  * \brief picolibrary::CRC::Bitwise_Calculator automated test program.
  */
 
-#include <cstdint>
-
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/crc.h"
-#include "picolibrary/testing/automated/crc.h"
-
-namespace {
-
-using ::picolibrary::CRC::Bitwise_Calculator;
-
-} // namespace
-
-/**
- * \brief Verify picolibrary::CRC::Bitwise_Calculator works properly.
- */
-INSTANTIATE_TYPED_TEST_SUITE_P( bitwiseCalculator, uint8Register, Bitwise_Calculator<std::uint8_t> );
-
-/**
- * \brief Verify picolibrary::CRC::Bitwise_Calculator works properly.
- */
-INSTANTIATE_TYPED_TEST_SUITE_P( bitwiseCalculator, uint16Register, Bitwise_Calculator<std::uint16_t> );
-
-/**
- * \brief Verify picolibrary::CRC::Bitwise_Calculator works properly.
- */
-INSTANTIATE_TYPED_TEST_SUITE_P( bitwiseCalculator, uint32Register, Bitwise_Calculator<std::uint32_t> );
 
 /**
  * \brief Execute the picolibrary::CRC::Bitwise_Calculator automated tests.

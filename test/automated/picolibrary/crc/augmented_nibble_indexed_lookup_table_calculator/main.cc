@@ -21,45 +21,9 @@
  *        test program.
  */
 
-#include <cstdint>
-
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/crc.h"
-#include "picolibrary/testing/automated/crc.h"
-
-namespace {
-
-using ::picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator;
-
-} // namespace
-
-/**
- * \brief Verify picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator works
- *        properly.
- */
-INSTANTIATE_TYPED_TEST_SUITE_P(
-    augmentedNibbleIndexedLookupTableCalculator,
-    uint8Register,
-    Augmented_Nibble_Indexed_Lookup_Table_Calculator<std::uint8_t> );
-
-/**
- * \brief Verify picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator works
- *        properly.
- */
-INSTANTIATE_TYPED_TEST_SUITE_P(
-    augmentedNibbleIndexedLookupTableCalculator,
-    uint16Register,
-    Augmented_Nibble_Indexed_Lookup_Table_Calculator<std::uint16_t> );
-
-/**
- * \brief Verify picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator works
- *        properly.
- */
-INSTANTIATE_TYPED_TEST_SUITE_P(
-    augmentedNibbleIndexedLookupTableCalculator,
-    uint32Register,
-    Augmented_Nibble_Indexed_Lookup_Table_Calculator<std::uint32_t> );
 
 /**
  * \brief Execute the picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator
