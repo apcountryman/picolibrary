@@ -32,20 +32,3 @@ add_subdirectory( direct_byte_indexed_lookup_table_calculator )
 # build the picolibrary::CRC::Direct_Nibble_Indexed_Lookup_Table_Calculator automated
 # tests
 add_subdirectory( direct_nibble_indexed_lookup_table_calculator )
-
-# build the picolibrary::CRC automated tests
-if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
-    add_executable(
-        test-automated-picolibrary-crc
-        main.cc
-    )
-    target_link_libraries(
-        test-automated-picolibrary-crc
-        picolibrary
-        picolibrary-testing-automated-fatal_error
-    )
-    add_test(
-        NAME    test-automated-picolibrary-crc
-        COMMAND test-automated-picolibrary-crc --gtest_color=yes
-    )
-endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )

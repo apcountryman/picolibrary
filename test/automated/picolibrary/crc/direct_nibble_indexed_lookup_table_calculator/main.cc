@@ -31,35 +31,86 @@
 namespace {
 
 using ::picolibrary::CRC::Direct_Nibble_Indexed_Lookup_Table_Calculator;
+using ::picolibrary::Testing::Automated::CRC::Calculator_Test_Case;
+using ::picolibrary::Testing::Automated::CRC::CALCULATOR_TEST_CASES_16;
+using ::picolibrary::Testing::Automated::CRC::CALCULATOR_TEST_CASES_32;
+using ::picolibrary::Testing::Automated::CRC::CALCULATOR_TEST_CASES_8;
+using ::testing::TestWithParam;
+using ::testing::ValuesIn;
 
 } // namespace
 
 /**
- * \brief Verify picolibrary::CRC::Direct_Nibble_Indexed_Lookup_Table_Calculator works
- *        properly.
+ * \brief picolibrary::CRC::Direct_Nibble_Indexed_Lookup_Table_Calculator std::uint8_t
+ *        test fixture.
  */
-INSTANTIATE_TYPED_TEST_SUITE_P(
-    directNibbleIndexedLookupTableCalculator,
-    uint8Register,
-    Direct_Nibble_Indexed_Lookup_Table_Calculator<std::uint8_t> );
+class directNibbleIndexedLookupTableCalculator8 :
+    public TestWithParam<Calculator_Test_Case<std::uint8_t>> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, directNibbleIndexedLookupTableCalculator8, ValuesIn( CALCULATOR_TEST_CASES_8 ) );
 
 /**
  * \brief Verify picolibrary::CRC::Direct_Nibble_Indexed_Lookup_Table_Calculator works
  *        properly.
  */
-INSTANTIATE_TYPED_TEST_SUITE_P(
-    directNibbleIndexedLookupTableCalculator,
-    uint16Register,
-    Direct_Nibble_Indexed_Lookup_Table_Calculator<std::uint16_t> );
+TEST_P( directNibbleIndexedLookupTableCalculator8, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    ASSERT_EQ(
+        Direct_Nibble_Indexed_Lookup_Table_Calculator{ test_case.calculation_parameters }.calculate(
+            test_case.message.begin(), test_case.message.end() ),
+        test_case.remainder );
+}
+
+/**
+ * \brief picolibrary::CRC::Direct_Nibble_Indexed_Lookup_Table_Calculator std::uint16_t
+ *        test fixture.
+ */
+class directNibbleIndexedLookupTableCalculator16 :
+    public TestWithParam<Calculator_Test_Case<std::uint16_t>> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, directNibbleIndexedLookupTableCalculator16, ValuesIn( CALCULATOR_TEST_CASES_16 ) );
 
 /**
  * \brief Verify picolibrary::CRC::Direct_Nibble_Indexed_Lookup_Table_Calculator works
  *        properly.
  */
-INSTANTIATE_TYPED_TEST_SUITE_P(
-    directNibbleIndexedLookupTableCalculator,
-    uint32Register,
-    Direct_Nibble_Indexed_Lookup_Table_Calculator<std::uint32_t> );
+TEST_P( directNibbleIndexedLookupTableCalculator16, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    ASSERT_EQ(
+        Direct_Nibble_Indexed_Lookup_Table_Calculator{ test_case.calculation_parameters }.calculate(
+            test_case.message.begin(), test_case.message.end() ),
+        test_case.remainder );
+}
+
+/**
+ * \brief picolibrary::CRC::Direct_Nibble_Indexed_Lookup_Table_Calculator std::uint32_t
+ *        test fixture.
+ */
+class directNibbleIndexedLookupTableCalculator32 :
+    public TestWithParam<Calculator_Test_Case<std::uint32_t>> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, directNibbleIndexedLookupTableCalculator32, ValuesIn( CALCULATOR_TEST_CASES_32 ) );
+
+/**
+ * \brief Verify picolibrary::CRC::Direct_Nibble_Indexed_Lookup_Table_Calculator works
+ *        properly.
+ */
+TEST_P( directNibbleIndexedLookupTableCalculator32, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    ASSERT_EQ(
+        Direct_Nibble_Indexed_Lookup_Table_Calculator{ test_case.calculation_parameters }.calculate(
+            test_case.message.begin(), test_case.message.end() ),
+        test_case.remainder );
+}
 
 /**
  * \brief Execute the picolibrary::CRC::Direct_Nibble_Indexed_Lookup_Table_Calculator
