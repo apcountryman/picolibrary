@@ -20,6 +20,7 @@
  * \brief picolibrary::Format::Bin automated test program.
  */
 
+#include <cstdint>
 #include <ostream>
 #include <string>
 #include <string_view>
