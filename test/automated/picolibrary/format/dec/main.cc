@@ -20,17 +20,15 @@
  * \brief picolibrary::Format::Dec automated test program.
  */
 
-#include <cstddef>
 #include <cstdint>
-#include <sstream>
+#include <ostream>
 #include <string>
-#include <type_traits>
+#include <string_view>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/format.h"
 #include "picolibrary/testing/automated/error.h"
-#include "picolibrary/testing/automated/random.h"
 #include "picolibrary/testing/automated/stream.h"
 
 namespace {
@@ -39,60 +37,27 @@ using ::picolibrary::Format::Dec;
 using ::picolibrary::Testing::Automated::Mock_Error;
 using ::picolibrary::Testing::Automated::Mock_Output_Stream;
 using ::picolibrary::Testing::Automated::Output_String_Stream;
-using ::picolibrary::Testing::Automated::random;
 using ::picolibrary::Testing::Automated::Reliable_Output_String_Stream;
 using ::testing::A;
 using ::testing::Return;
-
-template<typename Integer>
-auto dec( Integer value ) -> std::string
-{
-    auto stream = std::ostringstream{};
-
-    stream << static_cast<
-        std::conditional_t<std::is_same_v<Integer, std::int8_t>, std::int_fast16_t, std::conditional_t<std::is_same_v<Integer, std::uint8_t>, std::uint_fast16_t, Integer>>>(
-        value );
-
-    return stream.str();
-}
+using ::testing::TestWithParam;
+using ::testing::ValuesIn;
 
 } // namespace
 
 /**
- * \brief picolibrary::Output_Formatter<picolibrary::Dec> automated test fixture.
- *
- * \tparam Integer The type of integer to print.
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Output_Stream &, Integer ) properly handles a put error.
  */
-template<typename Integer>
-class outputFormatterDec : public ::testing::Test {
-};
-
-/**
- * \brief picolibrary::Output_Formatter<picolibrary::Dec> automated test integer types.
- */
-using Integers =
-    ::testing::Types<std::int8_t, std::uint8_t, std::int16_t, std::uint16_t, std::int32_t, std::uint32_t, std::int64_t, std::uint64_t>;
-
-/**
- * \brief picolibrary::Output_Formatter<picolibrary::Dec> automated test fixture.
- */
-TYPED_TEST_SUITE( outputFormatterDec, Integers );
-
-/**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Dec> properly handles
- *        a put error.
- */
-TYPED_TEST( outputFormatterDec, putError )
+TEST( outputFormatterFormatDecPrintOutputStreamErrorHandling, putError )
 {
-    using Integer = TypeParam;
-
     auto stream = Mock_Output_Stream{};
 
-    auto const error = random<Mock_Error>();
+    auto const error = Mock_Error{ 216 };
 
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.print( Dec{ random<Integer>() } );
+    auto const result = stream.print( Dec{ 712629789 } );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -103,38 +68,649 @@ TYPED_TEST( outputFormatterDec, putError )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Dec> works properly.
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print() test
+ *        case.
+ *
+ * \tparam Integer The type of integer to format.
  */
-TYPED_TEST( outputFormatterDec, worksProperly )
+template<typename Integer>
+struct outputFormatterFormatDecPrint_Test_Case {
+    /**
+     * \brief The integer to be formatted.
+     */
+    Integer value;
+
+    /**
+     * \brief The formatted integer.
+     */
+    std::string_view dec;
+};
+
+template<typename Integer>
+auto operator<<( std::ostream & stream, outputFormatterFormatDecPrint_Test_Case<Integer> const & test_case )
+    -> std::ostream &
 {
-    using Integer = TypeParam;
+    return stream << test_case.dec;
+}
 
-    {
-        auto stream = Output_String_Stream{};
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print()
+ *        std::int8_t test cases.
+ */
+outputFormatterFormatDecPrint_Test_Case<std::int8_t> const outputFormatterFormatDecPrintI8_TEST_CASES[]{
+    // clang-format off
 
-        auto const value = random<Integer>();
+    { INT8_MIN, "-128" },
+    {       -1,   "-1" },
+    {        0,    "0" },
+    {        1,    "1" },
+    { INT8_MAX,  "127" },
 
-        auto const result = stream.print( Dec{ value } );
+    {   69,   "69" },
+    {   77,   "77" },
+    {  -93,  "-93" },
+    {  121,  "121" },
+    { -119, "-119" },
 
-        ASSERT_FALSE( result.is_error() );
-        EXPECT_EQ( result.value(), stream.string().size() );
+    // clang-format on
+};
 
-        EXPECT_TRUE( stream.is_nominal() );
-        EXPECT_EQ( stream.string(), dec( value ) );
-    }
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Output_Stream &, Integer ) std::int8_t test fixture.
+ */
+class outputFormatterFormatDecPrintOutputStreamI8 :
+    public TestWithParam<outputFormatterFormatDecPrint_Test_Case<std::int8_t>> {
+};
 
-    {
-        auto stream = Reliable_Output_String_Stream{};
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatDecPrintOutputStreamI8, ValuesIn( outputFormatterFormatDecPrintI8_TEST_CASES ) );
 
-        auto const value = random<Integer>();
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Output_Stream &, Integer ) works properly.
+ */
+TEST_P( outputFormatterFormatDecPrintOutputStreamI8, worksProperly )
+{
+    auto const test_case = GetParam();
 
-        auto const n = stream.print( Dec{ value } );
+    auto stream = Output_String_Stream{};
 
-        EXPECT_EQ( n, stream.string().size() );
+    auto const result = stream.print( Dec{ test_case.value } );
 
-        EXPECT_TRUE( stream.is_nominal() );
-        EXPECT_EQ( stream.string(), dec( value ) );
-    }
+    ASSERT_FALSE( result.is_error() );
+    EXPECT_EQ( result.value(), stream.string().size() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), test_case.dec );
+}
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Reliable_Output_Stream &, Integer ) std::int8_t test fixture.
+ */
+class outputFormatterFormatDecPrintReliableOutputStreamI8 :
+    public TestWithParam<outputFormatterFormatDecPrint_Test_Case<std::int8_t>> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatDecPrintReliableOutputStreamI8, ValuesIn( outputFormatterFormatDecPrintI8_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Reliable_Output_Stream &, Integer ) works properly.
+ */
+TEST_P( outputFormatterFormatDecPrintReliableOutputStreamI8, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    auto stream = Reliable_Output_String_Stream{};
+
+    auto const n = stream.print( Dec{ test_case.value } );
+
+    EXPECT_EQ( n, stream.string().size() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), test_case.dec );
+}
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print()
+ *        std::uint8_t test cases.
+ */
+outputFormatterFormatDecPrint_Test_Case<std::uint8_t> const outputFormatterFormatDecPrintU8_TEST_CASES[]{
+    // clang-format off
+
+    {         0,   "0" },
+    { UINT8_MAX, "255" },
+
+    { 251, "251" },
+    { 109, "109" },
+    { 107, "107" },
+    { 217, "217" },
+    { 116, "116" },
+
+    // clang-format on
+};
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Output_Stream &, Integer ) std::uint8_t test fixture.
+ */
+class outputFormatterFormatDecPrintOutputStreamU8 :
+    public TestWithParam<outputFormatterFormatDecPrint_Test_Case<std::uint8_t>> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatDecPrintOutputStreamU8, ValuesIn( outputFormatterFormatDecPrintU8_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Output_Stream &, Integer ) works properly.
+ */
+TEST_P( outputFormatterFormatDecPrintOutputStreamU8, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    auto stream = Output_String_Stream{};
+
+    auto const result = stream.print( Dec{ test_case.value } );
+
+    ASSERT_FALSE( result.is_error() );
+    EXPECT_EQ( result.value(), stream.string().size() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), test_case.dec );
+}
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Reliable_Output_Stream &, Integer ) std::uint8_t test fixture.
+ */
+class outputFormatterFormatDecPrintReliableOutputStreamU8 :
+    public TestWithParam<outputFormatterFormatDecPrint_Test_Case<std::uint8_t>> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatDecPrintReliableOutputStreamU8, ValuesIn( outputFormatterFormatDecPrintU8_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Reliable_Output_Stream &, Integer ) works properly.
+ */
+TEST_P( outputFormatterFormatDecPrintReliableOutputStreamU8, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    auto stream = Reliable_Output_String_Stream{};
+
+    auto const n = stream.print( Dec{ test_case.value } );
+
+    EXPECT_EQ( n, stream.string().size() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), test_case.dec );
+}
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print()
+ *        std::int16_t test cases.
+ */
+outputFormatterFormatDecPrint_Test_Case<std::int16_t> const outputFormatterFormatDecPrintI16_TEST_CASES[]{
+    // clang-format off
+
+    { INT16_MIN, "-32768" },
+    {        -1,     "-1" },
+    {         0,      "0" },
+    {         1,      "1" },
+    { INT16_MAX,  "32767" },
+
+    {   8680,   "8680" },
+    { -11493, "-11493" },
+    { -25384, "-25384" },
+    {   6601,   "6601" },
+    {   8398,   "8398" },
+
+    // clang-format on
+};
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Output_Stream &, Integer ) std::int16_t test fixture.
+ */
+class outputFormatterFormatDecPrintOutputStreamI16 :
+    public TestWithParam<outputFormatterFormatDecPrint_Test_Case<std::int16_t>> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatDecPrintOutputStreamI16, ValuesIn( outputFormatterFormatDecPrintI16_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Output_Stream &, Integer ) works properly.
+ */
+TEST_P( outputFormatterFormatDecPrintOutputStreamI16, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    auto stream = Output_String_Stream{};
+
+    auto const result = stream.print( Dec{ test_case.value } );
+
+    ASSERT_FALSE( result.is_error() );
+    EXPECT_EQ( result.value(), stream.string().size() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), test_case.dec );
+}
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Reliable_Output_Stream &, Integer ) std::int16_t test fixture.
+ */
+class outputFormatterFormatDecPrintReliableOutputStreamI16 :
+    public TestWithParam<outputFormatterFormatDecPrint_Test_Case<std::int16_t>> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatDecPrintReliableOutputStreamI16, ValuesIn( outputFormatterFormatDecPrintI16_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Reliable_Output_Stream &, Integer ) works properly.
+ */
+TEST_P( outputFormatterFormatDecPrintReliableOutputStreamI16, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    auto stream = Reliable_Output_String_Stream{};
+
+    auto const n = stream.print( Dec{ test_case.value } );
+
+    EXPECT_EQ( n, stream.string().size() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), test_case.dec );
+}
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print()
+ *        std::uint16_t test cases.
+ */
+outputFormatterFormatDecPrint_Test_Case<std::uint16_t> const outputFormatterFormatDecPrintU16_TEST_CASES[]{
+    // clang-format off
+
+    {          0,     "0" },
+    { UINT16_MAX, "65535" },
+
+    { 27690, "27690" },
+    { 38952, "38952" },
+    { 23570, "23570" },
+    { 50329, "50329" },
+    {  8091,  "8091" },
+
+    // clang-format on
+};
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Output_Stream &, Integer ) std::uint16_t test fixture.
+ */
+class outputFormatterFormatDecPrintOutputStreamU16 :
+    public TestWithParam<outputFormatterFormatDecPrint_Test_Case<std::uint16_t>> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatDecPrintOutputStreamU16, ValuesIn( outputFormatterFormatDecPrintU16_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Output_Stream &, Integer ) works properly.
+ */
+TEST_P( outputFormatterFormatDecPrintOutputStreamU16, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    auto stream = Output_String_Stream{};
+
+    auto const result = stream.print( Dec{ test_case.value } );
+
+    ASSERT_FALSE( result.is_error() );
+    EXPECT_EQ( result.value(), stream.string().size() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), test_case.dec );
+}
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Reliable_Output_Stream &, Integer ) std::uint16_t test fixture.
+ */
+class outputFormatterFormatDecPrintReliableOutputStreamU16 :
+    public TestWithParam<outputFormatterFormatDecPrint_Test_Case<std::uint16_t>> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatDecPrintReliableOutputStreamU16, ValuesIn( outputFormatterFormatDecPrintU16_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Reliable_Output_Stream &, Integer ) works properly.
+ */
+TEST_P( outputFormatterFormatDecPrintReliableOutputStreamU16, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    auto stream = Reliable_Output_String_Stream{};
+
+    auto const n = stream.print( Dec{ test_case.value } );
+
+    EXPECT_EQ( n, stream.string().size() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), test_case.dec );
+}
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print()
+ *        std::int32_t test cases.
+ */
+outputFormatterFormatDecPrint_Test_Case<std::int32_t> const outputFormatterFormatDecPrintI32_TEST_CASES[]{
+    // clang-format off
+
+    { INT32_MIN, "-2147483648" },
+    {        -1,          "-1" },
+    {         0,           "0" },
+    {         1,           "1" },
+    { INT32_MAX,  "2147483647" },
+
+    {  -162212520,  "-162212520" },
+    { -1860052064, "-1860052064" },
+    { -2031119590, "-2031119590" },
+    {  1086379968,  "1086379968" },
+    {   128785365,   "128785365" },
+
+    // clang-format on
+};
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Output_Stream &, Integer ) std::int32_t test fixture.
+ */
+class outputFormatterFormatDecPrintOutputStreamI32 :
+    public TestWithParam<outputFormatterFormatDecPrint_Test_Case<std::int32_t>> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatDecPrintOutputStreamI32, ValuesIn( outputFormatterFormatDecPrintI32_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Output_Stream &, Integer ) works properly.
+ */
+TEST_P( outputFormatterFormatDecPrintOutputStreamI32, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    auto stream = Output_String_Stream{};
+
+    auto const result = stream.print( Dec{ test_case.value } );
+
+    ASSERT_FALSE( result.is_error() );
+    EXPECT_EQ( result.value(), stream.string().size() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), test_case.dec );
+}
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Reliable_Output_Stream &, Integer ) std::int32_t test fixture.
+ */
+class outputFormatterFormatDecPrintReliableOutputStreamI32 :
+    public TestWithParam<outputFormatterFormatDecPrint_Test_Case<std::int32_t>> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatDecPrintReliableOutputStreamI32, ValuesIn( outputFormatterFormatDecPrintI32_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Reliable_Output_Stream &, Integer ) works properly.
+ */
+TEST_P( outputFormatterFormatDecPrintReliableOutputStreamI32, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    auto stream = Reliable_Output_String_Stream{};
+
+    auto const n = stream.print( Dec{ test_case.value } );
+
+    EXPECT_EQ( n, stream.string().size() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), test_case.dec );
+}
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print()
+ *        std::uint32_t test cases.
+ */
+outputFormatterFormatDecPrint_Test_Case<std::uint32_t> const outputFormatterFormatDecPrintU32_TEST_CASES[]{
+    // clang-format off
+
+    {          0,          "0" },
+    { UINT32_MAX, "4294967295" },
+
+    { 4132754776, "4132754776" },
+    { 2434915232, "2434915232" },
+    { 2263847706, "2263847706" },
+    { 1086379968, "1086379968" },
+    {  128785365,  "128785365" },
+
+    // clang-format on
+};
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Output_Stream &, Integer ) std::uint32_t test fixture.
+ */
+class outputFormatterFormatDecPrintOutputStreamU32 :
+    public TestWithParam<outputFormatterFormatDecPrint_Test_Case<std::uint32_t>> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatDecPrintOutputStreamU32, ValuesIn( outputFormatterFormatDecPrintU32_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Output_Stream &, Integer ) works properly.
+ */
+TEST_P( outputFormatterFormatDecPrintOutputStreamU32, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    auto stream = Output_String_Stream{};
+
+    auto const result = stream.print( Dec{ test_case.value } );
+
+    ASSERT_FALSE( result.is_error() );
+    EXPECT_EQ( result.value(), stream.string().size() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), test_case.dec );
+}
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Reliable_Output_Stream &, Integer ) std::uint32_t test fixture.
+ */
+class outputFormatterFormatDecPrintReliableOutputStreamU32 :
+    public TestWithParam<outputFormatterFormatDecPrint_Test_Case<std::uint32_t>> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatDecPrintReliableOutputStreamU32, ValuesIn( outputFormatterFormatDecPrintU32_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Reliable_Output_Stream &, Integer ) works properly.
+ */
+TEST_P( outputFormatterFormatDecPrintReliableOutputStreamU32, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    auto stream = Reliable_Output_String_Stream{};
+
+    auto const n = stream.print( Dec{ test_case.value } );
+
+    EXPECT_EQ( n, stream.string().size() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), test_case.dec );
+}
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print()
+ *        std::int64_t test cases.
+ */
+outputFormatterFormatDecPrint_Test_Case<std::int64_t> const outputFormatterFormatDecPrintI64_TEST_CASES[]{
+    // clang-format off
+
+    { INT64_MIN, "-9223372036854775808" },
+    {        -1,                   "-1" },
+    {         0,                    "0" },
+    {         1,                    "1" },
+    { INT64_MAX,  "9223372036854775807" },
+
+    {  -162212520,  "-162212520" },
+    { -1860052064, "-1860052064" },
+    { -2031119590, "-2031119590" },
+    {  1086379968,  "1086379968" },
+    {   128785365,   "128785365" },
+
+    // clang-format on
+};
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Output_Stream &, Integer ) std::int64_t test fixture.
+ */
+class outputFormatterFormatDecPrintOutputStreamI64 :
+    public TestWithParam<outputFormatterFormatDecPrint_Test_Case<std::int64_t>> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatDecPrintOutputStreamI64, ValuesIn( outputFormatterFormatDecPrintI64_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Output_Stream &, Integer ) works properly.
+ */
+TEST_P( outputFormatterFormatDecPrintOutputStreamI64, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    auto stream = Output_String_Stream{};
+
+    auto const result = stream.print( Dec{ test_case.value } );
+
+    ASSERT_FALSE( result.is_error() );
+    EXPECT_EQ( result.value(), stream.string().size() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), test_case.dec );
+}
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Reliable_Output_Stream &, Integer ) std::int64_t test fixture.
+ */
+class outputFormatterFormatDecPrintReliableOutputStreamI64 :
+    public TestWithParam<outputFormatterFormatDecPrint_Test_Case<std::int64_t>> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatDecPrintReliableOutputStreamI64, ValuesIn( outputFormatterFormatDecPrintI64_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Reliable_Output_Stream &, Integer ) works properly.
+ */
+TEST_P( outputFormatterFormatDecPrintReliableOutputStreamI64, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    auto stream = Reliable_Output_String_Stream{};
+
+    auto const n = stream.print( Dec{ test_case.value } );
+
+    EXPECT_EQ( n, stream.string().size() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), test_case.dec );
+}
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print()
+ *        std::uint64_t test cases.
+ */
+outputFormatterFormatDecPrint_Test_Case<std::uint64_t> const outputFormatterFormatDecPrintU64_TEST_CASES[]{
+    // clang-format off
+
+    {          0,                    "0" },
+    { UINT64_MAX, "18446744073709551615" },
+
+    { 4132754776, "4132754776" },
+    { 2434915232, "2434915232" },
+    { 2263847706, "2263847706" },
+    { 1086379968, "1086379968" },
+    {  128785365,  "128785365" },
+
+    // clang-format on
+};
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Output_Stream &, Integer ) std::uint64_t test fixture.
+ */
+class outputFormatterFormatDecPrintOutputStreamU64 :
+    public TestWithParam<outputFormatterFormatDecPrint_Test_Case<std::uint64_t>> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatDecPrintOutputStreamU64, ValuesIn( outputFormatterFormatDecPrintU64_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Output_Stream &, Integer ) works properly.
+ */
+TEST_P( outputFormatterFormatDecPrintOutputStreamU64, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    auto stream = Output_String_Stream{};
+
+    auto const result = stream.print( Dec{ test_case.value } );
+
+    ASSERT_FALSE( result.is_error() );
+    EXPECT_EQ( result.value(), stream.string().size() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), test_case.dec );
+}
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Reliable_Output_Stream &, Integer ) std::uint64_t test fixture.
+ */
+class outputFormatterFormatDecPrintReliableOutputStreamU64 :
+    public TestWithParam<outputFormatterFormatDecPrint_Test_Case<std::uint64_t>> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatDecPrintReliableOutputStreamU64, ValuesIn( outputFormatterFormatDecPrintU64_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Dec<Integer>>::print(
+ *        picolibrary::Reliable_Output_Stream &, Integer ) works properly.
+ */
+TEST_P( outputFormatterFormatDecPrintReliableOutputStreamU64, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    auto stream = Reliable_Output_String_Stream{};
+
+    auto const n = stream.print( Dec{ test_case.value } );
+
+    EXPECT_EQ( n, stream.string().size() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), test_case.dec );
 }
 
 /**
