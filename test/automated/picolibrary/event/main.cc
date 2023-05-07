@@ -29,7 +29,6 @@
 #include "picolibrary/stream.h"
 #include "picolibrary/testing/automated/error.h"
 #include "picolibrary/testing/automated/event.h"
-#include "picolibrary/testing/automated/random.h"
 #include "picolibrary/testing/automated/stream.h"
 
 namespace {
@@ -44,8 +43,6 @@ using ::picolibrary::Testing::Automated::Mock_Event;
 using ::picolibrary::Testing::Automated::Mock_Event_Category;
 using ::picolibrary::Testing::Automated::Mock_Output_Stream;
 using ::picolibrary::Testing::Automated::Output_String_Stream;
-using ::picolibrary::Testing::Automated::random;
-using ::picolibrary::Testing::Automated::random_container;
 using ::picolibrary::Testing::Automated::Reliable_Output_String_Stream;
 using ::testing::_;
 using ::testing::A;
@@ -62,45 +59,43 @@ using ::testing::Return;
 TEST( constructor, worksProperly )
 {
     auto const category = Mock_Event_Category{};
-    auto const id       = random<Event_ID>();
+    auto const id       = Event_ID{ 90 };
 
     auto const event = Mock_Event{ category, id };
 
     EXPECT_EQ( &event.category(), &category );
     EXPECT_EQ( event.id(), id );
 
-    auto const description = random_container<std::string>();
+    auto const description = "jdmwJlCfF";
 
-    EXPECT_CALL( category, event_description( id ) ).WillOnce( Return( description.c_str() ) );
+    EXPECT_CALL( category, event_description( id ) ).WillOnce( Return( description ) );
 
-    EXPECT_STREQ( event.description(), description.c_str() );
+    EXPECT_STREQ( event.description(), description );
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Event> properly handles a put
- *        error.
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Event>::print(
+ *        picolibrary::Output_Stream &, picolibrary::Event const & ) properly handles a
+ *        put error.
  */
-TEST( outputFormatterEvent, putError )
+TEST( outputFormatterEventPrintOutputStreamErrorHandling, putError )
 {
     auto stream = Mock_Output_Stream{};
 
     auto const category = Mock_Event_Category{};
 
-    auto const event = Mock_Event{ category, random<Event_ID>() };
+    auto const event = Mock_Event{ category, 74 };
 
-    auto const event_category_name = random_container<std::string>();
-    auto const event_description   = random_container<std::string>();
+    auto const error = Mock_Error{ 73 };
 
-    auto const error = random<Mock_Error>();
-
-    EXPECT_CALL( category, name() ).WillOnce( Return( event_category_name.c_str() ) );
-    EXPECT_CALL( category, event_description( _ ) ).WillOnce( Return( event_description.c_str() ) );
+    EXPECT_CALL( category, name() ).WillOnce( Return( "LXfJsA" ) );
+    EXPECT_CALL( category, event_description( _ ) ).WillOnce( Return( "H94qveeyD3j" ) );
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
     EXPECT_CALL( event, print_details( Matcher<Output_Stream &>( _ ) ) ).Times( 0 );
 
     auto const result = stream.print( static_cast<Event const &>( event ) );
 
-    EXPECT_TRUE( result.is_error() );
+    ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
     EXPECT_FALSE( stream.end_of_file_reached() );
@@ -109,29 +104,27 @@ TEST( outputFormatterEvent, putError )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Event> properly handles a
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Event>::print(
+ *        picolibrary::Output_Stream &, picolibrary::Event const & ) properly handles a
  *        details print error.
  */
-TEST( outputFormatterEvent, detailsPrintError )
+TEST( outputFormatterEventPrintOutputStreamErrorHandling, detailsPrintError )
 {
     auto stream = Output_String_Stream{};
 
     auto const category = Mock_Event_Category{};
 
-    auto const event = Mock_Event{ category, random<Event_ID>() };
+    auto const event = Mock_Event{ category, 74 };
 
-    auto const event_category_name = random_container<std::string>();
-    auto const event_description   = random_container<std::string>();
+    auto const error = Mock_Error{ 196 };
 
-    auto const error = random<Mock_Error>();
-
-    EXPECT_CALL( category, name() ).WillOnce( Return( event_category_name.c_str() ) );
-    EXPECT_CALL( category, event_description( _ ) ).WillOnce( Return( event_description.c_str() ) );
+    EXPECT_CALL( category, name() ).WillOnce( Return( "LXfJsA" ) );
+    EXPECT_CALL( category, event_description( _ ) ).WillOnce( Return( "H94qveeyD3j" ) );
     EXPECT_CALL( event, print_details( Matcher<Output_Stream &>( _ ) ) ).WillOnce( Return( error ) );
 
     auto const result = stream.print( static_cast<Event const &>( event ) );
 
-    EXPECT_TRUE( result.is_error() );
+    ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
     EXPECT_FALSE( stream.end_of_file_reached() );
@@ -140,62 +133,64 @@ TEST( outputFormatterEvent, detailsPrintError )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Event> works properly.
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Event>::print(
+ *        picolibrary::Output_Stream &, picolibrary::Event const & ) works properly.
  */
-TEST( outputFormatterEvent, worksProperly )
+TEST( outputFormatterEventPrintOutputStream, worksProperly )
 {
-    {
-        auto stream = Output_String_Stream{};
+    auto stream = Output_String_Stream{};
 
-        auto const category = Mock_Event_Category{};
-        auto const id       = random<Event_ID>();
+    auto const category = Mock_Event_Category{};
+    auto const id       = Event_ID{ 114 };
 
-        auto const event = Mock_Event{ category, id };
+    auto const event = Mock_Event{ category, id };
 
-        auto const event_category_name = random_container<std::string>();
-        auto const event_description   = random_container<std::string>();
-        auto const event_details_size  = random<std::size_t>();
+    auto const event_category_name = "VHhfhLG";
+    auto const event_description   = "1maLI6tpGC";
+    auto const event_details_size  = std::size_t{ 244 };
 
-        EXPECT_CALL( category, name() ).WillOnce( Return( event_category_name.c_str() ) );
-        EXPECT_CALL( category, event_description( id ) )
-            .WillOnce( Return( event_description.c_str() ) );
-        EXPECT_CALL( event, print_details( Matcher<Output_Stream &>( Ref( stream ) ) ) )
-            .WillOnce( Return( event_details_size ) );
+    EXPECT_CALL( category, name() ).WillOnce( Return( event_category_name ) );
+    EXPECT_CALL( category, event_description( id ) ).WillOnce( Return( event_description ) );
+    EXPECT_CALL( event, print_details( Matcher<Output_Stream &>( Ref( stream ) ) ) ).WillOnce( Return( event_details_size ) );
 
-        auto const result = stream.print( static_cast<Event const &>( event ) );
+    auto const result = stream.print( static_cast<Event const &>( event ) );
 
-        EXPECT_FALSE( result.is_error() );
-        EXPECT_EQ( result.value(), stream.string().size() + event_details_size );
+    ASSERT_FALSE( result.is_error() );
+    EXPECT_EQ( result.value(), stream.string().size() + event_details_size );
 
-        EXPECT_TRUE( stream.is_nominal() );
-        EXPECT_EQ( stream.string(), event_category_name + "::" + event_description );
-    }
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), std::string{ event_category_name } + "::" + event_description );
+}
 
-    {
-        auto stream = Reliable_Output_String_Stream{};
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Event>::print(
+ *        picolibrary::Reliable_Output_Stream &, picolibrary::Event const & ) works
+ *        properly.
+ */
+TEST( outputFormatterEventPrintReliableOutputStream, worksProperly )
+{
+    auto stream = Reliable_Output_String_Stream{};
 
-        auto const category = Mock_Event_Category{};
-        auto const id       = random<Event_ID>();
+    auto const category = Mock_Event_Category{};
+    auto const id       = Event_ID{ 114 };
 
-        auto const event = Mock_Event{ category, id };
+    auto const event = Mock_Event{ category, id };
 
-        auto const event_category_name = random_container<std::string>();
-        auto const event_description   = random_container<std::string>();
-        auto const event_details_size  = random<std::size_t>();
+    auto const event_category_name = "VHhfhLG";
+    auto const event_description   = "1maLI6tpGC";
+    auto const event_details_size  = std::size_t{ 244 };
 
-        EXPECT_CALL( category, name() ).WillOnce( Return( event_category_name.c_str() ) );
-        EXPECT_CALL( category, event_description( id ) )
-            .WillOnce( Return( event_description.c_str() ) );
-        EXPECT_CALL( event, print_details( Matcher<Reliable_Output_Stream &>( Ref( stream ) ) ) )
-            .WillOnce( Return( event_details_size ) );
+    EXPECT_CALL( category, name() ).WillOnce( Return( event_category_name ) );
+    EXPECT_CALL( category, event_description( id ) ).WillOnce( Return( event_description ) );
+    EXPECT_CALL( event, print_details( Matcher<Reliable_Output_Stream &>( Ref( stream ) ) ) )
+        .WillOnce( Return( event_details_size ) );
 
-        auto const n = stream.print( static_cast<Event const &>( event ) );
+    auto const n = stream.print( static_cast<Event const &>( event ) );
 
-        EXPECT_EQ( n, stream.string().size() + event_details_size );
+    EXPECT_EQ( n, stream.string().size() + event_details_size );
 
-        EXPECT_TRUE( stream.is_nominal() );
-        EXPECT_EQ( stream.string(), event_category_name + "::" + event_description );
-    }
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), std::string{ event_category_name } + "::" + event_description );
 }
 
 /**
