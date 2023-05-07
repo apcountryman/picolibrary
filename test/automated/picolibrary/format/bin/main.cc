@@ -67,8 +67,8 @@ TEST( outputFormatterFormatBinPrintOutputStreamErrorHandling, putError )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Bin<Integer>>::print()
- *        test case.
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Bin<Integer>>::print() test
+ *        case.
  *
  * \tparam Integer The type of integer to format.
  */
@@ -93,7 +93,7 @@ auto operator<<( std::ostream & stream, outputFormatterFormatBinPrint_Test_Case<
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Bin<Integer>>::print()
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Bin<Integer>>::print()
  *        std::int8_t test cases.
  */
 outputFormatterFormatBinPrint_Test_Case<std::int8_t> const outputFormatterFormatBinPrintI8_TEST_CASES[]{
@@ -169,7 +169,7 @@ TEST_P( outputFormatterFormatBinPrintReliableOutputStreamI8, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Bin<Integer>>::print()
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Bin<Integer>>::print()
  *        std::uint8_t test cases.
  */
 outputFormatterFormatBinPrint_Test_Case<std::uint8_t> const outputFormatterFormatBinPrintU8_TEST_CASES[]{
@@ -245,7 +245,7 @@ TEST_P( outputFormatterFormatBinPrintReliableOutputStreamU8, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Bin<Integer>>::print()
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Bin<Integer>>::print()
  *        std::int16_t test cases.
  */
 outputFormatterFormatBinPrint_Test_Case<std::int16_t> const outputFormatterFormatBinPrintI16_TEST_CASES[]{
@@ -321,7 +321,7 @@ TEST_P( outputFormatterFormatBinPrintReliableOutputStreamI16, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Bin<Integer>>::print()
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Bin<Integer>>::print()
  *        std::uint16_t test cases.
  */
 outputFormatterFormatBinPrint_Test_Case<std::uint16_t> const outputFormatterFormatBinPrintU16_TEST_CASES[]{
@@ -397,7 +397,7 @@ TEST_P( outputFormatterFormatBinPrintReliableOutputStreamU16, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Bin<Integer>>::print()
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Bin<Integer>>::print()
  *        std::int32_t test cases.
  */
 outputFormatterFormatBinPrint_Test_Case<std::int32_t> const outputFormatterFormatBinPrintI32_TEST_CASES[]{
@@ -473,7 +473,7 @@ TEST_P( outputFormatterFormatBinPrintReliableOutputStreamI32, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Bin<Integer>>::print()
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Bin<Integer>>::print()
  *        std::uint32_t test cases.
  */
 outputFormatterFormatBinPrint_Test_Case<std::uint32_t> const outputFormatterFormatBinPrintU32_TEST_CASES[]{
@@ -549,7 +549,7 @@ TEST_P( outputFormatterFormatBinPrintReliableOutputStreamU32, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Bin<Integer>>::print()
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Bin<Integer>>::print()
  *        std::int64_t test cases.
  */
 outputFormatterFormatBinPrint_Test_Case<std::int64_t> const outputFormatterFormatBinPrintI64_TEST_CASES[]{
@@ -625,7 +625,7 @@ TEST_P( outputFormatterFormatBinPrintReliableOutputStreamI64, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Bin<Integer>>::print()
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Bin<Integer>>::print()
  *        std::uint64_t test cases.
  */
 outputFormatterFormatBinPrint_Test_Case<std::uint64_t> const outputFormatterFormatBinPrintU64_TEST_CASES[]{
