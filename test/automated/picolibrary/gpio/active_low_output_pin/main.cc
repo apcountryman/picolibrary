@@ -20,6 +20,8 @@
  * \brief picolibrary::GPIO::Active_Low_Output_Pin automated test program.
  */
 
+#include <ostream>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/gpio.h"
@@ -28,35 +30,81 @@
 namespace {
 
 using ::picolibrary::GPIO::Initial_Pin_State;
+using ::testing::TestWithParam;
+using ::testing::ValuesIn;
 
 using Pin = ::picolibrary::GPIO::Active_Low_Output_Pin<::picolibrary::Testing::Automated::GPIO::Mock_Output_Pin>;
 
 } // namespace
 
 /**
- * \brief Verify picolibrary::GPIO::Active_Low_Output_Pin::initialize() works properly.
+ * \brief picolibrary::GPIO::Active_Low_Output_Pin::initialize() test case.
  */
-TEST( initialize, worksProperly )
+struct initialize_Test_Case {
+    /**
+     * \brief The requested initial pin state.
+     */
+    Initial_Pin_State requested_state;
+
+    /**
+     * \brief The actual initial pin state.
+     */
+    Initial_Pin_State actual_state;
+};
+
+auto operator<<( std::ostream & stream, initialize_Test_Case const & test_case ) -> std::ostream &
 {
-    struct {
-        Initial_Pin_State requested_state;
-        Initial_Pin_State actual_state;
-    } const test_cases[]{
-        // clang-format off
-
-        { Initial_Pin_State::LOW,  Initial_Pin_State::HIGH },
-        { Initial_Pin_State::HIGH, Initial_Pin_State::LOW  },
-
-        // clang-format on
+    auto const as_string = []( Initial_Pin_State initial_pin_state ) -> char const * {
+        switch ( initial_pin_state ) {
+            case Initial_Pin_State::LOW: return "Initial_Pin_State::LOW";
+            case Initial_Pin_State::HIGH: return "Initial_Pin_State::HIGH";
+            default: return "UNKNOWN";
+        } // switch
     };
 
-    for ( auto const test_case : test_cases ) {
-        auto pin = Pin{};
+    // clang-format off
 
-        EXPECT_CALL( pin, initialize( test_case.actual_state ) );
+    return stream << "{ "
+                  << ".requested_state = " << as_string( test_case.requested_state )
+                  << ", "
+                  << ".actual_state = " << as_string( test_case.actual_state )
+                  << " }";
 
-        pin.initialize( test_case.requested_state );
-    } // for
+    // clang-format on
+}
+
+/**
+ * \brief picolibrary::GPIO::Active_Low_Output_Pin::initialize() test cases.
+ */
+initialize_Test_Case const initialize_TEST_CASES[]{
+    // clang-format off
+
+    { Initial_Pin_State::LOW,  Initial_Pin_State::HIGH },
+    { Initial_Pin_State::HIGH, Initial_Pin_State::LOW  },
+
+    // clang-format on
+};
+
+/**
+ * \brief picolibrary::GPIO::Active_Low_Output_Pin::initialize() test fixture.
+ */
+class initialize : public TestWithParam<initialize_Test_Case> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, initialize, ValuesIn( initialize_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::GPIO::Active_Low_Output_Pin::initialize() works properly.
+ */
+TEST_P( initialize, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    auto pin = Pin{};
+
+    EXPECT_CALL( pin, initialize( test_case.actual_state ) );
+
+    pin.initialize( test_case.requested_state );
 }
 
 /**
