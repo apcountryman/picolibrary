@@ -28,59 +28,64 @@
 namespace {
 
 using ::testing::Return;
+using ::testing::TestWithParam;
+using ::testing::ValuesIn;
 
 using Pin = ::picolibrary::GPIO::Active_Low_Input_Pin<::picolibrary::Testing::Automated::GPIO::Mock_Input_Pin>;
 
 } // namespace
 
 /**
+ * \brief picolibrary::GPIO::Active_Low_Input_Pin::is_low() and
+ *        picolibrary::GPIO::Active_Low_Input_Pin::is_high() test cases
+ */
+bool const isX_TEST_CASES[]{
+    true,
+    false,
+};
+
+/**
+ * \brief picolibrary::GPIO::Active_Low_Input_Pin::is_low() test fixture.
+ */
+class isLow : public TestWithParam<bool> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, isLow, ValuesIn( isX_TEST_CASES ) );
+
+/**
  * \brief Verify picolibrary::GPIO::Active_Low_Input_Pin::is_low() works properly.
  */
-TEST( isLow, worksProperly )
+TEST_P( isLow, worksProperly )
 {
-    struct {
-        bool is_high;
-    } const test_cases[]{
-        // clang-format off
+    auto const is_high = GetParam();
 
-        { true  },
-        { false },
+    auto const pin = Pin{};
 
-        //clang-format on
-    };
+    EXPECT_CALL( pin, is_high() ).WillOnce( Return( is_high ) );
 
-    for ( auto const test_case : test_cases ) {
-        auto const pin = Pin{};
-
-        EXPECT_CALL( pin, is_high() ).WillOnce( Return( test_case.is_high ) );
-
-        EXPECT_EQ( pin.is_low(), test_case.is_high );
-    } // for
+    EXPECT_EQ( pin.is_low(), is_high );
 }
+
+/**
+ * \brief picolibrary::GPIO::Active_Low_Input_Pin::is_high() test fixture.
+ */
+class isHigh : public TestWithParam<bool> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, isHigh, ValuesIn( isX_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::GPIO::Active_Low_Input_Pin::is_high() works properly.
  */
-TEST( isHigh, worksProperly )
+TEST_P( isHigh, worksProperly )
 {
-    struct {
-        bool is_low;
-    } const test_cases[]{
-        // clang-format off
+    auto const is_low = GetParam();
 
-        { true  },
-        { false },
+    auto const pin = Pin{};
 
-        //clang-format on
-    };
+    EXPECT_CALL( pin, is_low() ).WillOnce( Return( is_low ) );
 
-    for ( auto const test_case : test_cases ) {
-        auto const pin = Pin{};
-
-        EXPECT_CALL( pin, is_low() ).WillOnce( Return( test_case.is_low ) );
-
-        EXPECT_EQ( pin.is_high(), test_case.is_low );
-    } // for
+    EXPECT_EQ( pin.is_high(), is_low );
 }
 
 /**
