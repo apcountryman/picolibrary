@@ -29,20 +29,11 @@ namespace {
 
 using ::testing::Return;
 using ::testing::TestWithParam;
-using ::testing::ValuesIn;
+using ::testing::Values;
 
 using Pin = ::picolibrary::GPIO::Active_Low_Input_Pin<::picolibrary::Testing::Automated::GPIO::Mock_Input_Pin>;
 
 } // namespace
-
-/**
- * \brief picolibrary::GPIO::Active_Low_Input_Pin::is_low() and
- *        picolibrary::GPIO::Active_Low_Input_Pin::is_high() test cases
- */
-bool const isX_TEST_CASES[]{
-    true,
-    false,
-};
 
 /**
  * \brief picolibrary::GPIO::Active_Low_Input_Pin::is_low() test fixture.
@@ -50,7 +41,7 @@ bool const isX_TEST_CASES[]{
 class isLow : public TestWithParam<bool> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, isLow, ValuesIn( isX_TEST_CASES ) );
+INSTANTIATE_TEST_SUITE_P( testCases, isLow, Values( true, false ) );
 
 /**
  * \brief Verify picolibrary::GPIO::Active_Low_Input_Pin::is_low() works properly.
@@ -72,7 +63,7 @@ TEST_P( isLow, worksProperly )
 class isHigh : public TestWithParam<bool> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, isHigh, ValuesIn( isX_TEST_CASES ) );
+INSTANTIATE_TEST_SUITE_P( testCases, isHigh, Values( true, false ) );
 
 /**
  * \brief Verify picolibrary::GPIO::Active_Low_Input_Pin::is_high() works properly.
