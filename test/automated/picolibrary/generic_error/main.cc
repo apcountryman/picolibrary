@@ -23,7 +23,6 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/error.h"
-#include "picolibrary/testing/automated/random.h"
 
 namespace {
 
@@ -31,7 +30,6 @@ using ::picolibrary::Error_Code;
 using ::picolibrary::Error_ID;
 using ::picolibrary::Generic_Error;
 using ::picolibrary::Generic_Error_Category;
-using ::picolibrary::Testing::Automated::random;
 
 } // namespace
 
@@ -41,7 +39,7 @@ using ::picolibrary::Testing::Automated::random;
  */
 TEST( makeErrorCode, worksProperly )
 {
-    auto const id = random<Error_ID>();
+    auto const id = Error_ID{ 226 };
 
     auto const error = Error_Code{ static_cast<Generic_Error>( id ) };
 
