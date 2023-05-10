@@ -20,7 +20,6 @@
  * \brief picolibrary::I2C::Controller automated test program.
  */
 
-#include <cstddef>
 #include <cstdint>
 #include <vector>
 
@@ -28,13 +27,10 @@
 #include "gtest/gtest.h"
 #include "picolibrary/i2c.h"
 #include "picolibrary/testing/automated/i2c.h"
-#include "picolibrary/testing/automated/random.h"
 
 namespace {
 
 using ::picolibrary::I2C::Response;
-using ::picolibrary::Testing::Automated::random;
-using ::picolibrary::Testing::Automated::random_container;
 using ::testing::_;
 using ::testing::InSequence;
 using ::testing::Return;
@@ -45,112 +41,140 @@ using Controller = ::picolibrary::I2C::Controller<::picolibrary::Testing::Automa
 
 /**
  * \brief Verify picolibrary::I2C::Controller::read( std::uint8_t *, std::uint8_t *,
- *        picolibrary::I2C::Response ) works properly.
+ *        picolibrary::I2C::Response ) works properly when begin is equal to end and
+ *        response is picolibrary::I2C::Response::ACK.
  */
-TEST( read, worksProperly )
+TEST( readBlockResponse, worksProperlyBeginEqualEndACK )
 {
-    {
-        struct {
-            Response response;
-        } const test_cases[]{
-            // clang-format off
+    auto controller = Controller{};
 
-            { Response::ACK  },
-            { Response::NACK },
+    EXPECT_CALL( controller, read( _ ) ).Times( 0 );
 
-            // clang-format on
-        };
+    auto data = std::vector<std::uint8_t>{};
+    controller.read( &*data.begin(), &*data.end(), Response::ACK );
+}
 
-        for ( auto const test_case : test_cases ) {
-            auto controller = Controller{};
+/**
+ * \brief Verify picolibrary::I2C::Controller::read( std::uint8_t *, std::uint8_t *,
+ *        picolibrary::I2C::Response ) works properly when begin is equal to end and
+ *        response is picolibrary::I2C::Response::NACK.
+ */
+TEST( readBlockResponse, worksProperlyBeginEqualEndNACK )
+{
+    auto controller = Controller{};
 
-            EXPECT_CALL( controller, read( _ ) ).Times( 0 );
+    EXPECT_CALL( controller, read( _ ) ).Times( 0 );
 
-            auto data = std::vector<std::uint8_t>{};
-            controller.read( &*data.begin(), &*data.end(), test_case.response );
-        } // for
-    }
+    auto data = std::vector<std::uint8_t>{};
+    controller.read( &*data.begin(), &*data.end(), Response::NACK );
+}
 
-    {
-        auto const in_sequence = InSequence{};
+/**
+ * \brief Verify picolibrary::I2C::Controller::read( std::uint8_t *, std::uint8_t *,
+ *        picolibrary::I2C::Response ) works properly when begin is not equal to end and
+ *        response is picolibrary::I2C::Response::ACK.
+ */
+TEST( readBlockResponse, worksProperlyBeginNotEqualEndACK )
+{
+    auto const in_sequence = InSequence{};
 
-        auto controller = Controller{};
+    auto controller = Controller{};
 
-        auto const size          = random<std::size_t>( 1, 15 );
-        auto const data_expected = random_container<std::vector<std::uint8_t>>( size );
+    auto const data_expected = std::vector<std::uint8_t>{
+        0x7f, 0xD9, 0xF7, 0x30, 0x29, 0x72, 0x56, 0x17, 0xC6,
+    };
 
-        for ( auto const byte : data_expected ) {
-            EXPECT_CALL( controller, read( Response::ACK ) ).WillOnce( Return( byte ) );
-        } // for
+    for ( auto const byte : data_expected ) {
+        EXPECT_CALL( controller, read( Response::ACK ) ).WillOnce( Return( byte ) );
+    } // for
 
-        auto data = std::vector<std::uint8_t>( size );
-        controller.read( &*data.begin(), &*data.end(), Response::ACK );
+    auto data = std::vector<std::uint8_t>( data_expected.size() );
 
-        EXPECT_EQ( data, data_expected );
-    }
+    controller.read( &*data.begin(), &*data.end(), Response::ACK );
 
-    {
-        auto const in_sequence = InSequence{};
+    EXPECT_EQ( data, data_expected );
+}
 
-        auto controller = Controller{};
+/**
+ * \brief Verify picolibrary::I2C::Controller::read( std::uint8_t *, std::uint8_t *,
+ *        picolibrary::I2C::Response ) works properly when begin is not equal to end and
+ *        response is picolibrary::I2C::Response::NACK.
+ */
+TEST( readBlockResponse, worksProperlyBeginNotEqualEndNACK )
+{
+    auto const in_sequence = InSequence{};
 
-        auto const size          = random<std::size_t>( 1, 15 );
-        auto const data_expected = random_container<std::vector<std::uint8_t>>( size );
+    auto controller = Controller{};
 
-        for ( auto begin = data_expected.begin(); begin != data_expected.end(); ++begin ) {
-            EXPECT_CALL( controller, read( begin + 1 == data_expected.end() ? Response::NACK : Response::ACK ) )
-                .WillOnce( Return( *begin ) );
-        } // for
+    auto const data_expected = std::vector<std::uint8_t>{
+        0x7f, 0xD9, 0xF7, 0x30, 0x29, 0x72, 0x56, 0x17, 0xC6,
+    };
 
-        auto data = std::vector<std::uint8_t>( size );
-        controller.read( &*data.begin(), &*data.end(), Response::NACK );
+    for ( auto begin = data_expected.begin(); begin != data_expected.end(); ++begin ) {
+        EXPECT_CALL( controller, read( begin + 1 == data_expected.end() ? Response::NACK : Response::ACK ) )
+            .WillOnce( Return( *begin ) );
+    } // for
 
-        EXPECT_EQ( data, data_expected );
-    }
+    auto data = std::vector<std::uint8_t>( data_expected.size() );
+
+    controller.read( &*data.begin(), &*data.end(), Response::NACK );
+
+    EXPECT_EQ( data, data_expected );
 }
 
 /**
  * \brief Verify picolibrary::I2C::Controller::write( std::uint8_t const *, std::uint8_t
- *        const * ) properly handles a NACK response.
+ *        const * ) works properly when begin is equal to end.
  */
-TEST( write, nack )
+TEST( writeBlock, worksProperlyBeginEqualEnd )
+{
+    auto controller = Controller{};
+
+    EXPECT_CALL( controller, write( _ ) ).Times( 0 );
+
+    auto const data = std::vector<std::uint8_t>{};
+
+    EXPECT_EQ( controller.write( &*data.begin(), &*data.end() ), Response::ACK );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::Controller::write( std::uint8_t const *, std::uint8_t
+ *        const * ) works properly when begin is not equal to end and a NACK response is
+ *        received.
+ */
+TEST( writeBlock, worksProperlyBeginNotEqualEndNACK )
 {
     auto controller = Controller{};
 
     EXPECT_CALL( controller, write( _ ) ).WillOnce( Return( Response::NACK ) );
 
-    auto const data = random_container<std::vector<std::uint8_t>>( random<std::size_t>( 1, 15 ) );
+    auto const data = std::vector<std::uint8_t>{
+        0x7f, 0xD9, 0xF7, 0x30, 0x29, 0x72, 0x56, 0x17, 0xC6,
+    };
+
     EXPECT_EQ( controller.write( &*data.begin(), &*data.end() ), Response::NACK );
 }
 
 /**
  * \brief Verify picolibrary::I2C::Controller::write( std::uint8_t const *, std::uint8_t
- *        const * ) works properly.
+ *        const * ) works properly when begin is not equal to end and no NACK responses
+ *        are received.
  */
-TEST( write, worksProperly )
+TEST( writeBlock, worksProperlyBeginNotEqualEndNoNACK )
 {
-    {
-        auto controller = Controller{};
+    auto const in_sequence = InSequence{};
 
-        EXPECT_CALL( controller, write( _ ) ).Times( 0 );
+    auto controller = Controller{};
 
-        auto const data = std::vector<std::uint8_t>{};
-        EXPECT_EQ( controller.write( &*data.begin(), &*data.end() ), Response::ACK );
-    }
+    auto const data = std::vector<std::uint8_t>{
+        0x7f, 0xD9, 0xF7, 0x30, 0x29, 0x72, 0x56, 0x17, 0xC6,
+    };
 
-    {
-        auto const in_sequence = InSequence{};
+    for ( auto const byte : data ) {
+        EXPECT_CALL( controller, write( byte ) ).WillOnce( Return( Response::ACK ) );
+    } // for
 
-        auto controller = Controller{};
-
-        auto const data = random_container<std::vector<std::uint8_t>>();
-
-        for ( auto const byte : data ) {
-            EXPECT_CALL( controller, write( byte ) ).WillOnce( Return( Response::ACK ) );
-        } // for
-
-        EXPECT_EQ( controller.write( &*data.begin(), &*data.end() ), Response::ACK );
-    }
+    EXPECT_EQ( controller.write( &*data.begin(), &*data.end() ), Response::ACK );
 }
 
 /**
