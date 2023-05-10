@@ -45,9 +45,9 @@ using ::testing::ValuesIn;
  */
 TEST( constructorDefault, worksProperly )
 {
-    auto const address_numeric = Address_Transmitted{};
+    auto const address_transmitted = Address_Transmitted{};
 
-    ASSERT_EQ( address_numeric.as_unsigned_integer(), 0b0000000'0 );
+    ASSERT_EQ( address_transmitted.as_unsigned_integer(), 0b0000000'0 );
 }
 
 /**
@@ -86,9 +86,9 @@ TEST_P( constructorUnsignedInteger, worksProperly )
 {
     auto const address = GetParam();
 
-    auto const address_numeric = Address_Transmitted{ address };
+    auto const address_transmitted = Address_Transmitted{ address };
 
-    ASSERT_EQ( address_numeric.as_unsigned_integer(), address );
+    ASSERT_EQ( address_transmitted.as_unsigned_integer(), address );
 }
 
 /**
@@ -114,9 +114,9 @@ TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger, worksProp
 {
     auto const address = GetParam();
 
-    auto const address_numeric = Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, address };
+    auto const address_transmitted = Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, address };
 
-    ASSERT_EQ( address_numeric.as_unsigned_integer(), address );
+    ASSERT_EQ( address_transmitted.as_unsigned_integer(), address );
 }
 
 /**
@@ -125,9 +125,9 @@ TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger, worksProp
  */
 TEST( constructorAddressNumeric, worksProperly )
 {
-    auto const address_numeric = Address_Transmitted{ Address_Numeric{ 0b1011100 } };
+    auto const address_transmitted = Address_Transmitted{ Address_Numeric{ 0b1011100 } };
 
-    ASSERT_EQ( address_numeric.as_unsigned_integer(), 0b1011100'0 );
+    ASSERT_EQ( address_transmitted.as_unsigned_integer(), 0b1011100'0 );
 }
 
 /**
