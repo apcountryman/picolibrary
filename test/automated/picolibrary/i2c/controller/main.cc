@@ -41,40 +41,10 @@ using Controller = ::picolibrary::I2C::Controller<::picolibrary::Testing::Automa
 
 /**
  * \brief Verify picolibrary::I2C::Controller::read( std::uint8_t *, std::uint8_t *,
- *        picolibrary::I2C::Response ) works properly when begin is equal to end and
- *        response is picolibrary::I2C::Response::ACK.
+ *        picolibrary::I2C::Response ) works properly when response is
+ *        picolibrary::I2C::Response::ACK.
  */
-TEST( readBlockResponse, worksProperlyBeginEqualEndACK )
-{
-    auto controller = Controller{};
-
-    EXPECT_CALL( controller, read( _ ) ).Times( 0 );
-
-    auto data = std::vector<std::uint8_t>{};
-    controller.read( &*data.begin(), &*data.end(), Response::ACK );
-}
-
-/**
- * \brief Verify picolibrary::I2C::Controller::read( std::uint8_t *, std::uint8_t *,
- *        picolibrary::I2C::Response ) works properly when begin is equal to end and
- *        response is picolibrary::I2C::Response::NACK.
- */
-TEST( readBlockResponse, worksProperlyBeginEqualEndNACK )
-{
-    auto controller = Controller{};
-
-    EXPECT_CALL( controller, read( _ ) ).Times( 0 );
-
-    auto data = std::vector<std::uint8_t>{};
-    controller.read( &*data.begin(), &*data.end(), Response::NACK );
-}
-
-/**
- * \brief Verify picolibrary::I2C::Controller::read( std::uint8_t *, std::uint8_t *,
- *        picolibrary::I2C::Response ) works properly when begin is not equal to end and
- *        response is picolibrary::I2C::Response::ACK.
- */
-TEST( readBlockResponse, worksProperlyBeginNotEqualEndACK )
+TEST( readBlockResponse, worksProperlyACK )
 {
     auto const in_sequence = InSequence{};
 
@@ -97,10 +67,10 @@ TEST( readBlockResponse, worksProperlyBeginNotEqualEndACK )
 
 /**
  * \brief Verify picolibrary::I2C::Controller::read( std::uint8_t *, std::uint8_t *,
- *        picolibrary::I2C::Response ) works properly when begin is not equal to end and
- *        response is picolibrary::I2C::Response::NACK.
+ *        picolibrary::I2C::Response ) works properly when response is
+ *        picolibrary::I2C::Response::NACK.
  */
-TEST( readBlockResponse, worksProperlyBeginNotEqualEndNACK )
+TEST( readBlockResponse, worksProperlyNACK )
 {
     auto const in_sequence = InSequence{};
 
@@ -124,25 +94,9 @@ TEST( readBlockResponse, worksProperlyBeginNotEqualEndNACK )
 
 /**
  * \brief Verify picolibrary::I2C::Controller::write( std::uint8_t const *, std::uint8_t
- *        const * ) works properly when begin is equal to end.
+ *        const * ) works properly when a NACK response is received.
  */
-TEST( writeBlock, worksProperlyBeginEqualEnd )
-{
-    auto controller = Controller{};
-
-    EXPECT_CALL( controller, write( _ ) ).Times( 0 );
-
-    auto const data = std::vector<std::uint8_t>{};
-
-    EXPECT_EQ( controller.write( &*data.begin(), &*data.end() ), Response::ACK );
-}
-
-/**
- * \brief Verify picolibrary::I2C::Controller::write( std::uint8_t const *, std::uint8_t
- *        const * ) works properly when begin is not equal to end and a NACK response is
- *        received.
- */
-TEST( writeBlock, worksProperlyBeginNotEqualEndNACK )
+TEST( writeBlock, worksProperlyNACK )
 {
     auto controller = Controller{};
 
@@ -157,10 +111,9 @@ TEST( writeBlock, worksProperlyBeginNotEqualEndNACK )
 
 /**
  * \brief Verify picolibrary::I2C::Controller::write( std::uint8_t const *, std::uint8_t
- *        const * ) works properly when begin is not equal to end and no NACK responses
- *        are received.
+ *        const * ) works properly when no NACK responses are received.
  */
-TEST( writeBlock, worksProperlyBeginNotEqualEndNoNACK )
+TEST( writeBlock, worksProperlyNoNACK )
 {
     auto const in_sequence = InSequence{};
 
