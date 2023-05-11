@@ -330,14 +330,14 @@ tests are defined in the
 [`test/automated/picolibrary/format/hex_dump/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/format/hex_dump/main.cc)
 source file.
 ```c++
-#include <string>
+#include <string_view>
 
 #include "picolibrary/format.h"
 #include "picolibrary/stream.h"
 
 void foo( ::picolibrary::Reliable_Output_Stream & stream ) noexcept
 {
-    auto const data = std::string{ "{yZZk7V!/{>fm[lxV!$e|:" };
+    auto const data = std::string_view{ "{yZZk7V!/{>fm[lxV!$e|:" };
 
     // output will be
     // "0000000000000000  7B 79 5A 5A 6B 37 56 21 2F 7B 3E 66 6D 5B 6C 78  |{yZZk7V!/{>fm[lx|\n"

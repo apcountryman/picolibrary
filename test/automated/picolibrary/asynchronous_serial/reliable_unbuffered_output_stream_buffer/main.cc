@@ -22,7 +22,7 @@
  */
 
 #include <cstdint>
-#include <string>
+#include <string_view>
 #include <vector>
 
 #include "gmock/gmock.h"
@@ -67,7 +67,7 @@ TEST( putCharBlock, worksProperly )
 
     auto buffer = Reliable_Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
 
-    auto const string = std::string{ "12OA2mCrC1GL" };
+    auto const string = std::string_view{ "12OA2mCrC1GL" };
 
     EXPECT_CALL( transmitter, transmit( std::vector<std::uint8_t>{ string.begin(), string.end() } ) );
 
@@ -87,13 +87,13 @@ TEST( putNullTerminatedString, worksProperly )
 
     auto buffer = Reliable_Unbuffered_Output_Stream_Buffer{ transmitter.handle() };
 
-    auto const string = std::string{ "hpT6C7BvWvUBk" };
+    auto const string = std::string_view{ "hpT6C7BvWvUBk" };
 
     for ( auto const character : string ) {
         EXPECT_CALL( transmitter, transmit( character ) );
     } // for
 
-    buffer.put( string.c_str() );
+    buffer.put( string.data() );
 }
 
 /**

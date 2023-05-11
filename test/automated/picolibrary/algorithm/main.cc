@@ -24,7 +24,7 @@
 #include <cstdint>
 #include <ios>
 #include <ostream>
-#include <string>
+#include <string_view>
 #include <type_traits>
 #include <vector>
 
@@ -446,12 +446,12 @@ struct equal_Test_Case {
     /**
      * \brief Range 1.
      */
-    std::string range_1;
+    std::string_view range_1;
 
     /**
      * \brief Range 2.
      */
-    std::string range_2;
+    std::string_view range_2;
 
     /**
      * \brief Range 1 and range 2 are equal.
