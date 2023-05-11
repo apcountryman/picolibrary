@@ -326,7 +326,7 @@ TEST_P( ping, worksProperly )
 /**
  * \brief Verify picolibrary::I2C::Device::read( std::uint8_t ) works properly.
  */
-TEST( readRegister8BitAddress, worksProperly )
+TEST( readRegister8BitRegisterAddress, worksProperly )
 {
     auto const in_sequence = InSequence{};
 
@@ -358,7 +358,7 @@ TEST( readRegister8BitAddress, worksProperly )
  * \brief Verify picolibrary::I2C::Device::read( std::uint8_t, std::uint8_t *,
  *        std::uint8_t * ) works properly.
  */
-TEST( readRegisterBlock8BitAddress, worksProperly )
+TEST( readRegisterBlock8BitRegisterAddress, worksProperly )
 {
     auto const in_sequence = InSequence{};
 
@@ -396,7 +396,7 @@ TEST( readRegisterBlock8BitAddress, worksProperly )
  * \brief Verify picolibrary::I2C::Device::write( std::uint8_t, std::uint8_t ) works
  *        properly.
  */
-TEST( writeRegister8BitAddress, worksProperly )
+TEST( writeRegister8BitRegisterAddress, worksProperly )
 {
     auto const in_sequence = InSequence{};
 
@@ -424,7 +424,7 @@ TEST( writeRegister8BitAddress, worksProperly )
  * \brief Verify picolibrary::I2C::Device::write( std::uint8_t, std::uint8_t const *,
  *        std::uint8_t const * ) works properly.
  */
-TEST( writeRegisterBlock8BitAddress, worksProperly )
+TEST( writeRegisterBlock8BitRegisterAddress, worksProperly )
 {
     auto const in_sequence = InSequence{};
 
