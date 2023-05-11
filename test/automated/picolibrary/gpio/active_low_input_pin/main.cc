@@ -41,8 +41,6 @@ using Pin = ::picolibrary::GPIO::Active_Low_Input_Pin<::picolibrary::Testing::Au
 class isLow : public TestWithParam<bool> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, isLow, Values( true, false ) );
-
 /**
  * \brief Verify picolibrary::GPIO::Active_Low_Input_Pin::is_low() works properly.
  */
@@ -57,13 +55,13 @@ TEST_P( isLow, worksProperly )
     EXPECT_EQ( pin.is_low(), is_high );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, isLow, Values( true, false ) );
+
 /**
  * \brief picolibrary::GPIO::Active_Low_Input_Pin::is_high() test fixture.
  */
 class isHigh : public TestWithParam<bool> {
 };
-
-INSTANTIATE_TEST_SUITE_P( testCases, isHigh, Values( true, false ) );
 
 /**
  * \brief Verify picolibrary::GPIO::Active_Low_Input_Pin::is_high() works properly.
@@ -78,6 +76,8 @@ TEST_P( isHigh, worksProperly )
 
     EXPECT_EQ( pin.is_high(), is_low );
 }
+
+INSTANTIATE_TEST_SUITE_P( testCases, isHigh, Values( true, false ) );
 
 /**
  * \brief Execute the picolibrary::GPIO::Active_Low_Input_Pin automated tests.

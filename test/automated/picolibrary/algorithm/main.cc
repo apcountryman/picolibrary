@@ -67,8 +67,6 @@ std::vector<std::uint_fast8_t> const forEach_TEST_CASES[]{
 class forEach : public TestWithParam<std::vector<std::uint_fast8_t>> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, forEach, ValuesIn( forEach_TEST_CASES ) );
-
 /**
  * \brief Verify picolibrary::for_each() works properly.
  */
@@ -86,6 +84,8 @@ TEST_P( forEach, worksProperly )
 
     ::picolibrary::for_each( values.begin(), values.end(), functor.AsStdFunction() );
 }
+
+INSTANTIATE_TEST_SUITE_P( testCases, forEach, ValuesIn( forEach_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::for_each( Iterator, Iterator, Functor,
@@ -115,8 +115,6 @@ TEST( forEachFunctorCanFailReturnFunctorErrorHandling, functorError )
 class forEachFunctorCanFailReturnFunctor : public TestWithParam<std::vector<std::uint_fast8_t>> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, forEachFunctorCanFailReturnFunctor, ValuesIn( forEach_TEST_CASES ) );
-
 /**
  * \brief Verify picolibrary::for_each( Iterator, Iterator, Functor,
  *        picolibrary::Functor_Can_Fail_Return_Functor ) works properly.
@@ -144,6 +142,8 @@ TEST_P( forEachFunctorCanFailReturnFunctor, worksProperly )
 
     ASSERT_FALSE( result.value()( 0x06 ).is_error() );
 }
+
+INSTANTIATE_TEST_SUITE_P( testCases, forEachFunctorCanFailReturnFunctor, ValuesIn( forEach_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::for_each( Iterator, Iterator, Functor,
@@ -173,8 +173,6 @@ TEST( forEachFunctorCanFailDiscardFunctorErrorHandling, functorError )
 class forEachFunctorCanFailDiscardFunctor : public TestWithParam<std::vector<std::uint_fast8_t>> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, forEachFunctorCanFailDiscardFunctor, ValuesIn( forEach_TEST_CASES ) );
-
 /**
  * \brief Verify picolibrary::for_each( Iterator, Iterator, Functor,
  *        picolibrary::Functor_Can_Fail_Discard_Functor ) works properly.
@@ -199,13 +197,13 @@ TEST_P( forEachFunctorCanFailDiscardFunctor, worksProperly )
     ASSERT_FALSE( result.is_error() );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, forEachFunctorCanFailDiscardFunctor, ValuesIn( forEach_TEST_CASES ) );
+
 /**
  * \brief picolibrary::fill() test fixture.
  */
 class fill : public TestWithParam<std::size_t> {
 };
-
-INSTANTIATE_TEST_SUITE_P( testCases, fill, Values<std::size_t>( 0, 5 ) );
 
 /**
  * \brief Verify picolibrary::fill() works properly.
@@ -222,6 +220,8 @@ TEST_P( fill, worksProperly )
     ASSERT_THAT( container, Each( value ) );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, fill, Values<std::size_t>( 0, 5 ) );
+
 /**
  * \brief picolibrary::generate() test cases.
  */
@@ -235,8 +235,6 @@ std::vector<std::uint_fast8_t> const generate_TEST_CASES[]{
  */
 class generate : public TestWithParam<std::vector<std::uint_fast8_t>> {
 };
-
-INSTANTIATE_TEST_SUITE_P( testCases, generate, ValuesIn( generate_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::generate( Iterator, Iterator, Functor ) works properly.
@@ -259,6 +257,8 @@ TEST_P( generate, worksProperly )
 
     ASSERT_EQ( output, values );
 }
+
+INSTANTIATE_TEST_SUITE_P( testCases, generate, ValuesIn( generate_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::generate( Iterator, Iterator, Functor,
@@ -287,8 +287,6 @@ TEST( generateFunctorCanFailErrorHandling, functorError )
 class generateFunctorCanFail : public TestWithParam<std::vector<std::uint_fast8_t>> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, generateFunctorCanFail, ValuesIn( generate_TEST_CASES ) );
-
 /**
  * \brief Verify picolibrary::generate( Iterator, Iterator, Functor,
  *        picolibrary::Functor_Can_Fail ) works properly.
@@ -313,6 +311,8 @@ TEST_P( generateFunctorCanFail, functorError )
 
     ASSERT_EQ( output, values );
 }
+
+INSTANTIATE_TEST_SUITE_P( testCases, generateFunctorCanFail, ValuesIn( generate_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::min() works properly when a is less than b, and a and b are
@@ -496,8 +496,6 @@ equal_Test_Case const equal3Iterators_TEST_CASES[]{
 class equal3Iterators : public TestWithParam<equal_Test_Case> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, equal3Iterators, ValuesIn( equal3Iterators_TEST_CASES ) );
-
 /**
  * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2 ) works properly.
  */
@@ -511,14 +509,14 @@ TEST_P( equal3Iterators, worksProperly )
         test_case.equal );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, equal3Iterators, ValuesIn( equal3Iterators_TEST_CASES ) );
+
 /**
  * \brief picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Predicate ) test
  *        fixture.
  */
 class equal3IteratorsPredicate : public TestWithParam<equal_Test_Case> {
 };
-
-INSTANTIATE_TEST_SUITE_P( testCases, equal3IteratorsPredicate, ValuesIn( equal3Iterators_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Predicate ) works
@@ -536,6 +534,8 @@ TEST_P( equal3IteratorsPredicate, worksProperly )
             []( auto a, auto b ) { return a == b; } ),
         test_case.equal );
 }
+
+INSTANTIATE_TEST_SUITE_P( testCases, equal3IteratorsPredicate, ValuesIn( equal3Iterators_TEST_CASES ) );
 
 /**
  * \brief picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2 ) and
@@ -576,8 +576,6 @@ equal_Test_Case const equal4Iterators_TEST_CASES[]{
 class equal4Iterators : public TestWithParam<equal_Test_Case> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, equal4Iterators, ValuesIn( equal4Iterators_TEST_CASES ) );
-
 /**
  * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2 )
  *        works properly.
@@ -595,14 +593,14 @@ TEST_P( equal4Iterators, worksProperly )
         test_case.equal );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, equal4Iterators, ValuesIn( equal4Iterators_TEST_CASES ) );
+
 /**
  * \brief picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2, Predicate )
  *        test fixture.
  */
 class equal4IteratorsPredicate : public TestWithParam<equal_Test_Case> {
 };
-
-INSTANTIATE_TEST_SUITE_P( testCases, equal4IteratorsPredicate, ValuesIn( equal4Iterators_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::equal( Iterator_1, Iterator_1, Iterator_2, Iterator_2,
@@ -621,6 +619,8 @@ TEST_P( equal4IteratorsPredicate, worksProperly )
             []( auto a, auto b ) { return a == b; } ),
         test_case.equal );
 }
+
+INSTANTIATE_TEST_SUITE_P( testCases, equal4IteratorsPredicate, ValuesIn( equal4Iterators_TEST_CASES ) );
 
 /**
  * \brief Execute the picolibrary algorithm automated tests.

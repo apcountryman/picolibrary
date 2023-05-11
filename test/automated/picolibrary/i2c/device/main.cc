@@ -179,26 +179,10 @@ auto operator<<( std::ostream & stream, pingOperation_Test_Case const & test_cas
 }
 
 /**
- * \brief picolibrary::I2C::Controller::ping( picolibrary::I2C::Operation ) test cases.
- */
-pingOperation_Test_Case const pingOperation_TEST_CASES[]{
-    // clang-format off
-
-    { Operation::READ,  Response::ACK  },
-    { Operation::READ,  Response::NACK },
-    { Operation::WRITE, Response::ACK  },
-    { Operation::WRITE, Response::NACK },
-
-    // clang-format on
-};
-
-/**
  * \brief picolibrary::I2C::Controller::ping( picolibrary::I2C::Operation ) test fixture.
  */
 class pingOperation : public TestWithParam<pingOperation_Test_Case> {
 };
-
-INSTANTIATE_TEST_SUITE_P( testCases, pingOperation, ValuesIn( pingOperation_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::I2C::Controller::ping( picolibrary::I2C::Operation ) works
@@ -230,6 +214,22 @@ TEST_P( pingOperation, worksProperly )
 
     ASSERT_EQ( device.ping( test_case.operation ), test_case.response );
 }
+
+/**
+ * \brief picolibrary::I2C::Controller::ping( picolibrary::I2C::Operation ) test cases.
+ */
+pingOperation_Test_Case const pingOperation_TEST_CASES[]{
+    // clang-format off
+
+    { Operation::READ,  Response::ACK  },
+    { Operation::READ,  Response::NACK },
+    { Operation::WRITE, Response::ACK  },
+    { Operation::WRITE, Response::NACK },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, pingOperation, ValuesIn( pingOperation_TEST_CASES ) );
 
 /**
  * \brief picolibrary::I2C::Controller::ping() test case.
@@ -267,26 +267,10 @@ auto operator<<( std::ostream & stream, ping_Test_Case const & test_case ) -> st
 }
 
 /**
- * \brief picolibrary::I2C::Controller::ping() test cases.
- */
-ping_Test_Case const ping_TEST_CASES[]{
-    // clang-format off
-
-    { Response::ACK,  Response::ACK,  Response::ACK  },
-    { Response::ACK,  Response::NACK, Response::NACK },
-    { Response::NACK, Response::ACK,  Response::NACK },
-    { Response::NACK, Response::NACK, Response::NACK },
-
-    // clang-format on
-};
-
-/**
  * \brief picolibrary::I2C::Controller::ping() test fixture.
  */
 class ping : public TestWithParam<ping_Test_Case> {
 };
-
-INSTANTIATE_TEST_SUITE_P( testCases, ping, ValuesIn( ping_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::I2C::Controller::ping() works properly.
@@ -322,6 +306,22 @@ TEST_P( ping, worksProperly )
 
     ASSERT_EQ( device.ping(), test_case.response );
 }
+
+/**
+ * \brief picolibrary::I2C::Controller::ping() test cases.
+ */
+ping_Test_Case const ping_TEST_CASES[]{
+    // clang-format off
+
+    { Response::ACK,  Response::ACK,  Response::ACK  },
+    { Response::ACK,  Response::NACK, Response::NACK },
+    { Response::NACK, Response::ACK,  Response::NACK },
+    { Response::NACK, Response::NACK, Response::NACK },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, ping, ValuesIn( ping_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::I2C::Device::read( std::uint8_t ) works properly.

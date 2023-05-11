@@ -74,24 +74,10 @@ auto operator<<( std::ostream & stream, initialize_Test_Case const & test_case )
 }
 
 /**
- * \brief picolibrary::GPIO::Active_Low_Output_Pin::initialize() test cases.
- */
-initialize_Test_Case const initialize_TEST_CASES[]{
-    // clang-format off
-
-    { Initial_Pin_State::LOW,  Initial_Pin_State::HIGH },
-    { Initial_Pin_State::HIGH, Initial_Pin_State::LOW  },
-
-    // clang-format on
-};
-
-/**
  * \brief picolibrary::GPIO::Active_Low_Output_Pin::initialize() test fixture.
  */
 class initialize : public TestWithParam<initialize_Test_Case> {
 };
-
-INSTANTIATE_TEST_SUITE_P( testCases, initialize, ValuesIn( initialize_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::GPIO::Active_Low_Output_Pin::initialize() works properly.
@@ -106,6 +92,20 @@ TEST_P( initialize, worksProperly )
 
     pin.initialize( test_case.requested_state );
 }
+
+/**
+ * \brief picolibrary::GPIO::Active_Low_Output_Pin::initialize() test cases.
+ */
+initialize_Test_Case const initialize_TEST_CASES[]{
+    // clang-format off
+
+    { Initial_Pin_State::LOW,  Initial_Pin_State::HIGH },
+    { Initial_Pin_State::HIGH, Initial_Pin_State::LOW  },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, initialize, ValuesIn( initialize_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::GPIO::Active_Low_Output_Pin::transition_to_low() works

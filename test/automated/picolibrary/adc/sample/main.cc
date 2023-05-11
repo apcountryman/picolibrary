@@ -68,8 +68,6 @@ std::uint_fast8_t const constructorUnsignedInteger8_TEST_CASES[]{
 class constructorUnsignedInteger8 : public TestWithParam<std::uint_fast8_t> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger8, ValuesIn( constructorUnsignedInteger8_TEST_CASES ) );
-
 /**
  * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
@@ -83,6 +81,8 @@ TEST_P( constructorUnsignedInteger8, worksProperly )
     ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger8, ValuesIn( constructorUnsignedInteger8_TEST_CASES ) );
+
 /**
  * \brief picolibrary::ADC::Sample::Sample(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
@@ -91,11 +91,6 @@ TEST_P( constructorUnsignedInteger8, worksProperly )
 class constructorBypassPreconditionExpectationChecksUnsignedInteger8 :
     public TestWithParam<std::uint_fast8_t> {
 };
-
-INSTANTIATE_TEST_SUITE_P(
-    testCases,
-    constructorBypassPreconditionExpectationChecksUnsignedInteger8,
-    ValuesIn( constructorUnsignedInteger8_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::ADC::Sample::Sample(
@@ -111,6 +106,11 @@ TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger8, worksPro
 
     ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
+
+INSTANTIATE_TEST_SUITE_P(
+    testCases,
+    constructorBypassPreconditionExpectationChecksUnsignedInteger8,
+    ValuesIn( constructorUnsignedInteger8_TEST_CASES ) );
 
 /**
  * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
@@ -131,8 +131,6 @@ std::uint_fast16_t const constructorUnsignedInteger10_TEST_CASES[]{
 class constructorUnsignedInteger10 : public TestWithParam<std::uint_fast16_t> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger10, ValuesIn( constructorUnsignedInteger10_TEST_CASES ) );
-
 /**
  * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
@@ -146,6 +144,8 @@ TEST_P( constructorUnsignedInteger10, worksProperly )
     ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger10, ValuesIn( constructorUnsignedInteger10_TEST_CASES ) );
+
 /**
  * \brief picolibrary::ADC::Sample::Sample(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
@@ -155,11 +155,6 @@ TEST_P( constructorUnsignedInteger10, worksProperly )
 class constructorBypassPreconditionExpectationChecksUnsignedInteger10 :
     public TestWithParam<std::uint_fast16_t> {
 };
-
-INSTANTIATE_TEST_SUITE_P(
-    testCases,
-    constructorBypassPreconditionExpectationChecksUnsignedInteger10,
-    ValuesIn( constructorUnsignedInteger10_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::ADC::Sample::Sample(
@@ -175,6 +170,11 @@ TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger10, worksPr
 
     ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
+
+INSTANTIATE_TEST_SUITE_P(
+    testCases,
+    constructorBypassPreconditionExpectationChecksUnsignedInteger10,
+    ValuesIn( constructorUnsignedInteger10_TEST_CASES ) );
 
 /**
  * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
@@ -195,8 +195,6 @@ std::uint_fast16_t const constructorUnsignedInteger12_TEST_CASES[]{
 class constructorUnsignedInteger12 : public TestWithParam<std::uint_fast16_t> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger12, ValuesIn( constructorUnsignedInteger12_TEST_CASES ) );
-
 /**
  * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
@@ -210,6 +208,8 @@ TEST_P( constructorUnsignedInteger12, worksProperly )
     ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger12, ValuesIn( constructorUnsignedInteger12_TEST_CASES ) );
+
 /**
  * \brief picolibrary::ADC::Sample::Sample(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
@@ -219,11 +219,6 @@ TEST_P( constructorUnsignedInteger12, worksProperly )
 class constructorBypassPreconditionExpectationChecksUnsignedInteger12 :
     public TestWithParam<std::uint_fast16_t> {
 };
-
-INSTANTIATE_TEST_SUITE_P(
-    testCases,
-    constructorBypassPreconditionExpectationChecksUnsignedInteger12,
-    ValuesIn( constructorUnsignedInteger12_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::ADC::Sample::Sample(
@@ -239,6 +234,11 @@ TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger12, worksPr
 
     ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
+
+INSTANTIATE_TEST_SUITE_P(
+    testCases,
+    constructorBypassPreconditionExpectationChecksUnsignedInteger12,
+    ValuesIn( constructorUnsignedInteger12_TEST_CASES ) );
 
 /**
  * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
@@ -259,8 +259,6 @@ std::uint_fast16_t const constructorUnsignedInteger14_TEST_CASES[]{
 class constructorUnsignedInteger14 : public TestWithParam<std::uint_fast16_t> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger14, ValuesIn( constructorUnsignedInteger14_TEST_CASES ) );
-
 /**
  * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
@@ -274,6 +272,8 @@ TEST_P( constructorUnsignedInteger14, worksProperly )
     ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger14, ValuesIn( constructorUnsignedInteger14_TEST_CASES ) );
+
 /**
  * \brief picolibrary::ADC::Sample::Sample(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
@@ -283,11 +283,6 @@ TEST_P( constructorUnsignedInteger14, worksProperly )
 class constructorBypassPreconditionExpectationChecksUnsignedInteger14 :
     public TestWithParam<std::uint_fast16_t> {
 };
-
-INSTANTIATE_TEST_SUITE_P(
-    testCases,
-    constructorBypassPreconditionExpectationChecksUnsignedInteger14,
-    ValuesIn( constructorUnsignedInteger14_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::ADC::Sample::Sample(
@@ -303,6 +298,11 @@ TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger14, worksPr
 
     ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
+
+INSTANTIATE_TEST_SUITE_P(
+    testCases,
+    constructorBypassPreconditionExpectationChecksUnsignedInteger14,
+    ValuesIn( constructorUnsignedInteger14_TEST_CASES ) );
 
 /**
  * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
@@ -323,8 +323,6 @@ std::uint_fast16_t const constructorUnsignedInteger16_TEST_CASES[]{
 class constructorUnsignedInteger16 : public TestWithParam<std::uint_fast16_t> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger16, ValuesIn( constructorUnsignedInteger16_TEST_CASES ) );
-
 /**
  * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
@@ -338,6 +336,8 @@ TEST_P( constructorUnsignedInteger16, worksProperly )
     ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger16, ValuesIn( constructorUnsignedInteger16_TEST_CASES ) );
+
 /**
  * \brief picolibrary::ADC::Sample::Sample(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
@@ -347,11 +347,6 @@ TEST_P( constructorUnsignedInteger16, worksProperly )
 class constructorBypassPreconditionExpectationChecksUnsignedInteger16 :
     public TestWithParam<std::uint_fast16_t> {
 };
-
-INSTANTIATE_TEST_SUITE_P(
-    testCases,
-    constructorBypassPreconditionExpectationChecksUnsignedInteger16,
-    ValuesIn( constructorUnsignedInteger16_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::ADC::Sample::Sample(
@@ -367,6 +362,11 @@ TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger16, worksPr
 
     ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
+
+INSTANTIATE_TEST_SUITE_P(
+    testCases,
+    constructorBypassPreconditionExpectationChecksUnsignedInteger16,
+    ValuesIn( constructorUnsignedInteger16_TEST_CASES ) );
 
 /**
  * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
@@ -387,8 +387,6 @@ std::uint_fast32_t const constructorUnsignedInteger18_TEST_CASES[]{
 class constructorUnsignedInteger18 : public TestWithParam<std::uint_fast32_t> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger18, ValuesIn( constructorUnsignedInteger18_TEST_CASES ) );
-
 /**
  * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
@@ -402,6 +400,8 @@ TEST_P( constructorUnsignedInteger18, worksProperly )
     ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger18, ValuesIn( constructorUnsignedInteger18_TEST_CASES ) );
+
 /**
  * \brief picolibrary::ADC::Sample::Sample(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
@@ -411,11 +411,6 @@ TEST_P( constructorUnsignedInteger18, worksProperly )
 class constructorBypassPreconditionExpectationChecksUnsignedInteger18 :
     public TestWithParam<std::uint_fast32_t> {
 };
-
-INSTANTIATE_TEST_SUITE_P(
-    testCases,
-    constructorBypassPreconditionExpectationChecksUnsignedInteger18,
-    ValuesIn( constructorUnsignedInteger18_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::ADC::Sample::Sample(
@@ -431,6 +426,11 @@ TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger18, worksPr
 
     ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
+
+INSTANTIATE_TEST_SUITE_P(
+    testCases,
+    constructorBypassPreconditionExpectationChecksUnsignedInteger18,
+    ValuesIn( constructorUnsignedInteger18_TEST_CASES ) );
 
 /**
  * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
@@ -451,8 +451,6 @@ std::uint_fast32_t const constructorUnsignedInteger20_TEST_CASES[]{
 class constructorUnsignedInteger20 : public TestWithParam<std::uint_fast32_t> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger20, ValuesIn( constructorUnsignedInteger20_TEST_CASES ) );
-
 /**
  * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
@@ -466,6 +464,8 @@ TEST_P( constructorUnsignedInteger20, worksProperly )
     ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger20, ValuesIn( constructorUnsignedInteger20_TEST_CASES ) );
+
 /**
  * \brief picolibrary::ADC::Sample::Sample(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
@@ -475,11 +475,6 @@ TEST_P( constructorUnsignedInteger20, worksProperly )
 class constructorBypassPreconditionExpectationChecksUnsignedInteger20 :
     public TestWithParam<std::uint_fast32_t> {
 };
-
-INSTANTIATE_TEST_SUITE_P(
-    testCases,
-    constructorBypassPreconditionExpectationChecksUnsignedInteger20,
-    ValuesIn( constructorUnsignedInteger20_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::ADC::Sample::Sample(
@@ -495,6 +490,11 @@ TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger20, worksPr
 
     ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
+
+INSTANTIATE_TEST_SUITE_P(
+    testCases,
+    constructorBypassPreconditionExpectationChecksUnsignedInteger20,
+    ValuesIn( constructorUnsignedInteger20_TEST_CASES ) );
 
 /**
  * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
@@ -515,8 +515,6 @@ std::uint_fast32_t const constructorUnsignedInteger24_TEST_CASES[]{
 class constructorUnsignedInteger24 : public TestWithParam<std::uint_fast32_t> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger24, ValuesIn( constructorUnsignedInteger24_TEST_CASES ) );
-
 /**
  * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
@@ -530,6 +528,8 @@ TEST_P( constructorUnsignedInteger24, worksProperly )
     ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger24, ValuesIn( constructorUnsignedInteger24_TEST_CASES ) );
+
 /**
  * \brief picolibrary::ADC::Sample::Sample(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
@@ -539,11 +539,6 @@ TEST_P( constructorUnsignedInteger24, worksProperly )
 class constructorBypassPreconditionExpectationChecksUnsignedInteger24 :
     public TestWithParam<std::uint_fast32_t> {
 };
-
-INSTANTIATE_TEST_SUITE_P(
-    testCases,
-    constructorBypassPreconditionExpectationChecksUnsignedInteger24,
-    ValuesIn( constructorUnsignedInteger24_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::ADC::Sample::Sample(
@@ -559,6 +554,11 @@ TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger24, worksPr
 
     ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
+
+INSTANTIATE_TEST_SUITE_P(
+    testCases,
+    constructorBypassPreconditionExpectationChecksUnsignedInteger24,
+    ValuesIn( constructorUnsignedInteger24_TEST_CASES ) );
 
 /**
  * \brief picolibrary::ADC::operator==( picolibrary::ADC::Sample, picolibrary::ADC::Sample
@@ -605,6 +605,24 @@ auto operator<<( std::ostream & stream, comparisonOperator_Test_Case const & tes
 
 /**
  * \brief picolibrary::ADC::operator==( picolibrary::ADC::Sample, picolibrary::ADC::Sample
+ *        ) test fixture.
+ */
+class equalityOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::ADC::operator==( picolibrary::ADC::Sample,
+ *        picolibrary::ADC::Sample) works properly.
+ */
+TEST_P( equalityOperator, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    ASSERT_EQ( test_case.lhs == test_case.rhs, test_case.comparison_result );
+}
+
+/**
+ * \brief picolibrary::ADC::operator==( picolibrary::ADC::Sample, picolibrary::ADC::Sample
  *        ) test cases.
  */
 comparisonOperator_Test_Case const equalityOperator_TEST_CASES[]{
@@ -619,24 +637,24 @@ comparisonOperator_Test_Case const equalityOperator_TEST_CASES[]{
     // clang-format on
 };
 
-/**
- * \brief picolibrary::ADC::operator==( picolibrary::ADC::Sample, picolibrary::ADC::Sample
- *        ) test fixture.
- */
-class equalityOperator : public TestWithParam<comparisonOperator_Test_Case> {
-};
-
 INSTANTIATE_TEST_SUITE_P( testCases, equalityOperator, ValuesIn( equalityOperator_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::ADC::operator==( picolibrary::ADC::Sample,
+ * \brief picolibrary::ADC::operator!=( picolibrary::ADC::Sample, picolibrary::ADC::Sample
+ *        ) test fixture.
+ */
+class inequalityOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::ADC::operator!=( picolibrary::ADC::Sample,
  *        picolibrary::ADC::Sample) works properly.
  */
-TEST_P( equalityOperator, worksProperly )
+TEST_P( inequalityOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs == test_case.rhs, test_case.comparison_result );
+    ASSERT_EQ( test_case.lhs != test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -655,24 +673,24 @@ comparisonOperator_Test_Case const inequalityOperator_TEST_CASES[]{
     // clang-format on
 };
 
-/**
- * \brief picolibrary::ADC::operator!=( picolibrary::ADC::Sample, picolibrary::ADC::Sample
- *        ) test fixture.
- */
-class inequalityOperator : public TestWithParam<comparisonOperator_Test_Case> {
-};
-
 INSTANTIATE_TEST_SUITE_P( testCases, inequalityOperator, ValuesIn( inequalityOperator_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::ADC::operator!=( picolibrary::ADC::Sample,
+ * \brief picolibrary::ADC::operator<( picolibrary::ADC::Sample, picolibrary::ADC::Sample)
+ *        test fixture.
+ */
+class lessThanOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::ADC::operator<( picolibrary::ADC::Sample,
  *        picolibrary::ADC::Sample) works properly.
  */
-TEST_P( inequalityOperator, worksProperly )
+TEST_P( lessThanOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs != test_case.rhs, test_case.comparison_result );
+    ASSERT_EQ( test_case.lhs < test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -691,24 +709,24 @@ comparisonOperator_Test_Case const lessThanOperator_TEST_CASES[]{
     // clang-format on
 };
 
-/**
- * \brief picolibrary::ADC::operator<( picolibrary::ADC::Sample, picolibrary::ADC::Sample)
- *        test fixture.
- */
-class lessThanOperator : public TestWithParam<comparisonOperator_Test_Case> {
-};
-
 INSTANTIATE_TEST_SUITE_P( testCases, lessThanOperator, ValuesIn( lessThanOperator_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::ADC::operator<( picolibrary::ADC::Sample,
+ * \brief picolibrary::ADC::operator>( picolibrary::ADC::Sample, picolibrary::ADC::Sample)
+ *        test fixture.
+ */
+class greaterThanOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::ADC::operator>( picolibrary::ADC::Sample,
  *        picolibrary::ADC::Sample) works properly.
  */
-TEST_P( lessThanOperator, worksProperly )
+TEST_P( greaterThanOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs < test_case.rhs, test_case.comparison_result );
+    ASSERT_EQ( test_case.lhs > test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -727,24 +745,24 @@ comparisonOperator_Test_Case const greaterThanOperator_TEST_CASES[]{
     // clang-format on
 };
 
-/**
- * \brief picolibrary::ADC::operator>( picolibrary::ADC::Sample, picolibrary::ADC::Sample)
- *        test fixture.
- */
-class greaterThanOperator : public TestWithParam<comparisonOperator_Test_Case> {
-};
-
 INSTANTIATE_TEST_SUITE_P( testCases, greaterThanOperator, ValuesIn( greaterThanOperator_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::ADC::operator>( picolibrary::ADC::Sample,
+ * \brief picolibrary::ADC::operator<=( picolibrary::ADC::Sample,
+ *        picolibrary::ADC::Sample) test fixture.
+ */
+class lessThanOrEqualToOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::ADC::operator<=( picolibrary::ADC::Sample,
  *        picolibrary::ADC::Sample) works properly.
  */
-TEST_P( greaterThanOperator, worksProperly )
+TEST_P( lessThanOrEqualToOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs > test_case.rhs, test_case.comparison_result );
+    ASSERT_EQ( test_case.lhs <= test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -763,24 +781,24 @@ comparisonOperator_Test_Case const lessThanOrEqualToOperator_TEST_CASES[]{
     // clang-format on
 };
 
-/**
- * \brief picolibrary::ADC::operator<=( picolibrary::ADC::Sample,
- *        picolibrary::ADC::Sample) test fixture.
- */
-class lessThanOrEqualToOperator : public TestWithParam<comparisonOperator_Test_Case> {
-};
-
 INSTANTIATE_TEST_SUITE_P( testCases, lessThanOrEqualToOperator, ValuesIn( lessThanOrEqualToOperator_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::ADC::operator<=( picolibrary::ADC::Sample,
+ * \brief picolibrary::ADC::operator>=( picolibrary::ADC::Sample,
+ *        picolibrary::ADC::Sample) test fixture.
+ */
+class greaterThanOrEqualToOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::ADC::operator>=( picolibrary::ADC::Sample,
  *        picolibrary::ADC::Sample) works properly.
  */
-TEST_P( lessThanOrEqualToOperator, worksProperly )
+TEST_P( greaterThanOrEqualToOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs <= test_case.rhs, test_case.comparison_result );
+    ASSERT_EQ( test_case.lhs >= test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -799,25 +817,7 @@ comparisonOperator_Test_Case const greaterThanOrEqualToOperator_TEST_CASES[]{
     // clang-format on
 };
 
-/**
- * \brief picolibrary::ADC::operator>=( picolibrary::ADC::Sample,
- *        picolibrary::ADC::Sample) test fixture.
- */
-class greaterThanOrEqualToOperator : public TestWithParam<comparisonOperator_Test_Case> {
-};
-
 INSTANTIATE_TEST_SUITE_P( testCases, greaterThanOrEqualToOperator, ValuesIn( greaterThanOrEqualToOperator_TEST_CASES ) );
-
-/**
- * \brief Verify picolibrary::ADC::operator>=( picolibrary::ADC::Sample,
- *        picolibrary::ADC::Sample) works properly.
- */
-TEST_P( greaterThanOrEqualToOperator, worksProperly )
-{
-    auto const test_case = GetParam();
-
-    ASSERT_EQ( test_case.lhs >= test_case.rhs, test_case.comparison_result );
-}
 
 /**
  * \brief Execute the picolibrary::ADC::Sample automated tests.

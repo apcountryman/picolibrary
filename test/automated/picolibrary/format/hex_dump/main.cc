@@ -131,8 +131,6 @@ class outputFormatterFormatHexDumpPrintOutputStream :
     public TestWithParam<outputFormatterFormatHexDumpPrint_Test_Case> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexDumpPrintOutputStream, ValuesIn( outputFormatterFormatHexDumpPrint_TEST_CASES ) );
-
 /**
  * \brief Verify picolibrary::Output_Formatter<Hex_Dump<Iterator>>::print(
  *        picolibrary::Output_Stream &, picolibrary::Format::Hex_Dump<Iterator> const & )
@@ -153,6 +151,8 @@ TEST_P( outputFormatterFormatHexDumpPrintOutputStream, worksProperly )
     EXPECT_EQ( stream.string(), test_case.hex_dump );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexDumpPrintOutputStream, ValuesIn( outputFormatterFormatHexDumpPrint_TEST_CASES ) );
+
 /**
  * \brief picolibrary::Output_Formatter<Hex_Dump<Iterator>>::print(
  *        picolibrary::Reliable_Output_Stream &, picolibrary::Format::Hex_Dump<Iterator>
@@ -161,11 +161,6 @@ TEST_P( outputFormatterFormatHexDumpPrintOutputStream, worksProperly )
 class outputFormatterFormatHexDumpPrintReliableOutputStream :
     public TestWithParam<outputFormatterFormatHexDumpPrint_Test_Case> {
 };
-
-INSTANTIATE_TEST_SUITE_P(
-    testCases,
-    outputFormatterFormatHexDumpPrintReliableOutputStream,
-    ValuesIn( outputFormatterFormatHexDumpPrint_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::Output_Formatter<Hex_Dump<Iterator>>::print(
@@ -185,6 +180,11 @@ TEST_P( outputFormatterFormatHexDumpPrintReliableOutputStream, worksProperly )
     EXPECT_TRUE( stream.is_nominal() );
     EXPECT_EQ( stream.string(), test_case.hex_dump );
 }
+
+INSTANTIATE_TEST_SUITE_P(
+    testCases,
+    outputFormatterFormatHexDumpPrintReliableOutputStream,
+    ValuesIn( outputFormatterFormatHexDumpPrint_TEST_CASES ) );
 
 /**
  * \brief Execute the picolibrary::Format::Hex_Dump automated tests.

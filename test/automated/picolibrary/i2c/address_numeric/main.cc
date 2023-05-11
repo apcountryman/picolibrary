@@ -73,8 +73,6 @@ Address_Numeric::Unsigned_Integer const constructorUnsignedInteger_TEST_CASES[]{
 class constructorUnsignedInteger : public ::testing::TestWithParam<Address_Numeric::Unsigned_Integer> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger, ValuesIn( constructorUnsignedInteger_TEST_CASES ) );
-
 /**
  * \brief Verify picolibrary::I2C::Address_Numeric::Address_Numeric(
  *        picolibrary::I2C::Address_Numeric::Unsigned_Integer ) works properly.
@@ -88,6 +86,8 @@ TEST_P( constructorUnsignedInteger, worksProperly )
     ASSERT_EQ( address_numeric.as_unsigned_integer(), address );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger, ValuesIn( constructorUnsignedInteger_TEST_CASES ) );
+
 /**
  * \brief picolibrary::I2C::Address_Numeric::Address_Numeric(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
@@ -96,11 +96,6 @@ TEST_P( constructorUnsignedInteger, worksProperly )
 class constructorBypassPreconditionExpectationChecksUnsignedInteger :
     public ::testing::TestWithParam<Address_Numeric::Unsigned_Integer> {
 };
-
-INSTANTIATE_TEST_SUITE_P(
-    testCases,
-    constructorBypassPreconditionExpectationChecksUnsignedInteger,
-    ValuesIn( constructorUnsignedInteger_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::I2C::Address_Numeric::Address_Numeric(
@@ -115,6 +110,11 @@ TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger, worksProp
 
     ASSERT_EQ( address_numeric.as_unsigned_integer(), address );
 }
+
+INSTANTIATE_TEST_SUITE_P(
+    testCases,
+    constructorBypassPreconditionExpectationChecksUnsignedInteger,
+    ValuesIn( constructorUnsignedInteger_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::I2C::Address_Numeric::Address_Numeric(
@@ -174,6 +174,24 @@ auto operator<<( std::ostream & stream, comparisonOperator_Test_Case const & tes
 
 /**
  * \brief picolibrary::I2C::operator==( picolibrary::I2C::Address_Numeric,
+ *        picolibrary::I2C::Address_Numeric ) test fixture.
+ */
+class equalityOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::I2C::operator==( picolibrary::I2C::Address_Numeric,
+ *        picolibrary::I2C::Address_Numeric ) works properly.
+ */
+TEST_P( equalityOperator, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    ASSERT_EQ( test_case.lhs == test_case.rhs, test_case.comparison_result );
+}
+
+/**
+ * \brief picolibrary::I2C::operator==( picolibrary::I2C::Address_Numeric,
  *        picolibrary::I2C::Address_Numeric ) test cases.
  */
 comparisonOperator_Test_Case const equalityOperator_TEST_CASES[]{
@@ -188,24 +206,24 @@ comparisonOperator_Test_Case const equalityOperator_TEST_CASES[]{
     // clang-format on
 };
 
-/**
- * \brief picolibrary::I2C::operator==( picolibrary::I2C::Address_Numeric,
- *        picolibrary::I2C::Address_Numeric ) test fixture.
- */
-class equalityOperator : public TestWithParam<comparisonOperator_Test_Case> {
-};
-
 INSTANTIATE_TEST_SUITE_P( testCases, equalityOperator, ValuesIn( equalityOperator_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::I2C::operator==( picolibrary::I2C::Address_Numeric,
+ * \brief picolibrary::I2C::operator!=( picolibrary::I2C::Address_Numeric,
+ *        picolibrary::I2C::Address_Numeric ) test fixture.
+ */
+class inequalityOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::I2C::operator!=( picolibrary::I2C::Address_Numeric,
  *        picolibrary::I2C::Address_Numeric ) works properly.
  */
-TEST_P( equalityOperator, worksProperly )
+TEST_P( inequalityOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs == test_case.rhs, test_case.comparison_result );
+    ASSERT_EQ( test_case.lhs != test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -224,24 +242,24 @@ comparisonOperator_Test_Case const inequalityOperator_TEST_CASES[]{
     // clang-format on
 };
 
-/**
- * \brief picolibrary::I2C::operator!=( picolibrary::I2C::Address_Numeric,
- *        picolibrary::I2C::Address_Numeric ) test fixture.
- */
-class inequalityOperator : public TestWithParam<comparisonOperator_Test_Case> {
-};
-
 INSTANTIATE_TEST_SUITE_P( testCases, inequalityOperator, ValuesIn( inequalityOperator_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::I2C::operator!=( picolibrary::I2C::Address_Numeric,
+ * \brief picolibrary::I2C::operator<( picolibrary::I2C::Address_Numeric,
+ *        picolibrary::I2C::Address_Numeric ) test fixture.
+ */
+class lessThanOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::I2C::operator<( picolibrary::I2C::Address_Numeric,
  *        picolibrary::I2C::Address_Numeric ) works properly.
  */
-TEST_P( inequalityOperator, worksProperly )
+TEST_P( lessThanOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs != test_case.rhs, test_case.comparison_result );
+    ASSERT_EQ( test_case.lhs < test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -260,24 +278,24 @@ comparisonOperator_Test_Case const lessThanOperator_TEST_CASES[]{
     // clang-format on
 };
 
-/**
- * \brief picolibrary::I2C::operator<( picolibrary::I2C::Address_Numeric,
- *        picolibrary::I2C::Address_Numeric ) test fixture.
- */
-class lessThanOperator : public TestWithParam<comparisonOperator_Test_Case> {
-};
-
 INSTANTIATE_TEST_SUITE_P( testCases, lessThanOperator, ValuesIn( lessThanOperator_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::I2C::operator<( picolibrary::I2C::Address_Numeric,
+ * \brief picolibrary::I2C::operator>( picolibrary::I2C::Address_Numeric,
+ *        picolibrary::I2C::Address_Numeric ) test fixture.
+ */
+class greaterThanOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::I2C::operator>( picolibrary::I2C::Address_Numeric,
  *        picolibrary::I2C::Address_Numeric ) works properly.
  */
-TEST_P( lessThanOperator, worksProperly )
+TEST_P( greaterThanOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs < test_case.rhs, test_case.comparison_result );
+    ASSERT_EQ( test_case.lhs > test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -296,24 +314,24 @@ comparisonOperator_Test_Case const greaterThanOperator_TEST_CASES[]{
     // clang-format on
 };
 
-/**
- * \brief picolibrary::I2C::operator>( picolibrary::I2C::Address_Numeric,
- *        picolibrary::I2C::Address_Numeric ) test fixture.
- */
-class greaterThanOperator : public TestWithParam<comparisonOperator_Test_Case> {
-};
-
 INSTANTIATE_TEST_SUITE_P( testCases, greaterThanOperator, ValuesIn( greaterThanOperator_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::I2C::operator>( picolibrary::I2C::Address_Numeric,
+ * \brief picolibrary::I2C::operator<=( picolibrary::I2C::Address_Numeric,
+ *        picolibrary::I2C::Address_Numeric ) test fixture.
+ */
+class lessThanOrEqualToOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::I2C::operator<=( picolibrary::I2C::Address_Numeric,
  *        picolibrary::I2C::Address_Numeric ) works properly.
  */
-TEST_P( greaterThanOperator, worksProperly )
+TEST_P( lessThanOrEqualToOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs > test_case.rhs, test_case.comparison_result );
+    ASSERT_EQ( test_case.lhs <= test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -332,24 +350,24 @@ comparisonOperator_Test_Case const lessThanOrEqualToOperator_TEST_CASES[]{
     // clang-format on
 };
 
-/**
- * \brief picolibrary::I2C::operator<=( picolibrary::I2C::Address_Numeric,
- *        picolibrary::I2C::Address_Numeric ) test fixture.
- */
-class lessThanOrEqualToOperator : public TestWithParam<comparisonOperator_Test_Case> {
-};
-
 INSTANTIATE_TEST_SUITE_P( testCases, lessThanOrEqualToOperator, ValuesIn( lessThanOrEqualToOperator_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::I2C::operator<=( picolibrary::I2C::Address_Numeric,
+ * \brief picolibrary::I2C::operator>=( picolibrary::I2C::Address_Numeric,
+ *        picolibrary::I2C::Address_Numeric ) test fixture.
+ */
+class greaterThanOrEqualToOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::I2C::operator>=( picolibrary::I2C::Address_Numeric,
  *        picolibrary::I2C::Address_Numeric ) works properly.
  */
-TEST_P( lessThanOrEqualToOperator, worksProperly )
+TEST_P( greaterThanOrEqualToOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs <= test_case.rhs, test_case.comparison_result );
+    ASSERT_EQ( test_case.lhs >= test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -368,25 +386,7 @@ comparisonOperator_Test_Case const greaterThanOrEqualToOperator_TEST_CASES[]{
     // clang-format on
 };
 
-/**
- * \brief picolibrary::I2C::operator>=( picolibrary::I2C::Address_Numeric,
- *        picolibrary::I2C::Address_Numeric ) test fixture.
- */
-class greaterThanOrEqualToOperator : public TestWithParam<comparisonOperator_Test_Case> {
-};
-
 INSTANTIATE_TEST_SUITE_P( testCases, greaterThanOrEqualToOperator, ValuesIn( greaterThanOrEqualToOperator_TEST_CASES ) );
-
-/**
- * \brief Verify picolibrary::I2C::operator>=( picolibrary::I2C::Address_Numeric,
- *        picolibrary::I2C::Address_Numeric ) works properly.
- */
-TEST_P( greaterThanOrEqualToOperator, worksProperly )
-{
-    auto const test_case = GetParam();
-
-    ASSERT_EQ( test_case.lhs >= test_case.rhs, test_case.comparison_result );
-}
 
 /**
  * \brief Execute the picolibrary::I2C::Address_Numeric automated tests.
