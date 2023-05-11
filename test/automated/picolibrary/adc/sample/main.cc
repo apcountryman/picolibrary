@@ -33,7 +33,6 @@ namespace {
 
 using ::picolibrary::BYPASS_PRECONDITION_EXPECTATION_CHECKS;
 using ::picolibrary::ADC::Sample;
-using ::testing::Test;
 using ::testing::TestWithParam;
 using ::testing::Types;
 using ::testing::ValuesIn;
@@ -54,213 +53,511 @@ TEST( constructorDefault, worksProperly )
  * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
  *        and picolibrary::ADC::Sample::Sample(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
- *        picolibrary::ADC::Sample::Unsigned_Integer ) test case.
- *
- * \tparam T The sample unsigned integer representation.
- * \tparam N The number of bits in the sample.
- * \tparam MIN_VALUE The minimum valid sample.
- * \tparam MAX_VALUE The maximum valid sample.
- * \tparam OTHER_VALUE An arbitrary valid sample.
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) std::uint_fast8_t, 8 test cases.
  */
-template<typename T, std::uint_fast8_t N, T MIN_VALUE, T MAX_VALUE, T OTHER_VALUE>
-struct constructorUnsignedInteger_Test_Case {
-    /**
-     * \brief The sample type.
-     */
-    using Sample = ::picolibrary::ADC::Sample<T, N>;
-
-    /**
-     * \brief The minimum valid sample value.
-     */
-    static constexpr auto MIN = MIN_VALUE;
-
-    /**
-     * \brief The maximum valid sample value.
-     */
-    static constexpr auto MAX = MAX_VALUE;
-
-    /**
-     * \brief An arbitrary valid sample.
-     */
-    static constexpr auto OTHER = OTHER_VALUE;
+std::uint_fast8_t const constructorUnsignedInteger8_TEST_CASES[]{
+    0,
+    255,
+    51,
 };
 
 /**
  * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
- *        and picolibrary::ADC::Sample::Sample(
- *        picolibrary::Bypass_Precondition_Expectation_Checks,
- *        picolibrary::ADC::Sample::Unsigned_Integer ) test cases.
+ *        std::uint_fast8_t, 8 test fixture.
  */
-using constructorUnsignedInteger_Test_Cases = Types<
-    // clang-format off
-
-    constructorUnsignedInteger_Test_Case<std::uint_fast8_t,   8, 0,      255,       51>,
-    constructorUnsignedInteger_Test_Case<std::uint_fast16_t, 10, 0,     1023,      167>,
-    constructorUnsignedInteger_Test_Case<std::uint_fast16_t, 12, 0,     4095,     3700>,
-    constructorUnsignedInteger_Test_Case<std::uint_fast16_t, 14, 0,    16383,     8533>,
-    constructorUnsignedInteger_Test_Case<std::uint_fast16_t, 16, 0,    65535,    52593>,
-    constructorUnsignedInteger_Test_Case<std::uint_fast32_t, 18, 0,   262143,   102396>,
-    constructorUnsignedInteger_Test_Case<std::uint_fast32_t, 20, 0,  1048575,   407638>,
-    constructorUnsignedInteger_Test_Case<std::uint_fast32_t, 24, 0, 16777215, 12395235>
-
-    // clang-format on
-    >;
-
-/**
- * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
- *        test fixture.
- *
- * \tparam Test_Case The test case.
- */
-template<typename Test_Case>
-class constructorUnsignedInteger : public Test {
+class constructorUnsignedInteger8 : public TestWithParam<std::uint_fast8_t> {
 };
 
-TYPED_TEST_SUITE( constructorUnsignedInteger, constructorUnsignedInteger_Test_Cases );
+INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger8, ValuesIn( constructorUnsignedInteger8_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::ADC::Sample::Sample(
- *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly with the minimum
- *        valid sample.
+ * \brief verify picolibrary::ADC::Sample::Sample(
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
  */
-TYPED_TEST( constructorUnsignedInteger, worksProperlyMin )
+TEST_P( constructorUnsignedInteger8, worksProperly )
 {
-    using Test_Case = TypeParam;
+    auto const unsigned_integer = GetParam();
 
-    using Sample = typename Test_Case::Sample;
+    auto const sample = Sample<std::uint_fast8_t, 8>{ unsigned_integer };
 
-    auto const sample = Sample{ Test_Case::MIN };
-
-    ASSERT_EQ( sample.as_unsigned_integer(), Test_Case::MIN );
-}
-
-/**
- * \brief Verify picolibrary::ADC::Sample::Sample(
- *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly with the maximum
- *        valid sample.
- */
-TYPED_TEST( constructorUnsignedInteger, worksProperlyMax )
-{
-    using Test_Case = TypeParam;
-
-    using Sample = typename Test_Case::Sample;
-
-    auto const sample = Sample{ Test_Case::MAX };
-
-    ASSERT_EQ( sample.as_unsigned_integer(), Test_Case::MAX );
-}
-
-/**
- * \brief Verify picolibrary::ADC::Sample::Sample(
- *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly with the valid
- *        sample that is adjacent to the maximum valid sample.
- */
-TYPED_TEST( constructorUnsignedInteger, worksProperlyMaxAdjacent )
-{
-    using Test_Case = TypeParam;
-
-    using Sample = typename Test_Case::Sample;
-
-    auto const sample = Sample{ Test_Case::MAX - 1 };
-
-    ASSERT_EQ( sample.as_unsigned_integer(), Test_Case::MAX - 1 );
-}
-
-/**
- * \brief Verify picolibrary::ADC::Sample::Sample(
- *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly with an arbitrary
- *        valid sample.
- */
-TYPED_TEST( constructorUnsignedInteger, worksProperlyOther )
-{
-    using Test_Case = TypeParam;
-
-    using Sample = typename Test_Case::Sample;
-
-    auto const sample = Sample{ Test_Case::OTHER };
-
-    ASSERT_EQ( sample.as_unsigned_integer(), Test_Case::OTHER );
+    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
 /**
  * \brief picolibrary::ADC::Sample::Sample(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
- *        picolibrary::ADC::Sample::Unsigned_Integer ) test fixture.
- *
- * \tparam Test_Case The test case.
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) std::uint_fast8_t, 8 test fixture.
  */
-template<typename Test_Case>
-class constructorBypassPreconditionExpectationChecksUnsignedInteger : public Test {
+class constructorBypassPreconditionExpectationChecksUnsignedInteger8 :
+    public TestWithParam<std::uint_fast8_t> {
 };
 
-TYPED_TEST_SUITE( constructorBypassPreconditionExpectationChecksUnsignedInteger, constructorUnsignedInteger_Test_Cases );
+INSTANTIATE_TEST_SUITE_P(
+    testCases,
+    constructorBypassPreconditionExpectationChecksUnsignedInteger8,
+    ValuesIn( constructorUnsignedInteger8_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::ADC::Sample::Sample(
+ * \brief verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
- *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly with the minimum
- *        valid sample.
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
  */
-TYPED_TEST( constructorBypassPreconditionExpectationChecksUnsignedInteger, worksProperlyMin )
+TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger8, worksProperly )
 {
-    using Test_Case = TypeParam;
+    auto const unsigned_integer = GetParam();
 
-    using Sample = typename Test_Case::Sample;
+    auto const sample = Sample<std::uint_fast8_t, 8>{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
+                                                      unsigned_integer };
 
-    auto const sample = Sample{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, Test_Case::MIN };
-
-    ASSERT_EQ( sample.as_unsigned_integer(), Test_Case::MIN );
+    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
 /**
- * \brief Verify picolibrary::ADC::Sample::Sample(
+ * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
+ *        and picolibrary::ADC::Sample::Sample(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
- *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly with the maximum
- *        valid sample.
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) std::uint_fast16_t, 10 test cases.
  */
-TYPED_TEST( constructorBypassPreconditionExpectationChecksUnsignedInteger, worksProperlyMax )
+std::uint_fast16_t const constructorUnsignedInteger10_TEST_CASES[]{
+    0,
+    1023,
+    167,
+};
+
+/**
+ * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
+ *        std::uint_fast16_t, 10 test fixture.
+ */
+class constructorUnsignedInteger10 : public TestWithParam<std::uint_fast16_t> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger10, ValuesIn( constructorUnsignedInteger10_TEST_CASES ) );
+
+/**
+ * \brief verify picolibrary::ADC::Sample::Sample(
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
+ */
+TEST_P( constructorUnsignedInteger10, worksProperly )
 {
-    using Test_Case = TypeParam;
+    auto const unsigned_integer = GetParam();
 
-    using Sample = typename Test_Case::Sample;
+    auto const sample = Sample<std::uint_fast16_t, 10>{ unsigned_integer };
 
-    auto const sample = Sample{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, Test_Case::MAX };
-
-    ASSERT_EQ( sample.as_unsigned_integer(), Test_Case::MAX );
+    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
 /**
- * \brief Verify picolibrary::ADC::Sample::Sample(
+ * \brief picolibrary::ADC::Sample::Sample(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
- *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly with the valid
- *        sample that is adjacent to the maximum valid sample.
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) std::uint_fast16_t, 10 test
+ *        fixture.
  */
-TYPED_TEST( constructorBypassPreconditionExpectationChecksUnsignedInteger, worksProperlyMaxAdjacent )
+class constructorBypassPreconditionExpectationChecksUnsignedInteger10 :
+    public TestWithParam<std::uint_fast16_t> {
+};
+
+INSTANTIATE_TEST_SUITE_P(
+    testCases,
+    constructorBypassPreconditionExpectationChecksUnsignedInteger10,
+    ValuesIn( constructorUnsignedInteger10_TEST_CASES ) );
+
+/**
+ * \brief verify picolibrary::ADC::Sample::Sample(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
+ */
+TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger10, worksProperly )
 {
-    using Test_Case = TypeParam;
+    auto const unsigned_integer = GetParam();
 
-    using Sample = typename Test_Case::Sample;
+    auto const sample = Sample<std::uint_fast16_t, 10>{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
+                                                        unsigned_integer };
 
-    auto const sample = Sample{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, Test_Case::MAX - 1 };
-
-    ASSERT_EQ( sample.as_unsigned_integer(), Test_Case::MAX - 1 );
+    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
 /**
- * \brief Verify picolibrary::ADC::Sample::Sample(
+ * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
+ *        and picolibrary::ADC::Sample::Sample(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
- *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly with an arbitrary
- *        valid sample.
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) std::uint_fast16_t, 12 test cases.
  */
-TYPED_TEST( constructorBypassPreconditionExpectationChecksUnsignedInteger, worksProperlyOther )
+std::uint_fast16_t const constructorUnsignedInteger12_TEST_CASES[]{
+    0,
+    4095,
+    3700,
+};
+
+/**
+ * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
+ *        std::uint_fast16_t, 12 test fixture.
+ */
+class constructorUnsignedInteger12 : public TestWithParam<std::uint_fast16_t> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger12, ValuesIn( constructorUnsignedInteger12_TEST_CASES ) );
+
+/**
+ * \brief verify picolibrary::ADC::Sample::Sample(
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
+ */
+TEST_P( constructorUnsignedInteger12, worksProperly )
 {
-    using Test_Case = TypeParam;
+    auto const unsigned_integer = GetParam();
 
-    using Sample = typename Test_Case::Sample;
+    auto const sample = Sample<std::uint_fast16_t, 12>{ unsigned_integer };
 
-    auto const sample = Sample{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, Test_Case::OTHER };
+    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+}
 
-    ASSERT_EQ( sample.as_unsigned_integer(), Test_Case::OTHER );
+/**
+ * \brief picolibrary::ADC::Sample::Sample(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) std::uint_fast16_t, 12 test
+ *        fixture.
+ */
+class constructorBypassPreconditionExpectationChecksUnsignedInteger12 :
+    public TestWithParam<std::uint_fast16_t> {
+};
+
+INSTANTIATE_TEST_SUITE_P(
+    testCases,
+    constructorBypassPreconditionExpectationChecksUnsignedInteger12,
+    ValuesIn( constructorUnsignedInteger12_TEST_CASES ) );
+
+/**
+ * \brief verify picolibrary::ADC::Sample::Sample(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
+ */
+TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger12, worksProperly )
+{
+    auto const unsigned_integer = GetParam();
+
+    auto const sample = Sample<std::uint_fast16_t, 12>{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
+                                                        unsigned_integer };
+
+    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+}
+
+/**
+ * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
+ *        and picolibrary::ADC::Sample::Sample(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) std::uint_fast16_t, 14 test cases.
+ */
+std::uint_fast16_t const constructorUnsignedInteger14_TEST_CASES[]{
+    0,
+    16383,
+    8533,
+};
+
+/**
+ * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
+ *        std::uint_fast16_t, 14 test fixture.
+ */
+class constructorUnsignedInteger14 : public TestWithParam<std::uint_fast16_t> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger14, ValuesIn( constructorUnsignedInteger14_TEST_CASES ) );
+
+/**
+ * \brief verify picolibrary::ADC::Sample::Sample(
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
+ */
+TEST_P( constructorUnsignedInteger14, worksProperly )
+{
+    auto const unsigned_integer = GetParam();
+
+    auto const sample = Sample<std::uint_fast16_t, 14>{ unsigned_integer };
+
+    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+}
+
+/**
+ * \brief picolibrary::ADC::Sample::Sample(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) std::uint_fast16_t, 14 test
+ *        fixture.
+ */
+class constructorBypassPreconditionExpectationChecksUnsignedInteger14 :
+    public TestWithParam<std::uint_fast16_t> {
+};
+
+INSTANTIATE_TEST_SUITE_P(
+    testCases,
+    constructorBypassPreconditionExpectationChecksUnsignedInteger14,
+    ValuesIn( constructorUnsignedInteger14_TEST_CASES ) );
+
+/**
+ * \brief verify picolibrary::ADC::Sample::Sample(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
+ */
+TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger14, worksProperly )
+{
+    auto const unsigned_integer = GetParam();
+
+    auto const sample = Sample<std::uint_fast16_t, 14>{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
+                                                        unsigned_integer };
+
+    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+}
+
+/**
+ * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
+ *        and picolibrary::ADC::Sample::Sample(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) std::uint_fast16_t, 16 test cases.
+ */
+std::uint_fast16_t const constructorUnsignedInteger16_TEST_CASES[]{
+    0,
+    65535,
+    52593,
+};
+
+/**
+ * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
+ *        std::uint_fast16_t, 16 test fixture.
+ */
+class constructorUnsignedInteger16 : public TestWithParam<std::uint_fast16_t> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger16, ValuesIn( constructorUnsignedInteger16_TEST_CASES ) );
+
+/**
+ * \brief verify picolibrary::ADC::Sample::Sample(
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
+ */
+TEST_P( constructorUnsignedInteger16, worksProperly )
+{
+    auto const unsigned_integer = GetParam();
+
+    auto const sample = Sample<std::uint_fast16_t, 16>{ unsigned_integer };
+
+    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+}
+
+/**
+ * \brief picolibrary::ADC::Sample::Sample(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) std::uint_fast16_t, 16 test
+ *        fixture.
+ */
+class constructorBypassPreconditionExpectationChecksUnsignedInteger16 :
+    public TestWithParam<std::uint_fast16_t> {
+};
+
+INSTANTIATE_TEST_SUITE_P(
+    testCases,
+    constructorBypassPreconditionExpectationChecksUnsignedInteger16,
+    ValuesIn( constructorUnsignedInteger16_TEST_CASES ) );
+
+/**
+ * \brief verify picolibrary::ADC::Sample::Sample(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
+ */
+TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger16, worksProperly )
+{
+    auto const unsigned_integer = GetParam();
+
+    auto const sample = Sample<std::uint_fast16_t, 16>{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
+                                                        unsigned_integer };
+
+    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+}
+
+/**
+ * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
+ *        and picolibrary::ADC::Sample::Sample(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) std::uint_fast32_t, 18 test cases.
+ */
+std::uint_fast32_t const constructorUnsignedInteger18_TEST_CASES[]{
+    0,
+    262143,
+    102396,
+};
+
+/**
+ * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
+ *        std::uint_fast32_t, 18 test fixture.
+ */
+class constructorUnsignedInteger18 : public TestWithParam<std::uint_fast32_t> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger18, ValuesIn( constructorUnsignedInteger18_TEST_CASES ) );
+
+/**
+ * \brief verify picolibrary::ADC::Sample::Sample(
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
+ */
+TEST_P( constructorUnsignedInteger18, worksProperly )
+{
+    auto const unsigned_integer = GetParam();
+
+    auto const sample = Sample<std::uint_fast32_t, 18>{ unsigned_integer };
+
+    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+}
+
+/**
+ * \brief picolibrary::ADC::Sample::Sample(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) std::uint_fast32_t, 18 test
+ *        fixture.
+ */
+class constructorBypassPreconditionExpectationChecksUnsignedInteger18 :
+    public TestWithParam<std::uint_fast32_t> {
+};
+
+INSTANTIATE_TEST_SUITE_P(
+    testCases,
+    constructorBypassPreconditionExpectationChecksUnsignedInteger18,
+    ValuesIn( constructorUnsignedInteger18_TEST_CASES ) );
+
+/**
+ * \brief verify picolibrary::ADC::Sample::Sample(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
+ */
+TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger18, worksProperly )
+{
+    auto const unsigned_integer = GetParam();
+
+    auto const sample = Sample<std::uint_fast32_t, 18>{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
+                                                        unsigned_integer };
+
+    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+}
+
+/**
+ * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
+ *        and picolibrary::ADC::Sample::Sample(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) std::uint_fast32_t, 20 test cases.
+ */
+std::uint_fast32_t const constructorUnsignedInteger20_TEST_CASES[]{
+    0,
+    1048575,
+    407638,
+};
+
+/**
+ * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
+ *        std::uint_fast32_t, 20 test fixture.
+ */
+class constructorUnsignedInteger20 : public TestWithParam<std::uint_fast32_t> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger20, ValuesIn( constructorUnsignedInteger20_TEST_CASES ) );
+
+/**
+ * \brief verify picolibrary::ADC::Sample::Sample(
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
+ */
+TEST_P( constructorUnsignedInteger20, worksProperly )
+{
+    auto const unsigned_integer = GetParam();
+
+    auto const sample = Sample<std::uint_fast32_t, 20>{ unsigned_integer };
+
+    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+}
+
+/**
+ * \brief picolibrary::ADC::Sample::Sample(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) std::uint_fast32_t, 20 test
+ *        fixture.
+ */
+class constructorBypassPreconditionExpectationChecksUnsignedInteger20 :
+    public TestWithParam<std::uint_fast32_t> {
+};
+
+INSTANTIATE_TEST_SUITE_P(
+    testCases,
+    constructorBypassPreconditionExpectationChecksUnsignedInteger20,
+    ValuesIn( constructorUnsignedInteger20_TEST_CASES ) );
+
+/**
+ * \brief verify picolibrary::ADC::Sample::Sample(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
+ */
+TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger20, worksProperly )
+{
+    auto const unsigned_integer = GetParam();
+
+    auto const sample = Sample<std::uint_fast32_t, 20>{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
+                                                        unsigned_integer };
+
+    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+}
+
+/**
+ * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
+ *        and picolibrary::ADC::Sample::Sample(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) std::uint_fast32_t, 24 test cases.
+ */
+std::uint_fast32_t const constructorUnsignedInteger24_TEST_CASES[]{
+    0,
+    16777215,
+    12395235,
+};
+
+/**
+ * \brief picolibrary::ADC::Sample::Sample( picolibrary::ADC::Sample::Unsigned_Integer )
+ *        std::uint_fast32_t, 24 test fixture.
+ */
+class constructorUnsignedInteger24 : public TestWithParam<std::uint_fast32_t> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger24, ValuesIn( constructorUnsignedInteger24_TEST_CASES ) );
+
+/**
+ * \brief verify picolibrary::ADC::Sample::Sample(
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
+ */
+TEST_P( constructorUnsignedInteger24, worksProperly )
+{
+    auto const unsigned_integer = GetParam();
+
+    auto const sample = Sample<std::uint_fast32_t, 24>{ unsigned_integer };
+
+    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+}
+
+/**
+ * \brief picolibrary::ADC::Sample::Sample(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) std::uint_fast32_t, 24 test
+ *        fixture.
+ */
+class constructorBypassPreconditionExpectationChecksUnsignedInteger24 :
+    public TestWithParam<std::uint_fast32_t> {
+};
+
+INSTANTIATE_TEST_SUITE_P(
+    testCases,
+    constructorBypassPreconditionExpectationChecksUnsignedInteger24,
+    ValuesIn( constructorUnsignedInteger24_TEST_CASES ) );
+
+/**
+ * \brief verify picolibrary::ADC::Sample::Sample(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
+ */
+TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger24, worksProperly )
+{
+    auto const unsigned_integer = GetParam();
+
+    auto const sample = Sample<std::uint_fast32_t, 24>{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
+                                                        unsigned_integer };
+
+    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
 /**
