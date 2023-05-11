@@ -22,6 +22,7 @@
 
 #include <cstdint>
 #include <functional>
+#include <ostream>
 #include <utility>
 #include <vector>
 
@@ -31,7 +32,6 @@
 #include "picolibrary/i2c.h"
 #include "picolibrary/testing/automated/error.h"
 #include "picolibrary/testing/automated/i2c.h"
-#include "picolibrary/testing/automated/random.h"
 
 namespace {
 
@@ -40,13 +40,13 @@ using ::picolibrary::I2C::Address_Transmitted;
 using ::picolibrary::I2C::Operation;
 using ::picolibrary::I2C::Response;
 using ::picolibrary::Testing::Automated::Mock_Error;
-using ::picolibrary::Testing::Automated::random;
-using ::picolibrary::Testing::Automated::random_container;
 using ::picolibrary::Testing::Automated::I2C::Mock_Controller;
 using ::testing::A;
 using ::testing::InSequence;
 using ::testing::MockFunction;
 using ::testing::Return;
+using ::testing::TestWithParam;
+using ::testing::ValuesIn;
 
 class Device : public ::picolibrary::I2C::Device<std::function<void()>, Mock_Controller> {
   public:
@@ -83,6 +83,24 @@ class Device : public ::picolibrary::I2C::Device<std::function<void()>, Mock_Con
     using ::picolibrary::I2C::Device<std::function<void()>, Mock_Controller>::write;
 };
 
+auto as_string( Operation operation ) -> char const *
+{
+    switch ( operation ) {
+        case Operation::READ: return "Operation::READ";
+        case Operation::WRITE: return "Operation::WRITE";
+        default: return "UNKNOWN";
+    } // switch
+}
+
+auto as_string( Response response ) -> char const *
+{
+    switch ( response ) {
+        case Response::ACK: return "Response::ACK";
+        case Response::NACK: return "Response::NACK";
+        default: return "UNKNOWN";
+    } // switch
+}
+
 } // namespace
 
 /**
@@ -105,8 +123,8 @@ TEST( constructorDefault, worksProperly )
 TEST( constructor, worksProperly )
 {
     auto       controller                 = Mock_Controller{};
-    auto const address                    = random<Address_Transmitted>();
-    auto const nonresponsive_device_error = random<Mock_Error>();
+    auto const address                    = Address_Transmitted{ 0b1110010'0 };
+    auto const nonresponsive_device_error = Mock_Error{ 0x6B };
 
     auto const device = Device{ {}, controller, address, nonresponsive_device_error };
 
@@ -116,17 +134,16 @@ TEST( constructor, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device::align_bus_multiplexer() works properly.
+ * \brief Verify picolibrary::I2C::Controller::align_bus_multiplexer() works properly.
  */
 TEST( alignBusMultiplexer, worksProperly )
 {
     auto bus_multiplexer_aligner = MockFunction<void()>{};
     auto controller              = Mock_Controller{};
 
-    auto const device = Device{ bus_multiplexer_aligner.AsStdFunction(),
-                                controller,
-                                random<Address_Transmitted>(),
-                                random<Mock_Error>() };
+    auto const device = Device{
+        bus_multiplexer_aligner.AsStdFunction(), controller, 0b1110010'0, Mock_Error{ 0x6B }
+    };
 
     EXPECT_CALL( bus_multiplexer_aligner, Call() );
 
@@ -134,147 +151,198 @@ TEST( alignBusMultiplexer, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device::ping() works properly.
+ * \brief picolibrary::I2C::Controller::ping( picolibrary::I2C::Operation ) test case.
  */
-TEST( ping, worksProperly )
+struct pingOperation_Test_Case {
+    /**
+     * \brief The operation to request when addressing the device.
+     */
+    Operation operation;
+
+    /**
+     * \brief The device's response.
+     */
+    Response response;
+};
+
+auto operator<<( std::ostream & stream, pingOperation_Test_Case const & test_case ) -> std::ostream &
 {
-    {
-        struct {
-            Response response;
-        } const test_cases[]{
-            // clang-format off
+    // clang-format off
 
-            { Response::ACK  },
-            { Response::NACK },
+    return stream << "{ "
+                  << ".operation = " << as_string( test_case.operation )
+                  << ", "
+                  << ".response = " << as_string( test_case.response )
+                  << " }";
 
-            // clang-format on
-        };
+    // clang-format on
+}
 
-        for ( auto const test_case : test_cases ) {
-            auto const in_sequence = InSequence{};
+/**
+ * \brief picolibrary::I2C::Controller::ping( picolibrary::I2C::Operation ) test cases.
+ */
+pingOperation_Test_Case const pingOperation_TEST_CASES[]{
+    // clang-format off
 
-            auto       bus_multiplexer_aligner = MockFunction<void()>{};
-            auto       controller              = Mock_Controller{};
-            auto const address                 = random<Address_Transmitted>();
+    { Operation::READ,  Response::ACK  },
+    { Operation::READ,  Response::NACK },
+    { Operation::WRITE, Response::ACK  },
+    { Operation::WRITE, Response::NACK },
 
-            auto const device = Device{ bus_multiplexer_aligner.AsStdFunction(),
-                                        controller,
-                                        address,
-                                        random<Mock_Error>() };
+    // clang-format on
+};
 
-            EXPECT_CALL( bus_multiplexer_aligner, Call() );
-            EXPECT_CALL( controller, start() );
-            EXPECT_CALL( controller, address( address, Operation::READ ) )
-                .WillOnce( Return( test_case.response ) );
-            if ( test_case.response == Response::ACK ) {
-                EXPECT_CALL( controller, read( Response::NACK ) ).WillOnce( Return( random<std::uint8_t>() ) );
-            } // if
-            EXPECT_CALL( controller, stop() );
+/**
+ * \brief picolibrary::I2C::Controller::ping( picolibrary::I2C::Operation ) test fixture.
+ */
+class pingOperation : public TestWithParam<pingOperation_Test_Case> {
+};
 
-            EXPECT_EQ( device.ping( Operation::READ ), test_case.response );
-        } // for
-    }
+INSTANTIATE_TEST_SUITE_P( testCases, pingOperation, ValuesIn( pingOperation_TEST_CASES ) );
 
-    {
-        struct {
-            Response response;
-        } const test_cases[]{
-            // clang-format off
+/**
+ * \brief Verify picolibrary::I2C::Controller::ping( picolibrary::I2C::Operation ) works
+ *        properly.
+ */
+TEST_P( pingOperation, worksProperly )
+{
+    auto const test_case = GetParam();
 
-            { Response::ACK  },
-            { Response::NACK },
+    auto const in_sequence = InSequence{};
 
-            // clang-format on
-        };
+    auto       bus_multiplexer_aligner = MockFunction<void()>{};
+    auto       controller              = Mock_Controller{};
+    auto const address                 = Address_Transmitted{ 0b1110010'0 };
 
-        for ( auto const test_case : test_cases ) {
-            auto const in_sequence = InSequence{};
+    auto const device = Device{
+        bus_multiplexer_aligner.AsStdFunction(), controller, address, Mock_Error{ 0x68 }
+    };
 
-            auto       bus_multiplexer_aligner = MockFunction<void()>{};
-            auto       controller              = Mock_Controller{};
-            auto const address                 = random<Address_Transmitted>();
+    EXPECT_CALL( bus_multiplexer_aligner, Call() );
 
-            auto const device = Device{ bus_multiplexer_aligner.AsStdFunction(),
-                                        controller,
-                                        address,
-                                        random<Mock_Error>() };
+    EXPECT_CALL( controller, start() );
+    EXPECT_CALL( controller, address( address, test_case.operation ) )
+        .WillOnce( Return( test_case.response ) );
+    if ( test_case.operation == Operation::READ and test_case.response == Response::ACK ) {
+        EXPECT_CALL( controller, read( Response::NACK ) ).WillOnce( Return( 0xCC ) );
+    } // if
+    EXPECT_CALL( controller, stop() );
 
-            EXPECT_CALL( bus_multiplexer_aligner, Call() );
-            EXPECT_CALL( controller, start() );
-            EXPECT_CALL( controller, address( address, Operation::WRITE ) )
-                .WillOnce( Return( test_case.response ) );
-            EXPECT_CALL( controller, stop() );
+    ASSERT_EQ( device.ping( test_case.operation ), test_case.response );
+}
 
-            EXPECT_EQ( device.ping( Operation::WRITE ), test_case.response );
-        } // for
-    }
+/**
+ * \brief picolibrary::I2C::Controller::ping() test case.
+ */
+struct ping_Test_Case {
+    /**
+     * \brief The device's response to the read request.
+     */
+    Response response_read;
 
-    {
-        struct {
-            Response response_read;
-            Response response_write;
-            Response response;
-        } const test_cases[]{
-            // clang-format off
+    /**
+     * \brief The device's response to the write request.
+     */
+    Response response_write;
 
-            { Response::ACK,  Response::ACK,  Response::ACK  },
-            { Response::ACK,  Response::NACK, Response::NACK },
-            { Response::NACK, Response::ACK,  Response::NACK },
-            { Response::NACK, Response::NACK, Response::NACK },
+    /**
+     * \brief The device's response.
+     */
+    Response response;
+};
 
-            // clang-format on
-        };
+auto operator<<( std::ostream & stream, ping_Test_Case const & test_case ) -> std::ostream &
+{
+    // clang-format off
 
-        for ( auto const test_case : test_cases ) {
-            auto const in_sequence = InSequence{};
+    return stream << "{ "
+                  << ".response_read = " << as_string( test_case.response_read )
+                  << ", "
+                  << ".response_write = " << as_string( test_case.response_write )
+                  << ", "
+                  << ".response = " << as_string( test_case.response )
+                  << " }";
 
-            auto       bus_multiplexer_aligner = MockFunction<void()>{};
-            auto       controller              = Mock_Controller{};
-            auto const address                 = random<Address_Transmitted>();
+    // clang-format on
+}
 
-            auto const device = Device{ bus_multiplexer_aligner.AsStdFunction(),
-                                        controller,
-                                        address,
-                                        random<Mock_Error>() };
+/**
+ * \brief picolibrary::I2C::Controller::ping() test cases.
+ */
+ping_Test_Case const ping_TEST_CASES[]{
+    // clang-format off
 
-            EXPECT_CALL( bus_multiplexer_aligner, Call() );
-            EXPECT_CALL( controller, start() );
-            EXPECT_CALL( controller, address( address, Operation::READ ) )
-                .WillOnce( Return( test_case.response_read ) );
-            if ( test_case.response_read == Response::ACK ) {
-                EXPECT_CALL( controller, read( Response::NACK ) ).WillOnce( Return( random<std::uint8_t>() ) );
-            } // if
-            EXPECT_CALL( controller, stop() );
+    { Response::ACK,  Response::ACK,  Response::ACK  },
+    { Response::ACK,  Response::NACK, Response::NACK },
+    { Response::NACK, Response::ACK,  Response::NACK },
+    { Response::NACK, Response::NACK, Response::NACK },
 
-            EXPECT_CALL( controller, start() );
-            EXPECT_CALL( controller, address( address, Operation::WRITE ) )
-                .WillOnce( Return( test_case.response_write ) );
-            EXPECT_CALL( controller, stop() );
+    // clang-format on
+};
 
-            EXPECT_EQ( device.ping(), test_case.response );
-        } // for
-    }
+/**
+ * \brief picolibrary::I2C::Controller::ping() test fixture.
+ */
+class ping : public TestWithParam<ping_Test_Case> {
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, ping, ValuesIn( ping_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::I2C::Controller::ping() works properly.
+ */
+TEST_P( ping, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    auto const in_sequence = InSequence{};
+
+    auto       bus_multiplexer_aligner = MockFunction<void()>{};
+    auto       controller              = Mock_Controller{};
+    auto const address                 = Address_Transmitted{ 0b1110010'0 };
+
+    auto const device = Device{
+        bus_multiplexer_aligner.AsStdFunction(), controller, address, Mock_Error{ 0x68 }
+    };
+
+    EXPECT_CALL( bus_multiplexer_aligner, Call() );
+
+    EXPECT_CALL( controller, start() );
+    EXPECT_CALL( controller, address( address, Operation::READ ) )
+        .WillOnce( Return( test_case.response_read ) );
+    if ( test_case.response_read == Response::ACK ) {
+        EXPECT_CALL( controller, read( Response::NACK ) ).WillOnce( Return( 0xCC ) );
+    } // if
+    EXPECT_CALL( controller, stop() );
+
+    EXPECT_CALL( controller, start() );
+    EXPECT_CALL( controller, address( address, Operation::WRITE ) )
+        .WillOnce( Return( test_case.response_write ) );
+    EXPECT_CALL( controller, stop() );
+
+    ASSERT_EQ( device.ping(), test_case.response );
 }
 
 /**
  * \brief Verify picolibrary::I2C::Device::read( std::uint8_t ) works properly.
  */
-TEST( readRegister, worksProperly )
+TEST( readRegister8BitAddress, worksProperly )
 {
     auto const in_sequence = InSequence{};
 
     auto       bus_multiplexer_aligner = MockFunction<void()>{};
     auto       controller              = Mock_Controller{};
-    auto const address                 = random<Address_Transmitted>();
+    auto const address                 = Address_Transmitted{ 0b1110010'0 };
 
     auto const device = Device{
-        bus_multiplexer_aligner.AsStdFunction(), controller, address, random<Mock_Error>()
+        bus_multiplexer_aligner.AsStdFunction(), controller, address, Mock_Error{ 0x68 }
     };
 
-    auto const register_address = random<std::uint8_t>();
-    auto const data             = random<std::uint8_t>();
+    auto const register_address = std::uint8_t{ 0xB2 };
+    auto const data             = std::uint8_t{ 0x82 };
 
     EXPECT_CALL( bus_multiplexer_aligner, Call() );
+
     EXPECT_CALL( controller, start() );
     EXPECT_CALL( controller, address( address, Operation::WRITE ) ).WillOnce( Return( Response::ACK ) );
     EXPECT_CALL( controller, write( register_address ) ).WillOnce( Return( Response::ACK ) );
@@ -283,29 +351,32 @@ TEST( readRegister, worksProperly )
     EXPECT_CALL( controller, read( Response::NACK ) ).WillOnce( Return( data ) );
     EXPECT_CALL( controller, stop() );
 
-    EXPECT_EQ( device.read( register_address ), data );
+    ASSERT_EQ( device.read( register_address ), data );
 }
 
 /**
  * \brief Verify picolibrary::I2C::Device::read( std::uint8_t, std::uint8_t *,
  *        std::uint8_t * ) works properly.
  */
-TEST( readRegisterBlock, worksProperly )
+TEST( readRegisterBlock8BitAddress, worksProperly )
 {
     auto const in_sequence = InSequence{};
 
     auto       bus_multiplexer_aligner = MockFunction<void()>{};
     auto       controller              = Mock_Controller{};
-    auto const address                 = random<Address_Transmitted>();
+    auto const address                 = Address_Transmitted{ 0b1110010'0 };
 
     auto const device = Device{
-        bus_multiplexer_aligner.AsStdFunction(), controller, address, random<Mock_Error>()
+        bus_multiplexer_aligner.AsStdFunction(), controller, address, Mock_Error{ 0x68 }
     };
 
-    auto const register_address = random<std::uint8_t>();
-    auto const data_expected    = random_container<std::vector<std::uint8_t>>();
+    auto const register_address = std::uint8_t{ 0xB2 };
+    auto const data_expected    = std::vector<std::uint8_t>{
+        0x85, 0xA3, 0x98, 0xC7, 0x39, 0x6A, 0xFA, 0xC5, 0xA4,
+    };
 
     EXPECT_CALL( bus_multiplexer_aligner, Call() );
+
     EXPECT_CALL( controller, start() );
     EXPECT_CALL( controller, address( address, Operation::WRITE ) ).WillOnce( Return( Response::ACK ) );
     EXPECT_CALL( controller, write( register_address ) ).WillOnce( Return( Response::ACK ) );
@@ -315,30 +386,31 @@ TEST( readRegisterBlock, worksProperly )
     EXPECT_CALL( controller, stop() );
 
     auto data = std::vector<std::uint8_t>( data_expected.size() );
+
     device.read( register_address, &*data.begin(), &*data.end() );
 
-    EXPECT_EQ( data, data_expected );
+    ASSERT_EQ( data, data_expected );
 }
 
 /**
- * \brief Verify picolibrary::I2C::Device::write( std::uint8_t ) works properly.
+ * \brief Verify picolibrary::I2C::Device::write( std::uint8_t, std::uint8_t ) works
+ *        properly.
  */
-TEST( writeRegister, worksProperly )
+TEST( writeRegister8BitAddress, worksProperly )
 {
     auto const in_sequence = InSequence{};
 
     auto       bus_multiplexer_aligner = MockFunction<void()>{};
     auto       controller              = Mock_Controller{};
-    auto const address                 = random<Address_Transmitted>();
+    auto const address                 = Address_Transmitted{ 0b1110010'0 };
 
-    auto device = Device{
-        bus_multiplexer_aligner.AsStdFunction(), controller, address, random<Mock_Error>()
-    };
+    auto device = Device{ bus_multiplexer_aligner.AsStdFunction(), controller, address, Mock_Error{ 0x68 } };
 
-    auto const register_address = random<std::uint8_t>();
-    auto const data             = random<std::uint8_t>();
+    auto const register_address = std::uint8_t{ 0xB2 };
+    auto const data             = std::uint8_t{ 0x82 };
 
     EXPECT_CALL( bus_multiplexer_aligner, Call() );
+
     EXPECT_CALL( controller, start() );
     EXPECT_CALL( controller, address( address, Operation::WRITE ) ).WillOnce( Return( Response::ACK ) );
     EXPECT_CALL( controller, write( register_address ) ).WillOnce( Return( Response::ACK ) );
@@ -352,22 +424,23 @@ TEST( writeRegister, worksProperly )
  * \brief Verify picolibrary::I2C::Device::write( std::uint8_t, std::uint8_t const *,
  *        std::uint8_t const * ) works properly.
  */
-TEST( writeRegisterBlock, worksProperly )
+TEST( writeRegisterBlock8BitAddress, worksProperly )
 {
     auto const in_sequence = InSequence{};
 
     auto       bus_multiplexer_aligner = MockFunction<void()>{};
     auto       controller              = Mock_Controller{};
-    auto const address                 = random<Address_Transmitted>();
+    auto const address                 = Address_Transmitted{ 0b1110010'0 };
 
-    auto device = Device{
-        bus_multiplexer_aligner.AsStdFunction(), controller, address, random<Mock_Error>()
+    auto device = Device{ bus_multiplexer_aligner.AsStdFunction(), controller, address, Mock_Error{ 0x68 } };
+
+    auto const register_address = std::uint8_t{ 0xB2 };
+    auto const data             = std::vector<std::uint8_t>{
+        0x85, 0xA3, 0x98, 0xC7, 0x39, 0x6A, 0xFA, 0xC5, 0xA4,
     };
 
-    auto const register_address = random<std::uint8_t>();
-    auto const data             = random_container<std::vector<std::uint8_t>>();
-
     EXPECT_CALL( bus_multiplexer_aligner, Call() );
+
     EXPECT_CALL( controller, start() );
     EXPECT_CALL( controller, address( address, Operation::WRITE ) ).WillOnce( Return( Response::ACK ) );
     EXPECT_CALL( controller, write( register_address ) ).WillOnce( Return( Response::ACK ) );
