@@ -101,31 +101,11 @@ auto operator<<( std::ostream & stream, pingControllerI2CAddressTransmittedI2COp
 
 /**
  * \brief picolibrary::I2C::ping( Controller &, picolibrary::I2C::Address_Transmitted,
- *        picolibrary::I2C::Operation ) test cases.
- */
-pingControllerI2CAddressTransmittedI2COperation_Test_Case const pingControllerI2CAddressTransmittedI2COperation_TEST_CASES[]{
-    // clang-format off
-
-    { Operation::READ,  Response::ACK  },
-    { Operation::READ,  Response::NACK },
-    { Operation::WRITE, Response::ACK  },
-    { Operation::WRITE, Response::NACK },
-
-    // clang-format on
-};
-
-/**
- * \brief picolibrary::I2C::ping( Controller &, picolibrary::I2C::Address_Transmitted,
  *        picolibrary::I2C::Operation ) test fixture.
  */
 class pingControllerI2CAddressTransmittedI2COperation :
     public TestWithParam<pingControllerI2CAddressTransmittedI2COperation_Test_Case> {
 };
-
-INSTANTIATE_TEST_SUITE_P(
-    testCases,
-    pingControllerI2CAddressTransmittedI2COperation,
-    ValuesIn( pingControllerI2CAddressTransmittedI2COperation_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::I2C::ping( Controller &,
@@ -152,6 +132,26 @@ TEST_P( pingControllerI2CAddressTransmittedI2COperation, worksProperly )
 
     ASSERT_EQ( ping( controller, address, test_case.operation ), test_case.response );
 }
+
+/**
+ * \brief picolibrary::I2C::ping( Controller &, picolibrary::I2C::Address_Transmitted,
+ *        picolibrary::I2C::Operation ) test cases.
+ */
+pingControllerI2CAddressTransmittedI2COperation_Test_Case const pingControllerI2CAddressTransmittedI2COperation_TEST_CASES[]{
+    // clang-format off
+
+    { Operation::READ,  Response::ACK  },
+    { Operation::READ,  Response::NACK },
+    { Operation::WRITE, Response::ACK  },
+    { Operation::WRITE, Response::NACK },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P(
+    testCases,
+    pingControllerI2CAddressTransmittedI2COperation,
+    ValuesIn( pingControllerI2CAddressTransmittedI2COperation_TEST_CASES ) );
 
 /**
  * \brief picolibrary::I2C::ping( Controller &, picolibrary::I2C::Address_Transmitted )
@@ -192,28 +192,11 @@ auto operator<<( std::ostream & stream, pingControllerI2CAddressTransmitted_Test
 
 /**
  * \brief picolibrary::I2C::ping( Controller &, picolibrary::I2C::Address_Transmitted )
- *        test cases.
- */
-pingControllerI2CAddressTransmitted_Test_Case const pingControllerI2CAddressTransmitted_TEST_CASES[]{
-    // clang-format off
-
-    { Response::ACK,  Response::ACK,  Response::ACK  },
-    { Response::ACK,  Response::NACK, Response::NACK },
-    { Response::NACK, Response::ACK,  Response::NACK },
-    { Response::NACK, Response::NACK, Response::NACK },
-
-    // clang-format on
-};
-
-/**
- * \brief picolibrary::I2C::ping( Controller &, picolibrary::I2C::Address_Transmitted )
  *        test fixture.
  */
 class pingControllerI2CAddressTransmitted :
     public TestWithParam<pingControllerI2CAddressTransmitted_Test_Case> {
 };
-
-INSTANTIATE_TEST_SUITE_P( testCases, pingControllerI2CAddressTransmitted, ValuesIn( pingControllerI2CAddressTransmitted_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::I2C::ping( Controller &,
@@ -244,6 +227,23 @@ TEST_P( pingControllerI2CAddressTransmitted, worksProperly )
 
     ASSERT_EQ( ping( controller, address ), test_case.response );
 }
+
+/**
+ * \brief picolibrary::I2C::ping( Controller &, picolibrary::I2C::Address_Transmitted )
+ *        test cases.
+ */
+pingControllerI2CAddressTransmitted_Test_Case const pingControllerI2CAddressTransmitted_TEST_CASES[]{
+    // clang-format off
+
+    { Response::ACK,  Response::ACK,  Response::ACK  },
+    { Response::ACK,  Response::NACK, Response::NACK },
+    { Response::NACK, Response::ACK,  Response::NACK },
+    { Response::NACK, Response::NACK, Response::NACK },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, pingControllerI2CAddressTransmitted, ValuesIn( pingControllerI2CAddressTransmitted_TEST_CASES ) );
 
 /**
  * \brief picolibrary::I2C::scan() devices.

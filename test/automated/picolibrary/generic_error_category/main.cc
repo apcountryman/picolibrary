@@ -59,6 +59,23 @@ auto operator<<( std::ostream & stream, errorDescription_Test_Case const & test_
 }
 
 /**
+ * \brief picolibrary::Generic_Error_Category::error_description() test fixture.
+ */
+class errorDescription : public TestWithParam<errorDescription_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::Generic_Error_Category::error_description() works properly.
+ */
+TEST_P( errorDescription, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    EXPECT_STREQ(
+        Generic_Error_Category::instance().error_description( test_case.id ), test_case.error_description );
+}
+
+/**
  * \brief picolibrary::Generic_Error_Category::error_description() test cases.
  */
 errorDescription_Test_Case const errorDescription_TEST_CASES[]{
@@ -89,24 +106,7 @@ errorDescription_Test_Case const errorDescription_TEST_CASES[]{
     // clang-format on
 };
 
-/**
- * \brief picolibrary::Generic_Error_Category::error_description() test fixture.
- */
-class errorDescription : public TestWithParam<errorDescription_Test_Case> {
-};
-
 INSTANTIATE_TEST_SUITE_P( testCases, errorDescription, ValuesIn( errorDescription_TEST_CASES ) );
-
-/**
- * \brief Verify picolibrary::Generic_Error_Category::error_description() works properly.
- */
-TEST_P( errorDescription, worksProperly )
-{
-    auto const test_case = GetParam();
-
-    EXPECT_STREQ(
-        Generic_Error_Category::instance().error_description( test_case.id ), test_case.error_description );
-}
 
 /**
  * \brief Execute the picolibrary::Generic_Error_Category automated tests.

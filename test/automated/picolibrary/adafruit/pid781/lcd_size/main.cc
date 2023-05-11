@@ -71,24 +71,10 @@ auto operator<<( std::ostream & stream, lcdSize_Test_Case const & test_case ) ->
 }
 
 /**
- * \brief picolibrary::Adafruit::PID781::LCD_Size test cases.
- */
-lcdSize_Test_Case const lcdSize_TEST_CASES[]{
-    // clang-format off
-
-    { LCD_Size::_16X2, 16, 2 },
-    { LCD_Size::_20X4, 20, 4 },
-
-    // clang-format on
-};
-
-/**
  * \brief picolibrary::Adafruit::PID781::LCD_Size test fixture.
  */
 class lcdSize : public TestWithParam<lcdSize_Test_Case> {
 };
-
-INSTANTIATE_TEST_SUITE_P( testCases, lcdSize, ValuesIn( lcdSize_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::Adafruit::PID781::columns() and
@@ -101,6 +87,20 @@ TEST_P( lcdSize, worksProperly )
     EXPECT_EQ( columns( test_case.lcd_size ), test_case.columns );
     EXPECT_EQ( rows( test_case.lcd_size ), test_case.rows );
 }
+
+/**
+ * \brief picolibrary::Adafruit::PID781::LCD_Size test cases.
+ */
+lcdSize_Test_Case const lcdSize_TEST_CASES[]{
+    // clang-format off
+
+    { LCD_Size::_16X2, 16, 2 },
+    { LCD_Size::_20X4, 20, 4 },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, lcdSize, ValuesIn( lcdSize_TEST_CASES ) );
 
 /**
  * \brief Execute the picolibrary::Adafruit::PID781::LCD_Size automated tests.

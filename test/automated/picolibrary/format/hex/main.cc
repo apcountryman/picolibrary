@@ -120,8 +120,6 @@ class outputFormatterFormatHexPrintOutputStreamI8 :
     public TestWithParam<outputFormatterFormatHexPrint_Test_Case<std::int8_t>> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintOutputStreamI8, ValuesIn( outputFormatterFormatHexPrintI8_TEST_CASES ) );
-
 /**
  * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print(
  *        picolibrary::Output_Stream &, Integer ) works properly.
@@ -141,6 +139,8 @@ TEST_P( outputFormatterFormatHexPrintOutputStreamI8, worksProperly )
     EXPECT_EQ( stream.string(), test_case.hex );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintOutputStreamI8, ValuesIn( outputFormatterFormatHexPrintI8_TEST_CASES ) );
+
 /**
  * \brief picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print(
  *        picolibrary::Reliable_Output_Stream &, Integer ) std::int8_t test fixture.
@@ -148,8 +148,6 @@ TEST_P( outputFormatterFormatHexPrintOutputStreamI8, worksProperly )
 class outputFormatterFormatHexPrintReliableOutputStreamI8 :
     public TestWithParam<outputFormatterFormatHexPrint_Test_Case<std::int8_t>> {
 };
-
-INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintReliableOutputStreamI8, ValuesIn( outputFormatterFormatHexPrintI8_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print(
@@ -168,6 +166,8 @@ TEST_P( outputFormatterFormatHexPrintReliableOutputStreamI8, worksProperly )
     EXPECT_TRUE( stream.is_nominal() );
     EXPECT_EQ( stream.string(), test_case.hex );
 }
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintReliableOutputStreamI8, ValuesIn( outputFormatterFormatHexPrintI8_TEST_CASES ) );
 
 /**
  * \brief picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print()
@@ -196,8 +196,6 @@ class outputFormatterFormatHexPrintOutputStreamU8 :
     public TestWithParam<outputFormatterFormatHexPrint_Test_Case<std::uint8_t>> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintOutputStreamU8, ValuesIn( outputFormatterFormatHexPrintU8_TEST_CASES ) );
-
 /**
  * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print(
  *        picolibrary::Output_Stream &, Integer ) works properly.
@@ -217,6 +215,8 @@ TEST_P( outputFormatterFormatHexPrintOutputStreamU8, worksProperly )
     EXPECT_EQ( stream.string(), test_case.hex );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintOutputStreamU8, ValuesIn( outputFormatterFormatHexPrintU8_TEST_CASES ) );
+
 /**
  * \brief picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print(
  *        picolibrary::Reliable_Output_Stream &, Integer ) std::uint8_t test fixture.
@@ -224,8 +224,6 @@ TEST_P( outputFormatterFormatHexPrintOutputStreamU8, worksProperly )
 class outputFormatterFormatHexPrintReliableOutputStreamU8 :
     public TestWithParam<outputFormatterFormatHexPrint_Test_Case<std::uint8_t>> {
 };
-
-INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintReliableOutputStreamU8, ValuesIn( outputFormatterFormatHexPrintU8_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print(
@@ -244,6 +242,8 @@ TEST_P( outputFormatterFormatHexPrintReliableOutputStreamU8, worksProperly )
     EXPECT_TRUE( stream.is_nominal() );
     EXPECT_EQ( stream.string(), test_case.hex );
 }
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintReliableOutputStreamU8, ValuesIn( outputFormatterFormatHexPrintU8_TEST_CASES ) );
 
 /**
  * \brief picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print()
@@ -272,8 +272,6 @@ class outputFormatterFormatHexPrintOutputStreamI16 :
     public TestWithParam<outputFormatterFormatHexPrint_Test_Case<std::int16_t>> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintOutputStreamI16, ValuesIn( outputFormatterFormatHexPrintI16_TEST_CASES ) );
-
 /**
  * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print(
  *        picolibrary::Output_Stream &, Integer ) works properly.
@@ -293,6 +291,8 @@ TEST_P( outputFormatterFormatHexPrintOutputStreamI16, worksProperly )
     EXPECT_EQ( stream.string(), test_case.hex );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintOutputStreamI16, ValuesIn( outputFormatterFormatHexPrintI16_TEST_CASES ) );
+
 /**
  * \brief picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print(
  *        picolibrary::Reliable_Output_Stream &, Integer ) std::int16_t test fixture.
@@ -300,8 +300,6 @@ TEST_P( outputFormatterFormatHexPrintOutputStreamI16, worksProperly )
 class outputFormatterFormatHexPrintReliableOutputStreamI16 :
     public TestWithParam<outputFormatterFormatHexPrint_Test_Case<std::int16_t>> {
 };
-
-INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintReliableOutputStreamI16, ValuesIn( outputFormatterFormatHexPrintI16_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print(
@@ -320,6 +318,8 @@ TEST_P( outputFormatterFormatHexPrintReliableOutputStreamI16, worksProperly )
     EXPECT_TRUE( stream.is_nominal() );
     EXPECT_EQ( stream.string(), test_case.hex );
 }
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintReliableOutputStreamI16, ValuesIn( outputFormatterFormatHexPrintI16_TEST_CASES ) );
 
 /**
  * \brief picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print()
@@ -348,8 +348,6 @@ class outputFormatterFormatHexPrintOutputStreamU16 :
     public TestWithParam<outputFormatterFormatHexPrint_Test_Case<std::uint16_t>> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintOutputStreamU16, ValuesIn( outputFormatterFormatHexPrintU16_TEST_CASES ) );
-
 /**
  * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print(
  *        picolibrary::Output_Stream &, Integer ) works properly.
@@ -369,6 +367,8 @@ TEST_P( outputFormatterFormatHexPrintOutputStreamU16, worksProperly )
     EXPECT_EQ( stream.string(), test_case.hex );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintOutputStreamU16, ValuesIn( outputFormatterFormatHexPrintU16_TEST_CASES ) );
+
 /**
  * \brief picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print(
  *        picolibrary::Reliable_Output_Stream &, Integer ) std::uint16_t test fixture.
@@ -376,8 +376,6 @@ TEST_P( outputFormatterFormatHexPrintOutputStreamU16, worksProperly )
 class outputFormatterFormatHexPrintReliableOutputStreamU16 :
     public TestWithParam<outputFormatterFormatHexPrint_Test_Case<std::uint16_t>> {
 };
-
-INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintReliableOutputStreamU16, ValuesIn( outputFormatterFormatHexPrintU16_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print(
@@ -396,6 +394,8 @@ TEST_P( outputFormatterFormatHexPrintReliableOutputStreamU16, worksProperly )
     EXPECT_TRUE( stream.is_nominal() );
     EXPECT_EQ( stream.string(), test_case.hex );
 }
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintReliableOutputStreamU16, ValuesIn( outputFormatterFormatHexPrintU16_TEST_CASES ) );
 
 /**
  * \brief picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print()
@@ -424,8 +424,6 @@ class outputFormatterFormatHexPrintOutputStreamI32 :
     public TestWithParam<outputFormatterFormatHexPrint_Test_Case<std::int32_t>> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintOutputStreamI32, ValuesIn( outputFormatterFormatHexPrintI32_TEST_CASES ) );
-
 /**
  * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print(
  *        picolibrary::Output_Stream &, Integer ) works properly.
@@ -445,6 +443,8 @@ TEST_P( outputFormatterFormatHexPrintOutputStreamI32, worksProperly )
     EXPECT_EQ( stream.string(), test_case.hex );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintOutputStreamI32, ValuesIn( outputFormatterFormatHexPrintI32_TEST_CASES ) );
+
 /**
  * \brief picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print(
  *        picolibrary::Reliable_Output_Stream &, Integer ) std::int32_t test fixture.
@@ -452,8 +452,6 @@ TEST_P( outputFormatterFormatHexPrintOutputStreamI32, worksProperly )
 class outputFormatterFormatHexPrintReliableOutputStreamI32 :
     public TestWithParam<outputFormatterFormatHexPrint_Test_Case<std::int32_t>> {
 };
-
-INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintReliableOutputStreamI32, ValuesIn( outputFormatterFormatHexPrintI32_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print(
@@ -472,6 +470,8 @@ TEST_P( outputFormatterFormatHexPrintReliableOutputStreamI32, worksProperly )
     EXPECT_TRUE( stream.is_nominal() );
     EXPECT_EQ( stream.string(), test_case.hex );
 }
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintReliableOutputStreamI32, ValuesIn( outputFormatterFormatHexPrintI32_TEST_CASES ) );
 
 /**
  * \brief picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print()
@@ -500,8 +500,6 @@ class outputFormatterFormatHexPrintOutputStreamU32 :
     public TestWithParam<outputFormatterFormatHexPrint_Test_Case<std::uint32_t>> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintOutputStreamU32, ValuesIn( outputFormatterFormatHexPrintU32_TEST_CASES ) );
-
 /**
  * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print(
  *        picolibrary::Output_Stream &, Integer ) works properly.
@@ -521,6 +519,8 @@ TEST_P( outputFormatterFormatHexPrintOutputStreamU32, worksProperly )
     EXPECT_EQ( stream.string(), test_case.hex );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintOutputStreamU32, ValuesIn( outputFormatterFormatHexPrintU32_TEST_CASES ) );
+
 /**
  * \brief picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print(
  *        picolibrary::Reliable_Output_Stream &, Integer ) std::uint32_t test fixture.
@@ -528,8 +528,6 @@ TEST_P( outputFormatterFormatHexPrintOutputStreamU32, worksProperly )
 class outputFormatterFormatHexPrintReliableOutputStreamU32 :
     public TestWithParam<outputFormatterFormatHexPrint_Test_Case<std::uint32_t>> {
 };
-
-INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintReliableOutputStreamU32, ValuesIn( outputFormatterFormatHexPrintU32_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print(
@@ -548,6 +546,8 @@ TEST_P( outputFormatterFormatHexPrintReliableOutputStreamU32, worksProperly )
     EXPECT_TRUE( stream.is_nominal() );
     EXPECT_EQ( stream.string(), test_case.hex );
 }
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintReliableOutputStreamU32, ValuesIn( outputFormatterFormatHexPrintU32_TEST_CASES ) );
 
 /**
  * \brief picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print()
@@ -576,8 +576,6 @@ class outputFormatterFormatHexPrintOutputStreamI64 :
     public TestWithParam<outputFormatterFormatHexPrint_Test_Case<std::int64_t>> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintOutputStreamI64, ValuesIn( outputFormatterFormatHexPrintI64_TEST_CASES ) );
-
 /**
  * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print(
  *        picolibrary::Output_Stream &, Integer ) works properly.
@@ -597,6 +595,8 @@ TEST_P( outputFormatterFormatHexPrintOutputStreamI64, worksProperly )
     EXPECT_EQ( stream.string(), test_case.hex );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintOutputStreamI64, ValuesIn( outputFormatterFormatHexPrintI64_TEST_CASES ) );
+
 /**
  * \brief picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print(
  *        picolibrary::Reliable_Output_Stream &, Integer ) std::int64_t test fixture.
@@ -604,8 +604,6 @@ TEST_P( outputFormatterFormatHexPrintOutputStreamI64, worksProperly )
 class outputFormatterFormatHexPrintReliableOutputStreamI64 :
     public TestWithParam<outputFormatterFormatHexPrint_Test_Case<std::int64_t>> {
 };
-
-INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintReliableOutputStreamI64, ValuesIn( outputFormatterFormatHexPrintI64_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print(
@@ -624,6 +622,8 @@ TEST_P( outputFormatterFormatHexPrintReliableOutputStreamI64, worksProperly )
     EXPECT_TRUE( stream.is_nominal() );
     EXPECT_EQ( stream.string(), test_case.hex );
 }
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintReliableOutputStreamI64, ValuesIn( outputFormatterFormatHexPrintI64_TEST_CASES ) );
 
 /**
  * \brief picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print()
@@ -652,8 +652,6 @@ class outputFormatterFormatHexPrintOutputStreamU64 :
     public TestWithParam<outputFormatterFormatHexPrint_Test_Case<std::uint64_t>> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintOutputStreamU64, ValuesIn( outputFormatterFormatHexPrintU64_TEST_CASES ) );
-
 /**
  * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print(
  *        picolibrary::Output_Stream &, Integer ) works properly.
@@ -673,6 +671,8 @@ TEST_P( outputFormatterFormatHexPrintOutputStreamU64, worksProperly )
     EXPECT_EQ( stream.string(), test_case.hex );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintOutputStreamU64, ValuesIn( outputFormatterFormatHexPrintU64_TEST_CASES ) );
+
 /**
  * \brief picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print(
  *        picolibrary::Reliable_Output_Stream &, Integer ) std::uint64_t test fixture.
@@ -680,8 +680,6 @@ TEST_P( outputFormatterFormatHexPrintOutputStreamU64, worksProperly )
 class outputFormatterFormatHexPrintReliableOutputStreamU64 :
     public TestWithParam<outputFormatterFormatHexPrint_Test_Case<std::uint64_t>> {
 };
-
-INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintReliableOutputStreamU64, ValuesIn( outputFormatterFormatHexPrintU64_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::Output_Formatter<picolibrary::Format::Hex<Integer>>::print(
@@ -700,6 +698,8 @@ TEST_P( outputFormatterFormatHexPrintReliableOutputStreamU64, worksProperly )
     EXPECT_TRUE( stream.is_nominal() );
     EXPECT_EQ( stream.string(), test_case.hex );
 }
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexPrintReliableOutputStreamU64, ValuesIn( outputFormatterFormatHexPrintU64_TEST_CASES ) );
 
 /**
  * \brief Execute the picolibrary::Format::Hex automated tests.

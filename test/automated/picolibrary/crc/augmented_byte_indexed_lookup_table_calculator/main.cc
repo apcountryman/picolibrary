@@ -48,8 +48,6 @@ class augmentedByteIndexedLookupTableCalculator8 :
     public TestWithParam<Calculator_Test_Case<std::uint8_t>> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, augmentedByteIndexedLookupTableCalculator8, ValuesIn( CALCULATOR_TEST_CASES_8 ) );
-
 /**
  * \brief Verify picolibrary::CRC::Augmented_Byte_Indexed_Lookup_Table_Calculator works
  *        properly.
@@ -64,6 +62,8 @@ TEST_P( augmentedByteIndexedLookupTableCalculator8, worksProperly )
         test_case.remainder );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, augmentedByteIndexedLookupTableCalculator8, ValuesIn( CALCULATOR_TEST_CASES_8 ) );
+
 /**
  * \brief picolibrary::CRC::Augmented_Byte_Indexed_Lookup_Table_Calculator std::uint16_t
  *        test fixture.
@@ -71,8 +71,6 @@ TEST_P( augmentedByteIndexedLookupTableCalculator8, worksProperly )
 class augmentedByteIndexedLookupTableCalculator16 :
     public TestWithParam<Calculator_Test_Case<std::uint16_t>> {
 };
-
-INSTANTIATE_TEST_SUITE_P( testCases, augmentedByteIndexedLookupTableCalculator16, ValuesIn( CALCULATOR_TEST_CASES_16 ) );
 
 /**
  * \brief Verify picolibrary::CRC::Augmented_Byte_Indexed_Lookup_Table_Calculator works
@@ -88,6 +86,8 @@ TEST_P( augmentedByteIndexedLookupTableCalculator16, worksProperly )
         test_case.remainder );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, augmentedByteIndexedLookupTableCalculator16, ValuesIn( CALCULATOR_TEST_CASES_16 ) );
+
 /**
  * \brief picolibrary::CRC::Augmented_Byte_Indexed_Lookup_Table_Calculator std::uint32_t
  *        test fixture.
@@ -95,8 +95,6 @@ TEST_P( augmentedByteIndexedLookupTableCalculator16, worksProperly )
 class augmentedByteIndexedLookupTableCalculator32 :
     public TestWithParam<Calculator_Test_Case<std::uint32_t>> {
 };
-
-INSTANTIATE_TEST_SUITE_P( testCases, augmentedByteIndexedLookupTableCalculator32, ValuesIn( CALCULATOR_TEST_CASES_32 ) );
 
 /**
  * \brief Verify picolibrary::CRC::Augmented_Byte_Indexed_Lookup_Table_Calculator works
@@ -111,6 +109,8 @@ TEST_P( augmentedByteIndexedLookupTableCalculator32, worksProperly )
             test_case.message.begin(), test_case.message.end() ),
         test_case.remainder );
 }
+
+INSTANTIATE_TEST_SUITE_P( testCases, augmentedByteIndexedLookupTableCalculator32, ValuesIn( CALCULATOR_TEST_CASES_32 ) );
 
 /**
  * \brief Execute the picolibrary::CRC::Augmented_Byte_Indexed_Lookup_Table_Calculator
