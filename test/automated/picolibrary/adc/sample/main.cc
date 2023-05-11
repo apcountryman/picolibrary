@@ -71,7 +71,7 @@ class constructorUnsignedInteger8 : public TestWithParam<std::uint_fast8_t> {
 INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger8, ValuesIn( constructorUnsignedInteger8_TEST_CASES ) );
 
 /**
- * \brief verify picolibrary::ADC::Sample::Sample(
+ * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
  */
 TEST_P( constructorUnsignedInteger8, worksProperly )
@@ -98,7 +98,7 @@ INSTANTIATE_TEST_SUITE_P(
     ValuesIn( constructorUnsignedInteger8_TEST_CASES ) );
 
 /**
- * \brief verify picolibrary::ADC::Sample::Sample(
+ * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
  *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
  */
@@ -134,7 +134,7 @@ class constructorUnsignedInteger10 : public TestWithParam<std::uint_fast16_t> {
 INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger10, ValuesIn( constructorUnsignedInteger10_TEST_CASES ) );
 
 /**
- * \brief verify picolibrary::ADC::Sample::Sample(
+ * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
  */
 TEST_P( constructorUnsignedInteger10, worksProperly )
@@ -162,7 +162,7 @@ INSTANTIATE_TEST_SUITE_P(
     ValuesIn( constructorUnsignedInteger10_TEST_CASES ) );
 
 /**
- * \brief verify picolibrary::ADC::Sample::Sample(
+ * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
  *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
  */
@@ -198,7 +198,7 @@ class constructorUnsignedInteger12 : public TestWithParam<std::uint_fast16_t> {
 INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger12, ValuesIn( constructorUnsignedInteger12_TEST_CASES ) );
 
 /**
- * \brief verify picolibrary::ADC::Sample::Sample(
+ * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
  */
 TEST_P( constructorUnsignedInteger12, worksProperly )
@@ -226,7 +226,7 @@ INSTANTIATE_TEST_SUITE_P(
     ValuesIn( constructorUnsignedInteger12_TEST_CASES ) );
 
 /**
- * \brief verify picolibrary::ADC::Sample::Sample(
+ * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
  *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
  */
@@ -262,7 +262,7 @@ class constructorUnsignedInteger14 : public TestWithParam<std::uint_fast16_t> {
 INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger14, ValuesIn( constructorUnsignedInteger14_TEST_CASES ) );
 
 /**
- * \brief verify picolibrary::ADC::Sample::Sample(
+ * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
  */
 TEST_P( constructorUnsignedInteger14, worksProperly )
@@ -290,7 +290,7 @@ INSTANTIATE_TEST_SUITE_P(
     ValuesIn( constructorUnsignedInteger14_TEST_CASES ) );
 
 /**
- * \brief verify picolibrary::ADC::Sample::Sample(
+ * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
  *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
  */
@@ -326,7 +326,7 @@ class constructorUnsignedInteger16 : public TestWithParam<std::uint_fast16_t> {
 INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger16, ValuesIn( constructorUnsignedInteger16_TEST_CASES ) );
 
 /**
- * \brief verify picolibrary::ADC::Sample::Sample(
+ * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
  */
 TEST_P( constructorUnsignedInteger16, worksProperly )
@@ -354,7 +354,7 @@ INSTANTIATE_TEST_SUITE_P(
     ValuesIn( constructorUnsignedInteger16_TEST_CASES ) );
 
 /**
- * \brief verify picolibrary::ADC::Sample::Sample(
+ * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
  *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
  */
@@ -390,7 +390,7 @@ class constructorUnsignedInteger18 : public TestWithParam<std::uint_fast32_t> {
 INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger18, ValuesIn( constructorUnsignedInteger18_TEST_CASES ) );
 
 /**
- * \brief verify picolibrary::ADC::Sample::Sample(
+ * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
  */
 TEST_P( constructorUnsignedInteger18, worksProperly )
@@ -418,7 +418,7 @@ INSTANTIATE_TEST_SUITE_P(
     ValuesIn( constructorUnsignedInteger18_TEST_CASES ) );
 
 /**
- * \brief verify picolibrary::ADC::Sample::Sample(
+ * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
  *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
  */
@@ -454,7 +454,7 @@ class constructorUnsignedInteger20 : public TestWithParam<std::uint_fast32_t> {
 INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger20, ValuesIn( constructorUnsignedInteger20_TEST_CASES ) );
 
 /**
- * \brief verify picolibrary::ADC::Sample::Sample(
+ * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
  */
 TEST_P( constructorUnsignedInteger20, worksProperly )
@@ -482,7 +482,7 @@ INSTANTIATE_TEST_SUITE_P(
     ValuesIn( constructorUnsignedInteger20_TEST_CASES ) );
 
 /**
- * \brief verify picolibrary::ADC::Sample::Sample(
+ * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
  *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
  */
@@ -518,7 +518,7 @@ class constructorUnsignedInteger24 : public TestWithParam<std::uint_fast32_t> {
 INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger24, ValuesIn( constructorUnsignedInteger24_TEST_CASES ) );
 
 /**
- * \brief verify picolibrary::ADC::Sample::Sample(
+ * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
  */
 TEST_P( constructorUnsignedInteger24, worksProperly )
@@ -546,7 +546,7 @@ INSTANTIATE_TEST_SUITE_P(
     ValuesIn( constructorUnsignedInteger24_TEST_CASES ) );
 
 /**
- * \brief verify picolibrary::ADC::Sample::Sample(
+ * \brief Verify picolibrary::ADC::Sample::Sample(
  *        picolibrary::Bypass_Precondition_Expectation_Checks,
  *        picolibrary::ADC::Sample::Unsigned_Integer ) works properly.
  */
