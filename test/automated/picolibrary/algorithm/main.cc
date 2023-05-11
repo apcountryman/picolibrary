@@ -48,6 +48,7 @@ using ::testing::MockFunction;
 using ::testing::Ref;
 using ::testing::Return;
 using ::testing::TestWithParam;
+using ::testing::Values;
 using ::testing::ValuesIn;
 
 } // namespace
@@ -199,20 +200,12 @@ TEST_P( forEachFunctorCanFailDiscardFunctor, worksProperly )
 }
 
 /**
- * \brief picolibrary::fill() test cases.
- */
-std::size_t const fill_TEST_CASES[]{
-    0,
-    5,
-};
-
-/**
  * \brief picolibrary::fill() test fixture.
  */
 class fill : public TestWithParam<std::size_t> {
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, fill, ValuesIn( fill_TEST_CASES ) );
+INSTANTIATE_TEST_SUITE_P( testCases, fill, Values<std::size_t>( 0, 5 ) );
 
 /**
  * \brief Verify picolibrary::fill() works properly.
