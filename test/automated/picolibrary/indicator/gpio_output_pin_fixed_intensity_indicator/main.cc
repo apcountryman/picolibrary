@@ -31,49 +31,115 @@ namespace {
 
 using ::picolibrary::GPIO::Initial_Pin_State;
 using ::picolibrary::Indicator::Initial_Indicator_State;
+using ::testing::TestWithParam;
+using ::testing::ValuesIn;
 
 using Indicator =
     ::picolibrary::Indicator::GPIO_Output_Pin_Fixed_Intensity_Indicator<::picolibrary::Testing::Automated::GPIO::Mock_Output_Pin>;
+
+auto as_string( Initial_Indicator_State initial_indicator_state ) -> char const *
+{
+    switch ( initial_indicator_state ) {
+        case Initial_Indicator_State::EXTINGUISHED:
+            return "Initial_Indicator_State::EXTINGUISHED";
+        case Initial_Indicator_State::ILLUMINATED:
+            return "Initial_Indicator_State::ILLUMINATED";
+        default: return "UNKNOWN";
+    } // switch
+}
+
+auto as_string( Initial_Pin_State initial_pin_state ) -> char const *
+{
+    switch ( initial_pin_state ) {
+        case Initial_Pin_State::LOW: return "Initial_Pin_State::LOW";
+        case Initial_Pin_State::HIGH: return "Initial_Pin_State::HIGH";
+        default: return "UNKNOWN";
+    } // switch
+}
 
 } // namespace
 
 /**
  * \brief Verify
  *        picolibrary::Indicator::GPIO_Output_Pin_Fixed_Intensity_Indicator::initialize()
- *        works properly.
+ *        works properly when the default argument is used.
  */
-TEST( initialize, worksProperly )
+TEST( initializeDefaultArgument, worksProperly )
 {
-    {
-        auto indicator = Indicator{};
+    auto indicator = Indicator{};
 
-        EXPECT_CALL( indicator, initialize( Initial_Pin_State::LOW ) );
+    EXPECT_CALL( indicator, initialize( Initial_Pin_State::LOW ) );
 
-        indicator.initialize();
-    }
-
-    {
-        struct {
-            Initial_Indicator_State initial_indicator_state;
-            Initial_Pin_State       initial_pin_state;
-        } const test_cases[]{
-            // clang-format off
-
-            { Initial_Indicator_State::EXTINGUISHED, Initial_Pin_State::LOW  },
-            { Initial_Indicator_State::ILLUMINATED,  Initial_Pin_State::HIGH },
-
-            // clang-format on
-        };
-
-        for ( auto const test_case : test_cases ) {
-            auto indicator = Indicator{};
-
-            EXPECT_CALL( indicator, initialize( test_case.initial_pin_state ) );
-
-            indicator.initialize( test_case.initial_indicator_state );
-        } // for
-    }
+    indicator.initialize();
 }
+
+/**
+ * \brief picolibrary::Indicator::GPIO_Output_Pin_Fixed_Intensity_Indicator::initialize()
+ *        non-default argument test case.
+ */
+struct initializeNonDefaultArgument_Test_Case {
+    /**
+     * \brief The initial indicator state.
+     */
+    Initial_Indicator_State initial_indicator_state;
+
+    /**
+     * \brief The initial pin state.
+     */
+    Initial_Pin_State initial_pin_state;
+};
+
+auto operator<<( std::ostream & stream, initializeNonDefaultArgument_Test_Case const & test_case )
+    -> std::ostream &
+{
+    // clang-format off
+
+    return stream << "{ "
+                  << ".initial_indicator_state = " << as_string( test_case.initial_indicator_state )
+                  << ", "
+                  << ".initial_pin_state = " << as_string( test_case.initial_pin_state )
+                  << " }";
+
+    // clang-format on
+}
+
+/**
+ * \brief picolibrary::Indicator::GPIO_Output_Pin_Fixed_Intensity_Indicator::initialize()
+ *        non-default argument test case.
+ */
+class initializeNonDefaultArgument : public TestWithParam<initializeNonDefaultArgument_Test_Case> {
+};
+
+/**
+ * \brief Verify
+ *        picolibrary::Indicator::GPIO_Output_Pin_Fixed_Intensity_Indicator::initialize()
+ *        works properly when a non-default argument is used.
+ */
+TEST_P( initializeNonDefaultArgument, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    auto indicator = Indicator{};
+
+    EXPECT_CALL( indicator, initialize( test_case.initial_pin_state ) );
+
+    indicator.initialize( test_case.initial_indicator_state );
+}
+
+/**
+ * \brief picolibrary::Indicator::GPIO_Output_Pin_Fixed_Intensity_Indicator::initialize()
+ *        non-default argument test case.
+ */
+initializeNonDefaultArgument_Test_Case const initializeNonDefaultArgument_TEST_CASES[]{
+    // clang-format off
+
+    { Initial_Indicator_State::EXTINGUISHED, Initial_Pin_State::LOW  },
+    { Initial_Indicator_State::ILLUMINATED,  Initial_Pin_State::HIGH },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, initializeNonDefaultArgument, ValuesIn( initializeNonDefaultArgument_TEST_CASES ) );
 
 /**
  * \brief Verify
