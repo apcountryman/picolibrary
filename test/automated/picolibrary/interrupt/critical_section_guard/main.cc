@@ -24,46 +24,48 @@
 #include "gtest/gtest.h"
 #include "picolibrary/interrupt.h"
 #include "picolibrary/testing/automated/interrupt.h"
-#include "picolibrary/testing/automated/random.h"
 
 namespace {
 
 using ::picolibrary::Interrupt::Critical_Section_Guard;
 using ::picolibrary::Interrupt::ENABLE_INTERRUPT;
 using ::picolibrary::Interrupt::RESTORE_INTERRUPT_ENABLE_STATE;
-using ::picolibrary::Testing::Automated::random;
 using ::picolibrary::Testing::Automated::Interrupt::Mock_Controller;
 using ::testing::Return;
 
 } // namespace
 
 /**
- * \brief Verify picolibrary::Interrupt::Critical_Section_Guard works properly.
+ * \brief Verify picolibrary::Interrupt::Critical_Section_Guard works properly when
+ *        Exit_Action is picolibrary::Interrupt::Restore_Interrupt_Enable_State.
  */
-TEST( criticalSectionGuard, worksProperly )
+TEST( criticalSectionGuard, worksProperlyRestoreInterruptEnableState )
 {
-    {
-        auto controller = Mock_Controller{};
+    auto controller = Mock_Controller{};
 
-        auto const interrupt_enable_state = random<Mock_Controller::Interrupt_Enable_State>();
+    auto const interrupt_enable_state = Mock_Controller::Interrupt_Enable_State{ 0xEA };
 
-        EXPECT_CALL( controller, save_interrupt_enable_state() ).WillOnce( Return( interrupt_enable_state ) );
-        EXPECT_CALL( controller, disable_interrupt() );
+    EXPECT_CALL( controller, save_interrupt_enable_state() ).WillOnce( Return( interrupt_enable_state ) );
+    EXPECT_CALL( controller, disable_interrupt() );
 
-        auto const guard = Critical_Section_Guard{ controller, RESTORE_INTERRUPT_ENABLE_STATE };
+    auto const guard = Critical_Section_Guard{ controller, RESTORE_INTERRUPT_ENABLE_STATE };
 
-        EXPECT_CALL( controller, restore_interrupt_enable_state( interrupt_enable_state ) );
-    }
+    EXPECT_CALL( controller, restore_interrupt_enable_state( interrupt_enable_state ) );
+}
 
-    {
-        auto controller = Mock_Controller{};
+/**
+ * \brief Verify picolibrary::Interrupt::Critical_Section_Guard works properly when
+ *        Exit_Action is picolibrary::Interrupt::Enable_Interrupt.
+ */
+TEST( criticalSectionGuard, worksProperlyEnableInterrupt )
+{
+    auto controller = Mock_Controller{};
 
-        EXPECT_CALL( controller, disable_interrupt() );
+    EXPECT_CALL( controller, disable_interrupt() );
 
-        auto const guard = Critical_Section_Guard{ controller, ENABLE_INTERRUPT };
+    auto const guard = Critical_Section_Guard{ controller, ENABLE_INTERRUPT };
 
-        EXPECT_CALL( controller, enable_interrupt() );
-    }
+    EXPECT_CALL( controller, enable_interrupt() );
 }
 
 /**
