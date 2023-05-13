@@ -21,6 +21,8 @@
  *        program.
  */
 
+#include <ostream>
+
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/gpio.h"
@@ -128,7 +130,7 @@ TEST_P( initializeNonDefaultArgument, worksProperly )
 
 /**
  * \brief picolibrary::Indicator::GPIO_Output_Pin_Fixed_Intensity_Indicator::initialize()
- *        non-default argument test case.
+ *        non-default argument test cases.
  */
 initializeNonDefaultArgument_Test_Case const initializeNonDefaultArgument_TEST_CASES[]{
     // clang-format off
