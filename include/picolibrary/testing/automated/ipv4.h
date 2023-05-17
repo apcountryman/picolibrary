@@ -23,8 +23,31 @@
 #ifndef PICOLIBRARY_TESTING_AUTOMATED_IPV4_H
 #define PICOLIBRARY_TESTING_AUTOMATED_IPV4_H
 
+#include <cstdint>
+#include <ostream>
+
 #include "picolibrary/ipv4.h"
 #include "picolibrary/testing/automated/random.h"
+
+namespace picolibrary::IPv4 {
+
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the picolibrary::IPv4::Address to.
+ * \param[in] address The picolibrary::IPv4::Address to write to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Address const & address ) -> std::ostream &
+{
+    return stream << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 0 ] ) << '.'
+                  << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 1 ] ) << '.'
+                  << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 2 ] ) << '.'
+                  << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 3 ] );
+}
+
+} // namespace picolibrary::IPv4
 
 namespace picolibrary::Testing::Automated {
 
