@@ -23,10 +23,41 @@
 #ifndef PICOLIBRARY_TESTING_AUTOMATED_IP_H
 #define PICOLIBRARY_TESTING_AUTOMATED_IP_H
 
+#include <ostream>
+
 #include "picolibrary/ip.h"
 #include "picolibrary/ipv4.h"
 #include "picolibrary/testing/automated/ipv4.h"
 #include "picolibrary/testing/automated/random.h"
+
+namespace picolibrary::IP {
+
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the picolibrary::IP::Address to.
+ * \param[in] address The picolibrary::IP::Address to write to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Address const & address ) -> std::ostream &
+{
+    if ( address.is_any() ) {
+        switch ( address.version() ) {
+            case Version::UNSPECIFIED: return stream << "ANY (unspecified)";
+            case Version::_4: return stream << "ANY (IPv4)";
+        } // switch
+
+        return stream;
+    } // if
+
+    switch ( address.version() ) {
+        case Version::_4: return stream << address.ipv4();
+        default: return stream;
+    } // if
+}
+
+} // namespace picolibrary::IP
 
 namespace picolibrary::Testing::Automated {
 
