@@ -209,7 +209,7 @@ TEST( constructorMove, worksProperlySourceIPv4Address )
  * \brief Verify picolibrary::IP::Address::Address( picolibrary::IP::Address const & )
  *        works properly when the original to copy was default constructed.
  */
-TEST( constructorCopy, worksProperlySourceDefaultConstructed )
+TEST( constructorCopy, worksProperlyOriginalDefaultConstructed )
 {
     auto const original = Address{};
 
@@ -224,7 +224,7 @@ TEST( constructorCopy, worksProperlySourceDefaultConstructed )
  * \brief Verify picolibrary::IP::Address::Address( picolibrary::IP::Address const & )
  *        works properly when the original to copy was constructed from an IPv4 address.
  */
-TEST( constructorCopy, worksProperlySourceIPv4Address )
+TEST( constructorCopy, worksProperlyOriginalIPv4Address )
 {
     auto const ipv4_address = IPv4_Address{ { 208, 141, 112, 90 } };
 
@@ -872,8 +872,7 @@ class outputFormatterIPAddressPrintOutputStream :
 
 /**
  * \brief Verify picolibrary::Output_Formatter<picolibrary::IP::Address>::print(
- *        picolibrary::Output_Stream &, picolibrary::IP::Address const & ) properly
- *        handles a put error.
+ *        picolibrary::Output_Stream &, picolibrary::IP::Address const & ) works properly.
  */
 TEST_P( outputFormatterIPAddressPrintOutputStream, worksProperly )
 {
@@ -894,7 +893,8 @@ INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterIPAddressPrintOutputStream, 
 
 /**
  * \brief picolibrary::Output_Formatter<picolibrary::IP::Address>::print(
- *        picolibrary::Output_Stream &, picolibrary::IP::Address const & ) test fixture.
+ *        picolibrary::Reliable_Output_Stream &, picolibrary::IP::Address const & ) test
+ *        fixture.
  */
 class outputFormatterIPAddressPrintReliableOutputStream :
     public TestWithParam<outputFormatterIPAddressPrint_Test_Case> {
@@ -902,8 +902,8 @@ class outputFormatterIPAddressPrintReliableOutputStream :
 
 /**
  * \brief Verify picolibrary::Output_Formatter<picolibrary::IP::Address>::print(
- *        picolibrary::Output_Stream &, picolibrary::IP::Address const & ) properly
- *        handles a put error.
+ *        picolibrary::Reliable_Output_Stream &, picolibrary::IP::Address const & ) works
+ *        properly.
  */
 TEST_P( outputFormatterIPAddressPrintReliableOutputStream, worksProperly )
 {
