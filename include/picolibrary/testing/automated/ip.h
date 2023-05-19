@@ -24,6 +24,7 @@
 #define PICOLIBRARY_TESTING_AUTOMATED_IP_H
 
 #include <ostream>
+#include <stdexcept>
 
 #include "picolibrary/ip.h"
 #include "picolibrary/ipv4.h"
@@ -48,13 +49,19 @@ inline auto operator<<( std::ostream & stream, Address const & address ) -> std:
             case Version::_4: return stream << "ANY (IPv4)";
         } // switch
 
-        return stream;
+        throw std::invalid_argument{
+            "address.version() is not a valid ::picolibrary::IP::Version"
+        };
     } // if
 
     switch ( address.version() ) {
+        case Version::UNSPECIFIED: return stream;
         case Version::_4: return stream << address.ipv4();
-        default: return stream;
     } // if
+
+    throw std::invalid_argument{
+        "address.version() is not a valid ::picolibrary::IP::Version"
+    };
 }
 
 } // namespace picolibrary::IP
