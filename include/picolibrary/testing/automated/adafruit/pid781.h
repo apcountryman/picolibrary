@@ -56,7 +56,7 @@ inline auto operator<<( std::ostream & stream, Bit_Rate bit_rate ) -> std::ostre
             // clang-format on
     } // switch
 
-    throw std::invalid_argument{ "invalid ::picolibrary::Adafruit::PID781::Bit_Rate" };
+    throw std::invalid_argument{ "bit_rate is not a valid ::picolibrary::Adafruit::PID781::Bit_Rate" };
 }
 
 } // namespace picolibrary::Adafruit::PID781
