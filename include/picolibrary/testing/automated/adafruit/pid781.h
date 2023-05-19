@@ -61,6 +61,30 @@ inline auto operator<<( std::ostream & stream, Bit_Rate bit_rate ) -> std::ostre
     };
 }
 
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the picolibrary::Adafruit::PID781::LCD_Size to.
+ * \param[in] stream The picolibrary::Adafruit::PID781::LCD_Size to write to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, LCD_Size lcd_size ) -> std::ostream &
+{
+    switch ( lcd_size ) {
+            // clang-format off
+
+        case LCD_Size::_16X2: return stream << "::picolibrary::Adafruit::PID781::LCD_Size::_16X2";
+        case LCD_Size::_20X4: return stream << "::picolibrary::Adafruit::PID781::LCD_Size::_20X4";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{
+        "lcd_size is not a valid ::picolibrary::Adafruit::PID781::LCD_Size"
+    };
+}
+
 } // namespace picolibrary::Adafruit::PID781
 
 /**
