@@ -160,7 +160,7 @@ INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexDumpPrintOutputStre
 /**
  * \brief picolibrary::Output_Formatter<picolibrary::Format::Hex_Dump<Iterator>>::print(
  *        picolibrary::Reliable_Output_Stream &, picolibrary::Format::Hex_Dump<Iterator>
- *        const &) test fixture.
+ *        const & ) test fixture.
  */
 class outputFormatterFormatHexDumpPrintReliableOutputStream :
     public TestWithParam<outputFormatterFormatHexDumpPrint_Test_Case> {
@@ -170,7 +170,7 @@ class outputFormatterFormatHexDumpPrintReliableOutputStream :
  * \brief Verify
  *        picolibrary::Output_Formatter<picolibrary::Format::Hex_Dump<Iterator>>::print(
  *        picolibrary::Reliable_Output_Stream &, picolibrary::Format::Hex_Dump<Iterator>
- *        const &) works properly.
+ *        const & ) works properly.
  */
 TEST_P( outputFormatterFormatHexDumpPrintReliableOutputStream, worksProperly )
 {
