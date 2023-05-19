@@ -26,6 +26,7 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/adafruit/pid781.h"
+#include "picolibrary/testing/automated/adafruit/pid781.h"
 
 namespace {
 
@@ -62,6 +63,8 @@ auto operator<<( std::ostream & stream, lcdSize_Test_Case const & test_case ) ->
     // clang-format off
 
     return stream << "{ "
+                  << ".lcd_size = " << test_case.lcd_size
+                  << ", "
                   << ".columns = " << static_cast<std::uint_fast16_t>( test_case.columns )
                   << ", "
                   << ".rows = " << static_cast<std::uint_fast16_t>( test_case.rows )
