@@ -24,6 +24,7 @@
 #define PICOLIBRARY_TESTING_AUTOMATED_ADAFRUIT_PID781_H
 
 #include <ostream>
+#include <stdexcept>
 
 #include "picolibrary/adafruit/pid781.h"
 
@@ -55,7 +56,7 @@ inline auto operator<<( std::ostream & stream, Bit_Rate bit_rate ) -> std::ostre
             // clang-format on
     } // switch
 
-    return stream << "UNKNOWN";
+    throw std::invalid_argument{ "invalid ::picolibrary::Adafruit::PID781::Bit_Rate" };
 }
 
 } // namespace picolibrary::Adafruit::PID781
