@@ -45,7 +45,8 @@ using ::testing::ValuesIn;
 } // namespace
 
 /**
- * \brief Verify picolibrary::Output_Formatter<Hex_Dump<Iterator>>::print(
+ * \brief Verify
+ *        picolibrary::Output_Formatter<picolibrary::Format::Hex_Dump<Iterator>>::print(
  *        picolibrary::Output_Stream &, picolibrary::Format::Hex_Dump<Iterator> const & )
  *        properly handles a put error.
  */
@@ -70,7 +71,8 @@ TEST( outputFormatterFormatHexDumpPrintOutputStreamErrorHandling, putError )
 }
 
 /**
- * \brief picolibrary::Output_Formatter<Hex_Dump<Iterator>>::print() test case.
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Hex_Dump<Iterator>>::print()
+ *        test case.
  */
 struct outputFormatterFormatHexDumpPrint_Test_Case {
     /**
@@ -91,7 +93,8 @@ auto operator<<( std::ostream & stream, outputFormatterFormatHexDumpPrint_Test_C
 }
 
 /**
- * \brief picolibrary::Output_Formatter<Hex_Dump<Iterator>>::print() test cases.
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Hex_Dump<Iterator>>::print()
+ *        test cases.
  */
 outputFormatterFormatHexDumpPrint_Test_Case const outputFormatterFormatHexDumpPrint_TEST_CASES[]{
     // clang-format off
@@ -123,7 +126,7 @@ outputFormatterFormatHexDumpPrint_Test_Case const outputFormatterFormatHexDumpPr
 };
 
 /**
- * \brief picolibrary::Output_Formatter<Hex_Dump<Iterator>>::print(
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Hex_Dump<Iterator>>::print(
  *        picolibrary::Output_Stream &, picolibrary::Format::Hex_Dump<Iterator> const & )
  *        test fixture.
  */
@@ -132,7 +135,8 @@ class outputFormatterFormatHexDumpPrintOutputStream :
 };
 
 /**
- * \brief Verify picolibrary::Output_Formatter<Hex_Dump<Iterator>>::print(
+ * \brief Verify
+ *        picolibrary::Output_Formatter<picolibrary::Format::Hex_Dump<Iterator>>::print(
  *        picolibrary::Output_Stream &, picolibrary::Format::Hex_Dump<Iterator> const & )
  *        works properly.
  */
@@ -154,7 +158,7 @@ TEST_P( outputFormatterFormatHexDumpPrintOutputStream, worksProperly )
 INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterFormatHexDumpPrintOutputStream, ValuesIn( outputFormatterFormatHexDumpPrint_TEST_CASES ) );
 
 /**
- * \brief picolibrary::Output_Formatter<Hex_Dump<Iterator>>::print(
+ * \brief picolibrary::Output_Formatter<picolibrary::Format::Hex_Dump<Iterator>>::print(
  *        picolibrary::Reliable_Output_Stream &, picolibrary::Format::Hex_Dump<Iterator>
  *        const & ) test fixture.
  */
@@ -163,7 +167,8 @@ class outputFormatterFormatHexDumpPrintReliableOutputStream :
 };
 
 /**
- * \brief Verify picolibrary::Output_Formatter<Hex_Dump<Iterator>>::print(
+ * \brief Verify
+ *        picolibrary::Output_Formatter<picolibrary::Format::Hex_Dump<Iterator>>::print(
  *        picolibrary::Reliable_Output_Stream &, picolibrary::Format::Hex_Dump<Iterator>
  *        const & ) works properly.
  */
