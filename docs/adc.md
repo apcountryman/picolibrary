@@ -25,6 +25,12 @@ The `::picolibrary::ADC::Sample` template class is used to store ADC samples.
 [`test/automated/picolibrary/adc/sample/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/adc/sample/main.cc)
 source file.
 
+A `std::ostream` insertion operator is defined for `::picolibrary::ADC::Sample` if the
+`PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration option is `ON`.
+The insertion operator is defined in the
+[`include/picolibrary/testing/automated/adc.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/adc.h)/[`source/picolibrary/testing/automated/adc.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/adc.cc)
+header/source file pair.
+
 `::picolibrary::Testing::Automated::random()` specializations for several
 `::picolibrary::ADC::Sample` types are available if the
 `PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration option is `ON`.
