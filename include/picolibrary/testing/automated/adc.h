@@ -24,11 +24,34 @@
 #define PICOLIBRARY_TESTING_AUTOMATED_ADC_H
 
 #include <cstdint>
+#include <limits>
+#include <ostream>
 
 #include "gmock/gmock.h"
 #include "picolibrary/adc.h"
 #include "picolibrary/testing/automated/mock_handle.h"
 #include "picolibrary/testing/automated/random.h"
+
+namespace picolibrary::ADC {
+
+/**
+ * \brief Insertion operator.
+ *
+ * \tparam T The sample unsigned integer representation.
+ * \tparam N The number of bits in the sample.
+ *
+ * \param[in] stream The stream to write the picolibrary::ADC::Sample to.
+ * \param[in] sample The picolibrary::ADC::Sample to write to the stream.
+ */
+template<typename T, std::uint_fast8_t N>
+auto operator<<( std::ostream & stream, Sample<T, N> sample ) -> std::ostream &
+{
+    static_assert( N <= std::numeric_limits<std::uint_fast32_t>::digits );
+
+    return stream << static_cast<std::uint_fast32_t>( sample.as_unsigned_integer() );
+}
+
+} // namespace picolibrary::ADC
 
 namespace picolibrary::Testing::Automated {
 
