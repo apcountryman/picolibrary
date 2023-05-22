@@ -20,6 +20,7 @@
  * \brief picolibrary::Generic_Error_Category automated test program.
  */
 
+#include <cstdint>
 #include <ostream>
 
 #include "gmock/gmock.h"
@@ -55,7 +56,15 @@ struct errorDescription_Test_Case {
 
 auto operator<<( std::ostream & stream, errorDescription_Test_Case const & test_case ) -> std::ostream &
 {
-    return stream << test_case.error_description;
+    // clang-format off
+
+    return stream << "{ "
+                  << ".id = " << static_cast<std::uint_fast16_t>( test_case.id )
+                  << ", "
+                  << ".error_description = " << test_case.error_description
+                  << " }";
+
+    // clang-format on
 }
 
 /**
