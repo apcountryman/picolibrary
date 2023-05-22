@@ -64,6 +64,12 @@ and
 [`test/automated/picolibrary/generic_error_category/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/generic_error_category/main.cc)
 source files.
 
+A `std::ostream` insertion operator is defined for `::picolibrary::Generic_Error` if the
+`PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration option is `ON`.
+The insertion operator is defined in the
+[`include/picolibrary/testing/automated/error.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/error.h)/[`source/picolibrary/testing/automated/error.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/error.cc)
+header/source file pair.
+
 The mock error set is available if the `PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project
 configuration option is `ON`.
 The mock error set is defined in the

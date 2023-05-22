@@ -23,12 +23,59 @@
 #ifndef PICOLIBRARY_TESTING_AUTOMATED_ERROR_H
 #define PICOLIBRARY_TESTING_AUTOMATED_ERROR_H
 
+#include <ostream>
+#include <stdexcept>
 #include <type_traits>
 
 #include "gmock/gmock.h"
 #include "picolibrary/error.h"
 #include "picolibrary/testing/automated/random.h"
 #include "picolibrary/utility.h"
+
+namespace picolibrary {
+
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the picolibrary::Generic_Error to.
+ * \param[in] generic_error The picolibrary::Generic_Error to write to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Generic_Error generic_error ) -> std::ostream &
+{
+    switch ( generic_error ) {
+            // clang-format off
+
+        case Generic_Error::ARBITRATION_LOST:                 return stream << "::picolibrary::Generic_Error::ARBITRATION_LOST";
+        case Generic_Error::BUS_ERROR:                        return stream << "::picolibrary::Generic_Error::BUS_ERROR";
+        case Generic_Error::ENDPOINT_IN_USE:                  return stream << "::picolibrary::Generic_Error::ENDPOINT_IN_USE";
+        case Generic_Error::EPHEMERAL_PORTS_EXHAUSTED:        return stream << "::picolibrary::Generic_Error::EPHEMERAL_PORTS_EXHAUSTED";
+        case Generic_Error::INSUFFICIENT_CAPACITY:            return stream << "::picolibrary::Generic_Error::INSUFFICIENT_CAPACITY";
+        case Generic_Error::INSUFFICIENT_SOCKETS_AVAILABLE:   return stream << "::picolibrary::Generic_Error::INSUFFICIENT_SOCKETS_AVAILABLE";
+        case Generic_Error::INVALID_ARGUMENT:                 return stream << "::picolibrary::Generic_Error::INVALID_ARGUMENT";
+        case Generic_Error::IO_STREAM_DEGRADED:               return stream << "::picolibrary::Generic_Error::IO_STREAM_DEGRADED";
+        case Generic_Error::LOGIC_ERROR:                      return stream << "::picolibrary::Generic_Error::LOGIC_ERROR";
+        case Generic_Error::NONRESPONSIVE_DEVICE:             return stream << "::picolibrary::Generic_Error::NONRESPONSIVE_DEVICE";
+        case Generic_Error::NOT_CONNECTED:                    return stream << "::picolibrary::Generic_Error::NOT_CONNECTED";
+        case Generic_Error::NO_SOCKETS_AVAILABLE:             return stream << "::picolibrary::Generic_Error::NO_SOCKETS_AVAILABLE";
+        case Generic_Error::OPERATION_TIMEOUT:                return stream << "::picolibrary::Generic_Error::OPERATION_TIMEOUT";
+        case Generic_Error::OUT_OF_RANGE:                     return stream << "::picolibrary::Generic_Error::OUT_OF_RANGE";
+        case Generic_Error::RUNTIME_ERROR:                    return stream << "::picolibrary::Generic_Error::RUNTIME_ERROR";
+        case Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT: return stream << "::picolibrary::Generic_Error::UNEXPECTED_EVENT_HANDLING_RESULT";
+        case Generic_Error::WOULD_BLOCK:                      return stream << "::picolibrary::Generic_Error::WOULD_BLOCK";
+        case Generic_Error::WOULD_OVERFLOW:                   return stream << "::picolibrary::Generic_Error::WOULD_OVERFLOW";
+        case Generic_Error::WOULD_UNDERFLOW:                  return stream << "::picolibrary::Generic_Error::WOULD_UNDERFLOW";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{
+        "generic_error is not a valid ::picolibrary::Generic_Error"
+    };
+}
+
+} // namespace picolibrary
 
 namespace picolibrary::Testing::Automated {
 
