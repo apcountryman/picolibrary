@@ -44,6 +44,8 @@ namespace picolibrary {
  */
 inline auto operator<<( std::ostream & stream, Generic_Error generic_error ) -> std::ostream &
 {
+    // #lizard forgives the length
+
     switch ( generic_error ) {
             // clang-format off
 
