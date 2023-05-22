@@ -28,6 +28,7 @@
 #include "gtest/gtest.h"
 #include "picolibrary/adc.h"
 #include "picolibrary/precondition.h"
+#include "picolibrary/testing/automated/adc.h"
 
 namespace {
 
@@ -593,9 +594,9 @@ auto operator<<( std::ostream & stream, comparisonOperator_Test_Case const & tes
     // clang-format off
 
     return stream << "{ "
-                  << ".lhs = " << test_case.lhs.as_unsigned_integer()
+                  << ".lhs = " << test_case.lhs
                   << ", "
-                  << ".rhs = " << test_case.rhs.as_unsigned_integer()
+                  << ".rhs = " << test_case.rhs
                   << ", "
                   << ".comparison_result = " << std::boolalpha << test_case.comparison_result
                   << " }";
