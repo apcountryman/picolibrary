@@ -34,7 +34,7 @@ namespace picolibrary::Adafruit::PID781 {
  * \brief Insertion operator.
  *
  * \param[in] stream The stream to write the picolibrary::Adafruit::PID781::Bit_Rate to.
- * \param[in] stream The picolibrary::Adafruit::PID781::Bit_Rate to write to the stream.
+ * \param[in] bit_rate The picolibrary::Adafruit::PID781::Bit_Rate to write to the stream.
  *
  * \return stream
  */
