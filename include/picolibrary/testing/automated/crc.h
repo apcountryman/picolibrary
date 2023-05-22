@@ -114,17 +114,8 @@ auto operator<<( std::ostream & stream, Calculator_Test_Case<Register> const & t
     // clang-format off
 
     return stream << "{ "
-                  << ".calculation_parameters = { "
-                  << ".polynomial = 0x" << std::hex << std::uppercase << std::setw( std::numeric_limits<Register>::digits / 4 ) << std::setfill( '0' ) << static_cast<std::uint_fast64_t>( test_case.calculation_parameters.polynomial )
+                  << ".calculation_parameters = " << test_case.calculation_parameters
                   << ", "
-                  << ".initial_remainder = 0x" << std::hex << std::uppercase << std::setw( std::numeric_limits<Register>::digits / 4 ) << std::setfill( '0' ) << static_cast<std::uint_fast64_t>( test_case.calculation_parameters.initial_remainder )
-                  << ", "
-                  << ".input_is_reflected = " << std::boolalpha << test_case.calculation_parameters.input_is_reflected
-                  << ", "
-                  << ".output_is_reflected = " << std::boolalpha << test_case.calculation_parameters.output_is_reflected
-                  << ", "
-                  << ".xor_output = 0x" << std::hex << std::uppercase << std::setw( std::numeric_limits<Register>::digits / 4 ) << std::setfill( '0' ) << static_cast<std::uint_fast64_t>( test_case.calculation_parameters.xor_output )
-                  << " }, "
                   << ".message = \"" << test_case.message << "\""
                   << ", "
                   << ".remainder = 0x" << std::hex << std::uppercase << std::setw( std::numeric_limits<Register>::digits / 4 ) << std::setfill( '0' ) << static_cast<std::uint_fast64_t>( test_case.remainder )
