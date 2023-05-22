@@ -33,6 +33,42 @@
 
 #include "picolibrary/crc.h"
 
+namespace picolibrary::CRC {
+
+/**
+ * \brief Insertion operator.
+ *
+ * \tparam Register Calculation register type.
+ *
+ * \param[in] stream The stream to write the picolibrary::CRC::Calculation_Parameters to.
+ * \param[in] calculation_parameters The picolibrary::CRC::Calculation_Parameters to write
+ *            to the stream.
+ *
+ * \return stream
+ */
+template<typename Register>
+auto operator<<( std::ostream & stream, Calculation_Parameters<Register> const & calculation_parameters )
+    -> std::ostream &
+{
+    // clang-format off
+
+    return stream << "{ "
+                  << ".polynomial = 0x" << std::hex << std::uppercase << std::setw( std::numeric_limits<Register>::digits / 4 ) << std::setfill( '0' ) << static_cast<std::uint_fast64_t>( calculation_parameters.polynomial )
+                  << ", "
+                  << ".initial_remainder = 0x" << std::hex << std::uppercase << std::setw( std::numeric_limits<Register>::digits / 4 ) << std::setfill( '0' ) << static_cast<std::uint_fast64_t>( calculation_parameters.initial_remainder )
+                  << ", "
+                  << ".input_is_reflected = " << std::boolalpha << calculation_parameters.input_is_reflected
+                  << ", "
+                  << ".output_is_reflected = " << std::boolalpha << calculation_parameters.output_is_reflected
+                  << ", "
+                  << ".xor_output = 0x" << std::hex << std::uppercase << std::setw( std::numeric_limits<Register>::digits / 4 ) << std::setfill( '0' ) << static_cast<std::uint_fast64_t>( calculation_parameters.xor_output )
+                  << " }";
+
+    // clang-format on
+}
+
+} // namespace picolibrary::CRC
+
 /**
  * \brief CRC automated testing facilities.
  */

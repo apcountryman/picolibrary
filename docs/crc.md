@@ -11,6 +11,13 @@ header/source file pair.
 The `::picolibrary::CRC::Calculation_Parameters` struct captures a CRC calculation's
 parameters.
 
+A `std::ostream` insertion operator is defined for
+`::picolibrary::CRC::Calculation_Parameters` if the `PICOLIBRARY_ENABLE_AUTOMATED_TESTING`
+project configuration option is `ON`.
+The insertion operator is defined in the
+[`include/picolibrary/testing/automated/crc.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/crc.h)/[`source/picolibrary/testing/automated/crc.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/crc.cc)
+header/source file pair.
+
 The `::picolibrary::CRC::Calculator_Concept` defines the expected interface of a CRC
 calculator implementation.
 - To calculate the remainder for a message, use a CRC calculator implementation's
