@@ -65,7 +65,7 @@ inline auto operator<<( std::ostream & stream, Bit_Rate bit_rate ) -> std::ostre
  * \brief Insertion operator.
  *
  * \param[in] stream The stream to write the picolibrary::Adafruit::PID781::LCD_Size to.
- * \param[in] stream The picolibrary::Adafruit::PID781::LCD_Size to write to the stream.
+ * \param[in] lcd_size The picolibrary::Adafruit::PID781::LCD_Size to write to the stream.
  *
  * \return stream
  */
