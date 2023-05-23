@@ -24,6 +24,8 @@
 #define PICOLIBRARY_TESTING_AUTOMATED_EVENT_H
 
 #include <cstddef>
+#include <ostream>
+#include <typeinfo>
 
 #include "gmock/gmock.h"
 #include "picolibrary/event.h"
@@ -87,8 +89,44 @@ class Mock_Event : public Event {
     MOCK_METHOD( (Result<std::size_t>), print_details, (Output_Stream &), ( const, noexcept, override ) );
 
     MOCK_METHOD( std::size_t, print_details, (Reliable_Output_Stream &), ( const, noexcept, override ) );
+
+    void print_details( std::ostream & stream ) const override
+    {
+        static_cast<void>( stream );
+    }
 };
 
 } // namespace picolibrary::Testing::Automated
+
+namespace picolibrary {
+
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the picolibrary::Event to.
+ * \param[in] event The picolibrary::Event to write to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Event const & event ) -> std::ostream &
+{
+    if ( &event.category() == &Testing::Automated::Mock_Event_Category::instance() ) {
+        return stream << "::picolibrary::Testing::Automated::Mock_Event::"
+                      << static_cast<std::uint_fast16_t>( event.id() );
+    } // if
+
+    if ( typeid( event.category() ) == typeid( Testing::Automated::Mock_Event_Category ) ) {
+        return stream << "::picolibrary::Testing::Automated::Mock_Event( " << &event.category()
+                      << " )::" << static_cast<std::uint_fast16_t>( event.id() );
+    } // if
+
+    stream << event.category().name() << "::" << event.description();
+
+    event.print_details( stream );
+
+    return stream;
+}
+
+} // namespace picolibrary
 
 #endif // PICOLIBRARY_TESTING_AUTOMATED_EVENT_H
