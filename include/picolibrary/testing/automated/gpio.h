@@ -23,9 +23,42 @@
 #ifndef PICOLIBRARY_TESTING_AUTOMATED_GPIO_H
 #define PICOLIBRARY_TESTING_AUTOMATED_GPIO_H
 
+#include <ostream>
+#include <stdexcept>
+
 #include "gmock/gmock.h"
 #include "picolibrary/gpio.h"
 #include "picolibrary/testing/automated/mock_handle.h"
+
+namespace picolibrary::GPIO {
+
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the picolibrary::GPIO::Initial_Pull_Up_State to.
+ * \param[in] initial_pull_up_state The picolibrary::GPIO::Initial_Pull_Up_State to write
+ *            to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Initial_Pull_Up_State initial_pull_up_state )
+    -> std::ostream &
+{
+    switch ( initial_pull_up_state ) {
+            // clang-format off
+
+        case Initial_Pull_Up_State::DISABLED: return stream << "::picolibrary::GPIO::Initial_Pull_Up_State::DISABLED";
+        case Initial_Pull_Up_State::ENABLED:  return stream << "::picolibrary::GPIO::Initial_Pull_Up_State::ENABLED";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{
+        "initial_pull_up_state is not a valid ::picolibrary::GPIO::Initial_Pull_Up_State"
+    };
+}
+
+} // namespace picolibrary::GPIO
 
 /**
  * \brief GPIO automated testing facilities.
