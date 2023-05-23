@@ -23,9 +23,11 @@
 #ifndef PICOLIBRARY_TESTING_AUTOMATED_ERROR_H
 #define PICOLIBRARY_TESTING_AUTOMATED_ERROR_H
 
+#include <cstdint>
 #include <ostream>
 #include <stdexcept>
 #include <type_traits>
+#include <typeinfo>
 
 #include "gmock/gmock.h"
 #include "picolibrary/error.h"
@@ -156,6 +158,29 @@ namespace picolibrary {
 template<>
 struct is_error_code_enum<Testing::Automated::Mock_Error> : std::true_type {
 };
+
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the picolibrary::Error_Code to.
+ * \param[in] error The picolibrary::Error_Code to write to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Error_Code const & error ) -> std::ostream &
+{
+    if ( &error.category() == &Testing::Automated::Mock_Error_Category::instance() ) {
+        return stream << "::picolibrary::Testing::Automated::Mock_Error::"
+                      << static_cast<std::uint_fast16_t>( error.id() );
+    } // if
+
+    if ( typeid( error.category() ) == typeid( Testing::Automated::Mock_Error_Category ) ) {
+        return stream << "::picolibrary::Testing::Automated::Mock_Error( " << &error.category()
+                      << " )::" << static_cast<std::uint_fast16_t>( error.id() );
+    } // if
+
+    return stream << error.category().name() << "::" << error.description();
+}
 
 } // namespace picolibrary
 
