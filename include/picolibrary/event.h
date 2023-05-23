@@ -29,6 +29,10 @@
 #include <type_traits>
 #include <utility>
 
+#ifdef PICOLIBRARY_ENABLE_AUTOMATED_TESTING
+#include <ostream>
+#endif // PICOLIBRARY_ENABLE_AUTOMATED_TESTING
+
 #include "picolibrary/result.h"
 #include "picolibrary/rom.h"
 #include "picolibrary/stream.h"
@@ -175,6 +179,15 @@ class Event {
         return size_t{ 0 };
     }
 #endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
+
+#ifdef PICOLIBRARY_ENABLE_AUTOMATED_TESTING
+    /**
+     * \brief Write the event's details to a stream.
+     *
+     * \param[in] stream The stream to write the event's details to.
+     */
+    virtual void print_details( std::ostream & stream ) const = 0;
+#endif // PICOLIBRARY_ENABLE_AUTOMATED_TESTING
 
   protected:
     /**
@@ -464,6 +477,18 @@ class Simple_Event final : public Event {
         return size_t{ 0 };
     }
 #endif // PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION
+
+#ifdef PICOLIBRARY_ENABLE_AUTOMATED_TESTING
+    /**
+     * \brief Write the event's details to a stream.
+     *
+     * \param[in] stream The stream to write the event's details to.
+     */
+    void print_details( std::ostream & stream ) const override final
+    {
+        static_cast<void>( stream );
+    }
+#endif // PICOLIBRARY_ENABLE_AUTOMATED_TESTING
 };
 
 /**

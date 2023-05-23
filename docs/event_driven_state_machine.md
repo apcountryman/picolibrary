@@ -32,6 +32,12 @@ The `::picolibrary::Event::print_details()` member function can only be overridd
 [`test/automated/picolibrary/event/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/event/main.cc)
 source file.
 
+A `std::ostream` insertion operator is defined for `::picolibrary::Event` if the
+`PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration option is `ON`.
+The insertion operator is defined in the
+[`include/picolibrary/testing/automated/event.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/event.h)/[`source/picolibrary/testing/automated/event.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/event.cc)
+header/source file pair.
+
 A mock event class (`::picolibrary::Testing::Automated::Mock_Event`) is defined in the
 [`include/picolibrary/testing/automated/event.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/event.h)/[`source/picolibrary/testing/automated/event.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/event.cc)
 header/source file pair.
