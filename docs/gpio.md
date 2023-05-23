@@ -11,8 +11,8 @@ header/source file pair.
 1. [I/O Pin](#io-pin)
 
 ## Initial Internal Pull-Up Resistor State Identification
-The `::picolibrary::GPIO::Initial_Internal_Pull_Up_State` enum class is used to identify
-initial internal pull-up resistor states.
+The `::picolibrary::GPIO::Initial_Pull_Up_State` enum class is used to identify initial
+internal pull-up resistor states.
 
 A `std::ostream` insertion operator is defined for
 `::picolibrary::GPIO::Initial_Pull_Up_State` if the `PICOLIBRARY_ENABLE_AUTOMATED_TESTING`
