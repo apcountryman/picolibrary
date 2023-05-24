@@ -23,6 +23,12 @@ address in numeric (right justified) format.
 [`test/automated/picolibrary/i2c/address_numeric/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/i2c/address_numeric/main.cc)
 source file.
 
+A `std::ostream` insertion operator is defined for `::picolibrary::I2C::Address_Numeric`
+if the `PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration option is `ON`.
+The insertion operator is defined in the
+[`include/picolibrary/testing/automated/i2c.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/i2c.h)/[`source/picolibrary/testing/automated/i2c.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/i2c.cc)
+header/source file pair.
+
 The `::picolibrary::I2C::Address_Transmitted` class is used to store an I<sup>2</sup>C
 device address in transmitted (left shifted) format.
 - To get the minimum valid address, use the
