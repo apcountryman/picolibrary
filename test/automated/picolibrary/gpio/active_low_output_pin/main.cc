@@ -54,20 +54,12 @@ struct initialize_Test_Case {
 
 auto operator<<( std::ostream & stream, initialize_Test_Case const & test_case ) -> std::ostream &
 {
-    auto const as_string = []( Initial_Pin_State initial_pin_state ) -> char const * {
-        switch ( initial_pin_state ) {
-            case Initial_Pin_State::LOW: return "Initial_Pin_State::LOW";
-            case Initial_Pin_State::HIGH: return "Initial_Pin_State::HIGH";
-            default: return "UNKNOWN";
-        } // switch
-    };
-
     // clang-format off
 
     return stream << "{ "
-                  << ".requested_state = " << as_string( test_case.requested_state )
+                  << ".requested_state = " << test_case.requested_state
                   << ", "
-                  << ".actual_state = " << as_string( test_case.actual_state )
+                  << ".actual_state = " << test_case.actual_state
                   << " }";
 
     // clang-format on
