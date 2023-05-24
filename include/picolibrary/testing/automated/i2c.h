@@ -60,7 +60,7 @@ inline auto operator<<( std::ostream & stream, Address_Numeric address ) -> std:
  * \brief Insertion operator.
  *
  * \param[in] stream The stream to write the picolibrary::I2C::Address_Transmitted to.
- * \param[in] address The picolibrary::I2C::Address to write to the stream.
+ * \param[in] address The picolibrary::I2C::Address_Transmitted to write to the stream.
  *
  * \return stream
  */
