@@ -44,7 +44,7 @@ namespace picolibrary::I2C {
  * \brief Insertion operator.
  *
  * \param[in] stream The stream to write the picolibrary::I2C::Address_Numeric to.
- * \param[in] address The picolibrary::I2C::Address to write to the stream.
+ * \param[in] address The picolibrary::I2C::Address_Numeric to write to the stream.
  *
  * \return stream
  */
