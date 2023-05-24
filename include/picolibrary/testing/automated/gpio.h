@@ -58,6 +58,31 @@ inline auto operator<<( std::ostream & stream, Initial_Pull_Up_State initial_pul
     };
 }
 
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the picolibrary::GPIO::Initial_Pin_State to.
+ * \param[in] initial_pin_state The picolibrary::GPIO::Initial_Pin_State to write to the
+ *            stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Initial_Pin_State initial_pin_state ) -> std::ostream &
+{
+    switch ( initial_pin_state ) {
+            // clang-format off
+
+        case Initial_Pin_State::LOW:  return stream << "::picolibrary::GPIO::Initial_Pin_State::LOW";
+        case Initial_Pin_State::HIGH: return stream << "::picolibrary::GPIO::Initial_Pin_State::HIGH";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{
+        "initial_pin_state is not a valid ::picolibrary::GPIO::Initial_Pin_State"
+    };
+}
+
 } // namespace picolibrary::GPIO
 
 /**
