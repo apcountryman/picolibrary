@@ -50,11 +50,10 @@ namespace picolibrary::I2C {
  */
 inline auto operator<<( std::ostream & stream, Address_Numeric address ) -> std::ostream &
 {
-    return stream << static_cast<std::uint_fast16_t>( address.as_unsigned_integer() )
-                  << " (0x" << std::hex << std::uppercase
+    return stream << "0x" << std::hex << std::uppercase
                   << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 )
                   << std::setfill( '0' )
-                  << static_cast<std::uint_fast16_t>( address.as_unsigned_integer() ) << ')';
+                  << static_cast<std::uint_fast16_t>( address.as_unsigned_integer() );
 }
 
 } // namespace picolibrary::I2C
