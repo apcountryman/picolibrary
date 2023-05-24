@@ -43,6 +43,13 @@ device address in transmitted (left shifted) format.
 [`test/automated/picolibrary/i2c/address_transmitted/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/i2c/address_transmitted/main.cc)
 source file.
 
+A `std::ostream` insertion operator is defined for
+`::picolibrary::I2C::Address_Transmitted` if the `PICOLIBRARY_ENABLE_AUTOMATED_TESTING`
+project configuration option is `ON`.
+The insertion operator is defined in the
+[`include/picolibrary/testing/automated/i2c.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/i2c.h)/[`source/picolibrary/testing/automated/i2c.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/i2c.cc)
+header/source file pair.
+
 `::picolibrary::Testing::Automated::random()` specializations for
 `::picolibrary::I2C::Address_Numeric` and `::picolibrary::I2C::Address_Transmitted` are
 available if the `PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration option is
