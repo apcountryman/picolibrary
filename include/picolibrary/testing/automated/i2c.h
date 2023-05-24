@@ -26,6 +26,10 @@
 #include <algorithm>
 #include <cstdint>
 #include <functional>
+#include <iomanip>
+#include <ios>
+#include <limits>
+#include <ostream>
 #include <vector>
 
 #include "gmock/gmock.h"
@@ -33,6 +37,27 @@
 #include "picolibrary/i2c.h"
 #include "picolibrary/testing/automated/mock_handle.h"
 #include "picolibrary/testing/automated/random.h"
+
+namespace picolibrary::I2C {
+
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the picolibrary::I2C::Address_Numeric to.
+ * \param[in] address The picolibrary::I2C::Address to write to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Address_Numeric address ) -> std::ostream &
+{
+    return stream << static_cast<std::uint_fast16_t>( address.as_unsigned_integer() )
+                  << " (0x" << std::hex << std::uppercase
+                  << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 )
+                  << std::setfill( '0' )
+                  << static_cast<std::uint_fast16_t>( address.as_unsigned_integer() ) << ')';
+}
+
+} // namespace picolibrary::I2C
 
 namespace picolibrary::Testing::Automated {
 
