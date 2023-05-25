@@ -6,6 +6,7 @@ header/source file pair.
 ## Table of Contents
 1. [Device Addressing](#device-addressing)
 1. [Operation Identification](#operation-identification)
+1. [Response Identification](#response-identification)
 1. [Controller](#controller)
 1. [Device](#device)
 
@@ -64,6 +65,16 @@ The `::picolibrary::I2C::Operation` enum class is used to identify I<sup>2</sup>
 operations.
 
 A `std::ostream` insertion operator is defined for `::picolibrary::I2C::Operation` if the
+`PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration option is `ON`.
+The insertion operator is defined in the
+[`include/picolibrary/testing/automated/i2c.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/i2c.h)/[`source/picolibrary/testing/automated/i2c.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/i2c.cc)
+header/source file pair.
+
+## Response Identification
+The `::picolibrary::I2C::Response` enum class is used to identify I<sup>2</sup>C
+responses.
+
+A `std::ostream` insertion operator is defined for `::picolibrary::I2C::Response` if the
 `PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration option is `ON`.
 The insertion operator is defined in the
 [`include/picolibrary/testing/automated/i2c.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/i2c.h)/[`source/picolibrary/testing/automated/i2c.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/i2c.cc)
