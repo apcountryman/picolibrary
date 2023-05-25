@@ -30,6 +30,7 @@
 #include <ios>
 #include <limits>
 #include <ostream>
+#include <stdexcept>
 #include <vector>
 
 #include "gmock/gmock.h"
@@ -70,6 +71,30 @@ inline auto operator<<( std::ostream & stream, Address_Transmitted address ) -> 
                   << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 )
                   << std::setfill( '0' )
                   << static_cast<std::uint_fast16_t>( address.as_unsigned_integer() );
+}
+
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the picolibrary::I2C::Operation to.
+ * \param[in] address The picolibrary::I2C::Operation to write to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Operation operation ) -> std::ostream &
+{
+    switch ( operation ) {
+            // clang-format off
+
+        case Operation::READ:  return stream << "::picolibrary::Operation::READ";
+        case Operation::WRITE: return stream << "::picolibrary::Operation::WRITE";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{
+        "operation is not a valid ::picolibrary::I2C::Operation"
+    };
 }
 
 } // namespace picolibrary::I2C
