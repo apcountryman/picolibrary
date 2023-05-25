@@ -97,6 +97,28 @@ inline auto operator<<( std::ostream & stream, Operation operation ) -> std::ost
     };
 }
 
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the picolibrary::I2C::Response to.
+ * \param[in] response The picolibrary::I2C::Response to write to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Response response ) -> std::ostream &
+{
+    switch ( response ) {
+            // clang-format off
+
+        case Response::ACK:  return stream << "::picolibrary::Response::ACK";
+        case Response::NACK: return stream << "::picolibrary::Response::NACK";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{ "response is not a valid ::picolibrary::I2C::Response" };
+}
+
 } // namespace picolibrary::I2C
 
 namespace picolibrary::Testing::Automated {
