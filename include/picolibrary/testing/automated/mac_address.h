@@ -23,8 +23,40 @@
 #ifndef PICOLIBRARY_TESTING_AUTOMATED_MAC_ADDRESS_H
 #define PICOLIBRARY_TESTING_AUTOMATED_MAC_ADDRESS_H
 
+#include <cstdint>
+#include <iomanip>
+#include <ios>
+#include <limits>
+#include <ostream>
+
 #include "picolibrary/mac_address.h"
 #include "picolibrary/testing/automated/random.h"
+
+namespace picolibrary {
+
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the picolibrary::MAC_Address to.
+ * \param[in] address The picolibrary::MAC_Address to write to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, MAC_Address const & address ) -> std::ostream &
+{
+    // clang-format off
+
+    return stream << std::hex << std::uppercase << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 ) << std::setfill( '0' ) << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 0 ] ) << '-'
+                  << std::hex << std::uppercase << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 ) << std::setfill( '0' ) << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 1 ] ) << '-'
+                  << std::hex << std::uppercase << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 ) << std::setfill( '0' ) << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 2 ] ) << '-'
+                  << std::hex << std::uppercase << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 ) << std::setfill( '0' ) << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 3 ] ) << '-'
+                  << std::hex << std::uppercase << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 ) << std::setfill( '0' ) << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 4 ] ) << '-'
+                  << std::hex << std::uppercase << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 ) << std::setfill( '0' ) << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 5 ] );
+
+    // clang-format on
+}
+
+} // namespace picolibrary
 
 namespace picolibrary::Testing::Automated {
 
