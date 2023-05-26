@@ -40,7 +40,7 @@ in the
 source file.
 
 A `std::ostream` insertion operator is defined for `::picolibrary::IP::Address` if the
-`PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration option is on.
+`PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration option is `ON`.
 The insertion operator is defined in the
 [`include/picolibrary/testing/automated/ip.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/ip.h)/[`source/picolibrary/testing/automated/ip.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/ip.cc)
 header/source file pair.
@@ -79,7 +79,7 @@ the
 source file.
 
 A `std::ostream` insertion operator is defined for `::picolibrary::IP::Port` if the
-`PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration option is on.
+`PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration option is `ON`.
 The insertion operator is defined in the
 [`include/picolibrary/testing/automated/ip.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/ip.h)/[`source/picolibrary/testing/automated/ip.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/ip.cc)
 header/source file pair.
