@@ -28,6 +28,7 @@
 #include "picolibrary/gpio.h"
 #include "picolibrary/indicator.h"
 #include "picolibrary/testing/automated/gpio.h"
+#include "picolibrary/testing/automated/indicator.h"
 
 namespace {
 
@@ -38,26 +39,6 @@ using ::testing::ValuesIn;
 
 using Indicator =
     ::picolibrary::Indicator::GPIO_Output_Pin_Fixed_Intensity_Indicator<::picolibrary::Testing::Automated::GPIO::Mock_Output_Pin>;
-
-auto as_string( Initial_Indicator_State initial_indicator_state ) -> char const *
-{
-    switch ( initial_indicator_state ) {
-        case Initial_Indicator_State::EXTINGUISHED:
-            return "Initial_Indicator_State::EXTINGUISHED";
-        case Initial_Indicator_State::ILLUMINATED:
-            return "Initial_Indicator_State::ILLUMINATED";
-        default: return "UNKNOWN";
-    } // switch
-}
-
-auto as_string( Initial_Pin_State initial_pin_state ) -> char const *
-{
-    switch ( initial_pin_state ) {
-        case Initial_Pin_State::LOW: return "Initial_Pin_State::LOW";
-        case Initial_Pin_State::HIGH: return "Initial_Pin_State::HIGH";
-        default: return "UNKNOWN";
-    } // switch
-}
 
 } // namespace
 
@@ -97,9 +78,9 @@ auto operator<<( std::ostream & stream, initializeNonDefaultArgument_Test_Case c
     // clang-format off
 
     return stream << "{ "
-                  << ".initial_indicator_state = " << as_string( test_case.initial_indicator_state )
+                  << ".initial_indicator_state = " << test_case.initial_indicator_state
                   << ", "
-                  << ".initial_pin_state = " << as_string( test_case.initial_pin_state )
+                  << ".initial_pin_state = " << test_case.initial_pin_state
                   << " }";
 
     // clang-format on
