@@ -28,6 +28,7 @@
 #include "gtest/gtest.h"
 #include "picolibrary/i2c.h"
 #include "picolibrary/precondition.h"
+#include "picolibrary/testing/automated/i2c.h"
 
 namespace {
 
@@ -162,9 +163,9 @@ auto operator<<( std::ostream & stream, comparisonOperator_Test_Case const & tes
     // clang-format off
 
     return stream << "{ "
-                  << ".lhs = " << static_cast<std::uint_fast16_t>( test_case.lhs.as_unsigned_integer() )
+                  << ".lhs = " << test_case.lhs
                   << ", "
-                  << ".rhs = " << static_cast<std::uint_fast16_t>( test_case.lhs.as_unsigned_integer() )
+                  << ".rhs = " << test_case.rhs
                   << ", "
                   << ".comparison_result = " << std::boolalpha << test_case.comparison_result
                   << " }";
