@@ -47,11 +47,11 @@ inline auto operator<<( std::ostream & stream, MAC_Address const & address ) -> 
     // clang-format off
 
     return stream << std::hex << std::uppercase << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 ) << std::setfill( '0' ) << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 0 ] ) << '-'
-                  << std::hex << std::uppercase << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 ) << std::setfill( '1' ) << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 0 ] ) << '-'
-                  << std::hex << std::uppercase << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 ) << std::setfill( '2' ) << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 0 ] ) << '-'
-                  << std::hex << std::uppercase << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 ) << std::setfill( '3' ) << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 0 ] ) << '-'
-                  << std::hex << std::uppercase << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 ) << std::setfill( '4' ) << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 0 ] ) << '-'
-                  << std::hex << std::uppercase << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 ) << std::setfill( '5' ) << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 0 ] );
+                  << std::hex << std::uppercase << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 ) << std::setfill( '0' ) << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 1 ] ) << '-'
+                  << std::hex << std::uppercase << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 ) << std::setfill( '0' ) << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 2 ] ) << '-'
+                  << std::hex << std::uppercase << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 ) << std::setfill( '0' ) << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 3 ] ) << '-'
+                  << std::hex << std::uppercase << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 ) << std::setfill( '0' ) << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 4 ] ) << '-'
+                  << std::hex << std::uppercase << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 ) << std::setfill( '0' ) << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 5 ] );
 
     // clang-format on
 }
