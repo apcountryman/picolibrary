@@ -32,6 +32,12 @@ in the
 [`test/automated/picolibrary/mac_address/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/mac_address/main.cc)
 source file.
 
+A `std::ostream` insertion operator is defined for `::picolibrary::MAC_Address` if the
+`PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration option is `ON`.
+The insertion operator is defined in the
+[`include/picolibrary/testing/automated/mac_address.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/mac_address.h)/[`source/picolibrary/testing/automated/mac_address.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/mac_address.cc)
+header/source file pair.
+
 A `::picolibrary::Testing::Automated::random()` specialization for
 `::picolibrary::MAC_Address` is available if the `PICOLIBRARY_ENABLE_AUTOMATED_TESTING`
 project configuration option is `ON`.
