@@ -77,6 +77,19 @@ inline auto operator<<( std::ostream & stream, Port port ) -> std::ostream &
     return stream << port.as_unsigned_integer();
 }
 
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the picolibrary::IP::Endpoint to.
+ * \param[in] endpoint The picolibrary::IP::Endpoint to write to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Endpoint const & endpoint ) -> std::ostream &
+{
+    return stream << endpoint.address() << ':' << endpoint.port();
+}
+
 } // namespace picolibrary::IP
 
 namespace picolibrary::Testing::Automated {

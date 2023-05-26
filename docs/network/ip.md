@@ -112,6 +112,12 @@ in the
 [`test/automated/picolibrary/ip/endpoint/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/ip/endpoint/main.cc)
 source file.
 
+A `std::ostream` insertion operator is defined for `::picolibrary::IP::Endpoint` if the
+`PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration option is `ON`.
+The insertion operator is defined in the
+[`include/picolibrary/testing/automated/ip.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/ip.h)/[`source/picolibrary/testing/automated/ip.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/ip.cc)
+header/source file pair.
+
 A `::picolibrary::Testing::Automated::random()` specialization for
 `::picolibrary::IP::Endpoint` is available if the `PICOLIBRARY_ENABLE_AUTOMATED_TESTING`
 project configuration option is `ON`.
