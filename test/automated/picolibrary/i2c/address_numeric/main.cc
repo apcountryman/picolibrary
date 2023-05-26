@@ -20,7 +20,6 @@
  * \brief picolibrary::I2C::Address_Numeric automated test program.
  */
 
-#include <cstdint>
 #include <ios>
 #include <ostream>
 
