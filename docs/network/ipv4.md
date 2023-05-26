@@ -45,7 +45,7 @@ defined in the
 source file.
 
 A `std::ostream` insertion operator is defined for `::picolibrary::IPv4::Address` if the
-`PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration option is on.
+`PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration option is `ON`.
 The insertion operator is defined in the
 [`include/picolibrary/testing/automated/ipv4.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/ipv4.h)/[`source/picolibrary/testing/automated/ipv4.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/ipv4.cc)
 header/source file pair.
