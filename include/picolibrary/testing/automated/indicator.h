@@ -23,9 +23,44 @@
 #ifndef PICOLIBRARY_TESTING_AUTOMATED_INDICATOR_H
 #define PICOLIBRARY_TESTING_AUTOMATED_INDICATOR_H
 
+#include <ostream>
+#include <stdexcept>
+
 #include "gmock/gmock.h"
 #include "picolibrary/indicator.h"
 #include "picolibrary/testing/automated/mock_handle.h"
+
+namespace picolibrary::Indicator {
+
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the
+ *            picolibrary::Indicator::Initial_Indicator_State to.
+ * \param[in] initial_indicator_state The picolibrary::Indicator::Initial_Indicator_State
+ *            to write to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Initial_Indicator_State initial_indicator_state )
+    -> std::ostream &
+{
+    switch ( initial_indicator_state ) {
+            // clang-format off
+
+        case Initial_Indicator_State::EXTINGUISHED: return stream << "::picolibrary::Initial_Indicator_State::EXTINGUISHED";
+        case Initial_Indicator_State::ILLUMINATED:  return stream << "::picolibrary::Initial_Indicator_State::ILLUMINATED";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{
+        "initial_indicator_state is not a valid "
+        "::picolibrary::Indicator::Initial_Indicator_State"
+    };
+}
+
+} // namespace picolibrary::Indicator
 
 /**
  * \brief Indicator automated testing facilities.

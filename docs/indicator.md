@@ -4,7 +4,19 @@ Indicator facilities are defined in the
 header/source file pair.
 
 ## Table of Contents
+1. [Initial Indicator State Identification](#initial-indicator-state-identification)
 1. [Fixed Intensity Indicator](#fixed-intensity-indicator)
+
+## Operation Identification
+The `::picolibrary::Indicator::Initial_Indicator_State` enum class is used to identify
+initial indicator states.
+
+A `std::ostream` insertion operator is defined for
+`::picolibrary::Indicator::Initial_Indicator_State` if the
+`PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration option is `ON`.
+The insertion operator is defined in the
+[`include/picolibrary/testing/automated/indicator.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/indicator.h)/[`source/picolibrary/testing/automated/indicator.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/indicator.cc)
+header/source file pair.
 
 ## Fixed Intensity Indicator
 The `::picolibrary::Indicator::Fixed_Intensity_Indicator_Concept` concept class defines
