@@ -49,24 +49,6 @@ using ::testing::Return;
 using ::testing::TestWithParam;
 using ::testing::ValuesIn;
 
-auto as_string( Operation operation ) -> char const *
-{
-    switch ( operation ) {
-        case Operation::READ: return "Operation::READ";
-        case Operation::WRITE: return "Operation::WRITE";
-        default: return "UNKNOWN";
-    } // switch
-}
-
-auto as_string( Response response ) -> char const *
-{
-    switch ( response ) {
-        case Response::ACK: return "Response::ACK";
-        case Response::NACK: return "Response::NACK";
-        default: return "UNKNOWN";
-    } // switch
-}
-
 } // namespace
 
 /**
@@ -91,9 +73,9 @@ auto operator<<( std::ostream & stream, pingControllerI2CAddressTransmittedI2COp
     // clang-format off
 
     return stream << "{ "
-                  << ".operation = " << as_string( test_case.operation )
+                  << ".operation = " << test_case.operation
                   << ", "
-                  << ".response = " << as_string( test_case.response )
+                  << ".response = " << test_case.response
                   << " }";
 
     // clang-format on
@@ -180,11 +162,11 @@ auto operator<<( std::ostream & stream, pingControllerI2CAddressTransmitted_Test
     // clang-format off
 
     return stream << "{ "
-                  << ".response_read = " << as_string( test_case.response_read )
+                  << ".response_read = " << test_case.response_read
                   << ", "
-                  << ".response_write = " << as_string( test_case.response_write )
+                  << ".response_write = " << test_case.response_write
                   << ", "
-                  << ".response = " << as_string( test_case.response )
+                  << ".response = " << test_case.response
                   << " }";
 
     // clang-format on
