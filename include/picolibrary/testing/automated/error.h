@@ -91,6 +91,22 @@ namespace picolibrary::Testing::Automated {
 enum class Mock_Error : Error_ID {};
 
 /**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the picolibrary::Testing::Automated::Mock_Error
+ *            to.
+ * \param[in] error The picolibrary::Testing::Automated::Mock_Error to write to the
+ *            stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Mock_Error error ) -> std::ostream &
+{
+    return stream << "::picolibrary::Testing::Automated::Mock_Error::"
+                  << static_cast<std::uint_fast16_t>( error );
+}
+
+/**
  * \brief Generate a pseudo-random picolibrary::Testing::Automated::Mock_Error.
  *
  * \relatedalso picolibrary::Testing::Automated::Mock_Error_Category
