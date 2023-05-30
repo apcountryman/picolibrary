@@ -20,6 +20,7 @@
  * \brief picolibrary::IP::Endpoint automated test program.
  */
 
+#include <ios>
 #include <ostream>
 #include <string>
 #include <string_view>
