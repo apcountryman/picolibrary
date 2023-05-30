@@ -20,14 +20,16 @@
  * \brief picolibrary::IP::Port automated test program.
  */
 
-#include <sstream>
+#include <ios>
+#include <ostream>
 #include <string>
+#include <string_view>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/ip.h"
 #include "picolibrary/testing/automated/error.h"
-#include "picolibrary/testing/automated/random.h"
+#include "picolibrary/testing/automated/ip.h"
 #include "picolibrary/testing/automated/stream.h"
 
 namespace {
@@ -36,20 +38,11 @@ using ::picolibrary::IP::Port;
 using ::picolibrary::Testing::Automated::Mock_Error;
 using ::picolibrary::Testing::Automated::Mock_Output_Stream;
 using ::picolibrary::Testing::Automated::Output_String_Stream;
-using ::picolibrary::Testing::Automated::random;
-using ::picolibrary::Testing::Automated::random_unique_pair;
 using ::picolibrary::Testing::Automated::Reliable_Output_String_Stream;
 using ::testing::A;
 using ::testing::Return;
-
-auto dec( Port::Unsigned_Integer unsigned_integer ) -> std::string
-{
-    auto stream = std::ostringstream{};
-
-    stream << unsigned_integer;
-
-    return stream.str();
-}
+using ::testing::TestWithParam;
+using ::testing::ValuesIn;
 
 } // namespace
 
@@ -65,167 +58,345 @@ TEST( constructorDefault, worksProperly )
 }
 
 /**
+ * \brief picolibrary::IP::Port::Port( picolibrary::IP::Port::Unsigned_Integer ) test
+ *        case.
+ */
+struct constructorUnsignedInteger_Test_Case {
+    /**
+     * \brief The port.
+     */
+    Port::Unsigned_Integer port;
+
+    /**
+     * \brief The port is the port that is used to represent any port (0).
+     */
+    bool is_any;
+};
+
+auto operator<<( std::ostream & stream, constructorUnsignedInteger_Test_Case const & test_case )
+    -> std::ostream &
+{
+    // clang-format off
+
+    return stream << "{ "
+                  << ".port = " << test_case.port
+                  << ", "
+                  << ".is_any = " << std::boolalpha << test_case.is_any
+                  << " }";
+
+    // clang-format on
+}
+
+/**
+ * \brief picolibrary::IP::Port::Port( picolibrary::IP::Port::Unsigned_Integer ) test
+ *        fixture.
+ */
+class constructorUnsignedInteger : public TestWithParam<constructorUnsignedInteger_Test_Case> {
+};
+
+/**
  * \brief Verify picolibrary::IP::Port::Port( picolibrary::IP::Port::Unsigned_Integer )
  *        works properly.
  */
-TEST( constructorUnsignedInteger, worksProperly )
+TEST_P( constructorUnsignedInteger, worksProperly )
 {
-    {
-        auto const unsigned_integer = Port::Unsigned_Integer{ 0 };
+    auto const test_case = GetParam();
 
-        auto const port = Port{ unsigned_integer };
+    auto const port = Port{ test_case.port };
 
-        EXPECT_TRUE( port.is_any() );
-        EXPECT_EQ( port.as_unsigned_integer(), unsigned_integer );
-    }
-
-    {
-        auto const unsigned_integer = random<Port::Unsigned_Integer>( 1 );
-
-        auto const port = Port{ unsigned_integer };
-
-        EXPECT_FALSE( port.is_any() );
-        EXPECT_EQ( port.as_unsigned_integer(), unsigned_integer );
-    }
+    EXPECT_EQ( port.is_any(), test_case.is_any );
+    EXPECT_EQ( port.as_unsigned_integer(), test_case.port );
 }
 
 /**
- * \brief Verify picolibrary::operator==( picolibrary::IP::Port, picolibrary::IP::Port )
- *        works properly.
+ * \brief picolibrary::IP::Port::Port( picolibrary::IP::Port::Unsigned_Integer ) test
+ *        cases.
  */
-TEST( equalityOperator, worksProperly )
+constructorUnsignedInteger_Test_Case const constructorUnsignedInteger_TEST_CASES[]{
+    // clang-format off
+
+    {     0, true  },
+    {     1, false },
+    { 20711, false },
+    { 65535, false },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger, ValuesIn( constructorUnsignedInteger_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::IP::operator==( picolibrary::IP::Port, picolibrary::IP::Port ),
+ *        picolibrary::IP::operator!=( picolibrary::IP::Port, picolibrary::IP::Port ),
+ *        picolibrary::IP::operator<( picolibrary::IP::Port, picolibrary::IP::Port),
+ *        picolibrary::IP::operator>( picolibrary::IP::Port, picolibrary::IP::Port ),
+ *        picolibrary::IP::operator<=( picolibrary::IP::Port, picolibrary::IP::Port ), and
+ *        picolibrary::IP::operator>=( picolibrary::IP::Port, picolibrary::IP::Port ) test
+ *        case.
+ */
+struct comparisonOperator_Test_Case {
+    /**
+     * \brief The left hand side of the comparison.
+     */
+    Port lhs;
+
+    /**
+     * \brief The right hand side of the comparison.
+     */
+    Port rhs;
+
+    /**
+     * \brief The comparison result.
+     */
+    bool comparison_result;
+};
+
+auto operator<<( std::ostream & stream, comparisonOperator_Test_Case const & test_case )
+    -> std::ostream &
 {
-    {
-        auto const lhs = random<Port::Unsigned_Integer>();
-        auto const rhs = lhs;
+    // clang-format off
 
-        EXPECT_TRUE( Port{ lhs } == Port{ rhs } );
-    }
+    return stream << "{ "
+                  << ".lhs = " << test_case.lhs
+                  << ", "
+                  << ".rhs = " << test_case.rhs
+                  << ", "
+                  << ".comparison_result = " << std::boolalpha << test_case.comparison_result
+                  << " }";
 
-    {
-        auto const [ lhs, rhs ] = random_unique_pair<Port::Unsigned_Integer>();
-
-        EXPECT_FALSE( Port{ lhs } == Port{ rhs } );
-    }
+    // clang-format on
 }
 
 /**
- * \brief Verify picolibrary::operator!=( picolibrary::IP::Port, picolibrary::IP::Port )
- *        works properly.
+ * \brief picolibrary::IP::operator==( picolibrary::IP::Port, picolibrary::IP::Port ) test
+ *        fixture.
  */
-TEST( inequalityOperator, worksProperly )
+class equalityOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::IP::operator==( picolibrary::IP::Port, picolibrary::IP::Port
+ *        ) works properly.
+ */
+TEST_P( equalityOperator, worksProperly )
 {
-    {
-        auto const lhs = random<Port::Unsigned_Integer>();
-        auto const rhs = lhs;
+    auto const test_case = GetParam();
 
-        EXPECT_FALSE( Port{ lhs } != Port{ rhs } );
-    }
-
-    {
-        auto const [ lhs, rhs ] = random_unique_pair<Port::Unsigned_Integer>();
-
-        EXPECT_TRUE( Port{ lhs } != Port{ rhs } );
-    }
+    ASSERT_EQ( test_case.lhs == test_case.rhs, test_case.comparison_result );
 }
 
 /**
- * \brief Verify picolibrary::operator<( picolibrary::IP::Port, picolibrary::IP::Port )
- *        works properly.
+ * \brief picolibrary::IP::operator==( picolibrary::IP::Port, picolibrary::IP::Port ) test
+ *        cases.
  */
-TEST( lessThanOperator, worksProperly )
+comparisonOperator_Test_Case const equalityOperator_TEST_CASES[]{
+    // clang-format off
+
+    {  1948, 10417, false },
+    { 18347, 18348, false },
+    { 18348, 18348, true  },
+    { 18349, 18348, false },
+    { 59618, 60750, false },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, equalityOperator, ValuesIn( equalityOperator_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::IP::operator!=( picolibrary::IP::Port, picolibrary::IP::Port ) test
+ *        fixture.
+ */
+class inequalityOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::IP::operator!=( picolibrary::IP::Port, picolibrary::IP::Port
+ *        ) works properly.
+ */
+TEST_P( inequalityOperator, worksProperly )
 {
-    {
-        auto const rhs = random<Port::Unsigned_Integer>( 0 + 1 );
-        auto const lhs = random<Port::Unsigned_Integer>( 0, rhs - 1 );
+    auto const test_case = GetParam();
 
-        EXPECT_TRUE( Port{ lhs } < Port{ rhs } );
-    }
-
-    {
-        auto const rhs = random<Port::Unsigned_Integer>();
-        auto const lhs = random<Port::Unsigned_Integer>( rhs );
-
-        EXPECT_FALSE( Port{ lhs } < Port{ rhs } );
-    }
+    ASSERT_EQ( test_case.lhs != test_case.rhs, test_case.comparison_result );
 }
 
 /**
- * \brief Verify picolibrary::operator>( picolibrary::IP::Port, picolibrary::IP::Port )
- *        works properly.
+ * \brief picolibrary::IP::operator!=( picolibrary::IP::Port, picolibrary::IP::Port ) test
+ *        cases.
  */
-TEST( greaterThanOperator, worksProperly )
+comparisonOperator_Test_Case const inequalityOperator_TEST_CASES[]{
+    // clang-format off
+
+    {  1948, 10417, true  },
+    { 18347, 18348, true  },
+    { 18348, 18348, false },
+    { 18349, 18348, true  },
+    { 59618, 60750, true  },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, inequalityOperator, ValuesIn( inequalityOperator_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::IP::operator<( picolibrary::IP::Port, picolibrary::IP::Port ) test
+ *        fixture.
+ */
+class lessThanOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::IP::operator<( picolibrary::IP::Port, picolibrary::IP::Port
+ *        ) works properly.
+ */
+TEST_P( lessThanOperator, worksProperly )
 {
-    {
-        auto const lhs = random<Port::Unsigned_Integer>( 0 + 1 );
-        auto const rhs = random<Port::Unsigned_Integer>( 0, lhs - 1 );
+    auto const test_case = GetParam();
 
-        EXPECT_TRUE( Port{ lhs } > Port{ rhs } );
-    }
-
-    {
-        auto const lhs = random<Port::Unsigned_Integer>();
-        auto const rhs = random<Port::Unsigned_Integer>( lhs );
-
-        EXPECT_FALSE( Port{ lhs } > Port{ rhs } );
-    }
+    ASSERT_EQ( test_case.lhs < test_case.rhs, test_case.comparison_result );
 }
 
 /**
- * \brief Verify picolibrary::operator<=( picolibrary::IP::Port, picolibrary::IP::Port )
- *        works properly.
+ * \brief picolibrary::IP::operator<( picolibrary::IP::Port, picolibrary::IP::Port ) test
+ *        cases.
  */
-TEST( lessThanOrEqualToOperator, worksProperly )
+comparisonOperator_Test_Case const lessThanOperator_TEST_CASES[]{
+    // clang-format off
+
+    {  7444, 9706, true  },
+    {  9705, 9706, true  },
+    {  9706, 9706, false },
+    {  9707, 9706, false },
+    { 36246, 9706, false },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, lessThanOperator, ValuesIn( lessThanOperator_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::IP::operator>( picolibrary::IP::Port, picolibrary::IP::Port ) test
+ *        fixture.
+ */
+class greaterThanOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::IP::operator>( picolibrary::IP::Port, picolibrary::IP::Port
+ *        ) works properly.
+ */
+TEST_P( greaterThanOperator, worksProperly )
 {
-    {
-        auto const lhs = random<Port::Unsigned_Integer>();
-        auto const rhs = random<Port::Unsigned_Integer>( lhs );
+    auto const test_case = GetParam();
 
-        EXPECT_TRUE( Port{ lhs } <= Port{ rhs } );
-    }
-
-    {
-        auto const lhs = random<Port::Unsigned_Integer>( 0 + 1 );
-        auto const rhs = random<Port::Unsigned_Integer>( 0, lhs - 1 );
-
-        EXPECT_FALSE( Port{ lhs } <= Port{ rhs } );
-    }
+    ASSERT_EQ( test_case.lhs > test_case.rhs, test_case.comparison_result );
 }
 
 /**
- * \brief Verify picolibrary::operator>=( picolibrary::IP::Port, picolibrary::IP::Port )
- *        works properly.
+ * \brief picolibrary::IP::operator>( picolibrary::IP::Port, picolibrary::IP::Port ) test
+ *        cases.
  */
-TEST( greaterThanOrEqualToOperator, worksProperly )
+comparisonOperator_Test_Case const greaterThanOperator_TEST_CASES[]{
+    // clang-format off
+
+    {  7444, 9706, false },
+    {  9705, 9706, false },
+    {  9706, 9706, false },
+    {  9707, 9706, true  },
+    { 36246, 9706, true  },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, greaterThanOperator, ValuesIn( greaterThanOperator_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::IP::operator<=( picolibrary::IP::Port, picolibrary::IP::Port ) test
+ *        fixture.
+ */
+class lessThanOrEqualToOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::IP::operator<=( picolibrary::IP::Port, picolibrary::IP::Port
+ *        ) works properly.
+ */
+TEST_P( lessThanOrEqualToOperator, worksProperly )
 {
-    {
-        auto const rhs = random<Port::Unsigned_Integer>();
-        auto const lhs = random<Port::Unsigned_Integer>( rhs );
+    auto const test_case = GetParam();
 
-        EXPECT_TRUE( Port{ lhs } >= Port{ rhs } );
-    }
-
-    {
-        auto const rhs = random<Port::Unsigned_Integer>( 0 + 1 );
-        auto const lhs = random<Port::Unsigned_Integer>( 0, rhs - 1 );
-
-        EXPECT_FALSE( Port{ lhs } >= Port{ rhs } );
-    }
+    ASSERT_EQ( test_case.lhs <= test_case.rhs, test_case.comparison_result );
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::IP::Port> properly handles a
- *        print error.
+ * \brief picolibrary::IP::operator<=( picolibrary::IP::Port, picolibrary::IP::Port ) test
+ *        cases.
  */
-TEST( outputFormatterIPPort, printError )
+comparisonOperator_Test_Case const lessThanOrEqualToOperator_TEST_CASES[]{
+    // clang-format off
+
+    {  7444, 9706, true  },
+    {  9705, 9706, true  },
+    {  9706, 9706, true  },
+    {  9707, 9706, false },
+    { 36246, 9706, false },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, lessThanOrEqualToOperator, ValuesIn( lessThanOrEqualToOperator_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::IP::operator>=( picolibrary::IP::Port, picolibrary::IP::Port ) test
+ *        fixture.
+ */
+class greaterThanOrEqualToOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::IP::operator>=( picolibrary::IP::Port, picolibrary::IP::Port
+ *        ) works properly.
+ */
+TEST_P( greaterThanOrEqualToOperator, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    ASSERT_EQ( test_case.lhs >= test_case.rhs, test_case.comparison_result );
+}
+
+/**
+ * \brief picolibrary::IP::operator>=( picolibrary::IP::Port, picolibrary::IP::Port ) test
+ *        cases.
+ */
+comparisonOperator_Test_Case const greaterThanOrEqualToOperator_TEST_CASES[]{
+    // clang-format off
+
+    {  7444, 9706, false },
+    {  9705, 9706, false },
+    {  9706, 9706, true  },
+    {  9707, 9706, true  },
+    { 36246, 9706, true  },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, greaterThanOrEqualToOperator, ValuesIn( greaterThanOrEqualToOperator_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::IP::Port>::print(
+ *        picolibrary::Output_Stream &, picolibrary::IP::Port ) properly handles a put
+ *        error.
+ */
+TEST( outputFormatterIPPortPrintOutputStreamErrorHandling, putError )
 {
     auto stream = Mock_Output_Stream{};
 
-    auto const error = random<Mock_Error>();
+    auto const error = Mock_Error{ 148 };
 
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.print( Port{ random<Port::Unsigned_Integer>() } );
+    auto const result = stream.print( Port{ 569 } );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -236,41 +407,103 @@ TEST( outputFormatterIPPort, printError )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::IP::Port> works properly.
+ * \brief picolibrary::Output_Formatter<picolibrary::IP::Port>::print() test case.
  */
-TEST( outputFormatterIPPort, worksProperly )
+struct outputFormatterIPPortPrint_Test_Case {
+    /**
+     * \brief The picolibrary::IP::Port to format.
+     */
+    Port port;
+
+    /**
+     * \brief The formatted port.
+     */
+    std::string_view formatted_port;
+};
+
+auto operator<<( std::ostream & stream, outputFormatterIPPortPrint_Test_Case const & test_case )
+    -> std::ostream &
 {
-    {
-        auto stream = Output_String_Stream{};
+    // clang-format off
 
-        auto const unsigned_integer = random<Port::Unsigned_Integer>();
+    return stream << "{ "
+                  << ".port = " << test_case.port
+                  << ", "
+                  << ".formatted_port = " << test_case.formatted_port
+                  << " }";
 
-        auto const port = Port{ unsigned_integer };
-
-        auto const result = stream.print( port );
-
-        ASSERT_FALSE( result.is_error() );
-        EXPECT_EQ( result.value(), stream.string().size() );
-
-        EXPECT_TRUE( stream.is_nominal() );
-        EXPECT_EQ( stream.string(), dec( unsigned_integer ) );
-    }
-
-    {
-        auto stream = Reliable_Output_String_Stream{};
-
-        auto const unsigned_integer = random<Port::Unsigned_Integer>();
-
-        auto const port = Port{ unsigned_integer };
-
-        auto const n = stream.print( port );
-
-        EXPECT_EQ( n, stream.string().size() );
-
-        EXPECT_TRUE( stream.is_nominal() );
-        EXPECT_EQ( stream.string(), dec( unsigned_integer ) );
-    }
+    // clang-format on
 }
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::IP::Port>::print() test cases.
+ */
+outputFormatterIPPortPrint_Test_Case const outputFormatterIPPortPrint_TEST_CASES[]{
+    // clang-format off
+
+    {     0,     "0" },
+    { 14535, "14535" },
+    { 65535, "65535" },
+
+    // clang-format on
+};
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::IP::Port>::print(
+ *        picolibrary::Output_Stream &, picolibrary::IP::Port ) test fixture.
+ */
+class outputFormatterIPPortPrintOutputStream :
+    public TestWithParam<outputFormatterIPPortPrint_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::IP::Port>::print(
+ *        picolibrary::Output_Stream &, picolibrary::IP::Port ) works properly.
+ */
+TEST_P( outputFormatterIPPortPrintOutputStream, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    auto stream = Output_String_Stream{};
+
+    auto const result = stream.print( test_case.port );
+
+    ASSERT_FALSE( result.is_error() );
+    EXPECT_EQ( result.value(), stream.string().size() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), test_case.formatted_port );
+}
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterIPPortPrintOutputStream, ValuesIn( outputFormatterIPPortPrint_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::IP::Port>::print(
+ *        picolibrary::Reliable_Output_Stream &, picolibrary::IP::Port ) test fixture.
+ */
+class outputFormatterIPPortPrintReliableOutputStream :
+    public TestWithParam<outputFormatterIPPortPrint_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::IP::Port>::print(
+ *        picolibrary::Reliable_Output_Stream &, picolibrary::IP::Port ) works properly.
+ */
+TEST_P( outputFormatterIPPortPrintReliableOutputStream, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    auto stream = Reliable_Output_String_Stream{};
+
+    auto const n = stream.print( test_case.port );
+
+    EXPECT_EQ( n, stream.string().size() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), test_case.formatted_port );
+}
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterIPPortPrintReliableOutputStream, ValuesIn( outputFormatterIPPortPrint_TEST_CASES ) );
 
 /**
  * \brief Execute the picolibrary::IP::Port automated tests.
