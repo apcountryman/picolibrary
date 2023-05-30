@@ -385,7 +385,8 @@ INSTANTIATE_TEST_SUITE_P( testCases, greaterThanOrEqualToOperator, ValuesIn( gre
 
 /**
  * \brief Verify picolibrary::Output_Formatter<picolibrary::IP::Port>::print(
- * picolibrary::Output_Stream &, picolibrary::IP::Port ) properly handles a put error.
+ *        picolibrary::Output_Stream &, picolibrary::IP::Port ) properly handles a put
+ *        error.
  */
 TEST( outputFormatterIPPortPrintOutputStreamErrorHandling, putError )
 {
