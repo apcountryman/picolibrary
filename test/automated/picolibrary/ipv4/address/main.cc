@@ -128,7 +128,7 @@ auto operator<<( std::ostream & stream, constructor_Test_Case const & test_case 
 /**
  * \brief picolibrary::IPv4::Address::Address( picolibrary::IPv4::Address::Byte_Array
  *        const & ) and picolibrary::IPv4::Address::Address(
- *        picolibrary::IPv4::Address::Unsigned_Integer const & ) test case.
+ *        picolibrary::IPv4::Address::Unsigned_Integer const & ) test cases.
  */
 constructor_Test_Case const constructor_TEST_CASES[]{
     // clang-format off
@@ -162,7 +162,7 @@ constructor_Test_Case const constructor_TEST_CASES[]{
 
 /**
  * \brief picolibrary::IPv4::Address::Address( picolibrary::IPv4::Address::Byte_Array
- *        const & ) test case.
+ *        const & ) test fixture.
  */
 class constructorByteArray : public TestWithParam<constructor_Test_Case> {
 };
@@ -189,7 +189,7 @@ INSTANTIATE_TEST_SUITE_P( testCases, constructorByteArray, ValuesIn( constructor
 
 /**
  * \brief picolibrary::IPv4::Address::Address(
- *        picolibrary::IPv4::Address::Unsigned_Integer const & ) test case.
+ *        picolibrary::IPv4::Address::Unsigned_Integer const & ) test fixture.
  */
 class constructorUnsignedInteger : public TestWithParam<constructor_Test_Case> {
 };
@@ -248,17 +248,15 @@ auto operator<<( std::ostream & stream, comparisonOperator_Test_Case const & tes
 {
     // clang-format off
 
-    stream << "{ "
-           << ".lhs = " << test_case.lhs
-           << ", "
-           << ".rhs = " << test_case.rhs
-           << ", "
-           << ".comparison_result = " << std::boolalpha << test_case.comparison_result
-           << " }";
+    return stream << "{ "
+                  << ".lhs = " << test_case.lhs
+                  << ", "
+                  << ".rhs = " << test_case.rhs
+                  << ", "
+                  << ".comparison_result = " << std::boolalpha << test_case.comparison_result
+                  << " }";
 
     // clang-format on
-
-    return stream;
 }
 
 /**
