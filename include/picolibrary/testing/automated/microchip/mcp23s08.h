@@ -55,6 +55,24 @@ inline auto operator<<( std::ostream & stream, Address_Numeric address ) -> std:
                   << static_cast<std::uint_fast16_t>( address.as_unsigned_integer() );
 }
 
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the
+ *            picolibrary::Microchip::MCP23S08::Address_Transmitted to.
+ * \param[in] address The picolibrary::Microchip::MCP23S08::Address_Transmitted to write
+ *            to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Address_Transmitted address ) -> std::ostream &
+{
+    return stream << "0x" << std::hex << std::uppercase
+                  << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 )
+                  << std::setfill( '0' )
+                  << static_cast<std::uint_fast16_t>( address.as_unsigned_integer() );
+}
+
 } // namespace picolibrary::Microchip::MCP23S08
 
 namespace picolibrary::Testing::Automated {
