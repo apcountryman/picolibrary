@@ -24,12 +24,38 @@
 #define PICOLIBRARY_TESTING_AUTOMATED_MICROCHIP_MCP23S08_H
 
 #include <cstdint>
+#include <iomanip>
+#include <ios>
+#include <limits>
+#include <ostream>
 
 #include "gmock/gmock.h"
 #include "picolibrary/microchip/mcp23s08.h"
 #include "picolibrary/testing/automated/microchip/mcp23x08.h"
 #include "picolibrary/testing/automated/random.h"
 #include "picolibrary/testing/automated/spi.h"
+
+namespace picolibrary::Microchip::MCP23S08 {
+
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the
+ *            picolibrary::Microchip::MCP23S08::Address_Numeric to.
+ * \param[in] address The picolibrary::Microchip::MCP23S08::Address_Numeric to write to
+ *            the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Address_Numeric address ) -> std::ostream &
+{
+    return stream << "0x" << std::hex << std::uppercase
+                  << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 )
+                  << std::setfill( '0' )
+                  << static_cast<std::uint_fast16_t>( address.as_unsigned_integer() );
+}
+
+} // namespace picolibrary::Microchip::MCP23S08
 
 namespace picolibrary::Testing::Automated {
 
