@@ -21,15 +21,18 @@
  */
 
 #include <cstdint>
+#include <iomanip>
+#include <ios>
 #include <limits>
-#include <sstream>
+#include <ostream>
 #include <string>
+#include <string_view>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/ipv4.h"
 #include "picolibrary/testing/automated/error.h"
-#include "picolibrary/testing/automated/random.h"
+#include "picolibrary/testing/automated/ipv4.h"
 #include "picolibrary/testing/automated/stream.h"
 
 namespace {
@@ -38,37 +41,11 @@ using ::picolibrary::IPv4::Address;
 using ::picolibrary::Testing::Automated::Mock_Error;
 using ::picolibrary::Testing::Automated::Mock_Output_Stream;
 using ::picolibrary::Testing::Automated::Output_String_Stream;
-using ::picolibrary::Testing::Automated::random;
-using ::picolibrary::Testing::Automated::random_array;
-using ::picolibrary::Testing::Automated::random_unique_pair;
 using ::picolibrary::Testing::Automated::Reliable_Output_String_Stream;
 using ::testing::A;
 using ::testing::Return;
-
-auto to_unsigned_integer( Address::Byte_Array byte_array ) -> Address::Unsigned_Integer
-{
-    // clang-format off
-
-    return static_cast<Address::Unsigned_Integer>(
-        ( static_cast<Address::Unsigned_Integer>( byte_array[ 0 ] ) << 3 *std::numeric_limits<std::uint8_t>::digits ) |
-        ( static_cast<Address::Unsigned_Integer>( byte_array[ 1 ] ) << 2 *std::numeric_limits<std::uint8_t>::digits ) |
-        ( static_cast<Address::Unsigned_Integer>( byte_array[ 2 ] ) << 1 *std::numeric_limits<std::uint8_t>::digits ) |
-        ( static_cast<Address::Unsigned_Integer>( byte_array[ 3 ] ) << 0 *std::numeric_limits<std::uint8_t>::digits ) );
-
-    // clang-format on
-}
-
-auto dot_decimal( Address::Byte_Array const & byte_array ) -> std::string
-{
-    auto stream = std::ostringstream{};
-
-    stream << static_cast<std::uint_fast16_t>( byte_array[ 0 ] ) << '.'
-           << static_cast<std::uint_fast16_t>( byte_array[ 1 ] ) << '.'
-           << static_cast<std::uint_fast16_t>( byte_array[ 2 ] ) << '.'
-           << static_cast<std::uint_fast16_t>( byte_array[ 3 ] );
-
-    return stream.str();
-}
+using ::testing::TestWithParam;
+using ::testing::ValuesIn;
 
 } // namespace
 
@@ -84,305 +61,434 @@ TEST( constructorDefault, worksProperly )
     EXPECT_FALSE( address.is_broadcast() );
     EXPECT_FALSE( address.is_multicast() );
     EXPECT_EQ( address.as_byte_array(), ( Address::Byte_Array{ 0, 0, 0, 0 } ) );
-    EXPECT_EQ( address.as_unsigned_integer(), 0'0'0'0 );
+    EXPECT_EQ( address.as_unsigned_integer(), 0x00'00'00'00 );
 }
+
+/**
+ * \brief picolibrary::IPv4::Address::Address( picolibrary::IPv4::Address::Byte_Array
+ *        const & ) and picolibrary::IPv4::Address::Address(
+ *        picolibrary::IPv4::Address::Unsigned_Integer const & ) test case.
+ */
+struct constructor_Test_Case {
+    /**
+     * \brief The address in its byte array representation.
+     */
+    Address::Byte_Array byte_array;
+
+    /**
+     * \brief The address in its unsigned integer representation.
+     */
+    Address::Unsigned_Integer unsigned_integer;
+
+    /**
+     * \brief The address is the address that is used to represent any address (0.0.0.0).
+     */
+    bool is_any;
+
+    /**
+     * \brief The address is a loopback address (127.0.0.0-127.255.255.255).
+     */
+    bool is_loopback;
+
+    /**
+     * \brief The address is the local network broadcast address (255.255.255.255).
+     */
+    bool is_broadcast;
+
+    /**
+     * \brief The address is a multicast address (224.0.0.0-239.255.255.255).
+     */
+    bool is_multicast;
+};
+
+auto operator<<( std::ostream & stream, constructor_Test_Case const & test_case ) -> std::ostream &
+{
+    // clang-format off
+
+    return stream << "{ "
+                  << ".byte_array = { " << static_cast<std::uint_fast16_t>( test_case.byte_array[ 0 ] ) << ", "
+                                        << static_cast<std::uint_fast16_t>( test_case.byte_array[ 1 ] ) << ", "
+                                        << static_cast<std::uint_fast16_t>( test_case.byte_array[ 2 ] ) << ", "
+                                        << static_cast<std::uint_fast16_t>( test_case.byte_array[ 3 ] ) << " }"
+                  << ", "
+                  << ".unsigned_integer = 0x" << std::hex << std::uppercase << std::setw( std::numeric_limits<Address::Unsigned_Integer>::digits / 4 ) << std::setfill( '0' ) << test_case.unsigned_integer
+                  << ", "
+                  << ".is_any = " << std::boolalpha << test_case.is_any
+                  << ", "
+                  << ".is_loopback = " << std::boolalpha << test_case.is_loopback
+                  << ", "
+                  << ".is_broadcast = " << std::boolalpha << test_case.is_broadcast
+                  << ", "
+                  << ".is_multicast = " << std::boolalpha << test_case.is_multicast
+                  << " }";
+
+    // clang-format on
+}
+
+/**
+ * \brief picolibrary::IPv4::Address::Address( picolibrary::IPv4::Address::Byte_Array
+ *        const & ) and picolibrary::IPv4::Address::Address(
+ *        picolibrary::IPv4::Address::Unsigned_Integer const & ) test cases.
+ */
+constructor_Test_Case const constructor_TEST_CASES[]{
+    // clang-format off
+
+    { { 0, 0, 0, 0 }, 0x00'00'00'00, true,  false, false, false },
+
+    { {   0,   0,   0,   1 }, 0x00'00'00'01, false, false, false, false },
+    { {  94, 251,  42,  60 }, 0x5E'FB'2A'3C, false, false, false, false },
+    { { 126, 255, 255, 255 }, 0x7E'FF'FF'FF, false, false, false, false },
+
+    { { 127,   0,   0,   0 }, 0x7F'00'00'00, false, true, false, false },
+    { { 127, 187, 219, 128 }, 0x7F'BB'DB'80, false, true, false, false },
+    { { 127, 255, 255, 255 }, 0x7F'FF'FF'FF, false, true, false, false },
+
+    { { 128,   0,   0,   0 }, 0x80'00'00'00, false, false, false, false },
+    { { 215, 243, 162, 166 }, 0xD7'F3'A2'A6, false, false, false, false },
+    { { 223, 255, 255, 255 }, 0xDF'FF'FF'FF, false, false, false, false },
+
+    { { 224,   0,   0,   0 }, 0xE0'00'00'00, false, false, false, true },
+    { { 229, 172,  99,  89 }, 0xE5'AC'63'59, false, false, false, true },
+    { { 239, 255, 255, 255 }, 0xEF'FF'FF'FF, false, false, false, true },
+
+    { { 240,   0,   0,   0 }, 0xF0'00'00'00, false, false, false, false },
+    { { 242, 147, 131, 229 }, 0xF2'93'83'E5, false, false, false, false },
+    { { 255, 255, 255, 254 }, 0xFF'FF'FF'FE, false, false, false, false },
+
+    { { 255, 255, 255, 255 }, 0xFF'FF'FF'FF, false, false, true, false },
+
+    // clang-format on
+};
+
+/**
+ * \brief picolibrary::IPv4::Address::Address( picolibrary::IPv4::Address::Byte_Array
+ *        const & ) test fixture.
+ */
+class constructorByteArray : public TestWithParam<constructor_Test_Case> {
+};
 
 /**
  * \brief Verify picolibrary::IPv4::Address::Address(
  *        picolibrary::IPv4::Address::Byte_Array const & ) works properly.
  */
-TEST( constructorByteArray, worksProperly )
+TEST_P( constructorByteArray, worksProperly )
 {
-    {
-        auto const byte_array = Address::Byte_Array{ 0, 0, 0, 0 };
+    auto const test_case = GetParam();
 
-        auto const address = Address{ byte_array };
+    auto const address = Address{ test_case.byte_array };
 
-        EXPECT_TRUE( address.is_any() );
-        EXPECT_FALSE( address.is_loopback() );
-        EXPECT_FALSE( address.is_broadcast() );
-        EXPECT_FALSE( address.is_multicast() );
-        EXPECT_EQ( address.as_byte_array(), byte_array );
-        EXPECT_EQ( address.as_unsigned_integer(), to_unsigned_integer( byte_array ) );
-    }
-
-    {
-        auto const byte_array = Address::Byte_Array{
-            127, random<std::uint8_t>(), random<std::uint8_t>(), random<std::uint8_t>()
-        };
-
-        auto const address = Address{ byte_array };
-
-        EXPECT_FALSE( address.is_any() );
-        EXPECT_TRUE( address.is_loopback() );
-        EXPECT_FALSE( address.is_broadcast() );
-        EXPECT_FALSE( address.is_multicast() );
-        EXPECT_EQ( address.as_byte_array(), byte_array );
-        EXPECT_EQ( address.as_unsigned_integer(), to_unsigned_integer( byte_array ) );
-    }
-
-    {
-        auto const byte_array = Address::Byte_Array{ 255, 255, 255, 255 };
-
-        auto const address = Address{ byte_array };
-
-        EXPECT_FALSE( address.is_any() );
-        EXPECT_FALSE( address.is_loopback() );
-        EXPECT_TRUE( address.is_broadcast() );
-        EXPECT_FALSE( address.is_multicast() );
-        EXPECT_EQ( address.as_byte_array(), byte_array );
-        EXPECT_EQ( address.as_unsigned_integer(), to_unsigned_integer( byte_array ) );
-    }
-
-    {
-        auto const byte_array = Address::Byte_Array{ random<std::uint8_t>( 224, 239 ),
-                                                     random<std::uint8_t>(),
-                                                     random<std::uint8_t>(),
-                                                     random<std::uint8_t>() };
-
-        auto const address = Address{ byte_array };
-
-        EXPECT_FALSE( address.is_any() );
-        EXPECT_FALSE( address.is_loopback() );
-        EXPECT_FALSE( address.is_broadcast() );
-        EXPECT_TRUE( address.is_multicast() );
-        EXPECT_EQ( address.as_byte_array(), byte_array );
-        EXPECT_EQ( address.as_unsigned_integer(), to_unsigned_integer( byte_array ) );
-    }
-
-    {
-        auto const byte_array = random_array<std::uint8_t, 4>();
-
-        auto const address = Address{ byte_array };
-
-        EXPECT_EQ( address.is_any(), ( byte_array == Address::Byte_Array{ 0, 0, 0, 0 } ) );
-        EXPECT_EQ( address.is_loopback(), byte_array[ 0 ] == 127 );
-        EXPECT_EQ( address.is_broadcast(), ( byte_array == Address::Byte_Array{ 255, 255, 255, 255 } ) );
-        EXPECT_EQ( address.is_multicast(), byte_array[ 0 ] >= 224 and byte_array[ 0 ] <= 239 );
-        EXPECT_EQ( address.as_byte_array(), byte_array );
-        EXPECT_EQ( address.as_unsigned_integer(), to_unsigned_integer( byte_array ) );
-    }
+    EXPECT_EQ( address.is_any(), test_case.is_any );
+    EXPECT_EQ( address.is_loopback(), test_case.is_loopback );
+    EXPECT_EQ( address.is_broadcast(), test_case.is_broadcast );
+    EXPECT_EQ( address.is_multicast(), test_case.is_multicast );
+    EXPECT_EQ( address.as_byte_array(), test_case.byte_array );
+    EXPECT_EQ( address.as_unsigned_integer(), test_case.unsigned_integer );
 }
+
+INSTANTIATE_TEST_SUITE_P( testCases, constructorByteArray, ValuesIn( constructor_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::IPv4::Address::Address(
+ *        picolibrary::IPv4::Address::Unsigned_Integer const & ) test fixture.
+ */
+class constructorUnsignedInteger : public TestWithParam<constructor_Test_Case> {
+};
 
 /**
  * \brief Verify picolibrary::IPv4::Address::Address(
  *        picolibrary::IPv4::Address::Unsigned_Integer const & ) works properly.
  */
-TEST( constructorUnsignedInteger, worksProperly )
+TEST_P( constructorUnsignedInteger, worksProperly )
 {
-    {
-        auto const byte_array       = Address::Byte_Array{ 0, 0, 0, 0 };
-        auto const unsigned_integer = to_unsigned_integer( byte_array );
+    auto const test_case = GetParam();
 
-        auto const address = Address{ unsigned_integer };
+    auto const address = Address{ test_case.unsigned_integer };
 
-        EXPECT_TRUE( address.is_any() );
-        EXPECT_FALSE( address.is_loopback() );
-        EXPECT_FALSE( address.is_broadcast() );
-        EXPECT_FALSE( address.is_multicast() );
-        EXPECT_EQ( address.as_byte_array(), byte_array );
-        EXPECT_EQ( address.as_unsigned_integer(), unsigned_integer );
-    }
+    EXPECT_EQ( address.is_any(), test_case.is_any );
+    EXPECT_EQ( address.is_loopback(), test_case.is_loopback );
+    EXPECT_EQ( address.is_broadcast(), test_case.is_broadcast );
+    EXPECT_EQ( address.is_multicast(), test_case.is_multicast );
+    EXPECT_EQ( address.as_byte_array(), test_case.byte_array );
+    EXPECT_EQ( address.as_unsigned_integer(), test_case.unsigned_integer );
+}
 
-    {
-        auto const byte_array = Address::Byte_Array{
-            127, random<std::uint8_t>(), random<std::uint8_t>(), random<std::uint8_t>()
-        };
-        auto const unsigned_integer = to_unsigned_integer( byte_array );
+INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger, ValuesIn( constructor_TEST_CASES ) );
 
-        auto const address = Address{ unsigned_integer };
+/**
+ * \brief picolibrary::IPv4::operator==( picolibrary::IPv4::Address const &,
+ *        picolibrary::IPv4::Address const & ), picolibrary::IPv4::operator!=(
+ *        picolibrary::IPv4::Address const &, picolibrary::IPv4::Address const & ),
+ *        picolibrary::IPv4::operator<( picolibrary::IPv4::Address const &,
+ *        picolibrary::IPv4::Address const & ), picolibrary::IPv4::operator>(
+ *        picolibrary::IPv4::Address const &, picolibrary::IPv4::Address const & ),
+ *        picolibrary::IPv4::operator<=( picolibrary::IPv4::Address const &,
+ *        picolibrary::IPv4::Address const & ), and picolibrary::IPv4::operator>=(
+ *        picolibrary::IPv4::Address const &, picolibrary::IPv4::Address const & ) test
+ *        case.
+ */
+struct comparisonOperator_Test_Case {
+    /**
+     * \brief The left hand side of the comparison.
+     */
+    Address lhs;
 
-        EXPECT_FALSE( address.is_any() );
-        EXPECT_TRUE( address.is_loopback() );
-        EXPECT_FALSE( address.is_broadcast() );
-        EXPECT_FALSE( address.is_multicast() );
-        EXPECT_EQ( address.as_byte_array(), byte_array );
-        EXPECT_EQ( address.as_unsigned_integer(), unsigned_integer );
-    }
+    /**
+     * \brief The right hand side of the comparison.
+     */
+    Address rhs;
 
-    {
-        auto const byte_array       = Address::Byte_Array{ 255, 255, 255, 255 };
-        auto const unsigned_integer = to_unsigned_integer( byte_array );
+    /**
+     * \brief The comparison result.
+     */
+    bool comparison_result;
+};
 
-        auto const address = Address{ unsigned_integer };
+auto operator<<( std::ostream & stream, comparisonOperator_Test_Case const & test_case )
+    -> std::ostream &
+{
+    // clang-format off
 
-        EXPECT_FALSE( address.is_any() );
-        EXPECT_FALSE( address.is_loopback() );
-        EXPECT_TRUE( address.is_broadcast() );
-        EXPECT_FALSE( address.is_multicast() );
-        EXPECT_EQ( address.as_byte_array(), byte_array );
-        EXPECT_EQ( address.as_unsigned_integer(), unsigned_integer );
-    }
+    return stream << "{ "
+                  << ".lhs = " << test_case.lhs
+                  << ", "
+                  << ".rhs = " << test_case.rhs
+                  << ", "
+                  << ".comparison_result = " << std::boolalpha << test_case.comparison_result
+                  << " }";
 
-    {
-        auto const byte_array = Address::Byte_Array{ random<std::uint8_t>( 224, 239 ),
-                                                     random<std::uint8_t>(),
-                                                     random<std::uint8_t>(),
-                                                     random<std::uint8_t>() };
-        auto const unsigned_integer = to_unsigned_integer( byte_array );
-
-        auto const address = Address{ unsigned_integer };
-
-        EXPECT_FALSE( address.is_any() );
-        EXPECT_FALSE( address.is_loopback() );
-        EXPECT_FALSE( address.is_broadcast() );
-        EXPECT_TRUE( address.is_multicast() );
-        EXPECT_EQ( address.as_byte_array(), byte_array );
-        EXPECT_EQ( address.as_unsigned_integer(), unsigned_integer );
-    }
-
-    {
-        auto const byte_array       = random_array<std::uint8_t, 4>();
-        auto const unsigned_integer = to_unsigned_integer( byte_array );
-
-        auto const address = Address{ unsigned_integer };
-
-        EXPECT_EQ( address.is_any(), ( byte_array == Address::Byte_Array{ 0, 0, 0, 0 } ) );
-        EXPECT_EQ( address.is_loopback(), byte_array[ 0 ] == 127 );
-        EXPECT_EQ( address.is_broadcast(), ( byte_array == Address::Byte_Array{ 255, 255, 255, 255 } ) );
-        EXPECT_EQ( address.is_multicast(), byte_array[ 0 ] >= 224 and byte_array[ 0 ] <= 239 );
-        EXPECT_EQ( address.as_byte_array(), byte_array );
-        EXPECT_EQ( address.as_unsigned_integer(), unsigned_integer );
-    }
+    // clang-format on
 }
 
 /**
- * \brief Verify picolibrary::operator==( picolibrary::IPv4::Address const &,
+ * \brief picolibrary::IPv4::operator==( picolibrary::IPv4::Address const &,
+ *        picolibrary::IPv4::Address const & ) test fixture.
+ */
+class equalityOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::IPv4::operator==( picolibrary::IPv4::Address const &,
  *        picolibrary::IPv4::Address const & ) works properly.
  */
-TEST( equalityOperator, worksProperly )
+TEST_P( equalityOperator, worksProperly )
 {
-    {
-        auto const lhs = random<Address::Unsigned_Integer>();
-        auto const rhs = lhs;
+    auto const test_case = GetParam();
 
-        EXPECT_TRUE( Address{ lhs } == Address{ rhs } );
-    }
-
-    {
-        auto const [ lhs, rhs ] = random_unique_pair<Address::Unsigned_Integer>();
-
-        EXPECT_FALSE( Address{ lhs } == Address{ rhs } );
-    }
+    ASSERT_EQ( test_case.lhs == test_case.rhs, test_case.comparison_result );
 }
 
 /**
- * \brief Verify picolibrary::operator!=( picolibrary::IPv4::Address const &,
+ * \brief picolibrary::IPv4::operator==( picolibrary::IPv4::Address const &,
+ *        picolibrary::IPv4::Address const & ) test cases.
+ */
+comparisonOperator_Test_Case const equalityOperator_TEST_CASES[]{
+    // clang-format off
+
+    { { {  24,  89, 245,  60 } }, { { 142, 148,  44,  38 } }, false },
+    { { { 149, 175, 232,  78 } }, { { 149, 175, 232,  79 } }, false },
+    { { { 149, 175, 232,  79 } }, { { 149, 175, 232,  79 } }, true  },
+    { { { 149, 175, 232,  80 } }, { { 149, 175, 232,  79 } }, false },
+    { { { 210,  90, 186, 128 } }, { { 219,  29,  34, 215 } }, false },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, equalityOperator, ValuesIn( equalityOperator_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::IPv4::operator!=( picolibrary::IPv4::Address const &,
+ *        picolibrary::IPv4::Address const & ) test fixture.
+ */
+class inequalityOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::IPv4::operator!=( picolibrary::IPv4::Address const &,
  *        picolibrary::IPv4::Address const & ) works properly.
  */
-TEST( inequalityOperator, worksProperly )
+TEST_P( inequalityOperator, worksProperly )
 {
-    {
-        auto const lhs = random<Address::Unsigned_Integer>();
-        auto const rhs = lhs;
+    auto const test_case = GetParam();
 
-        EXPECT_FALSE( Address{ lhs } != Address{ rhs } );
-    }
-
-    {
-        auto const [ lhs, rhs ] = random_unique_pair<Address::Unsigned_Integer>();
-
-        EXPECT_TRUE( Address{ lhs } != Address{ rhs } );
-    }
+    ASSERT_EQ( test_case.lhs != test_case.rhs, test_case.comparison_result );
 }
 
 /**
- * \brief Verify picolibrary::operator<( picolibrary::IPv4::Address const &,
+ * \brief picolibrary::IPv4::operator!=( picolibrary::IPv4::Address const &,
+ *        picolibrary::IPv4::Address const & ) test cases.
+ */
+comparisonOperator_Test_Case const inequalityOperator_TEST_CASES[]{
+    // clang-format off
+
+    { { {  24,  89, 245,  60 } }, { { 142, 148,  44,  38 } }, true  },
+    { { { 149, 175, 232,  78 } }, { { 149, 175, 232,  79 } }, true  },
+    { { { 149, 175, 232,  79 } }, { { 149, 175, 232,  79 } }, false },
+    { { { 149, 175, 232,  80 } }, { { 149, 175, 232,  79 } }, true  },
+    { { { 210,  90, 186, 128 } }, { { 219,  29,  34, 215 } }, true  },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, inequalityOperator, ValuesIn( inequalityOperator_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::IPv4::operator<( picolibrary::IPv4::Address const &,
+ *        picolibrary::IPv4::Address const & ) test fixture.
+ */
+class lessThanOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::IPv4::operator<( picolibrary::IPv4::Address const &,
  *        picolibrary::IPv4::Address const & ) works properly.
  */
-TEST( lessThanOperator, worksProperly )
+TEST_P( lessThanOperator, worksProperly )
 {
-    {
-        auto const rhs = random<Address::Unsigned_Integer>( 0'0'0'0 + 1 );
-        auto const lhs = random<Address::Unsigned_Integer>( 0'0'0'0, rhs - 1 );
+    auto const test_case = GetParam();
 
-        EXPECT_TRUE( Address{ lhs } < Address{ rhs } );
-    }
-
-    {
-        auto const rhs = random<Address::Unsigned_Integer>();
-        auto const lhs = random<Address::Unsigned_Integer>( rhs );
-
-        EXPECT_FALSE( Address{ lhs } < Address{ rhs } );
-    }
+    ASSERT_EQ( test_case.lhs < test_case.rhs, test_case.comparison_result );
 }
 
 /**
- * \brief Verify picolibrary::operator>( picolibrary::IPv4::Address const &,
+ * \brief picolibrary::IPv4::operator<( picolibrary::IPv4::Address const &,
+ *        picolibrary::IPv4::Address const & ) test cases.
+ */
+comparisonOperator_Test_Case const lessThanOperator_TEST_CASES[]{
+    // clang-format off
+
+    { { {  92, 178,  11, 221 } }, { { 146, 45, 171, 183 } }, true  },
+    { { { 146,  45, 171, 182 } }, { { 146, 45, 171, 183 } }, true  },
+    { { { 146,  45, 171, 183 } }, { { 146, 45, 171, 183 } }, false },
+    { { { 146,  45, 171, 184 } }, { { 146, 45, 171, 183 } }, false },
+    { { { 253, 213, 179,  93 } }, { { 146, 45, 171, 183 } }, false },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, lessThanOperator, ValuesIn( lessThanOperator_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::IPv4::operator>( picolibrary::IPv4::Address const &,
+ *        picolibrary::IPv4::Address const & ) test fixture.
+ */
+class greaterThanOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::IPv4::operator>( picolibrary::IPv4::Address const &,
  *        picolibrary::IPv4::Address const & ) works properly.
  */
-TEST( greaterThanOperator, worksProperly )
+TEST_P( greaterThanOperator, worksProperly )
 {
-    {
-        auto const lhs = random<Address::Unsigned_Integer>( 0'0'0'0 + 1 );
-        auto const rhs = random<Address::Unsigned_Integer>( 0'0'0'0, lhs - 1 );
+    auto const test_case = GetParam();
 
-        EXPECT_TRUE( Address{ lhs } > Address{ rhs } );
-    }
-
-    {
-        auto const lhs = random<Address::Unsigned_Integer>();
-        auto const rhs = random<Address::Unsigned_Integer>( lhs );
-
-        EXPECT_FALSE( Address{ lhs } > Address{ rhs } );
-    }
+    ASSERT_EQ( test_case.lhs > test_case.rhs, test_case.comparison_result );
 }
 
 /**
- * \brief Verify picolibrary::operator<=( picolibrary::IPv4::Address const &,
+ * \brief picolibrary::IPv4::operator>( picolibrary::IPv4::Address const &,
+ *        picolibrary::IPv4::Address const & ) test cases.
+ */
+comparisonOperator_Test_Case const greaterThanOperator_TEST_CASES[]{
+    // clang-format off
+
+    { { {  92, 178,  11, 221 } }, { { 146, 45, 171, 183 } }, false },
+    { { { 146,  45, 171, 182 } }, { { 146, 45, 171, 183 } }, false },
+    { { { 146,  45, 171, 183 } }, { { 146, 45, 171, 183 } }, false },
+    { { { 146,  45, 171, 184 } }, { { 146, 45, 171, 183 } }, true  },
+    { { { 253, 213, 179,  93 } }, { { 146, 45, 171, 183 } }, true  },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, greaterThanOperator, ValuesIn( greaterThanOperator_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::IPv4::operator<=( picolibrary::IPv4::Address const &,
+ *        picolibrary::IPv4::Address const & ) test fixture.
+ */
+class lessThanOrEqualToOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::IPv4::operator<=( picolibrary::IPv4::Address const &,
  *        picolibrary::IPv4::Address const & ) works properly.
  */
-TEST( lessThanOrEqualToOperator, worksProperly )
+TEST_P( lessThanOrEqualToOperator, worksProperly )
 {
-    {
-        auto const lhs = random<Address::Unsigned_Integer>();
-        auto const rhs = random<Address::Unsigned_Integer>( lhs );
+    auto const test_case = GetParam();
 
-        EXPECT_TRUE( Address{ lhs } <= Address{ rhs } );
-    }
-
-    {
-        auto const lhs = random<Address::Unsigned_Integer>( 0'0'0'0 + 1 );
-        auto const rhs = random<Address::Unsigned_Integer>( 0'0'0'0, lhs - 1 );
-
-        EXPECT_FALSE( Address{ lhs } <= Address{ rhs } );
-    }
+    ASSERT_EQ( test_case.lhs <= test_case.rhs, test_case.comparison_result );
 }
 
 /**
- * \brief Verify picolibrary::operator>=( picolibrary::IPv4::Address const &,
+ * \brief picolibrary::IPv4::operator<=( picolibrary::IPv4::Address const &,
+ *        picolibrary::IPv4::Address const & ) test cases.
+ */
+comparisonOperator_Test_Case const lessThanOrEqualToOperator_TEST_CASES[]{
+    // clang-format off
+
+    { { {  92, 178,  11, 221 } }, { { 146, 45, 171, 183 } }, true  },
+    { { { 146,  45, 171, 182 } }, { { 146, 45, 171, 183 } }, true  },
+    { { { 146,  45, 171, 183 } }, { { 146, 45, 171, 183 } }, true  },
+    { { { 146,  45, 171, 184 } }, { { 146, 45, 171, 183 } }, false },
+    { { { 253, 213, 179,  93 } }, { { 146, 45, 171, 183 } }, false },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, lessThanOrEqualToOperator, ValuesIn( lessThanOrEqualToOperator_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::IPv4::operator>=( picolibrary::IPv4::Address const &,
+ *        picolibrary::IPv4::Address const & ) test fixture.
+ */
+class greaterThanOrEqualToOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::IPv4::operator>=( picolibrary::IPv4::Address const &,
  *        picolibrary::IPv4::Address const & ) works properly.
  */
-TEST( greaterThanOrEqualToOperator, worksProperly )
+TEST_P( greaterThanOrEqualToOperator, worksProperly )
 {
-    {
-        auto const rhs = random<Address::Unsigned_Integer>();
-        auto const lhs = random<Address::Unsigned_Integer>( rhs );
+    auto const test_case = GetParam();
 
-        EXPECT_TRUE( Address{ lhs } >= Address{ rhs } );
-    }
-
-    {
-        auto const rhs = random<Address::Unsigned_Integer>( 0'0'0'0 + 1 );
-        auto const lhs = random<Address::Unsigned_Integer>( 0'0'0'0, rhs - 1 );
-
-        EXPECT_FALSE( Address{ lhs } >= Address{ rhs } );
-    }
+    ASSERT_EQ( test_case.lhs >= test_case.rhs, test_case.comparison_result );
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::IPv4::Address> properly
- *        handles a print error.
+ * \brief picolibrary::IPv4::operator>=( picolibrary::IPv4::Address const &,
+ *        picolibrary::IPv4::Address const & ) test cases.
  */
-TEST( outputFormatterIPv4Address, printError )
+comparisonOperator_Test_Case const greaterThanOrEqualToOperator_TEST_CASES[]{
+    // clang-format off
+
+    { { {  92, 178,  11, 221 } }, { { 146, 45, 171, 183 } }, false },
+    { { { 146,  45, 171, 182 } }, { { 146, 45, 171, 183 } }, false },
+    { { { 146,  45, 171, 183 } }, { { 146, 45, 171, 183 } }, true  },
+    { { { 146,  45, 171, 184 } }, { { 146, 45, 171, 183 } }, true  },
+    { { { 253, 213, 179,  93 } }, { { 146, 45, 171, 183 } }, true  },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, greaterThanOrEqualToOperator, ValuesIn( greaterThanOrEqualToOperator_TEST_CASES ) );
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::IPv4::Address>::print(
+ *        picolibrary::Output_Stream &, picolibrary::IPv4::Address const & ) properly
+ *        handles a put error.
+ */
+TEST( outputFormatterIPv4AddressPrintOutputStreamErrorHandling, putError )
 {
     auto stream = Mock_Output_Stream{};
 
-    auto const error = random<Mock_Error>();
+    auto const error = Mock_Error{ 98 };
 
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.print( Address{ random<Address::Unsigned_Integer>() } );
+    auto const result = stream.print( Address{ { 198, 4, 177, 122 } } );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -393,41 +499,106 @@ TEST( outputFormatterIPv4Address, printError )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::IPv4::Address> works properly.
+ * \brief picolibrary::Output_Formatter<picolibrary::IPv4::Address>::print() test case.
  */
-TEST( outputFormatterIPv4Address, worksProperly )
+struct outputFormatterIPv4AddressPrint_Test_Case {
+    /**
+     * \brief The picolibrary::IPv4::Address to format.
+     */
+    Address address;
+
+    /**
+     * \brief The formatted address.
+     */
+    std::string_view formatted_address;
+};
+
+auto operator<<( std::ostream & stream, outputFormatterIPv4AddressPrint_Test_Case const & test_case )
+    -> std::ostream &
 {
-    {
-        auto stream = Output_String_Stream{};
+    // clang-format off
 
-        auto const byte_array = random_array<std::uint8_t, 4>();
+    return stream << "{ "
+                  << ".address = " << test_case.address
+                  << ", "
+                  << ".formatted_address = " << test_case.formatted_address
+                  << " }";
 
-        auto const address = Address{ byte_array };
-
-        auto const result = stream.print( address );
-
-        ASSERT_FALSE( result.is_error() );
-        EXPECT_EQ( result.value(), stream.string().size() );
-
-        EXPECT_TRUE( stream.is_nominal() );
-        EXPECT_EQ( stream.string(), dot_decimal( byte_array ) );
-    }
-
-    {
-        auto stream = Reliable_Output_String_Stream{};
-
-        auto const byte_array = random_array<std::uint8_t, 4>();
-
-        auto const address = Address{ byte_array };
-
-        auto const n = stream.print( address );
-
-        EXPECT_EQ( n, stream.string().size() );
-
-        EXPECT_TRUE( stream.is_nominal() );
-        EXPECT_EQ( stream.string(), dot_decimal( byte_array ) );
-    }
+    // clang-format on
 }
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::IPv4::Address>::print() test cases.
+ */
+outputFormatterIPv4AddressPrint_Test_Case const outputFormatterIPv4AddressPrint_TEST_CASES[]{
+    // clang-format off
+
+    { { {   0,   0,   0,   0 } }, "0.0.0.0"         },
+    { { { 101, 136, 170,  45 } }, "101.136.170.45"  },
+    { { { 255, 255, 255, 255 } }, "255.255.255.255" },
+
+    // clang-format on
+};
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::IPv4::Address>::print(
+ *        picolibrary::Output_Stream &, picolibrary::IPv4::Address const & ) test fixture.
+ */
+class outputFormatterIPv4AddressPrintOutputStream :
+    public TestWithParam<outputFormatterIPv4AddressPrint_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::IPv4::Address>::print(
+ *        picolibrary::Output_Stream &, picolibrary::IPv4::Address const & ) works
+ *        properly.
+ */
+TEST_P( outputFormatterIPv4AddressPrintOutputStream, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    auto stream = Output_String_Stream{};
+
+    auto const result = stream.print( test_case.address );
+
+    ASSERT_FALSE( result.is_error() );
+    EXPECT_EQ( result.value(), stream.string().size() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), test_case.formatted_address );
+}
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterIPv4AddressPrintOutputStream, ValuesIn( outputFormatterIPv4AddressPrint_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::Output_Formatter<picolibrary::IPv4::Address>::print(
+ *        picolibrary::Reliable_Output_Stream &, picolibrary::IPv4::Address const & ) test
+ *        fixture.
+ */
+class outputFormatterIPv4AddressPrintReliableOutputStream :
+    public TestWithParam<outputFormatterIPv4AddressPrint_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::IPv4::Address>::print(
+ *        picolibrary::Reliable_Output_Stream &, picolibrary::IPv4::Address const & )
+ *        works properly.
+ */
+TEST_P( outputFormatterIPv4AddressPrintReliableOutputStream, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    auto stream = Reliable_Output_String_Stream{};
+
+    auto const n = stream.print( test_case.address );
+
+    EXPECT_EQ( n, stream.string().size() );
+
+    EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.string(), test_case.formatted_address );
+}
+
+INSTANTIATE_TEST_SUITE_P( testCases, outputFormatterIPv4AddressPrintReliableOutputStream, ValuesIn( outputFormatterIPv4AddressPrint_TEST_CASES ) );
 
 /**
  * \brief Execute the picolibrary::IPv4::Address automated tests.
