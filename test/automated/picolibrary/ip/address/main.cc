@@ -485,17 +485,15 @@ auto operator<<( std::ostream & stream, comparisonOperator_Test_Case const & tes
 {
     // clang-format off
 
-    stream << "{ "
-           << ".lhs = " << test_case.lhs
-           << ", "
-           << ".rhs = " << test_case.rhs
-           << ", "
-           << ".comparison_result = " << std::boolalpha << test_case.comparison_result
-           << " }";
+    return stream << "{ "
+                  << ".lhs = " << test_case.lhs
+                  << ", "
+                  << ".rhs = " << test_case.rhs
+                  << ", "
+                  << ".comparison_result = " << std::boolalpha << test_case.comparison_result
+                  << " }";
 
     // clang-format on
-
-    return stream;
 }
 
 /**
