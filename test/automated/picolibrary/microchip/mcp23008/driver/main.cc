@@ -75,7 +75,7 @@ TEST_P( constructor, worksProperly )
 /**
  * \brief picolibrary::Microchip::MCP23008::Driver::Driver( Bus_Multiplexer_Aligner,
  *        Controller &, picolibrary::Microchip::MCP23008::Address_Transmitted,
- *        picolibrary::Error_Code const & ) test fixture.
+ *        picolibrary::Error_Code const & ) test cases.
  */
 Address_Transmitted const constructor_TEST_CASES[]{
     // clang-format off
