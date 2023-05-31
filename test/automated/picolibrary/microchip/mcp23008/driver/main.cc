@@ -28,21 +28,29 @@
 #include "picolibrary/microchip/mcp23008.h"
 #include "picolibrary/testing/automated/error.h"
 #include "picolibrary/testing/automated/i2c.h"
-#include "picolibrary/testing/automated/random.h"
 
 namespace {
 
 using ::picolibrary::Microchip::MCP23008::Address_Numeric;
 using ::picolibrary::Microchip::MCP23008::Address_Transmitted;
 using ::picolibrary::Testing::Automated::Mock_Error;
-using ::picolibrary::Testing::Automated::random;
 using ::picolibrary::Testing::Automated::I2C::Mock_Controller;
 using ::picolibrary::Testing::Automated::I2C::Mock_Device;
 using ::testing::Return;
+using ::testing::TestWithParam;
+using ::testing::ValuesIn;
 
 using Driver = ::picolibrary::Microchip::MCP23008::Driver<std::function<void()>, Mock_Controller, Mock_Device>;
 
 } // namespace
+
+/**
+ * \brief picolibrary::Microchip::MCP23008::Driver::Driver( Bus_Multiplexer_Aligner,
+ *        Controller &, picolibrary::Microchip::MCP23008::Address_Transmitted,
+ *        picolibrary::Error_Code const & ) test fixture.
+ */
+class constructor : public TestWithParam<Address_Transmitted> {
+};
 
 /**
  * \brief Verify picolibrary::Microchip::MCP23008::Driver::Driver(
@@ -50,37 +58,41 @@ using Driver = ::picolibrary::Microchip::MCP23008::Driver<std::function<void()>,
  *        picolibrary::Microchip::MCP23008::Address_Transmitted, picolibrary::Error_Code
  *        const & ) works properly.
  */
-TEST( constructor, worksProperly )
+TEST_P( constructor, worksProperly )
 {
-    struct {
-        Address_Transmitted address;
-    } const test_cases[]{
-        // clang-format off
+    auto       controller                 = Mock_Controller{};
+    auto const address                    = GetParam();
+    auto const nonresponsive_device_error = Mock_Error{ 68 };
 
-        { Address_Numeric{ 0b0100'000 } },
-        { Address_Numeric{ 0b0100'001 } },
-        { Address_Numeric{ 0b0100'010 } },
-        { Address_Numeric{ 0b0100'011 } },
-        { Address_Numeric{ 0b0100'100 } },
-        { Address_Numeric{ 0b0100'101 } },
-        { Address_Numeric{ 0b0100'110 } },
-        { Address_Numeric{ 0b0100'111 } },
-
-        // clang-format on
+    auto const mcp23008 = ::picolibrary::Microchip::MCP23008::Driver{
+        std::function<void()>{}, controller, address, nonresponsive_device_error
     };
 
-    for ( auto const test_case : test_cases ) {
-        auto       controller                 = Mock_Controller{};
-        auto const nonresponsive_device_error = random<Mock_Error>();
-
-        auto const mcp23008 = ::picolibrary::Microchip::MCP23008::Driver{
-            std::function<void()>{}, controller, test_case.address, nonresponsive_device_error
-        };
-
-        EXPECT_EQ( mcp23008.address(), test_case.address );
-        EXPECT_EQ( mcp23008.nonresponsive_device_error(), nonresponsive_device_error );
-    } // for
+    EXPECT_EQ( mcp23008.address(), address );
+    EXPECT_EQ( mcp23008.nonresponsive_device_error(), nonresponsive_device_error );
 }
+
+/**
+ * \brief picolibrary::Microchip::MCP23008::Driver::Driver( Bus_Multiplexer_Aligner,
+ *        Controller &, picolibrary::Microchip::MCP23008::Address_Transmitted,
+ *        picolibrary::Error_Code const & ) test cases.
+ */
+Address_Transmitted const constructor_TEST_CASES[]{
+    // clang-format off
+
+    { Address_Numeric{ 0b0100'000 } },
+    { Address_Numeric{ 0b0100'001 } },
+    { Address_Numeric{ 0b0100'010 } },
+    { Address_Numeric{ 0b0100'011 } },
+    { Address_Numeric{ 0b0100'100 } },
+    { Address_Numeric{ 0b0100'101 } },
+    { Address_Numeric{ 0b0100'110 } },
+    { Address_Numeric{ 0b0100'111 } },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, constructor, ValuesIn( constructor_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::Microchip::MCP23008::Driver::read_iodir() works properly.
@@ -89,11 +101,11 @@ TEST( readIODIR, worksProperly )
 {
     auto const mcp23008 = Driver{};
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0x14 };
 
     EXPECT_CALL( mcp23008, read( 0x00 ) ).WillOnce( Return( data ) );
 
-    EXPECT_EQ( mcp23008.read_iodir(), data );
+    ASSERT_EQ( mcp23008.read_iodir(), data );
 }
 
 /**
@@ -103,7 +115,7 @@ TEST( writeIODIR, worksProperly )
 {
     auto mcp23008 = Driver{};
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0x1E };
 
     EXPECT_CALL( mcp23008, write( 0x00, data ) );
 
@@ -117,11 +129,11 @@ TEST( readIPOL, worksProperly )
 {
     auto const mcp23008 = Driver{};
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0x66 };
 
     EXPECT_CALL( mcp23008, read( 0x01 ) ).WillOnce( Return( data ) );
 
-    EXPECT_EQ( mcp23008.read_ipol(), data );
+    ASSERT_EQ( mcp23008.read_ipol(), data );
 }
 
 /**
@@ -131,7 +143,7 @@ TEST( writeIPOL, worksProperly )
 {
     auto mcp23008 = Driver{};
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0xFB };
 
     EXPECT_CALL( mcp23008, write( 0x01, data ) );
 
@@ -145,11 +157,11 @@ TEST( readGPINTEN, worksProperly )
 {
     auto const mcp23008 = Driver{};
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0x14 };
 
     EXPECT_CALL( mcp23008, read( 0x02 ) ).WillOnce( Return( data ) );
 
-    EXPECT_EQ( mcp23008.read_gpinten(), data );
+    ASSERT_EQ( mcp23008.read_gpinten(), data );
 }
 
 /**
@@ -159,7 +171,7 @@ TEST( writeGPINTEN, worksProperly )
 {
     auto mcp23008 = Driver{};
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0x01 };
 
     EXPECT_CALL( mcp23008, write( 0x02, data ) );
 
@@ -173,11 +185,11 @@ TEST( readDEFVAL, worksProperly )
 {
     auto const mcp23008 = Driver{};
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0x6F };
 
     EXPECT_CALL( mcp23008, read( 0x03 ) ).WillOnce( Return( data ) );
 
-    EXPECT_EQ( mcp23008.read_defval(), data );
+    ASSERT_EQ( mcp23008.read_defval(), data );
 }
 
 /**
@@ -187,7 +199,7 @@ TEST( writeDEFVAL, worksProperly )
 {
     auto mcp23008 = Driver{};
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0xC5 };
 
     EXPECT_CALL( mcp23008, write( 0x03, data ) );
 
@@ -201,11 +213,11 @@ TEST( readINTCON, worksProperly )
 {
     auto const mcp23008 = Driver{};
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0x37 };
 
     EXPECT_CALL( mcp23008, read( 0x04 ) ).WillOnce( Return( data ) );
 
-    EXPECT_EQ( mcp23008.read_intcon(), data );
+    ASSERT_EQ( mcp23008.read_intcon(), data );
 }
 
 /**
@@ -215,7 +227,7 @@ TEST( writeINTCON, worksProperly )
 {
     auto mcp23008 = Driver{};
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0x2B };
 
     EXPECT_CALL( mcp23008, write( 0x04, data ) );
 
@@ -229,11 +241,11 @@ TEST( readIOCON, worksProperly )
 {
     auto const mcp23008 = Driver{};
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0x06 };
 
     EXPECT_CALL( mcp23008, read( 0x05 ) ).WillOnce( Return( data ) );
 
-    EXPECT_EQ( mcp23008.read_iocon(), data );
+    ASSERT_EQ( mcp23008.read_iocon(), data );
 }
 
 /**
@@ -243,7 +255,7 @@ TEST( writeIOCON, worksProperly )
 {
     auto mcp23008 = Driver{};
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0x85 };
 
     EXPECT_CALL( mcp23008, write( 0x05, data ) );
 
@@ -257,11 +269,11 @@ TEST( readGPPU, worksProperly )
 {
     auto const mcp23008 = Driver{};
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0xD5 };
 
     EXPECT_CALL( mcp23008, read( 0x06 ) ).WillOnce( Return( data ) );
 
-    EXPECT_EQ( mcp23008.read_gppu(), data );
+    ASSERT_EQ( mcp23008.read_gppu(), data );
 }
 
 /**
@@ -271,7 +283,7 @@ TEST( writeGPPU, worksProperly )
 {
     auto mcp23008 = Driver{};
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0x25 };
 
     EXPECT_CALL( mcp23008, write( 0x06, data ) );
 
@@ -285,11 +297,11 @@ TEST( readINTF, worksProperly )
 {
     auto const mcp23008 = Driver{};
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0x94 };
 
     EXPECT_CALL( mcp23008, read( 0x07 ) ).WillOnce( Return( data ) );
 
-    EXPECT_EQ( mcp23008.read_intf(), data );
+    ASSERT_EQ( mcp23008.read_intf(), data );
 }
 
 /**
@@ -299,11 +311,11 @@ TEST( readINTCAP, worksProperly )
 {
     auto const mcp23008 = Driver{};
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0x2D };
 
     EXPECT_CALL( mcp23008, read( 0x08 ) ).WillOnce( Return( data ) );
 
-    EXPECT_EQ( mcp23008.read_intcap(), data );
+    ASSERT_EQ( mcp23008.read_intcap(), data );
 }
 
 /**
@@ -313,11 +325,11 @@ TEST( readGPIO, worksProperly )
 {
     auto const mcp23008 = Driver{};
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0x9C };
 
     EXPECT_CALL( mcp23008, read( 0x09 ) ).WillOnce( Return( data ) );
 
-    EXPECT_EQ( mcp23008.read_gpio(), data );
+    ASSERT_EQ( mcp23008.read_gpio(), data );
 }
 
 /**
@@ -327,7 +339,7 @@ TEST( writeGPIO, worksProperly )
 {
     auto mcp23008 = Driver{};
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0x04 };
 
     EXPECT_CALL( mcp23008, write( 0x09, data ) );
 
@@ -341,11 +353,11 @@ TEST( readOLAT, worksProperly )
 {
     auto const mcp23008 = Driver{};
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0x38 };
 
     EXPECT_CALL( mcp23008, read( 0x0A ) ).WillOnce( Return( data ) );
 
-    EXPECT_EQ( mcp23008.read_olat(), data );
+    ASSERT_EQ( mcp23008.read_olat(), data );
 }
 
 /**
@@ -355,7 +367,7 @@ TEST( writeOLAT, worksProperly )
 {
     auto mcp23008 = Driver{};
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0xF5 };
 
     EXPECT_CALL( mcp23008, write( 0x0A, data ) );
 
