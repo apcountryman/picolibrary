@@ -70,7 +70,7 @@ Address_Numeric::Unsigned_Integer const constructorUnsignedInteger_TEST_CASES[]{
  * \brief picolibrary::I2C::Address_Numeric::Address_Numeric(
  *        picolibrary::I2C::Address_Numeric::Unsigned_Integer ) test fixture.
  */
-class constructorUnsignedInteger : public ::testing::TestWithParam<Address_Numeric::Unsigned_Integer> {
+class constructorUnsignedInteger : public TestWithParam<Address_Numeric::Unsigned_Integer> {
 };
 
 /**
@@ -94,7 +94,7 @@ INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger, ValuesIn( const
  *        picolibrary::I2C::Address_Numeric::Unsigned_Integer ) test fixture.
  */
 class constructorBypassPreconditionExpectationChecksUnsignedInteger :
-    public ::testing::TestWithParam<Address_Numeric::Unsigned_Integer> {
+    public TestWithParam<Address_Numeric::Unsigned_Integer> {
 };
 
 /**

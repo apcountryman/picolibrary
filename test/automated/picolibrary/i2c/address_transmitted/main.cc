@@ -72,8 +72,7 @@ Address_Transmitted::Unsigned_Integer const constructorUnsignedInteger_TEST_CASE
  * \brief picolibrary::I2C::Address_Transmitted::Address_Transmitted(
  *        picolibrary::I2C::Address_Transmitted::Unsigned_Integer ) test fixture.
  */
-class constructorUnsignedInteger :
-    public ::testing::TestWithParam<Address_Transmitted::Unsigned_Integer> {
+class constructorUnsignedInteger : public TestWithParam<Address_Transmitted::Unsigned_Integer> {
 };
 
 /**
@@ -97,7 +96,7 @@ INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger, ValuesIn( const
  *        picolibrary::I2C::Address_Transmitted::Unsigned_Integer ) test fixture.
  */
 class constructorBypassPreconditionExpectationChecksUnsignedInteger :
-    public ::testing::TestWithParam<Address_Transmitted::Unsigned_Integer> {
+    public TestWithParam<Address_Transmitted::Unsigned_Integer> {
 };
 
 /**
