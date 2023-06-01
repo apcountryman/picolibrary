@@ -20,40 +20,22 @@
  * \brief picolibrary::Microchip::MCP23S08::Address_Transmitted automated test program.
  */
 
-#include <utility>
+#include <ios>
+#include <ostream>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/microchip/mcp23s08.h"
 #include "picolibrary/precondition.h"
 #include "picolibrary/testing/automated/microchip/mcp23s08.h"
-#include "picolibrary/testing/automated/random.h"
 
 namespace {
 
 using ::picolibrary::BYPASS_PRECONDITION_EXPECTATION_CHECKS;
 using ::picolibrary::Microchip::MCP23S08::Address_Numeric;
 using ::picolibrary::Microchip::MCP23S08::Address_Transmitted;
-using ::picolibrary::Testing::Automated::random;
-
-auto random_address(
-    Address_Transmitted::Unsigned_Integer min = 0b01000'00'0,
-    Address_Transmitted::Unsigned_Integer max = 0b01000'11'0 ) -> Address_Transmitted::Unsigned_Integer
-{
-    return static_cast<Address_Transmitted::Unsigned_Integer>(
-        random<Address_Transmitted::Unsigned_Integer>( min, max ) & 0b11111'11'0 );
-}
-
-auto random_unique_address_pair()
-    -> std::pair<Address_Transmitted::Unsigned_Integer, Address_Transmitted::Unsigned_Integer>
-{
-    auto const a = random_address();
-    auto const b = random_address();
-
-    return std::pair<Address_Transmitted::Unsigned_Integer, Address_Transmitted::Unsigned_Integer>{
-        a, b != a ? b : b ^ ( random<Address_Transmitted::Unsigned_Integer>( 0b01'0, 0b11'0 ) & 0b11'0 )
-    };
-}
+using ::testing::TestWithParam;
+using ::testing::ValuesIn;
 
 } // namespace
 
@@ -66,8 +48,35 @@ TEST( constructorDefault, worksProperly )
 {
     auto const address_transmitted = Address_Transmitted{};
 
-    EXPECT_EQ( address_transmitted.as_unsigned_integer(), 0b01000'00'0 );
+    ASSERT_EQ( address_transmitted.as_unsigned_integer(), 0b01000'00'0 );
 }
+
+/**
+ * \brief picolibrary::Microchip::MCP23S08::Address_Transmitted::Address_Transmitted(
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted::Unsigned_Integer ) and
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted::Address_Transmitted(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted::Unsigned_Integer ) test
+ *        cases.
+ */
+Address_Transmitted::Unsigned_Integer const constructorUnsignedInteger_TEST_CASES[]{
+    // clang-format off
+
+    0b01000'00'0,
+    0b01000'01'0,
+    0b01000'10'0,
+    0b01000'11'0,
+
+    // clang-format on
+};
+
+/**
+ * \brief picolibrary::Microchip::MCP23S08::Address_Transmitted::Address_Transmitted(
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted::Unsigned_Integer ) test
+ *        fixture.
+ */
+class constructorUnsignedInteger : public TestWithParam<Address_Transmitted::Unsigned_Integer> {
+};
 
 /**
  * \brief Verify
@@ -75,27 +84,26 @@ TEST( constructorDefault, worksProperly )
  *        picolibrary::Microchip::MCP23S08::Address_Transmitted::Unsigned_Integer ) works
  *        properly.
  */
-TEST( constructorUnsignedInteger, worksProperly )
+TEST_P( constructorUnsignedInteger, worksProperly )
 {
-    struct {
-        Address_Transmitted::Unsigned_Integer address;
-    } const test_cases[]{
-        // clang-format off
+    auto const address = GetParam();
 
-        { 0b01000'00'0 },
-        { 0b01000'01'0 },
-        { 0b01000'10'0 },
-        { 0b01000'11'0 },
+    auto const address_transmitted = Address_Transmitted{ address };
 
-        // clang-format on
-    };
-
-    for ( auto const test_case : test_cases ) {
-        auto const address_transmitted = Address_Transmitted{ test_case.address };
-
-        EXPECT_EQ( address_transmitted.as_unsigned_integer(), test_case.address );
-    } // for
+    ASSERT_EQ( address_transmitted.as_unsigned_integer(), address );
 }
+
+INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger, ValuesIn( constructorUnsignedInteger_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::Microchip::MCP23S08::Address_Transmitted::Address_Transmitted(
+ *        picolibrary::Bypass_Precondition_Expectation_Checks,
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted::Unsigned_Integer ) test
+ *        fixture.
+ */
+class constructorBypassPreconditionExpectationChecksUnsignedInteger :
+    public TestWithParam<Address_Transmitted::Unsigned_Integer> {
+};
 
 /**
  * \brief Verify
@@ -104,172 +112,401 @@ TEST( constructorUnsignedInteger, worksProperly )
  *        picolibrary::Microchip::MCP23S08::Address_Transmitted::Unsigned_Integer ) works
  *        properly.
  */
-TEST( constructorBypassPreconditionExpectationChecksUnsignedInteger, worksProperly )
+TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger, worksProperly )
 {
-    struct {
-        Address_Transmitted::Unsigned_Integer address;
-    } const test_cases[]{
-        // clang-format off
+    auto const address = GetParam();
 
-        { 0b01000'00'0 },
-        { 0b01000'01'0 },
-        { 0b01000'10'0 },
-        { 0b01000'11'0 },
+    auto const address_transmitted = Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, address };
 
-        // clang-format on
-    };
-
-    for ( auto const test_case : test_cases ) {
-        auto const address_transmitted = Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
-                                                              test_case.address };
-
-        EXPECT_EQ( address_transmitted.as_unsigned_integer(), test_case.address );
-    } // for
+    ASSERT_EQ( address_transmitted.as_unsigned_integer(), address );
 }
 
+INSTANTIATE_TEST_SUITE_P(
+    testCases,
+    constructorBypassPreconditionExpectationChecksUnsignedInteger,
+    ValuesIn( constructorUnsignedInteger_TEST_CASES ) );
+
 /**
- * \brief Verify
- *        picolibrary::Microchip::MCP23S08::Address_Transmitted::Address_Transmitted(
+ * \brief Verify picolibrary::Microchip::MCP23S08::Address_Transmitted::Address_Transmitted(
  *        picolibrary::Microchip::MCP23S08::Address_Numeric ) works properly.
  */
 TEST( constructorAddressNumeric, worksProperly )
 {
-    auto const address = random<Address_Numeric>();
+    auto const address_transmitted = Address_Transmitted{ Address_Numeric{ 0b01000'01 } };
 
-    auto const address_transmitted = Address_Transmitted{ address };
-
-    EXPECT_EQ( address_transmitted.as_unsigned_integer(), address.as_unsigned_integer() << 1 );
+    ASSERT_EQ( address_transmitted.as_unsigned_integer(), 0b01000'01'0 );
 }
+
+/**
+ * \brief picolibrary::Microchip::MCP23S08::operator==(
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted,
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted ),
+ *        picolibrary::Microchip::MCP23S08::operator!=(
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted,
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted ),
+ *        picolibrary::Microchip::MCP23S08::operator<(
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted,
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted ),
+ *        picolibrary::Microchip::MCP23S08::operator>(
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted,
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted ),
+ *        picolibrary::Microchip::MCP23S08::operator<=(
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted,
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted ), and
+ *        picolibrary::Microchip::MCP23S08::operator>=(
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted,
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) test case.
+ */
+struct comparisonOperator_Test_Case {
+    /**
+     * \brief The left hand side of the comparison.
+     */
+    Address_Transmitted lhs;
+
+    /**
+     * \brief The right hand side of the comparison.
+     */
+    Address_Transmitted rhs;
+
+    /**
+     * \brief The result of the comparison.
+     */
+    bool comparison_result;
+};
+
+auto operator<<( std::ostream & stream, comparisonOperator_Test_Case const & test_case )
+    -> std::ostream &
+{
+    // clang-format off
+
+    return stream << "{ "
+                  << ".lhs = " << test_case.lhs
+                  << ", "
+                  << ".rhs = " << test_case.rhs
+                  << ", "
+                  << ".comparison_result = " << std::boolalpha << test_case.comparison_result
+                  << " }";
+
+    // clang-format on
+}
+
+/**
+ * \brief picolibrary::Microchip::MCP23S08::operator==(
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted,
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) test fixture.
+ */
+class equalityOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
 
 /**
  * \brief Verify picolibrary::Microchip::MCP23S08::operator==(
  *        picolibrary::Microchip::MCP23S08::Address_Transmitted,
  *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) works properly.
  */
-TEST( equalityOperator, worksProperly )
+TEST_P( equalityOperator, worksProperly )
 {
-    {
-        auto const lhs = random_address();
-        auto const rhs = lhs;
+    auto const test_case = GetParam();
 
-        EXPECT_TRUE( Address_Transmitted{ lhs } == Address_Transmitted{ rhs } );
-    }
-
-    {
-        auto const [ lhs, rhs ] = random_unique_address_pair();
-
-        EXPECT_FALSE( Address_Transmitted{ lhs } == Address_Transmitted{ rhs } );
-    }
+    ASSERT_EQ( test_case.lhs == test_case.rhs, test_case.comparison_result );
 }
+
+/**
+ * \brief picolibrary::Microchip::MCP23S08::operator==(
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted,
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) test cases.
+ */
+comparisonOperator_Test_Case const equalityOperator_TEST_CASES[]{
+    // clang-format off
+
+    { 0b01000'00'0, 0b01000'00'0, true  },
+    { 0b01000'00'0, 0b01000'01'0, false },
+    { 0b01000'00'0, 0b01000'10'0, false },
+    { 0b01000'00'0, 0b01000'11'0, false },
+
+    { 0b01000'01'0, 0b01000'00'0, false },
+    { 0b01000'01'0, 0b01000'01'0, true  },
+    { 0b01000'01'0, 0b01000'10'0, false },
+    { 0b01000'01'0, 0b01000'11'0, false },
+
+    { 0b01000'10'0, 0b01000'00'0, false },
+    { 0b01000'10'0, 0b01000'01'0, false },
+    { 0b01000'10'0, 0b01000'10'0, true  },
+    { 0b01000'10'0, 0b01000'11'0, false },
+
+    { 0b01000'11'0, 0b01000'00'0, false },
+    { 0b01000'11'0, 0b01000'01'0, false },
+    { 0b01000'11'0, 0b01000'10'0, false },
+    { 0b01000'11'0, 0b01000'11'0, true  },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, equalityOperator, ValuesIn( equalityOperator_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::Microchip::MCP23S08::operator!=(
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted,
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) test fixture.
+ */
+class inequalityOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
 
 /**
  * \brief Verify picolibrary::Microchip::MCP23S08::operator!=(
  *        picolibrary::Microchip::MCP23S08::Address_Transmitted,
  *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) works properly.
  */
-TEST( inequalityOperator, worksProperly )
+TEST_P( inequalityOperator, worksProperly )
 {
-    {
-        auto const lhs = random_address();
-        auto const rhs = lhs;
+    auto const test_case = GetParam();
 
-        EXPECT_FALSE( Address_Transmitted{ lhs } != Address_Transmitted{ rhs } );
-    }
-
-    {
-        auto const [ lhs, rhs ] = random_unique_address_pair();
-
-        EXPECT_TRUE( Address_Transmitted{ lhs } != Address_Transmitted{ rhs } );
-    }
+    ASSERT_EQ( test_case.lhs != test_case.rhs, test_case.comparison_result );
 }
+
+/**
+ * \brief picolibrary::Microchip::MCP23S08::operator!=(
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted,
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) test cases.
+ */
+comparisonOperator_Test_Case const inequalityOperator_TEST_CASES[]{
+    // clang-format off
+
+    { 0b01000'00'0, 0b01000'00'0, false },
+    { 0b01000'00'0, 0b01000'01'0, true  },
+    { 0b01000'00'0, 0b01000'10'0, true  },
+    { 0b01000'00'0, 0b01000'11'0, true  },
+
+    { 0b01000'01'0, 0b01000'00'0, true  },
+    { 0b01000'01'0, 0b01000'01'0, false },
+    { 0b01000'01'0, 0b01000'10'0, true  },
+    { 0b01000'01'0, 0b01000'11'0, true  },
+
+    { 0b01000'10'0, 0b01000'00'0, true  },
+    { 0b01000'10'0, 0b01000'01'0, true  },
+    { 0b01000'10'0, 0b01000'10'0, false },
+    { 0b01000'10'0, 0b01000'11'0, true  },
+
+    { 0b01000'11'0, 0b01000'00'0, true  },
+    { 0b01000'11'0, 0b01000'01'0, true  },
+    { 0b01000'11'0, 0b01000'10'0, true  },
+    { 0b01000'11'0, 0b01000'11'0, false },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, inequalityOperator, ValuesIn( inequalityOperator_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::Microchip::MCP23S08::operator<(
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted,
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) test fixture.
+ */
+class lessThanOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
 
 /**
  * \brief Verify picolibrary::Microchip::MCP23S08::operator<(
  *        picolibrary::Microchip::MCP23S08::Address_Transmitted,
  *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) works properly.
  */
-TEST( lessThanOperator, worksProperly )
+TEST_P( lessThanOperator, worksProperly )
 {
-    {
-        auto const rhs = random_address( 0b01000'00'0 + 2 );
-        auto const lhs = random_address( 0b01000'00'0, rhs - 2 );
+    auto const test_case = GetParam();
 
-        EXPECT_TRUE( Address_Transmitted{ lhs } < Address_Transmitted{ rhs } );
-    }
-
-    {
-        auto const rhs = random_address();
-        auto const lhs = random_address( rhs );
-
-        EXPECT_FALSE( Address_Transmitted{ lhs } < Address_Transmitted{ rhs } );
-    }
+    ASSERT_EQ( test_case.lhs < test_case.rhs, test_case.comparison_result );
 }
+
+/**
+ * \brief picolibrary::Microchip::MCP23S08::operator<(
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted,
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) test cases.
+ */
+comparisonOperator_Test_Case const lessThanOperator_TEST_CASES[]{
+    // clang-format off
+
+    { 0b01000'00'0, 0b01000'00'0, false },
+    { 0b01000'00'0, 0b01000'01'0, true  },
+    { 0b01000'00'0, 0b01000'10'0, true  },
+    { 0b01000'00'0, 0b01000'11'0, true  },
+
+    { 0b01000'01'0, 0b01000'00'0, false },
+    { 0b01000'01'0, 0b01000'01'0, false },
+    { 0b01000'01'0, 0b01000'10'0, true  },
+    { 0b01000'01'0, 0b01000'11'0, true  },
+
+    { 0b01000'10'0, 0b01000'00'0, false },
+    { 0b01000'10'0, 0b01000'01'0, false },
+    { 0b01000'10'0, 0b01000'10'0, false },
+    { 0b01000'10'0, 0b01000'11'0, true  },
+
+    { 0b01000'11'0, 0b01000'00'0, false },
+    { 0b01000'11'0, 0b01000'01'0, false },
+    { 0b01000'11'0, 0b01000'10'0, false },
+    { 0b01000'11'0, 0b01000'11'0, false },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, lessThanOperator, ValuesIn( lessThanOperator_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::Microchip::MCP23S08::operator>(
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted,
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) test fixture.
+ */
+class greaterThanOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
 
 /**
  * \brief Verify picolibrary::Microchip::MCP23S08::operator>(
  *        picolibrary::Microchip::MCP23S08::Address_Transmitted,
  *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) works properly.
  */
-TEST( greaterThanOperator, worksProperly )
+TEST_P( greaterThanOperator, worksProperly )
 {
-    {
-        auto const lhs = random_address( 0b01000'00'0 + 2 );
-        auto const rhs = random_address( 0b01000'00'0, lhs - 2 );
+    auto const test_case = GetParam();
 
-        EXPECT_TRUE( Address_Transmitted{ lhs } > Address_Transmitted{ rhs } );
-    }
-
-    {
-        auto const lhs = random_address();
-        auto const rhs = random_address( lhs );
-
-        EXPECT_FALSE( Address_Transmitted{ lhs } > Address_Transmitted{ rhs } );
-    }
+    ASSERT_EQ( test_case.lhs > test_case.rhs, test_case.comparison_result );
 }
+
+/**
+ * \brief picolibrary::Microchip::MCP23S08::operator>(
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted,
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) test cases.
+ */
+comparisonOperator_Test_Case const greaterThanOperator_TEST_CASES[]{
+    // clang-format off
+
+    { 0b01000'00'0, 0b01000'00'0, false },
+    { 0b01000'00'0, 0b01000'01'0, false },
+    { 0b01000'00'0, 0b01000'10'0, false },
+    { 0b01000'00'0, 0b01000'11'0, false },
+
+    { 0b01000'01'0, 0b01000'00'0, true  },
+    { 0b01000'01'0, 0b01000'01'0, false },
+    { 0b01000'01'0, 0b01000'10'0, false },
+    { 0b01000'01'0, 0b01000'11'0, false },
+
+    { 0b01000'10'0, 0b01000'00'0, true  },
+    { 0b01000'10'0, 0b01000'01'0, true  },
+    { 0b01000'10'0, 0b01000'10'0, false },
+    { 0b01000'10'0, 0b01000'11'0, false },
+
+    { 0b01000'11'0, 0b01000'00'0, true  },
+    { 0b01000'11'0, 0b01000'01'0, true  },
+    { 0b01000'11'0, 0b01000'10'0, true  },
+    { 0b01000'11'0, 0b01000'11'0, false },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, greaterThanOperator, ValuesIn( greaterThanOperator_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::Microchip::MCP23S08::operator<=(
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted,
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) test fixture.
+ */
+class lessThanOrEqualToOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
 
 /**
  * \brief Verify picolibrary::Microchip::MCP23S08::operator<=(
  *        picolibrary::Microchip::MCP23S08::Address_Transmitted,
  *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) works properly.
  */
-TEST( lessThanOrEqualToOperator, worksProperly )
+TEST_P( lessThanOrEqualToOperator, worksProperly )
 {
-    {
-        auto const lhs = random_address();
-        auto const rhs = random_address( lhs );
+    auto const test_case = GetParam();
 
-        EXPECT_TRUE( Address_Transmitted{ lhs } <= Address_Transmitted{ rhs } );
-    }
-
-    {
-        auto const lhs = random_address( 0b01000'00'0 + 2 );
-        auto const rhs = random_address( 0b01000'00'0, lhs - 2 );
-
-        EXPECT_FALSE( Address_Transmitted{ lhs } <= Address_Transmitted{ rhs } );
-    }
+    ASSERT_EQ( test_case.lhs <= test_case.rhs, test_case.comparison_result );
 }
+
+/**
+ * \brief picolibrary::Microchip::MCP23S08::operator<=(
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted,
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) test cases.
+ */
+comparisonOperator_Test_Case const lessThanOrEqualToOperator_TEST_CASES[]{
+    // clang-format off
+
+    { 0b01000'00'0, 0b01000'00'0, true },
+    { 0b01000'00'0, 0b01000'01'0, true },
+    { 0b01000'00'0, 0b01000'10'0, true },
+    { 0b01000'00'0, 0b01000'11'0, true },
+
+    { 0b01000'01'0, 0b01000'00'0, false },
+    { 0b01000'01'0, 0b01000'01'0, true  },
+    { 0b01000'01'0, 0b01000'10'0, true  },
+    { 0b01000'01'0, 0b01000'11'0, true  },
+
+    { 0b01000'10'0, 0b01000'00'0, false },
+    { 0b01000'10'0, 0b01000'01'0, false },
+    { 0b01000'10'0, 0b01000'10'0, true  },
+    { 0b01000'10'0, 0b01000'11'0, true  },
+
+    { 0b01000'11'0, 0b01000'00'0, false },
+    { 0b01000'11'0, 0b01000'01'0, false },
+    { 0b01000'11'0, 0b01000'10'0, false },
+    { 0b01000'11'0, 0b01000'11'0, true  },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, lessThanOrEqualToOperator, ValuesIn( lessThanOrEqualToOperator_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::Microchip::MCP23S08::operator>=(
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted,
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) test fixture.
+ */
+class greaterThanOrEqualToOperator : public TestWithParam<comparisonOperator_Test_Case> {
+};
 
 /**
  * \brief Verify picolibrary::Microchip::MCP23S08::operator>=(
  *        picolibrary::Microchip::MCP23S08::Address_Transmitted,
  *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) works properly.
  */
-TEST( greaterThanOrEqualToOperator, worksProperly )
+TEST_P( greaterThanOrEqualToOperator, worksProperly )
 {
-    {
-        auto const rhs = random_address();
-        auto const lhs = random_address( rhs );
+    auto const test_case = GetParam();
 
-        EXPECT_TRUE( Address_Transmitted{ lhs } >= Address_Transmitted{ rhs } );
-    }
-
-    {
-        auto const rhs = random_address( 0b01000'00'0 + 2 );
-        auto const lhs = random_address( 0b01000'00'0, rhs - 2 );
-
-        EXPECT_FALSE( Address_Transmitted{ lhs } >= Address_Transmitted{ rhs } );
-    }
+    ASSERT_EQ( test_case.lhs >= test_case.rhs, test_case.comparison_result );
 }
+
+/**
+ * \brief picolibrary::Microchip::MCP23S08::operator>=(
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted,
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) test cases.
+ */
+comparisonOperator_Test_Case const greaterThanOrEqualToOperator_TEST_CASES[]{
+    // clang-format off
+
+    { 0b01000'00'0, 0b01000'00'0, true  },
+    { 0b01000'00'0, 0b01000'01'0, false },
+    { 0b01000'00'0, 0b01000'10'0, false },
+    { 0b01000'00'0, 0b01000'11'0, false },
+
+    { 0b01000'01'0, 0b01000'00'0, true  },
+    { 0b01000'01'0, 0b01000'01'0, true  },
+    { 0b01000'01'0, 0b01000'10'0, false },
+    { 0b01000'01'0, 0b01000'11'0, false },
+
+    { 0b01000'10'0, 0b01000'00'0, true  },
+    { 0b01000'10'0, 0b01000'01'0, true  },
+    { 0b01000'10'0, 0b01000'10'0, true  },
+    { 0b01000'10'0, 0b01000'11'0, false },
+
+    { 0b01000'11'0, 0b01000'00'0, true },
+    { 0b01000'11'0, 0b01000'01'0, true },
+    { 0b01000'11'0, 0b01000'10'0, true },
+    { 0b01000'11'0, 0b01000'11'0, true },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, greaterThanOrEqualToOperator, ValuesIn( greaterThanOrEqualToOperator_TEST_CASES ) );
 
 /**
  * \brief Execute the picolibrary::Microchip::MCP23S08::Address_Transmitted automated
