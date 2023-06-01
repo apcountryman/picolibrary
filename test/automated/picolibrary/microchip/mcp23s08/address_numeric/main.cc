@@ -45,9 +45,9 @@ using ::testing::ValuesIn;
  */
 TEST( constructorDefault, worksProperly )
 {
-    auto const address = Address_Numeric{};
+    auto const address_numeric = Address_Numeric{};
 
-    ASSERT_EQ( address.as_unsigned_integer(), 0b01000'00 );
+    ASSERT_EQ( address_numeric.as_unsigned_integer(), 0b01000'00 );
 }
 
 /**
