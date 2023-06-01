@@ -88,9 +88,9 @@ TEST_P( constructorUnsignedInteger, worksProperly )
 {
     auto const address = GetParam();
 
-    auto const address_numeric = Address_Transmitted{ address };
+    auto const address_transmitted = Address_Transmitted{ address };
 
-    ASSERT_EQ( address_numeric.as_unsigned_integer(), address );
+    ASSERT_EQ( address_transmitted.as_unsigned_integer(), address );
 }
 
 INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger, ValuesIn( constructorUnsignedInteger_TEST_CASES ) );
@@ -116,9 +116,9 @@ TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger, worksProp
 {
     auto const address = GetParam();
 
-    auto const address_numeric = Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, address };
+    auto const address_transmitted = Address_Transmitted{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, address };
 
-    ASSERT_EQ( address_numeric.as_unsigned_integer(), address );
+    ASSERT_EQ( address_transmitted.as_unsigned_integer(), address );
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -132,9 +132,9 @@ INSTANTIATE_TEST_SUITE_P(
  */
 TEST( constructorAddressNumeric, worksProperly )
 {
-    auto const address_numeric = Address_Transmitted{ Address_Numeric{ 0b01000'01 } };
+    auto const address_transmitted = Address_Transmitted{ Address_Numeric{ 0b01000'01 } };
 
-    ASSERT_EQ( address_numeric.as_unsigned_integer(), 0b01000'01'0 );
+    ASSERT_EQ( address_transmitted.as_unsigned_integer(), 0b01000'01'0 );
 }
 
 /**
