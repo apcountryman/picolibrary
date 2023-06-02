@@ -26,11 +26,9 @@
 #include "gtest/gtest.h"
 #include "picolibrary/microchip/mcp23x08.h"
 #include "picolibrary/testing/automated/microchip/mcp23x08.h"
-#include "picolibrary/testing/automated/random.h"
 
 namespace {
 
-using ::picolibrary::Testing::Automated::random;
 using ::picolibrary::Testing::Automated::Microchip::MCP23X08::Mock_Driver;
 
 using Caching_Driver = ::picolibrary::Microchip::MCP23X08::Caching_Driver<Mock_Driver>;
@@ -47,7 +45,7 @@ TEST( iodir, worksProperly )
 
     EXPECT_EQ( mcp23x08.iodir(), 0xFF );
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0xC9 };
 
     EXPECT_CALL( mcp23x08, write_iodir( data ) );
 
@@ -70,7 +68,7 @@ TEST( ipol, worksProperly )
 
     EXPECT_EQ( mcp23x08.ipol(), 0x00 );
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0xA0 };
 
     EXPECT_CALL( mcp23x08, write_ipol( data ) );
 
@@ -93,7 +91,7 @@ TEST( gpinten, worksProperly )
 
     EXPECT_EQ( mcp23x08.gpinten(), 0x00 );
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0xF7 };
 
     EXPECT_CALL( mcp23x08, write_gpinten( data ) );
 
@@ -116,7 +114,7 @@ TEST( defval, worksProperly )
 
     EXPECT_EQ( mcp23x08.defval(), 0x00 );
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0xE4 };
 
     EXPECT_CALL( mcp23x08, write_defval( data ) );
 
@@ -139,7 +137,7 @@ TEST( intcon, worksProperly )
 
     EXPECT_EQ( mcp23x08.intcon(), 0x00 );
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0x95 };
 
     EXPECT_CALL( mcp23x08, write_intcon( data ) );
 
@@ -162,7 +160,7 @@ TEST( iocon, worksProperly )
 
     EXPECT_EQ( mcp23x08.iocon(), 0x00 );
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0x22 };
 
     EXPECT_CALL( mcp23x08, write_iocon( data ) );
 
@@ -185,7 +183,7 @@ TEST( gppu, worksProperly )
 
     EXPECT_EQ( mcp23x08.gppu(), 0x00 );
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0x6C };
 
     EXPECT_CALL( mcp23x08, write_gppu( data ) );
 
@@ -208,7 +206,7 @@ TEST( gpio, worksProperly )
 
     EXPECT_EQ( mcp23x08.olat(), 0x00 );
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0x58 };
 
     EXPECT_CALL( mcp23x08, write_gpio( data ) );
 
@@ -231,7 +229,7 @@ TEST( olat, worksProperly )
 
     EXPECT_EQ( mcp23x08.olat(), 0x00 );
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0x1C };
 
     EXPECT_CALL( mcp23x08, write_olat( data ) );
 
