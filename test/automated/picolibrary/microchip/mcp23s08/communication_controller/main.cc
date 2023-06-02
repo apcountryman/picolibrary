@@ -21,27 +21,26 @@
  *        program.
  */
 
-#include <cstdint>
 #include <utility>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/microchip/mcp23s08.h"
 #include "picolibrary/testing/automated/microchip/mcp23s08.h"
-#include "picolibrary/testing/automated/random.h"
 #include "picolibrary/testing/automated/spi.h"
 
 namespace {
 
 using ::picolibrary::Microchip::MCP23S08::Address_Numeric;
 using ::picolibrary::Microchip::MCP23S08::Address_Transmitted;
-using ::picolibrary::Testing::Automated::random;
 using ::picolibrary::Testing::Automated::SPI::Mock_Controller;
 using ::picolibrary::Testing::Automated::SPI::Mock_Device;
 using ::picolibrary::Testing::Automated::SPI::Mock_Device_Selector;
 using ::testing::InSequence;
 using ::testing::Return;
 using ::testing::ReturnRef;
+using ::testing::TestWithParam;
+using ::testing::ValuesIn;
 
 class Communication_Controller :
     public ::picolibrary::Microchip::MCP23S08::Communication_Controller<Mock_Controller, Mock_Device_Selector::Handle, Mock_Device> {
@@ -61,10 +60,19 @@ class Communication_Controller :
     }
 
     using ::picolibrary::Microchip::MCP23S08::Communication_Controller<Mock_Controller, Mock_Device_Selector::Handle, Mock_Device>::read;
+
     using ::picolibrary::Microchip::MCP23S08::Communication_Controller<Mock_Controller, Mock_Device_Selector::Handle, Mock_Device>::write;
 };
 
 } // namespace
+
+/**
+ * \brief picolibrary::Microchip::MCP23S08::Communication_Controller::Communication_Controller(
+ *        Controller &, Controller::Configuration const &, Device_Selector,
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) test fixture.
+ */
+class constructor : public TestWithParam<Address_Transmitted> {
+};
 
 /**
  * \brief Verify
@@ -72,35 +80,36 @@ class Communication_Controller :
  *        Controller &, Controller::Configuration const &, Device_Selector,
  *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) works properly.
  */
-TEST( constructor, worksProperly )
+TEST_P( constructor, worksProperly )
 {
-    struct {
-        Address_Transmitted address;
-    } const test_cases[]{
-        // clang-format off
+    auto       controller      = Mock_Controller{};
+    auto       device_selector = Mock_Device_Selector{};
+    auto const address         = GetParam();
 
-        { Address_Numeric{ 0b01000'00 } },
-        { Address_Numeric{ 0b01000'01 } },
-        { Address_Numeric{ 0b01000'10 } },
-        { Address_Numeric{ 0b01000'11 } },
-
-        // clang-format on
+    auto const communication_controller = Communication_Controller{
+        controller, 95, device_selector.handle(), address
     };
 
-    for ( auto const test_case : test_cases ) {
-        auto controller      = Mock_Controller{};
-        auto device_selector = Mock_Device_Selector{};
-
-        auto const communication_controller = Communication_Controller{
-            controller,
-            random<Mock_Controller::Configuration>(),
-            device_selector.handle(),
-            test_case.address
-        };
-
-        EXPECT_EQ( communication_controller.address(), test_case.address );
-    } // for
+    ASSERT_EQ( communication_controller.address(), address );
 }
+
+/**
+ * \brief picolibrary::Microchip::MCP23S08::Communication_Controller::Communication_Controller(
+ *        Controller &, Controller::Configuration const &, Device_Selector,
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) test fixture.
+ */
+Address_Transmitted const constructor_TEST_CASES[]{
+    // clang-format off
+
+    { Address_Numeric{ 0b01000'00 } },
+    { Address_Numeric{ 0b01000'01 } },
+    { Address_Numeric{ 0b01000'10 } },
+    { Address_Numeric{ 0b01000'11 } },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, constructor, ValuesIn( constructor_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::Microchip::MCP23S08::Communication_Controller::read() works
@@ -113,14 +122,14 @@ TEST( read, worksProperly )
     auto       controller             = Mock_Controller{};
     auto       device_selector        = Mock_Device_Selector{};
     auto       device_selector_handle = device_selector.handle();
-    auto const address                = random<Address_Transmitted>();
+    auto const address = Address_Transmitted{ Address_Numeric{ 0b01000'01 } };
 
     auto const communication_controller = Communication_Controller{
-        controller, random<Mock_Controller::Configuration>(), device_selector.handle(), address
+        controller, 95, device_selector.handle(), address
     };
 
-    auto const register_address = random<std::uint8_t>();
-    auto const data             = random<std::uint8_t>();
+    auto const register_address = std::uint8_t{ 0x67 };
+    auto const data             = std::uint8_t{ 0xA5 };
 
     EXPECT_CALL( communication_controller, configure() );
     EXPECT_CALL( communication_controller, device_selector() ).WillOnce( ReturnRef( device_selector_handle ) );
@@ -130,7 +139,7 @@ TEST( read, worksProperly )
     EXPECT_CALL( communication_controller, receive() ).WillOnce( Return( data ) );
     EXPECT_CALL( device_selector, deselect() );
 
-    EXPECT_EQ( communication_controller.read( register_address ), data );
+    ASSERT_EQ( communication_controller.read( register_address ), data );
 }
 
 /**
@@ -144,14 +153,14 @@ TEST( write, worksProperly )
     auto       controller             = Mock_Controller{};
     auto       device_selector        = Mock_Device_Selector{};
     auto       device_selector_handle = device_selector.handle();
-    auto const address                = random<Address_Transmitted>();
+    auto const address = Address_Transmitted{ Address_Numeric{ 0b01000'10 } };
 
     auto communication_controller = Communication_Controller{
-        controller, random<Mock_Controller::Configuration>(), device_selector.handle(), address
+        controller, 95, device_selector.handle(), address
     };
 
-    auto const register_address = random<std::uint8_t>();
-    auto const data             = random<std::uint8_t>();
+    auto const register_address = std::uint8_t{ 0x97 };
+    auto const data             = std::uint8_t{ 0x56 };
 
     EXPECT_CALL( communication_controller, configure() );
     EXPECT_CALL( communication_controller, device_selector() ).WillOnce( ReturnRef( device_selector_handle ) );
