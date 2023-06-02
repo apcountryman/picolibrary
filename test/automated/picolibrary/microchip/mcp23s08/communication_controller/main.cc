@@ -21,6 +21,7 @@
  *        program.
  */
 
+#include <cstdint>
 #include <utility>
 
 #include "gmock/gmock.h"
@@ -96,7 +97,7 @@ TEST_P( constructor, worksProperly )
 /**
  * \brief picolibrary::Microchip::MCP23S08::Communication_Controller::Communication_Controller(
  *        Controller &, Controller::Configuration const &, Device_Selector,
- *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) test fixture.
+ *        picolibrary::Microchip::MCP23S08::Address_Transmitted ) test cases.
  */
 Address_Transmitted const constructor_TEST_CASES[]{
     // clang-format off
