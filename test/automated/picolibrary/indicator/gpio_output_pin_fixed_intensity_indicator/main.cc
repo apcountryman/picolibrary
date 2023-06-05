@@ -45,9 +45,9 @@ using Indicator =
 /**
  * \brief Verify
  *        picolibrary::Indicator::GPIO_Output_Pin_Fixed_Intensity_Indicator::initialize()
- *        works properly when the default argument is used.
+ *        works properly when the default initial indicator state is used.
  */
-TEST( initializeDefaultArgument, worksProperly )
+TEST( initializeDefaultInitialIndicatorState, worksProperly )
 {
     auto indicator = Indicator{};
 
@@ -58,9 +58,9 @@ TEST( initializeDefaultArgument, worksProperly )
 
 /**
  * \brief picolibrary::Indicator::GPIO_Output_Pin_Fixed_Intensity_Indicator::initialize()
- *        non-default argument test case.
+ *        non-default initial indicator state test case.
  */
-struct initializeNonDefaultArgument_Test_Case {
+struct initializeNonDefaultInitialIndicatorState_Test_Case {
     /**
      * \brief The initial indicator state.
      */
@@ -72,7 +72,7 @@ struct initializeNonDefaultArgument_Test_Case {
     Initial_Pin_State initial_pin_state;
 };
 
-auto operator<<( std::ostream & stream, initializeNonDefaultArgument_Test_Case const & test_case )
+auto operator<<( std::ostream & stream, initializeNonDefaultInitialIndicatorState_Test_Case const & test_case )
     -> std::ostream &
 {
     // clang-format off
@@ -88,17 +88,18 @@ auto operator<<( std::ostream & stream, initializeNonDefaultArgument_Test_Case c
 
 /**
  * \brief picolibrary::Indicator::GPIO_Output_Pin_Fixed_Intensity_Indicator::initialize()
- *        non-default argument test case.
+ *        non-default initial indicator state test case.
  */
-class initializeNonDefaultArgument : public TestWithParam<initializeNonDefaultArgument_Test_Case> {
+class initializeNonDefaultInitialIndicatorState :
+    public TestWithParam<initializeNonDefaultInitialIndicatorState_Test_Case> {
 };
 
 /**
  * \brief Verify
  *        picolibrary::Indicator::GPIO_Output_Pin_Fixed_Intensity_Indicator::initialize()
- *        works properly when a non-default argument is used.
+ *        works properly when a non-default initial indicator state is used.
  */
-TEST_P( initializeNonDefaultArgument, worksProperly )
+TEST_P( initializeNonDefaultInitialIndicatorState, worksProperly )
 {
     auto const test_case = GetParam();
 
@@ -111,9 +112,9 @@ TEST_P( initializeNonDefaultArgument, worksProperly )
 
 /**
  * \brief picolibrary::Indicator::GPIO_Output_Pin_Fixed_Intensity_Indicator::initialize()
- *        non-default argument test cases.
+ *        non-default initial indicator state test cases.
  */
-initializeNonDefaultArgument_Test_Case const initializeNonDefaultArgument_TEST_CASES[]{
+initializeNonDefaultInitialIndicatorState_Test_Case const initializeNonDefaultInitialIndicatorState_TEST_CASES[]{
     // clang-format off
 
     { Initial_Indicator_State::EXTINGUISHED, Initial_Pin_State::LOW  },
@@ -122,7 +123,7 @@ initializeNonDefaultArgument_Test_Case const initializeNonDefaultArgument_TEST_C
     // clang-format on
 };
 
-INSTANTIATE_TEST_SUITE_P( testCases, initializeNonDefaultArgument, ValuesIn( initializeNonDefaultArgument_TEST_CASES ) );
+INSTANTIATE_TEST_SUITE_P( testCases, initializeNonDefaultInitialIndicatorState, ValuesIn( initializeNonDefaultInitialIndicatorState_TEST_CASES ) );
 
 /**
  * \brief Verify
