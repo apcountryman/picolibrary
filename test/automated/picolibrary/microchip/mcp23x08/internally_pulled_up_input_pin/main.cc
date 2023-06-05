@@ -396,7 +396,7 @@ TEST_P( pullUpIsDisabled, worksProperly )
 
     auto mcp23x08 = Mock_Caching_Driver{};
 
-    auto pin = Internally_Pulled_Up_Input_Pin{ mcp23x08, 0b0000'1000 };
+    auto const pin = Internally_Pulled_Up_Input_Pin{ mcp23x08, 0b0000'1000 };
 
     EXPECT_CALL( mcp23x08, gppu() ).WillOnce( Return( test_case.gppu ) );
 
@@ -468,7 +468,7 @@ TEST_P( pullUpIsEnabled, worksProperly )
 
     auto mcp23x08 = Mock_Caching_Driver{};
 
-    auto pin = Internally_Pulled_Up_Input_Pin{ mcp23x08, 0b0001'0000 };
+    auto const pin = Internally_Pulled_Up_Input_Pin{ mcp23x08, 0b0001'0000 };
 
     EXPECT_CALL( mcp23x08, gppu() ).WillOnce( Return( test_case.gppu ) );
 
@@ -584,7 +584,7 @@ TEST_P( isLow, worksProperly )
 
     auto mcp23x08 = Mock_Caching_Driver{};
 
-    auto pin = Internally_Pulled_Up_Input_Pin{ mcp23x08, 0b0100'0000 };
+    auto const pin = Internally_Pulled_Up_Input_Pin{ mcp23x08, 0b0100'0000 };
 
     EXPECT_CALL( mcp23x08, read_gpio() ).WillOnce( Return( test_case.gpio ) );
 
@@ -656,7 +656,7 @@ TEST_P( isHigh, worksProperly )
 
     auto mcp23x08 = Mock_Caching_Driver{};
 
-    auto pin = Internally_Pulled_Up_Input_Pin{ mcp23x08, 0b0001'0000 };
+    auto const pin = Internally_Pulled_Up_Input_Pin{ mcp23x08, 0b0001'0000 };
 
     EXPECT_CALL( mcp23x08, read_gpio() ).WillOnce( Return( test_case.gpio ) );
 
