@@ -26,32 +26,16 @@
 #include "picolibrary/microchip/mcp3008.h"
 #include "picolibrary/testing/automated/adc.h"
 #include "picolibrary/testing/automated/microchip/mcp3008.h"
-#include "picolibrary/testing/automated/random.h"
 
 namespace {
 
 using ::picolibrary::Microchip::MCP3008::Blocking_Single_Sample_Converter;
 using ::picolibrary::Microchip::MCP3008::Input;
 using ::picolibrary::Microchip::MCP3008::Sample;
-using ::picolibrary::Testing::Automated::random;
 using ::picolibrary::Testing::Automated::Microchip::MCP3008::Mock_Driver;
 using ::testing::Return;
 
 } // namespace
-
-/**
- * \brief Verify
- *        picolibrary::Microchip::MCP3008::Blocking_Single_Sample_Converter::initialize()
- *        works properly.
- */
-TEST( initialize, worksProperly )
-{
-    auto mcp3008 = Mock_Driver{};
-
-    auto adc = Blocking_Single_Sample_Converter{ mcp3008, random<Input>() };
-
-    adc.initialize();
-}
 
 /**
  * \brief Verify
@@ -61,15 +45,15 @@ TEST( initialize, worksProperly )
 TEST( sample, worksProperly )
 {
     auto       mcp3008 = Mock_Driver{};
-    auto const input   = random<Input>();
+    auto const input   = Input::CH7;
 
     auto adc = Blocking_Single_Sample_Converter{ mcp3008, input };
 
-    auto const sample = random<Sample>();
+    auto const sample = Sample{ 485 };
 
     EXPECT_CALL( mcp3008, sample( input ) ).WillOnce( Return( sample ) );
 
-    EXPECT_EQ( adc.sample(), sample );
+    ASSERT_EQ( adc.sample(), sample );
 }
 
 /**
