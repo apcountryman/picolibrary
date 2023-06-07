@@ -38,6 +38,8 @@ namespace picolibrary::Microchip::MCP3008 {
  *
  * \param[in] stream The stream to write the picolibrary::Microchip::MCP3008::Input to.
  * \param[in] input The picolibrary::Microchip::MCP3008::Input to write to the stream.
+ *
+ * \return stream
  */
 inline auto operator<<( std::ostream & stream, Input input ) -> std::ostream &
 {
