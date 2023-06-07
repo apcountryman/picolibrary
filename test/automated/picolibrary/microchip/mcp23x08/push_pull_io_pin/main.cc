@@ -58,7 +58,7 @@ TEST( constructorDefault, worksProperly )
 
 /**
  * \brief Verify picolibrary::Microchip::MCP23X08::Push_Pull_IO_Pin::Push_Pull_IO_Pin(
- *        Caching Driver &, std::uint8_t ) works properly.
+ *        Caching_Driver &, std::uint8_t ) works properly.
  */
 TEST( constructorCachingDriverMask, worksProperly )
 {
