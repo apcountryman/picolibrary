@@ -58,7 +58,7 @@ TEST( constructorDefault, worksProperly )
 
 /**
  * \brief Verify picolibrary::Microchip::MCP23X08::Open_Drain_IO_Pin::Open_Drain_IO_Pin(
- *        Caching Driver &, std::uint8_t ) works properly.
+ *        Caching_Driver &, std::uint8_t ) works properly.
  */
 TEST( constructorCachingDriverMask, worksProperly )
 {
