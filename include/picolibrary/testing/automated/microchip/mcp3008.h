@@ -24,10 +24,53 @@
 #define PICOLIBRARY_TESTING_AUTOMATED_MICROCHIP_MCP3008_H
 
 #include <cstdint>
+#include <ostream>
+#include <stdexcept>
 
 #include "picolibrary/microchip/mcp3008.h"
 #include "picolibrary/testing/automated/random.h"
 #include "picolibrary/testing/automated/spi.h"
+
+namespace picolibrary::Microchip::MCP3008 {
+
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the picolibrary::Microchip::MCP3008::Input to.
+ * \param[in] input The picolibrary::Microchip::MCP3008::Input to write to the stream.
+ */
+inline auto operator<<( std::ostream & stream, Input input ) -> std::ostream &
+{
+    switch ( input ) {
+            // clang-format off
+
+        case Input::CH0: return stream << "::picolibrary::Microchip::MCP3008::Input::CH0";
+        case Input::CH1: return stream << "::picolibrary::Microchip::MCP3008::Input::CH1";
+        case Input::CH2: return stream << "::picolibrary::Microchip::MCP3008::Input::CH2";
+        case Input::CH3: return stream << "::picolibrary::Microchip::MCP3008::Input::CH3";
+        case Input::CH4: return stream << "::picolibrary::Microchip::MCP3008::Input::CH4";
+        case Input::CH5: return stream << "::picolibrary::Microchip::MCP3008::Input::CH5";
+        case Input::CH6: return stream << "::picolibrary::Microchip::MCP3008::Input::CH6";
+        case Input::CH7: return stream << "::picolibrary::Microchip::MCP3008::Input::CH7";
+
+        case Input::CH0_RELATIVE_TO_CH1: return stream << "::picolibrary::Microchip::MCP3008::Input::CH0_RELATIVE_TO_CH1";
+        case Input::CH1_RELATIVE_TO_CH0: return stream << "::picolibrary::Microchip::MCP3008::Input::CH1_RELATIVE_TO_CH0";
+        case Input::CH2_RELATIVE_TO_CH3: return stream << "::picolibrary::Microchip::MCP3008::Input::CH2_RELATIVE_TO_CH3";
+        case Input::CH3_RELATIVE_TO_CH2: return stream << "::picolibrary::Microchip::MCP3008::Input::CH3_RELATIVE_TO_CH2";
+        case Input::CH4_RELATIVE_TO_CH5: return stream << "::picolibrary::Microchip::MCP3008::Input::CH4_RELATIVE_TO_CH5";
+        case Input::CH5_RELATIVE_TO_CH4: return stream << "::picolibrary::Microchip::MCP3008::Input::CH5_RELATIVE_TO_CH4";
+        case Input::CH6_RELATIVE_TO_CH7: return stream << "::picolibrary::Microchip::MCP3008::Input::CH6_RELATIVE_TO_CH7";
+        case Input::CH7_RELATIVE_TO_CH6: return stream << "::picolibrary::Microchip::MCP3008::Input::CH7_RELATIVE_TO_CH6";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{
+        "input is not a valid ::picolibrary::Microchip::MCP3008::Input"
+    };
+}
+
+} // namespace picolibrary::Microchip::MCP3008
 
 namespace picolibrary::Testing::Automated {
 
