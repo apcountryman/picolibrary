@@ -41,6 +41,8 @@ namespace picolibrary::Microchip::MCP3008 {
  */
 inline auto operator<<( std::ostream & stream, Input input ) -> std::ostream &
 {
+    // #lizard forgives the length
+
     switch ( input ) {
             // clang-format off
 
