@@ -360,9 +360,7 @@ class isHigh : public TestWithParam<isHigh_Test_Case> {
 };
 
 /**
- * \brief Verify
- *        picolibrary::Microchip::MCP23X08::Pin::is_high()
- *        works properly.
+ * \brief Verify picolibrary::Microchip::MCP23X08::Pin::is_high() works properly.
  */
 TEST_P( isHigh, worksProperly )
 {
