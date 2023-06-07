@@ -26,51 +26,74 @@
 #include "picolibrary/microchip/mcp3008.h"
 #include "picolibrary/testing/automated/adc.h"
 #include "picolibrary/testing/automated/microchip/mcp3008.h"
-#include "picolibrary/testing/automated/random.h"
 
 namespace {
 
 using ::picolibrary::Microchip::MCP3008::Blocking_Single_Sample_Converter;
 using ::picolibrary::Microchip::MCP3008::Input;
 using ::picolibrary::Microchip::MCP3008::Sample;
-using ::picolibrary::Testing::Automated::random;
 using ::picolibrary::Testing::Automated::Microchip::MCP3008::Mock_Driver;
 using ::testing::Return;
+using ::testing::TestWithParam;
+using ::testing::ValuesIn;
 
 } // namespace
 
 /**
- * \brief Verify
- *        picolibrary::Microchip::MCP3008::Blocking_Single_Sample_Converter::initialize()
- *        works properly.
+ * \brief picolibrary::Microchip::MCP3008::Blocking_Single_Sample_Converter::sample() test
+ *        fixture.
  */
-TEST( initialize, worksProperly )
-{
-    auto mcp3008 = Mock_Driver{};
-
-    auto adc = Blocking_Single_Sample_Converter{ mcp3008, random<Input>() };
-
-    adc.initialize();
-}
+class sample : public TestWithParam<Input> {
+};
 
 /**
  * \brief Verify
  *        picolibrary::Microchip::MCP3008::Blocking_Single_Sample_Converter::sample()
  *        works properly.
  */
-TEST( sample, worksProperly )
+TEST_P( sample, worksProperly )
 {
     auto       mcp3008 = Mock_Driver{};
-    auto const input   = random<Input>();
+    auto const input   = GetParam();
 
     auto adc = Blocking_Single_Sample_Converter{ mcp3008, input };
 
-    auto const sample = random<Sample>();
+    auto const s = Sample{ 485 };
 
-    EXPECT_CALL( mcp3008, sample( input ) ).WillOnce( Return( sample ) );
+    EXPECT_CALL( mcp3008, sample( input ) ).WillOnce( Return( s ) );
 
-    EXPECT_EQ( adc.sample(), sample );
+    ASSERT_EQ( adc.sample(), s );
 }
+
+/**
+ * \brief picolibrary::Microchip::MCP3008::Blocking_Single_Sample_Converter::sample() test
+ *        cases.
+ */
+Input const sample_TEST_CASES[]{
+    // clang-format off
+
+    Input::CH0,
+    Input::CH1,
+    Input::CH2,
+    Input::CH3,
+    Input::CH4,
+    Input::CH5,
+    Input::CH6,
+    Input::CH7,
+
+    Input::CH0_RELATIVE_TO_CH1,
+    Input::CH1_RELATIVE_TO_CH0,
+    Input::CH2_RELATIVE_TO_CH3,
+    Input::CH3_RELATIVE_TO_CH2,
+    Input::CH4_RELATIVE_TO_CH5,
+    Input::CH5_RELATIVE_TO_CH4,
+    Input::CH6_RELATIVE_TO_CH7,
+    Input::CH7_RELATIVE_TO_CH6,
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, sample, ValuesIn( sample_TEST_CASES ) );
 
 /**
  * \brief Execute the picolibrary::Microchip::MCP3008::Blocking_Single_Sample_Converter
