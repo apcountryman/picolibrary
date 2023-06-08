@@ -21,6 +21,7 @@
  */
 
 #include <cstdint>
+#include <ios>
 #include <ostream>
 
 #include "gmock/gmock.h"
@@ -65,9 +66,9 @@ auto operator<<( std::ostream & stream, lcdSize_Test_Case const & test_case ) ->
     return stream << "{ "
                   << ".lcd_size = " << test_case.lcd_size
                   << ", "
-                  << ".columns = " << static_cast<std::uint_fast16_t>( test_case.columns )
+                  << ".columns = " << std::dec << static_cast<std::uint_fast16_t>( test_case.columns )
                   << ", "
-                  << ".rows = " << static_cast<std::uint_fast16_t>( test_case.rows )
+                  << ".rows = " << std::dec << static_cast<std::uint_fast16_t>( test_case.rows )
                   << " }";
 
     // clang-format on

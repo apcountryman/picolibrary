@@ -106,10 +106,10 @@ auto operator<<( std::ostream & stream, constructor_Test_Case const & test_case 
     // clang-format off
 
     return stream << "{ "
-                  << ".byte_array = { " << static_cast<std::uint_fast16_t>( test_case.byte_array[ 0 ] ) << ", "
-                                        << static_cast<std::uint_fast16_t>( test_case.byte_array[ 1 ] ) << ", "
-                                        << static_cast<std::uint_fast16_t>( test_case.byte_array[ 2 ] ) << ", "
-                                        << static_cast<std::uint_fast16_t>( test_case.byte_array[ 3 ] ) << " }"
+                  << ".byte_array = { " << std::dec << static_cast<std::uint_fast16_t>( test_case.byte_array[ 0 ] ) << ", "
+                                        << std::dec << static_cast<std::uint_fast16_t>( test_case.byte_array[ 1 ] ) << ", "
+                                        << std::dec << static_cast<std::uint_fast16_t>( test_case.byte_array[ 2 ] ) << ", "
+                                        << std::dec << static_cast<std::uint_fast16_t>( test_case.byte_array[ 3 ] ) << " }"
                   << ", "
                   << ".unsigned_integer = 0x" << std::hex << std::uppercase << std::setw( std::numeric_limits<Address::Unsigned_Integer>::digits / 4 ) << std::setfill( '0' ) << test_case.unsigned_integer
                   << ", "

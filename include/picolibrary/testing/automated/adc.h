@@ -24,6 +24,7 @@
 #define PICOLIBRARY_TESTING_AUTOMATED_ADC_H
 
 #include <cstdint>
+#include <ios>
 #include <limits>
 #include <ostream>
 
@@ -48,7 +49,7 @@ auto operator<<( std::ostream & stream, Sample<T, N> sample ) -> std::ostream &
 {
     static_assert( N <= std::numeric_limits<std::uint_fast32_t>::digits );
 
-    return stream << static_cast<std::uint_fast32_t>( sample.as_unsigned_integer() );
+    return stream << std::dec << static_cast<std::uint_fast32_t>( sample.as_unsigned_integer() );
 }
 
 } // namespace picolibrary::ADC

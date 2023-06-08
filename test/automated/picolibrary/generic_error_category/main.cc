@@ -21,6 +21,7 @@
  */
 
 #include <cstdint>
+#include <ios>
 #include <ostream>
 
 #include "gmock/gmock.h"
@@ -59,7 +60,7 @@ auto operator<<( std::ostream & stream, errorDescription_Test_Case const & test_
     // clang-format off
 
     return stream << "{ "
-                  << ".id = " << static_cast<std::uint_fast16_t>( test_case.id )
+                  << ".id = " << std::dec << static_cast<std::uint_fast16_t>( test_case.id )
                   << ", "
                   << ".error_description = " << test_case.error_description
                   << " }";

@@ -23,6 +23,7 @@
 #ifndef PICOLIBRARY_TESTING_AUTOMATED_IP_H
 #define PICOLIBRARY_TESTING_AUTOMATED_IP_H
 
+#include <ios>
 #include <ostream>
 #include <stdexcept>
 
@@ -74,7 +75,7 @@ inline auto operator<<( std::ostream & stream, Address const & address ) -> std:
  */
 inline auto operator<<( std::ostream & stream, Port port ) -> std::ostream &
 {
-    return stream << port.as_unsigned_integer();
+    return stream << std::dec << port.as_unsigned_integer();
 }
 
 /**

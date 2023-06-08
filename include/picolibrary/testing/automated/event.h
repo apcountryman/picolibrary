@@ -24,6 +24,7 @@
 #define PICOLIBRARY_TESTING_AUTOMATED_EVENT_H
 
 #include <cstddef>
+#include <ios>
 #include <ostream>
 #include <typeinfo>
 
@@ -111,13 +112,13 @@ namespace picolibrary {
 inline auto operator<<( std::ostream & stream, Event const & event ) -> std::ostream &
 {
     if ( &event.category() == &Testing::Automated::Mock_Event_Category::instance() ) {
-        return stream << "::picolibrary::Testing::Automated::Mock_Event::"
+        return stream << "::picolibrary::Testing::Automated::Mock_Event::" << std::dec
                       << static_cast<std::uint_fast16_t>( event.id() );
     } // if
 
     if ( typeid( event.category() ) == typeid( Testing::Automated::Mock_Event_Category ) ) {
         return stream << "::picolibrary::Testing::Automated::Mock_Event( " << &event.category()
-                      << " )::" << static_cast<std::uint_fast16_t>( event.id() );
+                      << " )::" << std::dec << static_cast<std::uint_fast16_t>( event.id() );
     } // if
 
     stream << event.category().name() << "::" << event.description();

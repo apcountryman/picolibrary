@@ -68,7 +68,7 @@ auto operator<<( std::ostream & stream, highestBitSet_Test_Case<T> const & test_
     return stream << "{ "
                   << ".value = 0b" << std::bitset<std::numeric_limits<T>::digits>{ test_case.value }
                   << ", "
-                  << ".highest_bit_set = " << static_cast<std::uint_fast16_t>( test_case.highest_bit_set )
+                  << ".highest_bit_set = " << std::dec << static_cast<std::uint_fast16_t>( test_case.highest_bit_set )
                   << " }";
 
     // clang-format on
@@ -355,9 +355,9 @@ auto operator<<( std::ostream & stream, mask_Test_Case<T> const & test_case ) ->
     // clang-format off
 
     return stream << "{ "
-                  << ".size = " << static_cast<std::uint_fast16_t>( test_case.size )
+                  << ".size = " << std::dec << static_cast<std::uint_fast16_t>( test_case.size )
                   << ", "
-                  << ".bit = " << static_cast<std::uint_fast16_t>( test_case.bit )
+                  << ".bit = " << std::dec << static_cast<std::uint_fast16_t>( test_case.bit )
                   << ", "
                   << ".mask = 0b" << std::bitset<std::numeric_limits<T>::digits>{ test_case.mask }
                   << " }";

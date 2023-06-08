@@ -91,7 +91,7 @@ auto operator<<( std::ostream & stream, sample_Test_Case const & test_case ) -> 
                                 << "0x" << std::hex << std::uppercase << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 ) << std::setfill( '0' ) << static_cast<std::uint_fast16_t>( test_case.rx[ 1 ] ) << ", "
                                 << "0x" << std::hex << std::uppercase << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 ) << std::setfill( '0' ) << static_cast<std::uint_fast16_t>( test_case.rx[ 2 ] ) << " }"
                   << ", "
-                  << ".sample = " << std::dec << test_case.sample
+                  << ".sample = " << test_case.sample
                   << " }";
 
     // clang-format on
