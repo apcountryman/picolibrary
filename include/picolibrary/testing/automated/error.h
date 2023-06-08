@@ -24,6 +24,7 @@
 #define PICOLIBRARY_TESTING_AUTOMATED_ERROR_H
 
 #include <cstdint>
+#include <ios>
 #include <ostream>
 #include <stdexcept>
 #include <type_traits>
@@ -102,7 +103,7 @@ enum class Mock_Error : Error_ID {};
  */
 inline auto operator<<( std::ostream & stream, Mock_Error error ) -> std::ostream &
 {
-    return stream << "::picolibrary::Testing::Automated::Mock_Error::"
+    return stream << "::picolibrary::Testing::Automated::Mock_Error::" << std::dec
                   << static_cast<std::uint_fast16_t>( error );
 }
 
@@ -186,13 +187,13 @@ struct is_error_code_enum<Testing::Automated::Mock_Error> : std::true_type {
 inline auto operator<<( std::ostream & stream, Error_Code const & error ) -> std::ostream &
 {
     if ( &error.category() == &Testing::Automated::Mock_Error_Category::instance() ) {
-        return stream << "::picolibrary::Testing::Automated::Mock_Error::"
+        return stream << "::picolibrary::Testing::Automated::Mock_Error::" << std::dec
                       << static_cast<std::uint_fast16_t>( error.id() );
     } // if
 
     if ( typeid( error.category() ) == typeid( Testing::Automated::Mock_Error_Category ) ) {
         return stream << "::picolibrary::Testing::Automated::Mock_Error( " << &error.category()
-                      << " )::" << static_cast<std::uint_fast16_t>( error.id() );
+                      << " )::" << std::dec << static_cast<std::uint_fast16_t>( error.id() );
     } // if
 
     return stream << error.category().name() << "::" << error.description();

@@ -24,6 +24,7 @@
 #define PICOLIBRARY_TESTING_AUTOMATED_IPV4_H
 
 #include <cstdint>
+#include <ios>
 #include <ostream>
 
 #include "picolibrary/ipv4.h"
@@ -41,10 +42,14 @@ namespace picolibrary::IPv4 {
  */
 inline auto operator<<( std::ostream & stream, Address const & address ) -> std::ostream &
 {
-    return stream << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 0 ] ) << '.'
-                  << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 1 ] ) << '.'
-                  << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 2 ] ) << '.'
-                  << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 3 ] );
+    // clang-format off
+
+    return stream << std::dec << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 0 ] ) << '.'
+                  << std::dec << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 1 ] ) << '.'
+                  << std::dec << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 2 ] ) << '.'
+                  << std::dec << static_cast<std::uint_fast16_t>( address.as_byte_array()[ 3 ] );
+
+    // clang-format on
 }
 
 } // namespace picolibrary::IPv4

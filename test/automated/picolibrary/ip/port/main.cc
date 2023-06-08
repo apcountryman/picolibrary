@@ -79,7 +79,7 @@ auto operator<<( std::ostream & stream, constructorUnsignedInteger_Test_Case con
     // clang-format off
 
     return stream << "{ "
-                  << ".port = " << test_case.port
+                  << ".port = " << std::dec << test_case.port
                   << ", "
                   << ".is_any = " << std::boolalpha << test_case.is_any
                   << " }";
