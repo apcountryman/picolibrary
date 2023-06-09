@@ -21,19 +21,17 @@
  */
 
 #include <cstdint>
-#include <string>
+#include <string_view>
 #include <vector>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/stream.h"
-#include "picolibrary/testing/automated/random.h"
 #include "picolibrary/testing/automated/stream.h"
 
 namespace {
 
 using ::picolibrary::Testing::Automated::Mock_Reliable_Stream_Buffer;
-using ::picolibrary::Testing::Automated::random_container;
 using ::testing::Eq;
 using ::testing::InSequence;
 using ::testing::SafeMatcherCast;
@@ -50,13 +48,13 @@ TEST( putCharBlock, worksProperly )
 
     auto buffer = Mock_Reliable_Stream_Buffer{};
 
-    auto const string = random_container<std::string>();
+    auto const string = std::string_view{ "XnQmlICQXCrJ" };
 
     for ( auto const character : string ) {
         EXPECT_CALL( buffer, put( SafeMatcherCast<char>( Eq( character ) ) ) );
     } // for
 
-    buffer.Reliable_Stream_Buffer::put( &*string.begin(), &*string.end() );
+    buffer.Reliable_Stream_Buffer::put( string.begin(), string.end() );
 }
 
 /**
@@ -68,13 +66,13 @@ TEST( putNullTerminatedString, worksProperly )
 
     auto buffer = Mock_Reliable_Stream_Buffer{};
 
-    auto const string = random_container<std::string>();
+    auto const string = std::string_view{ "0cCzet1DQC" };
 
     for ( auto const character : string ) {
         EXPECT_CALL( buffer, put( SafeMatcherCast<char>( Eq( character ) ) ) );
     } // for
 
-    buffer.Reliable_Stream_Buffer::put( string.c_str() );
+    buffer.Reliable_Stream_Buffer::put( string.data() );
 }
 
 /**
@@ -87,7 +85,7 @@ TEST( putUnsignedByteBlock, worksProperly )
 
     auto buffer = Mock_Reliable_Stream_Buffer{};
 
-    auto const values = random_container<std::vector<std::uint8_t>>();
+    auto const values = std::vector<std::uint8_t>{ 0x0E, 0x2D, 0xE6, 0xB0, 0x4D, 0x35 };
 
     for ( auto const value : values ) {
         EXPECT_CALL( buffer, put( SafeMatcherCast<std::uint8_t>( Eq( value ) ) ) );
@@ -106,7 +104,7 @@ TEST( putSignedByteBlock, worksProperly )
 
     auto buffer = Mock_Reliable_Stream_Buffer{};
 
-    auto const values = random_container<std::vector<std::int8_t>>();
+    auto const values = std::vector<std::int8_t>{ 0x7D, 0x27, 0x2B, 0x1C, 0x7D };
 
     for ( auto const value : values ) {
         EXPECT_CALL( buffer, put( SafeMatcherCast<std::int8_t>( Eq( value ) ) ) );
