@@ -23,6 +23,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include "gmock/gmock.h"
@@ -153,9 +154,9 @@ TEST( putCharBlockErrorHandling, putError )
 
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
 
-    auto const string = std::string{ "QoHCz0" };
+    auto const string = std::string_view{ "QoHCz0" };
 
-    auto const result = stream.put( &*string.begin(), &*string.end() );
+    auto const result = stream.put( string.begin(), string.end() );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -173,11 +174,11 @@ TEST( putCharBlock, worksProperly )
 {
     auto stream = Mock_Output_Stream{};
 
-    auto const string = std::string{ "FDBVjQgD" };
+    auto const string = std::string_view{ "FDBVjQgD" };
 
-    EXPECT_CALL( stream.buffer(), put( string ) ).WillOnce( Return( Result<void>{} ) );
+    EXPECT_CALL( stream.buffer(), put( std::string{ string } ) ).WillOnce( Return( Result<void>{} ) );
 
-    EXPECT_FALSE( stream.put( &*string.begin(), &*string.end() ).is_error() );
+    EXPECT_FALSE( stream.put( string.begin(), string.end() ).is_error() );
 
     EXPECT_TRUE( stream.is_nominal() );
 }
@@ -194,9 +195,9 @@ TEST( putNullTerminatedStringErrorHandling, putError )
 
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
 
-    auto const string = std::string{ "du1JWCGcsfXR3" };
+    auto const string = "du1JWCGcsfXR3";
 
-    auto const result = stream.put( string.c_str() );
+    auto const result = stream.put( string );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -213,11 +214,11 @@ TEST( putNullTerminatedString, worksProperly )
 {
     auto stream = Mock_Output_Stream{};
 
-    auto const string = std::string{ "UStwlrJdq" };
+    auto const string = "UStwlrJdq";
 
     EXPECT_CALL( stream.buffer(), put( string ) ).WillOnce( Return( Result<void>{} ) );
 
-    EXPECT_FALSE( stream.put( string.c_str() ).is_error() );
+    EXPECT_FALSE( stream.put( string ).is_error() );
 
     EXPECT_TRUE( stream.is_nominal() );
 }
@@ -467,8 +468,6 @@ TEST( flushErrorHandling, flushError )
     auto const error = Mock_Error{ 33 };
 
     EXPECT_CALL( stream.buffer(), flush() ).WillOnce( Return( error ) );
-
-    auto const values = std::vector<std::int8_t>{ 0x09, 0x32, 0x75 };
 
     auto const result = stream.flush();
 
