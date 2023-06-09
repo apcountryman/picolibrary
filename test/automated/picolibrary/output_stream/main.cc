@@ -23,7 +23,6 @@
 #include <cstddef>
 #include <cstdint>
 #include <string>
-#include <type_traits>
 #include <vector>
 
 #include "gmock/gmock.h"
@@ -32,7 +31,6 @@
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
 #include "picolibrary/testing/automated/error.h"
-#include "picolibrary/testing/automated/random.h"
 #include "picolibrary/testing/automated/stream.h"
 #include "picolibrary/utility.h"
 
@@ -47,8 +45,6 @@ using ::picolibrary::Testing::Automated::Mock_Error;
 using ::picolibrary::Testing::Automated::Mock_Error_Category;
 using ::picolibrary::Testing::Automated::Mock_Output_Stream;
 using ::picolibrary::Testing::Automated::Output_String_Stream;
-using ::picolibrary::Testing::Automated::random;
-using ::picolibrary::Testing::Automated::random_container;
 using ::testing::_;
 using ::testing::A;
 using ::testing::Eq;
@@ -107,24 +103,18 @@ class picolibrary::Output_Formatter<::Foo> {
     ::Mock_Output_Formatter const * m_mock_output_formatter{};
 };
 
-template<>
-inline auto picolibrary::Testing::Automated::random<::Foo>() -> ::Foo
-{
-    return static_cast<::Foo>( random<std::underlying_type_t<::Foo>>() );
-}
-
 /**
  * \brief Verify picolibrary::Output_Stream::put( char ) properly handles a put error.
  */
-TEST( putChar, putError )
+TEST( putCharErrorHandling, putError )
 {
     auto stream = Mock_Output_Stream{};
 
-    auto const error = random<Mock_Error>();
+    auto const error = Mock_Error{ 63 };
 
     EXPECT_CALL( stream.buffer(), put( A<char>() ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.put( random<char>() );
+    auto const result = stream.put( 'W' );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -141,7 +131,7 @@ TEST( putChar, worksProperly )
 {
     auto stream = Mock_Output_Stream{};
 
-    auto const character = random<char>();
+    auto const character = 'g';
 
     EXPECT_CALL( stream.buffer(), put( SafeMatcherCast<char>( Eq( character ) ) ) )
         .WillOnce( Return( Result<void>{} ) );
@@ -155,15 +145,16 @@ TEST( putChar, worksProperly )
  * \brief Verify picolibrary::Output_Stream::put( char const *, char const * ) properly
  *        handles a put error.
  */
-TEST( putCharBlock, putError )
+TEST( putCharBlockErrorHandling, putError )
 {
     auto stream = Mock_Output_Stream{};
 
-    auto const error = random<Mock_Error>();
+    auto const error = Mock_Error{ 83 };
 
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
 
-    auto const string = random_container<std::string>();
+    auto const string = std::string{ "QoHCz0" };
+
     auto const result = stream.put( &*string.begin(), &*string.end() );
 
     ASSERT_TRUE( result.is_error() );
@@ -182,7 +173,7 @@ TEST( putCharBlock, worksProperly )
 {
     auto stream = Mock_Output_Stream{};
 
-    auto const string = random_container<std::string>();
+    auto const string = std::string{ "FDBVjQgD" };
 
     EXPECT_CALL( stream.buffer(), put( string ) ).WillOnce( Return( Result<void>{} ) );
 
@@ -195,15 +186,16 @@ TEST( putCharBlock, worksProperly )
  * \brief Verify picolibrary::Output_Stream::put( char const * ) properly handles a put
  *        error.
  */
-TEST( putNullTerminatedString, putError )
+TEST( putNullTerminatedStringErrorHandling, putError )
 {
     auto stream = Mock_Output_Stream{};
 
-    auto const error = random<Mock_Error>();
+    auto const error = Mock_Error{ 169 };
 
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
 
-    auto const string = random_container<std::string>();
+    auto const string = std::string{ "du1JWCGcsfXR3" };
+
     auto const result = stream.put( string.c_str() );
 
     ASSERT_TRUE( result.is_error() );
@@ -221,7 +213,7 @@ TEST( putNullTerminatedString, worksProperly )
 {
     auto stream = Mock_Output_Stream{};
 
-    auto const string = random_container<std::string>();
+    auto const string = std::string{ "UStwlrJdq" };
 
     EXPECT_CALL( stream.buffer(), put( string ) ).WillOnce( Return( Result<void>{} ) );
 
@@ -234,15 +226,15 @@ TEST( putNullTerminatedString, worksProperly )
  * \brief Verify picolibrary::Output_Stream::put( std::uint8_t ) properly handles a put
  *        error.
  */
-TEST( putUnsignedByte, putError )
+TEST( putUnsignedByteErrorHandling, putError )
 {
     auto stream = Mock_Output_Stream{};
 
-    auto const error = random<Mock_Error>();
+    auto const error = Mock_Error{ 9 };
 
     EXPECT_CALL( stream.buffer(), put( A<std::uint8_t>() ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.put( random<std::uint8_t>() );
+    auto const result = stream.put( std::uint8_t{ 0xB6 } );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -259,7 +251,7 @@ TEST( putUnsignedByte, worksProperly )
 {
     auto stream = Mock_Output_Stream{};
 
-    auto const value = random<std::uint8_t>();
+    auto const value = std::uint8_t{ 0xFB };
 
     EXPECT_CALL( stream.buffer(), put( SafeMatcherCast<std::uint8_t>( Eq( value ) ) ) )
         .WillOnce( Return( Result<void>{} ) );
@@ -273,15 +265,16 @@ TEST( putUnsignedByte, worksProperly )
  * \brief Verify picolibrary::Output_Stream::put( std::uint8_t const *, std::uint8_t const
  *        * ) properly handles a put error.
  */
-TEST( putUnsignedByteBlock, putError )
+TEST( putUnsignedByteBlockErrorHandling, putError )
 {
     auto stream = Mock_Output_Stream{};
 
-    auto const error = random<Mock_Error>();
+    auto const error = Mock_Error{ 101 };
 
     EXPECT_CALL( stream.buffer(), put( A<std::vector<std::uint8_t>>() ) ).WillOnce( Return( error ) );
 
-    auto const values = random_container<std::vector<std::uint8_t>>();
+    auto const values = std::vector<std::uint8_t>{ 0x04, 0x35, 0x13, 0x53 };
+
     auto const result = stream.put( &*values.begin(), &*values.end() );
 
     ASSERT_TRUE( result.is_error() );
@@ -300,7 +293,7 @@ TEST( putUnsignedByteBlock, worksProperly )
 {
     auto stream = Mock_Output_Stream{};
 
-    auto const values = random_container<std::vector<std::uint8_t>>();
+    auto const values = std::vector<std::uint8_t>{ 0x49, 0x70, 0xB9, 0x97, 0x02 };
 
     EXPECT_CALL( stream.buffer(), put( values ) ).WillOnce( Return( Result<void>{} ) );
 
@@ -313,15 +306,15 @@ TEST( putUnsignedByteBlock, worksProperly )
  * \brief Verify picolibrary::Output_Stream::put( std::int8_t ) properly handles a put
  *        error.
  */
-TEST( putSignedByte, putError )
+TEST( putSignedByteErrorHandling, putError )
 {
     auto stream = Mock_Output_Stream{};
 
-    auto const error = random<Mock_Error>();
+    auto const error = Mock_Error{ 31 };
 
     EXPECT_CALL( stream.buffer(), put( A<std::int8_t>() ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.put( random<std::int8_t>() );
+    auto const result = stream.put( std::int8_t{ 0x3D } );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -338,7 +331,7 @@ TEST( putSignedByte, worksProperly )
 {
     auto stream = Mock_Output_Stream{};
 
-    auto const value = random<std::int8_t>();
+    auto const value = std::int8_t{ 0x12 };
 
     EXPECT_CALL( stream.buffer(), put( SafeMatcherCast<std::int8_t>( Eq( value ) ) ) )
         .WillOnce( Return( Result<void>{} ) );
@@ -352,15 +345,16 @@ TEST( putSignedByte, worksProperly )
  * \brief Verify picolibrary::Output_Stream::put( std::int8_t const *, std::int8_t const *
  *        ) properly handles a put error.
  */
-TEST( putSignedByteBlock, putError )
+TEST( putSignedByteBlockErrorHandling, putError )
 {
     auto stream = Mock_Output_Stream{};
 
-    auto const error = random<Mock_Error>();
+    auto const error = Mock_Error{ 101 };
 
     EXPECT_CALL( stream.buffer(), put( A<std::vector<std::int8_t>>() ) ).WillOnce( Return( error ) );
 
-    auto const values = random_container<std::vector<std::int8_t>>();
+    auto const values = std::vector<std::int8_t>{ 0x09, 0x32, 0x75 };
+
     auto const result = stream.put( &*values.begin(), &*values.end() );
 
     ASSERT_TRUE( result.is_error() );
@@ -379,7 +373,7 @@ TEST( putSignedByteBlock, worksProperly )
 {
     auto stream = Mock_Output_Stream{};
 
-    auto const values = random_container<std::vector<std::int8_t>>();
+    auto const values = std::vector<std::int8_t>{ 0x57, 0x22, 0x19, 0x54, 0x56, 0x4D };
 
     EXPECT_CALL( stream.buffer(), put( values ) ).WillOnce( Return( Result<void>{} ) );
 
@@ -392,17 +386,17 @@ TEST( putSignedByteBlock, worksProperly )
  * \brief Verify picolibrary::Output_Stream::print() properly handles a
  *        picolibrary::Output_Formatter::print() error.
  */
-TEST( print, outputFormatterPrintError )
+TEST( printErrorHandling, outputFormatterPrintError )
 {
     auto stream = Mock_Output_Stream{};
 
     auto const formatter = Mock_Output_Formatter{};
 
-    auto const error = random<Mock_Error>();
+    auto const error = Mock_Error{ 242 };
 
     EXPECT_CALL( formatter, print( _, _ ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.print( random<Foo>(), Output_Formatter<Foo>{ formatter } );
+    auto const result = stream.print( Foo{ 89 }, Output_Formatter<Foo>{ formatter } );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -413,62 +407,68 @@ TEST( print, outputFormatterPrintError )
 }
 
 /**
- * \brief Verify picolibrary::Output_Stream::print() works properly.
+ * \brief Verify picolibrary::Output_Stream::print() works properly when there is a single
+ *        value to format.
  */
-TEST( print, worksProperly )
+TEST( print, worksProperlySingleValue )
 {
-    {
-        auto stream = Mock_Output_Stream{};
+    auto stream = Mock_Output_Stream{};
 
-        auto const foo           = random<Foo>();
-        auto const foo_formatter = Mock_Output_Formatter{};
-        auto const foo_size      = random<std::size_t>();
+    auto const foo           = Foo{ 243 };
+    auto const foo_formatter = Mock_Output_Formatter{};
+    auto const foo_size      = std::size_t{ 156 };
 
-        EXPECT_CALL( foo_formatter, print( Ref( stream ), Ref( foo ) ) ).WillOnce( Return( foo_size ) );
+    EXPECT_CALL( foo_formatter, print( Ref( stream ), Ref( foo ) ) ).WillOnce( Return( foo_size ) );
 
-        auto const result = stream.print( foo, Output_Formatter<Foo>{ foo_formatter } );
+    auto const result = stream.print( foo, Output_Formatter<Foo>{ foo_formatter } );
 
-        ASSERT_FALSE( result.is_error() );
-        EXPECT_EQ( result.value(), foo_size );
+    ASSERT_FALSE( result.is_error() );
+    EXPECT_EQ( result.value(), foo_size );
 
-        EXPECT_TRUE( stream.is_nominal() );
-    }
+    EXPECT_TRUE( stream.is_nominal() );
+}
 
-    {
-        auto const in_sequence = InSequence{};
+/**
+ * \brief Verify picolibrary::Output_Stream::print() works properly when there are
+ *        multiple values to format.
+ */
+TEST( print, worksProperlyMultipleValues )
+{
+    auto const in_sequence = InSequence{};
 
-        auto stream = Mock_Output_Stream{};
+    auto stream = Mock_Output_Stream{};
 
-        auto const foo_a           = random<Foo>();
-        auto const foo_a_formatter = Mock_Output_Formatter{};
-        auto const foo_a_size      = random<std::size_t>();
-        auto const foo_b           = random<Foo>();
-        auto const foo_b_formatter = Mock_Output_Formatter{};
-        auto const foo_b_size      = random<std::size_t>();
+    auto const foo_a           = Foo{ 201 };
+    auto const foo_a_formatter = Mock_Output_Formatter{};
+    auto const foo_a_size      = std::size_t{ 47 };
+    auto const foo_b           = Foo{ 141 };
+    auto const foo_b_formatter = Mock_Output_Formatter{};
+    auto const foo_b_size      = std::size_t{ 253 };
 
-        EXPECT_CALL( foo_a_formatter, print( Ref( stream ), Ref( foo_a ) ) ).WillOnce( Return( foo_a_size ) );
-        EXPECT_CALL( foo_b_formatter, print( Ref( stream ), Ref( foo_b ) ) ).WillOnce( Return( foo_b_size ) );
+    EXPECT_CALL( foo_a_formatter, print( Ref( stream ), Ref( foo_a ) ) ).WillOnce( Return( foo_a_size ) );
+    EXPECT_CALL( foo_b_formatter, print( Ref( stream ), Ref( foo_b ) ) ).WillOnce( Return( foo_b_size ) );
 
-        auto const result = stream.print(
-            foo_a, Output_Formatter<Foo>{ foo_a_formatter }, foo_b, Output_Formatter<Foo>{ foo_b_formatter } );
+    auto const result = stream.print(
+        foo_a, Output_Formatter<Foo>{ foo_a_formatter }, foo_b, Output_Formatter<Foo>{ foo_b_formatter } );
 
-        ASSERT_FALSE( result.is_error() );
-        EXPECT_EQ( result.value(), foo_a_size + foo_b_size );
+    ASSERT_FALSE( result.is_error() );
+    EXPECT_EQ( result.value(), foo_a_size + foo_b_size );
 
-        EXPECT_TRUE( stream.is_nominal() );
-    }
+    EXPECT_TRUE( stream.is_nominal() );
 }
 
 /**
  * \brief Verify picolibrary::Output_Stream::flush() properly handles a flush error.
  */
-TEST( flush, flushError )
+TEST( flushErrorHandling, flushError )
 {
     auto stream = Mock_Output_Stream{};
 
-    auto const error = random<Mock_Error>();
+    auto const error = Mock_Error{ 33 };
 
     EXPECT_CALL( stream.buffer(), flush() ).WillOnce( Return( error ) );
+
+    auto const values = std::vector<std::int8_t>{ 0x09, 0x32, 0x75 };
 
     auto const result = stream.flush();
 
@@ -495,17 +495,18 @@ TEST( flush, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<char> properly handles a put error.
+ * \brief Verify picolibrary::Output_Formatter<char>::print( picolibrary::Output_Stream &,
+ *        char ) properly handles a put error.
  */
-TEST( outputFormatterChar, putError )
+TEST( outputFormatterCharPrintOutputStreamErrorHandling, putError )
 {
     auto stream = Mock_Output_Stream{};
 
-    auto const error = random<Mock_Error>();
+    auto const error = Mock_Error{ 181 };
 
     EXPECT_CALL( stream.buffer(), put( A<char>() ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.print( random<char>() );
+    auto const result = stream.print( 'g' );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -516,13 +517,14 @@ TEST( outputFormatterChar, putError )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<char> works properly.
+ * \brief Verify picolibrary::Output_Formatter<char>::print( picolibrary::Output_Stream &,
+ *        char ) works properly.
  */
-TEST( outputFormatterChar, worksProperly )
+TEST( outputFormatterCharPrintOutputStream, worksProperly )
 {
     auto stream = Output_String_Stream{};
 
-    auto const character = random<char>();
+    auto const character = 'u';
 
     auto const result = stream.print( character );
 
@@ -534,17 +536,18 @@ TEST( outputFormatterChar, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<char const *> properly handles a put error.
+ * \brief Verify picolibrary::Output_Formatter<char const *>::print(
+ *        picolibrary::Output_Stream &, char const * ) properly handles a put error.
  */
-TEST( outputFormatterNullTerminatedString, putError )
+TEST( outputFormatterNullTerminatedStringPrintOutputStreamErrorHandling, putError )
 {
     auto stream = Mock_Output_Stream{};
 
-    auto const error = random<Mock_Error>();
+    auto const error = Mock_Error{ 105 };
 
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.print( random_container<std::string>().c_str() );
+    auto const result = stream.print( "FxYCgTqc4" );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -555,15 +558,16 @@ TEST( outputFormatterNullTerminatedString, putError )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<char const *> works properly.
+ * \brief Verify picolibrary::Output_Formatter<char const *>::print(
+ *        picolibrary::Output_Stream &, char const * ) works properly.
  */
-TEST( outputFormatterNullTerminatedString, worksProperly )
+TEST( outputFormatterNullTerminatedStringPrintOutputStream, worksProperly )
 {
     auto stream = Output_String_Stream{};
 
-    auto const string = random_container<std::string>();
+    auto const string = "Ku67TKN3M5ITORA";
 
-    auto const result = stream.print( string.c_str() );
+    auto const result = stream.print( string );
 
     ASSERT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
@@ -573,25 +577,23 @@ TEST( outputFormatterNullTerminatedString, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Error_Code> properly handles a
- *        put error.
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Error_Code>::print(
+ *        picolibrary::Output_Stream &, picolibrary::Error_Code const & ) properly handles
+ *        a put error.
  */
-TEST( outputFormatterErrorCode, putError )
+TEST( outputFormatterErrorCodePrintOutputStreamErrorHandling, putError )
 {
     auto stream = Mock_Output_Stream{};
 
-    auto const error_category_name = random_container<std::string>();
-    auto const error_description   = random_container<std::string>();
-
-    auto const error = random<Mock_Error>();
+    auto const error = Mock_Error{ 163 };
 
     EXPECT_CALL( Mock_Error_Category::instance(), name() )
-        .WillOnce( Return( error_category_name.c_str() ) );
+        .WillOnce( Return( "pvtwn8xRCN9" ) );
     EXPECT_CALL( Mock_Error_Category::instance(), error_description( _ ) )
-        .WillOnce( Return( error_description.c_str() ) );
+        .WillOnce( Return( "1aL94J2UIA" ) );
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
 
-    auto const result = stream.print( Error_Code{ random<Mock_Error>() } );
+    auto const result = stream.print( Mock_Error{ 150 } );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
@@ -602,20 +604,21 @@ TEST( outputFormatterErrorCode, putError )
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<picolibrary::Error_Code> works properly.
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Error_Code>::print(
+ *        picolibrary::Output_Stream &, picolibrary::Error_Code const & ) works properly
+ *        with a picolibrary::Error_Code.
  */
-TEST( outputFormatterErrorCode, worksProperly )
+TEST( outputFormatterErrorCodePrintOutputStream, worksProperlyErrorCode )
 {
     auto stream = Output_String_Stream{};
 
-    auto const error               = random<Mock_Error>();
-    auto const error_category_name = random_container<std::string>();
-    auto const error_description   = random_container<std::string>();
+    auto const error               = Mock_Error{ 120 };
+    auto const error_category_name = "CjPf5bhQgbshej";
+    auto const error_description   = "4snpgrnA4";
 
-    EXPECT_CALL( Mock_Error_Category::instance(), name() )
-        .WillOnce( Return( error_category_name.c_str() ) );
+    EXPECT_CALL( Mock_Error_Category::instance(), name() ).WillOnce( Return( error_category_name ) );
     EXPECT_CALL( Mock_Error_Category::instance(), error_description( to_underlying( error ) ) )
-        .WillOnce( Return( error_description.c_str() ) );
+        .WillOnce( Return( error_description ) );
 
     auto const result = stream.print( Error_Code{ error } );
 
@@ -623,55 +626,25 @@ TEST( outputFormatterErrorCode, worksProperly )
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
-    EXPECT_EQ( stream.string(), error_category_name + "::" + error_description );
+    EXPECT_EQ( stream.string(), std::string{ error_category_name } + "::" + error_description );
 }
 
 /**
- * \brief Verify picolibrary::Output_Formatter<Enum,
- *        std::enable_if_t<picolibrary::is_error_code_enum_v<Enum>>> properly handles a
- *        put error.
+ * \brief Verify picolibrary::Output_Formatter<picolibrary::Error_Code>::print(
+ *        picolibrary::Output_Stream &, picolibrary::Error_Code const & ) works properly
+ *        with an error code enum.
  */
-TEST( outputFormatterErrorCodeEnum, putError )
-{
-    auto stream = Mock_Output_Stream{};
-
-    auto const error_category_name = random_container<std::string>();
-    auto const error_description   = random_container<std::string>();
-
-    auto const error = random<Mock_Error>();
-
-    EXPECT_CALL( Mock_Error_Category::instance(), name() )
-        .WillOnce( Return( error_category_name.c_str() ) );
-    EXPECT_CALL( Mock_Error_Category::instance(), error_description( _ ) )
-        .WillOnce( Return( error_description.c_str() ) );
-    EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
-
-    auto const result = stream.print( random<Mock_Error>() );
-
-    ASSERT_TRUE( result.is_error() );
-    EXPECT_EQ( result.error(), error );
-
-    EXPECT_FALSE( stream.end_of_file_reached() );
-    EXPECT_FALSE( stream.io_error_present() );
-    EXPECT_TRUE( stream.fatal_error_present() );
-}
-
-/**
- * \brief Verify picolibrary::Output_Formatter<Enum,
- *        std::enable_if_t<picolibrary::is_error_code_enum_v<Enum>>> works properly.
- */
-TEST( outputFormatterErrorCodeEnum, worksProperly )
+TEST( outputFormatterErrorCodePrintOutputStream, worksProperlyErrorCodeEnum )
 {
     auto stream = Output_String_Stream{};
 
-    auto const error               = random<Mock_Error>();
-    auto const error_category_name = random_container<std::string>();
-    auto const error_description   = random_container<std::string>();
+    auto const error               = Mock_Error{ 116 };
+    auto const error_category_name = "68vDl0jKy";
+    auto const error_description   = "McNFWXoDC36ZcSt";
 
-    EXPECT_CALL( Mock_Error_Category::instance(), name() )
-        .WillOnce( Return( error_category_name.c_str() ) );
+    EXPECT_CALL( Mock_Error_Category::instance(), name() ).WillOnce( Return( error_category_name ) );
     EXPECT_CALL( Mock_Error_Category::instance(), error_description( to_underlying( error ) ) )
-        .WillOnce( Return( error_description.c_str() ) );
+        .WillOnce( Return( error_description ) );
 
     auto const result = stream.print( error );
 
@@ -679,7 +652,7 @@ TEST( outputFormatterErrorCodeEnum, worksProperly )
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
-    EXPECT_EQ( stream.string(), error_category_name + "::" + error_description );
+    EXPECT_EQ( stream.string(), std::string{ error_category_name } + "::" + error_description );
 }
 
 /**
