@@ -123,7 +123,7 @@ TEST( putNullTerminatedString, worksProperly )
 
 /**
  * \brief Verify picolibrary::Stream_Buffer::put( std::uint8_t const *, std::uint8_t const
- *        * ) works properly.
+ *        * ) properly handles a put error.
  */
 TEST( putUnsignedByteBlockErrorHandling, putError )
 {
@@ -163,7 +163,7 @@ TEST( putUnsignedByteBlock, worksProperly )
 
 /**
  * \brief Verify picolibrary::Stream_Buffer::put( std::int8_t const *, std::int8_t const *
- *        ) works properly.
+ *        ) properly handles a put error.
  */
 TEST( putSignedByteBlockErrorHandling, putError )
 {
