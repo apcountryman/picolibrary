@@ -195,9 +195,7 @@ TEST( putNullTerminatedStringErrorHandling, putError )
 
     EXPECT_CALL( stream.buffer(), put( A<std::string>() ) ).WillOnce( Return( error ) );
 
-    auto const string = "du1JWCGcsfXR3";
-
-    auto const result = stream.put( string );
+    auto const result = stream.put( "du1JWCGcsfXR3" );
 
     ASSERT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
