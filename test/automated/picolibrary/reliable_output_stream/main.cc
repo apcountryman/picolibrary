@@ -280,7 +280,7 @@ TEST( flush, worksProperly )
  * \brief Verify picolibrary::Output_Formatter<char>::print(
  *        picolibrary::Reliable_Output_Stream &, char ) works properly.
  */
-TEST( outputFormatterCharPrintOutputStream, worksProperly )
+TEST( outputFormatterCharPrintReliableOutputStream, worksProperly )
 {
     auto stream = Reliable_Output_String_Stream{};
 
@@ -298,7 +298,7 @@ TEST( outputFormatterCharPrintOutputStream, worksProperly )
  * \brief Verify picolibrary::Output_Formatter<char const *>::print(
  *        picolibrary::Reliable_Output_Stream &, char const * ) works properly.
  */
-TEST( outputFormatterNullTerminatedStringPrintOutputStream, worksProperly )
+TEST( outputFormatterNullTerminatedStringPrintReliableOutputStream, worksProperly )
 {
     auto stream = Reliable_Output_String_Stream{};
 
@@ -317,7 +317,7 @@ TEST( outputFormatterNullTerminatedStringPrintOutputStream, worksProperly )
  *        picolibrary::Reliable_Output_Stream &, picolibrary::Error_Code const & ) works
  *        properly with a picolibrary::Error_Code.
  */
-TEST( outputFormatterErrorCodePrintOutputStream, worksProperlyErrorCode )
+TEST( outputFormatterErrorCodePrintReliableOutputStream, worksProperlyErrorCode )
 {
     auto stream = Reliable_Output_String_Stream{};
 
@@ -342,7 +342,7 @@ TEST( outputFormatterErrorCodePrintOutputStream, worksProperlyErrorCode )
  *        picolibrary::Reliable_Output_Stream &, picolibrary::Error_Code const & ) works
  *        properly with an error code enum.
  */
-TEST( outputFormatterErrorCodePrintOutputStream, worksProperlyErrorCodeEnum )
+TEST( outputFormatterErrorCodePrintReliableOutputStream, worksProperlyErrorCodeEnum )
 {
     auto stream = Reliable_Output_String_Stream{};
 
