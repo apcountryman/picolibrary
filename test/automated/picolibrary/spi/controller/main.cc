@@ -20,6 +20,7 @@
  * \brief picolibrary::SPI::Controller automated test program.
  */
 
+#include <array>
 #include <cstddef>
 #include <cstdint>
 #include <vector>
@@ -27,13 +28,10 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/spi.h"
-#include "picolibrary/testing/automated/random.h"
 #include "picolibrary/testing/automated/spi.h"
 
 namespace {
 
-using ::picolibrary::Testing::Automated::random;
-using ::picolibrary::Testing::Automated::random_container;
 using ::testing::_;
 using ::testing::InSequence;
 using ::testing::Return;
@@ -48,34 +46,24 @@ using Controller = ::picolibrary::SPI::Controller<::picolibrary::Testing::Automa
  */
 TEST( exchangeBlock, worksProperly )
 {
-    {
-        auto controller = Controller{};
+    auto const in_sequence = InSequence{};
 
-        EXPECT_CALL( controller, exchange( _ ) ).Times( 0 );
+    auto controller = Controller{};
 
-        auto const tx = std::vector<std::uint8_t>{};
-        auto       rx = std::vector<std::uint8_t>{};
-        controller.exchange( &*tx.begin(), &*tx.end(), &*rx.begin(), &*rx.end() );
-    }
+    constexpr auto SIZE = std::size_t{ 5 };
+    using Array         = std::array<std::uint8_t, SIZE>;
 
-    {
-        auto const in_sequence = InSequence{};
+    auto const tx          = Array{ 0x27, 0x9E, 0xFB, 0x2E, 0x3E };
+    auto       rx          = Array{};
+    auto const rx_expected = Array{ 0xC1, 0xB8, 0xCA, 0x75, 0xEB };
 
-        auto controller = Controller{};
+    for ( auto i = std::size_t{ 0 }; i < SIZE; ++i ) {
+        EXPECT_CALL( controller, exchange( tx[ i ] ) ).WillOnce( Return( rx_expected[ i ] ) );
+    } // for
 
-        auto const size        = random<std::size_t>( 1, 15 );
-        auto const tx          = random_container<std::vector<std::uint8_t>>( size );
-        auto const rx_expected = random_container<std::vector<std::uint8_t>>( size );
+    controller.exchange( tx.begin(), tx.end(), rx.begin(), rx.end() );
 
-        for ( auto i = std::size_t{}; i < size; ++i ) {
-            EXPECT_CALL( controller, exchange( tx[ i ] ) ).WillOnce( Return( rx_expected[ i ] ) );
-        } // for
-
-        auto rx = std::vector<std::uint8_t>( size );
-        controller.exchange( &*tx.begin(), &*tx.end(), &*rx.begin(), &*rx.end() );
-
-        EXPECT_EQ( rx, rx_expected );
-    }
+    ASSERT_EQ( rx, rx_expected );
 }
 
 /**
@@ -85,11 +73,11 @@ TEST( receive, worksProperly )
 {
     auto controller = Controller{};
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0x13 };
 
-    EXPECT_CALL( controller, exchange( 0x00 ) ).WillOnce( Return( data ) );
+    EXPECT_CALL( controller, exchange( _ ) ).WillOnce( Return( data ) );
 
-    EXPECT_EQ( controller.receive(), data );
+    ASSERT_EQ( controller.receive(), data );
 }
 
 /**
@@ -98,32 +86,22 @@ TEST( receive, worksProperly )
  */
 TEST( receiveBlock, worksProperly )
 {
-    {
-        auto controller = Controller{};
+    auto const in_sequence = InSequence{};
 
-        EXPECT_CALL( controller, exchange( _ ) ).Times( 0 );
+    auto controller = Controller{};
 
-        auto data = std::vector<std::uint8_t>{};
-        controller.receive( &*data.begin(), &*data.end() );
-    }
+    using Array = std::array<std::uint8_t, 6>;
 
-    {
-        auto const in_sequence = InSequence{};
+    auto       data          = Array{};
+    auto const data_expected = Array{ 0x1B, 0x63, 0x77, 0xA3, 0xB0, 0xC5 };
 
-        auto controller = Controller{};
+    for ( auto const byte : data_expected ) {
+        EXPECT_CALL( controller, exchange( _ ) ).WillOnce( Return( byte ) );
+    } // for
 
-        auto const size          = random<std::size_t>( 1, 15 );
-        auto const data_expected = random_container<std::vector<std::uint8_t>>( size );
+    controller.receive( data.begin(), data.end() );
 
-        for ( auto const byte : data_expected ) {
-            EXPECT_CALL( controller, exchange( 0x00 ) ).WillOnce( Return( byte ) );
-        } // for
-
-        auto data = std::vector<std::uint8_t>( size );
-        controller.receive( &*data.begin(), &*data.end() );
-
-        EXPECT_EQ( data, data_expected );
-    }
+    ASSERT_EQ( data, data_expected );
 }
 
 /**
@@ -133,9 +111,9 @@ TEST( transmit, worksProperly )
 {
     auto controller = Controller{};
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0x09 };
 
-    EXPECT_CALL( controller, exchange( data ) ).WillOnce( Return( random<std::uint8_t>() ) );
+    EXPECT_CALL( controller, exchange( data ) ).WillOnce( Return( 0x50 ) );
 
     controller.transmit( data );
 }
@@ -146,28 +124,17 @@ TEST( transmit, worksProperly )
  */
 TEST( transmitBlock, worksProperly )
 {
-    {
-        auto controller = Controller{};
+    auto const in_sequence = InSequence{};
 
-        EXPECT_CALL( controller, exchange( _ ) ).Times( 0 );
+    auto controller = Controller{};
 
-        auto const data = std::vector<std::uint8_t>{};
-        controller.transmit( &*data.begin(), &*data.end() );
-    }
+    auto const data = std::vector<std::uint8_t>{ 0x45, 0x90, 0x87, 0xBF };
 
-    {
-        auto const in_sequence = InSequence{};
+    for ( auto const byte : data ) {
+        EXPECT_CALL( controller, exchange( byte ) ).WillOnce( Return( 0xD9 ) );
+    } // for
 
-        auto controller = Controller{};
-
-        auto const data = random_container<std::vector<std::uint8_t>>( random<std::size_t>( 1, 15 ) );
-
-        for ( auto const byte : data ) {
-            EXPECT_CALL( controller, exchange( byte ) ).WillOnce( Return( random<std::uint8_t>() ) );
-        } // for
-
-        controller.transmit( &*data.begin(), &*data.end() );
-    }
+    controller.transmit( &*data.begin(), &*data.end() );
 }
 
 /**
