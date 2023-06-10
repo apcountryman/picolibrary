@@ -28,14 +28,11 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/spi.h"
-#include "picolibrary/testing/automated/random.h"
 #include "picolibrary/testing/automated/spi.h"
 
 namespace {
 
 using ::picolibrary::SPI::Device_Selection_Guard;
-using ::picolibrary::Testing::Automated::random;
-using ::picolibrary::Testing::Automated::random_container;
 using ::picolibrary::Testing::Automated::SPI::Mock_Controller;
 using ::picolibrary::Testing::Automated::SPI::Mock_Device_Selector;
 using ::testing::A;
@@ -76,9 +73,7 @@ TEST( initialize, worksProperly )
     auto controller      = Mock_Controller{};
     auto device_selector = Mock_Device_Selector{};
 
-    auto const device = Device{ controller,
-                                random<Mock_Controller::Configuration>(),
-                                device_selector.handle() };
+    auto const device = Device{ controller, 161, device_selector.handle() };
 
     EXPECT_CALL( device_selector, initialize() );
 
@@ -91,7 +86,7 @@ TEST( initialize, worksProperly )
 TEST( configure, worksProperly )
 {
     auto       controller      = Mock_Controller{};
-    auto const configuration   = random<Mock_Controller::Configuration>();
+    auto const configuration   = Mock_Controller::Configuration{ 224 };
     auto       device_selector = Mock_Device_Selector{};
 
     auto const device = Device{ controller, configuration, device_selector.handle() };
@@ -109,9 +104,7 @@ TEST( deviceSelector, worksProperly )
     auto controller      = Mock_Controller{};
     auto device_selector = Mock_Device_Selector{};
 
-    auto const device = Device{ controller,
-                                random<Mock_Controller::Configuration>(),
-                                device_selector.handle() };
+    auto const device = Device{ controller, 207, device_selector.handle() };
 
     EXPECT_CALL( device_selector, select() );
     EXPECT_CALL( device_selector, deselect() );
@@ -127,16 +120,14 @@ TEST( exchange, worksProperly )
     auto controller      = Mock_Controller{};
     auto device_selector = Mock_Device_Selector{};
 
-    auto const device = Device{ controller,
-                                random<Mock_Controller::Configuration>(),
-                                device_selector.handle() };
+    auto const device = Device{ controller, 192, device_selector.handle() };
 
-    auto const tx = random<std::uint8_t>();
-    auto const rx = random<std::uint8_t>();
+    auto const tx = std::uint8_t{ 0x48 };
+    auto const rx = std::uint8_t{ 0xC8 };
 
     EXPECT_CALL( controller, exchange( tx ) ).WillOnce( Return( rx ) );
 
-    EXPECT_EQ( device.exchange( tx ), rx );
+    ASSERT_EQ( device.exchange( tx ), rx );
 }
 
 /**
@@ -148,20 +139,17 @@ TEST( exchangeBlock, worksProperly )
     auto controller      = Mock_Controller{};
     auto device_selector = Mock_Device_Selector{};
 
-    auto const device = Device{ controller,
-                                random<Mock_Controller::Configuration>(),
-                                device_selector.handle() };
+    auto const device = Device{ controller, 140, device_selector.handle() };
 
-    auto const size        = random<std::size_t>( 0, 15 );
-    auto const tx          = random_container<std::vector<std::uint8_t>>( size );
-    auto const rx_expected = random_container<std::vector<std::uint8_t>>( size );
+    auto const tx          = std::vector<std::uint8_t>{ 0x9C, 0x73, 0x38, 0x65, 0xC6 };
+    auto       rx          = std::vector<std::uint8_t>( 5 );
+    auto const rx_expected = std::vector<std::uint8_t>{ 0x56, 0x8C, 0xC2, 0x29, 0x85 };
 
     EXPECT_CALL( controller, exchange( tx ) ).WillOnce( Return( rx_expected ) );
 
-    auto rx = std::vector<std::uint8_t>( size );
     device.exchange( &*tx.begin(), &*tx.end(), &*rx.begin(), &*rx.end() );
 
-    EXPECT_EQ( rx, rx_expected );
+    ASSERT_EQ( rx, rx_expected );
 }
 
 /**
@@ -172,15 +160,13 @@ TEST( receive, worksProperly )
     auto controller      = Mock_Controller{};
     auto device_selector = Mock_Device_Selector{};
 
-    auto const device = Device{ controller,
-                                random<Mock_Controller::Configuration>(),
-                                device_selector.handle() };
+    auto const device = Device{ controller, 201, device_selector.handle() };
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0xDD };
 
     EXPECT_CALL( controller, receive() ).WillOnce( Return( data ) );
 
-    EXPECT_EQ( device.receive(), data );
+    ASSERT_EQ( device.receive(), data );
 }
 
 /**
@@ -192,34 +178,29 @@ TEST( receiveBlock, worksProperly )
     auto controller      = Mock_Controller{};
     auto device_selector = Mock_Device_Selector{};
 
-    auto const device = Device{ controller,
-                                random<Mock_Controller::Configuration>(),
-                                device_selector.handle() };
+    auto const device = Device{ controller, 122, device_selector.handle() };
 
-    auto const size          = random<std::size_t>( 0, 15 );
-    auto const data_expected = random_container<std::vector<std::uint8_t>>( size );
+    auto       data          = std::vector<std::uint8_t>( 4 );
+    auto const data_expected = std::vector<std::uint8_t>{ 0xEC, 0x22, 0x3F, 0xA5 };
 
     EXPECT_CALL( controller, receive( A<std::vector<std::uint8_t>>() ) ).WillOnce( Return( data_expected ) );
 
-    auto data = std::vector<std::uint8_t>( size );
     device.receive( &*data.begin(), &*data.end() );
 
-    EXPECT_EQ( data, data_expected );
+    ASSERT_EQ( data, data_expected );
 }
 
 /**
- * \brief Verify picolibrary::SPI::Device::transmit( std::uint8_t ) works properly.
+ * \brief Verify picolibrary::SPI::Device::transmit() works properly.
  */
 TEST( transmit, worksProperly )
 {
     auto controller      = Mock_Controller{};
     auto device_selector = Mock_Device_Selector{};
 
-    auto const device = Device{ controller,
-                                random<Mock_Controller::Configuration>(),
-                                device_selector.handle() };
+    auto const device = Device{ controller, 74, device_selector.handle() };
 
-    auto const data = random<std::uint8_t>();
+    auto const data = std::uint8_t{ 0xEC };
 
     EXPECT_CALL( controller, transmit( data ) );
 
@@ -235,11 +216,9 @@ TEST( transmitBlock, worksProperly )
     auto controller      = Mock_Controller{};
     auto device_selector = Mock_Device_Selector{};
 
-    auto const device = Device{ controller,
-                                random<Mock_Controller::Configuration>(),
-                                device_selector.handle() };
+    auto const device = Device{ controller, 44, device_selector.handle() };
 
-    auto const data = random_container<std::vector<std::uint8_t>>();
+    auto const data = std::vector<std::uint8_t>{ 0xBF, 0x46, 0x55, 0x3D, 0x5C, 0x68 };
 
     EXPECT_CALL( controller, transmit( data ) );
 
