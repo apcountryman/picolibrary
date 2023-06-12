@@ -66,6 +66,35 @@ inline auto operator<<( std::ostream & stream, Socket_ID socket_id ) -> std::ost
     };
 }
 
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the
+ *            picolibrary::WIZnet::W5500::Socket_Memory_Block to.
+ * \param[in] socket_memory_block The picolibrary::WIZnet::W5500::Socket_Memory_Block to
+ *            write to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Socket_Memory_Block socket_memory_block )
+    -> std::ostream &
+{
+    switch ( socket_memory_block ) {
+            // clang-format off
+
+        case Socket_Memory_Block::REGISTERS: return stream << "::picolibrary::WIZnet::W5500::Socket_Memory_Block::REGISTERS";
+        case Socket_Memory_Block::TX_BUFFER: return stream << "::picolibrary::WIZnet::W5500::Socket_Memory_Block::TX_BUFFER";
+        case Socket_Memory_Block::RX_BUFFER: return stream << "::picolibrary::WIZnet::W5500::Socket_Memory_Block::RX_BUFFER";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{
+        "socket_memory_block is not a valid "
+        "::picolibrary::WIZnet::W5500::Socket_Memory_Block"
+    };
+}
+
 } // namespace picolibrary::WIZnet::W5500
 
 namespace picolibrary::Testing::Automated {
