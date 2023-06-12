@@ -20,20 +20,20 @@
  * \brief picolibrary::WIZnet::W5500::Communication_Controller automated test program.
  */
 
+#include <bitset>
 #include <cstdint>
 #include <limits>
+#include <ostream>
 #include <vector>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "picolibrary/testing/automated/random.h"
 #include "picolibrary/testing/automated/spi.h"
+#include "picolibrary/testing/automated/wiznet/w5500.h"
 #include "picolibrary/wiznet/w5500.h"
 
 namespace {
 
-using ::picolibrary::Testing::Automated::random;
-using ::picolibrary::Testing::Automated::random_container;
 using ::picolibrary::Testing::Automated::SPI::Mock_Controller;
 using ::picolibrary::Testing::Automated::SPI::Mock_Device;
 using ::picolibrary::Testing::Automated::SPI::Mock_Device_Selector;
@@ -44,6 +44,8 @@ using ::testing::A;
 using ::testing::InSequence;
 using ::testing::Return;
 using ::testing::ReturnRef;
+using ::testing::TestWithParam;
+using ::testing::ValuesIn;
 
 class Communication_Controller :
     public ::picolibrary::WIZnet::W5500::Communication_Controller<Mock_Controller, Mock_Device_Selector::Handle, Mock_Device> {
@@ -51,8 +53,16 @@ class Communication_Controller :
     using ::picolibrary::WIZnet::W5500::Communication_Controller<Mock_Controller, Mock_Device_Selector::Handle, Mock_Device>::Communication_Controller;
 
     using ::picolibrary::WIZnet::W5500::Communication_Controller<Mock_Controller, Mock_Device_Selector::Handle, Mock_Device>::read;
+
     using ::picolibrary::WIZnet::W5500::Communication_Controller<Mock_Controller, Mock_Device_Selector::Handle, Mock_Device>::write;
 };
+
+auto frame_header( Memory_Offset memory_offset, std::uint8_t control_byte ) -> std::vector<std::uint8_t>
+{
+    return { static_cast<std::uint8_t>( memory_offset >> std::numeric_limits<std::uint8_t>::digits ),
+             static_cast<std::uint8_t>( memory_offset ),
+             control_byte };
+}
 
 } // namespace
 
@@ -69,23 +79,17 @@ TEST( readCommonRegisterMemoryByte, worksProperly )
 
     auto const communication_controller = Communication_Controller{};
 
-    auto const memory_offset = random<Memory_Offset>();
-    auto const data          = random<std::uint8_t>();
+    auto const memory_offset = Memory_Offset{ 0x7790 };
+    auto const data          = std::uint8_t{ 0x8B };
 
     EXPECT_CALL( communication_controller, configure() );
     EXPECT_CALL( communication_controller, device_selector() ).WillOnce( ReturnRef( device_selector_handle ) );
     EXPECT_CALL( device_selector, select() );
-    EXPECT_CALL(
-        communication_controller,
-        transmit( std::vector<std::uint8_t>{
-            static_cast<std::uint8_t>( memory_offset >> std::numeric_limits<std::uint8_t>::digits ),
-            static_cast<std::uint8_t>( memory_offset ),
-            0b00000'0'00,
-        } ) );
+    EXPECT_CALL( communication_controller, transmit( frame_header( memory_offset, 0b000'00'0'00 ) ) );
     EXPECT_CALL( communication_controller, receive() ).WillOnce( Return( data ) );
     EXPECT_CALL( device_selector, deselect() );
 
-    EXPECT_EQ( communication_controller.read( memory_offset ), data );
+    ASSERT_EQ( communication_controller.read( memory_offset ), data );
 }
 
 /**
@@ -102,26 +106,20 @@ TEST( readCommonRegisterMemoryBlock, worksProperly )
 
     auto const communication_controller = Communication_Controller{};
 
-    auto const memory_offset = random<Memory_Offset>();
-    auto const data_expected = random_container<std::vector<std::uint8_t>>();
+    auto const memory_offset = Memory_Offset{ 0x7790 };
+    auto       data          = std::vector<std::uint8_t>( 4 );
+    auto const data_expected = std::vector<std::uint8_t>{ 0x61, 0x9A, 0x1D, 0x39 };
 
     EXPECT_CALL( communication_controller, configure() );
     EXPECT_CALL( communication_controller, device_selector() ).WillOnce( ReturnRef( device_selector_handle ) );
     EXPECT_CALL( device_selector, select() );
-    EXPECT_CALL(
-        communication_controller,
-        transmit( std::vector<std::uint8_t>{
-            static_cast<std::uint8_t>( memory_offset >> std::numeric_limits<std::uint8_t>::digits ),
-            static_cast<std::uint8_t>( memory_offset ),
-            0b00000'0'00,
-        } ) );
+    EXPECT_CALL( communication_controller, transmit( frame_header( memory_offset, 0b000'00'0'00 ) ) );
     EXPECT_CALL( communication_controller, receive( A<std::vector<std::uint8_t>>() ) ).WillOnce( Return( data_expected ) );
     EXPECT_CALL( device_selector, deselect() );
 
-    auto data = std::vector<std::uint8_t>( data_expected.size() );
     communication_controller.read( memory_offset, &*data.begin(), &*data.end() );
 
-    EXPECT_EQ( data, data_expected );
+    ASSERT_EQ( data, data_expected );
 }
 
 /**
@@ -137,19 +135,13 @@ TEST( writeCommonRegisterMemoryByte, worksProperly )
 
     auto communication_controller = Communication_Controller{};
 
-    auto const memory_offset = random<Memory_Offset>();
-    auto const data          = random<std::uint8_t>();
+    auto const memory_offset = Memory_Offset{ 0xD0C2 };
+    auto const data          = std::uint8_t{ 0x70 };
 
     EXPECT_CALL( communication_controller, configure() );
     EXPECT_CALL( communication_controller, device_selector() ).WillOnce( ReturnRef( device_selector_handle ) );
     EXPECT_CALL( device_selector, select() );
-    EXPECT_CALL(
-        communication_controller,
-        transmit( std::vector<std::uint8_t>{
-            static_cast<std::uint8_t>( memory_offset >> std::numeric_limits<std::uint8_t>::digits ),
-            static_cast<std::uint8_t>( memory_offset ),
-            0b00000'1'00,
-        } ) );
+    EXPECT_CALL( communication_controller, transmit( frame_header( memory_offset, 0b000'00'1'00 ) ) );
     EXPECT_CALL( communication_controller, transmit( data ) );
     EXPECT_CALL( device_selector, deselect() );
 
@@ -170,19 +162,13 @@ TEST( writeCommonRegisterMemoryBlock, worksProperly )
 
     auto communication_controller = Communication_Controller{};
 
-    auto const memory_offset = random<Memory_Offset>();
-    auto const data          = random_container<std::vector<std::uint8_t>>();
+    auto const memory_offset = Memory_Offset{ 0xAD97 };
+    auto const data          = std::vector<std::uint8_t>{ 0xFC, 0xCC, 0x5F, 0x71, 0x14 };
 
     EXPECT_CALL( communication_controller, configure() );
     EXPECT_CALL( communication_controller, device_selector() ).WillOnce( ReturnRef( device_selector_handle ) );
     EXPECT_CALL( device_selector, select() );
-    EXPECT_CALL(
-        communication_controller,
-        transmit( std::vector<std::uint8_t>{
-            static_cast<std::uint8_t>( memory_offset >> std::numeric_limits<std::uint8_t>::digits ),
-            static_cast<std::uint8_t>( memory_offset ),
-            0b00000'1'00,
-        } ) );
+    EXPECT_CALL( communication_controller, transmit( frame_header( memory_offset, 0b000'00'1'00 ) ) );
     EXPECT_CALL( communication_controller, transmit( data ) );
     EXPECT_CALL( device_selector, deselect() );
 
@@ -190,19 +176,69 @@ TEST( writeCommonRegisterMemoryBlock, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::read(
+ * \brief picolibrary::WIZnet::W5500::Communication_Controller::read(
  *        picolibrary::WIZnet::W5500::Socket_ID,
  *        picolibrary::WIZnet::W5500::Socket_Memory_Block,
- *        picolibrary::WIZnet::W5500::Memory_Offset ) works properly.
+ *        picolibrary::WIZnet::W5500::Memory_Offset ),
+ *        picolibrary::WIZnet::W5500::Communication_Controller::read(
+ *        picolibrary::WIZnet::W5500::Socket_ID,
+ *        picolibrary::WIZnet::W5500::Socket_Memory_Block,
+ *        picolibrary::WIZnet::W5500::Memory_Offset, std::uint8_t *, std::uint8_t * ),
+ *        picolibrary::WIZnet::W5500::Communication_Controller::write(
+ *        picolibrary::WIZnet::W5500::Socket_ID,
+ *        picolibrary::WIZnet::W5500::Socket_Memory_Block,
+ *        picolibrary::WIZnet::W5500::Memory_Offset, std::uint8_t ), and
+ *        picolibrary::WIZnet::W5500::Communication_Controller::write(
+ *        picolibrary::WIZnet::W5500::Socket_ID,
+ *        picolibrary::WIZnet::W5500::Socket_Memory_Block,
+ *        picolibrary::WIZnet::W5500::Memory_Offset, std::uint8_t const *, std::uint8_t
+ *        const * ) test case.
  */
-TEST( readSocketMemoryByte, worksProperly )
+struct socketMemory_Test_Case {
+    /**
+     * \brief The ID of the socket.
+     */
+    Socket_ID socket_id;
+
+    /**
+     * \brief The socket memory block.
+     */
+    Socket_Memory_Block socket_memory_block;
+
+    /**
+     * \brief The control byte.
+     */
+    std::uint8_t control_byte;
+};
+
+auto operator<<( std::ostream & stream, socketMemory_Test_Case const & test_case ) -> std::ostream &
 {
-    struct {
-        Socket_ID           socket_id;
-        Socket_Memory_Block socket_memory_block;
-        std::uint8_t        control_byte;
-    } const test_cases[]{
-        // clang-format off
+    // clang-format off
+
+    return stream << "{ "
+                  << ".socket_id = " << test_case.socket_id
+                  << ", "
+                  << ".socket_memory_block = " << test_case.socket_memory_block
+                  << ", "
+                  << ".control_byte = 0b" << std::bitset<std::numeric_limits<std::uint8_t>::digits>{ test_case.control_byte }
+                  << " }";
+
+    // clang-format on
+}
+
+/**
+ * \brief picolibrary::WIZnet::W5500::Communication_Controller::read(
+ *        picolibrary::WIZnet::W5500::Socket_ID,
+ *        picolibrary::WIZnet::W5500::Socket_Memory_Block,
+ *        picolibrary::WIZnet::W5500::Memory_Offset ), and
+ *        picolibrary::WIZnet::W5500::Communication_Controller::read(
+ *        picolibrary::WIZnet::W5500::Socket_ID,
+ *        picolibrary::WIZnet::W5500::Socket_Memory_Block,
+ *        picolibrary::WIZnet::W5500::Memory_Offset, std::uint8_t *, std::uint8_t * ) test
+ *        cases.
+ */
+socketMemory_Test_Case const readSocketMemory_TEST_CASES[]{
+    // clang-format off
 
         { Socket_ID::_0, Socket_Memory_Block::REGISTERS, 0b000'01'0'00 },
         { Socket_ID::_0, Socket_Memory_Block::TX_BUFFER, 0b000'10'0'00 },
@@ -236,38 +272,62 @@ TEST( readSocketMemoryByte, worksProperly )
         { Socket_ID::_7, Socket_Memory_Block::TX_BUFFER, 0b111'10'0'00 },
         { Socket_ID::_7, Socket_Memory_Block::RX_BUFFER, 0b111'11'0'00 },
 
-        // clang-format on
-    };
+    // clang-format on
+};
 
-    for ( auto const test_case : test_cases ) {
-        auto const in_sequence = InSequence{};
+/**
+ * \brief picolibrary::WIZnet::W5500::Communication_Controller::read(
+ *        picolibrary::WIZnet::W5500::Socket_ID,
+ *        picolibrary::WIZnet::W5500::Socket_Memory_Block,
+ *        picolibrary::WIZnet::W5500::Memory_Offset ) test fixture.
+ */
+class readSocketMemoryByte : public TestWithParam<socketMemory_Test_Case> {
+};
 
-        auto device_selector        = Mock_Device_Selector{};
-        auto device_selector_handle = device_selector.handle();
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::read(
+ *        picolibrary::WIZnet::W5500::Socket_ID,
+ *        picolibrary::WIZnet::W5500::Socket_Memory_Block,
+ *        picolibrary::WIZnet::W5500::Memory_Offset ) works properly.
+ */
+TEST_P( readSocketMemoryByte, worksProperly )
+{
+    auto const test_case = GetParam();
 
-        auto const communication_controller = Communication_Controller{};
+    auto const in_sequence = InSequence{};
 
-        auto const memory_offset = random<Memory_Offset>();
-        auto const data          = random<std::uint8_t>();
+    auto device_selector        = Mock_Device_Selector{};
+    auto device_selector_handle = device_selector.handle();
 
-        EXPECT_CALL( communication_controller, configure() );
-        EXPECT_CALL( communication_controller, device_selector() ).WillOnce( ReturnRef( device_selector_handle ) );
-        EXPECT_CALL( device_selector, select() );
-        EXPECT_CALL(
-            communication_controller,
-            transmit( std::vector<std::uint8_t>{
-                static_cast<std::uint8_t>( memory_offset >> std::numeric_limits<std::uint8_t>::digits ),
-                static_cast<std::uint8_t>( memory_offset ),
-                test_case.control_byte,
-            } ) );
-        EXPECT_CALL( communication_controller, receive() ).WillOnce( Return( data ) );
-        EXPECT_CALL( device_selector, deselect() );
+    auto const communication_controller = Communication_Controller{};
 
-        EXPECT_EQ(
-            communication_controller.read( test_case.socket_id, test_case.socket_memory_block, memory_offset ),
-            data );
-    } // for
+    auto const memory_offset = Memory_Offset{ 0xE6AA };
+    auto const data          = std::uint8_t{ 0x3E };
+
+    EXPECT_CALL( communication_controller, configure() );
+    EXPECT_CALL( communication_controller, device_selector() ).WillOnce( ReturnRef( device_selector_handle ) );
+    EXPECT_CALL( device_selector, select() );
+    EXPECT_CALL(
+        communication_controller, transmit( frame_header( memory_offset, test_case.control_byte ) ) );
+    EXPECT_CALL( communication_controller, receive() ).WillOnce( Return( data ) );
+    EXPECT_CALL( device_selector, deselect() );
+
+    ASSERT_EQ(
+        communication_controller.read( test_case.socket_id, test_case.socket_memory_block, memory_offset ),
+        data );
 }
+
+INSTANTIATE_TEST_SUITE_P( testCases, readSocketMemoryByte, ValuesIn( readSocketMemory_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::WIZnet::W5500::Communication_Controller::read(
+ *        picolibrary::WIZnet::W5500::Socket_ID,
+ *        picolibrary::WIZnet::W5500::Socket_Memory_Block,
+ *        picolibrary::WIZnet::W5500::Memory_Offset, std::uint8_t *, std::uint8_t * ) test
+ *        fixture.
+ */
+class readSocketMemoryBlock : public TestWithParam<socketMemory_Test_Case> {
+};
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::read(
@@ -276,97 +336,50 @@ TEST( readSocketMemoryByte, worksProperly )
  *        picolibrary::WIZnet::W5500::Memory_Offset, std::uint8_t *, std::uint8_t * )
  *        works properly.
  */
-TEST( readSocketMemoryBlock, worksProperly )
+TEST_P( readSocketMemoryBlock, worksProperly )
 {
-    struct {
-        Socket_ID           socket_id;
-        Socket_Memory_Block socket_memory_block;
-        std::uint8_t        control_byte;
-    } const test_cases[]{
-        // clang-format off
+    auto const test_case = GetParam();
 
-        { Socket_ID::_0, Socket_Memory_Block::REGISTERS, 0b000'01'0'00 },
-        { Socket_ID::_0, Socket_Memory_Block::TX_BUFFER, 0b000'10'0'00 },
-        { Socket_ID::_0, Socket_Memory_Block::RX_BUFFER, 0b000'11'0'00 },
+    auto const in_sequence = InSequence{};
 
-        { Socket_ID::_1, Socket_Memory_Block::REGISTERS, 0b001'01'0'00 },
-        { Socket_ID::_1, Socket_Memory_Block::TX_BUFFER, 0b001'10'0'00 },
-        { Socket_ID::_1, Socket_Memory_Block::RX_BUFFER, 0b001'11'0'00 },
+    auto device_selector        = Mock_Device_Selector{};
+    auto device_selector_handle = device_selector.handle();
 
-        { Socket_ID::_2, Socket_Memory_Block::REGISTERS, 0b010'01'0'00 },
-        { Socket_ID::_2, Socket_Memory_Block::TX_BUFFER, 0b010'10'0'00 },
-        { Socket_ID::_2, Socket_Memory_Block::RX_BUFFER, 0b010'11'0'00 },
+    auto const communication_controller = Communication_Controller{};
 
-        { Socket_ID::_3, Socket_Memory_Block::REGISTERS, 0b011'01'0'00 },
-        { Socket_ID::_3, Socket_Memory_Block::TX_BUFFER, 0b011'10'0'00 },
-        { Socket_ID::_3, Socket_Memory_Block::RX_BUFFER, 0b011'11'0'00 },
+    auto const memory_offset = Memory_Offset{ 0x809F };
+    auto       data          = std::vector<std::uint8_t>( 5 );
+    auto const data_expected = std::vector<std::uint8_t>{ 0xDF, 0x54, 0xBB, 0xA9, 0x0C };
 
-        { Socket_ID::_4, Socket_Memory_Block::REGISTERS, 0b100'01'0'00 },
-        { Socket_ID::_4, Socket_Memory_Block::TX_BUFFER, 0b100'10'0'00 },
-        { Socket_ID::_4, Socket_Memory_Block::RX_BUFFER, 0b100'11'0'00 },
+    EXPECT_CALL( communication_controller, configure() );
+    EXPECT_CALL( communication_controller, device_selector() ).WillOnce( ReturnRef( device_selector_handle ) );
+    EXPECT_CALL( device_selector, select() );
+    EXPECT_CALL(
+        communication_controller, transmit( frame_header( memory_offset, test_case.control_byte ) ) );
+    EXPECT_CALL( communication_controller, receive( A<std::vector<std::uint8_t>>() ) ).WillOnce( Return( data_expected ) );
+    EXPECT_CALL( device_selector, deselect() );
 
-        { Socket_ID::_5, Socket_Memory_Block::REGISTERS, 0b101'01'0'00 },
-        { Socket_ID::_5, Socket_Memory_Block::TX_BUFFER, 0b101'10'0'00 },
-        { Socket_ID::_5, Socket_Memory_Block::RX_BUFFER, 0b101'11'0'00 },
+    communication_controller.read(
+        test_case.socket_id, test_case.socket_memory_block, memory_offset, &*data.begin(), &*data.end() );
 
-        { Socket_ID::_6, Socket_Memory_Block::REGISTERS, 0b110'01'0'00 },
-        { Socket_ID::_6, Socket_Memory_Block::TX_BUFFER, 0b110'10'0'00 },
-        { Socket_ID::_6, Socket_Memory_Block::RX_BUFFER, 0b110'11'0'00 },
-
-        { Socket_ID::_7, Socket_Memory_Block::REGISTERS, 0b111'01'0'00 },
-        { Socket_ID::_7, Socket_Memory_Block::TX_BUFFER, 0b111'10'0'00 },
-        { Socket_ID::_7, Socket_Memory_Block::RX_BUFFER, 0b111'11'0'00 },
-
-        // clang-format on
-    };
-
-    for ( auto const test_case : test_cases ) {
-        auto const in_sequence = InSequence{};
-
-        auto device_selector        = Mock_Device_Selector{};
-        auto device_selector_handle = device_selector.handle();
-
-        auto const communication_controller = Communication_Controller{};
-
-        auto const memory_offset = random<Memory_Offset>();
-        auto const data_expected = random_container<std::vector<std::uint8_t>>();
-
-        EXPECT_CALL( communication_controller, configure() );
-        EXPECT_CALL( communication_controller, device_selector() ).WillOnce( ReturnRef( device_selector_handle ) );
-        EXPECT_CALL( device_selector, select() );
-        EXPECT_CALL(
-            communication_controller,
-            transmit( std::vector<std::uint8_t>{
-                static_cast<std::uint8_t>( memory_offset >> std::numeric_limits<std::uint8_t>::digits ),
-                static_cast<std::uint8_t>( memory_offset ),
-                test_case.control_byte,
-            } ) );
-        EXPECT_CALL( communication_controller, receive( A<std::vector<std::uint8_t>>() ) )
-            .WillOnce( Return( data_expected ) );
-        EXPECT_CALL( device_selector, deselect() );
-
-        auto data = std::vector<std::uint8_t>( data_expected.size() );
-        communication_controller.read(
-            test_case.socket_id, test_case.socket_memory_block, memory_offset, &*data.begin(), &*data.end() );
-
-        EXPECT_EQ( data, data_expected );
-    } // for
+    ASSERT_EQ( data, data_expected );
 }
 
+INSTANTIATE_TEST_SUITE_P( testCases, readSocketMemoryBlock, ValuesIn( readSocketMemory_TEST_CASES ) );
+
 /**
- * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::write(
+ * \brief picolibrary::WIZnet::W5500::Communication_Controller::write(
  *        picolibrary::WIZnet::W5500::Socket_ID,
  *        picolibrary::WIZnet::W5500::Socket_Memory_Block,
- *        picolibrary::WIZnet::W5500::Memory_Offset, std::uint8_t ) works properly.
+ *        picolibrary::WIZnet::W5500::Memory_Offset, std::uint8_t ), and
+ *        picolibrary::WIZnet::W5500::Communication_Controller::write(
+ *        picolibrary::WIZnet::W5500::Socket_ID,
+ *        picolibrary::WIZnet::W5500::Socket_Memory_Block,
+ *        picolibrary::WIZnet::W5500::Memory_Offset, std::uint8_t const *, std::uint8_t
+ *        const * ) test cases.
  */
-TEST( writeSocketMemoryByte, worksProperly )
-{
-    struct {
-        Socket_ID           socket_id;
-        Socket_Memory_Block socket_memory_block;
-        std::uint8_t        control_byte;
-    } const test_cases[]{
-        // clang-format off
+socketMemory_Test_Case const writeSocketMemory_TEST_CASES[]{
+    // clang-format off
 
         { Socket_ID::_0, Socket_Memory_Block::REGISTERS, 0b000'01'1'00 },
         { Socket_ID::_0, Socket_Memory_Block::TX_BUFFER, 0b000'10'1'00 },
@@ -400,37 +413,61 @@ TEST( writeSocketMemoryByte, worksProperly )
         { Socket_ID::_7, Socket_Memory_Block::TX_BUFFER, 0b111'10'1'00 },
         { Socket_ID::_7, Socket_Memory_Block::RX_BUFFER, 0b111'11'1'00 },
 
-        // clang-format on
-    };
+    // clang-format on
+};
 
-    for ( auto const test_case : test_cases ) {
-        auto const in_sequence = InSequence{};
+/**
+ * \brief picolibrary::WIZnet::W5500::Communication_Controller::write(
+ *        picolibrary::WIZnet::W5500::Socket_ID,
+ *        picolibrary::WIZnet::W5500::Socket_Memory_Block,
+ *        picolibrary::WIZnet::W5500::Memory_Offset, std::uint8_t ) test fixture.
+ */
+class writeSocketMemoryByte : public TestWithParam<socketMemory_Test_Case> {
+};
 
-        auto device_selector        = Mock_Device_Selector{};
-        auto device_selector_handle = device_selector.handle();
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::write(
+ *        picolibrary::WIZnet::W5500::Socket_ID,
+ *        picolibrary::WIZnet::W5500::Socket_Memory_Block,
+ *        picolibrary::WIZnet::W5500::Memory_Offset, std::uint8_t ) works properly.
+ */
+TEST_P( writeSocketMemoryByte, worksProperly )
+{
+    auto const test_case = GetParam();
 
-        auto communication_controller = Communication_Controller{};
+    auto const in_sequence = InSequence{};
 
-        auto const memory_offset = random<Memory_Offset>();
-        auto const data          = random<std::uint8_t>();
+    auto device_selector        = Mock_Device_Selector{};
+    auto device_selector_handle = device_selector.handle();
 
-        EXPECT_CALL( communication_controller, configure() );
-        EXPECT_CALL( communication_controller, device_selector() ).WillOnce( ReturnRef( device_selector_handle ) );
-        EXPECT_CALL( device_selector, select() );
-        EXPECT_CALL(
-            communication_controller,
-            transmit( std::vector<std::uint8_t>{
-                static_cast<std::uint8_t>( memory_offset >> std::numeric_limits<std::uint8_t>::digits ),
-                static_cast<std::uint8_t>( memory_offset ),
-                test_case.control_byte,
-            } ) );
-        EXPECT_CALL( communication_controller, transmit( data ) );
-        EXPECT_CALL( device_selector, deselect() );
+    auto communication_controller = Communication_Controller{};
 
-        communication_controller.write(
-            test_case.socket_id, test_case.socket_memory_block, memory_offset, data );
-    } // for
+    auto const memory_offset = Memory_Offset{ 0xD7F1 };
+    auto const data          = std::uint8_t{ 0xA8 };
+
+    EXPECT_CALL( communication_controller, configure() );
+    EXPECT_CALL( communication_controller, device_selector() ).WillOnce( ReturnRef( device_selector_handle ) );
+    EXPECT_CALL( device_selector, select() );
+    EXPECT_CALL(
+        communication_controller, transmit( frame_header( memory_offset, test_case.control_byte ) ) );
+    EXPECT_CALL( communication_controller, transmit( data ) );
+    EXPECT_CALL( device_selector, deselect() );
+
+    communication_controller.write(
+        test_case.socket_id, test_case.socket_memory_block, memory_offset, data );
 }
+
+INSTANTIATE_TEST_SUITE_P( testCases, writeSocketMemoryByte, ValuesIn( writeSocketMemory_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::WIZnet::W5500::Communication_Controller::write(
+ *        picolibrary::WIZnet::W5500::Socket_ID,
+ *        picolibrary::WIZnet::W5500::Socket_Memory_Block,
+ *        picolibrary::WIZnet::W5500::Memory_Offset, std::uint8_t const *, std::uint8_t
+ *        const * ) test fixture.
+ */
+class writeSocketMemoryBlock : public TestWithParam<socketMemory_Test_Case> {
+};
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::Communication_Controller::write(
@@ -439,78 +476,33 @@ TEST( writeSocketMemoryByte, worksProperly )
  *        picolibrary::WIZnet::W5500::Memory_Offset, std::uint8_t const *, std::uint8_t
  *        const * ) works properly.
  */
-TEST( writeSocketMemoryBlock, worksProperly )
+TEST_P( writeSocketMemoryBlock, worksProperly )
 {
-    struct {
-        Socket_ID           socket_id;
-        Socket_Memory_Block socket_memory_block;
-        std::uint8_t        control_byte;
-    } const test_cases[]{
-        // clang-format off
+    auto const test_case = GetParam();
 
-        { Socket_ID::_0, Socket_Memory_Block::REGISTERS, 0b000'01'1'00 },
-        { Socket_ID::_0, Socket_Memory_Block::TX_BUFFER, 0b000'10'1'00 },
-        { Socket_ID::_0, Socket_Memory_Block::RX_BUFFER, 0b000'11'1'00 },
+    auto const in_sequence = InSequence{};
 
-        { Socket_ID::_1, Socket_Memory_Block::REGISTERS, 0b001'01'1'00 },
-        { Socket_ID::_1, Socket_Memory_Block::TX_BUFFER, 0b001'10'1'00 },
-        { Socket_ID::_1, Socket_Memory_Block::RX_BUFFER, 0b001'11'1'00 },
+    auto device_selector        = Mock_Device_Selector{};
+    auto device_selector_handle = device_selector.handle();
 
-        { Socket_ID::_2, Socket_Memory_Block::REGISTERS, 0b010'01'1'00 },
-        { Socket_ID::_2, Socket_Memory_Block::TX_BUFFER, 0b010'10'1'00 },
-        { Socket_ID::_2, Socket_Memory_Block::RX_BUFFER, 0b010'11'1'00 },
+    auto communication_controller = Communication_Controller{};
 
-        { Socket_ID::_3, Socket_Memory_Block::REGISTERS, 0b011'01'1'00 },
-        { Socket_ID::_3, Socket_Memory_Block::TX_BUFFER, 0b011'10'1'00 },
-        { Socket_ID::_3, Socket_Memory_Block::RX_BUFFER, 0b011'11'1'00 },
+    auto const memory_offset = Memory_Offset{ 0xB6EB };
+    auto const data = std::vector<std::uint8_t>{ 0xBB, 0x7F, 0x5E, 0x36, 0x3E, 0x7E };
 
-        { Socket_ID::_4, Socket_Memory_Block::REGISTERS, 0b100'01'1'00 },
-        { Socket_ID::_4, Socket_Memory_Block::TX_BUFFER, 0b100'10'1'00 },
-        { Socket_ID::_4, Socket_Memory_Block::RX_BUFFER, 0b100'11'1'00 },
+    EXPECT_CALL( communication_controller, configure() );
+    EXPECT_CALL( communication_controller, device_selector() ).WillOnce( ReturnRef( device_selector_handle ) );
+    EXPECT_CALL( device_selector, select() );
+    EXPECT_CALL(
+        communication_controller, transmit( frame_header( memory_offset, test_case.control_byte ) ) );
+    EXPECT_CALL( communication_controller, transmit( data ) );
+    EXPECT_CALL( device_selector, deselect() );
 
-        { Socket_ID::_5, Socket_Memory_Block::REGISTERS, 0b101'01'1'00 },
-        { Socket_ID::_5, Socket_Memory_Block::TX_BUFFER, 0b101'10'1'00 },
-        { Socket_ID::_5, Socket_Memory_Block::RX_BUFFER, 0b101'11'1'00 },
-
-        { Socket_ID::_6, Socket_Memory_Block::REGISTERS, 0b110'01'1'00 },
-        { Socket_ID::_6, Socket_Memory_Block::TX_BUFFER, 0b110'10'1'00 },
-        { Socket_ID::_6, Socket_Memory_Block::RX_BUFFER, 0b110'11'1'00 },
-
-        { Socket_ID::_7, Socket_Memory_Block::REGISTERS, 0b111'01'1'00 },
-        { Socket_ID::_7, Socket_Memory_Block::TX_BUFFER, 0b111'10'1'00 },
-        { Socket_ID::_7, Socket_Memory_Block::RX_BUFFER, 0b111'11'1'00 },
-
-        // clang-format on
-    };
-
-    for ( auto const test_case : test_cases ) {
-        auto const in_sequence = InSequence{};
-
-        auto device_selector        = Mock_Device_Selector{};
-        auto device_selector_handle = device_selector.handle();
-
-        auto communication_controller = Communication_Controller{};
-
-        auto const memory_offset = random<Memory_Offset>();
-        auto const data          = random_container<std::vector<std::uint8_t>>();
-
-        EXPECT_CALL( communication_controller, configure() );
-        EXPECT_CALL( communication_controller, device_selector() ).WillOnce( ReturnRef( device_selector_handle ) );
-        EXPECT_CALL( device_selector, select() );
-        EXPECT_CALL(
-            communication_controller,
-            transmit( std::vector<std::uint8_t>{
-                static_cast<std::uint8_t>( memory_offset >> std::numeric_limits<std::uint8_t>::digits ),
-                static_cast<std::uint8_t>( memory_offset ),
-                test_case.control_byte,
-            } ) );
-        EXPECT_CALL( communication_controller, transmit( data ) );
-        EXPECT_CALL( device_selector, deselect() );
-
-        communication_controller.write(
-            test_case.socket_id, test_case.socket_memory_block, memory_offset, &*data.begin(), &*data.end() );
-    } // for
+    communication_controller.write(
+        test_case.socket_id, test_case.socket_memory_block, memory_offset, &*data.begin(), &*data.end() );
 }
+
+INSTANTIATE_TEST_SUITE_P( testCases, writeSocketMemoryBlock, ValuesIn( writeSocketMemory_TEST_CASES ) );
 
 /**
  * \brief Execute the picolibrary::WIZnet::W5500::Communication_Controller automated
