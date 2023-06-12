@@ -179,19 +179,20 @@ TEST( writeCommonRegisterMemoryBlock, worksProperly )
  * \brief picolibrary::WIZnet::W5500::Communication_Controller::read(
  *        picolibrary::WIZnet::W5500::Socket_ID,
  *        picolibrary::WIZnet::W5500::Socket_Memory_Block,
- *        picolibrary::WIZnet::W5500::Memory_Offset ), and
+ *        picolibrary::WIZnet::W5500::Memory_Offset ),
  *        picolibrary::WIZnet::W5500::Communication_Controller::read(
  *        picolibrary::WIZnet::W5500::Socket_ID,
  *        picolibrary::WIZnet::W5500::Socket_Memory_Block,
  *        picolibrary::WIZnet::W5500::Memory_Offset, std::uint8_t *, std::uint8_t * ),
  *        picolibrary::WIZnet::W5500::Communication_Controller::write(
  *        picolibrary::WIZnet::W5500::Socket_ID,
- *        picolibrary::WIZnet::W5500::Socket_Memory_Block, std::uint8_t ), and
+ *        picolibrary::WIZnet::W5500::Socket_Memory_Block,
+ *        picolibrary::WIZnet::W5500::Memory_Offset, std::uint8_t ), and
  *        picolibrary::WIZnet::W5500::Communication_Controller::write(
  *        picolibrary::WIZnet::W5500::Socket_ID,
- *        picolibrary::WIZnet::W5500::Socket_Memory_Block, std::uint8_t const *,
- *        std::uint8_t const * ) test case.
- *
+ *        picolibrary::WIZnet::W5500::Socket_Memory_Block,
+ *        picolibrary::WIZnet::W5500::Memory_Offset, std::uint8_t const *, std::uint8_t
+ *        const * ) test case.
  */
 struct socketMemory_Test_Case {
     /**
