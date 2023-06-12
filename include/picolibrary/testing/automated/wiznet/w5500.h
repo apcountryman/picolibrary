@@ -25,12 +25,48 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <ostream>
+#include <stdexcept>
 #include <vector>
 
 #include "picolibrary/array.h"
 #include "picolibrary/testing/automated/random.h"
 #include "picolibrary/testing/automated/spi.h"
 #include "picolibrary/wiznet/w5500.h"
+
+namespace picolibrary::WIZnet::W5500 {
+
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the picolibrary::WIZnet::W5500::Socket_ID to.
+ * \param[in] socket_id The picolibrary::WIZnet::W5500::Socket_ID to write to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Socket_ID socket_id ) -> std::ostream &
+{
+    switch ( socket_id ) {
+            // clang-format off
+
+        case Socket_ID::_0: return stream << "::picolibrary::WIZnet::W5500::Socket_ID::_0";
+        case Socket_ID::_1: return stream << "::picolibrary::WIZnet::W5500::Socket_ID::_1";
+        case Socket_ID::_2: return stream << "::picolibrary::WIZnet::W5500::Socket_ID::_2";
+        case Socket_ID::_3: return stream << "::picolibrary::WIZnet::W5500::Socket_ID::_3";
+        case Socket_ID::_4: return stream << "::picolibrary::WIZnet::W5500::Socket_ID::_4";
+        case Socket_ID::_5: return stream << "::picolibrary::WIZnet::W5500::Socket_ID::_5";
+        case Socket_ID::_6: return stream << "::picolibrary::WIZnet::W5500::Socket_ID::_6";
+        case Socket_ID::_7: return stream << "::picolibrary::WIZnet::W5500::Socket_ID::_7";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{
+        "socket_id is not a valid ::picolibrary::WIZnet::W5500::Socket_ID"
+    };
+}
+
+} // namespace picolibrary::WIZnet::W5500
 
 namespace picolibrary::Testing::Automated {
 
