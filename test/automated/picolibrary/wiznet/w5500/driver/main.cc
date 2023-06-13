@@ -1010,8 +1010,6 @@ TEST( readSNTXFSR, worksProperlyStable )
     auto const data      = std::uint16_t{ 0x3056 };
 
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0020, _ ) )
-        .WillOnce( Return( to_vector( 0x7927 ) ) );
-    EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0020, _ ) )
         .WillOnce( Return( to_vector( data ) ) );
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0020, _ ) )
         .WillOnce( Return( to_vector( data ) ) );
@@ -1102,8 +1100,6 @@ TEST( readSNRXRSR, worksProperlyStable )
     auto const socket_id = Socket_ID::_6;
     auto const data      = std::uint16_t{ 0x924A };
 
-    EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0026, _ ) )
-        .WillOnce( Return( to_vector( 0x14A1 ) ) );
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0026, _ ) )
         .WillOnce( Return( to_vector( data ) ) );
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0026, _ ) )
