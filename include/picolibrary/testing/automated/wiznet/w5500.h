@@ -121,6 +121,33 @@ inline auto operator<<( std::ostream & stream, ARP_Forcing arp_forcing_configura
     };
 }
 
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the picolibrary::WIZnet::W5500::Ping_Blocking to.
+ * \param[in] ping_blocking_configuration The picolibrary::WIZnet::W5500::Ping_Blocking to
+ *            write to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Ping_Blocking ping_blocking_configuration )
+    -> std::ostream &
+{
+    switch ( ping_blocking_configuration ) {
+            // clang-format off
+
+        case Ping_Blocking::DISABLED: return stream << "::picolibrary::WIZnet::W5500::Ping_Blocking::DISABLED";
+        case Ping_Blocking::ENABLED:  return stream << "::picolibrary::WIZnet::W5500::Ping_Blocking::ENABLED";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{
+        "ping_blocking_configuration is not a valid "
+        "::picolibrary::WIZnet::W5500::Ping_Blocking"
+    };
+}
+
 } // namespace picolibrary::WIZnet::W5500
 
 namespace picolibrary::Testing::Automated {
