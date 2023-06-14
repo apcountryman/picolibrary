@@ -95,6 +95,32 @@ inline auto operator<<( std::ostream & stream, Socket_Memory_Block socket_memory
     };
 }
 
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the picolibrary::WIZnet::W5500::ARP_Forcing to.
+ * \param[in] arp_forcing_configuration The picolibrary::WIZnet::W5500::ARP_Forcing to
+ *            write to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, ARP_Forcing arp_forcing_configuration ) -> std::ostream &
+{
+    switch ( arp_forcing_configuration ) {
+            // clang-format off
+
+        case ARP_Forcing::DISABLED: return stream << "::picolibrary::WIZnet::W5500::ARP_Forcing::DISABLED";
+        case ARP_Forcing::ENABLED:  return stream << "::picolibrary::WIZnet::W5500::ARP_Forcing::ENABLED";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{
+        "arp_forcing_configuration is not a valid "
+        "::picolibrary::WIZnet::W5500::ARP_Forcing"
+    };
+}
+
 } // namespace picolibrary::WIZnet::W5500
 
 namespace picolibrary::Testing::Automated {

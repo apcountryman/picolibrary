@@ -1,5 +1,6 @@
 ## Definitions
 - ADC: Analog-to-Digital Converter
+- ARP: Address Resolution Protocol
 - CRC: Cyclic Redundancy Check
 - GPIO: General Purpose Input/Output
 - HIL: Hardware Interface Layer
