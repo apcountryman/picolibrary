@@ -203,6 +203,30 @@ inline auto operator<<( std::ostream & stream, Link_Status link_status ) -> std:
     };
 }
 
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the picolibrary::WIZnet::W5500::Link_Mode to.
+ * \param[in] link_mode The picolibrary::WIZnet::W5500::Link_Mode to write to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Link_Mode link_mode ) -> std::ostream &
+{
+    switch ( link_mode ) {
+            // clang-format off
+
+        case Link_Mode::HALF_DUPLEX: return stream << "::picolibrary::WIZnet::W5500::Link_Mode::HALF_DUPLEX";
+        case Link_Mode::FULL_DUPLEX: return stream << "::picolibrary::WIZnet::W5500::Link_Mode::FULL_DUPLEX";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{
+        "link_mode is not a valid ::picolibrary::WIZnet::W5500::Link_Mode"
+    };
+}
+
 } // namespace picolibrary::WIZnet::W5500
 
 namespace picolibrary::Testing::Automated {
