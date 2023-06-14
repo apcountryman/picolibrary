@@ -152,8 +152,7 @@ inline auto operator<<( std::ostream & stream, Ping_Blocking ping_blocking_confi
  * \brief Insertion operator.
  *
  * \param[in] stream The stream to write the picolibrary::WIZnet::W5500::PHY_Mode to.
- * \param[in] phy_blocking_configuration The picolibrary::WIZnet::W5500::PHY_Mode to write
- *            to the stream.
+ * \param[in] phy_mode The picolibrary::WIZnet::W5500::PHY_Mode to write to the stream.
  *
  * \return stream
  */
