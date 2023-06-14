@@ -178,6 +178,31 @@ inline auto operator<<( std::ostream & stream, PHY_Mode phy_mode ) -> std::ostre
     };
 }
 
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the picolibrary::WIZnet::W5500::Link_Status to.
+ * \param[in] link_status The picolibrary::WIZnet::W5500::Link_Status to write to the
+ *            stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Link_Status link_status ) -> std::ostream &
+{
+    switch ( link_status ) {
+            // clang-format off
+
+        case Link_Status::DOWN: return stream << "::picolibrary::WIZnet::W5500::Link_Status::DOWN";
+        case Link_Status::UP:   return stream << "::picolibrary::WIZnet::W5500::Link_Status::UP";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{
+        "link_status is not a valid ::picolibrary::WIZnet::W5500::Link_Status"
+    };
+}
+
 } // namespace picolibrary::WIZnet::W5500
 
 namespace picolibrary::Testing::Automated {
