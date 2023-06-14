@@ -148,6 +148,37 @@ inline auto operator<<( std::ostream & stream, Ping_Blocking ping_blocking_confi
     };
 }
 
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the picolibrary::WIZnet::W5500::PHY_Mode to.
+ * \param[in] phy_blocking_configuration The picolibrary::WIZnet::W5500::PHY_Mode to write
+ *            to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, PHY_Mode phy_mode ) -> std::ostream &
+{
+    switch ( phy_mode ) {
+            // clang-format off
+
+        case PHY_Mode::CONFIGURED_BY_HARDWARE:                       return stream << "::picolibrary::WIZnet::W5500::PHY_Mode::CONFIGURED_BY_HARDWARE";
+        case PHY_Mode::POWER_DOWN:                                   return stream << "::picolibrary::WIZnet::W5500::PHY_Mode::POWER_DOWN";
+        case PHY_Mode::_10BT_HALF_DUPLEX_AUTO_NEGOTIATION_DISABLED:  return stream << "::picolibrary::WIZnet::W5500::PHY_Mode::_10BT_HALF_DUPLEX_AUTO_NEGOTIATION_DISABLED";
+        case PHY_Mode::_10BT_FULL_DUPLEX_AUTO_NEGOTIATION_DISABLED:  return stream << "::picolibrary::WIZnet::W5500::PHY_Mode::_10BT_FULL_DUPLEX_AUTO_NEGOTIATION_DISABLED";
+        case PHY_Mode::_100BT_HALF_DUPLEX_AUTO_NEGOTIATION_DISABLED: return stream << "::picolibrary::WIZnet::W5500::PHY_Mode::_100BT_HALF_DUPLEX_AUTO_NEGOTIATION_DISABLED";
+        case PHY_Mode::_100BT_FULL_DUPLEX_AUTO_NEGOTIATION_DISABLED: return stream << "::picolibrary::WIZnet::W5500::PHY_Mode::_100BT_FULL_DUPLEX_AUTO_NEGOTIATION_DISABLED";
+        case PHY_Mode::_100BT_HALF_DUPLEX_AUTO_NEGOTIATION_ENABLED:  return stream << "::picolibrary::WIZnet::W5500::PHY_Mode::_100BT_HALF_DUPLEX_AUTO_NEGOTIATION_ENABLED";
+        case PHY_Mode::ALL_CAPABLE_AUTO_NEGOTIATION_ENABLED:         return stream << "::picolibrary::WIZnet::W5500::PHY_Mode::ALL_CAPABLE_AUTO_NEGOTIATION_ENABLED";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{
+        "phy_mode is not a valid ::picolibrary::WIZnet::W5500::PHY_Mode"
+    };
+}
+
 } // namespace picolibrary::WIZnet::W5500
 
 namespace picolibrary::Testing::Automated {
