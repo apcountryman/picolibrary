@@ -252,6 +252,34 @@ inline auto operator<<( std::ostream & stream, Link_Speed link_speed ) -> std::o
     };
 }
 
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the
+ *            picolibrary::WIZnet::W5500::No_Delayed_ACK_Usage to.
+ * \param[in] no_delayed_ack_usage_configuration The
+ *            picolibrary::WIZnet::W5500::No_Delayed_ACK_Usage to write to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, No_Delayed_ACK_Usage no_delayed_ack_usage_configuration )
+    -> std::ostream &
+{
+    switch ( no_delayed_ack_usage_configuration ) {
+            // clang-format off
+
+        case No_Delayed_ACK_Usage::DISABLED: return stream << "::picolibrary::WIZnet::W5500::No_Delayed_ACK_Usage::DISABLED";
+        case No_Delayed_ACK_Usage::ENABLED:  return stream << "::picolibrary::WIZnet::W5500::No_Delayed_ACK_Usage::ENABLED";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{
+        "no_delayed_ack_usage_configuration is not a valid "
+        "::picolibrary::WIZnet::W5500::No_Delayed_ACK_Usage"
+    };
+}
+
 } // namespace picolibrary::WIZnet::W5500
 
 namespace picolibrary::Testing::Automated {
