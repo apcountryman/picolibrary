@@ -227,6 +227,31 @@ inline auto operator<<( std::ostream & stream, Link_Mode link_mode ) -> std::ost
     };
 }
 
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the picolibrary::WIZnet::W5500::Link_Speed to.
+ * \param[in] link_speed The picolibrary::WIZnet::W5500::Link_Speed to write to the
+ *            stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Link_Speed link_speed ) -> std::ostream &
+{
+    switch ( link_speed ) {
+            // clang-format off
+
+        case Link_Speed::_10_MbPs:  return stream << "::picolibrary::WIZnet::W5500::Link_Speed::_10_MbPs";
+        case Link_Speed::_100_MbPs: return stream << "::picolibrary::WIZnet::W5500::Link_Speed::_100_MbPs";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{
+        "link_speed is not a valid ::picolibrary::WIZnet::W5500::Link_Speed"
+    };
+}
+
 } // namespace picolibrary::WIZnet::W5500
 
 namespace picolibrary::Testing::Automated {
