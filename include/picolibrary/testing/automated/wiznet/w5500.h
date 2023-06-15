@@ -280,6 +280,37 @@ inline auto operator<<( std::ostream & stream, No_Delayed_ACK_Usage no_delayed_a
     };
 }
 
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the
+ *            picolibrary::WIZnet::W5500::Socket_Buffer_Size to.
+ * \param[in] socket_buffer_size The picolibrary::WIZnet::W5500::Socket_Buffer_Size to
+ *            write to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Socket_Buffer_Size socket_buffer_size ) -> std::ostream &
+{
+    switch ( socket_buffer_size ) {
+            // clang-format off
+
+        case Socket_Buffer_Size::_0_KiB:  return stream << "::picolibrary::WIZnet::W5500::Socket_Buffer_Size::_0_KiB";
+        case Socket_Buffer_Size::_1_KiB:  return stream << "::picolibrary::WIZnet::W5500::Socket_Buffer_Size::_1_KiB";
+        case Socket_Buffer_Size::_2_KiB:  return stream << "::picolibrary::WIZnet::W5500::Socket_Buffer_Size::_2_KiB";
+        case Socket_Buffer_Size::_4_KiB:  return stream << "::picolibrary::WIZnet::W5500::Socket_Buffer_Size::_4_KiB";
+        case Socket_Buffer_Size::_8_KiB:  return stream << "::picolibrary::WIZnet::W5500::Socket_Buffer_Size::_8_KiB";
+        case Socket_Buffer_Size::_16_KiB: return stream << "::picolibrary::WIZnet::W5500::Socket_Buffer_Size::_16_KiB";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{
+        "socket_buffer_size is not a valid "
+        "::picolibrary::WIZnet::W5500::Socket_Buffer_Size"
+    };
+}
+
 } // namespace picolibrary::WIZnet::W5500
 
 namespace picolibrary::Testing::Automated {
