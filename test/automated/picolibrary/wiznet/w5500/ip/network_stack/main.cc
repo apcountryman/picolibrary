@@ -20,16 +20,20 @@
  * \brief picolibrary::WIZnet::W5500::IP::Network_Stack automated test program.
  */
 
+#include <array>
+#include <bitset>
 #include <cstdint>
+#include <iomanip>
+#include <ios>
+#include <limits>
+#include <ostream>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "picolibrary/array.h"
 #include "picolibrary/ipv4.h"
 #include "picolibrary/mac_address.h"
 #include "picolibrary/testing/automated/error.h"
-#include "picolibrary/testing/automated/ipv4.h"
-#include "picolibrary/testing/automated/mac_address.h"
-#include "picolibrary/testing/automated/random.h"
 #include "picolibrary/testing/automated/wiznet/w5500.h"
 #include "picolibrary/testing/automated/wiznet/w5500/ip.h"
 #include "picolibrary/wiznet/w5500.h"
@@ -37,10 +41,9 @@
 
 namespace {
 
+using ::picolibrary::Array;
 using ::picolibrary::MAC_Address;
 using ::picolibrary::Testing::Automated::Mock_Error;
-using ::picolibrary::Testing::Automated::random;
-using ::picolibrary::Testing::Automated::random_array;
 using ::picolibrary::Testing::Automated::WIZnet::W5500::Mock_Driver;
 using ::picolibrary::Testing::Automated::WIZnet::W5500::IP::Mock_Port_Allocator;
 using ::picolibrary::WIZnet::W5500::ARP_Forcing;
@@ -54,6 +57,8 @@ using ::picolibrary::WIZnet::W5500::Socket_ID;
 using ::picolibrary::WIZnet::W5500::IP::Network_Stack;
 using ::testing::InSequence;
 using ::testing::Return;
+using ::testing::TestWithParam;
+using ::testing::ValuesIn;
 
 using IPv4_Address = ::picolibrary::IPv4::Address;
 
@@ -65,10 +70,9 @@ using IPv4_Address = ::picolibrary::IPv4::Address;
  */
 TEST( constructor, worksProperly )
 {
-    auto driver             = Mock_Driver{};
-    auto tcp_port_allocator = Mock_Port_Allocator{};
-
-    auto const nonresponsive_device_error = random<Mock_Error>();
+    auto       driver                     = Mock_Driver{};
+    auto       tcp_port_allocator         = Mock_Port_Allocator{};
+    auto const nonresponsive_device_error = Mock_Error{ 58 };
 
     auto const network_stack = Network_Stack{ driver,
                                               nonresponsive_device_error,
@@ -81,358 +85,719 @@ TEST( constructor, worksProperly )
 }
 
 /**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::w5500_is_responsive() test case.
+ */
+struct w5500IsResponsive_Test_Case {
+    /**
+     * \brief The VERSIONR register value.
+     */
+    std::uint8_t versionr;
+
+    /**
+     * \brief The W5500 is responsive.
+     */
+    bool w5500_is_responsive;
+};
+
+auto operator<<( std::ostream & stream, w5500IsResponsive_Test_Case const & test_case ) -> std::ostream &
+{
+    // clang-format off
+
+    return stream << "{ "
+                  << ".versionr = 0x" << std::hex << std::uppercase << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 ) << std::setfill( '0' ) << static_cast<std::uint_fast16_t>( test_case.versionr )
+                  << ", "
+                  << ".w5500_is_responsive = " << std::boolalpha << test_case.w5500_is_responsive
+                  << " }";
+
+    // clang-format on
+}
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::w5500_is_responsive() test
+ *        fixture.
+ */
+class w5500IsResponsive : public TestWithParam<w5500IsResponsive_Test_Case> {
+};
+
+/**
  * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::w5500_is_responsive()
  *        works properly.
  */
-TEST( w5500IsResponsive, worksProperly )
+TEST_P( w5500IsResponsive, worksProperly )
 {
-    struct {
-        std::uint8_t versionr;
-        bool         w5500_is_responsive;
-    } const test_cases[]{
-        // clang-format off
+    auto const test_case = GetParam();
 
-        { random<std::uint8_t>( 0x00, 0x03 ), false },
-        {                             0x04,   true  },
-        { random<std::uint8_t>( 0x05, 0xFF ), false },
+    auto driver             = Mock_Driver{};
+    auto tcp_port_allocator = Mock_Port_Allocator{};
 
-        // clang-format on
-    };
+    auto const network_stack = Network_Stack{ driver,
+                                              Mock_Error{ 243 },
+                                              tcp_port_allocator.handle() };
 
-    for ( auto const test_case : test_cases ) {
-        auto driver             = Mock_Driver{};
-        auto tcp_port_allocator = Mock_Port_Allocator{};
+    EXPECT_CALL( driver, read_versionr() ).WillOnce( Return( test_case.versionr ) );
 
-        auto const network_stack = Network_Stack{ driver,
-                                                  random<Mock_Error>(),
-                                                  tcp_port_allocator.handle() };
-
-        EXPECT_CALL( driver, read_versionr() ).WillOnce( Return( test_case.versionr ) );
-
-        EXPECT_EQ( network_stack.w5500_is_responsive(), test_case.w5500_is_responsive );
-    } // for
+    ASSERT_EQ( network_stack.w5500_is_responsive(), test_case.w5500_is_responsive );
 }
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::w5500_is_responsive() test cases.
+ */
+w5500IsResponsive_Test_Case const w5500IsResponsive_TEST_CASES[]{
+    // clang-format off
+
+    { 0x00, false },
+    { 0x01, false },
+    { 0x03, false },
+    { 0x04, true  },
+    { 0x05, false },
+    { 0x2F, false },
+    { 0xFF, false },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, w5500IsResponsive, ValuesIn( w5500IsResponsive_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::configure_phy() test case.
+ */
+struct configurePHY_Test_Case {
+    /**
+     * \brief The desired PHY mode.
+     */
+    PHY_Mode phy_mode;
+
+    /**
+     * \brief The PHYCFGR register value.
+     */
+    std::uint8_t phycfgr;
+};
+
+auto operator<<( std::ostream & stream, configurePHY_Test_Case const & test_case ) -> std::ostream &
+{
+    // clang-format off
+
+    return stream << "{ "
+                  << ".phy_mode = " << test_case.phy_mode
+                  << ", "
+                  << ".phycfgr = 0b" << std::bitset<std::numeric_limits<std::uint8_t>::digits>{ test_case.phycfgr }
+                  << " }";
+
+    // clang-format on
+}
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::configure_phy() test fixture.
+ */
+class configurePHY : public TestWithParam<configurePHY_Test_Case> {
+};
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_phy() works
  *        properly.
  */
-TEST( configurePHY, worksProperly )
+TEST_P( configurePHY, worksProperly )
 {
-    struct {
-        PHY_Mode     phy_mode;
-        std::uint8_t phycfgr_opmd_opmdc;
-    } const test_cases[]{
-        // clang-format off
+    auto const test_case = GetParam();
 
-        { PHY_Mode::CONFIGURED_BY_HARDWARE,                       0b0'0'000'0'0'0 },
-        { PHY_Mode::POWER_DOWN,                                   0b0'1'110'0'0'0 },
-        { PHY_Mode::_10BT_HALF_DUPLEX_AUTO_NEGOTIATION_DISABLED,  0b0'1'000'0'0'0 },
-        { PHY_Mode::_10BT_FULL_DUPLEX_AUTO_NEGOTIATION_DISABLED,  0b0'1'001'0'0'0 },
-        { PHY_Mode::_100BT_HALF_DUPLEX_AUTO_NEGOTIATION_DISABLED, 0b0'1'010'0'0'0 },
-        { PHY_Mode::_100BT_FULL_DUPLEX_AUTO_NEGOTIATION_DISABLED, 0b0'1'011'0'0'0 },
-        { PHY_Mode::_100BT_HALF_DUPLEX_AUTO_NEGOTIATION_ENABLED,  0b0'1'100'0'0'0 },
-        { PHY_Mode::ALL_CAPABLE_AUTO_NEGOTIATION_ENABLED,         0b0'1'111'0'0'0 },
+    auto const in_sequence = InSequence{};
 
-        // clang-format on
-    };
+    auto driver             = Mock_Driver{};
+    auto tcp_port_allocator = Mock_Port_Allocator{};
 
-    for ( auto const test_case : test_cases ) {
-        auto const in_sequence = InSequence{};
+    auto network_stack = Network_Stack{ driver, Mock_Error{ 39 }, tcp_port_allocator.handle() };
 
-        auto driver             = Mock_Driver{};
-        auto tcp_port_allocator = Mock_Port_Allocator{};
+    EXPECT_CALL( driver, write_phycfgr( test_case.phycfgr | 0b1'0'000'0'0'0 ) );
+    EXPECT_CALL( driver, write_phycfgr( test_case.phycfgr ) );
+    EXPECT_CALL( driver, write_phycfgr( test_case.phycfgr | 0b1'0'000'0'0'0 ) );
 
-        auto network_stack = Network_Stack{ driver,
-                                            random<Mock_Error>(),
-                                            tcp_port_allocator.handle() };
-
-        EXPECT_CALL( driver, write_phycfgr( test_case.phycfgr_opmd_opmdc | 0b1'0'000'000 ) );
-        EXPECT_CALL( driver, write_phycfgr( test_case.phycfgr_opmd_opmdc ) );
-        EXPECT_CALL( driver, write_phycfgr( test_case.phycfgr_opmd_opmdc | 0b1'0'000'000 ) );
-
-        network_stack.configure_phy( test_case.phy_mode );
-    } // for
+    network_stack.configure_phy( test_case.phy_mode );
 }
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::configure_phy() test cases.
+ */
+configurePHY_Test_Case const configurePHY_TEST_CASES[]{
+    // clang-format off
+
+    { PHY_Mode::CONFIGURED_BY_HARDWARE,                       0b0'0'000'0'0'0 },
+    { PHY_Mode::POWER_DOWN,                                   0b0'1'110'0'0'0 },
+    { PHY_Mode::_10BT_HALF_DUPLEX_AUTO_NEGOTIATION_DISABLED,  0b0'1'000'0'0'0 },
+    { PHY_Mode::_10BT_FULL_DUPLEX_AUTO_NEGOTIATION_DISABLED,  0b0'1'001'0'0'0 },
+    { PHY_Mode::_100BT_HALF_DUPLEX_AUTO_NEGOTIATION_DISABLED, 0b0'1'010'0'0'0 },
+    { PHY_Mode::_100BT_FULL_DUPLEX_AUTO_NEGOTIATION_DISABLED, 0b0'1'011'0'0'0 },
+    { PHY_Mode::_100BT_HALF_DUPLEX_AUTO_NEGOTIATION_ENABLED,  0b0'1'100'0'0'0 },
+    { PHY_Mode::ALL_CAPABLE_AUTO_NEGOTIATION_ENABLED,         0b0'1'111'0'0'0 },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, configurePHY, ValuesIn( configurePHY_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::phy_mode() test case.
+ */
+struct phyMode_Test_Case {
+    /**
+     * \brief The PHYCFGR register value.
+     */
+    std::uint8_t phycfgr;
+
+    /**
+     * \brief The PHY mode.
+     */
+    PHY_Mode phy_mode;
+};
+
+auto operator<<( std::ostream & stream, phyMode_Test_Case const & test_case ) -> std::ostream &
+{
+    // clang-format off
+
+    return stream << "{ "
+                  << ".phycfgr = 0b" << std::bitset<std::numeric_limits<std::uint8_t>::digits>{ test_case.phycfgr }
+                  << ", "
+                  << ".phy_mode = " << test_case.phy_mode
+                  << " }";
+
+    // clang-format on
+}
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::phy_mode() test fixture.
+ */
+class phyMode : public TestWithParam<phyMode_Test_Case> {
+};
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::phy_mode() works properly.
  */
-TEST( phyMode, worksProperly )
+TEST_P( phyMode, worksProperly )
 {
-    struct {
-        std::uint8_t phycfgr_opmd_opmdc;
-        PHY_Mode     phy_mode;
-    } const test_cases[]{
-        // clang-format off
+    auto const test_case = GetParam();
 
-        { 0b0'0'000'0'0'0, PHY_Mode::CONFIGURED_BY_HARDWARE                       },
-        { 0b0'1'110'0'0'0, PHY_Mode::POWER_DOWN                                   },
-        { 0b0'1'000'0'0'0, PHY_Mode::_10BT_HALF_DUPLEX_AUTO_NEGOTIATION_DISABLED  },
-        { 0b0'1'001'0'0'0, PHY_Mode::_10BT_FULL_DUPLEX_AUTO_NEGOTIATION_DISABLED  },
-        { 0b0'1'010'0'0'0, PHY_Mode::_100BT_HALF_DUPLEX_AUTO_NEGOTIATION_DISABLED },
-        { 0b0'1'011'0'0'0, PHY_Mode::_100BT_FULL_DUPLEX_AUTO_NEGOTIATION_DISABLED },
-        { 0b0'1'100'0'0'0, PHY_Mode::_100BT_HALF_DUPLEX_AUTO_NEGOTIATION_ENABLED  },
-        { 0b0'1'111'0'0'0, PHY_Mode::ALL_CAPABLE_AUTO_NEGOTIATION_ENABLED         },
+    auto driver             = Mock_Driver{};
+    auto tcp_port_allocator = Mock_Port_Allocator{};
 
-        // clang-format on
-    };
+    auto const network_stack = Network_Stack{ driver, Mock_Error{ 85 }, tcp_port_allocator.handle() };
 
-    for ( auto const test_case : test_cases ) {
-        auto driver             = Mock_Driver{};
-        auto tcp_port_allocator = Mock_Port_Allocator{};
+    EXPECT_CALL( driver, read_phycfgr() ).WillOnce( Return( test_case.phycfgr ) );
 
-        auto const network_stack = Network_Stack{ driver,
-                                                  random<Mock_Error>(),
-                                                  tcp_port_allocator.handle() };
-
-        EXPECT_CALL( driver, read_phycfgr() )
-            .WillOnce( Return( ( random<std::uint8_t>() & 0b1'0'000'1'1'1 ) | test_case.phycfgr_opmd_opmdc ) );
-
-        EXPECT_EQ( network_stack.phy_mode(), test_case.phy_mode );
-    } // for
+    ASSERT_EQ( network_stack.phy_mode(), test_case.phy_mode );
 }
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::phy_mode() test cases.
+ */
+phyMode_Test_Case const phyMode_TEST_CASES[]{
+    // clang-format off
+
+    { 0b0'0'000'1'0'1, PHY_Mode::CONFIGURED_BY_HARDWARE                       },
+    { 0b0'1'110'1'0'1, PHY_Mode::POWER_DOWN                                   },
+    { 0b0'1'000'1'0'1, PHY_Mode::_10BT_HALF_DUPLEX_AUTO_NEGOTIATION_DISABLED  },
+    { 0b0'1'001'1'0'1, PHY_Mode::_10BT_FULL_DUPLEX_AUTO_NEGOTIATION_DISABLED  },
+    { 0b0'1'010'1'0'1, PHY_Mode::_100BT_HALF_DUPLEX_AUTO_NEGOTIATION_DISABLED },
+    { 0b0'1'011'1'0'1, PHY_Mode::_100BT_FULL_DUPLEX_AUTO_NEGOTIATION_DISABLED },
+    { 0b0'1'100'1'0'1, PHY_Mode::_100BT_HALF_DUPLEX_AUTO_NEGOTIATION_ENABLED  },
+    { 0b0'1'111'1'0'1, PHY_Mode::ALL_CAPABLE_AUTO_NEGOTIATION_ENABLED         },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, phyMode, ValuesIn( phyMode_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::link_status() test case.
+ */
+struct linkStatus_Test_Case {
+    /**
+     * \brief The PHYCFGR register value.
+     */
+    std::uint8_t phycfgr;
+
+    /**
+     * \brief The link status.
+     */
+    Link_Status link_status;
+};
+
+auto operator<<( std::ostream & stream, linkStatus_Test_Case const & test_case ) -> std::ostream &
+{
+    // clang-format off
+
+    return stream << "{ "
+                  << ".phycfgr = 0b" << std::bitset<std::numeric_limits<std::uint8_t>::digits>{ test_case.phycfgr }
+                  << ", "
+                  << ".link_status = " << test_case.link_status
+                  << " }";
+
+    // clang-format on
+}
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::link_status() test fixture.
+ */
+class linkStatus : public TestWithParam<linkStatus_Test_Case> {
+};
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::link_status() works
  *        properly.
  */
-TEST( linkStatus, worksProperly )
+TEST_P( linkStatus, worksProperly )
 {
-    struct {
-        std::uint8_t phycfgr_lnk;
-        Link_Status  link_status;
-    } const test_cases[]{
-        // clang-format off
+    auto const test_case = GetParam();
 
-        { 0b0'0'000'0'0'0, Link_Status::DOWN },
-        { 0b0'0'000'0'0'1, Link_Status::UP   },
+    auto driver             = Mock_Driver{};
+    auto tcp_port_allocator = Mock_Port_Allocator{};
 
-        // clang-format on
-    };
+    auto const network_stack = Network_Stack{ driver, Mock_Error{ 16 }, tcp_port_allocator.handle() };
 
-    for ( auto const test_case : test_cases ) {
-        auto driver             = Mock_Driver{};
-        auto tcp_port_allocator = Mock_Port_Allocator{};
+    EXPECT_CALL( driver, read_phycfgr() ).WillOnce( Return( test_case.phycfgr ) );
 
-        auto const network_stack = Network_Stack{ driver,
-                                                  random<Mock_Error>(),
-                                                  tcp_port_allocator.handle() };
-
-        EXPECT_CALL( driver, read_phycfgr() )
-            .WillOnce( Return( ( random<std::uint8_t>() & 0b1'1'111'1'1'0 ) | test_case.phycfgr_lnk ) );
-
-        EXPECT_EQ( network_stack.link_status(), test_case.link_status );
-    } // for
+    ASSERT_EQ( network_stack.link_status(), test_case.link_status );
 }
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::link_status() test cases.
+ */
+linkStatus_Test_Case const linkStatus_TEST_CASES[]{
+    // clang-format off
+
+    { 0b1'0'010'0'1'0, Link_Status::DOWN },
+    { 0b1'0'010'0'1'1, Link_Status::UP   },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, linkStatus, ValuesIn( linkStatus_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::link_mode() test case.
+ */
+struct linkMode_Test_Case {
+    /**
+     * \brief The PHYCFGR register value.
+     */
+    std::uint8_t phycfgr;
+
+    /**
+     * \brief The link mode.
+     */
+    Link_Mode link_mode;
+};
+
+auto operator<<( std::ostream & stream, linkMode_Test_Case const & test_case ) -> std::ostream &
+{
+    // clang-format off
+
+    return stream << "{ "
+                  << ".phycfgr = 0b" << std::bitset<std::numeric_limits<std::uint8_t>::digits>{ test_case.phycfgr }
+                  << ", "
+                  << ".link_mode = " << test_case.link_mode
+                  << " }";
+
+    // clang-format on
+}
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::link_mode() test fixture.
+ */
+class linkMode : public TestWithParam<linkMode_Test_Case> {
+};
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::link_mode() works
  *        properly.
  */
-TEST( linkMode, worksProperly )
+TEST_P( linkMode, worksProperly )
 {
-    struct {
-        std::uint8_t phycfgr_dpx;
-        Link_Mode    link_mode;
-    } const test_cases[]{
-        // clang-format off
+    auto const test_case = GetParam();
 
-        { 0b0'0'000'0'0'0, Link_Mode::HALF_DUPLEX },
-        { 0b0'0'000'1'0'0, Link_Mode::FULL_DUPLEX },
+    auto driver             = Mock_Driver{};
+    auto tcp_port_allocator = Mock_Port_Allocator{};
 
-        // clang-format on
-    };
+    auto const network_stack = Network_Stack{ driver,
+                                              Mock_Error{ 106 },
+                                              tcp_port_allocator.handle() };
 
-    for ( auto const test_case : test_cases ) {
-        auto driver             = Mock_Driver{};
-        auto tcp_port_allocator = Mock_Port_Allocator{};
+    EXPECT_CALL( driver, read_phycfgr() ).WillOnce( Return( test_case.phycfgr ) );
 
-        auto const network_stack = Network_Stack{ driver,
-                                                  random<Mock_Error>(),
-                                                  tcp_port_allocator.handle() };
-
-        EXPECT_CALL( driver, read_phycfgr() )
-            .WillOnce( Return( ( random<std::uint8_t>() & 0b1'1'111'0'1'1 ) | test_case.phycfgr_dpx ) );
-
-        EXPECT_EQ( network_stack.link_mode(), test_case.link_mode );
-    } // for
+    ASSERT_EQ( network_stack.link_mode(), test_case.link_mode );
 }
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::link_mode() test cases.
+ */
+linkMode_Test_Case const linkMode_TEST_CASES[]{
+    // clang-format off
+
+    { 0b0'1'011'0'0'1, Link_Mode::HALF_DUPLEX },
+    { 0b0'1'011'1'0'1, Link_Mode::FULL_DUPLEX },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, linkMode, ValuesIn( linkMode_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::link_speed() test case.
+ */
+struct linkSpeed_Test_Case {
+    /**
+     * \brief The PHYCFGR register value.
+     */
+    std::uint8_t phycfgr;
+
+    /**
+     * \brief The link speed.
+     */
+    Link_Speed link_speed;
+};
+
+auto operator<<( std::ostream & stream, linkSpeed_Test_Case const & test_case ) -> std::ostream &
+{
+    // clang-format off
+
+    return stream << "{ "
+                  << ".phycfgr = 0b" << std::bitset<std::numeric_limits<std::uint8_t>::digits>{ test_case.phycfgr }
+                  << ", "
+                  << ".link_speed = " << test_case.link_speed
+                  << " }";
+
+    // clang-format on
+}
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::link_speed() test fixture.
+ */
+class linkSpeed : public TestWithParam<linkSpeed_Test_Case> {
+};
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::link_speed() works
  *        properly.
  */
-TEST( linkSpeed, worksProperly )
+TEST_P( linkSpeed, worksProperly )
 {
-    struct {
-        std::uint8_t phycfgr_spd;
-        Link_Speed   link_speed;
-    } const test_cases[]{
-        // clang-format off
+    auto const test_case = GetParam();
 
-        { 0b0'0'000'0'0'0, Link_Speed::_10_MbPs  },
-        { 0b0'0'000'0'1'0, Link_Speed::_100_MbPs },
+    auto driver             = Mock_Driver{};
+    auto tcp_port_allocator = Mock_Port_Allocator{};
 
-        // clang-format on
-    };
+    auto const network_stack = Network_Stack{ driver,
+                                              Mock_Error{ 125 },
+                                              tcp_port_allocator.handle() };
 
-    for ( auto const test_case : test_cases ) {
-        auto driver             = Mock_Driver{};
-        auto tcp_port_allocator = Mock_Port_Allocator{};
+    EXPECT_CALL( driver, read_phycfgr() ).WillOnce( Return( test_case.phycfgr ) );
 
-        auto const network_stack = Network_Stack{ driver,
-                                                  random<Mock_Error>(),
-                                                  tcp_port_allocator.handle() };
-
-        EXPECT_CALL( driver, read_phycfgr() )
-            .WillOnce( Return( ( random<std::uint8_t>() & 0b1'1'111'1'0'1 ) | test_case.phycfgr_spd ) );
-
-        EXPECT_EQ( network_stack.link_speed(), test_case.link_speed );
-    } // for
+    ASSERT_EQ( network_stack.link_speed(), test_case.link_speed );
 }
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::link_speed() test cases.
+ */
+linkSpeed_Test_Case const linkSpeed_TEST_CASES[]{
+    // clang-format off
+
+    { 0b0'1'111'0'0'0, Link_Speed::_10_MbPs  },
+    { 0b0'1'111'0'1'0, Link_Speed::_100_MbPs },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, linkSpeed, ValuesIn( linkSpeed_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::configure_ping_blocking() test
+ *        case.
+ */
+struct configurePingBlocking_Test_Case {
+    /**
+     * \brief The desired ping blocking configuration.
+     */
+    Ping_Blocking ping_blocking_configuration;
+
+    /**
+     * \brief The MR register value.
+     */
+    std::uint8_t mr;
+};
+
+auto operator<<( std::ostream & stream, configurePingBlocking_Test_Case const & test_case )
+    -> std::ostream &
+{
+    // clang-format off
+
+    return stream << "{ "
+                  << ".ping_blocking_configuration = " << test_case.ping_blocking_configuration
+                  << ", "
+                  << ".mr = 0b" << std::bitset<std::numeric_limits<std::uint8_t>::digits>{ test_case.mr }
+                  << " }";
+
+    // clang-format on
+}
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::configure_ping_blocking() test
+ *        fixture.
+ */
+class configurePingBlocking : public TestWithParam<configurePingBlocking_Test_Case> {
+};
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_ping_blocking()
  *        works properly.
  */
-TEST( configurePingBlocking, worksProperly )
+TEST_P( configurePingBlocking, worksProperly )
 {
-    struct {
-        Ping_Blocking ping_blocking_configuration;
-        std::uint8_t  mr_pb;
-    } const test_cases[]{
-        // clang-format off
+    auto const test_case = GetParam();
 
-        { Ping_Blocking::DISABLED, 0b0'0'0'0'0'0'0'0 },
-        { Ping_Blocking::ENABLED,  0b0'0'0'1'0'0'0'0 },
+    auto const in_sequence = InSequence{};
 
-        // clang-format on
-    };
+    auto driver             = Mock_Driver{};
+    auto tcp_port_allocator = Mock_Port_Allocator{};
 
-    for ( auto const test_case : test_cases ) {
-        auto const in_sequence = InSequence{};
+    auto network_stack = Network_Stack{ driver, Mock_Error{ 83 }, tcp_port_allocator.handle() };
 
-        auto driver             = Mock_Driver{};
-        auto tcp_port_allocator = Mock_Port_Allocator{};
+    EXPECT_CALL( driver, read_mr() ).WillOnce( Return( 0b1'1'0'1'0'0'1'1 ) );
+    EXPECT_CALL( driver, write_mr( test_case.mr ) );
 
-        auto network_stack = Network_Stack{ driver,
-                                            random<Mock_Error>(),
-                                            tcp_port_allocator.handle() };
-
-        auto const mr = random<std::uint8_t>();
-
-        EXPECT_CALL( driver, read_mr() ).WillOnce( Return( mr ) );
-        EXPECT_CALL( driver, write_mr( ( mr & 0b1'1'1'0'1'1'1'1 ) | test_case.mr_pb ) );
-
-        network_stack.configure_ping_blocking( test_case.ping_blocking_configuration );
-    } // for
+    network_stack.configure_ping_blocking( test_case.ping_blocking_configuration );
 }
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::configure_ping_blocking() test
+ *        cases.
+ */
+configurePingBlocking_Test_Case const configurePingBlocking_TEST_CASES[]{
+    // clang-format off
+
+    { Ping_Blocking::DISABLED, 0b1'1'0'0'0'0'1'1 },
+    { Ping_Blocking::ENABLED,  0b1'1'0'1'0'0'1'1 },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, configurePingBlocking, ValuesIn( configurePingBlocking_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::ping_blocking_configuration()
+ *        test case.
+ */
+struct pingBlockingConfiguration_Test_Case {
+    /**
+     * \brief The MR register value.
+     */
+    std::uint8_t mr;
+
+    /**
+     * \brief The ping blocking configuration.
+     */
+    Ping_Blocking ping_blocking_configuration;
+};
+
+auto operator<<( std::ostream & stream, pingBlockingConfiguration_Test_Case const & test_case )
+    -> std::ostream &
+{
+    // clang-format off
+
+    return stream << "{ "
+                  << ".mr = 0b" << std::bitset<std::numeric_limits<std::uint8_t>::digits>{ test_case.mr }
+                  << ", "
+                  << ".ping_blocking_configuration = " << test_case.ping_blocking_configuration
+                  << " }";
+
+    // clang-format on
+}
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::ping_blocking_configuration()
+ *        test fixture.
+ */
+class pingBlockingConfiguration : public TestWithParam<pingBlockingConfiguration_Test_Case> {
+};
 
 /**
  * \brief Verify
  *        picolibrary::WIZnet::W5500::IP::Network_Stack::ping_blocking_configuration()
  *        works properly.
  */
-TEST( pingBlockingConfiguration, worksProperly )
+TEST_P( pingBlockingConfiguration, worksProperly )
 {
-    struct {
-        std::uint8_t  mr_pb;
-        Ping_Blocking ping_blocking_configuration;
-    } const test_cases[]{
-        // clang-format off
+    auto const test_case = GetParam();
 
-        { 0b0'0'0'0'0'0'0'0, Ping_Blocking::DISABLED },
-        { 0b0'0'0'1'0'0'0'0, Ping_Blocking::ENABLED  },
+    auto driver             = Mock_Driver{};
+    auto tcp_port_allocator = Mock_Port_Allocator{};
 
-        // clang-format on
-    };
+    auto const network_stack = Network_Stack{ driver,
+                                              Mock_Error{ 132 },
+                                              tcp_port_allocator.handle() };
 
-    for ( auto const test_case : test_cases ) {
-        auto driver             = Mock_Driver{};
-        auto tcp_port_allocator = Mock_Port_Allocator{};
+    EXPECT_CALL( driver, read_mr() ).WillOnce( Return( test_case.mr ) );
 
-        auto const network_stack = Network_Stack{ driver,
-                                                  random<Mock_Error>(),
-                                                  tcp_port_allocator.handle() };
-
-        EXPECT_CALL( driver, read_mr() )
-            .WillOnce( Return( ( random<std::uint8_t>() & 0b1'1'1'0'1'1'1'1 ) | test_case.mr_pb ) );
-
-        EXPECT_EQ( network_stack.ping_blocking_configuration(), test_case.ping_blocking_configuration );
-    } // for
+    ASSERT_EQ( network_stack.ping_blocking_configuration(), test_case.ping_blocking_configuration );
 }
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::ping_blocking_configuration()
+ *        test cases.
+ */
+pingBlockingConfiguration_Test_Case const pingBlockingConfiguration_TEST_CASES[]{
+    // clang-format off
+
+    { 0b1'1'0'0'0'0'1'1, Ping_Blocking::DISABLED },
+    { 0b1'1'0'1'0'0'1'1, Ping_Blocking::ENABLED  },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, pingBlockingConfiguration, ValuesIn( pingBlockingConfiguration_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::configure_arp_forcing() test
+ *        case.
+ */
+struct configureARPForcing_Test_Case {
+    /**
+     * \brief The desired ARP forcing configuration.
+     */
+    ARP_Forcing arp_forcing_configuration;
+
+    /**
+     * \brief The MR register value.
+     */
+    std::uint8_t mr;
+};
+
+auto operator<<( std::ostream & stream, configureARPForcing_Test_Case const & test_case )
+    -> std::ostream &
+{
+    // clang-format off
+
+    return stream << "{ "
+                  << ".arp_forcing_configuration = " << test_case.arp_forcing_configuration
+                  << ", "
+                  << ".mr = 0b" << std::bitset<std::numeric_limits<std::uint8_t>::digits>{ test_case.mr }
+                  << " }";
+
+    // clang-format on
+}
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::configure_arp_forcing() test
+ *        fixture.
+ */
+class configureARPForcing : public TestWithParam<configureARPForcing_Test_Case> {
+};
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_arp_forcing()
  *        works properly.
  */
-TEST( configureARPForcing, worksProperly )
+TEST_P( configureARPForcing, worksProperly )
 {
-    struct {
-        ARP_Forcing  arp_forcing_configuration;
-        std::uint8_t mr_farp;
-    } const test_cases[]{
-        // clang-format off
+    auto const test_case = GetParam();
 
-        { ARP_Forcing::DISABLED, 0b0'0'0'0'0'0'0'0 },
-        { ARP_Forcing::ENABLED,  0b0'0'0'0'0'0'1'0 },
+    auto const in_sequence = InSequence{};
 
-        // clang-format on
-    };
+    auto driver             = Mock_Driver{};
+    auto tcp_port_allocator = Mock_Port_Allocator{};
 
-    for ( auto const test_case : test_cases ) {
-        auto const in_sequence = InSequence{};
+    auto network_stack = Network_Stack{ driver, Mock_Error{ 103 }, tcp_port_allocator.handle() };
 
-        auto driver             = Mock_Driver{};
-        auto tcp_port_allocator = Mock_Port_Allocator{};
+    EXPECT_CALL( driver, read_mr() ).WillOnce( Return( 0b1'0'0'1'0'0'0'0 ) );
+    EXPECT_CALL( driver, write_mr( test_case.mr ) );
 
-        auto network_stack = Network_Stack{ driver,
-                                            random<Mock_Error>(),
-                                            tcp_port_allocator.handle() };
-
-        auto const mr = random<std::uint8_t>();
-
-        EXPECT_CALL( driver, read_mr() ).WillOnce( Return( mr ) );
-        EXPECT_CALL( driver, write_mr( ( mr & 0b1'1'1'1'1'1'0'1 ) | test_case.mr_farp ) );
-
-        network_stack.configure_arp_forcing( test_case.arp_forcing_configuration );
-    } // for
+    network_stack.configure_arp_forcing( test_case.arp_forcing_configuration );
 }
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::configure_arp_forcing() test
+ *        cases.
+ */
+configureARPForcing_Test_Case const configureARPForcing_TEST_CASES[]{
+    // clang-format off
+
+    { ARP_Forcing::DISABLED, 0b1'0'0'1'0'0'0'0 },
+    { ARP_Forcing::ENABLED,  0b1'0'0'1'0'0'1'0 },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, configureARPForcing, ValuesIn( configureARPForcing_TEST_CASES ) );
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::arp_forcing_configuration() test
+ *        case.
+ */
+struct arpForcingConfiguration_Test_Case {
+    /**
+     * \brief The MR register value.
+     */
+    std::uint8_t mr;
+
+    /**
+     * \brief The ARP forcing configuration.
+     */
+    ARP_Forcing arp_forcing_configuration;
+};
+
+auto operator<<( std::ostream & stream, arpForcingConfiguration_Test_Case const & test_case )
+    -> std::ostream &
+{
+    // clang-format off
+
+    return stream << "{ "
+                  << ".mr = 0b" << std::bitset<std::numeric_limits<std::uint8_t>::digits>{ test_case.mr }
+                  << ", "
+                  << ".arp_forcing_configuration = " << test_case.arp_forcing_configuration
+                  << " }";
+
+    // clang-format on
+}
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::arp_forcing_configuration() test
+ *        fixture.
+ */
+class arpForcingConfiguration : public TestWithParam<arpForcingConfiguration_Test_Case> {
+};
 
 /**
  * \brief Verify
  *        picolibrary::WIZnet::W5500::IP::Network_Stack::arp_forcing_configuration() works
  *        properly.
  */
-TEST( arpForcingConfiguration, worksProperly )
+TEST_P( arpForcingConfiguration, worksProperly )
 {
-    struct {
-        std::uint8_t mr_farp;
-        ARP_Forcing  arp_forcing_configuration;
-    } const test_cases[]{
-        // clang-format off
+    auto const test_case = GetParam();
 
-        { 0b0'0'0'0'0'0'0'0, ARP_Forcing::DISABLED },
-        { 0b0'0'0'0'0'0'1'0, ARP_Forcing::ENABLED  },
+    auto driver             = Mock_Driver{};
+    auto tcp_port_allocator = Mock_Port_Allocator{};
 
-        // clang-format on
-    };
+    auto const network_stack = Network_Stack{ driver,
+                                              Mock_Error{ 168 },
+                                              tcp_port_allocator.handle() };
 
-    for ( auto const test_case : test_cases ) {
-        auto driver             = Mock_Driver{};
-        auto tcp_port_allocator = Mock_Port_Allocator{};
+    EXPECT_CALL( driver, read_mr() ).WillOnce( Return( test_case.mr ) );
 
-        auto const network_stack = Network_Stack{ driver,
-                                                  random<Mock_Error>(),
-                                                  tcp_port_allocator.handle() };
-
-        EXPECT_CALL( driver, read_mr() )
-            .WillOnce( Return( ( random<std::uint8_t>() & 0b1'1'1'1'1'1'0'1 ) | test_case.mr_farp ) );
-
-        EXPECT_EQ( network_stack.arp_forcing_configuration(), test_case.arp_forcing_configuration );
-    } // for
+    ASSERT_EQ( network_stack.arp_forcing_configuration(), test_case.arp_forcing_configuration );
 }
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::arp_forcing_configuration() test
+ *        cases.
+ */
+arpForcingConfiguration_Test_Case const arpForcingConfiguration_TEST_CASES[]{
+    // clang-format off
+
+    { 0b0'1'0'0'0'1'0'0, ARP_Forcing::DISABLED },
+    { 0b0'1'0'0'0'1'1'0, ARP_Forcing::ENABLED  },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, arpForcingConfiguration, ValuesIn( arpForcingConfiguration_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_retransmission()
@@ -443,10 +808,10 @@ TEST( configureRetransmission, worksProperly )
     auto driver             = Mock_Driver{};
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
-    auto network_stack = Network_Stack{ driver, random<Mock_Error>(), tcp_port_allocator.handle() };
+    auto network_stack = Network_Stack{ driver, Mock_Error{ 35 }, tcp_port_allocator.handle() };
 
-    auto const retry_time  = random<std::uint16_t>();
-    auto const retry_count = random<std::uint8_t>();
+    auto const retry_time  = std::uint16_t{ 0xB2FA };
+    auto const retry_count = std::uint8_t{ 0xC2 };
 
     EXPECT_CALL( driver, write_rtr( retry_time ) );
     EXPECT_CALL( driver, write_rcr( retry_count ) );
@@ -464,14 +829,14 @@ TEST( retryTime, worksProperly )
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
     auto const network_stack = Network_Stack{ driver,
-                                              random<Mock_Error>(),
+                                              Mock_Error{ 245 },
                                               tcp_port_allocator.handle() };
 
-    auto const rtr = random<std::uint16_t>();
+    auto const rtr = std::uint16_t{ 0x8BBE };
 
     EXPECT_CALL( driver, read_rtr() ).WillOnce( Return( rtr ) );
 
-    EXPECT_EQ( network_stack.retry_time(), rtr );
+    ASSERT_EQ( network_stack.retry_time(), rtr );
 }
 
 /**
@@ -484,80 +849,121 @@ TEST( retryCount, worksProperly )
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
     auto const network_stack = Network_Stack{ driver,
-                                              random<Mock_Error>(),
+                                              Mock_Error{ 182 },
                                               tcp_port_allocator.handle() };
 
-    auto const rcr = random<std::uint8_t>();
+    auto const rcr = std::uint8_t{ 0xEC };
 
     EXPECT_CALL( driver, read_rcr() ).WillOnce( Return( rcr ) );
 
-    EXPECT_EQ( network_stack.retry_count(), rcr );
+    ASSERT_EQ( network_stack.retry_count(), rcr );
 }
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::configure_socket_buffer_size()
+ *        test case.
+ */
+struct configureSocketBufferSize_Test_Case {
+    /**
+     * \brief The desired socket buffer size.
+     */
+    Socket_Buffer_Size socket_buffer_size;
+
+    /**
+     * \brief The SN_RXBUF_SIZE and SN_TXBUF_SIZE register values.
+     */
+    std::array<std::uint8_t, 8> sn_xxbuf_size;
+
+    /**
+     * \brief The number of sockets the network stack is configured to support.
+     */
+    std::uint_fast8_t sockets;
+};
+
+auto operator<<( std::ostream & stream, configureSocketBufferSize_Test_Case const & test_case )
+    -> std::ostream &
+{
+    // clang-format off
+
+    return stream << "{ "
+                  << ".socket_buffer_size = " << test_case.socket_buffer_size
+                  << ", "
+                  << ".sn_xxbuf_size = { " << static_cast<std::uint_fast16_t>( test_case.sn_xxbuf_size[ 0 ] ) << ", "
+                                           << static_cast<std::uint_fast16_t>( test_case.sn_xxbuf_size[ 1 ] ) << ", "
+                                           << static_cast<std::uint_fast16_t>( test_case.sn_xxbuf_size[ 2 ] ) << ", "
+                                           << static_cast<std::uint_fast16_t>( test_case.sn_xxbuf_size[ 3 ] ) << ", "
+                                           << static_cast<std::uint_fast16_t>( test_case.sn_xxbuf_size[ 4 ] ) << ", "
+                                           << static_cast<std::uint_fast16_t>( test_case.sn_xxbuf_size[ 5 ] ) << ", "
+                                           << static_cast<std::uint_fast16_t>( test_case.sn_xxbuf_size[ 6 ] ) << ", "
+                                           << static_cast<std::uint_fast16_t>( test_case.sn_xxbuf_size[ 7 ] ) << " }"
+                  << ", "
+                  << ".sockets = " << static_cast<std::uint16_t>( test_case.sockets )
+                  << " }";
+
+    // clang-format on
+}
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::configure_socket_buffer_size()
+ *        test fixture.
+ */
+class configureSocketBufferSize : public TestWithParam<configureSocketBufferSize_Test_Case> {
+};
 
 /**
  * \brief Verify
  *        picolibrary::WIZnet::W5500::IP::Network_Stack::configure_socket_buffer_size()
  *        works properly.
  */
-TEST( configureSocketBufferSize, worksProperly )
+TEST_P( configureSocketBufferSize, worksProperly )
 {
-    Socket_ID const socket_id[]{
-        // clang-format off
+    auto const test_case = GetParam();
 
-        Socket_ID::_0,
-        Socket_ID::_1,
-        Socket_ID::_2,
-        Socket_ID::_3,
-        Socket_ID::_4,
-        Socket_ID::_5,
-        Socket_ID::_6,
-        Socket_ID::_7,
+    auto driver             = Mock_Driver{};
+    auto tcp_port_allocator = Mock_Port_Allocator{};
 
-        // clang-format on
-    };
+    auto network_stack = Network_Stack{ driver, Mock_Error{ 196 }, tcp_port_allocator.handle() };
 
-    struct {
-        Socket_Buffer_Size socket_buffer_size;
-        std::uint8_t       sn_xxbuf_size;
-        std::uint_fast8_t  sockets;
-    } const test_cases[]{
-        // clang-format off
+    EXPECT_CALL( driver, write_sn_rxbuf_size( Socket_ID::_0, test_case.sn_xxbuf_size[ 0 ] ) );
+    EXPECT_CALL( driver, write_sn_txbuf_size( Socket_ID::_0, test_case.sn_xxbuf_size[ 0 ] ) );
+    EXPECT_CALL( driver, write_sn_rxbuf_size( Socket_ID::_1, test_case.sn_xxbuf_size[ 1 ] ) );
+    EXPECT_CALL( driver, write_sn_txbuf_size( Socket_ID::_1, test_case.sn_xxbuf_size[ 1 ] ) );
+    EXPECT_CALL( driver, write_sn_rxbuf_size( Socket_ID::_2, test_case.sn_xxbuf_size[ 2 ] ) );
+    EXPECT_CALL( driver, write_sn_txbuf_size( Socket_ID::_2, test_case.sn_xxbuf_size[ 2 ] ) );
+    EXPECT_CALL( driver, write_sn_rxbuf_size( Socket_ID::_3, test_case.sn_xxbuf_size[ 3 ] ) );
+    EXPECT_CALL( driver, write_sn_txbuf_size( Socket_ID::_3, test_case.sn_xxbuf_size[ 3 ] ) );
+    EXPECT_CALL( driver, write_sn_rxbuf_size( Socket_ID::_4, test_case.sn_xxbuf_size[ 4 ] ) );
+    EXPECT_CALL( driver, write_sn_txbuf_size( Socket_ID::_4, test_case.sn_xxbuf_size[ 4 ] ) );
+    EXPECT_CALL( driver, write_sn_rxbuf_size( Socket_ID::_5, test_case.sn_xxbuf_size[ 5 ] ) );
+    EXPECT_CALL( driver, write_sn_txbuf_size( Socket_ID::_5, test_case.sn_xxbuf_size[ 5 ] ) );
+    EXPECT_CALL( driver, write_sn_rxbuf_size( Socket_ID::_6, test_case.sn_xxbuf_size[ 6 ] ) );
+    EXPECT_CALL( driver, write_sn_txbuf_size( Socket_ID::_6, test_case.sn_xxbuf_size[ 6 ] ) );
+    EXPECT_CALL( driver, write_sn_rxbuf_size( Socket_ID::_7, test_case.sn_xxbuf_size[ 7 ] ) );
+    EXPECT_CALL( driver, write_sn_txbuf_size( Socket_ID::_7, test_case.sn_xxbuf_size[ 7 ] ) );
 
-        { Socket_Buffer_Size::_2_KiB,  2,  8 },
-        { Socket_Buffer_Size::_4_KiB,  4,  4 },
-        { Socket_Buffer_Size::_8_KiB,  8,  2 },
-        { Socket_Buffer_Size::_16_KiB, 16, 1 },
+    network_stack.configure_socket_buffer_size( test_case.socket_buffer_size );
 
-        // clang-format on
-    };
-
-    for ( auto const test_case : test_cases ) {
-        auto const in_sequence = InSequence{};
-
-        auto driver             = Mock_Driver{};
-        auto tcp_port_allocator = Mock_Port_Allocator{};
-
-        auto network_stack = Network_Stack{ driver,
-                                            random<Mock_Error>(),
-                                            tcp_port_allocator.handle() };
-
-        for ( auto socket = std::uint_fast8_t{ 0 }; socket < test_case.sockets; ++socket ) {
-            EXPECT_CALL( driver, write_sn_rxbuf_size( socket_id[ socket ], test_case.sn_xxbuf_size ) );
-            EXPECT_CALL( driver, write_sn_txbuf_size( socket_id[ socket ], test_case.sn_xxbuf_size ) );
-        } // for
-
-        for ( auto socket = test_case.sockets; socket < 8; ++socket ) {
-            EXPECT_CALL( driver, write_sn_rxbuf_size( socket_id[ socket ], 0 ) );
-            EXPECT_CALL( driver, write_sn_txbuf_size( socket_id[ socket ], 0 ) );
-        } // for
-
-        network_stack.configure_socket_buffer_size( test_case.socket_buffer_size );
-
-        EXPECT_EQ( network_stack.socket_buffer_size(), test_case.socket_buffer_size );
-        EXPECT_EQ( network_stack.sockets(), test_case.sockets );
-        EXPECT_EQ( network_stack.sockets_available_for_allocation(), test_case.sockets );
-    } // for
+    EXPECT_EQ( network_stack.socket_buffer_size(), test_case.socket_buffer_size );
+    EXPECT_EQ( network_stack.sockets(), test_case.sockets );
+    EXPECT_EQ( network_stack.sockets_available_for_allocation(), test_case.sockets );
 }
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::configure_socket_buffer_size()
+ *        test cases.
+ */
+configureSocketBufferSize_Test_Case const configureSocketBufferSize_TEST_CASES[]{
+    // clang-format off
+
+    { Socket_Buffer_Size::_2_KiB,  {  2, 2, 2, 2, 2, 2, 2, 2 }, 8 },
+    { Socket_Buffer_Size::_4_KiB,  {  4, 4, 4, 4, 0, 0, 0, 0 }, 4 },
+    { Socket_Buffer_Size::_8_KiB,  {  8, 8, 0, 0, 0, 0, 0, 0 }, 2 },
+    { Socket_Buffer_Size::_16_KiB, { 16, 0, 0, 0, 0, 0, 0, 0 }, 1 },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, configureSocketBufferSize, ValuesIn( configureSocketBufferSize_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::configure_mac_address()
@@ -568,9 +974,9 @@ TEST( configureMACAddress, worksProperly )
     auto driver             = Mock_Driver{};
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
-    auto network_stack = Network_Stack{ driver, random<Mock_Error>(), tcp_port_allocator.handle() };
+    auto network_stack = Network_Stack{ driver, Mock_Error{ 177 }, tcp_port_allocator.handle() };
 
-    auto const address = random<MAC_Address>();
+    auto const address = MAC_Address{ { 0xB4, 0x49, 0x7C, 0xBB, 0xF9, 0x8C } };
 
     EXPECT_CALL( driver, write_shar( address.as_byte_array() ) );
 
@@ -587,14 +993,14 @@ TEST( macAddress, worksProperly )
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
     auto const network_stack = Network_Stack{ driver,
-                                              random<Mock_Error>(),
+                                              Mock_Error{ 186 },
                                               tcp_port_allocator.handle() };
 
-    auto const shar = random_array<std::uint8_t, 6>();
+    auto const shar = Array<std::uint8_t, 6>{ 0x43, 0xAD, 0x77, 0x0A, 0xC7, 0xFE };
 
     EXPECT_CALL( driver, read_shar() ).WillOnce( Return( shar ) );
 
-    EXPECT_EQ( network_stack.mac_address().as_byte_array(), shar );
+    ASSERT_EQ( network_stack.mac_address().as_byte_array(), shar );
 }
 
 /**
@@ -606,9 +1012,9 @@ TEST( configureIPv4Address, worksProperly )
     auto driver             = Mock_Driver{};
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
-    auto network_stack = Network_Stack{ driver, random<Mock_Error>(), tcp_port_allocator.handle() };
+    auto network_stack = Network_Stack{ driver, Mock_Error{ 203 }, tcp_port_allocator.handle() };
 
-    auto const address = random<IPv4_Address>();
+    auto const address = IPv4_Address{ { 22, 84, 250, 184 } };
 
     EXPECT_CALL( driver, write_sipr( address.as_byte_array() ) );
 
@@ -625,14 +1031,14 @@ TEST( ipv4Address, worksProperly )
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
     auto const network_stack = Network_Stack{ driver,
-                                              random<Mock_Error>(),
+                                              Mock_Error{ 120 },
                                               tcp_port_allocator.handle() };
 
-    auto const sipr = random_array<std::uint8_t, 4>();
+    auto const sipr = Array<std::uint8_t, 4>{ 242, 69, 197, 219 };
 
     EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( sipr ) );
 
-    EXPECT_EQ( network_stack.ipv4_address().as_byte_array(), sipr );
+    ASSERT_EQ( network_stack.ipv4_address().as_byte_array(), sipr );
 }
 
 /**
@@ -645,9 +1051,9 @@ TEST( configureIPv4GatewayAddress, worksProperly )
     auto driver             = Mock_Driver{};
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
-    auto network_stack = Network_Stack{ driver, random<Mock_Error>(), tcp_port_allocator.handle() };
+    auto network_stack = Network_Stack{ driver, Mock_Error{ 222 }, tcp_port_allocator.handle() };
 
-    auto const address = random<IPv4_Address>();
+    auto const address = IPv4_Address{ { 195, 53, 124, 168 } };
 
     EXPECT_CALL( driver, write_gar( address.as_byte_array() ) );
 
@@ -663,15 +1069,13 @@ TEST( ipv4GatewayAddress, worksProperly )
     auto driver             = Mock_Driver{};
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
-    auto const network_stack = Network_Stack{ driver,
-                                              random<Mock_Error>(),
-                                              tcp_port_allocator.handle() };
+    auto const network_stack = Network_Stack{ driver, Mock_Error{ 91 }, tcp_port_allocator.handle() };
 
-    auto const gar = random_array<std::uint8_t, 4>();
+    auto const gar = Array<std::uint8_t, 4>{ 163, 8, 45, 250 };
 
     EXPECT_CALL( driver, read_gar() ).WillOnce( Return( gar ) );
 
-    EXPECT_EQ( network_stack.ipv4_gateway_address().as_byte_array(), gar );
+    ASSERT_EQ( network_stack.ipv4_gateway_address().as_byte_array(), gar );
 }
 
 /**
@@ -684,9 +1088,9 @@ TEST( configureIPv4SubnetMask, worksProperly )
     auto driver             = Mock_Driver{};
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
-    auto network_stack = Network_Stack{ driver, random<Mock_Error>(), tcp_port_allocator.handle() };
+    auto network_stack = Network_Stack{ driver, Mock_Error{ 184 }, tcp_port_allocator.handle() };
 
-    auto const subnet_mask = random<IPv4_Address>();
+    auto const subnet_mask = IPv4_Address{ { 119, 122, 231, 41 } };
 
     EXPECT_CALL( driver, write_subr( subnet_mask.as_byte_array() ) );
 
@@ -703,14 +1107,14 @@ TEST( ipv4SubnetMask, worksProperly )
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
     auto const network_stack = Network_Stack{ driver,
-                                              random<Mock_Error>(),
+                                              Mock_Error{ 169 },
                                               tcp_port_allocator.handle() };
 
-    auto const subr = random_array<std::uint8_t, 4>();
+    auto const subr = Array<std::uint8_t, 4>{ 94, 66, 94, 244 };
 
     EXPECT_CALL( driver, read_subr() ).WillOnce( Return( subr ) );
 
-    EXPECT_EQ( network_stack.ipv4_subnet_mask().as_byte_array(), subr );
+    ASSERT_EQ( network_stack.ipv4_subnet_mask().as_byte_array(), subr );
 }
 
 /**
@@ -723,9 +1127,9 @@ TEST( configureInterruptAssertWaitTime, worksProperly )
     auto driver             = Mock_Driver{};
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
-    auto network_stack = Network_Stack{ driver, random<Mock_Error>(), tcp_port_allocator.handle() };
+    auto network_stack = Network_Stack{ driver, Mock_Error{ 114 }, tcp_port_allocator.handle() };
 
-    auto const interrupt_assert_wait_time = random<std::uint16_t>();
+    auto const interrupt_assert_wait_time = std::uint16_t{ 0xB752 };
 
     EXPECT_CALL( driver, write_intlevel( interrupt_assert_wait_time ) );
 
@@ -743,14 +1147,14 @@ TEST( interruptAssertWaitTime, worksProperly )
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
     auto const network_stack = Network_Stack{ driver,
-                                              random<Mock_Error>(),
+                                              Mock_Error{ 238 },
                                               tcp_port_allocator.handle() };
 
-    auto const intlevel = random<std::uint16_t>();
+    auto const intlevel = std::uint16_t{ 0x8724 };
 
     EXPECT_CALL( driver, read_intlevel() ).WillOnce( Return( intlevel ) );
 
-    EXPECT_EQ( network_stack.interrupt_assert_wait_time(), intlevel );
+    ASSERT_EQ( network_stack.interrupt_assert_wait_time(), intlevel );
 }
 
 /**
@@ -764,13 +1168,12 @@ TEST( enableInterrupts, worksProperly )
     auto driver             = Mock_Driver{};
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
-    auto network_stack = Network_Stack{ driver, random<Mock_Error>(), tcp_port_allocator.handle() };
+    auto network_stack = Network_Stack{ driver, Mock_Error{ 26 }, tcp_port_allocator.handle() };
 
-    auto const imr  = random<std::uint8_t>();
-    auto const mask = random<std::uint8_t>();
+    auto const mask = std::uint8_t{ 0b0101'0100 };
 
-    EXPECT_CALL( driver, read_imr() ).WillOnce( Return( imr ) );
-    EXPECT_CALL( driver, write_imr( imr | mask ) );
+    EXPECT_CALL( driver, read_imr() ).WillOnce( Return( 0b0011'0101 ) );
+    EXPECT_CALL( driver, write_imr( 0b0111'0101 ) );
 
     network_stack.enable_interrupts( mask );
 }
@@ -786,13 +1189,12 @@ TEST( disableInterrupts, worksProperly )
     auto driver             = Mock_Driver{};
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
-    auto network_stack = Network_Stack{ driver, random<Mock_Error>(), tcp_port_allocator.handle() };
+    auto network_stack = Network_Stack{ driver, Mock_Error{ 204 }, tcp_port_allocator.handle() };
 
-    auto const imr  = random<std::uint8_t>();
-    auto const mask = random<std::uint8_t>();
+    auto const mask = std::uint8_t{ 0b0101'0001 };
 
-    EXPECT_CALL( driver, read_imr() ).WillOnce( Return( imr ) );
-    EXPECT_CALL( driver, write_imr( imr & ~mask ) );
+    EXPECT_CALL( driver, read_imr() ).WillOnce( Return( 0b0011'1100 ) );
+    EXPECT_CALL( driver, write_imr( 0b0010'1100 ) );
 
     network_stack.disable_interrupts( mask );
 }
@@ -806,7 +1208,7 @@ TEST( disableAllInterrupts, worksProperly )
     auto driver             = Mock_Driver{};
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
-    auto network_stack = Network_Stack{ driver, random<Mock_Error>(), tcp_port_allocator.handle() };
+    auto network_stack = Network_Stack{ driver, Mock_Error{ 148 }, tcp_port_allocator.handle() };
 
     EXPECT_CALL( driver, write_imr( 0x00 ) );
 
@@ -823,14 +1225,14 @@ TEST( enabledInterrupts, worksProperly )
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
     auto const network_stack = Network_Stack{ driver,
-                                              random<Mock_Error>(),
+                                              Mock_Error{ 190 },
                                               tcp_port_allocator.handle() };
 
-    auto const imr = random<std::uint8_t>();
+    auto const imr = std::uint8_t{ 0b00010100 };
 
     EXPECT_CALL( driver, read_imr() ).WillOnce( Return( imr ) );
 
-    EXPECT_EQ( network_stack.enabled_interrupts(), imr );
+    ASSERT_EQ( network_stack.enabled_interrupts(), imr );
 }
 
 /**
@@ -842,15 +1244,13 @@ TEST( interruptContext, worksProperly )
     auto driver             = Mock_Driver{};
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
-    auto const network_stack = Network_Stack{ driver,
-                                              random<Mock_Error>(),
-                                              tcp_port_allocator.handle() };
+    auto const network_stack = Network_Stack{ driver, Mock_Error{ 82 }, tcp_port_allocator.handle() };
 
-    auto const ir = random<std::uint8_t>();
+    auto const ir = std::uint8_t{ 0b00010101 };
 
     EXPECT_CALL( driver, read_ir() ).WillOnce( Return( ir ) );
 
-    EXPECT_EQ( network_stack.interrupt_context(), ir );
+    ASSERT_EQ( network_stack.interrupt_context(), ir );
 }
 
 /**
@@ -862,9 +1262,9 @@ TEST( clearInterrupts, worksProperly )
     auto driver             = Mock_Driver{};
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
-    auto network_stack = Network_Stack{ driver, random<Mock_Error>(), tcp_port_allocator.handle() };
+    auto network_stack = Network_Stack{ driver, Mock_Error{ 251 }, tcp_port_allocator.handle() };
 
-    auto const mask = random<std::uint8_t>();
+    auto const mask = std::uint8_t{ 0b00110111 };
 
     EXPECT_CALL( driver, write_ir( mask ) );
 
@@ -880,7 +1280,7 @@ TEST( enableSocketInterrupts, worksProperly )
     auto driver             = Mock_Driver{};
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
-    auto network_stack = Network_Stack{ driver, random<Mock_Error>(), tcp_port_allocator.handle() };
+    auto network_stack = Network_Stack{ driver, Mock_Error{ 191 }, tcp_port_allocator.handle() };
 
     EXPECT_CALL( driver, write_simr( 0xFF ) );
 
@@ -897,7 +1297,7 @@ TEST( disableSocketInterrupts, worksProperly )
     auto driver             = Mock_Driver{};
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
-    auto network_stack = Network_Stack{ driver, random<Mock_Error>(), tcp_port_allocator.handle() };
+    auto network_stack = Network_Stack{ driver, Mock_Error{ 32 }, tcp_port_allocator.handle() };
 
     EXPECT_CALL( driver, write_simr( 0x00 ) );
 
@@ -905,37 +1305,79 @@ TEST( disableSocketInterrupts, worksProperly )
 }
 
 /**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::socket_interrupts_are_enabled()
+ *        test case.
+ */
+struct socketInterruptsAreEnabled_Test_Case {
+    /**
+     * \brief The SIMR register value.
+     */
+    std::uint8_t simr;
+
+    /**
+     * \brief Socket interrupts are enabled.
+     */
+    bool socket_interrupts_are_enabled;
+};
+
+auto operator<<( std::ostream & stream, socketInterruptsAreEnabled_Test_Case const & test_case )
+    -> std::ostream &
+{
+    // clang-format off
+
+    return stream << "{ "
+                  << ".simr = 0x" << std::hex << std::uppercase << std::setw( std::numeric_limits<std::uint8_t>::digits / 4 ) << std::setfill( '0' ) << static_cast<std::uint_fast16_t>( test_case.simr )
+                  << ", "
+                  << ".socket_interrupts_are_enabled = " << std::boolalpha << test_case.socket_interrupts_are_enabled
+                  << " }";
+
+    // clang-format on
+}
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::socket_interrupts_are_enabled()
+ *        test fixture.
+ */
+class socketInterruptsAreEnabled : public TestWithParam<socketInterruptsAreEnabled_Test_Case> {
+};
+
+/**
  * \brief Verify
  *        picolibrary::WIZnet::W5500::IP::Network_Stack::socket_interrupts_are_enabled()
  *        works properly.
  */
-TEST( socketInterruptsAreEnabled, worksProperly )
+TEST_P( socketInterruptsAreEnabled, worksProperly )
 {
-    struct {
-        std::uint8_t simr;
-        bool         socket_interrupts_are_enabled;
-    } const test_cases[]{
-        // clang-format off
+    auto const test_case = GetParam();
 
-        {                       0x00,   false },
-        { random<std::uint8_t>( 0x01 ), true  },
+    auto driver             = Mock_Driver{};
+    auto tcp_port_allocator = Mock_Port_Allocator{};
 
-        // clang-format on
-    };
+    auto const network_stack = Network_Stack{ driver,
+                                              Mock_Error{ 126 },
+                                              tcp_port_allocator.handle() };
 
-    for ( auto const test_case : test_cases ) {
-        auto driver             = Mock_Driver{};
-        auto tcp_port_allocator = Mock_Port_Allocator{};
+    EXPECT_CALL( driver, read_simr() ).WillOnce( Return( test_case.simr ) );
 
-        auto const network_stack = Network_Stack{ driver,
-                                                  random<Mock_Error>(),
-                                                  tcp_port_allocator.handle() };
-
-        EXPECT_CALL( driver, read_simr() ).WillOnce( Return( test_case.simr ) );
-
-        EXPECT_EQ( network_stack.socket_interrupts_are_enabled(), test_case.socket_interrupts_are_enabled );
-    } // for
+    ASSERT_EQ( network_stack.socket_interrupts_are_enabled(), test_case.socket_interrupts_are_enabled );
 }
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack::socket_interrupts_are_enabled()
+ *        test cases.
+ */
+socketInterruptsAreEnabled_Test_Case const socketInterruptsAreEnabled_TEST_CASES[]{
+    // clang-format off
+
+    { 0x00, false },
+    { 0x01, true  },
+    { 0x9C, true  },
+    { 0xFF, true  },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, socketInterruptsAreEnabled, ValuesIn( socketInterruptsAreEnabled_TEST_CASES ) );
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::socket_interrupt_context()
@@ -947,14 +1389,14 @@ TEST( socketInterruptContext, worksProperly )
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
     auto const network_stack = Network_Stack{ driver,
-                                              random<Mock_Error>(),
+                                              Mock_Error{ 159 },
                                               tcp_port_allocator.handle() };
 
-    auto const sir = random<std::uint8_t>();
+    auto const sir = std::uint8_t{ 0b10101011 };
 
     EXPECT_CALL( driver, read_sir() ).WillOnce( Return( sir ) );
 
-    EXPECT_EQ( network_stack.socket_interrupt_context(), sir );
+    ASSERT_EQ( network_stack.socket_interrupt_context(), sir );
 }
 
 /**
@@ -967,14 +1409,14 @@ TEST( unreachableIPv4Address, worksProperly )
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
     auto const network_stack = Network_Stack{ driver,
-                                              random<Mock_Error>(),
+                                              Mock_Error{ 174 },
                                               tcp_port_allocator.handle() };
 
-    auto const uipr = random_array<std::uint8_t, 4>();
+    auto const uipr = Array<std::uint8_t, 4>{ 192, 156, 56, 116 };
 
     EXPECT_CALL( driver, read_uipr() ).WillOnce( Return( uipr ) );
 
-    EXPECT_EQ( network_stack.unreachable_ipv4_address().as_byte_array(), uipr );
+    ASSERT_EQ( network_stack.unreachable_ipv4_address().as_byte_array(), uipr );
 }
 
 /**
@@ -987,14 +1429,14 @@ TEST( unreachablePort, worksProperly )
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
     auto const network_stack = Network_Stack{ driver,
-                                              random<Mock_Error>(),
+                                              Mock_Error{ 174 },
                                               tcp_port_allocator.handle() };
 
-    auto const uportr = random<std::uint16_t>();
+    auto const uportr = std::uint16_t{ 31689 };
 
     EXPECT_CALL( driver, read_uportr() ).WillOnce( Return( uportr ) );
 
-    EXPECT_EQ( network_stack.unreachable_port().as_unsigned_integer(), uportr );
+    ASSERT_EQ( network_stack.unreachable_port().as_unsigned_integer(), uportr );
 }
 
 /**
