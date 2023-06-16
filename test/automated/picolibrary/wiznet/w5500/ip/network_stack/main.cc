@@ -1381,7 +1381,7 @@ INSTANTIATE_TEST_SUITE_P( testCases, socketInterruptsAreEnabled, ValuesIn( socke
 
 /**
  * \brief Verify picolibrary::WIZnet::W5500::IP::Network_Stack::socket_interrupt_context()
- * works properly.
+ *        works properly.
  */
 TEST( socketInterruptContext, worksProperly )
 {
