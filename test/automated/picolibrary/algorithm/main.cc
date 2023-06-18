@@ -95,7 +95,7 @@ TEST( forEachFunctorCanFailReturnFunctorErrorHandling, functorError )
 {
     auto functor = MockFunction<Result<void>( std::uint_fast8_t const & )>{};
 
-    auto const error = Mock_Error{ 0xA2 };
+    auto const error = Mock_Error{ 146 };
 
     EXPECT_CALL( functor, Call( _ ) ).WillOnce( Return( error ) );
 
@@ -153,7 +153,7 @@ TEST( forEachFunctorCanFailDiscardFunctorErrorHandling, functorError )
 {
     auto functor = MockFunction<Result<void>( std::uint_fast8_t const & )>{};
 
-    auto const error = Mock_Error{ 0xA2 };
+    auto const error = Mock_Error{ 146 };
 
     EXPECT_CALL( functor, Call( _ ) ).WillOnce( Return( error ) );
 
@@ -268,7 +268,7 @@ TEST( generateFunctorCanFailErrorHandling, functorError )
 {
     auto functor = MockFunction<Result<std::uint_fast8_t>()>{};
 
-    auto const error = Mock_Error{ 0xA2 };
+    auto const error = Mock_Error{ 146 };
 
     EXPECT_CALL( functor, Call() ).WillOnce( Return( error ) );
 

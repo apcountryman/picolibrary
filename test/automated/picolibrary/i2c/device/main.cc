@@ -106,7 +106,7 @@ TEST( constructor, worksProperly )
 {
     auto       controller                 = Mock_Controller{};
     auto const address                    = Address_Transmitted{ 0b1110010'0 };
-    auto const nonresponsive_device_error = Mock_Error{ 0x6B };
+    auto const nonresponsive_device_error = Mock_Error{ 12 };
 
     auto const device = Device{ {}, controller, address, nonresponsive_device_error };
 
@@ -124,7 +124,7 @@ TEST( alignBusMultiplexer, worksProperly )
     auto controller              = Mock_Controller{};
 
     auto const device = Device{
-        bus_multiplexer_aligner.AsStdFunction(), controller, 0b1110010'0, Mock_Error{ 0x6B }
+        bus_multiplexer_aligner.AsStdFunction(), controller, 0b1110010'0, Mock_Error{ 190 }
     };
 
     EXPECT_CALL( bus_multiplexer_aligner, Call() );
@@ -181,7 +181,7 @@ TEST_P( pingOperation, worksProperly )
     auto const address                 = Address_Transmitted{ 0b1110010'0 };
 
     auto const device = Device{
-        bus_multiplexer_aligner.AsStdFunction(), controller, address, Mock_Error{ 0x68 }
+        bus_multiplexer_aligner.AsStdFunction(), controller, address, Mock_Error{ 32 }
     };
 
     EXPECT_CALL( bus_multiplexer_aligner, Call() );
@@ -268,7 +268,7 @@ TEST_P( ping, worksProperly )
     auto const address                 = Address_Transmitted{ 0b1110010'0 };
 
     auto const device = Device{
-        bus_multiplexer_aligner.AsStdFunction(), controller, address, Mock_Error{ 0x68 }
+        bus_multiplexer_aligner.AsStdFunction(), controller, address, Mock_Error{ 32 }
     };
 
     EXPECT_CALL( bus_multiplexer_aligner, Call() );
@@ -317,7 +317,7 @@ TEST( readRegister8BitRegisterAddress, worksProperly )
     auto const address                 = Address_Transmitted{ 0b1110010'0 };
 
     auto const device = Device{
-        bus_multiplexer_aligner.AsStdFunction(), controller, address, Mock_Error{ 0x68 }
+        bus_multiplexer_aligner.AsStdFunction(), controller, address, Mock_Error{ 32 }
     };
 
     auto const register_address = std::uint8_t{ 0xB2 };
@@ -349,7 +349,7 @@ TEST( readRegisterBlock8BitRegisterAddress, worksProperly )
     auto const address                 = Address_Transmitted{ 0b1110010'0 };
 
     auto const device = Device{
-        bus_multiplexer_aligner.AsStdFunction(), controller, address, Mock_Error{ 0x68 }
+        bus_multiplexer_aligner.AsStdFunction(), controller, address, Mock_Error{ 32 }
     };
 
     auto const register_address = std::uint8_t{ 0xB2 };
@@ -386,7 +386,7 @@ TEST( writeRegister8BitRegisterAddress, worksProperly )
     auto       controller              = Mock_Controller{};
     auto const address                 = Address_Transmitted{ 0b1110010'0 };
 
-    auto device = Device{ bus_multiplexer_aligner.AsStdFunction(), controller, address, Mock_Error{ 0x68 } };
+    auto device = Device{ bus_multiplexer_aligner.AsStdFunction(), controller, address, Mock_Error{ 32 } };
 
     auto const register_address = std::uint8_t{ 0xB2 };
     auto const data             = std::uint8_t{ 0x82 };
@@ -414,7 +414,7 @@ TEST( writeRegisterBlock8BitRegisterAddress, worksProperly )
     auto       controller              = Mock_Controller{};
     auto const address                 = Address_Transmitted{ 0b1110010'0 };
 
-    auto device = Device{ bus_multiplexer_aligner.AsStdFunction(), controller, address, Mock_Error{ 0x68 } };
+    auto device = Device{ bus_multiplexer_aligner.AsStdFunction(), controller, address, Mock_Error{ 32 } };
 
     auto const register_address = std::uint8_t{ 0xB2 };
     auto const data             = std::vector<std::uint8_t>{

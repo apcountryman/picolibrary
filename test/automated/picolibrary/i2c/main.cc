@@ -417,7 +417,7 @@ TEST( scanControllerFunctorFunctorCanFailReturnFunctorErrorHandling, functorErro
     auto controller = Mock_Controller{};
     auto functor = MockFunction<Result<void>( Address_Transmitted, Operation, Response )>{};
 
-    auto const error = Mock_Error{ 0xDA };
+    auto const error = Mock_Error{ 202 };
 
     EXPECT_CALL( controller, start() );
     EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( Response::NACK ) );
@@ -484,7 +484,7 @@ TEST( scanControllerFunctorFunctorCanFailDiscardFunctorErrorHandling, functorErr
     auto controller = Mock_Controller{};
     auto functor = MockFunction<Result<void>( Address_Transmitted, Operation, Response )>{};
 
-    auto const error = Mock_Error{ 0xDA };
+    auto const error = Mock_Error{ 202 };
 
     EXPECT_CALL( controller, start() );
     EXPECT_CALL( controller, address( _, _ ) ).WillOnce( Return( Response::NACK ) );
