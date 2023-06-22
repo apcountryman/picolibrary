@@ -32,7 +32,6 @@
 #include "gtest/gtest.h"
 #include "picolibrary/array.h"
 #include "picolibrary/error.h"
-#include "picolibrary/ip.h"
 #include "picolibrary/ip/tcp.h"
 #include "picolibrary/ipv4.h"
 #include "picolibrary/testing/automated/error.h"
@@ -40,13 +39,14 @@
 #include "picolibrary/testing/automated/wiznet/w5500.h"
 #include "picolibrary/testing/automated/wiznet/w5500/ip.h"
 #include "picolibrary/testing/automated/wiznet/w5500/ip/network_stack.h"
+#include "picolibrary/wiznet/w5500.h"
 #include "picolibrary/wiznet/w5500/ip/tcp.h"
 
 namespace {
 
 using ::picolibrary::Array;
 using ::picolibrary::Generic_Error;
-using ::picolibrary::IP::Endpoint;
+using ::picolibrary::IP::TCP::Endpoint;
 using ::picolibrary::IP::TCP::Port;
 using ::picolibrary::IPv4::Address;
 using ::picolibrary::Testing::Automated::Mock_Error;
@@ -133,7 +133,7 @@ TEST_P( constructor, worksProperly )
     EXPECT_EQ( client.socket_interrupt_mask(), test_case.socket_interrupt_mask );
     EXPECT_FALSE( client.is_transmitting() );
 
-    EXPECT_CALL( network_stack, deallocate_socket( test_case.socket_id ) );
+    EXPECT_CALL( network_stack, deallocate_socket( _ ) );
 }
 
 /**
@@ -894,8 +894,6 @@ class connectConnectionAttemptInProgress : public TestWithParam<std::uint8_t> {
  */
 TEST_P( connectConnectionAttemptInProgress, worksProperly )
 {
-    auto const in_sequence = InSequence{};
-
     auto       driver             = Mock_Driver{};
     auto const socket_id          = Socket_ID::_7;
     auto       network_stack      = Mock_Network_Stack{};
@@ -935,8 +933,6 @@ class connectConnectionEstablished : public TestWithParam<std::uint8_t> {
  */
 TEST_P( connectConnectionEstablished, worksProperly )
 {
-    auto const in_sequence = InSequence{};
-
     auto       driver             = Mock_Driver{};
     auto const socket_id          = Socket_ID::_7;
     auto       network_stack      = Mock_Network_Stack{};
@@ -1016,7 +1012,7 @@ TEST_P( isConnected, worksProperly )
 }
 
 /**
- * \brief picolibrary::WIZnet::W5500::IP::TCP::Client::is_connected() test case.
+ * \brief picolibrary::WIZnet::W5500::IP::TCP::Client::is_connected() test cases.
  */
 isConnected_Test_Case const isConnected_TEST_CASES[]{
     // clang-format off
@@ -2175,7 +2171,7 @@ TEST_P( receiveEmptyDataBlock, worksProperly )
 
 /**
  * \brief picolibrary::WIZnet::W5500::IP::TCP::Client::receive() empty data block test
- *        case.
+ *        cases.
  */
 receiveEmptyDataBlock_Test_Case const receiveEmptyDataBlock_TEST_CASES[]{
     // clang-format off
@@ -2627,6 +2623,8 @@ class closeOtherStates : public TestWithParam<Client::State> {
  */
 TEST_P( closeOtherStates, worksProperly )
 {
+    auto const in_sequence = InSequence{};
+
     auto const state = GetParam();
 
     auto       driver             = Mock_Driver{};
