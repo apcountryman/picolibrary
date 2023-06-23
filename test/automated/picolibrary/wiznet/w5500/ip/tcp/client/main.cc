@@ -49,7 +49,6 @@ using ::picolibrary::Generic_Error;
 using ::picolibrary::IP::TCP::Endpoint;
 using ::picolibrary::IP::TCP::Port;
 using ::picolibrary::IPv4::Address;
-using ::picolibrary::Testing::Automated::Mock_Error;
 using ::picolibrary::Testing::Automated::WIZnet::W5500::Mock_Driver;
 using ::picolibrary::Testing::Automated::WIZnet::W5500::IP::Mock_Network_Stack;
 using ::picolibrary::Testing::Automated::WIZnet::W5500::IP::Mock_Port_Allocator;
@@ -1143,7 +1142,6 @@ TEST_P( outstanding, worksProperly )
 
     EXPECT_CALL( network_stack, socket_buffer_size() ).WillOnce( Return( test_case.socket_buffer_size ) );
     EXPECT_CALL( driver, read_sn_tx_fsr( socket_id ) ).WillOnce( Return( test_case.sn_tx_fsr ) );
-    EXPECT_CALL( network_stack, nonresponsive_device_error() ).WillOnce( Return( Mock_Error{ 138 } ) );
 
     ASSERT_EQ( client.outstanding(), test_case.outstanding );
 
@@ -1393,7 +1391,6 @@ TEST( transmit, worksProperlyTransmissionNotInProgressTransmitBufferFull )
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x17 ) );
     EXPECT_CALL( network_stack, socket_buffer_size() ).WillOnce( Return( Socket_Buffer_Size::_8_KiB ) );
     EXPECT_CALL( driver, read_sn_tx_fsr( socket_id ) ).WillOnce( Return( 0 ) );
-    EXPECT_CALL( network_stack, nonresponsive_device_error() ).WillOnce( Return( Mock_Error{ 206 } ) );
 
     auto const data   = std::vector<std::uint8_t>{ 0xCA, 0x67 };
     auto const result = client.transmit( &*data.begin(), &*data.end() );
@@ -1430,7 +1427,6 @@ TEST( transmit, worksProperlyInProgressTransmissionCompleteTransmitBufferFull )
     EXPECT_CALL( driver, write_sn_ir( socket_id, 0b000'1'0'0'0'0 ) );
     EXPECT_CALL( network_stack, socket_buffer_size() ).WillOnce( Return( Socket_Buffer_Size::_8_KiB ) );
     EXPECT_CALL( driver, read_sn_tx_fsr( socket_id ) ).WillOnce( Return( 0 ) );
-    EXPECT_CALL( network_stack, nonresponsive_device_error() ).WillOnce( Return( Mock_Error{ 29 } ) );
 
     auto const data   = std::vector<std::uint8_t>{ 0x68, 0x2B, 0x9E, 0x28 };
     auto const result = client.transmit( &*data.begin(), &*data.end() );
@@ -1522,7 +1518,6 @@ TEST_P( transmitSufficientTransmitBufferCapacity, worksProperlyTransmissionNotIn
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x17 ) );
     EXPECT_CALL( network_stack, socket_buffer_size() ).WillOnce( Return( test_case.socket_buffer_size ) );
     EXPECT_CALL( driver, read_sn_tx_fsr( socket_id ) ).WillOnce( Return( test_case.sn_tx_fsr ) );
-    EXPECT_CALL( network_stack, nonresponsive_device_error() ).WillOnce( Return( Mock_Error{ 161 } ) );
     EXPECT_CALL( driver, read_sn_tx_wr( socket_id ) ).WillOnce( Return( test_case.sn_tx_wr_initial ) );
     EXPECT_CALL( driver, write_tx_buffer( socket_id, test_case.sn_tx_wr_initial, data ) );
     EXPECT_CALL( driver, write_sn_tx_wr( socket_id, test_case.sn_tx_wr_final ) );
@@ -1569,7 +1564,6 @@ TEST_P( transmitSufficientTransmitBufferCapacity, worksProperlyInProgressTransmi
     EXPECT_CALL( driver, write_sn_ir( socket_id, 0b000'1'0'0'0'0 ) );
     EXPECT_CALL( network_stack, socket_buffer_size() ).WillOnce( Return( test_case.socket_buffer_size ) );
     EXPECT_CALL( driver, read_sn_tx_fsr( socket_id ) ).WillOnce( Return( test_case.sn_tx_fsr ) );
-    EXPECT_CALL( network_stack, nonresponsive_device_error() ).WillOnce( Return( Mock_Error{ 250 } ) );
     EXPECT_CALL( driver, read_sn_tx_wr( socket_id ) ).WillOnce( Return( test_case.sn_tx_wr_initial ) );
     EXPECT_CALL( driver, write_tx_buffer( socket_id, test_case.sn_tx_wr_initial, data ) );
     EXPECT_CALL( driver, write_sn_tx_wr( socket_id, test_case.sn_tx_wr_final ) );
@@ -1662,7 +1656,6 @@ TEST_P( transmitInsufficientTransmitBufferCapacity, worksProperlyTransmissionNot
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x17 ) );
     EXPECT_CALL( network_stack, socket_buffer_size() ).WillOnce( Return( test_case.socket_buffer_size ) );
     EXPECT_CALL( driver, read_sn_tx_fsr( socket_id ) ).WillOnce( Return( test_case.sn_tx_fsr ) );
-    EXPECT_CALL( network_stack, nonresponsive_device_error() ).WillOnce( Return( Mock_Error{ 141 } ) );
     EXPECT_CALL( driver, read_sn_tx_wr( socket_id ) ).WillOnce( Return( test_case.sn_tx_wr_initial ) );
     EXPECT_CALL(
         driver,
@@ -1714,7 +1707,6 @@ TEST_P( transmitInsufficientTransmitBufferCapacity, worksProperlyInProgressTrans
     EXPECT_CALL( driver, write_sn_ir( socket_id, 0b000'1'0'0'0'0 ) );
     EXPECT_CALL( network_stack, socket_buffer_size() ).WillOnce( Return( test_case.socket_buffer_size ) );
     EXPECT_CALL( driver, read_sn_tx_fsr( socket_id ) ).WillOnce( Return( test_case.sn_tx_fsr ) );
-    EXPECT_CALL( network_stack, nonresponsive_device_error() ).WillOnce( Return( Mock_Error{ 159 } ) );
     EXPECT_CALL( driver, read_sn_tx_wr( socket_id ) ).WillOnce( Return( test_case.sn_tx_wr_initial ) );
     EXPECT_CALL(
         driver,
@@ -1901,7 +1893,6 @@ TEST_P( available, worksProperly )
 
     EXPECT_CALL( network_stack, socket_buffer_size() ).WillOnce( Return( test_case.socket_buffer_size ) );
     EXPECT_CALL( driver, read_sn_rx_rsr( socket_id ) ).WillOnce( Return( test_case.sn_rx_rsr ) );
-    EXPECT_CALL( network_stack, nonresponsive_device_error() ).WillOnce( Return( Mock_Error{ 241 } ) );
 
     ASSERT_EQ( client.available(), test_case.sn_rx_rsr );
 
@@ -2060,7 +2051,6 @@ TEST_P( receiveReceiveBufferEmpty, worksProperly )
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( test_case.sn_sr ) );
     EXPECT_CALL( network_stack, socket_buffer_size() ).WillOnce( Return( Socket_Buffer_Size::_8_KiB ) );
     EXPECT_CALL( driver, read_sn_rx_rsr( socket_id ) ).WillOnce( Return( 0 ) );
-    EXPECT_CALL( network_stack, nonresponsive_device_error() ).WillOnce( Return( Mock_Error{ 177 } ) );
 
     auto       data   = std::vector<std::uint8_t>( 5 );
     auto const result = client.receive( &*data.begin(), &*data.end() );
@@ -2155,7 +2145,6 @@ TEST_P( receiveEmptyDataBlock, worksProperly )
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( test_case.sn_sr ) );
     EXPECT_CALL( network_stack, socket_buffer_size() ).WillOnce( Return( test_case.socket_buffer_size ) );
     EXPECT_CALL( driver, read_sn_rx_rsr( socket_id ) ).WillOnce( Return( test_case.sn_rx_rsr ) );
-    EXPECT_CALL( network_stack, nonresponsive_device_error() ).WillOnce( Return( Mock_Error{ 178 } ) );
 
     auto       data   = std::vector<std::uint8_t>{};
     auto const result = client.receive( &*data.begin(), &*data.end() );
@@ -2291,7 +2280,6 @@ TEST_P( receiveAllData, worksProperly )
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( test_case.sn_sr ) );
     EXPECT_CALL( network_stack, socket_buffer_size() ).WillOnce( Return( test_case.socket_buffer_size ) );
     EXPECT_CALL( driver, read_sn_rx_rsr( socket_id ) ).WillOnce( Return( test_case.sn_rx_rsr ) );
-    EXPECT_CALL( network_stack, nonresponsive_device_error() ).WillOnce( Return( Mock_Error{ 9 } ) );
     EXPECT_CALL( driver, read_sn_rx_rd( socket_id ) ).WillOnce( Return( test_case.sn_rx_rd_initial ) );
     EXPECT_CALL( driver, read_rx_buffer( socket_id, test_case.sn_rx_rd_initial, _ ) )
         .WillOnce( Return( std::vector<std::uint8_t>{
@@ -2417,7 +2405,6 @@ TEST_P( receiveSomeData, worksProperly )
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( test_case.sn_sr ) );
     EXPECT_CALL( network_stack, socket_buffer_size() ).WillOnce( Return( test_case.socket_buffer_size ) );
     EXPECT_CALL( driver, read_sn_rx_rsr( socket_id ) ).WillOnce( Return( test_case.sn_rx_rsr ) );
-    EXPECT_CALL( network_stack, nonresponsive_device_error() ).WillOnce( Return( Mock_Error{ 205 } ) );
     EXPECT_CALL( driver, read_sn_rx_rd( socket_id ) ).WillOnce( Return( test_case.sn_rx_rd_initial ) );
     EXPECT_CALL( driver, read_rx_buffer( socket_id, test_case.sn_rx_rd_initial, _ ) ).WillOnce( Return( data_expected ) );
     EXPECT_CALL( driver, write_sn_rx_rd( socket_id, test_case.sn_rx_rd_final ) );
