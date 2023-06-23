@@ -32,7 +32,6 @@
 #include "gmock/gmock.h"
 #include "picolibrary/microchip/mcp23s08.h"
 #include "picolibrary/testing/automated/microchip/mcp23x08.h"
-#include "picolibrary/testing/automated/random.h"
 #include "picolibrary/testing/automated/spi.h"
 
 namespace picolibrary::Microchip::MCP23S08 {
@@ -74,125 +73,6 @@ inline auto operator<<( std::ostream & stream, Address_Transmitted address ) -> 
 }
 
 } // namespace picolibrary::Microchip::MCP23S08
-
-namespace picolibrary::Testing::Automated {
-
-/**
- * \brief Generate a pseudo-random picolibrary::Microchip::MCP23S08::Address_Numeric
- *        within the specified range.
- *
- * \param[in] min The lower bound of the allowable range.
- * \param[in] max The upper bound of the allowable range.
- *
- * \return A pseudo-random picolibrary::Microchip::MCP23S08::Address_Numeric in the range
- *         [min,max].
- */
-template<>
-inline auto random<::picolibrary::Microchip::MCP23S08::Address_Numeric>(
-    ::picolibrary::Microchip::MCP23S08::Address_Numeric min,
-    ::picolibrary::Microchip::MCP23S08::Address_Numeric max )
-    -> ::picolibrary::Microchip::MCP23S08::Address_Numeric
-{
-    return ::picolibrary::Microchip::MCP23S08::Address_Numeric{
-        random<::picolibrary::Microchip::MCP23S08::Address_Numeric::Unsigned_Integer>(
-            min.as_unsigned_integer(), max.as_unsigned_integer() )
-    };
-}
-
-/**
- * \brief Generate a pseudo-random picolibrary::Microchip::MCP23S08::Address_Numeric
- *        greater than or equal to a minimum
- *        picolibrary::Microchip::MCP23S08::Address_Numeric.
- *
- * \param[in] min The lower bound of the allowable range.
- *
- * \return A pseudo-random picolibrary::Microchip::MCP23S08::Address_Numeric in the range
- *         [min,picolibrary::Microchip::MCP23S08::Address_Numeric::max()].
- */
-template<>
-inline auto random<::picolibrary::Microchip::MCP23S08::Address_Numeric>(
-    ::picolibrary::Microchip::MCP23S08::Address_Numeric min )
-    -> ::picolibrary::Microchip::MCP23S08::Address_Numeric
-{
-    return random<::picolibrary::Microchip::MCP23S08::Address_Numeric>(
-        min, ::picolibrary::Microchip::MCP23S08::Address_Numeric::max() );
-}
-
-/**
- * \brief Generate a pseudo-random picolibrary::Microchip::MCP23S08::Address_Numeric.
- *
- * \return A pseudo-random picolibrary::Microchip::MCP23S08::Address_Numeric in the range
- *         [picolibrary::Microchip::MCP23S08::Address_Numeric::min(),picolibrary::Microchip::MCP23S08::Address_Numeric::max()].
- */
-template<>
-inline auto random<::picolibrary::Microchip::MCP23S08::Address_Numeric>()
-    -> ::picolibrary::Microchip::MCP23S08::Address_Numeric
-{
-    return random<::picolibrary::Microchip::MCP23S08::Address_Numeric>(
-        ::picolibrary::Microchip::MCP23S08::Address_Numeric::min(),
-        ::picolibrary::Microchip::MCP23S08::Address_Numeric::max() );
-}
-
-/**
- * \brief Generate a pseudo-random picolibrary::Microchip::MCP23S08::Address_Transmitted
- *        within the specified range.
- *
- * \param[in] min The lower bound of the allowable range.
- * \param[in] max The upper bound of the allowable range.
- *
- * \return A pseudo-random picolibrary::Microchip::MCP23S08::Address_Transmitted in the
- *         range [min,max].
- */
-template<>
-inline auto random<::picolibrary::Microchip::MCP23S08::Address_Transmitted>(
-    ::picolibrary::Microchip::MCP23S08::Address_Transmitted min,
-    ::picolibrary::Microchip::MCP23S08::Address_Transmitted max )
-    -> ::picolibrary::Microchip::MCP23S08::Address_Transmitted
-{
-    return ::picolibrary::Microchip::MCP23S08::Address_Transmitted{
-        static_cast<::picolibrary::Microchip::MCP23S08::Address_Transmitted::Unsigned_Integer>(
-            random<::picolibrary::Microchip::MCP23S08::Address_Transmitted::Unsigned_Integer>(
-                min.as_unsigned_integer(), max.as_unsigned_integer() )
-            & 0b11111'11'0 )
-    };
-}
-
-/**
- * \brief Generate a pseudo-random picolibrary::Microchip::MCP23S08::Address_Transmitted
- *        greater than or equal to a minimum
- *        picolibrary::Microchip::MCP23S08::Address_Transmitted.
- *
- * \param[in] min The lower bound of the allowable range.
- *
- * \return A pseudo-random picolibrary::Microchip::MCP23S08::Address_Transmitted in the
- *         range [min,picolibrary::Microchip::MCP23S08::Address_Transmitted::max()].
- */
-template<>
-inline auto random<::picolibrary::Microchip::MCP23S08::Address_Transmitted>(
-    ::picolibrary::Microchip::MCP23S08::Address_Transmitted min )
-    -> ::picolibrary::Microchip::MCP23S08::Address_Transmitted
-{
-    return random<::picolibrary::Microchip::MCP23S08::Address_Transmitted>(
-        min, ::picolibrary::Microchip::MCP23S08::Address_Transmitted::max() );
-}
-
-/**
- * \brief Generate a pseudo-random picolibrary::Microchip::MCP23S08::Address_Transmitted.
- *
- * \return A pseudo-random picolibrary::Microchip::MCP23S08::Address_Transmitted in the
- *         range
- *         [picolibrary::Microchip::MCP23S08::Address_Transmitted::min(),picolibrary::Microchip::MCP23S08::Address_Transmitted::max()].
- */
-template<>
-inline auto random<::picolibrary::Microchip::MCP23S08::Address_Transmitted>()
-    -> ::picolibrary::Microchip::MCP23S08::Address_Transmitted
-{
-    return random<::picolibrary::Microchip::MCP23S08::Address_Transmitted>(
-        ::picolibrary::Microchip::MCP23S08::Address_Transmitted::min(),
-        ::picolibrary::Microchip::MCP23S08::Address_Transmitted::max() );
-}
-
-} // namespace picolibrary::Testing::Automated
 
 /**
  * \brief Microchip MCP23S08 automated testing facilities.

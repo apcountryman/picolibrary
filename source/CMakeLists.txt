@@ -102,7 +102,6 @@ if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
         "picolibrary/testing/automated/microchip/mcp23x08.cc"
         "picolibrary/testing/automated/microchip/mcp3008.cc"
         "picolibrary/testing/automated/mock_handle.cc"
-        "picolibrary/testing/automated/random.cc"
         "picolibrary/testing/automated/rgb.cc"
         "picolibrary/testing/automated/spi.cc"
         "picolibrary/testing/automated/stream.cc"

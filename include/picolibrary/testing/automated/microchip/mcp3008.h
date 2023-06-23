@@ -23,12 +23,10 @@
 #ifndef PICOLIBRARY_TESTING_AUTOMATED_MICROCHIP_MCP3008_H
 #define PICOLIBRARY_TESTING_AUTOMATED_MICROCHIP_MCP3008_H
 
-#include <cstdint>
 #include <ostream>
 #include <stdexcept>
 
 #include "picolibrary/microchip/mcp3008.h"
-#include "picolibrary/testing/automated/random.h"
 #include "picolibrary/testing/automated/spi.h"
 
 namespace picolibrary::Microchip::MCP3008 {
@@ -75,21 +73,6 @@ inline auto operator<<( std::ostream & stream, Input input ) -> std::ostream &
 }
 
 } // namespace picolibrary::Microchip::MCP3008
-
-namespace picolibrary::Testing::Automated {
-
-/**
- * \brief Generate a pseudo-random picolibrary::Microchip::MCP3008::Input.
- *
- * \return A pseudo-randomly generated picolibrary::Microchip::MCP3008::Input.
- */
-template<>
-inline auto random<Microchip::MCP3008::Input>() -> Microchip::MCP3008::Input
-{
-    return static_cast<Microchip::MCP3008::Input>( random<std::uint_fast8_t>( 0b0'000, 0b1'111 ) << 4 );
-}
-
-} // namespace picolibrary::Testing::Automated
 
 /**
  * \brief Microchip MCP3008 automated testing facilities.
