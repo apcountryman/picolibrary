@@ -32,7 +32,6 @@
 
 #include "gmock/gmock.h"
 #include "picolibrary/error.h"
-#include "picolibrary/testing/automated/random.h"
 #include "picolibrary/utility.h"
 
 namespace picolibrary {
@@ -105,19 +104,6 @@ inline auto operator<<( std::ostream & stream, Mock_Error error ) -> std::ostrea
 {
     return stream << "::picolibrary::Testing::Automated::Mock_Error::" << std::dec
                   << static_cast<std::uint_fast16_t>( error );
-}
-
-/**
- * \brief Generate a pseudo-random picolibrary::Testing::Automated::Mock_Error.
- *
- * \relatedalso picolibrary::Testing::Automated::Mock_Error_Category
- *
- * \return A pseudo-randomly generated picolibrary::Testing::Automated::Mock_Error.
- */
-template<>
-inline auto random<Mock_Error>() -> Mock_Error
-{
-    return static_cast<Mock_Error>( random<Error_ID>() );
 }
 
 /**

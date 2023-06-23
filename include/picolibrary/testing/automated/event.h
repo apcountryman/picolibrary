@@ -32,7 +32,6 @@
 #include "picolibrary/event.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
-#include "picolibrary/testing/automated/random.h"
 
 namespace picolibrary::Testing::Automated {
 
@@ -70,9 +69,7 @@ class Mock_Event_Category : public Event_Category {
  */
 class Mock_Event : public Event {
   public:
-    Mock_Event(
-        Mock_Event_Category const & category = Mock_Event_Category::instance(),
-        Event_ID                    id       = random<Event_ID>() ) :
+    Mock_Event( Mock_Event_Category const & category, Event_ID id ) :
         Event{ category, id }
     {
     }

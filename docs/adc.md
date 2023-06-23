@@ -31,23 +31,6 @@ The insertion operator is defined in the
 [`include/picolibrary/testing/automated/adc.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/adc.h)/[`source/picolibrary/testing/automated/adc.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/adc.cc)
 header/source file pair.
 
-`::picolibrary::Testing::Automated::random()` specializations for several
-`::picolibrary::ADC::Sample` types are available if the
-`PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration option is `ON`.
-The specializations are defined in the
-[`include/picolibrary/testing/automated/adc.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/adc.h)/[`source/picolibrary/testing/automated/adc.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/adc.cc)
-header/source file pair.
-`::picolibrary::Testing::Automated::random()` specializations are defined for the
-following `::picolibrary::ADC::Sample` types:
-- `::picolibrary::ADC::Sample<std::uint_fast8_t, 8>`
-- `::picolibrary::ADC::Sample<std::uint_fast16_t, 10>`
-- `::picolibrary::ADC::Sample<std::uint_fast16_t, 12>`
-- `::picolibrary::ADC::Sample<std::uint_fast16_t, 14>`
-- `::picolibrary::ADC::Sample<std::uint_fast16_t, 16>`
-- `::picolibrary::ADC::Sample<std::uint_fast32_t, 18>`
-- `::picolibrary::ADC::Sample<std::uint_fast32_t, 20>`
-- `::picolibrary::ADC::Sample<std::uint_fast32_t, 24>`
-
 ## ADC Types
 
 ### Blocking, Single Sample ADC

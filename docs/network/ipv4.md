@@ -49,10 +49,3 @@ A `std::ostream` insertion operator is defined for `::picolibrary::IPv4::Address
 The insertion operator is defined in the
 [`include/picolibrary/testing/automated/ipv4.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/ipv4.h)/[`source/picolibrary/testing/automated/ipv4.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/ipv4.cc)
 header/source file pair.
-
-A `::picolibrary::Testing::Automated::random()` specialization for
-`::picolibrary::IPv4::Address` is available if the `PICOLIBRARY_ENABLE_AUTOMATED_TESTING`
-project configuration option is `ON`.
-The specialization is defined in the
-[`include/picolibrary/testing/automated/ipv4.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/ipv4.h)/[`source/picolibrary/testing/automated/ipv4.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/ipv4.cc)
-header/source file pair.

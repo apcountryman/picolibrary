@@ -45,13 +45,6 @@ The insertion operator is defined in the
 [`include/picolibrary/testing/automated/ip.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/ip.h)/[`source/picolibrary/testing/automated/ip.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/ip.cc)
 header/source file pair.
 
-A `::picolibrary::Testing::Automated::random()` specialization for
-`::picolibrary::IP::Address` is available if the `PICOLIBRARY_ENABLE_AUTOMATED_TESTING`
-project configuration option is `ON`.
-The specialization is defined in the
-[`include/picolibrary/testing/automated/ip.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/ip.h)/[`source/picolibrary/testing/automated/ip.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/ip.cc)
-header/source file pair.
-
 ## Port
 The `::picolibrary::IP::Port` class is used to store a protocol port.
 - To get the minimum valid port, use the `::picolibrary::IP::Port::min()` static member
@@ -84,13 +77,6 @@ The insertion operator is defined in the
 [`include/picolibrary/testing/automated/ip.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/ip.h)/[`source/picolibrary/testing/automated/ip.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/ip.cc)
 header/source file pair.
 
-A `::picolibrary::Testing::Automated::random()` specialization for
-`::picolibrary::IP::Port` is available if the `PICOLIBRARY_ENABLE_AUTOMATED_TESTING`
-project configuration option is `ON`.
-The specialization is defined in the
-[`include/picolibrary/testing/automated/ip.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/ip.h)/[`source/picolibrary/testing/automated/ip.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/ip.cc)
-header/source file pair.
-
 ## Endpoint
 The `::picolibrary::IP::Endpoint` class is used to store a protocol endpoint (IP address,
 protocol port pair).
@@ -115,13 +101,6 @@ source file.
 A `std::ostream` insertion operator is defined for `::picolibrary::IP::Endpoint` if the
 `PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration option is `ON`.
 The insertion operator is defined in the
-[`include/picolibrary/testing/automated/ip.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/ip.h)/[`source/picolibrary/testing/automated/ip.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/ip.cc)
-header/source file pair.
-
-A `::picolibrary::Testing::Automated::random()` specialization for
-`::picolibrary::IP::Endpoint` is available if the `PICOLIBRARY_ENABLE_AUTOMATED_TESTING`
-project configuration option is `ON`.
-The specialization is defined in the
 [`include/picolibrary/testing/automated/ip.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/ip.h)/[`source/picolibrary/testing/automated/ip.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/ip.cc)
 header/source file pair.
 

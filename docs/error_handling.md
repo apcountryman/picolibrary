@@ -86,9 +86,6 @@ The `::picolibrary::Testing::Automated::Mock_Error` enum class is used to identi
 "specific" errors in the set.
 A `std::ostream` insertion operator is defind for
 `::picolibrary::Testing::Automated::Mock_Error`.
-`::picolibrary::Testing::Automated::random()` is specialized for the
-`::picolibrary::Testing::Automated::Mock_Error` enum class so that "specific"
-pseudo-random mock errors can be generated at runtime for use in automated tests.
 
 The `::picolibrary::Testing::Automated::Mock_Error_Category` class is the error category
 for the set.
