@@ -13,10 +13,22 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary::Adafruit::PID781 automated tests CMake rules.
+# Description: picolibrary::Adafruit::PID781::Custom_Character automated tests CMake
+#       rules.
 
 # build the picolibrary::Adafruit::PID781::Custom_Character automated tests
-add_subdirectory( custom_character )
-
-# build the picolibrary::Adafruit::PID781::LCD_Size automated tests
-add_subdirectory( lcd_size )
+if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
+    add_executable(
+        test-automated-picolibrary-adafruit-pid781-custom_character
+        main.cc
+    )
+    target_link_libraries(
+        test-automated-picolibrary-adafruit-pid781-custom_character
+        picolibrary
+        picolibrary-testing-automated-fatal_error
+    )
+    add_test(
+        NAME    test-automated-picolibrary-adafruit-pid781-custom_character
+        COMMAND test-automated-picolibrary-adafruit-pid781-custom_character --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
