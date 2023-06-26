@@ -146,6 +146,32 @@ inline auto operator<<( std::ostream & stream, Custom_Character::ID id ) -> std:
     };
 }
 
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the picolibrary::Adafruit::PID781::Pin to.
+ * \param[in] pin The picolibrary::Adafruit::PID781::Pin to write to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Pin pin ) -> std::ostream &
+{
+    switch ( pin ) {
+            // clang-format off
+
+        case Pin::PB0: return stream << "::picolibrary::Adafruit::PID781::Pin::PB0";
+        case Pin::PC2: return stream << "::picolibrary::Adafruit::PID781::Pin::PC2";
+        case Pin::PC4: return stream << "::picolibrary::Adafruit::PID781::Pin::PC4";
+        case Pin::PC7: return stream << "::picolibrary::Adafruit::PID781::Pin::PC7";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{
+        "pin is not a valid ::picolibrary::Adafruit::PID781::Pin"
+    };
+}
+
 } // namespace picolibrary::Adafruit::PID781
 
 /**
