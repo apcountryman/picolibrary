@@ -156,8 +156,8 @@ struct Custom_Character {
 enum class Pin : std::uint8_t {
     PB0 = 1, ///< PB0.
     PC2 = 2, ///< PC2.
-    PC4 = 4, ///< PC4.
-    PC7 = 7, ///< PC7.
+    PC4 = 3, ///< PC4.
+    PC7 = 4, ///< PC7.
 };
 
 } // namespace picolibrary::Adafruit::PID781
