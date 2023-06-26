@@ -28,7 +28,6 @@
 #include <limits>
 
 #include "picolibrary/array.h"
-#include "picolibrary/result.h"
 #include "picolibrary/stream.h"
 #include "picolibrary/utility.h"
 
@@ -213,29 +212,6 @@ class Output_Formatter<Adafruit::PID781::Custom_Character> {
      * \param[in] custom_character The picolibrary::Adafruit::PID781::Custom_Character to
      *            format.
      *
-     * \return The number of characters written to the stream if the write succeeded.
-     * \return An error code if the write failed.
-     */
-    auto print( Output_Stream & stream, Adafruit::PID781::Custom_Character const & custom_character ) const noexcept
-        -> Result<std::size_t>
-    {
-        auto result = stream.put( to_underlying( custom_character.id ) );
-        if ( result.is_error() ) {
-            return result.error();
-        } // if
-
-        return std::size_t{ 1 };
-    }
-
-    /**
-     * \brief Write the formatted picolibrary::Adafruit::PID781::Custom_Character to the
-     *        stream.
-     *
-     * \param[in] stream The stream to write the formatted
-     *            picolibrary::Adafruit::PID781::Custom_Character to.
-     * \param[in] custom_character The picolibrary::Adafruit::PID781::Custom_Character to
-     *            format.
-     *
      * \return The number of characters written to the stream.
      */
     auto print( Reliable_Output_Stream & stream, Adafruit::PID781::Custom_Character const & custom_character ) const noexcept
@@ -295,28 +271,6 @@ class Output_Formatter<Adafruit::PID781::Custom_Character::ID> {
      */
     constexpr auto operator   =( Output_Formatter const & expression ) noexcept
         -> Output_Formatter & = default;
-
-    /**
-     * \brief Write the formatted picolibrary::Adafruit::PID781::Custom_Character::ID to
-     *        the stream.
-     *
-     * \param[in] stream The stream to write the formatted
-     *            picolibrary::Adafruit::PID781::Custom_Character::ID to.
-     * \param[in] id The picolibrary::Adafruit::PID781::Custom_Character::ID to format.
-     *
-     * \return The number of characters written to the stream if the write succeeded.
-     * \return An error code if the write failed.
-     */
-    auto print( Output_Stream & stream, Adafruit::PID781::Custom_Character::ID id ) const noexcept
-        -> Result<std::size_t>
-    {
-        auto result = stream.put( to_underlying( id ) );
-        if ( result.is_error() ) {
-            return result.error();
-        } // if
-
-        return std::size_t{ 1 };
-    }
 
     /**
      * \brief Write the formatted picolibrary::Adafruit::PID781::Custom_Character::ID to

@@ -26,17 +26,12 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "picolibrary/adafruit/pid781.h"
-#include "picolibrary/result.h"
 #include "picolibrary/testing/automated/adafruit/pid781.h"
-#include "picolibrary/testing/automated/error.h"
 #include "picolibrary/testing/automated/stream.h"
 
 namespace {
 
-using ::picolibrary::Result;
 using ::picolibrary::Adafruit::PID781::Custom_Character;
-using ::picolibrary::Testing::Automated::Mock_Error;
-using ::picolibrary::Testing::Automated::Mock_Output_Stream;
 using ::picolibrary::Testing::Automated::Mock_Reliable_Output_Stream;
 using ::testing::A;
 using ::testing::Eq;
@@ -46,41 +41,6 @@ using ::testing::TestWithParam;
 using ::testing::ValuesIn;
 
 } // namespace
-
-/**
- * \brief Verify
- *        picolibrary::Output_Formatter<picolibrary::Adafruit::PID781::Custom_Character>::print(
- *        picolibrary::Output_Stream &, picolibrary::Adafruit::PID781::Custom_Character
- *        const & ) properly handles a put error.
- */
-TEST( outputFormatterAdafruitPID781CustomCharacterPrintOutputStreamErrorHandling, putError )
-{
-    auto stream = Mock_Output_Stream{};
-
-    auto const error = Mock_Error{ 175 };
-
-    EXPECT_CALL( stream.buffer(), put( A<std::uint8_t>() ) ).WillOnce( Return( error ) );
-
-    auto const result = stream.print( Custom_Character{ Custom_Character::Bank::_1,
-                                                        Custom_Character::ID::_6,
-                                                        {
-                                                            0b01100100,
-                                                            0b11010110,
-                                                            0b01110000,
-                                                            0b11010110,
-                                                            0b11011110,
-                                                            0b00010011,
-                                                            0b00111000,
-                                                            0b10111010,
-                                                        } } );
-
-    ASSERT_TRUE( result.is_error() );
-    EXPECT_EQ( result.error(), error );
-
-    EXPECT_FALSE( stream.end_of_file_reached() );
-    EXPECT_FALSE( stream.io_error_present() );
-    EXPECT_TRUE( stream.fatal_error_present() );
-}
 
 /**
  * \brief picolibrary::Output_Formatter<picolibrary::Adafruit::PID781::Custom_Character>::print(),
@@ -137,54 +97,6 @@ outputFormatterPrint_Test_Case const outputFormatterPrint_TEST_CASES[]{
 
 /**
  * \brief picolibrary::Output_Formatter<picolibrary::Adafruit::PID781::Custom_Character>::print(
- *        picolibrary::Output_Stream &, picolibrary::Adafruit::PID781::Custom_Character
- *        const & ) test fixture.
- */
-class outputFormatterAdafruitPID781CustomCharacterPrintOutputStream :
-    public TestWithParam<outputFormatterPrint_Test_Case> {
-};
-
-/**
- * \brief Verify
- *        picolibrary::Output_Formatter<picolibrary::Adafruit::PID781::Custom_Character>::print(
- *        picolibrary::Output_Stream &, picolibrary::Adafruit::PID781::Custom_Character
- *        const & ) works properly.
- */
-TEST_P( outputFormatterAdafruitPID781CustomCharacterPrintOutputStream, worksProperly )
-{
-    auto const test_case = GetParam();
-
-    auto stream = Mock_Output_Stream{};
-
-    EXPECT_CALL( stream.buffer(), put( SafeMatcherCast<std::uint8_t>( Eq( test_case.value ) ) ) )
-        .WillOnce( Return( Result<void>{} ) );
-
-    auto const result = stream.print( Custom_Character{ Custom_Character::Bank::_3,
-                                                        test_case.id,
-                                                        {
-                                                            0b11010010,
-                                                            0b00100100,
-                                                            0b00110110,
-                                                            0b00111110,
-                                                            0b10100101,
-                                                            0b01011000,
-                                                            0b00001001,
-                                                            0b01100000,
-                                                        } } );
-
-    ASSERT_FALSE( result.is_error() );
-    EXPECT_EQ( result.value(), 1 );
-
-    EXPECT_TRUE( stream.is_nominal() );
-}
-
-INSTANTIATE_TEST_SUITE_P(
-    testCases,
-    outputFormatterAdafruitPID781CustomCharacterPrintOutputStream,
-    ValuesIn( outputFormatterPrint_TEST_CASES ) );
-
-/**
- * \brief picolibrary::Output_Formatter<picolibrary::Adafruit::PID781::Custom_Character>::print(
  *        picolibrary::Reliable_Output_Stream &,
  *        picolibrary::Adafruit::PID781::Custom_Character const & ) test fixture.
  */
@@ -227,68 +139,6 @@ TEST_P( outputFormatterAdafruitPID781CustomCharacterPrintReliableOutputStream, w
 INSTANTIATE_TEST_SUITE_P(
     testCases,
     outputFormatterAdafruitPID781CustomCharacterPrintReliableOutputStream,
-    ValuesIn( outputFormatterPrint_TEST_CASES ) );
-
-/**
- * \brief Verify
- *        picolibrary::Output_Formatter<picolibrary::Adafruit::PID781::Custom_Character::ID>::print(
- *        picolibrary::Output_Stream &,
- *        picolibrary::Adafruit::PID781::Custom_Character::ID const & ) properly handles a
- *        put error.
- */
-TEST( outputFormatterAdafruitPID781CustomCharacterIDPrintOutputStreamErrorHandling, putError )
-{
-    auto stream = Mock_Output_Stream{};
-
-    auto const error = Mock_Error{ 7 };
-
-    EXPECT_CALL( stream.buffer(), put( A<std::uint8_t>() ) ).WillOnce( Return( error ) );
-
-    auto const result = stream.print( Custom_Character::ID::_5 );
-
-    ASSERT_TRUE( result.is_error() );
-    EXPECT_EQ( result.error(), error );
-
-    EXPECT_FALSE( stream.end_of_file_reached() );
-    EXPECT_FALSE( stream.io_error_present() );
-    EXPECT_TRUE( stream.fatal_error_present() );
-}
-
-/**
- * \brief picolibrary::Output_Formatter<picolibrary::Adafruit::PID781::Custom_Character::ID>::print(
- *        picolibrary::Output_Stream &,
- *        picolibrary::Adafruit::PID781::Custom_Character::ID ) test fixture.
- */
-class outputFormatterAdafruitPID781CustomCharacterIDPrintOutputStream :
-    public TestWithParam<outputFormatterPrint_Test_Case> {
-};
-
-/**
- * \brief Verify
- *        picolibrary::Output_Formatter<picolibrary::Adafruit::PID781::Custom_Character::ID>::print(
- *        picolibrary::Output_Stream &,
- *        picolibrary::Adafruit::PID781::Custom_Character::ID ) works properly.
- */
-TEST_P( outputFormatterAdafruitPID781CustomCharacterIDPrintOutputStream, worksProperly )
-{
-    auto const test_case = GetParam();
-
-    auto stream = Mock_Output_Stream{};
-
-    EXPECT_CALL( stream.buffer(), put( SafeMatcherCast<std::uint8_t>( Eq( test_case.value ) ) ) )
-        .WillOnce( Return( Result<void>{} ) );
-
-    auto const result = stream.print( test_case.id );
-
-    ASSERT_FALSE( result.is_error() );
-    EXPECT_EQ( result.value(), 1 );
-
-    EXPECT_TRUE( stream.is_nominal() );
-}
-
-INSTANTIATE_TEST_SUITE_P(
-    testCases,
-    outputFormatterAdafruitPID781CustomCharacterIDPrintOutputStream,
     ValuesIn( outputFormatterPrint_TEST_CASES ) );
 
 /**
