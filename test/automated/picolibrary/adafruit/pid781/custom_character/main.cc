@@ -78,7 +78,7 @@ auto operator<<( std::ostream & stream, outputFormatterPrint_Test_Case const & t
  * \brief picolibrary::Output_Formatter<picolibrary::Adafruit::PID781::Custom_Character>::print(),
  *        and
  *        picolibrary::Output_Formatter<picolibrary::Adafruit::PID781::Custom_Character::ID>::print()
- *        test case.
+ *        test cases.
  */
 outputFormatterPrint_Test_Case const outputFormatterPrint_TEST_CASES[]{
     // clang-format off
