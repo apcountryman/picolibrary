@@ -85,6 +85,67 @@ inline auto operator<<( std::ostream & stream, LCD_Size lcd_size ) -> std::ostre
     };
 }
 
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the
+ *            picolibrary::Adafruit::PID781::Custom_Character::Bank to.
+ * \param[in] bank The picolibrary::Adafruit::PID781::Custom_Character::Bank to write to
+ *            the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Custom_Character::Bank bank ) -> std::ostream &
+{
+    switch ( bank ) {
+            // clang-format off
+
+        case Custom_Character::Bank::_0: return stream << "::picolibrary::Adafruit::PID781::Custom_Character::Bank::_0";
+        case Custom_Character::Bank::_1: return stream << "::picolibrary::Adafruit::PID781::Custom_Character::Bank::_1";
+        case Custom_Character::Bank::_2: return stream << "::picolibrary::Adafruit::PID781::Custom_Character::Bank::_2";
+        case Custom_Character::Bank::_3: return stream << "::picolibrary::Adafruit::PID781::Custom_Character::Bank::_3";
+        case Custom_Character::Bank::_4: return stream << "::picolibrary::Adafruit::PID781::Custom_Character::Bank::_4";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{
+        "bank is not a valid ::picolibrary::Adafruit::PID781::Custom_Character::Bank"
+    };
+}
+
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the
+ *            picolibrary::Adafruit::PID781::Custom_Character::ID to.
+ * \param[in] id The picolibrary::Adafruit::PID781::Custom_Character::ID to write to the
+ *            stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Custom_Character::ID id ) -> std::ostream &
+{
+    switch ( id ) {
+            // clang-format off
+
+        case Custom_Character::ID::_0: return stream << "::picolibrary::Adafruit::PID781::Custom_Character::ID::_0";
+        case Custom_Character::ID::_1: return stream << "::picolibrary::Adafruit::PID781::Custom_Character::ID::_1";
+        case Custom_Character::ID::_2: return stream << "::picolibrary::Adafruit::PID781::Custom_Character::ID::_2";
+        case Custom_Character::ID::_3: return stream << "::picolibrary::Adafruit::PID781::Custom_Character::ID::_3";
+        case Custom_Character::ID::_4: return stream << "::picolibrary::Adafruit::PID781::Custom_Character::ID::_4";
+        case Custom_Character::ID::_5: return stream << "::picolibrary::Adafruit::PID781::Custom_Character::ID::_5";
+        case Custom_Character::ID::_6: return stream << "::picolibrary::Adafruit::PID781::Custom_Character::ID::_6";
+        case Custom_Character::ID::_7: return stream << "::picolibrary::Adafruit::PID781::Custom_Character::ID::_7";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{
+        "id is not a valid ::picolibrary::Adafruit::PID781::Custom_Character::ID"
+    };
+}
+
 } // namespace picolibrary::Adafruit::PID781
 
 /**
