@@ -15,8 +15,5 @@
 
 # Description: picolibrary::Adafruit::PID781 automated tests CMake rules.
 
-# build the picolibrary::Adafruit::PID781::Custom_Character automated tests
-add_subdirectory( custom_character )
-
 # build the picolibrary::Adafruit::PID781::LCD_Size automated tests
 add_subdirectory( lcd_size )
