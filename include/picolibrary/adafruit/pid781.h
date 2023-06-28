@@ -98,6 +98,17 @@ struct Cursor_Position {
 };
 
 /**
+ * \brief Custom character bank.
+ */
+enum class Custom_Character_Bank : std::uint8_t {
+    _0 = 0, ///< 0.
+    _1 = 1, ///< 1.
+    _2 = 2, ///< 2.
+    _3 = 3, ///< 3.
+    _4 = 4, ///< 4.
+};
+
+/**
  * \brief Pin.
  */
 enum class Pin : std::uint8_t {
