@@ -27,6 +27,7 @@
 #include <cstdint>
 #include <limits>
 
+#include "picolibrary/array.h"
 #include "picolibrary/result.h"
 #include "picolibrary/stream.h"
 #include "picolibrary/utility.h"
@@ -124,6 +125,11 @@ enum class Custom_Character_ID : std::uint8_t {
     _6 = 6, ///< 6.
     _7 = 7, ///< 7.
 };
+
+/**
+ * \brief Custom character pixel matrix.
+ */
+using Custom_Character_Pixel_Matrix = Array<std::uint8_t, 8>;
 
 /**
  * \brief Pin.
