@@ -119,6 +119,40 @@ inline auto operator<<( std::ostream & stream, Custom_Character_Bank custom_char
 /**
  * \brief Insertion operator.
  *
+ * \param[in] stream The stream to write the
+ *            picolibrary::Adafruit::PID781::Custom_Character_ID to.
+ * \param[in] custom_character_id The picolibrary::Adafruit::PID781::Custom_Character_ID
+ *            to write to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Custom_Character_ID custom_character_id )
+    -> std::ostream &
+{
+    switch ( custom_character_id ) {
+            // clang-format off
+
+        case Custom_Character_ID::_0: return stream << "::picolibrary::Adafruit::PID781::Custom_Character_ID::_0";
+        case Custom_Character_ID::_1: return stream << "::picolibrary::Adafruit::PID781::Custom_Character_ID::_1";
+        case Custom_Character_ID::_2: return stream << "::picolibrary::Adafruit::PID781::Custom_Character_ID::_2";
+        case Custom_Character_ID::_3: return stream << "::picolibrary::Adafruit::PID781::Custom_Character_ID::_3";
+        case Custom_Character_ID::_4: return stream << "::picolibrary::Adafruit::PID781::Custom_Character_ID::_4";
+        case Custom_Character_ID::_5: return stream << "::picolibrary::Adafruit::PID781::Custom_Character_ID::_5";
+        case Custom_Character_ID::_6: return stream << "::picolibrary::Adafruit::PID781::Custom_Character_ID::_6";
+        case Custom_Character_ID::_7: return stream << "::picolibrary::Adafruit::PID781::Custom_Character_ID::_7";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{
+        "custom_character_id is not a valid "
+        "::picolibrary::Adafruit::PID781::Custom_Character_ID"
+    };
+}
+
+/**
+ * \brief Insertion operator.
+ *
  * \param[in] stream The stream to write the picolibrary::Adafruit::PID781::Pin to.
  * \param[in] pin The picolibrary::Adafruit::PID781::Pin to write to the stream.
  *

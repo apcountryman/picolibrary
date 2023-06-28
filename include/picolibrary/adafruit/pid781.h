@@ -23,9 +23,12 @@
 #ifndef PICOLIBRARY_ADAFRUIT_PID781_H
 #define PICOLIBRARY_ADAFRUIT_PID781_H
 
+#include <cstddef>
 #include <cstdint>
 #include <limits>
 
+#include "picolibrary/result.h"
+#include "picolibrary/stream.h"
 #include "picolibrary/utility.h"
 
 /**
@@ -109,6 +112,20 @@ enum class Custom_Character_Bank : std::uint8_t {
 };
 
 /**
+ * \brief Custom character ID.
+ */
+enum class Custom_Character_ID : std::uint8_t {
+    _0 = 0, ///< 0.
+    _1 = 1, ///< 1.
+    _2 = 2, ///< 2.
+    _3 = 3, ///< 3.
+    _4 = 4, ///< 4.
+    _5 = 5, ///< 5.
+    _6 = 6, ///< 6.
+    _7 = 7, ///< 7.
+};
+
+/**
  * \brief Pin.
  */
 enum class Pin : std::uint8_t {
@@ -119,5 +136,101 @@ enum class Pin : std::uint8_t {
 };
 
 } // namespace picolibrary::Adafruit::PID781
+
+namespace picolibrary {
+
+/**
+ * \brief picolibrary::Adafruit::PID781::Custom_Character_ID output formatter.
+ */
+template<>
+class Output_Formatter<Adafruit::PID781::Custom_Character_ID> {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Output_Formatter() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Output_Formatter( Output_Formatter && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Output_Formatter( Output_Formatter const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Output_Formatter() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Output_Formatter && expression ) noexcept -> Output_Formatter & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator   =( Output_Formatter const & expression ) noexcept
+        -> Output_Formatter & = default;
+
+    /**
+     * \brief Write the formatted picolibrary::Adafruit::PID781::Custom_Character_ID to
+     *        the stream.
+     *
+     * \param[in] stream The stream to write the formatted
+     *            picolibrary::Adafruit::PID781::Custom_Character_ID to.
+     * \param[in] custom_character_id The
+     *            picolibrary::Adafruit::PID781::Custom_Character_ID to format.
+     *
+     * \return The number of characters written to the stream if the write succeeded.
+     * \return An error code if the write failed.
+     */
+    auto print( Output_Stream & stream, Adafruit::PID781::Custom_Character_ID custom_character_id ) const noexcept
+        -> Result<std::size_t>
+    {
+        auto result = stream.put( to_underlying( custom_character_id ) );
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        return std::size_t{ 1 };
+    }
+
+    /**
+     * \brief Write the formatted picolibrary::Adafruit::PID781::Custom_Character_ID to
+     *        the stream.
+     *
+     * \param[in] stream The stream to write the formatted
+     *            picolibrary::Adafruit::PID781::Custom_Character_ID to.
+     * \param[in] custom_character_id The
+     *            picolibrary::Adafruit::PID781::Custom_Character_ID to format.
+     *
+     * \return The number of characters written to the stream.
+     */
+    auto print( Reliable_Output_Stream & stream, Adafruit::PID781::Custom_Character_ID custom_character_id ) const noexcept
+        -> std::size_t
+    {
+        stream.put( to_underlying( custom_character_id ) );
+
+        return std::size_t{ 1 };
+    }
+};
+
+} // namespace picolibrary
 
 #endif // PICOLIBRARY_ADAFRUIT_PID781_H
