@@ -88,6 +88,37 @@ inline auto operator<<( std::ostream & stream, LCD_Size lcd_size ) -> std::ostre
 /**
  * \brief Insertion operator.
  *
+ * \param[in] stream The stream to write the
+ *            picolibrary::Adafruit::PID781::Custom_Character_Bank to.
+ * \param[in] custom_character_bank The
+ *            picolibrary::Adafruit::PID781::Custom_Character_Bank to write to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Custom_Character_Bank custom_character_bank )
+    -> std::ostream &
+{
+    switch ( custom_character_bank ) {
+            // clang-format off
+
+        case Custom_Character_Bank::_0: return stream << "::picolibrary::Adafruit::PID781::Custom_Character_Bank::_0";
+        case Custom_Character_Bank::_1: return stream << "::picolibrary::Adafruit::PID781::Custom_Character_Bank::_1";
+        case Custom_Character_Bank::_2: return stream << "::picolibrary::Adafruit::PID781::Custom_Character_Bank::_2";
+        case Custom_Character_Bank::_3: return stream << "::picolibrary::Adafruit::PID781::Custom_Character_Bank::_3";
+        case Custom_Character_Bank::_4: return stream << "::picolibrary::Adafruit::PID781::Custom_Character_Bank::_4";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{
+        "custom_character_bank is not a valid "
+        "::picolibrary::Adafruit::PID781::Custom_Character_Bank"
+    };
+}
+
+/**
+ * \brief Insertion operator.
+ *
  * \param[in] stream The stream to write the picolibrary::Adafruit::PID781::Pin to.
  * \param[in] pin The picolibrary::Adafruit::PID781::Pin to write to the stream.
  *
