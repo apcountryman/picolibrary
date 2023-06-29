@@ -155,6 +155,15 @@ header/source file pair.
   `::picolibrary::Testing::Automated::Reliable_Output_String_Stream::string()` member
   functions.
 
+The `::picolibrary::Testing::Automated::Output_Vector_Stream` vector stream class is
+available if the `PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration option is
+`ON`.
+The vector stream is define in the
+[`include/picolibrary/testing/automated/stream.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/stream.h)/[`source/picolibrary/testing/automated/stream.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/stream.cc)
+header/source file pair.
+- To access the `std::vector` abstracted by the stream, use the
+  `::picolibrary::Testing::Automated::Output_Vector_Stream::vector()` member function.
+
 The `::picolibrary::Testing::Interactive::hello_world()` output stream interactive test
 helper is available if the `PICOLIBRARY_ENABLE_INTERACTIVE_TESTING` project configuration
 option is `ON`.
