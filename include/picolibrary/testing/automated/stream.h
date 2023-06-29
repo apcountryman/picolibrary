@@ -674,6 +674,52 @@ class Reliable_Vector_Stream_Buffer final : public Reliable_Stream_Buffer {
     std::vector<T> m_vector{};
 };
 
+/**
+ * \brief Automated testing reliable output vector stream.
+ *
+ * \tparam T The vector element type.
+ */
+template<typename T>
+class Reliable_Output_Vector_Stream : public Reliable_Output_Stream {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    Reliable_Output_Vector_Stream()
+    {
+        set_buffer( &m_buffer );
+    }
+
+    Reliable_Output_Vector_Stream( Reliable_Output_Vector_Stream && ) = delete;
+
+    Reliable_Output_Vector_Stream( Reliable_Output_Vector_Stream const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Reliable_Output_Vector_Stream() noexcept = default;
+
+    auto operator=( Reliable_Output_Vector_Stream && ) = delete;
+
+    auto operator=( Reliable_Output_Vector_Stream const & ) = delete;
+
+    /**
+     * \brief Get the vector abstracted by the stream.
+     *
+     * \return The vector abstracted by the stream.
+     */
+    auto vector() const noexcept -> std::vector<T> const &
+    {
+        return m_buffer.vector();
+    }
+
+  private:
+    /**
+     * \brief The stream's device access buffer.
+     */
+    Reliable_Vector_Stream_Buffer<T> m_buffer{};
+};
+
 } // namespace picolibrary::Testing::Automated
 
 #endif // PICOLIBRARY_TESTING_AUTOMATED_STREAM_H
