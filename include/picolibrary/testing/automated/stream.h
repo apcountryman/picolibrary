@@ -348,6 +348,52 @@ class Vector_Stream_Buffer final : public Stream_Buffer {
 };
 
 /**
+ * \brief Automated testing output vector stream.
+ *
+ * \tparam T The vector element type.
+ */
+template<typename T>
+class Output_Vector_Stream : public Output_Stream {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    Output_Vector_Stream()
+    {
+        set_buffer( &m_buffer );
+    }
+
+    Output_Vector_Stream( Output_Vector_Stream && ) = delete;
+
+    Output_Vector_Stream( Output_Vector_Stream const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Output_Vector_Stream() noexcept = default;
+
+    auto operator=( Output_Vector_Stream && ) = delete;
+
+    auto operator=( Output_Vector_Stream const & ) = delete;
+
+    /**
+     * \brief Get the vector abstracted by the stream.
+     *
+     * \return The vector abstracted by the stream.
+     */
+    auto vector() const noexcept -> std::vector<T> const &
+    {
+        return m_buffer.vector();
+    }
+
+  private:
+    /**
+     * \brief The stream's device access buffer.
+     */
+    Vector_Stream_Buffer<T> m_buffer{};
+};
+
+/**
  * \brief Mock reliable I/O stream device access buffer.
  */
 class Mock_Reliable_Stream_Buffer : public Reliable_Stream_Buffer {
