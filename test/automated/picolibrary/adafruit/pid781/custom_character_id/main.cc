@@ -22,6 +22,7 @@
 
 #include <cstdint>
 #include <ostream>
+#include <vector>
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -37,7 +38,8 @@ using ::picolibrary::Result;
 using ::picolibrary::Adafruit::PID781::Custom_Character_ID;
 using ::picolibrary::Testing::Automated::Mock_Error;
 using ::picolibrary::Testing::Automated::Mock_Output_Stream;
-using ::picolibrary::Testing::Automated::Mock_Reliable_Output_Stream;
+using ::picolibrary::Testing::Automated::Output_Vector_Stream;
+using ::picolibrary::Testing::Automated::Reliable_Output_Vector_Stream;
 using ::testing::A;
 using ::testing::Eq;
 using ::testing::Return;
@@ -139,17 +141,15 @@ TEST_P( outputFormatterAdafruitPID781CustomCharacterIDPrintOutputStream, worksPr
 {
     auto const test_case = GetParam();
 
-    auto stream = Mock_Output_Stream{};
-
-    EXPECT_CALL( stream.buffer(), put( SafeMatcherCast<std::uint8_t>( Eq( test_case.value ) ) ) )
-        .WillOnce( Return( Result<void>{} ) );
+    auto stream = Output_Vector_Stream<std::uint8_t>{};
 
     auto const result = stream.print( test_case.custom_character_id );
 
     ASSERT_FALSE( result.is_error() );
-    EXPECT_EQ( result.value(), 1 );
+    EXPECT_EQ( result.value(), stream.vector().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.vector(), std::vector<std::uint8_t>{ test_case.value } );
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -176,15 +176,14 @@ TEST_P( outputFormatterAdafruitPID781CustomCharacterIDPrintReliableOutputStream,
 {
     auto const test_case = GetParam();
 
-    auto stream = Mock_Reliable_Output_Stream{};
-
-    EXPECT_CALL( stream.buffer(), put( SafeMatcherCast<std::uint8_t>( Eq( test_case.value ) ) ) );
+    auto stream = Reliable_Output_Vector_Stream<std::uint8_t>{};
 
     auto const n = stream.print( test_case.custom_character_id );
 
-    EXPECT_EQ( n, 1 );
+    EXPECT_EQ( n, stream.vector().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
+    EXPECT_EQ( stream.vector(), std::vector<std::uint8_t>{ test_case.value } );
 }
 
 INSTANTIATE_TEST_SUITE_P(
