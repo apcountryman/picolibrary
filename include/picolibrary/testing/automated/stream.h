@@ -253,6 +253,101 @@ class Output_String_Stream : public Output_Stream {
 };
 
 /**
+ * \brief Automated testing vector stream device access buffer.
+ *
+ * \tparam T The vector element type.
+ */
+template<typename T>
+class Vector_Stream_Buffer final : public Stream_Buffer {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    Vector_Stream_Buffer() = default;
+
+    Vector_Stream_Buffer( Vector_Stream_Buffer && ) = delete;
+
+    Vector_Stream_Buffer( Vector_Stream_Buffer const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Vector_Stream_Buffer() noexcept = default;
+
+    auto operator=( Vector_Stream_Buffer && ) = delete;
+
+    auto operator=( Vector_Stream_Buffer const & ) = delete;
+
+    /**
+     * \brief Get the vector abstracted by the device access buffer.
+     *
+     * \return The vector abstracted by the device access buffer.
+     */
+    auto vector() const noexcept -> std::vector<T> const &
+    {
+        return m_vector;
+    }
+
+    /**
+     * \brief Write a character to the vector.
+     *
+     * \param[in] character The character to write to the vector.
+     *
+     * \return Nothing.
+     */
+    auto put( char character ) noexcept -> Result<void> override final
+    {
+        m_vector.push_back( character );
+
+        return {};
+    }
+
+    /**
+     * \brief Write an unsigned byte to the vector.
+     *
+     * \param[in] value The unsigned byte to write to the vector.
+     *
+     * \return Nothing.
+     */
+    auto put( std::uint8_t value ) noexcept -> Result<void> override final
+    {
+        m_vector.push_back( value );
+
+        return {};
+    }
+
+    /**
+     * \brief Write a signed byte to the vector.
+     *
+     * \param[in] value The signed byte to write to the vector.
+     *
+     * \return Nothing.
+     */
+    auto put( std::int8_t value ) noexcept -> Result<void> override final
+    {
+        m_vector.push_back( value );
+
+        return {};
+    }
+
+    /**
+     * \brief Do nothing.
+     *
+     * \return Nothing.
+     */
+    auto flush() noexcept -> Result<void> override final
+    {
+        return {};
+    }
+
+  private:
+    /**
+     * \brief The vector abstracted by the device access buffer.
+     */
+    std::vector<T> m_vector{};
+};
+
+/**
  * \brief Mock reliable I/O stream device access buffer.
  */
 class Mock_Reliable_Stream_Buffer : public Reliable_Stream_Buffer {
