@@ -155,22 +155,6 @@ class Driver : public Reliable_Output_Stream {
     using Reliable_Output_Stream::Reliable_Output_Stream;
 
     /**
-     * \brief Destructor.
-     */
-    ~Driver() noexcept = default;
-
-    /**
-     * \brief Assignment operator.
-     *
-     * \param[in] expression The expression to be assigned.
-     *
-     * \return The assigned to object.
-     */
-    auto operator=( Driver && expression ) noexcept -> Driver & = default;
-
-    auto operator=( Driver const & ) = delete;
-
-    /**
      * \brief Set and save the bit rate.
      *
      * \param[in] bit_rate The desired bit rate.
