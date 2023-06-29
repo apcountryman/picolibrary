@@ -594,6 +594,86 @@ class Reliable_Output_String_Stream : public Reliable_Output_Stream {
     Reliable_String_Stream_Buffer m_buffer{};
 };
 
+/**
+ * \brief Automated testing reliable vector stream device access buffer.
+ *
+ * \tparam T The vector element type.
+ */
+template<typename T>
+class Reliable_Vector_Stream_Buffer final : public Reliable_Stream_Buffer {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    Reliable_Vector_Stream_Buffer() = default;
+
+    Reliable_Vector_Stream_Buffer( Reliable_Vector_Stream_Buffer && ) = delete;
+
+    Reliable_Vector_Stream_Buffer( Reliable_Vector_Stream_Buffer const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Reliable_Vector_Stream_Buffer() noexcept = default;
+
+    auto operator=( Reliable_Vector_Stream_Buffer && ) = delete;
+
+    auto operator=( Reliable_Vector_Stream_Buffer const & ) = delete;
+
+    /**
+     * \brief Get the vector abstracted by the device access buffer.
+     *
+     * \return The vector abstracted by the device access buffer.
+     */
+    auto vector() const noexcept -> std::vector<T> const &
+    {
+        return m_vector;
+    }
+
+    /**
+     * \brief Write a character to the vector.
+     *
+     * \param[in] character The character to write to the vector.
+     */
+    void put( char character ) noexcept override final
+    {
+        m_vector.push_back( character );
+    }
+
+    /**
+     * \brief Write an unsigned byte to the vector.
+     *
+     * \param[in] value The unsigned byte to write to the vector.
+     */
+    void put( std::uint8_t value ) noexcept override final
+    {
+        m_vector.push_back( value );
+    }
+
+    /**
+     * \brief Write a signed byte to the vector.
+     *
+     * \param[in] value The signed byte to write to the vector.
+     */
+    void put( std::int8_t value ) noexcept override final
+    {
+        m_vector.push_back( value );
+    }
+
+    /**
+     * \brief Do nothing.
+     */
+    void flush() noexcept override final
+    {
+    }
+
+  private:
+    /**
+     * \brief The vector abstracted by the device access buffer.
+     */
+    std::vector<T> m_vector{};
+};
+
 } // namespace picolibrary::Testing::Automated
 
 #endif // PICOLIBRARY_TESTING_AUTOMATED_STREAM_H
