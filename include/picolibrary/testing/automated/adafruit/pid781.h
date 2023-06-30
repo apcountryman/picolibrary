@@ -28,8 +28,8 @@
 #include <stdexcept>
 
 #include "picolibrary/adafruit/pid781.h"
+#include "picolibrary/gpio.h"
 #include "picolibrary/rgb.h"
-#include "picolibrary/testing/automated/gpio.h"
 #include "picolibrary/testing/automated/stream.h"
 
 namespace picolibrary::Adafruit::PID781 {
@@ -252,7 +252,7 @@ class Mock_Driver : public Mock_Reliable_Output_Stream {
 
     MOCK_METHOD(
         void,
-        create_custom_character,
+        create_and_save_custom_character,
         (::picolibrary::Adafruit::PID781::Custom_Character_Bank,
          ::picolibrary::Adafruit::PID781::Custom_Character_ID,
          ::picolibrary::Adafruit::PID781::Custom_Character_Pixel_Matrix const &));

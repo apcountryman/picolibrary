@@ -499,9 +499,9 @@ class Driver : public Reliable_Output_Stream {
 
   private:
     /**
-     * \brief Data.
+     * \brief Data array.
      *
-     * \tparam N The number of bytes the data is comprised of.
+     * \tparam N The number of bytes in the data array.
      */
     template<std::size_t N>
     using Data = Array<std::uint8_t, N>;
@@ -544,11 +544,11 @@ class Driver : public Reliable_Output_Stream {
     };
 
     /**
-     * \brief Write data to the stream.
+     * \brief Write a data array to the stream.
      *
-     * \tparam N The number of bytes of data to write to the stream.
+     * \tparam N The number of bytes in the data array.
      *
-     * \param[in] data The data to write to the stream.
+     * \param[in] data The data array to write to the stream.
      */
     template<std::size_t N>
     void put( Data<N> const & data ) noexcept

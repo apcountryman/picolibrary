@@ -970,12 +970,12 @@ setAndSaveOutputPinInitialState_Test_Case const setAndSaveOutputPinInitialState_
 INSTANTIATE_TEST_SUITE_P( testCases, setAndSaveOutputPinInitialState, ValuesIn( setAndSaveOutputPinInitialState_TEST_CASES ) );
 
 /**
- * \brief picolibrary::Adafruit::PID781::Driver::transition_output_pin_to_high() test
- *        case.
+ * \brief picolibrary::Adafruit::PID781::Driver::transition_output_pin_to_high() and
+ *        picolibrary::Adafruit::PID781::Driver::transition_output_pin_to_low() test case.
  */
-struct transitionOutputPinToHigh_Test_Case {
+struct transitionOutputPin_Test_Case {
     /**
-     * \brief The pin to transition to the high state.
+     * \brief The pin whose state is to be transitioned.
      */
     Pin pin;
 
@@ -985,7 +985,7 @@ struct transitionOutputPinToHigh_Test_Case {
     std::uint8_t value;
 };
 
-auto operator<<( std::ostream & stream, transitionOutputPinToHigh_Test_Case const & test_case )
+auto operator<<( std::ostream & stream, transitionOutputPin_Test_Case const & test_case )
     -> std::ostream &
 {
     // clang-format off
@@ -1000,10 +1000,26 @@ auto operator<<( std::ostream & stream, transitionOutputPinToHigh_Test_Case cons
 }
 
 /**
+ * \brief picolibrary::Adafruit::PID781::Driver::transition_output_pin_to_high() and
+ *        picolibrary::Adafruit::PID781::Driver::transition_output_pin_to_low() test
+ *        cases.
+ */
+transitionOutputPin_Test_Case const transitionOutputPin_TEST_CASES[]{
+    // clang-format off
+
+    { Pin::PB0, 1 },
+    { Pin::PC2, 2 },
+    { Pin::PC4, 3 },
+    { Pin::PC7, 4 },
+
+    // clang-format on
+};
+
+/**
  * \brief picolibrary::Adafruit::PID781::Driver::transition_output_pin_to_high() test
  *        fixture.
  */
-class transitionOutputPinToHigh : public TestWithParam<transitionOutputPinToHigh_Test_Case> {
+class transitionOutputPinToHigh : public TestWithParam<transitionOutputPin_Test_Case> {
 };
 
 /**
@@ -1027,57 +1043,13 @@ TEST_P( transitionOutputPinToHigh, worksProperly )
         } ) );
 }
 
-/**
- * \brief picolibrary::Adafruit::PID781::Driver::transition_output_pin_to_high() test
- *        cases.
- */
-transitionOutputPinToHigh_Test_Case const transitionOutputPinToHigh_TEST_CASES[]{
-    // clang-format off
-
-    { Pin::PB0, 1 },
-    { Pin::PC2, 2 },
-    { Pin::PC4, 3 },
-    { Pin::PC7, 4 },
-
-    // clang-format on
-};
-
-INSTANTIATE_TEST_SUITE_P( testCases, transitionOutputPinToHigh, ValuesIn( transitionOutputPinToHigh_TEST_CASES ) );
-
-/**
- * \brief picolibrary::Adafruit::PID781::Driver::transition_output_pin_to_low() test case.
- */
-struct transitionOutputPinToLow_Test_Case {
-    /**
-     * \brief The pin to transition to the low state.
-     */
-    Pin pin;
-
-    /**
-     * \brief The unsigned byte written to the stream.
-     */
-    std::uint8_t value;
-};
-
-auto operator<<( std::ostream & stream, transitionOutputPinToLow_Test_Case const & test_case )
-    -> std::ostream &
-{
-    // clang-format off
-
-    return stream << "{ "
-                  << ".pin = " << test_case.pin
-                  << ", "
-                  << ".value = " << static_cast<std::uint_fast16_t>( test_case.value )
-                  << " }";
-
-    // clang-format on
-}
+INSTANTIATE_TEST_SUITE_P( testCases, transitionOutputPinToHigh, ValuesIn( transitionOutputPin_TEST_CASES ) );
 
 /**
  * \brief picolibrary::Adafruit::PID781::Driver::transition_output_pin_to_low() test
  *        fixture.
  */
-class transitionOutputPinToLow : public TestWithParam<transitionOutputPinToLow_Test_Case> {
+class transitionOutputPinToLow : public TestWithParam<transitionOutputPin_Test_Case> {
 };
 
 /**
@@ -1101,22 +1073,7 @@ TEST_P( transitionOutputPinToLow, worksProperly )
         } ) );
 }
 
-/**
- * \brief picolibrary::Adafruit::PID781::Driver::transition_output_pin_to_low() test
- *        cases.
- */
-transitionOutputPinToLow_Test_Case const transitionOutputPinToLow_TEST_CASES[]{
-    // clang-format off
-
-    { Pin::PB0, 1 },
-    { Pin::PC2, 2 },
-    { Pin::PC4, 3 },
-    { Pin::PC7, 4 },
-
-    // clang-format on
-};
-
-INSTANTIATE_TEST_SUITE_P( testCases, transitionOutputPinToLow, ValuesIn( transitionOutputPinToLow_TEST_CASES ) );
+INSTANTIATE_TEST_SUITE_P( testCases, transitionOutputPinToLow, ValuesIn( transitionOutputPin_TEST_CASES ) );
 
 /**
  * \brief Execute the picolibrary::Adafruit::PID781::Driver automated tests.
