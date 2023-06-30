@@ -44,8 +44,11 @@ namespace picolibrary::Testing::Interactive::Adafruit::PID781 {
  *            the PID781.
  */
 template<typename Transmitter>
+// NOLINTNEXTLINE(readability-function-size)
 void hello_world( Transmitter transmitter ) noexcept
 {
+    // #lizard forgives the length
+
     transmitter.initialize();
 
     auto pid781 = ::picolibrary::Adafruit::PID781::Driver<Asynchronous_Serial::Reliable_Unbuffered_Output_Stream<Transmitter>>{
