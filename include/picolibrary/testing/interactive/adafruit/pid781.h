@@ -79,7 +79,7 @@ void hello_world( Transmitter transmitter ) noexcept
     pid781.clear_screen();
 
     pid781.home_cursor();
-    pid781.put( PICOLIBRARY_ROM_STRING( "Adafruit PID781" ) );
+    pid781.put( PICOLIBRARY_ROM_STRING( "Adafruit::PID781" ) );
     pid781.set_cursor_position( { 2, 2 } );
     pid781.print( PICOLIBRARY_ROM_STRING( "Hello, world!" ), smiley_face );
     pid781.flush();
