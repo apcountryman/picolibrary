@@ -154,6 +154,8 @@ class Driver : public Reliable_Output_Stream {
   public:
     using Reliable_Output_Stream::Reliable_Output_Stream;
 
+    using Reliable_Output_Stream::put;
+
     /**
      * \brief Set and save the bit rate.
      *
