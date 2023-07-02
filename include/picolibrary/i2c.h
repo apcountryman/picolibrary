@@ -1446,6 +1446,50 @@ class Device {
      *
      * \pre the device is responsive
      *
+     * \return The data read from the register.
+     */
+    auto read() const noexcept -> std::uint8_t
+    {
+        m_align_bus_multiplexer();
+
+        auto const guard = Bus_Control_Guard{ *m_controller };
+
+        PICOLIBRARY_EXPECT(
+            m_controller->address( m_address, Operation::READ ) == Response::ACK,
+            m_nonresponsive_device_error );
+        return m_controller->read( Response::NACK );
+    }
+
+    /**
+     * \brief Read a block of registers.
+     *
+     * \pre the device is responsive
+     *
+     * \param[out] begin The beginning of the data read from the block of registers.
+     * \param[out] end The end of the data read from the block of registers.
+     *
+     * \warning This function does not verify that the register block size is non-zero. If
+     *          the register block size is zero, a NACK terminated read will never be
+     *          performed which results in the device retaining control of the SDA signal,
+     *          locking up the bus.
+     */
+    void read( std::uint8_t * begin, std::uint8_t * end ) const noexcept
+    {
+        m_align_bus_multiplexer();
+
+        auto const guard = Bus_Control_Guard{ *m_controller };
+
+        PICOLIBRARY_EXPECT(
+            m_controller->address( m_address, Operation::READ ) == Response::ACK,
+            m_nonresponsive_device_error );
+        m_controller->read( begin, end, Response::NACK );
+    }
+
+    /**
+     * \brief Read a register.
+     *
+     * \pre the device is responsive
+     *
      * \param[in] register_address The address of the register to read.
      *
      * \return The data read from the register.
@@ -1500,6 +1544,45 @@ class Device {
             m_controller->address( m_address, Operation::READ ) == Response::ACK,
             m_nonresponsive_device_error );
         m_controller->read( begin, end, Response::NACK );
+    }
+
+    /**
+     * \brief Write to a register.
+     *
+     * \pre the device is responsive
+     *
+     * \param[in] data The data to write to the register.
+     */
+    void write( std::uint8_t data ) noexcept
+    {
+        m_align_bus_multiplexer();
+
+        auto const guard = Bus_Control_Guard{ *m_controller };
+
+        PICOLIBRARY_EXPECT(
+            m_controller->address( m_address, Operation::WRITE ) == Response::ACK,
+            m_nonresponsive_device_error );
+        PICOLIBRARY_EXPECT( m_controller->write( data ) == Response::ACK, m_nonresponsive_device_error );
+    }
+
+    /**
+     * \brief Write to a block of registers.
+     *
+     * \pre the device is responsive
+     *
+     * \param[in] begin, The beginning of the data to write to the block of registers.
+     * \param[in] end, The end of the data to write to the block of registers.
+     */
+    void write( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+    {
+        m_align_bus_multiplexer();
+
+        auto const guard = Bus_Control_Guard{ *m_controller };
+
+        PICOLIBRARY_EXPECT(
+            m_controller->address( m_address, Operation::WRITE ) == Response::ACK,
+            m_nonresponsive_device_error );
+        PICOLIBRARY_EXPECT( m_controller->write( begin, end ) == Response::ACK, m_nonresponsive_device_error );
     }
 
     /**

@@ -353,6 +353,18 @@ class Mock_Device {
 
     MOCK_METHOD( Mock_Controller &, controller, (), ( const ) );
 
+    MOCK_METHOD( std::uint8_t, read, (), ( const ) );
+    MOCK_METHOD( std::vector<std::uint8_t>, read, (std::vector<std::uint8_t>), ( const ) );
+
+    void read( std::uint8_t * begin, std::uint8_t * end ) const
+    {
+        static_cast<void>( end );
+
+        auto const data = read( std::vector<std::uint8_t>{} );
+
+        std::copy( data.begin(), data.end(), begin );
+    }
+
     MOCK_METHOD( std::uint8_t, read, ( std::uint8_t ), ( const ) );
     MOCK_METHOD( std::vector<std::uint8_t>, read, (std::uint8_t, std::vector<std::uint8_t>), ( const ) );
 
@@ -363,6 +375,14 @@ class Mock_Device {
         auto const data = read( register_address, std::vector<std::uint8_t>{} );
 
         std::copy( data.begin(), data.end(), begin );
+    }
+
+    MOCK_METHOD( void, write, ( std::uint8_t ) );
+    MOCK_METHOD( void, write, (std::vector<std::uint8_t>));
+
+    void write( std::uint8_t const * begin, std::uint8_t const * end )
+    {
+        write( std::vector<std::uint8_t>{ begin, end } );
     }
 
     MOCK_METHOD( void, write, ( std::uint8_t, std::uint8_t ) );
