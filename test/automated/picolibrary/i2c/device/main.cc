@@ -306,6 +306,67 @@ ping_Test_Case const ping_TEST_CASES[]{
 INSTANTIATE_TEST_SUITE_P( testCases, ping, ValuesIn( ping_TEST_CASES ) );
 
 /**
+ * \brief Verify picolibrary::I2C::Device::read() works properly.
+ */
+TEST( readRegister0BitRegisterAddress, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto       bus_multiplexer_aligner = MockFunction<void()>{};
+    auto       controller              = Mock_Controller{};
+    auto const address                 = Address_Transmitted{ 0b1110010'0 };
+
+    auto const device = Device{
+        bus_multiplexer_aligner.AsStdFunction(), controller, address, Mock_Error{ 32 }
+    };
+
+    auto const data = std::uint8_t{ 0x82 };
+
+    EXPECT_CALL( bus_multiplexer_aligner, Call() );
+
+    EXPECT_CALL( controller, start() );
+    EXPECT_CALL( controller, address( address, Operation::READ ) ).WillOnce( Return( Response::ACK ) );
+    EXPECT_CALL( controller, read( Response::NACK ) ).WillOnce( Return( data ) );
+    EXPECT_CALL( controller, stop() );
+
+    ASSERT_EQ( device.read(), data );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::Device::read( std::uint8_t *, std::uint8_t * ) works
+ *        properly.
+ */
+TEST( readRegisterBlock0BitRegisterAddress, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto       bus_multiplexer_aligner = MockFunction<void()>{};
+    auto       controller              = Mock_Controller{};
+    auto const address                 = Address_Transmitted{ 0b1110010'0 };
+
+    auto const device = Device{
+        bus_multiplexer_aligner.AsStdFunction(), controller, address, Mock_Error{ 32 }
+    };
+
+    auto const data_expected = std::vector<std::uint8_t>{
+        0x85, 0xA3, 0x98, 0xC7, 0x39, 0x6A, 0xFA, 0xC5, 0xA4,
+    };
+
+    EXPECT_CALL( bus_multiplexer_aligner, Call() );
+
+    EXPECT_CALL( controller, start() );
+    EXPECT_CALL( controller, address( address, Operation::READ ) ).WillOnce( Return( Response::ACK ) );
+    EXPECT_CALL( controller, read( A<std::vector<std::uint8_t>>(), Response::NACK ) ).WillOnce( Return( data_expected ) );
+    EXPECT_CALL( controller, stop() );
+
+    auto data = std::vector<std::uint8_t>( data_expected.size() );
+
+    device.read( &*data.begin(), &*data.end() );
+
+    ASSERT_EQ( data, data_expected );
+}
+
+/**
  * \brief Verify picolibrary::I2C::Device::read( std::uint8_t ) works properly.
  */
 TEST( readRegister8BitRegisterAddress, worksProperly )
@@ -372,6 +433,59 @@ TEST( readRegisterBlock8BitRegisterAddress, worksProperly )
     device.read( register_address, &*data.begin(), &*data.end() );
 
     ASSERT_EQ( data, data_expected );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::Device::write( std::uint8_t ) works properly.
+ */
+TEST( writeRegister0BitRegisterAddress, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto       bus_multiplexer_aligner = MockFunction<void()>{};
+    auto       controller              = Mock_Controller{};
+    auto const address                 = Address_Transmitted{ 0b1110010'0 };
+
+    auto device = Device{ bus_multiplexer_aligner.AsStdFunction(), controller, address, Mock_Error{ 32 } };
+
+    auto const data = std::uint8_t{ 0x82 };
+
+    EXPECT_CALL( bus_multiplexer_aligner, Call() );
+
+    EXPECT_CALL( controller, start() );
+    EXPECT_CALL( controller, address( address, Operation::WRITE ) ).WillOnce( Return( Response::ACK ) );
+    EXPECT_CALL( controller, write( data ) ).WillOnce( Return( Response::ACK ) );
+    EXPECT_CALL( controller, stop() );
+
+    device.write( data );
+}
+
+/**
+ * \brief Verify picolibrary::I2C::Device::write( std::uint8_t const *, std::uint8_t const
+ *        * ) works properly.
+ */
+TEST( writeRegisterBlock0BitRegisterAddress, worksProperly )
+{
+    auto const in_sequence = InSequence{};
+
+    auto       bus_multiplexer_aligner = MockFunction<void()>{};
+    auto       controller              = Mock_Controller{};
+    auto const address                 = Address_Transmitted{ 0b1110010'0 };
+
+    auto device = Device{ bus_multiplexer_aligner.AsStdFunction(), controller, address, Mock_Error{ 32 } };
+
+    auto const data = std::vector<std::uint8_t>{
+        0x85, 0xA3, 0x98, 0xC7, 0x39, 0x6A, 0xFA, 0xC5, 0xA4,
+    };
+
+    EXPECT_CALL( bus_multiplexer_aligner, Call() );
+
+    EXPECT_CALL( controller, start() );
+    EXPECT_CALL( controller, address( address, Operation::WRITE ) ).WillOnce( Return( Response::ACK ) );
+    EXPECT_CALL( controller, write( data ) ).WillOnce( Return( Response::ACK ) );
+    EXPECT_CALL( controller, stop() );
+
+    device.write( &*data.begin(), &*data.end() );
 }
 
 /**
