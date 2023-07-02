@@ -24,9 +24,11 @@
 #define PICOLIBRARY_I2C_H
 
 #include <cstdint>
+#include <limits>
 #include <utility>
 
 #include "picolibrary/algorithm.h"
+#include "picolibrary/array.h"
 #include "picolibrary/error.h"
 #include "picolibrary/precondition.h"
 #include "picolibrary/result.h"
@@ -1547,6 +1549,77 @@ class Device {
     }
 
     /**
+     * \brief Read a register.
+     *
+     * \pre the device is responsive
+     *
+     * \param[in] register_address The address of the register to read.
+     *
+     * \return The data read from the register.
+     */
+    auto read( std::uint16_t register_address ) const noexcept -> std::uint8_t
+    {
+        auto const register_address_array = to_array( register_address );
+
+        m_align_bus_multiplexer();
+
+        auto const guard = Bus_Control_Guard{ *m_controller };
+
+        PICOLIBRARY_EXPECT(
+            m_controller->address( m_address, Operation::WRITE ) == Response::ACK,
+            m_nonresponsive_device_error );
+        PICOLIBRARY_EXPECT(
+            m_controller->write( register_address_array.begin(), register_address_array.end() )
+                == Response::ACK,
+            m_nonresponsive_device_error );
+
+        m_controller->repeated_start();
+
+        PICOLIBRARY_EXPECT(
+            m_controller->address( m_address, Operation::READ ) == Response::ACK,
+            m_nonresponsive_device_error );
+        return m_controller->read( Response::NACK );
+    }
+
+    /**
+     * \brief Read a block of registers.
+     *
+     * \pre the device is responsive
+     *
+     * \param[in] register_address The address of the block of registers to read.
+     * \param[out] begin The beginning of the data read from the block of registers.
+     * \param[out] end The end of the data read from the block of registers.
+     *
+     * \warning This function does not verify that the register block size is non-zero. If
+     *          the register block size is zero, a NACK terminated read will never be
+     *          performed which results in the device retaining control of the SDA signal,
+     *          locking up the bus.
+     */
+    void read( std::uint16_t register_address, std::uint8_t * begin, std::uint8_t * end ) const noexcept
+    {
+        auto const register_address_array = to_array( register_address );
+
+        m_align_bus_multiplexer();
+
+        auto const guard = Bus_Control_Guard{ *m_controller };
+
+        PICOLIBRARY_EXPECT(
+            m_controller->address( m_address, Operation::WRITE ) == Response::ACK,
+            m_nonresponsive_device_error );
+        PICOLIBRARY_EXPECT(
+            m_controller->write( register_address_array.begin(), register_address_array.end() )
+                == Response::ACK,
+            m_nonresponsive_device_error );
+
+        m_controller->repeated_start();
+
+        PICOLIBRARY_EXPECT(
+            m_controller->address( m_address, Operation::READ ) == Response::ACK,
+            m_nonresponsive_device_error );
+        m_controller->read( begin, end, Response::NACK );
+    }
+
+    /**
      * \brief Write to a register.
      *
      * \pre the device is responsive
@@ -1628,6 +1701,59 @@ class Device {
         PICOLIBRARY_EXPECT( m_controller->write( begin, end ) == Response::ACK, m_nonresponsive_device_error );
     }
 
+    /**
+     * \brief Write to a register.
+     *
+     * \pre the device is responsive
+     *
+     * \param[in] register_address The address of the register to write to.
+     * \param[in] data The data to write to the register.
+     */
+    void write( std::uint16_t register_address, std::uint8_t data ) noexcept
+    {
+        auto const register_address_array = to_array( register_address );
+
+        m_align_bus_multiplexer();
+
+        auto const guard = Bus_Control_Guard{ *m_controller };
+
+        PICOLIBRARY_EXPECT(
+            m_controller->address( m_address, Operation::WRITE ) == Response::ACK,
+            m_nonresponsive_device_error );
+        PICOLIBRARY_EXPECT(
+            m_controller->write( register_address_array.begin(), register_address_array.end() )
+                == Response::ACK,
+            m_nonresponsive_device_error );
+        PICOLIBRARY_EXPECT( m_controller->write( data ) == Response::ACK, m_nonresponsive_device_error );
+    }
+
+    /**
+     * \brief Write to a block of registers.
+     *
+     * \pre the device is responsive
+     *
+     * \param[in] register_address The address of the block of registers to write to.
+     * \param[in] begin, The beginning of the data to write to the block of registers.
+     * \param[in] end, The end of the data to write to the block of registers.
+     */
+    void write( std::uint16_t register_address, std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+    {
+        auto const register_address_array = to_array( register_address );
+
+        m_align_bus_multiplexer();
+
+        auto const guard = Bus_Control_Guard{ *m_controller };
+
+        PICOLIBRARY_EXPECT(
+            m_controller->address( m_address, Operation::WRITE ) == Response::ACK,
+            m_nonresponsive_device_error );
+        PICOLIBRARY_EXPECT(
+            m_controller->write( register_address_array.begin(), register_address_array.end() )
+                == Response::ACK,
+            m_nonresponsive_device_error );
+        PICOLIBRARY_EXPECT( m_controller->write( begin, end ) == Response::ACK, m_nonresponsive_device_error );
+    }
+
   private:
     /**
      * \brief Align the bus's multiplexer(s) (if any) to enable communication with the
@@ -1650,6 +1776,20 @@ class Device {
      *        does not acknowledge a write.
      */
     Error_Code m_nonresponsive_device_error{};
+
+    /**
+     * \brief Convert a 16-bit register address to an array of bytes (MSB first).
+     *
+     * \param[in] register_address The 16-bit register address to convert to an array of
+     *            bytes.
+     *
+     * \return The array of bytes.
+     */
+    static auto to_array( std::uint16_t register_address ) noexcept -> Array<std::uint8_t, 2>
+    {
+        return { static_cast<std::uint8_t>( register_address >> std::numeric_limits<std::uint8_t>::digits ),
+                 static_cast<std::uint8_t>( register_address ) };
+    }
 };
 
 } // namespace picolibrary::I2C
