@@ -662,6 +662,8 @@ class Network_Stack {
 
         m_socket_status[ socket ] = Socket_Status::AVAILABLE_FOR_ALLOCATION;
         ++m_sockets_available_for_allocation;
+
+        m_socket_flags[ socket ] = 0x00;
     }
 
     /**
@@ -737,6 +739,56 @@ class Network_Stack {
         ::picolibrary::for_each( begin, end, [ this ]( auto socket_id ) noexcept {
             deallocate_socket( socket_id );
         } );
+    }
+
+    /**
+     * \brief Set a socket's flags.
+     *
+     * \param[in] socket_id The socket ID for the socket whose flags are to be set.
+     * \param[in] mask The mask identifying the flags to set.
+     *
+     * \pre the socket has been allocated
+     */
+    void set_socket_flags( Socket_ID socket_id, std::uint_fast8_t mask ) noexcept
+    {
+        auto const socket = static_cast<std::uint_fast8_t>(
+            to_underlying( socket_id ) >> Control_Byte::Bit::SOCKET );
+
+        PICOLIBRARY_EXPECT(
+            m_socket_status[ socket ] == Socket_Status::ALLOCATED, Generic_Error::LOGIC_ERROR );
+
+        m_socket_flags[ socket ] |= mask;
+    }
+
+    /**
+     * \brief Clear a socket's flags.
+     *
+     * \param[in] socket_id The socket ID for the socket whose flags are to be cleared.
+     * \param[in] mask The mask identifying the flags to clear.
+     */
+    void clear_socket_flags( Socket_ID socket_id, std::uint_fast8_t mask ) noexcept
+    {
+        auto const socket = static_cast<std::uint_fast8_t>(
+            to_underlying( socket_id ) >> Control_Byte::Bit::SOCKET );
+
+        m_socket_flags[ socket ] &= ~mask;
+    }
+
+    /**
+     * \brief Get a socket's flags.
+     *
+     * \attention A socket's flags are cleared when the socket is allocated.
+     *
+     * \param[in] socket_id The socket ID for the socket whose flags are to be gotten.
+     *
+     * \return The socket's flags.
+     */
+    auto socket_flags( Socket_ID socket_id ) const noexcept -> std::uint_fast8_t
+    {
+        auto const socket = static_cast<std::uint_fast8_t>(
+            to_underlying( socket_id ) >> Control_Byte::Bit::SOCKET );
+
+        return m_socket_flags[ socket ];
     }
 
     /**
@@ -820,6 +872,11 @@ class Network_Stack {
      * \brief The socket status.
      */
     Array<Socket_Status, SOCKETS> m_socket_status{};
+
+    /**
+     * \brief The socket flags.
+     */
+    Array<std::uint_fast8_t, SOCKETS> m_socket_flags{};
 };
 
 } // namespace picolibrary::WIZnet::W5500::IP

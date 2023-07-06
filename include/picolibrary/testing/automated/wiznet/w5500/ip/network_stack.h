@@ -138,6 +138,10 @@ class Mock_Network_Stack {
         deallocate_sockets( std::vector<::picolibrary::WIZnet::W5500::Socket_ID>{ begin, end } );
     }
 
+    MOCK_METHOD( void, set_socket_flags, ( ::picolibrary::WIZnet::W5500::Socket_ID, std::uint_fast8_t ) );
+    MOCK_METHOD( void, clear_socket_flags, ( ::picolibrary::WIZnet::W5500::Socket_ID, std::uint_fast8_t ) );
+    MOCK_METHOD( std::uint_fast8_t, socket_flags, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
+
     MOCK_METHOD( Mock_Port_Allocator &, tcp_port_allocator, () );
 
     MOCK_METHOD( TCP_Client, make_tcp_client, () );
