@@ -147,6 +147,12 @@ docuentation](../../../network/ip.md#network-stack) for more information.
   `::picolibrary::WIZnet::W5500::IP::Network_Stack::allocate_sockets()` member functions.
 - To deallocate sockets, use the
   `::picolibrary::WIZnet::W5500::IP::Network_Stack::deallocate_sockets()` member function.
+- To set a socket's flags, use the
+  `::picolibrary::WIZnet::W5500::IP::Network_Stack::set_socket_flags()` member function.
+- To clear a socket's flags, use the
+  `::picolibrary::WIZnet::W5500::IP::Network_Stack::clear_socket_flags()` member function.
+- To get a socket's flags, use the
+  `::picolibrary::WIZnet::W5500::IP::Network_Stack::socket_flags()` member function.
 - To access the TCP over IP port allocator, us the
   `::picolibrary::WIZnet::W5500::IP::Network_Stack::tcp_port_allocator()` member function.
 
