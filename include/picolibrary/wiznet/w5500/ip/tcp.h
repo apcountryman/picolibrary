@@ -126,8 +126,6 @@ class Client {
 
     /**
      * \brief Destructor.
-     *
-     * \pre the W5500 is responsive
      */
     ~Client() noexcept
     {
@@ -136,8 +134,6 @@ class Client {
 
     /**
      * \brief Assignment operator.
-     *
-     * \pre the W5500 is responsive
      *
      * \param[in] expression The expression to be assigned.
      *
