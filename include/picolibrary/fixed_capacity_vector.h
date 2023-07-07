@@ -264,7 +264,7 @@ class Fixed_Capacity_Vector {
     {
         for ( auto i = Size{}; i < m_size; ++i ) {
             new ( &m_storage[ i ] )
-                Value{ *std::launder( reinterpret_cast<Pointer>( &original.m_storage[ i ] ) ) };
+                Value{ *std::launder( reinterpret_cast<Const_Pointer>( &original.m_storage[ i ] ) ) };
         } // for
     }
 
@@ -334,8 +334,8 @@ class Fixed_Capacity_Vector {
             m_size = expression.m_size;
 
             for ( auto i = Size{}; i < m_size; ++i ) {
-                new ( &m_storage[ i ] )
-                    Value{ *std::launder( reinterpret_cast<Pointer>( &expression.m_storage[ i ] ) ) };
+                new ( &m_storage[ i ] ) Value{ *std::launder(
+                    reinterpret_cast<Const_Pointer>( &expression.m_storage[ i ] ) ) };
             } // for
         }     // if
 
