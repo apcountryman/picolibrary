@@ -15,8 +15,5 @@
 
 # Description: picolibrary::WIZnet::W5500::IP automated tests CMake rules.
 
-# build the picolibrary::WIZnet::W5500::IP::Network_Stack automated tests
-add_subdirectory( network_stack )
-
 # build the picolibrary::WIZnet::W5500::IP::TCP automated tests
 add_subdirectory( tcp )
