@@ -14,6 +14,3 @@
 # permissions and limitations under the License.
 
 # Description: picolibrary::WIZnet::W5500::IP::TCP automated tests CMake rules.
-
-# build the picolibrary::WIZnet::W5500::IP::TCP::Client automated tests
-add_subdirectory( client )

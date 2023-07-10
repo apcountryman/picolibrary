@@ -33,7 +33,6 @@
 #include "picolibrary/ipv4.h"
 #include "picolibrary/mac_address.h"
 #include "picolibrary/testing/automated/wiznet/w5500/ip.h"
-#include "picolibrary/testing/automated/wiznet/w5500/ip/tcp.h"
 #include "picolibrary/wiznet/w5500.h"
 
 namespace picolibrary::Testing::Automated::WIZnet::W5500::IP {
@@ -43,8 +42,6 @@ namespace picolibrary::Testing::Automated::WIZnet::W5500::IP {
  */
 class Mock_Network_Stack {
   public:
-    using TCP_Client = TCP::Mock_Client::Handle;
-
     Mock_Network_Stack() = default;
 
     Mock_Network_Stack( Mock_Network_Stack && ) = delete;
@@ -143,9 +140,6 @@ class Mock_Network_Stack {
     MOCK_METHOD( std::uint_fast8_t, socket_flags, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
 
     MOCK_METHOD( Mock_Port_Allocator &, tcp_port_allocator, () );
-
-    MOCK_METHOD( TCP_Client, make_tcp_client, () );
-    MOCK_METHOD( TCP_Client, make_tcp_client, ( ::picolibrary::WIZnet::W5500::Socket_ID ) );
 };
 
 } // namespace picolibrary::Testing::Automated::WIZnet::W5500::IP
