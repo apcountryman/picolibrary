@@ -60,6 +60,7 @@ set(
     "picolibrary/spi.cc"
     "picolibrary/state_machine.cc"
     "picolibrary/stream.cc"
+    "picolibrary/texas_instruments.cc"
     "picolibrary/utility.cc"
     "picolibrary/wiznet.cc"
     "picolibrary/wiznet/w5500.cc"
