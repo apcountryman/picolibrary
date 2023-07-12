@@ -139,6 +139,7 @@ if( ${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING} )
         "picolibrary/testing/interactive/spi.cc"
         "picolibrary/testing/interactive/stream.cc"
         "picolibrary/testing/interactive/texas_instruments.cc"
+        "picolibrary/testing/interactive/texas_instruments/tca9548a.cc"
         "picolibrary/testing/interactive/wiznet.cc"
         "picolibrary/testing/interactive/wiznet/w5500.cc"
         "picolibrary/testing/interactive/wiznet/w5500/ip.cc"
