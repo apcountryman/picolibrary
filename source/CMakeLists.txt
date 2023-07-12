@@ -61,6 +61,7 @@ set(
     "picolibrary/state_machine.cc"
     "picolibrary/stream.cc"
     "picolibrary/texas_instruments.cc"
+    "picolibrary/texas_instruments/tca9548a.cc"
     "picolibrary/utility.cc"
     "picolibrary/wiznet.cc"
     "picolibrary/wiznet/w5500.cc"
