@@ -93,5 +93,8 @@ add_subdirectory( stream )
 # build the picolibrary::Stream_Buffer automated tests
 add_subdirectory( stream_buffer )
 
+# build the picolibrary::Texas_Instruments automated tests
+add_subdirectory( texas_instruments )
+
 # build the picolibrary::WIZnet automated tests
 add_subdirectory( wiznet )
