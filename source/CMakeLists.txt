@@ -105,6 +105,7 @@ if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
         "picolibrary/testing/automated/rgb.cc"
         "picolibrary/testing/automated/spi.cc"
         "picolibrary/testing/automated/stream.cc"
+        "picolibrary/testing/automated/texas_instruments.cc"
         "picolibrary/testing/automated/wiznet.cc"
         "picolibrary/testing/automated/wiznet/w5500.cc"
         "picolibrary/testing/automated/wiznet/w5500/ip.cc"
