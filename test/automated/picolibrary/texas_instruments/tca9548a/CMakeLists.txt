@@ -13,7 +13,4 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary::Texas_Instruments automated tests CMake rules.
-
-# build the picolibrary::Texas_Instruments::TCA9548A automated tests
-add_subdirectory( tca9548a )
+# Description: picolibrary::Texas_Instruments::TCA9548A automated tests CMake rules.
