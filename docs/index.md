@@ -43,6 +43,7 @@ microcontrollers.
         1. [MCP23008 Facilities](device/microchip/mcp23008.md)
         1. [MCP23S08 Facilities](device/microchip/mcp23s08.md)
     1. Texas Instruments
+        1. [TCA9548A Facilities](device/texas_instruments/tca9548a.md)
     1. WIZnet
         1. [W5500 Facilities](device/wiznet/w5500.md)
             1. [IP Facilities](device/wiznet/w5500/ip.md)
