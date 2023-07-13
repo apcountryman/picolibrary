@@ -23,10 +23,23 @@
 #ifndef PICOLIBRARY_TEXAS_INSTRUMENTS_TCA9548A_H
 #define PICOLIBRARY_TEXAS_INSTRUMENTS_TCA9548A_H
 
+#include <cstdint>
+
 /**
  * \brief Texas Instruments TCA9548A facilities.
  */
 namespace picolibrary::Texas_Instruments::TCA9548A {
+
+/**
+ * \brief Control register.
+ */
+struct Control {
+    /**
+     * \brief Register reset value.
+     */
+    static constexpr auto RESET = std::uint8_t{ 0b00000000 };
+};
+
 } // namespace picolibrary::Texas_Instruments::TCA9548A
 
 #endif // PICOLIBRARY_TEXAS_INSTRUMENTS_TCA9548A_H
