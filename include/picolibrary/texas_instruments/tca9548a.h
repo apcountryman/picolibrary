@@ -25,6 +25,8 @@
 
 #include <cstdint>
 
+#include "picolibrary/i2c.h"
+
 /**
  * \brief Texas Instruments TCA9548A facilities.
  */
@@ -39,6 +41,16 @@ struct Control {
      */
     static constexpr auto RESET = std::uint8_t{ 0b00000000 };
 };
+
+/**
+ * \brief Address, numeric format.
+ */
+using Address_Numeric = I2C::Device_Address_Numeric<0b1110'000, 0b1110'111>;
+
+/**
+ * \brief Address, transmitted format.
+ */
+using Address_Transmitted = I2C::Device_Address_Transmitted<0b1110'000'0, 0b1110'111'0>;
 
 } // namespace picolibrary::Texas_Instruments::TCA9548A
 
