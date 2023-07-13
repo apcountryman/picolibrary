@@ -13,7 +13,22 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary::Texas_Instruments::TCA9548A automated tests CMake rules.
+# Description: picolibrary::Texas_Instruments::TCA9548A::Driver automated tests CMake
+#       rules.
 
 # build the picolibrary::Texas_Instruments::TCA9548A::Driver automated tests
-add_subdirectory( driver )
+if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
+    add_executable(
+        test-automated-picolibrary-texas_instruments-tca9548a-driver
+        main.cc
+    )
+    target_link_libraries(
+        test-automated-picolibrary-texas_instruments-tca9548a-driver
+        picolibrary
+        picolibrary-testing-automated-fatal_error
+    )
+    add_test(
+        NAME    test-automated-picolibrary-texas_instruments-tca9548a-driver
+        COMMAND test-automated-picolibrary-texas_instruments-tca9548a-driver --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
