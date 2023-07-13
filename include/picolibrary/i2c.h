@@ -1131,10 +1131,10 @@ class Device_Address_Numeric : public Address_Numeric {
 template<Address_Transmitted::Unsigned_Integer MIN, Address_Transmitted::Unsigned_Integer MAX>
 class Device_Address_Transmitted : public Address_Transmitted {
   public:
-    static_assert( MIN >= Address_Numeric::min().as_unsigned_integer() );
+    static_assert( MIN >= Address_Transmitted::min().as_unsigned_integer() );
     static_assert( not( MIN & 0b1 ) );
 
-    static_assert( MAX <= Address_Numeric::max().as_unsigned_integer() );
+    static_assert( MAX <= Address_Transmitted::max().as_unsigned_integer() );
     static_assert( not( MAX & 0b1 ) );
 
     static_assert( MIN <= MAX );
