@@ -212,7 +212,7 @@ class Bus_Multiplexer_Aligner {
     constexpr Bus_Multiplexer_Aligner() noexcept = default;
 
     /**
-     * \brief Caching driver.
+     * \brief Constructor.
      *
      * \param[in] caching_driver The caching driver used to interact with the TCA9548A.
      * \param[in] mask_enable The mask identifying the TCA9548A channels to enable.
