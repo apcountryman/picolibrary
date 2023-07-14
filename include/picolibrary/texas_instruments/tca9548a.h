@@ -142,6 +142,62 @@ class Driver : public Device {
     }
 };
 
+/**
+ * \brief Caching driver.
+ *
+ * \tparam Bus_Multiplexer_Aligner A nullary functor. The functor must be default
+ *         constructable, move constructable, and move assignable. When called, the
+ *         functor should align the bus's multiplexer(s) (if any) to enable communication
+ *         with the TCA9548A.
+ * \tparam Controller The type of controller used to communicate with the TCA9548A.
+ * \tparam Driver The type of driver to add register caching to. The default driver
+ *         implementation should be used unless a mock driver implementation is being
+ *         injected to support automated testing of this caching driver.
+ */
+template<typename Bus_Multiplexer_Aligner, typename Controller, typename Driver = ::picolibrary::Texas_Instruments::TCA9548A::Driver<Bus_Multiplexer_Aligner, Controller>>
+class Caching_Driver : public Driver {
+  public:
+    using Driver::Driver;
+
+    /**
+     * \brief Reset all cached register values.
+     */
+    constexpr void reset_cache() noexcept
+    {
+        m_control = Control::RESET;
+    }
+
+    /**
+     * \brief Write to the Control register.
+     *
+     * \pre the TCA9548A is responsive
+     *
+     * \param[in] data The data to write to the Control register.
+     */
+    void write_control( std::uint8_t data ) noexcept
+    {
+        Driver::write_control( data );
+
+        m_control = data;
+    }
+
+    /**
+     * \brief Get the cached Control register value.
+     *
+     * \return The cached Control register value.
+     */
+    constexpr auto control() const noexcept -> std::uint8_t
+    {
+        return m_control;
+    }
+
+  private:
+    /**
+     * \brief The cached Control register value.
+     */
+    std::uint8_t m_control{ Control::RESET };
+};
+
 } // namespace picolibrary::Texas_Instruments::TCA9548A
 
 #endif // PICOLIBRARY_TEXAS_INSTRUMENTS_TCA9548A_H

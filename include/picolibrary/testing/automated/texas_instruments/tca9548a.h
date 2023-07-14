@@ -65,6 +65,36 @@ class Mock_Driver : public I2C::Mock_Device {
     MOCK_METHOD( void, write_control, ( std::uint8_t ) );
 };
 
+/**
+ * \brief Mock caching driver.
+ */
+class Mock_Caching_Driver : public Mock_Driver {
+  public:
+    Mock_Caching_Driver() = default;
+
+    Mock_Caching_Driver(
+        std::function<void()>,
+        I2C::Mock_Controller &,
+        ::picolibrary::Texas_Instruments::TCA9548A::Address_Transmitted,
+        Error_Code const & )
+    {
+    }
+
+    Mock_Caching_Driver( Mock_Caching_Driver && ) = delete;
+
+    Mock_Caching_Driver( Mock_Caching_Driver const & ) = delete;
+
+    ~Mock_Caching_Driver() noexcept = default;
+
+    auto operator=( Mock_Caching_Driver && ) = delete;
+
+    auto operator=( Mock_Caching_Driver const & ) = delete;
+
+    MOCK_METHOD( void, reset_cache, () );
+
+    MOCK_METHOD( std::uint8_t, control, (), ( const ) );
+};
+
 } // namespace picolibrary::Testing::Automated::Texas_Instruments::TCA9548A
 
 #endif // PICOLIBRARY_TESTING_AUTOMATED_TEXAS_INSTRUMENTS_TCA9548A_H
