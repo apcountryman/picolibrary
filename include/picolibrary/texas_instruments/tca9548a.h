@@ -198,6 +198,112 @@ class Caching_Driver : public Driver {
     std::uint8_t m_control{ Control::RESET };
 };
 
+/**
+ * \brief Bus multiplexer aligner.
+ *
+ * \tparam Caching_Driver The type of caching driver used to interact with a TCA9548A.
+ */
+template<typename Caching_Driver>
+class Bus_Multiplexer_Aligner {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Bus_Multiplexer_Aligner() noexcept = default;
+
+    /**
+     * \brief Caching driver.
+     *
+     * \param[in] caching_driver The caching driver used to interact with the TCA9548A.
+     * \param[in] mask_enable The mask identifying the TCA9548A channels to enable.
+     * \param[in] mask_disable The mask identifying the TCA9548A channels to disable.
+     */
+    constexpr Bus_Multiplexer_Aligner( Caching_Driver & caching_driver, std::uint8_t mask_enable, std::uint8_t mask_disable ) noexcept
+        :
+        m_caching_driver{ &caching_driver },
+        m_mask_enable{ mask_enable },
+        m_mask_disable{ mask_disable }
+    {
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Bus_Multiplexer_Aligner( Bus_Multiplexer_Aligner && source ) noexcept :
+        m_caching_driver{ source.m_caching_driver },
+        m_mask_enable{ source.m_mask_enable },
+        m_mask_disable{ source.m_mask_disable }
+    {
+        source.m_caching_driver = nullptr;
+        source.m_mask_enable    = 0x00;
+        source.m_mask_disable   = 0x00;
+    }
+
+    Bus_Multiplexer_Aligner( Bus_Multiplexer_Aligner const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Bus_Multiplexer_Aligner() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Bus_Multiplexer_Aligner && expression ) noexcept -> Bus_Multiplexer_Aligner &
+    {
+        if ( &expression != this ) {
+            m_caching_driver = expression.m_caching_driver;
+            m_mask_enable    = expression.m_mask_enable;
+            m_mask_disable   = expression.m_mask_disable;
+
+            expression.m_caching_driver = nullptr;
+            expression.m_mask_enable    = 0x00;
+            expression.m_mask_disable   = 0x00;
+        } // if
+
+        return *this;
+    }
+
+    auto operator=( Bus_Multiplexer_Aligner const & ) = delete;
+
+    /**
+     * \brief Configure the TCA9548A to enable communication with the device.
+     */
+    constexpr void operator()() const noexcept
+    {
+        auto const control = m_caching_driver->control();
+
+        auto const channels_not_enabled  = ( control & m_mask_enable ) != m_mask_enable;
+        auto const channels_not_disabled = ( control & m_mask_disable ) != 0x00;
+
+        if ( channels_not_enabled or channels_not_disabled ) {
+            m_caching_driver->write_control( ( control | m_mask_enable ) & ~m_mask_disable );
+        } // if
+    }
+
+  private:
+    /**
+     * \brief The caching driver used to interact with the TCA9548A.
+     */
+    Caching_Driver * m_caching_driver{};
+
+    /**
+     * \brief The mask identifying the TCA9548A channels to enable.
+     */
+    std::uint8_t m_mask_enable{};
+
+    /**
+     * \brief The mask identifying the TCA9548A channels to disable.
+     */
+    std::uint8_t m_mask_disable{};
+};
+
 } // namespace picolibrary::Texas_Instruments::TCA9548A
 
 #endif // PICOLIBRARY_TEXAS_INSTRUMENTS_TCA9548A_H
