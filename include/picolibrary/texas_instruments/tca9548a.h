@@ -143,16 +143,16 @@ class Driver : public Device {
 };
 
 /**
- * \brief Driver.
+ * \brief Caching driver.
  *
  * \tparam Bus_Multiplexer_Aligner A nullary functor. The functor must be default
  *         constructable, move constructable, and move assignable. When called, the
  *         functor should align the bus's multiplexer(s) (if any) to enable communication
  *         with the TCA9548A.
  * \tparam Controller The type of controller used to communicate with the TCA9548A.
- * \tparam Driver The type of driver to add caching driver functionality to. The default
- *         driver implementation should be used unless a mock driver implementation is
- *         being injected to support automated testing of this caching driver.
+ * \tparam Driver The type of driver to add register caching to. The default driver
+ *         implementation should be used unless a mock driver implementation is being
+ *         injected to support automated testing of this caching driver.
  */
 template<typename Bus_Multiplexer_Aligner, typename Controller, typename Driver = ::picolibrary::Texas_Instruments::TCA9548A::Driver<Bus_Multiplexer_Aligner, Controller>>
 class Caching_Driver : public Driver {
