@@ -13,14 +13,23 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary::Texas_Instruments::TCA9548A automated tests CMake rules.
+# Description: picolibrary::Texas_Instruments::TCA9548A::Bus_Multiplexer_Aligner automated
+#       tests CMake rules.
 
 # build the picolibrary::Texas_Instruments::TCA9548A::Bus_Multiplexer_Aligner automated
 # tests
-add_subdirectory( bus_multiplexer_aligner )
-
-# build the picolibrary::Texas_Instruments::TCA9548A::Caching_Driver automated tests
-add_subdirectory( caching_driver )
-
-# build the picolibrary::Texas_Instruments::TCA9548A::Driver automated tests
-add_subdirectory( driver )
+if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
+    add_executable(
+        test-automated-picolibrary-texas_instruments-tca9548a-bus_multiplexer_aligner
+        main.cc
+    )
+    target_link_libraries(
+        test-automated-picolibrary-texas_instruments-tca9548a-bus_multiplexer_aligner
+        picolibrary
+        picolibrary-testing-automated-fatal_error
+    )
+    add_test(
+        NAME    test-automated-picolibrary-texas_instruments-tca9548a-bus_multiplexer_aligner
+        COMMAND test-automated-picolibrary-texas_instruments-tca9548a-bus_multiplexer_aligner --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
