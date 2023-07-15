@@ -49,11 +49,14 @@ namespace picolibrary::Testing::Interactive::Texas_Instruments::TCA9548A {
  * \param[in] tca9548a_address the TCA9548A's address.
  */
 template<typename Controller>
+// NOLINTNEXTLINE(readability-function-size)
 void scan(
     Reliable_Output_Stream &                                        stream,
     Controller                                                      controller,
     ::picolibrary::Texas_Instruments::TCA9548A::Address_Transmitted tca9548a_address ) noexcept
 {
+    // #lizard forgives the length
+
     controller.initialize();
 
     auto tca9548a = ::picolibrary::Texas_Instruments::TCA9548A::Driver{
