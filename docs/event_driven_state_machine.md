@@ -374,7 +374,7 @@ Event-Driven Programming for Embedded Systems" Figure 2.11.
 Note that there is an error in line "(2)" of Figure 2.12 ("s1-INIT;" should not be
 present).
 The example assumes that the `PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION`
-project configuration option is `OFF`.
+project configuration option is `ON`.
 ```c++
 #include <cstdlib>
 #include <iostream>
