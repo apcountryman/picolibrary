@@ -365,6 +365,10 @@ for more information about state event handlers.
   active state or one of its superstates from a derived class, use the
   `::picolibrary::HSM::is_in()` member function.
 
+`::picolibrary::HSM` automated tests are defined in the
+[`test/automated/picolibrary/hsm/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/hsm/main.cc)
+source file.
+
 The following example is based on "Practical UML Statecharts in C/C++, Second Edition:
 Event-Driven Programming for Embedded Systems" Figure 2.11.
 Note that there is an error in line "(2)" of Figure 2.12 ("s1-INIT;" should not be
