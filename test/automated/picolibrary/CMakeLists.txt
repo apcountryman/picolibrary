@@ -87,6 +87,9 @@ add_subdirectory( reliable_stream_buffer )
 # build the picolibrary::SPI automated tests
 add_subdirectory( spi )
 
+# build the picolibrary::State_Machine automated tests
+add_subdirectory( state_machine )
+
 # build the picolibrary::Stream automated tests
 add_subdirectory( stream )
 

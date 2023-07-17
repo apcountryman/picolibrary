@@ -119,6 +119,10 @@ for more information about state event handlers.
   currently active state from a derived class, use the
   `::picolibrary::State_Machine::is_in()` member function.
 
+`::picolibrary::State_Machine` automated tests are defined in the
+[`test/automated/picolibrary/state_machine/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/state_machine/main.cc)
+source file.
+
 The following example assumes that the
 `PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION` project configuration option is
 `OFF`.
