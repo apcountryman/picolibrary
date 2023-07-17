@@ -39,13 +39,6 @@ using ::picolibrary::to_underlying;
 
 class Test_State_Machine : public State_Machine {
   public:
-    enum class Event : Event_ID {
-        INITIAL_TRANSITION_TRIGGER,
-        A,
-        B,
-        C,
-    };
-
     static Simple_Event const A;
     static Simple_Event const B;
     static Simple_Event const C;
@@ -74,6 +67,13 @@ class Test_State_Machine : public State_Machine {
     using State_Machine::dispatch;
 
   private:
+    enum class Event : Event_ID {
+        INITIAL_TRANSITION_TRIGGER,
+        A,
+        B,
+        C,
+    };
+
     class Event_Category final : public ::picolibrary::Event_Category {
       public:
         static constexpr auto instance() noexcept -> Event_Category const &
