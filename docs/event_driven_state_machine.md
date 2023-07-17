@@ -125,7 +125,7 @@ source file.
 
 The following example assumes that the
 `PICOLIBRARY_SUPPRESS_HUMAN_READABLE_EVENT_INFORMATION` project configuration option is
-`OFF`.
+`ON`.
 ```c++
 #include <cstdlib>
 #include <iostream>
