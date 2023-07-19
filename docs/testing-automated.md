@@ -14,6 +14,14 @@ The location of the automated tests for a particular library feature can be foun
 documentation for the feature.
 Not all library features have automated tests.
 
+## Test Coverage
+To generate an automated testing coverage report, build the
+`picolibrary-automated-testing-coverage` target.
+The automated testing coverage report can then be found in the build directory's
+`picolibrary-automated-testing-coverage-report` subdirectory.
+The reported coverage will be misleadingly high due to picolibrary's heavy use of
+templates that are not explicitly instantiated.
+
 ## Utilities
 
 ### Movable Mock Handles
