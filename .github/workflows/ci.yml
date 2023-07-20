@@ -78,12 +78,21 @@ jobs:
             - uses: actions/checkout@v3
               with:
                   submodules: recursive
+            - name: Install dependencies
+              shell: bash
+              run: sudo apt update && sudo apt install lcov
             - name: Build
               shell: bash
               run: ./ci/build --configuration testing-automated
             - name: Test
               shell: bash
               run: ./ci/test
+            - name: Archive automated testing coverage report
+              uses: actions/upload-artifact@v3
+              with:
+                  name: picolibrary-automated-testing-coverage-report
+                  path: build/testing-automated/picolibrary-automated-testing-coverage-report
+                  retention-days: 7
 
     build-testing-interactive:
         name: Build (testing-interactive)

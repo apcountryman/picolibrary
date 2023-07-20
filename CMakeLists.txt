@@ -109,10 +109,14 @@ if( NOT ${PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS} )
         add_compile_options(
             -fsanitize=address
             -fno-sanitize-recover=all
+            -fprofile-arcs
+            -ftest-coverage
         )
         add_link_options(
             -fsanitize=address
             -fno-sanitize-recover=all
+            -fprofile-arcs
+            -ftest-coverage
         )
     endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
 endif( NOT ${PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS} )
@@ -145,6 +149,25 @@ if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
 
         add_subdirectory( googletest )
     endif( NOT ${PICOLIBRARY_USE_PARENT_PROJECT_GOOGLE_TEST} )
+endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
+
+# configure automated testing coverage report generation
+if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
+    include( lcov-utilities )
+    add_lcov_coverage_target(
+        picolibrary-automated-testing-coverage
+        ctest
+        EXECUTABLE_ARGUMENTS --tests-regex test-automated-picolibrary*
+        INCLUDE_BRANCH_COVERAGE
+        EXCLUDE_EXTERNAL_SOURCE_FILES
+        REMOVE
+            */googletest/*
+            */include/picolibrary/testing.h
+            */include/picolibrary/testing/*
+            */source/picolibrary/testing.h
+            */source/picolibrary/testing/*
+            */test/*
+    )
 endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
 
 # enable automated testing
