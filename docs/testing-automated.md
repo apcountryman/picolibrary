@@ -3,6 +3,7 @@ picolibrary uses [GoogleTest](https://github.com/google/googletest) for automate
 
 ## Table of Contents
 1. [Tests](#tests)
+1. [Test Coverage](#test-coverage)
 1. [Utilities](#utilities)
     1. [Movable Mock Handles](#movable-mock-handles)
 
