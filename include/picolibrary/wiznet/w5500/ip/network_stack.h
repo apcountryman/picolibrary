@@ -26,6 +26,7 @@
 #include <cstdint>
 #include <utility>
 
+#include "picolibrary/array.h"
 #include "picolibrary/error.h"
 #include "picolibrary/fixed_capacity_vector.h"
 #include "picolibrary/ip.h"
@@ -64,6 +65,8 @@ class Network_Stack {
      * \param[in] controller The controller used to communicate with the W5500.
      * \param[in] configuration The controller clock and data exchange bit order
      *            configuration that meets the W5500's communication requirements.
+     * \param[in] device_selector The device selector used to select and deselect the
+     *            W5500.
      * \param[in] nonresponsive_device_error The fatal error that occurs if an operation
      *            fails due to the W5500 being nonresponsive.
      * \param[in] tcp_port_allocator The TCP over IP port allocator to use.
@@ -166,6 +169,7 @@ class Network_Stack {
      *            (INTLEVEL register value).
      * \param[in] socket_buffer_size The desired socket buffer size.
      *
+     * \pre phy_mode != picolibrary::WIZnet::W5500::PHY_mode::POWER_DOWN
      * \pre socket_buffer_size is 2 KiB, 4 KiB, 8 KiB, or 16 KiB
      */
     // NOLINTNEXTLINE(readability-function-size)
@@ -184,6 +188,7 @@ class Network_Stack {
     {
         // #lizard forgives the length
 
+        PICOLIBRARY_EXPECT( phy_mode != PHY_Mode::POWER_DOWN, Generic_Error::INVALID_ARGUMENT );
         PICOLIBRARY_EXPECT( m_sockets == 0, Generic_Error::LOGIC_ERROR );
 
         auto sockets = std::uint_fast8_t{ 0 };
@@ -584,7 +589,7 @@ class Network_Stack {
     auto allocate_sockets( Network_Stack_Socket_Allocation_Key, std::uint_fast8_t n ) noexcept
         -> Fixed_Capacity_Vector<Socket_ID, SOCKETS>
     {
-        PICOLIBRARY_EXPECT( n <= sockets_available_for_allocation(), Generic_Error::INSUFFICIENT_SOCKETS_AVAILABLE );
+        PICOLIBRARY_EXPECT( n <= m_sockets_available_for_allocation, Generic_Error::INSUFFICIENT_SOCKETS_AVAILABLE );
 
         auto socket_ids = Fixed_Capacity_Vector<Socket_ID, SOCKETS>{};
 
@@ -765,7 +770,7 @@ class Network_Stack {
      */
     constexpr auto allocate_socket() noexcept -> Socket_ID
     {
-        for ( auto socket = std::uint_fast8_t{}; socket < sockets(); ++socket ) {
+        for ( auto socket = std::uint_fast8_t{}; socket < m_sockets; ++socket ) {
             if ( m_socket_status[ socket ] == Socket_Status::AVAILABLE_FOR_ALLOCATION ) {
                 m_socket_status[ socket ] = Socket_Status::ALLOCATED;
                 --m_sockets_available_for_allocation;

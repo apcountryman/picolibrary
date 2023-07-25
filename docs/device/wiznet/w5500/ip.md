@@ -111,7 +111,7 @@ docuentation](../../../network/ip.md#network-stack) for more information.
 - To get the socket buffer size, use the
   `::picolibrary::WIZnet::W5500::IP::Network_Stack::socket_buffer_size()` member function.
 - To get the number of sockets the network stack is configured to support, use the
-  `::picolibrary::WIZnet::W5500::IP::Network_Stack::socket_buffer_size()` member function.
+  `::picolibrary::WIZnet::W5500::IP::Network_Stack::sockets()` member function.
 - To get the number of sockets that are available for allocation, use the
   `::picolibrary::WIZnet::W5500::IP::Network_Stack::sockets_available_for_allocation()`
   member function.

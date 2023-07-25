@@ -17,7 +17,8 @@
 
 /**
  * \file
- * \brief picolibrary::Testing::Automated::WIZnet::W5500::IP::Network_Stack implementation.
+ * \brief picolibrary::Testing::Automated::WIZnet::W5500::IP::Network_Stack
+ *        implementation.
  */
 
 #include "picolibrary/testing/automated/wiznet/w5500/ip/network_stack.h"
