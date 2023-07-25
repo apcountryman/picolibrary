@@ -81,6 +81,7 @@ class Network_Stack {
         m_tcp_port_allocator{ std::move( tcp_port_allocator ) },
         m_udp_port_allocator{ std::move( udp_port_allocator ) }
     {
+        // #lizard forgives the parameter count
     }
 
     /**
@@ -143,6 +144,8 @@ class Network_Stack {
         return *this;
     }
 
+    auto operator=( Network_Stack const & ) = delete;
+
     /**
      * \brief Initialize the network stack.
      *
@@ -165,6 +168,7 @@ class Network_Stack {
      *
      * \pre socket_buffer_size is 2 KiB, 4 KiB, 8 KiB, or 16 KiB
      */
+    // NOLINTNEXTLINE(readability-function-size)
     void initialize(
         PHY_Mode              phy_mode,
         Ping_Blocking         ping_blocking_configuration,
@@ -178,6 +182,8 @@ class Network_Stack {
         std::uint16_t         interrupt_assert_wait_time,
         Socket_Buffer_Size    socket_buffer_size ) noexcept
     {
+        // #lizard forgives the length
+
         PICOLIBRARY_EXPECT( m_sockets == 0, Generic_Error::LOGIC_ERROR );
 
         auto sockets = std::uint_fast8_t{ 0 };
@@ -575,7 +581,7 @@ class Network_Stack {
      *
      * \return The socket IDs for the allocated sockets.
      */
-    constexpr auto allocate_sockets( Network_Stack_Socket_Allocation_Key, std::uint_fast8_t n ) noexcept
+    auto allocate_sockets( Network_Stack_Socket_Allocation_Key, std::uint_fast8_t n ) noexcept
         -> Fixed_Capacity_Vector<Socket_ID, SOCKETS>
     {
         PICOLIBRARY_EXPECT( n <= sockets_available_for_allocation(), Generic_Error::INSUFFICIENT_SOCKETS_AVAILABLE );
@@ -809,7 +815,7 @@ class Network_Stack {
      * \return The socket IDs for the allocated sockets.
      */
     template<typename Iterator>
-    constexpr auto allocate_sockets( Iterator begin, Iterator end ) noexcept
+    auto allocate_sockets( Iterator begin, Iterator end ) noexcept
         -> Fixed_Capacity_Vector<Socket_ID, SOCKETS>
     {
         auto socket_ids = Fixed_Capacity_Vector<Socket_ID, SOCKETS>{};
