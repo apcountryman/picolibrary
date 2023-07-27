@@ -206,6 +206,8 @@ class Network_Stack {
             default: PICOLIBRARY_EXPECTATION_NOT_MET( Generic_Error::INVALID_ARGUMENT );
         } // switch
 
+        m_driver.initialize();
+
         m_driver.write_phycfgr( to_underlying( phy_mode ) | PHYCFGR::Mask::RST );
         m_driver.write_phycfgr( to_underlying( phy_mode ) );
         m_driver.write_phycfgr( to_underlying( phy_mode ) | PHYCFGR::Mask::RST );
