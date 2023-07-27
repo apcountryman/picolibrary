@@ -62,6 +62,7 @@ namespace picolibrary::Testing::Interactive::WIZnet::W5500::IP {
  * \param[in] ipv4_subnet_mask The desired IPv4 subnet mask.
  */
 template<typename Controller, typename Device_Selector>
+// NOLINTNEXTLINE(readability-function-size)
 [[noreturn]] void ping(
     Reliable_Output_Stream &                   stream,
     Controller &                               controller,
@@ -76,6 +77,9 @@ template<typename Controller, typename Device_Selector>
     IPv4::Address const &                      ipv4_gateway_address,
     IPv4::Address const &                      ipv4_subnet_mask ) noexcept
 {
+    // #lizard forgives the length
+    // #lizard forgives the parameter count
+
     controller.initialize();
 
     auto network_stack = ::picolibrary::WIZnet::W5500::IP::Network_Stack{
