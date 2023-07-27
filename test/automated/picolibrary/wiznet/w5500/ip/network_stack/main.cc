@@ -61,7 +61,6 @@ using ::picolibrary::WIZnet::W5500::Socket_Buffer_Size;
 using ::picolibrary::WIZnet::W5500::Socket_ID;
 using ::testing::InSequence;
 using ::testing::Return;
-using ::testing::Sequence;
 using ::testing::TestWithParam;
 using ::testing::ValuesIn;
 
@@ -199,6 +198,8 @@ TEST_P( initialize, worksProperly )
 {
     auto const test_case = GetParam();
 
+    auto const in_sequence = InSequence{};
+
     auto controller = Mock_Controller{};
 
     auto network_stack = Network_Stack{ controller,
@@ -208,8 +209,6 @@ TEST_P( initialize, worksProperly )
                                         Mock_Port_Allocator::Handle{},
                                         Mock_Port_Allocator::Handle{} };
 
-    auto phycfgr_sequence = Sequence{};
-
     auto const retransmission_retry_time  = std::uint16_t{ 0xB2FA };
     auto const retransmission_retry_count = std::uint8_t{ 0xC2 };
     auto const mac_address  = MAC_Address{ { 0xB4, 0x49, 0x7C, 0xBB, 0xF9, 0x8C } };
@@ -218,11 +217,10 @@ TEST_P( initialize, worksProperly )
     auto const ipv4_subnet_mask           = IPv4_Address{ { 119, 122, 231, 41 } };
     auto const interrupt_assert_wait_time = std::uint16_t{ 0xB752 };
 
-    EXPECT_CALL( network_stack.driver(), write_phycfgr( test_case.phycfgr | 0b1'0'000'0'0'0 ) )
-        .InSequence( phycfgr_sequence );
-    EXPECT_CALL( network_stack.driver(), write_phycfgr( test_case.phycfgr ) ).InSequence( phycfgr_sequence );
-    EXPECT_CALL( network_stack.driver(), write_phycfgr( test_case.phycfgr | 0b1'0'000'0'0'0 ) )
-        .InSequence( phycfgr_sequence );
+    EXPECT_CALL( network_stack.driver(), initialize() );
+    EXPECT_CALL( network_stack.driver(), write_phycfgr( test_case.phycfgr | 0b1'0'000'0'0'0 ) );
+    EXPECT_CALL( network_stack.driver(), write_phycfgr( test_case.phycfgr ) );
+    EXPECT_CALL( network_stack.driver(), write_phycfgr( test_case.phycfgr | 0b1'0'000'0'0'0 ) );
     EXPECT_CALL( network_stack.driver(), write_mr( test_case.mr ) );
     EXPECT_CALL( network_stack.driver(), write_rtr( retransmission_retry_time ) );
     EXPECT_CALL( network_stack.driver(), write_rcr( retransmission_retry_count ) );
