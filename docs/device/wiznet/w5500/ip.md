@@ -126,3 +126,10 @@ project configuration option is `ON`.
 The mock is defined in the
 [`include/picolibrary/testing/automated/wiznet/w5500/ip/network_stack.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/wiznet/w5500/ip/network_stack.h)/[`source/picolibrary/testing/automated/wiznet/w5500/ip/network_stack.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/wiznet/w5500/ip/network_stack.cc)
 header/source file pair.
+
+The `::picolibrary::Testing::Interactive::WIZnet::W5500::IP::ping()` interactive test
+helper is available if the `PICOLIBRARY_ENABLE_INTERACTIVE_TESTING` project configuration
+option is `ON`.
+The interactive test helper is defined in the
+[`include/picolibrary/testing/interactive/wiznet/w5500/ip/network_stack.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/interactive/wiznet/w5500/ip/network_stack.h)/[`source/picolibrary/testing/interactive/wiznet/w5500/ip/network_stack.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/interactive/wiznet/w5500/ip/network_stack.cc)
+header/source file pair.
