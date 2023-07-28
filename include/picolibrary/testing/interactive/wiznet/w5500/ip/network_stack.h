@@ -64,18 +64,18 @@ namespace picolibrary::Testing::Interactive::WIZnet::W5500::IP {
 template<typename Controller, typename Device_Selector>
 // NOLINTNEXTLINE(readability-function-size)
 [[noreturn]] void ping(
-    Reliable_Output_Stream &                   stream,
-    Controller &                               controller,
-    typename Controller::Configuration const & configuration,
-    Device_Selector                            device_selector,
-    ::picolibrary::WIZnet::W5500::PHY_Mode     phy_mode,
-    ::picolibrary::WIZnet::W5500::ARP_Forcing  arp_forcing_configuration,
-    std::uint16_t                              retransmission_retry_time,
-    std::uint8_t                               retransmission_retry_count,
-    MAC_Address const &                        mac_address,
-    IPv4::Address const &                      ipv4_address,
-    IPv4::Address const &                      ipv4_gateway_address,
-    IPv4::Address const &                      ipv4_subnet_mask ) noexcept
+    Reliable_Output_Stream &                  stream,
+    Controller                                controller,
+    typename Controller::Configuration        configuration,
+    Device_Selector                           device_selector,
+    ::picolibrary::WIZnet::W5500::PHY_Mode    phy_mode,
+    ::picolibrary::WIZnet::W5500::ARP_Forcing arp_forcing_configuration,
+    std::uint16_t                             retransmission_retry_time,
+    std::uint8_t                              retransmission_retry_count,
+    MAC_Address                               mac_address,
+    IPv4::Address                             ipv4_address,
+    IPv4::Address                             ipv4_gateway_address,
+    IPv4::Address                             ipv4_subnet_mask ) noexcept
 {
     // #lizard forgives the length
     // #lizard forgives the parameter count
