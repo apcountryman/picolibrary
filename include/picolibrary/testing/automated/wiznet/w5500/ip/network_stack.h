@@ -127,9 +127,9 @@ class Mock_Network_Stack {
     MOCK_METHOD( void, detach_tcp_server, ( std::uint_fast8_t, ::picolibrary::WIZnet::W5500::Socket_ID ) );
     MOCK_METHOD( bool, tcp_server_is_detached, (), ( const ) );
 
-    MOCK_METHOD( Mock_Port_Allocator &, tcp_port_allocator, () );
+    MOCK_METHOD( Mock_Port_Allocator &, tcp_port_allocator, ( std::uint_fast8_t ) );
 
-    MOCK_METHOD( Mock_Port_Allocator &, udp_port_allocator, () );
+    MOCK_METHOD( Mock_Port_Allocator &, udp_port_allocator, ( std::uint_fast8_t ) );
 };
 
 } // namespace picolibrary::Testing::Automated::WIZnet::W5500::IP
