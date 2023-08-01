@@ -28,6 +28,17 @@ namespace picolibrary::WIZnet::W5500::IP {
 template<typename Controller, typename Device_Selector, typename TCP_Port_Allocator, typename UDP_Port_Allocator, typename Driver>
 class Network_Stack;
 
+} // namespace picolibrary::WIZnet::W5500::IP
+
+namespace picolibrary::WIZnet::W5500::IP::TCP {
+
+template<typename Network_Stack>
+class Client;
+
+} // namespace picolibrary::WIZnet::W5500::IP::TCP
+
+namespace picolibrary::WIZnet::W5500::IP {
+
 /**
  * \brief ::picolibrary::WIZnet::W5500::IP::Network_Stack driver access key.
  */
@@ -47,6 +58,9 @@ class Network_Stack_Driver_Access_Key {
     auto operator=( Network_Stack_Driver_Access_Key const & ) = delete;
 
   private:
+    template<typename Network_Stack>
+    friend class TCP::Client;
+
     /**
      * \brief Constructor.
      */
@@ -72,6 +86,9 @@ class Network_Stack_Socket_Allocation_Key {
     auto operator=( Network_Stack_Socket_Allocation_Key const & ) = delete;
 
   private:
+    template<typename Network_Stack>
+    friend class TCP::Client;
+
     /**
      * \brief Constructor.
      */
@@ -151,6 +168,9 @@ class Network_Stack_TCP_Port_Allocator_Access_Key {
     auto operator=( Network_Stack_TCP_Port_Allocator_Access_Key const & ) = delete;
 
   private:
+    template<typename Network_Stack>
+    friend class TCP::Client;
+
     /**
      * \brief Constructor.
      */

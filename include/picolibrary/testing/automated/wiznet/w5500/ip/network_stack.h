@@ -33,6 +33,7 @@
 #include "picolibrary/mac_address.h"
 #include "picolibrary/testing/automated/wiznet/w5500.h"
 #include "picolibrary/testing/automated/wiznet/w5500/ip.h"
+#include "picolibrary/testing/automated/wiznet/w5500/ip/tcp.h"
 #include "picolibrary/wiznet/w5500.h"
 
 namespace picolibrary::Testing::Automated::WIZnet::W5500::IP {
@@ -42,6 +43,8 @@ namespace picolibrary::Testing::Automated::WIZnet::W5500::IP {
  */
 class Mock_Network_Stack {
   public:
+    using TCP_Client = TCP::Mock_Client::Handle;
+
     Mock_Network_Stack() = default;
 
     Mock_Network_Stack( Mock_Network_Stack && ) = delete;
@@ -123,6 +126,9 @@ class Mock_Network_Stack {
         allocate_sockets,
         ( std::uint_fast8_t, std::uint_fast8_t ) );
     MOCK_METHOD( void, deallocate_socket, ( std::uint_fast8_t, ::picolibrary::WIZnet::W5500::Socket_ID ) );
+
+    MOCK_METHOD( TCP_Client, make_tcp_client, () );
+    MOCK_METHOD( TCP_Client, make_tcp_client, ( ::picolibrary::WIZnet::W5500::Socket_ID ) );
 
     MOCK_METHOD( void, detach_tcp_server, ( std::uint_fast8_t, ::picolibrary::WIZnet::W5500::Socket_ID ) );
     MOCK_METHOD( bool, tcp_server_is_detached, (), ( const ) );
