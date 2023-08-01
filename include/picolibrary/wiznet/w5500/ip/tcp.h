@@ -365,8 +365,11 @@ class Client {
      * \pre endpoint is not already in use
      * \pre if an ephemeral port is requested, an ephemeral port is available
      */
+    // NOLINTNEXTLINE(readability-function-size)
     void bind( ::picolibrary::IP::TCP::Endpoint const & endpoint = ::picolibrary::IP::TCP::Endpoint{} ) noexcept
     {
+        // #lizard forgives the length
+
         PICOLIBRARY_EXPECT( m_state == State::INITIALIZED, Generic_Error::LOGIC_ERROR );
 
         PICOLIBRARY_EXPECT(
@@ -413,8 +416,11 @@ class Client {
      * \return picolibrary::Generic_Error::OPERATION_TIMEOUT if connecting to the remote
      *         endpoint timed out.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     auto connect( ::picolibrary::IP::TCP::Endpoint const & endpoint ) noexcept -> Result<void>
     {
+        // #lizard forgives the length
+
         auto & driver = m_network_stack->driver( {} );
 
         if ( m_state == State::BOUND ) {
@@ -529,9 +535,12 @@ class Client {
      * \return picolibrary::Generic_Error::WOULD_BLOCK if no data could be written to the
      *         socket's transmit buffer without blocking.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     auto transmit( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
         -> Result<std::uint8_t const *>
     {
+        // #lizard forgives the length
+
         PICOLIBRARY_EXPECT( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
 
         auto & driver = m_network_stack->driver( {} );
@@ -642,8 +651,11 @@ class Client {
      * \return picolibrary::Generic_Error::WOULD_BLOCK if no data could be read from the
      *         socket's receive buffer without blocking.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     auto receive( std::uint8_t * begin, std::uint8_t * end ) noexcept -> Result<std::uint8_t *>
     {
+        // #lizard forgives the length
+
         PICOLIBRARY_EXPECT( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
 
         auto & driver = m_network_stack->driver( {} );
