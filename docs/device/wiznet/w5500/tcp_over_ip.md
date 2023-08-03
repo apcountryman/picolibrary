@@ -15,7 +15,8 @@ documentation](../../../network/tcp_over_ip.md#client-socket) for more informati
   `::picolibrary::WIZnet::W5500::IP::TCP::Client::state()` member function.
 - To get a socket's socket ID, use the
   `::picolibrary::WIZnet::W5500::IP::TCP::Client::socket_id()` member function.
-- To get a socket's socket interrupt mask, use the
+- To get a socket's socket interrupt mask (mask used when checking the network stack's
+  socket interrupt context), use the
   `::picolibrary::WIZnet::W5500::IP::TCP::Client::socket_interrupt_mask()` member
   function.
 - To configure a socket's no delayed ACK usage, use the
@@ -34,11 +35,12 @@ documentation](../../../network/tcp_over_ip.md#client-socket) for more informati
   function.
 - To get a socket's IPv4 packet time to live field value, use the
   `::picolibrary::WIZnet::W5500::IP::TCP::Client::time_to_live()` member function.
-- To configure a socket's keepalive packet transmission period (KPALVTR register value),
-  use the `::picolibrary::WIZnet::W5500::IP::TCP::Client::configure_keepalive_period()`
-  member function.
-- To get a socket's keepalive packet transmission period (KPALVTR register value), use the
-  `::picolibrary::WIZnet::W5500::IP::TCP::Client::keepalive_period()` member function.
+- To configure a socket's keepalive packet transmission period (SN_KPALVTR register
+  value), use the
+  `::picolibrary::WIZnet::W5500::IP::TCP::Client::configure_keepalive_period()` member
+  function.
+- To get a socket's keepalive packet transmission period (SN_KPALVTR register value), use
+  the `::picolibrary::WIZnet::W5500::IP::TCP::Client::keepalive_period()` member function.
 - To enable interrupts, use the
   `::picolibrary::WIZnet::W5500::IP::TCP::enable_interrupts()` member function.
 - To disable interrupts, use the

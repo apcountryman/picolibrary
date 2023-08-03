@@ -879,7 +879,7 @@ TEST( bind, worksProperlySpecificAddressNonEphemeralPort )
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( address.as_byte_array() ) );
     EXPECT_CALL( network_stack, tcp_port_allocator( _ ) ).WillOnce( ReturnRef( tcp_port_allocator ) );
-    EXPECT_CALL( tcp_port_allocator, allocate( Ref( driver ), Port{} ) ).WillOnce( Return( port ) );
+    EXPECT_CALL( tcp_port_allocator, allocate( Ref( driver ), port ) ).WillOnce( Return( port ) );
     EXPECT_CALL( driver, write_sn_port( socket_id, port.as_unsigned_integer() ) );
     EXPECT_CALL( driver, read_sn_mr( socket_id ) ).WillOnce( Return( 0b1'1'1'0'0'1'0'1 ) );
     EXPECT_CALL( driver, write_sn_mr( socket_id, 0b1'1'1'0'0001 ) );
@@ -890,7 +890,7 @@ TEST( bind, worksProperlySpecificAddressNonEphemeralPort )
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x94 ) );
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x13 ) );
 
-    client.bind( { address, {} } );
+    client.bind( { address, port } );
 
     ASSERT_EQ( client.state(), Client::State::BOUND );
 

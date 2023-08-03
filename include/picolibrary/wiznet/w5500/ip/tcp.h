@@ -29,6 +29,7 @@
 #include "picolibrary/ip.h"
 #include "picolibrary/ip/tcp.h"
 #include "picolibrary/precondition.h"
+#include "picolibrary/result.h"
 #include "picolibrary/utility.h"
 #include "picolibrary/wiznet/w5500.h"
 
@@ -164,7 +165,7 @@ class Client {
     /**
      * \brief Get the socket's socket ID.
      *
-     * \return The socket's socket IDs.
+     * \return The socket's socket ID.
      */
     constexpr auto socket_id() const noexcept -> Socket_ID
     {
