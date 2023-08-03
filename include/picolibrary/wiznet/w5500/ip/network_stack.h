@@ -36,6 +36,7 @@
 #include "picolibrary/utility.h"
 #include "picolibrary/wiznet/w5500.h"
 #include "picolibrary/wiznet/w5500/ip/network_stack_keys.h"
+#include "picolibrary/wiznet/w5500/ip/tcp.h"
 
 namespace picolibrary::WIZnet::W5500::IP {
 
@@ -54,6 +55,12 @@ namespace picolibrary::WIZnet::W5500::IP {
 template<typename Controller, typename Device_Selector, typename TCP_Port_Allocator, typename UDP_Port_Allocator, typename Driver = ::picolibrary::WIZnet::W5500::Driver<Controller, Device_Selector>>
 class Network_Stack {
   public:
+    /**
+     * \brief The type of TCP client socket that is used to interact with the network
+     *        stack.
+     */
+    using TCP_Client = TCP::Client<Network_Stack>;
+
     /**
      * \brief Constructor.
      */
@@ -650,6 +657,32 @@ class Network_Stack {
         ++m_sockets_available_for_allocation;
 
         m_tcp_server_is_detached[ socket ] = false;
+    }
+
+    /**
+     * \brief Construct a TCP client socket.
+     *
+     * \pre a socket is available
+     *
+     * \return The constructed TCP client socket.
+     */
+    auto make_tcp_client() noexcept -> TCP_Client
+    {
+        return { *this, allocate_socket() };
+    }
+
+    /**
+     * \brief Construct a TCP client socket that uses a specific socket.
+     *
+     * \param[in] socket_id The socket ID for the socket to use.
+     *
+     * \pre the requested socket is available for allocation
+     *
+     * \return The constructed TCP client socket.
+     */
+    auto make_tcp_client( Socket_ID socket_id ) noexcept -> TCP_Client
+    {
+        return { *this, allocate_socket( socket_id ) };
     }
 
     /**
