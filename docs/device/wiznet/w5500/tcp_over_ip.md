@@ -66,3 +66,10 @@ W5500 TCP over IP client socket class is available if the
 The mock is defined in the
 [`include/picolibrary/testing/automated/wiznet/w5500/ip/tcp.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/wiznet/w5500/ip/tcp.h)/[`source/picolibrary/testing/automated/wiznet/w5500/ip/tcp.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/wiznet/w5500/ip/tcp.cc)
 header/source file pair.
+
+The `::picolibrary::Testing::Interactive::WIZnet::W5500::IP::TCP::echo_client()`
+interactive test helper is available if the `PICOLIBRARY_ENABLE_INTERACTIVE_TESTING`
+project configuration options is `ON`.
+The interactive test helper is defined in the
+[`include/picolibrary/testing/interactive/wiznet/w5500/ip/tcp.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/interactive/wiznet/w5500/ip/tcp.h)/[`source/picolibrary/testing/interactive/wiznet/w5500/ip/tcp.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/interactive/wiznet/w5500/ip/tcp.cc)
+header/source file pair.
