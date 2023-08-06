@@ -635,23 +635,23 @@ class Network_Stack {
         PICOLIBRARY_EXPECT(
             m_socket_status[ socket ] == Socket_Status::ALLOCATED, Generic_Error::LOGIC_ERROR );
 
-        m_driver->write_sn_cr( socket_id, SN_CR::COMMAND_CLOSE );
-        while ( m_driver->read_sn_cr( socket_id ) ) {} // while
+        m_driver.write_sn_cr( socket_id, SN_CR::COMMAND_CLOSE );
+        while ( m_driver.read_sn_cr( socket_id ) ) {} // while
 
-        while ( m_driver->read_sn_sr( socket_id ) != SN_SR::STATUS_SOCK_CLOSED ) {} // while
+        while ( m_driver.read_sn_sr( socket_id ) != SN_SR::STATUS_SOCK_CLOSED ) {} // while
 
-        m_driver->write_sn_mr( socket_id, SN_MR::RESET );
-        m_driver->write_sn_ir( socket_id, Socket_Interrupt::ALL );
-        m_driver->write_sn_port( socket_id, SN_PORT::RESET );
-        m_driver->write_sn_dhar( socket_id, SN_DHAR::RESET );
-        m_driver->write_sn_dipr( socket_id, SN_DIPR::RESET );
-        m_driver->write_sn_dport( socket_id, SN_DPORT::RESET );
-        m_driver->write_sn_mssr( socket_id, SN_MSSR::RESET );
-        m_driver->write_sn_tos( socket_id, SN_TOS::RESET );
-        m_driver->write_sn_ttl( socket_id, SN_TTL::RESET );
-        m_driver->write_sn_imr( socket_id, SN_IMR::RESET );
-        m_driver->write_sn_frag( socket_id, SN_FRAG::RESET );
-        m_driver->write_sn_kpalvtr( socket_id, SN_KPALVTR::RESET );
+        m_driver.write_sn_mr( socket_id, SN_MR::RESET );
+        m_driver.write_sn_ir( socket_id, Socket_Interrupt::ALL );
+        m_driver.write_sn_port( socket_id, SN_PORT::RESET );
+        m_driver.write_sn_dhar( socket_id, SN_DHAR::RESET );
+        m_driver.write_sn_dipr( socket_id, SN_DIPR::RESET );
+        m_driver.write_sn_dport( socket_id, SN_DPORT::RESET );
+        m_driver.write_sn_mssr( socket_id, SN_MSSR::RESET );
+        m_driver.write_sn_tos( socket_id, SN_TOS::RESET );
+        m_driver.write_sn_ttl( socket_id, SN_TTL::RESET );
+        m_driver.write_sn_imr( socket_id, SN_IMR::RESET );
+        m_driver.write_sn_frag( socket_id, SN_FRAG::RESET );
+        m_driver.write_sn_kpalvtr( socket_id, SN_KPALVTR::RESET );
 
         m_socket_status[ socket ] = Socket_Status::AVAILABLE_FOR_ALLOCATION;
         ++m_sockets_available_for_allocation;
