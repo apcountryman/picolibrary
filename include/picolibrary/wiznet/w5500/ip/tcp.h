@@ -109,7 +109,7 @@ class Client {
     constexpr Client( Client && source ) noexcept :
         m_state{ source.m_state },
         m_network_stack{ source.m_network_stack },
-        m_socket_id{ source.socket_id },
+        m_socket_id{ source.m_socket_id },
         m_is_transmitting{ source.m_is_transmitting }
     {
         source.m_state         = State::UNINITIALIZED;
