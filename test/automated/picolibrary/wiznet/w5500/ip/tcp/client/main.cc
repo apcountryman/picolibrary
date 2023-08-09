@@ -78,83 +78,6 @@ TEST( constructorDefault, worksProperly )
 }
 
 /**
- * \brief picolibrary::WIZnet::W5500::IP::TCP::Client::Client( Network_Stack &,
- *        picolibrary::WIZnet::W5500::Socket_ID ) test case.
- */
-struct constructor_Test_Case {
-    /**
-     * \brief The socket's socket ID.
-     */
-    Socket_ID socket_id;
-
-    /**
-     * \brief The socket's socket interrupt mask.
-     */
-    std::uint8_t socket_interrupt_mask;
-};
-
-auto operator<<( std::ostream & stream, constructor_Test_Case const & test_case ) -> std::ostream &
-{
-    // clang-format off
-
-    return stream << "{ "
-                  << ".socket_id = " << test_case.socket_id
-                  << ", "
-                  << ".socket_interrupt_mask = 0b" << std::bitset<std::numeric_limits<std::uint8_t>::digits>{ test_case.socket_interrupt_mask }
-                  << " }";
-
-    // clang-format on
-}
-
-/**
- * \brief picolibrary::WIZnet::W5500::IP::TCP::Client::Client( Network_Stack &,
- *        picolibrary::WIZnet::W5500::Socket_ID ) test fixture.
- */
-class constructor : public TestWithParam<constructor_Test_Case> {
-};
-
-/**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::Client( Network_Stack &,
- *        picolibrary::WIZnet::W5500::Socket_ID ) works properly.
- */
-TEST_P( constructor, worksProperly )
-{
-    auto const test_case = GetParam();
-
-    auto network_stack = Mock_Network_Stack{};
-
-    auto const client = Client{ network_stack, test_case.socket_id };
-
-    EXPECT_EQ( client.state(), Client::State::INITIALIZED );
-    EXPECT_EQ( client.socket_id(), test_case.socket_id );
-    EXPECT_EQ( client.socket_interrupt_mask(), test_case.socket_interrupt_mask );
-    EXPECT_FALSE( client.is_transmitting() );
-
-    EXPECT_CALL( network_stack, deallocate_socket( _, _ ) );
-}
-
-/**
- * \brief picolibrary::WIZnet::W5500::IP::TCP::Client::Client( Network_Stack &,
- *        picolibrary::WIZnet::W5500::Socket_ID ) test cases.
- */
-constructor_Test_Case const constructor_TEST_CASES[]{
-    // clang-format off
-
-    { Socket_ID::_0, 0b00000001 },
-    { Socket_ID::_1, 0b00000010 },
-    { Socket_ID::_2, 0b00000100 },
-    { Socket_ID::_3, 0b00001000 },
-    { Socket_ID::_4, 0b00010000 },
-    { Socket_ID::_5, 0b00100000 },
-    { Socket_ID::_6, 0b01000000 },
-    { Socket_ID::_7, 0b10000000 },
-
-    // clang-format on
-};
-
-INSTANTIATE_TEST_SUITE_P( testCases, constructor, ValuesIn( constructor_TEST_CASES ) );
-
-/**
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::~Client() works properly
  *        when the socket is in the
  *        picolibrary::WIZnet::W5500::IP::TCP::Client::State::UNINITIALIZED state.
@@ -196,13 +119,13 @@ TEST_P( destructorOtherStates, worksProperly )
 {
     auto const in_sequence = InSequence{};
 
-    auto const state              = GetParam();
     auto       network_stack      = Mock_Network_Stack{};
     auto       driver             = Mock_Driver{};
     auto       tcp_port_allocator = Mock_Port_Allocator{};
     auto const socket_id          = Socket_ID::_4;
+    auto const state              = GetParam();
 
-    auto const client = Client{ state, network_stack, socket_id };
+    auto const client = Client{ network_stack, socket_id, state };
 
     auto const sn_port = std::uint16_t{ 6528 };
 
@@ -217,6 +140,94 @@ INSTANTIATE_TEST_SUITE_P(
     testCases,
     destructorOtherStates,
     Values<Client::State>( Client::State::BOUND, Client::State::CONNECTING, Client::State::CONNECTED ) );
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::socket_id() works properly.
+ */
+TEST( socketId, worksProperly )
+{
+    auto       network_stack = Mock_Network_Stack{};
+    auto const socket_id     = Socket_ID::_5;
+
+    auto const client = Client{ network_stack, socket_id };
+
+    ASSERT_EQ( client.socket_id(), socket_id );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _, _ ) );
+}
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::TCP::Client::socket_interrupt_mask() test case.
+ */
+struct socketInterruptMask_Test_Case {
+    /**
+     * \brief The socket's socket ID.
+     */
+    Socket_ID socket_id;
+
+    /**
+     * \brief The socket's socket interrupt mask.
+     */
+    std::uint8_t socket_interrupt_mask;
+};
+
+auto operator<<( std::ostream & stream, socketInterruptMask_Test_Case const & test_case )
+    -> std::ostream &
+{
+    // clang-format off
+
+    return stream << "{ "
+                  << ".socket_id = " << test_case.socket_id
+                  << ", "
+                  << ".socket_interrupt_mask = 0b" << std::bitset<std::numeric_limits<std::uint8_t>::digits>{ test_case.socket_interrupt_mask }
+                  << " }";
+
+    // clang-format on
+}
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::TCP::Client::socket_interrupt_mask() test
+ *        fixture.
+ */
+class socketInterruptMask : public TestWithParam<socketInterruptMask_Test_Case> {
+};
+
+/**
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Client::socket_interrupt_mask()
+ *        works properly.
+ */
+TEST_P( socketInterruptMask, worksProperly )
+{
+    auto const test_case = GetParam();
+
+    auto network_stack = Mock_Network_Stack{};
+
+    auto const client = Client{ network_stack, test_case.socket_id };
+
+    ASSERT_EQ( client.socket_interrupt_mask(), test_case.socket_interrupt_mask );
+
+    EXPECT_CALL( network_stack, deallocate_socket( _, _ ) );
+}
+
+/**
+ * \brief picolibrary::WIZnet::W5500::IP::TCP::Client::socket_interrupt_mask() test cases.
+ */
+socketInterruptMask_Test_Case const socketInterruptMask_TEST_CASES[]{
+    // clang-format off
+
+    { Socket_ID::_0, 0b00000001 },
+    { Socket_ID::_1, 0b00000010 },
+    { Socket_ID::_2, 0b00000100 },
+    { Socket_ID::_3, 0b00001000 },
+    { Socket_ID::_4, 0b00010000 },
+    { Socket_ID::_5, 0b00100000 },
+    { Socket_ID::_6, 0b01000000 },
+    { Socket_ID::_7, 0b10000000 },
+
+    // clang-format on
+};
+
+INSTANTIATE_TEST_SUITE_P( testCases, socketInterruptMask, ValuesIn( socketInterruptMask_TEST_CASES ) );
 
 /**
  * \brief picolibrary::WIZnet::W5500::IP::TCP::Client::configure_no_delayed_ack_usage()
@@ -664,7 +675,7 @@ TEST_P( clearInterrupts, worksProperly )
     auto       driver        = Mock_Driver{};
     auto const socket_id     = Socket_ID::_4;
 
-    auto client = Client{ Client::State::INITIALIZED, network_stack, socket_id, test_case.is_transmitting_initial };
+    auto client = Client{ network_stack, socket_id, Client::State::INITIALIZED, test_case.is_transmitting_initial };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, write_sn_ir( socket_id, test_case.mask ) );
@@ -911,7 +922,7 @@ TEST( connectErrorHandling, connectionTimeout )
     auto driver             = Mock_Driver{};
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
-    auto client = Client{ Client::State::CONNECTING, network_stack, Socket_ID::_0 };
+    auto client = Client{ network_stack, Socket_ID::_0, Client::State::CONNECTING };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
@@ -943,7 +954,7 @@ TEST( connect, worksProperlyConnectionAttemptInitiated )
     auto       tcp_port_allocator = Mock_Port_Allocator{};
     auto const socket_id          = Socket_ID::_6;
 
-    auto client = Client{ Client::State::BOUND, network_stack, socket_id };
+    auto client = Client{ network_stack, socket_id, Client::State::BOUND };
 
     auto const endpoint = Endpoint{ Address{ { 192, 206, 29, 34 } }, 22919 };
 
@@ -986,7 +997,7 @@ TEST_P( connectConnectionAttemptInProgress, worksProperly )
     auto       tcp_port_allocator = Mock_Port_Allocator{};
     auto const socket_id          = Socket_ID::_7;
 
-    auto client = Client{ Client::State::CONNECTING, network_stack, socket_id };
+    auto client = Client{ network_stack, socket_id, Client::State::CONNECTING };
 
     auto const sn_sr = GetParam();
 
@@ -1027,7 +1038,7 @@ TEST_P( connectConnectionEstablished, worksProperly )
     auto       tcp_port_allocator = Mock_Port_Allocator{};
     auto const socket_id          = Socket_ID::_7;
 
-    auto client = Client{ Client::State::CONNECTING, network_stack, socket_id };
+    auto client = Client{ network_stack, socket_id, Client::State::CONNECTING };
 
     auto const sn_sr = GetParam();
 
@@ -1322,7 +1333,7 @@ TEST_P( transmitErrorHandlingConnectionLoss, connectionLoss )
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
     auto client = Client{
-        Client::State::CONNECTED, network_stack, Socket_ID::_5, test_case.is_transmitting
+        network_stack, Socket_ID::_5, Client::State::CONNECTED, test_case.is_transmitting
     };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
@@ -1387,7 +1398,7 @@ TEST( transmit, worksProperlyInProgressTransmissionNotComplete )
     auto       tcp_port_allocator = Mock_Port_Allocator{};
     auto const socket_id          = Socket_ID::_1;
 
-    auto client = Client{ Client::State::CONNECTED, network_stack, socket_id, true };
+    auto client = Client{ network_stack, socket_id, Client::State::CONNECTED, true };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x17 ) );
@@ -1420,7 +1431,7 @@ TEST( transmit, worksProperlyTransmissionNotInProgressEmptyDataBlock )
     auto       tcp_port_allocator = Mock_Port_Allocator{};
     auto const socket_id          = Socket_ID::_4;
 
-    auto client = Client{ Client::State::CONNECTED, network_stack, socket_id, false };
+    auto client = Client{ network_stack, socket_id, Client::State::CONNECTED, false };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x17 ) );
@@ -1454,7 +1465,7 @@ TEST( transmit, worksProperlyInProgressTransmissionCompleteEmptyDataBlock )
     auto       tcp_port_allocator = Mock_Port_Allocator{};
     auto const socket_id          = Socket_ID::_4;
 
-    auto client = Client{ Client::State::CONNECTED, network_stack, socket_id, true };
+    auto client = Client{ network_stack, socket_id, Client::State::CONNECTED, true };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x17 ) );
@@ -1490,7 +1501,7 @@ TEST( transmit, worksProperlyTransmissionNotInProgressTransmitBufferFull )
     auto       tcp_port_allocator = Mock_Port_Allocator{};
     auto const socket_id          = Socket_ID::_3;
 
-    auto client = Client{ Client::State::CONNECTED, network_stack, socket_id, false };
+    auto client = Client{ network_stack, socket_id, Client::State::CONNECTED, false };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x17 ) );
@@ -1526,7 +1537,7 @@ TEST( transmit, worksProperlyInProgressTransmissionCompleteTransmitBufferFull )
     auto       tcp_port_allocator = Mock_Port_Allocator{};
     auto const socket_id          = Socket_ID::_3;
 
-    auto client = Client{ Client::State::CONNECTED, network_stack, socket_id, true };
+    auto client = Client{ network_stack, socket_id, Client::State::CONNECTED, true };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x17 ) );
@@ -1619,7 +1630,7 @@ TEST_P( transmitSufficientTransmitBufferCapacity, worksProperlyTransmissionNotIn
     auto       tcp_port_allocator = Mock_Port_Allocator{};
     auto const socket_id          = Socket_ID::_4;
 
-    auto client = Client{ Client::State::CONNECTED, network_stack, socket_id, false };
+    auto client = Client{ network_stack, socket_id, Client::State::CONNECTED, false };
 
     auto const data = std::vector<std::uint8_t>{ 0xA6, 0x94, 0x18, 0x2D };
 
@@ -1665,7 +1676,7 @@ TEST_P( transmitSufficientTransmitBufferCapacity, worksProperlyInProgressTransmi
     auto       tcp_port_allocator = Mock_Port_Allocator{};
     auto const socket_id          = Socket_ID::_4;
 
-    auto client = Client{ Client::State::CONNECTED, network_stack, socket_id, true };
+    auto client = Client{ network_stack, socket_id, Client::State::CONNECTED, true };
 
     auto const data = std::vector<std::uint8_t>{ 0xA0, 0xA9, 0xC8, 0x3F };
 
@@ -1761,7 +1772,7 @@ TEST_P( transmitInsufficientTransmitBufferCapacity, worksProperlyTransmissionNot
     auto       tcp_port_allocator = Mock_Port_Allocator{};
     auto const socket_id          = Socket_ID::_4;
 
-    auto client = Client{ Client::State::CONNECTED, network_stack, socket_id, false };
+    auto client = Client{ network_stack, socket_id, Client::State::CONNECTED, false };
 
     auto const data = std::vector<std::uint8_t>{ 0x1C, 0x98, 0xAE, 0xBE };
 
@@ -1812,7 +1823,7 @@ TEST_P( transmitInsufficientTransmitBufferCapacity, worksProperlyInProgressTrans
     auto       tcp_port_allocator = Mock_Port_Allocator{};
     auto const socket_id          = Socket_ID::_4;
 
-    auto client = Client{ Client::State::CONNECTED, network_stack, socket_id, true };
+    auto client = Client{ network_stack, socket_id, Client::State::CONNECTED, true };
 
     auto const data = std::vector<std::uint8_t>{ 0x9A, 0x37, 0x71, 0xD9 };
 
@@ -1906,7 +1917,7 @@ TEST_P( transmitKeepaliveErrorHandlingConnectionLoss, connectionLoss )
     auto driver             = Mock_Driver{};
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
-    auto client = Client{ Client::State::CONNECTED, network_stack, Socket_ID::_1 };
+    auto client = Client{ network_stack, Socket_ID::_1, Client::State::CONNECTED };
 
     auto const sn_sr = GetParam();
 
@@ -1945,7 +1956,7 @@ TEST( transmitKeepalive, worksProperly )
     auto       tcp_port_allocator = Mock_Port_Allocator{};
     auto const socket_id          = Socket_ID::_2;
 
-    auto client = Client{ Client::State::CONNECTED, network_stack, socket_id };
+    auto client = Client{ network_stack, socket_id, Client::State::CONNECTED };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x17 ) );
@@ -2057,7 +2068,7 @@ TEST( receiveErrorHandling, connectionLoss )
     auto driver             = Mock_Driver{};
     auto tcp_port_allocator = Mock_Port_Allocator{};
 
-    auto client = Client{ Client::State::CONNECTED, network_stack, Socket_ID::_7 };
+    auto client = Client{ network_stack, Socket_ID::_7, Client::State::CONNECTED };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
@@ -2095,7 +2106,7 @@ TEST_P( receiveGracefulShutdown, worksProperly )
     auto       tcp_port_allocator = Mock_Port_Allocator{};
     auto const socket_id          = Socket_ID::_6;
 
-    auto client = Client{ Client::State::CONNECTED, network_stack, socket_id };
+    auto client = Client{ network_stack, socket_id, Client::State::CONNECTED };
 
     auto const sn_sr = GetParam();
 
@@ -2171,7 +2182,7 @@ TEST_P( receiveReceiveBufferEmpty, worksProperly )
     auto       tcp_port_allocator = Mock_Port_Allocator{};
     auto const socket_id          = Socket_ID::_1;
 
-    auto client = Client{ Client::State::CONNECTED, network_stack, socket_id };
+    auto client = Client{ network_stack, socket_id, Client::State::CONNECTED };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( test_case.sn_sr ) );
@@ -2267,7 +2278,7 @@ TEST_P( receiveEmptyDataBlock, worksProperly )
     auto       tcp_port_allocator = Mock_Port_Allocator{};
     auto const socket_id          = Socket_ID::_5;
 
-    auto client = Client{ Client::State::CONNECTED, network_stack, socket_id };
+    auto client = Client{ network_stack, socket_id, Client::State::CONNECTED };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( test_case.sn_sr ) );
@@ -2402,7 +2413,7 @@ TEST_P( receiveAllData, worksProperly )
     auto       tcp_port_allocator = Mock_Port_Allocator{};
     auto const socket_id          = Socket_ID::_0;
 
-    auto client = Client{ Client::State::CONNECTED, network_stack, socket_id };
+    auto client = Client{ network_stack, socket_id, Client::State::CONNECTED };
 
     auto const data_expected = std::vector<std::uint8_t>{ 0x03, 0xA2, 0xAD };
 
@@ -2529,7 +2540,7 @@ TEST_P( receiveSomeData, worksProperly )
     auto       tcp_port_allocator = Mock_Port_Allocator{};
     auto const socket_id          = Socket_ID::_1;
 
-    auto client = Client{ Client::State::CONNECTED, network_stack, socket_id };
+    auto client = Client{ network_stack, socket_id, Client::State::CONNECTED };
 
     auto const data_expected = std::vector<std::uint8_t>{ 0x4B, 0x9F, 0x62, 0xB8 };
 
@@ -2640,7 +2651,7 @@ TEST( shutdownConnectionLost, worksProperly )
     auto       tcp_port_allocator = Mock_Port_Allocator{};
     auto const socket_id          = Socket_ID::_7;
 
-    auto client = Client{ Client::State::CONNECTED, network_stack, socket_id };
+    auto client = Client{ network_stack, socket_id, Client::State::CONNECTED };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x00 ) );
@@ -2676,7 +2687,7 @@ TEST_P( shutdownConnectionNotLost, worksProperly )
     auto       tcp_port_allocator = Mock_Port_Allocator{};
     auto const socket_id          = Socket_ID::_2;
 
-    auto client = Client{ Client::State::CONNECTED, network_stack, socket_id };
+    auto client = Client{ network_stack, socket_id, Client::State::CONNECTED };
 
     auto const sn_sr = GetParam();
 
@@ -2749,13 +2760,13 @@ TEST_P( closeOtherStates, worksProperly )
 {
     auto const in_sequence = InSequence{};
 
-    auto const state              = GetParam();
     auto       network_stack      = Mock_Network_Stack{};
     auto       driver             = Mock_Driver{};
     auto       tcp_port_allocator = Mock_Port_Allocator{};
     auto const socket_id          = Socket_ID::_5;
+    auto const state              = GetParam();
 
-    auto client = Client{ state, network_stack, socket_id };
+    auto client = Client{ network_stack, socket_id, state };
 
     auto const sn_port = std::uint16_t{ 62819 };
 

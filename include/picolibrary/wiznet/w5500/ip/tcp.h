@@ -32,6 +32,7 @@
 #include "picolibrary/result.h"
 #include "picolibrary/utility.h"
 #include "picolibrary/wiznet/w5500.h"
+#include "picolibrary/wiznet/w5500/ip/network_stack_keys.h"
 
 /**
  * \brief WIZnet W5500 TCP over IP facilities.
@@ -74,7 +75,8 @@ class Client {
      * \param[in] network_stack The network stack the socket is associated with.
      * \param[in] socket_id The socket's socket ID.
      */
-    constexpr Client( Network_Stack & network_stack, Socket_ID socket_id ) noexcept :
+    constexpr Client( Network_Stack_Socket_Construction_Key, Network_Stack & network_stack, Socket_ID socket_id ) noexcept
+        :
         m_state{ State::INITIALIZED },
         m_network_stack{ &network_stack },
         m_socket_id{ socket_id }
@@ -85,14 +87,17 @@ class Client {
     /**
      * \brief Constructor.
      *
-     * \param[in] state The socket's initial state.
      * \param[in] network_stack The network stack the socket is associated with.
      * \param[in] socket_id The socket's socket ID.
+     * \param[in] state The socket's initial state.
      * \param[in] is_transmitting The socket's initial data transmission in progress
      *            status.
      */
-    constexpr Client( State state, Network_Stack & network_stack, Socket_ID socket_id, bool is_transmitting = false ) noexcept
-        :
+    constexpr Client(
+        Network_Stack & network_stack,
+        Socket_ID       socket_id,
+        State           state           = State::INITIALIZED,
+        bool            is_transmitting = false ) noexcept :
         m_state{ state },
         m_network_stack{ &network_stack },
         m_socket_id{ socket_id },
