@@ -668,7 +668,7 @@ class Network_Stack {
      */
     auto make_tcp_client() noexcept -> TCP_Client
     {
-        return { *this, allocate_socket() };
+        return { {}, *this, allocate_socket() };
     }
 
     /**
@@ -682,7 +682,7 @@ class Network_Stack {
      */
     auto make_tcp_client( Socket_ID socket_id ) noexcept -> TCP_Client
     {
-        return { *this, allocate_socket( socket_id ) };
+        return { {}, *this, allocate_socket( socket_id ) };
     }
 
     /**
