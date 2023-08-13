@@ -1197,7 +1197,7 @@ struct SN_CR {
      */
     enum COMMAND : Type {
         COMMAND_OPEN      = 0x01, ///< Open.
-        COMMADN_LISTEN    = 0x02, ///< Listen.
+        COMMAND_LISTEN    = 0x02, ///< Listen.
         COMMAND_CONNECT   = 0x04, ///< Connect.
         COMMAND_DISCON    = 0x08, ///< Disconnect.
         COMMAND_CLOSE     = 0x10, ///< Close.
