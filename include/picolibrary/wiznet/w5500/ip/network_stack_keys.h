@@ -35,6 +35,9 @@ namespace picolibrary::WIZnet::W5500::IP::TCP {
 template<typename Network_Stack>
 class Client;
 
+template<typename Network_Stack>
+class Acceptor;
+
 } // namespace picolibrary::WIZnet::W5500::IP::TCP
 
 namespace picolibrary::WIZnet::W5500::IP {
@@ -60,6 +63,9 @@ class Network_Stack_Driver_Access_Key {
   private:
     template<typename Network_Stack>
     friend class TCP::Client;
+
+    template<typename Network_Stack>
+    friend class TCP::Acceptor;
 
     /**
      * \brief Constructor.
@@ -89,10 +95,40 @@ class Network_Stack_Socket_Allocation_Key {
     template<typename Network_Stack>
     friend class TCP::Client;
 
+    template<typename Network_Stack>
+    friend class TCP::Acceptor;
+
     /**
      * \brief Constructor.
      */
     constexpr Network_Stack_Socket_Allocation_Key() noexcept = default;
+};
+
+/**
+ * \brief ::picolibrary::WIZnet::W5500::IP::Network_Stack
+ *        ::picolibrary::WIZnet::W5500::IP::TCP::Acceptor socket allocation key.
+ */
+class Network_Stack_TCP_Acceptor_Socket_Allocation_Key {
+  public:
+    Network_Stack_TCP_Acceptor_Socket_Allocation_Key( Network_Stack_TCP_Acceptor_Socket_Allocation_Key && ) = delete;
+
+    Network_Stack_TCP_Acceptor_Socket_Allocation_Key(
+        Network_Stack_TCP_Acceptor_Socket_Allocation_Key const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Network_Stack_TCP_Acceptor_Socket_Allocation_Key() noexcept = default;
+
+    auto operator=( Network_Stack_TCP_Acceptor_Socket_Allocation_Key && ) = delete;
+
+    auto operator=( Network_Stack_TCP_Acceptor_Socket_Allocation_Key const & ) = delete;
+
+  private:
+    /**
+     * \brief Constructor.
+     */
+    constexpr Network_Stack_TCP_Acceptor_Socket_Allocation_Key() noexcept = default;
 };
 
 /**
@@ -124,6 +160,35 @@ class Network_Stack_Socket_Construction_Key {
 };
 
 /**
+ * \brief ::picolibrary::WIZnet::W5500::IP::Network_Stack
+ *        ::picolibrary::WIZnet::W5500::IP::TCP::Server construction key.
+ */
+class Network_Stack_TCP_Server_Construction_Key {
+  public:
+    Network_Stack_TCP_Server_Construction_Key( Network_Stack_TCP_Server_Construction_Key && ) = delete;
+
+    Network_Stack_TCP_Server_Construction_Key( Network_Stack_TCP_Server_Construction_Key const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Network_Stack_TCP_Server_Construction_Key() noexcept = default;
+
+    auto operator=( Network_Stack_TCP_Server_Construction_Key && ) = delete;
+
+    auto operator=( Network_Stack_TCP_Server_Construction_Key const & ) = delete;
+
+  private:
+    template<typename Network_Stack>
+    friend class TCP::Acceptor;
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Network_Stack_TCP_Server_Construction_Key() noexcept = default;
+};
+
+/**
  * \brief ::picolibrary::WIZnet::W5500::IP::Network_Stack TCP server socket detachment
  *        key.
  */
@@ -143,6 +208,9 @@ class Network_Stack_TCP_Server_Detachment_Key {
     auto operator=( Network_Stack_TCP_Server_Detachment_Key const & ) = delete;
 
   private:
+    template<typename Network_Stack>
+    friend class TCP::Acceptor;
+
     /**
      * \brief Constructor.
      */
@@ -170,6 +238,9 @@ class Network_Stack_TCP_Port_Allocator_Access_Key {
   private:
     template<typename Network_Stack>
     friend class TCP::Client;
+
+    template<typename Network_Stack>
+    friend class TCP::Acceptor;
 
     /**
      * \brief Constructor.
