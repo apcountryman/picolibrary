@@ -893,7 +893,7 @@ class Acceptor {
      *
      * \return The socket's socket IDs.
      */
-    constexpr auto socket_ids() const noexcept -> Socket_IDs
+    auto socket_ids() const noexcept -> Socket_IDs
     {
         auto socket_ids = Socket_IDs{};
 
@@ -1141,8 +1141,11 @@ class Acceptor {
      * \pre endpoint is not already in use
      * \pre if an ephemeral port is requested, an ephemeral port is available
      */
+    // NOLINTNEXTLINE(readability-function-size)
     void bind( ::picolibrary::IP::TCP::Endpoint const & endpoint = ::picolibrary::IP::TCP::Endpoint{} ) noexcept
     {
+        // #lizard forgives the length
+
         PICOLIBRARY_EXPECT( m_state == State::INITIALIZED, Generic_Error::LOGIC_ERROR );
 
         PICOLIBRARY_EXPECT(
@@ -1188,8 +1191,11 @@ class Acceptor {
      *
      * \pre sufficient resources are available to support the requested backlog
      */
+    // NOLINTNEXTLINE(readability-function-size)
     void listen( std::uint_fast8_t backlog ) noexcept
     {
+        // #lizard forgives the length
+
         PICOLIBRARY_EXPECT( m_state == State::BOUND, Generic_Error::LOGIC_ERROR );
 
         auto & driver = m_network_stack->driver( {} );
@@ -1262,8 +1268,11 @@ class Acceptor {
      *
      * \pre the socket has been allocated
      */
+    // NOLINTNEXTLINE(readability-function-size)
     void deallocate_socket( Network_Stack_TCP_Acceptor_Socket_Allocation_Key, Socket_ID socket_id ) noexcept
     {
+        // #lizard forgives the length
+
         for ( auto & socket : m_sockets ) {
             if ( socket_id == socket.id ) {
                 PICOLIBRARY_EXPECT(
@@ -1296,8 +1305,11 @@ class Acceptor {
     /**
      * \brief Close the socket.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     constexpr void close() noexcept
     {
+        // #lizard forgives the length
+
         if ( m_state == State::UNINITIALIZED ) {
             return;
         } // if
