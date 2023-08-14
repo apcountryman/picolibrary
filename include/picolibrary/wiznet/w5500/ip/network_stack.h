@@ -844,25 +844,16 @@ class Network_Stack {
     /**
      * \brief Allocate specific sockets.
      *
-     * \tparam Iterator Socket IDs range iterator.
-     *
-     * \param[in] begin The beginning of the range of socket IDs for the sockets to
-     *            allocate.
-     * \param[in] end The end of the range of socket IDs for the sockets to allocate.
+     * \param[in] socket_ids The socket IDs for the sockets to allocate.
      *
      * \pre the requested sockets are available for allocation.
      *
      * \return The socket IDs for the allocated sockets.
      */
-    template<typename Iterator>
-    auto allocate_sockets( Iterator begin, Iterator end ) noexcept
+    auto allocate_sockets( Fixed_Capacity_Vector<Socket_ID, SOCKETS> const & socket_ids ) noexcept
         -> Fixed_Capacity_Vector<Socket_ID, SOCKETS>
     {
-        auto socket_ids = Fixed_Capacity_Vector<Socket_ID, SOCKETS>{};
-
-        ::picolibrary::for_each( begin, end, [ this, &socket_ids ]( auto socket_id ) noexcept {
-            socket_ids.push_back( BYPASS_PRECONDITION_EXPECTATION_CHECKS, allocate_socket( socket_id ) );
-        } );
+        for ( auto const socket_id : socket_ids ) { allocate_socket( socket_id ); } // for
 
         return socket_ids;
     }
