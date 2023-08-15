@@ -286,7 +286,7 @@ class Client {
 
     /**
      * \brief Get the socket's keepalive packet transmission period (SN_KPALVTR register
-     *        value.
+     *        value).
      *
      * \return The socket's keepalive packet transmission period.
      */
