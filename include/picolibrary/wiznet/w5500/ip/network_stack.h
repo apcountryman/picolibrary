@@ -62,6 +62,12 @@ class Network_Stack {
     using TCP_Client = TCP::Client<Network_Stack>;
 
     /**
+     * \brief The type of TCP acceptor socket that is used to interact with the network
+     *        stack.
+     */
+    using TCP_Acceptor = TCP::Acceptor<Network_Stack>;
+
+    /**
      * \brief Constructor.
      */
     constexpr Network_Stack() noexcept = default;
@@ -683,6 +689,32 @@ class Network_Stack {
     auto make_tcp_client( Socket_ID socket_id ) noexcept -> TCP_Client
     {
         return { {}, *this, allocate_socket( socket_id ) };
+    }
+
+    /**
+     * \brief Construct a TCP acceptor socket.
+     *
+     * \pre a socket is available
+     *
+     * \return The constructed TCP acceptor socket.
+     */
+    auto make_tcp_acceptor() noexcept -> TCP_Acceptor
+    {
+        return { {}, *this, allocate_sockets( 1 ) };
+    }
+
+    /**
+     * \brief Construct a TCP acceptor socket that uses specific sockets.
+     *
+     * \param[in] socket_ids The socket IDs for the sockets to use.
+     *
+     * \pre the requested sockets are available for allocation
+     *
+     * \return The constructed TCP acceptor socket.
+     */
+    auto make_tcp_acceptor( Fixed_Capacity_Vector<Socket_ID, SOCKETS> const & socket_ids ) noexcept -> TCP_Acceptor
+    {
+        return { {}, *this, allocate_sockets( socket_ids ) };
     }
 
     /**

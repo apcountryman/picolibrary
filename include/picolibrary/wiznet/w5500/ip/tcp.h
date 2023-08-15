@@ -24,8 +24,10 @@
 #define PICOLIBRARY_WIZNET_W5500_IP_TCP_H
 
 #include <cstdint>
+#include <utility>
 
 #include "picolibrary/error.h"
+#include "picolibrary/fixed_capacity_vector.h"
 #include "picolibrary/ip.h"
 #include "picolibrary/ip/tcp.h"
 #include "picolibrary/precondition.h"
@@ -761,6 +763,621 @@ class Client {
      * \brief The socket's data transmission in progress flag.
      */
     bool m_is_transmitting{};
+};
+
+/**
+ * \brief Acceptor socket.
+ *
+ * \tparam Network_Stack The type of network stack the socket is associated with.
+ */
+template<typename Network_Stack>
+class Acceptor {
+  public:
+    /**
+     * \brief Socket IDs.
+     */
+    using Socket_IDs = Fixed_Capacity_Vector<Socket_ID, SOCKETS>;
+
+    /**
+     * \brief Socket state.
+     */
+    enum class State : std::uint_fast8_t {
+        UNINITIALIZED, ///< Uninitialized.
+        INITIALIZED,   ///< Initialized.
+        BOUND,         ///< Bound.
+        LISTENING,     ///< Listening.
+    };
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Acceptor() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] network_stack The network stack the socket is associated with.
+     * \param[in] socket_ids The socket's socket IDs.
+     *
+     * \pre not socket_ids.empty()
+     */
+    constexpr Acceptor( Network_Stack_Socket_Construction_Key, Network_Stack & network_stack, Socket_IDs const & socket_ids ) noexcept
+        :
+        m_state{ State::INITIALIZED },
+        m_network_stack{ &network_stack },
+        m_sockets{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, socket_ids.begin(), socket_ids.end() }
+    {
+        PICOLIBRARY_EXPECT( not socket_ids.empty(), Generic_Error::INVALID_ARGUMENT );
+    }
+
+#ifdef PICOLIBRARY_ENABLE_AUTOMATED_TESTING
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] network_stack The network stack the socket is associated with.
+     * \param[in] socket_ids The socket's socket IDs.
+     * \param[in] state The socket's initial state.
+     *
+     * \pre not socket_ids.empty()
+     */
+    constexpr Acceptor( Network_Stack & network_stack, Socket_IDs const & socket_ids, State state = State::INITIALIZED ) noexcept
+        :
+        m_state{ state },
+        m_network_stack{ &network_stack },
+        m_sockets{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, socket_ids.begin(), socket_ids.end() }
+    {
+        PICOLIBRARY_EXPECT( not socket_ids.empty(), Generic_Error::INVALID_ARGUMENT );
+    }
+#endif // PICOLIBRARY_ENABLE_AUTOMATED_TESTING
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Acceptor( Acceptor && source ) noexcept :
+        m_state{ source.m_state },
+        m_network_stack{ source.m_network_stack },
+        m_sockets{ std::move( source.m_sockets ) }
+    {
+        source.m_state         = State::UNINITIALIZED;
+        source.m_network_stack = nullptr;
+    }
+
+    Acceptor( Acceptor const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Acceptor() noexcept
+    {
+        close();
+    }
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Acceptor && expression ) noexcept -> Acceptor &
+    {
+        if ( &expression != this ) {
+            close();
+
+            m_state         = expression.m_state;
+            m_network_stack = expression.m_network_stack;
+            m_sockets       = std::move( expression.m_sockets );
+
+            expression.m_state         = State::UNINITIALIZED;
+            expression.m_network_stack = nullptr;
+        } // if
+
+        return *this;
+    }
+
+    auto operator=( Acceptor const & ) = delete;
+
+    /**
+     * \brief Get the socket's state.
+     *
+     * \return The socket's state.
+     */
+    constexpr auto state() const noexcept -> State
+    {
+        return m_state;
+    }
+
+    /**
+     * \brief Get the socket's socket IDs.
+     *
+     * \return The socket's socket IDs.
+     */
+    auto socket_ids() const noexcept -> Socket_IDs
+    {
+        auto socket_ids = Socket_IDs{};
+
+        for ( auto const socket : m_sockets ) {
+            socket_ids.push_back( BYPASS_PRECONDITION_EXPECTATION_CHECKS, socket.id );
+        } // for
+
+        return socket_ids;
+    }
+
+    /**
+     * \brief Get the socket's socket interrupt mask (mask used when checking the network
+     *        stack's socket interrupt context).
+     */
+    constexpr auto socket_interrupt_mask() const noexcept -> std::uint8_t
+    {
+        auto mask = std::uint8_t{};
+
+        for ( auto const socket : m_sockets ) {
+            mask |= 1 << ( to_underlying( socket.id ) >> Control_Byte::Bit::SOCKET );
+        } // for
+
+        return mask;
+    }
+
+    /**
+     * \brief Configure the socket's no delayed ACK usage (defaults to disabled).
+     *
+     * \pre picolibrary::WIZnet::W5500::IP::TCP::Acceptor::state() ==
+     *      picolibrary::WIZnet::W5500::IP::TCP::Acceptor::State::INITIALIZED
+     *
+     * \param[in] no_delayed_ack_usage_configuration The desired no delayed ACK usage
+     *            configuration.
+     */
+    void configure_no_delayed_ack_usage( No_Delayed_ACK_Usage no_delayed_ack_usage_configuration ) noexcept
+    {
+        PICOLIBRARY_EXPECT( m_state == State::INITIALIZED, Generic_Error::LOGIC_ERROR );
+
+        auto & driver = m_network_stack->driver( {} );
+
+        for ( auto const socket : m_sockets ) {
+            driver.write_sn_mr( socket.id, to_underlying( no_delayed_ack_usage_configuration ) );
+        } // for
+    }
+
+    /**
+     * \brief Get the socket's no delayed ACK usage configuration.
+     *
+     * \return The socket's no delayed ACK usage configuration.
+     */
+    auto no_delayed_ack_usage_configuration() const noexcept -> No_Delayed_ACK_Usage
+    {
+        return static_cast<No_Delayed_ACK_Usage>(
+            m_network_stack->driver( {} ).read_sn_mr( m_sockets.front().id ) & SN_MR::Mask::ND );
+    }
+
+    /**
+     * \brief Configure the socket's maximum segment size (defaults to 0x0000).
+     *
+     * \pre picolibrary::WIZnet::W5500::IP::TCP::Acceptor::state() ==
+     *      picolibrary::WIZnet::W5500::IP::TCP::Acceptor::State::INITIALIZED
+     *
+     * \param[in] maximum_segment_size The desired maximum segment size.
+     */
+    void configure_maximum_segment_size( std::uint16_t maximum_segment_size ) noexcept
+    {
+        PICOLIBRARY_EXPECT( m_state == State::INITIALIZED, Generic_Error::LOGIC_ERROR );
+
+        auto & driver = m_network_stack->driver( {} );
+
+        for ( auto const socket : m_sockets ) {
+            driver.write_sn_mssr( socket.id, maximum_segment_size );
+        } // for
+    }
+
+    /**
+     * \brief Get the socket's maximum segment size.
+     *
+     * \return The socket's maximum segment size.
+     */
+    auto maximum_segment_size() const noexcept -> std::uint16_t
+    {
+        return m_network_stack->driver( {} ).read_sn_mssr( m_sockets.front().id );
+    }
+
+    /**
+     * \brief Configure the socket's IPv4 time to live field value (defaults to 0x80).
+     *
+     * \pre picolibrary::WIZnet::W5500::IP::TCP::Acceptor::state() ==
+     *      picolibrary::WIZnet::W5500::IP::TCP::Acceptor::State::INITIALIZED
+     *
+     * \param[in] time_to_live The desired IPv4 time to live field value.
+     */
+    void configure_time_to_live( std::uint8_t time_to_live ) noexcept
+    {
+        PICOLIBRARY_EXPECT( m_state == State::INITIALIZED, Generic_Error::LOGIC_ERROR );
+
+        auto & driver = m_network_stack->driver( {} );
+
+        for ( auto const socket : m_sockets ) {
+            driver.write_sn_ttl( socket.id, time_to_live );
+        } // for
+    }
+
+    /**
+     * \brief Get the socket's IPv4 time to live field value.
+     *
+     * \return The socket's IPv4 time to live field value.
+     */
+    auto time_to_live() const noexcept -> std::uint8_t
+    {
+        return m_network_stack->driver( {} ).read_sn_ttl( m_sockets.front().id );
+    }
+
+    /**
+     * \brief Configure the socket's keepalive packet transmission period (SN_KPALVTR
+     *        register value, defaults to 0x00).
+     *
+     * \pre picolibrary::WIZnet::W5500::IP::TCP::Acceptor::state() ==
+     *      picolibrary::WIZnet::W5500::IP::TCP::Acceptor::State::INITIALIZED
+     *
+     * \param[in] keepalive_period The desired keepalive packet transmission period.
+     */
+    void configure_keepalive_period( std::uint8_t keepalive_period ) noexcept
+    {
+        PICOLIBRARY_EXPECT( m_state == State::INITIALIZED, Generic_Error::LOGIC_ERROR );
+
+        auto & driver = m_network_stack->driver( {} );
+
+        for ( auto const socket : m_sockets ) {
+            driver.write_sn_kpalvtr( socket.id, keepalive_period );
+        } // for
+    }
+
+    /**
+     * \brief Get the socket's keepalive packet transmission period (SN_KPALVTR register
+     *        value).
+     *
+     * \return The socket's keepalive packet transmission period.
+     */
+    auto keepalive_period() const noexcept -> std::uint8_t
+    {
+        return m_network_stack->driver( {} ).read_sn_kpalvtr( m_sockets.front().id );
+    }
+
+    /**
+     * \brief Enable interrupts.
+     *
+     * \param[in] mask The mask identifying the interrupts to enable.
+     */
+    void enable_interrupts( std::uint8_t mask ) noexcept
+    {
+        auto & driver = m_network_stack->driver( {} );
+
+        auto const sn_imr = driver.read_sn_imr( m_sockets.front().id );
+
+        for ( auto const socket : m_sockets ) {
+            driver.write_sn_imr( socket.id, sn_imr | mask );
+        } // for
+    }
+
+    /**
+     * \brief Disable interrupts.
+     *
+     * \param[in] mask The mask identifying the interrupts to disable.
+     */
+    void disable_interrupts( std::uint8_t mask ) noexcept
+    {
+        auto & driver = m_network_stack->driver( {} );
+
+        auto const sn_imr = driver.read_sn_imr( m_sockets.front().id );
+
+        for ( auto const socket : m_sockets ) {
+            driver.write_sn_imr( socket.id, sn_imr & ~mask );
+        } // for
+    }
+
+    /**
+     * \brief Disable all interrupts.
+     */
+    void disable_interrupts() noexcept
+    {
+        auto & driver = m_network_stack->driver( {} );
+
+        for ( auto const socket : m_sockets ) {
+            driver.write_sn_imr( socket.id, 0x00 );
+        } // for
+    }
+
+    /**
+     * \brief Get a mask identifying the interrupts that are enabled.
+     *
+     * \return A mask identifying the interrupts that are enabled.
+     */
+    auto enabled_interrupts() const noexcept -> std::uint8_t
+    {
+        return m_network_stack->driver( {} ).read_sn_imr( m_sockets.front().id );
+    }
+
+    /**
+     * \brief Get the interrupt context (SN_IR register values ORed together).
+     *
+     * \return The socket's interrupt context.
+     */
+    auto interrupt_context() const noexcept -> std::uint8_t
+    {
+        auto sn_ir = SN_IR::Type{};
+
+        auto const & driver = m_network_stack->driver( {} );
+
+        for ( auto const socket : m_sockets ) {
+            sn_ir |= driver.read_sn_ir( socket.id );
+        } // for
+
+        return sn_ir;
+    }
+
+    /**
+     * \brief Clear interrupts.
+     *
+     * \param[in] mask The mask identifying the interrupts to clear.
+     *
+     * \pre not( mask & picolibrary::WIZnet::W5500::Socket_Interrupt::DATA_TRANSMITTED )
+     */
+    void clear_interrupts( std::uint8_t mask ) noexcept
+    {
+        PICOLIBRARY_EXPECT( not( mask & Socket_Interrupt::DATA_TRANSMITTED ), Generic_Error::INVALID_ARGUMENT );
+
+        auto & driver = m_network_stack->driver( {} );
+
+        for ( auto const socket : m_sockets ) {
+            driver.write_sn_ir( socket.id, mask );
+        } // for
+    }
+
+    /**
+     * \brief Bind the socket to a local endpoint.
+     *
+     * \pre the socket is in a state that allows it to be bound to a local endpoint
+     * \pre the socket is not already bound to a local endpoint
+     *
+     * \param[in] endpoint The local endpoint to bind the socket to.
+     *
+     * \pre endpoint is a valid local endpoint
+     * \pre endpoint is not already in use
+     * \pre if an ephemeral port is requested, an ephemeral port is available
+     */
+    // NOLINTNEXTLINE(readability-function-size)
+    void bind( ::picolibrary::IP::TCP::Endpoint const & endpoint = ::picolibrary::IP::TCP::Endpoint{} ) noexcept
+    {
+        // #lizard forgives the length
+
+        PICOLIBRARY_EXPECT( m_state == State::INITIALIZED, Generic_Error::LOGIC_ERROR );
+
+        PICOLIBRARY_EXPECT(
+            endpoint.address().version() == ::picolibrary::IP::Version::UNSPECIFIED
+                or endpoint.address().version() == ::picolibrary::IP::Version::_4,
+            Generic_Error::INVALID_ARGUMENT );
+
+        auto & driver = m_network_stack->driver( {} );
+
+        if ( not endpoint.address().is_any() ) {
+            PICOLIBRARY_EXPECT(
+                endpoint.address().ipv4().as_byte_array() == driver.read_sipr(),
+                Generic_Error::INVALID_ARGUMENT );
+        } // if
+
+        auto const port = m_network_stack->tcp_port_allocator( {} ).allocate(
+            driver, endpoint.port() );
+
+        auto const sn_mr = driver.read_sn_mr( m_sockets.front().id );
+
+        for ( auto const socket : m_sockets ) {
+            driver.write_sn_port( socket.id, port.as_unsigned_integer() );
+
+            driver.write_sn_mr( socket.id, ( sn_mr & ~SN_MR::Mask::P ) | SN_MR::P_TCP );
+
+            driver.write_sn_cr( socket.id, SN_CR::COMMAND_OPEN );
+            while ( driver.read_sn_cr( socket.id ) ) {} // while
+
+            while ( driver.read_sn_sr( socket.id ) != SN_SR::STATUS_SOCK_INIT ) {} // while
+        }                                                                          // for
+
+        m_state = State::BOUND;
+    }
+
+    /**
+     * \brief Listen for incoming connection requests.
+     *
+     * \pre the socket is in a state that allows it to listen for incoming connection
+     *      requests
+     * \pre the socket is not already listening for incoming connection requests
+     *
+     * \param[in] backlog The maximum number of simultaneously connected clients.
+     *
+     * \pre sufficient resources are available to support the requested backlog
+     */
+    // NOLINTNEXTLINE(readability-function-size)
+    void listen( std::uint_fast8_t backlog ) noexcept
+    {
+        // #lizard forgives the length
+
+        PICOLIBRARY_EXPECT( m_state == State::BOUND, Generic_Error::LOGIC_ERROR );
+
+        auto & driver = m_network_stack->driver( {} );
+
+        if ( backlog > m_sockets.size() ) {
+            auto const socket_ids = m_network_stack->allocate_sockets(
+                {}, backlog - m_sockets.size() );
+
+            auto const sn_mr      = driver.read_sn_mr( m_sockets.front().id );
+            auto const sn_port    = driver.read_sn_port( m_sockets.front().id );
+            auto const sn_mssr    = driver.read_sn_mssr( m_sockets.front().id );
+            auto const sn_ttl     = driver.read_sn_ttl( m_sockets.front().id );
+            auto const sn_imr     = driver.read_sn_imr( m_sockets.front().id );
+            auto const sn_kpalvtr = driver.read_sn_kpalvtr( m_sockets.front().id );
+
+            for ( auto const socket_id : socket_ids ) {
+                driver.write_sn_mr( socket_id, sn_mr );
+                driver.write_sn_port( socket_id, sn_port );
+                driver.write_sn_mssr( socket_id, sn_mssr );
+                driver.write_sn_ttl( socket_id, sn_ttl );
+                driver.write_sn_imr( socket_id, sn_imr );
+                driver.write_sn_kpalvtr( socket_id, sn_kpalvtr );
+
+                driver.write_sn_cr( socket_id, SN_CR::COMMAND_OPEN );
+                while ( driver.read_sn_cr( socket_id ) ) {} // while
+
+                while ( driver.read_sn_sr( socket_id ) != SN_SR::STATUS_SOCK_INIT ) {} // while
+
+                m_sockets.push_back( BYPASS_PRECONDITION_EXPECTATION_CHECKS, { socket_id } );
+            } // for
+        }     // if
+
+        for ( auto const socket : m_sockets ) {
+            driver.write_sn_cr( socket.id, SN_CR::COMMAND_LISTEN );
+            while ( driver.read_sn_cr( socket.id ) ) {} // while
+        }                                               // for
+
+        m_state = State::LISTENING;
+    }
+
+    /**
+     * \brief Check if the socket is listening for incoming connection requests.
+     *
+     * \return true if the socket is listening for incoming connection requests.
+     * \return false if the socket is not listening for incoming connection requests.
+     */
+    auto is_listening() const noexcept -> bool
+    {
+        return m_state == State::LISTENING;
+    }
+
+    /**
+     * \brief Get the local endpoint on which the socket is listening for incoming
+     *        connection requests.
+     *
+     * \return The local endpoint on which the socket is listening for incoming connection
+     *         requests.
+     */
+    auto local_endpoint() const noexcept -> ::picolibrary::IP::TCP::Endpoint
+    {
+        auto const & driver = m_network_stack->driver( {} );
+
+        return { { driver.read_sipr() }, driver.read_sn_port( m_sockets.front().id ) };
+    }
+
+    /**
+     * \brief Deallocate a socket.
+     *
+     * \param[in] socket_id The socket ID for the socket to deallocate.
+     *
+     * \pre the socket has been allocated
+     */
+    // NOLINTNEXTLINE(readability-function-size)
+    void deallocate_socket( Network_Stack_TCP_Acceptor_Socket_Allocation_Key, Socket_ID socket_id ) noexcept
+    {
+        // #lizard forgives the length
+
+        for ( auto & socket : m_sockets ) {
+            if ( socket_id == socket.id ) {
+                PICOLIBRARY_EXPECT(
+                    socket.status == Socket::Status::ALLOCATED, Generic_Error::LOGIC_ERROR );
+
+                auto & driver = m_network_stack->driver( {} );
+
+                driver.write_sn_cr( socket.id, SN_CR::COMMAND_CLOSE );
+                while ( driver.read_sn_cr( socket.id ) ) {} // while
+
+                while ( driver.read_sn_sr( socket.id ) != SN_SR::STATUS_SOCK_CLOSED ) {} // while
+
+                driver.write_sn_cr( socket_id, SN_CR::COMMAND_OPEN );
+                while ( driver.read_sn_cr( socket.id ) ) {} // while
+
+                while ( driver.read_sn_sr( socket.id ) != SN_SR::STATUS_SOCK_INIT ) {} // while
+
+                driver.write_sn_cr( socket.id, SN_CR::COMMAND_LISTEN );
+                while ( driver.read_sn_cr( socket.id ) ) {} // while
+
+                socket.status = Socket::Status::AVAILABLE_FOR_ALLOCATION;
+
+                return;
+            } // if
+        }     // for
+
+        PICOLIBRARY_EXPECTATION_NOT_MET( Generic_Error::LOGIC_ERROR );
+    }
+
+    /**
+     * \brief Close the socket.
+     */
+    // NOLINTNEXTLINE(readability-function-size)
+    constexpr void close() noexcept
+    {
+        // #lizard forgives the length
+
+        if ( m_state == State::UNINITIALIZED ) {
+            return;
+        } // if
+
+        if ( m_state != State::INITIALIZED ) {
+            auto deallocate_port = true;
+            for ( auto const socket : m_sockets ) {
+                if ( socket.status == Socket::Status::ALLOCATED ) {
+                    deallocate_port = false;
+                } // if
+            }     // for
+
+            if ( deallocate_port ) {
+                m_network_stack->tcp_port_allocator( {} ).deallocate(
+                    m_network_stack->driver( {} ).read_sn_port( m_sockets.front().id ) );
+            } // if
+        }     // if
+
+        for ( auto const socket : m_sockets ) {
+            if ( socket.status == Socket::Status::ALLOCATED ) {
+                m_network_stack->detach_tcp_server( {}, socket.id );
+            } else {
+                m_network_stack->deallocate_socket( {}, socket.id );
+            } // else
+        }     // for
+
+        m_state = State::UNINITIALIZED;
+    }
+
+  private:
+    /**
+     * \brief Socket information.
+     */
+    struct Socket {
+        /**
+         * \brief Socket status.
+         */
+        enum class Status : std::uint_fast8_t {
+            AVAILABLE_FOR_ALLOCATION, ///< Available for allocation.
+            ALLOCATED,                ///< Allocated.
+        };
+
+        /**
+         * \brief The socket's socket ID.
+         */
+        Socket_ID id{};
+
+        /**
+         * \brief The socket's status.
+         */
+        Status status{};
+    };
+
+    /**
+     * \brief The socket's state.
+     */
+    State m_state{};
+
+    /**
+     * \brief The network stack the socket is associated with.
+     */
+    Network_Stack * m_network_stack{};
+
+    /**
+     * \brief The socket's socket information.
+     */
+    Fixed_Capacity_Vector<Socket, SOCKETS> m_sockets{};
 };
 
 } // namespace picolibrary::WIZnet::W5500::IP::TCP
