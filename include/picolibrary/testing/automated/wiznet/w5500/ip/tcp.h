@@ -467,6 +467,21 @@ class Mock_Acceptor {
         {
             return mock().is_listening();
         }
+        
+        auto local_endpoint() const -> ::picolibrary::IP::TCP::Endpoint
+        {
+            return mock().local_endpoint();
+        }
+        
+        void deallocate_socket( std::uint_fast8_t, ::picolibrary::WIZnet::W5500::Socket_ID socket_id )
+        {
+            mock().deallocate_socket( {}, socket_id );
+        }
+        
+        void close()
+        {
+            mock().close()
+        }
     };
 
     Mock_Acceptor() = default;
@@ -517,6 +532,10 @@ class Mock_Acceptor {
 
     MOCK_METHOD( void, listen, ( std::uint_fast8_t ) );
     MOCK_METHOD( bool, is_listening, (), ( const ) );
+    
+    MOCK_METHOD( ::picolibrary::IP::TCP::Endpoint, local_endpoint, (), ( const ) );
+    
+    MOCK_METHOD( void, deallocate_socket, ( std::uint_fast8_t, ::picolibrary::WIZnet::W5500::Socket_ID ) );
 
     MOCK_METHOD( void, deallocate_socket, ( std::uint_fast8_t, ::picolibrary::WIZnet::W5500::Socket_ID ) );
 

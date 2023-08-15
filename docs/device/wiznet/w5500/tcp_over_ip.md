@@ -113,7 +113,7 @@ documentation](../../../network/tcp_over_ip.md#acceptor-socket) for more informa
   the `::picolibrary::WIZnet::W5500::IP::TCP::Acceptor::keepalive_period()` member
   function.
 - To enable interrupts, use the
-  `::picolibrary::WIZnet::W5500::IP::TCP::enable_interrupts()` member function.
+  `::picolibrary::WIZnet::W5500::IP::TCP::Acceptor::enable_interrupts()` member function.
 - To disable interrupts, use the
   `::picolibrary::WIZnet::W5500::IP::TCP::Acceptor::disable_interrupts()` member
   functions.
@@ -130,7 +130,7 @@ source file.
 
 The `::picolibrary::Testing::Automated::WIZnet::W5500::IP::TCP::Mock_Acceptor` mock WIZnet
 W5500 TCP over IP acceptor socket class is available if the
-`PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration options is `ON`.
+`PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration option is `ON`.
 The mock is defined in the
 [`include/picolibrary/testing/automated/wiznet/w5500/ip/tcp.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/wiznet/w5500/ip/tcp.h)/[`source/picolibrary/testing/automated/wiznet/w5500/ip/tcp.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/wiznet/w5500/ip/tcp.cc)
 header/source file pair.

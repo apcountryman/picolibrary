@@ -24,6 +24,7 @@
 #define PICOLIBRARY_WIZNET_W5500_IP_TCP_H
 
 #include <cstdint>
+#include <utility>
 
 #include "picolibrary/error.h"
 #include "picolibrary/fixed_capacity_vector.h"
@@ -1030,7 +1031,7 @@ class Acceptor {
 
     /**
      * \brief Get the socket's keepalive packet transmission period (SN_KPALVTR register
-     *        value.
+     *        value).
      *
      * \return The socket's keepalive packet transmission period.
      */
@@ -1324,7 +1325,7 @@ class Acceptor {
 
             if ( deallocate_port ) {
                 m_network_stack->tcp_port_allocator( {} ).deallocate(
-                    m_network_stack->driver( {} ).read_sn_port( m_sockets[ 0 ].id ) );
+                    m_network_stack->driver( {} ).read_sn_port( m_sockets.front().id ) );
             } // if
         }     // if
 
