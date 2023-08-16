@@ -599,7 +599,7 @@ class Network_Stack {
      *
      * \pre at least n sockets are available
      *
-     * \return The socket IDs for the allocated sockets.
+     * \return The hardware socket IDs for the allocated sockets.
      */
     auto allocate_sockets( Network_Stack_Socket_Allocation_Key, std::uint_fast8_t n ) noexcept
         -> Fixed_Capacity_Vector<Socket_ID, SOCKETS>
@@ -626,7 +626,7 @@ class Network_Stack {
     /**
      * \brief Deallocate a socket.
      *
-     * \param[in] socket_id The socket ID for the socket to deallocate.
+     * \param[in] socket_id The hardware socket ID for the socket to deallocate.
      *
      * \pre the socket has been allocated
      */
@@ -678,9 +678,9 @@ class Network_Stack {
     }
 
     /**
-     * \brief Construct a TCP client socket that uses a specific socket.
+     * \brief Construct a TCP client socket that uses a specific hardware socket.
      *
-     * \param[in] socket_id The socket ID for the socket to use.
+     * \param[in] socket_id The hardware socket ID for the hardware socket to use.
      *
      * \pre the requested socket is available for allocation
      *
@@ -704,9 +704,9 @@ class Network_Stack {
     }
 
     /**
-     * \brief Construct a TCP acceptor socket that uses specific sockets.
+     * \brief Construct a TCP acceptor socket that uses specific hardware sockets.
      *
-     * \param[in] socket_ids The socket IDs for the sockets to use.
+     * \param[in] socket_ids The hardware socket IDs for the hardware sockets to use.
      *
      * \pre the requested sockets are available for allocation
      *
@@ -721,8 +721,8 @@ class Network_Stack {
      * \brief Detach a TCP server socket from the TCP acceptor socket it is associated
      *        with.
      *
-     * \param[in] socket_id The socket ID for the TCP server socket to detach from the TCP
-     *            acceptor socket it is associated with.
+     * \param[in] socket_id The hardware socket ID for the TCP server socket to detach
+     *            from the TCP acceptor socket it is associated with.
      */
     void detach_tcp_server( Network_Stack_TCP_Server_Detachment_Key, Socket_ID socket_id ) noexcept
     {
@@ -736,7 +736,7 @@ class Network_Stack {
      * \brief Check if a TCP server socket has been detached from the TCP acceptor socket
      *        it is associated with.
      *
-     * \param[in] socket_id The socket ID for the TCP server socket to check.
+     * \param[in] socket_id The hardware socket ID for the TCP server socket to check.
      *
      * \return true if the TCP server socket has been detached from the TCP acceptor
      *         socket it is associated with.
@@ -833,7 +833,7 @@ class Network_Stack {
      *
      * \pre a socket is available
      *
-     * \return The socket ID for the allocated socket.
+     * \return The hardware socket ID for the allocated socket.
      */
     constexpr auto allocate_socket() noexcept -> Socket_ID
     {
@@ -850,9 +850,9 @@ class Network_Stack {
     }
 
     /**
-     * \brief Allocate a specific socket.
+     * \brief Allocate a socket that uses a specific hardware socket.
      *
-     * \param[in] socket_id The socket ID for the socket to allocate.
+     * \param[in] socket_id The hardware socket ID for the socket to allocate.
      *
      * \pre the requested socket is available for allocation
      *
@@ -874,13 +874,13 @@ class Network_Stack {
     }
 
     /**
-     * \brief Allocate specific sockets.
+     * \brief Allocate sockets that use specific hardware sockets.
      *
-     * \param[in] socket_ids The socket IDs for the sockets to allocate.
+     * \param[in] socket_ids The hardware socket IDs for the sockets to allocate.
      *
      * \pre the requested sockets are available for allocation.
      *
-     * \return The socket IDs for the allocated sockets.
+     * \return The hardware socket IDs for the allocated sockets.
      */
     auto allocate_sockets( Fixed_Capacity_Vector<Socket_ID, SOCKETS> const & socket_ids ) noexcept
         -> Fixed_Capacity_Vector<Socket_ID, SOCKETS>
