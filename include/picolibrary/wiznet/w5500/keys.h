@@ -226,29 +226,28 @@ class Network_Stack_UDP_Port_Allocator_Access_Key {
 namespace picolibrary::WIZnet::W5500::IP::TCP {
 
 /**
- * \brief picolibrary::WIZnet::W5500::IP::TCP::Acceptor
- *        picolibrary::WIZnet::W5500::IP::TCP::Server deallocation key.
+ * \brief picolibrary::WIZnet::W5500::IP::TCP::Acceptor socket deallocation key.
  */
-class Acceptor_Server_Deallocation_Key {
+class Acceptor_Socket_Deallocation_Key {
   public:
-    Acceptor_Server_Deallocation_Key( Acceptor_Server_Deallocation_Key && ) = delete;
+    Acceptor_Socket_Deallocation_Key( Acceptor_Socket_Deallocation_Key && ) = delete;
 
-    Acceptor_Server_Deallocation_Key( Acceptor_Server_Deallocation_Key const & ) = delete;
+    Acceptor_Socket_Deallocation_Key( Acceptor_Socket_Deallocation_Key const & ) = delete;
 
     /**
      * \brief Destructor.
      */
-    ~Acceptor_Server_Deallocation_Key() noexcept = default;
+    ~Acceptor_Socket_Deallocation_Key() noexcept = default;
 
-    auto operator=( Acceptor_Server_Deallocation_Key && ) = delete;
+    auto operator=( Acceptor_Socket_Deallocation_Key && ) = delete;
 
-    auto operator=( Acceptor_Server_Deallocation_Key const & ) = delete;
+    auto operator=( Acceptor_Socket_Deallocation_Key const & ) = delete;
 
   private:
     /**
      * \brief Constructor.
      */
-    constexpr Acceptor_Server_Deallocation_Key() noexcept = default;
+    constexpr Acceptor_Socket_Deallocation_Key() noexcept = default;
 };
 
 /**
