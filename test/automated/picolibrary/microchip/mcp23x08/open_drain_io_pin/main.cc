@@ -381,7 +381,7 @@ TEST_P( isLow, worksProperly )
 
     EXPECT_CALL( mcp23x08, read_gpio() ).WillOnce( Return( test_case.gpio ) );
 
-    ASSERT_EQ( pin.is_low(), test_case.is_low );
+    EXPECT_EQ( pin.is_low(), test_case.is_low );
 
     EXPECT_CALL( mcp23x08, iodir() ).WillOnce( Return( 0b1000'0110 ) );
     EXPECT_CALL( mcp23x08, write_iodir( _ ) );
@@ -449,7 +449,7 @@ TEST_P( isHigh, worksProperly )
 
     EXPECT_CALL( mcp23x08, read_gpio() ).WillOnce( Return( test_case.gpio ) );
 
-    ASSERT_EQ( pin.is_high(), test_case.is_high );
+    EXPECT_EQ( pin.is_high(), test_case.is_high );
 
     EXPECT_CALL( mcp23x08, iodir() ).WillOnce( Return( 0b1000'0110 ) );
     EXPECT_CALL( mcp23x08, write_iodir( _ ) );

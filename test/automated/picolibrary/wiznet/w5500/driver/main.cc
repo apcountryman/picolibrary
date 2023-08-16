@@ -72,7 +72,7 @@ TEST( readMR, worksProperly )
 
     EXPECT_CALL( w5500, read( 0x0000 ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( w5500.read_mr(), data );
+    EXPECT_EQ( w5500.read_mr(), data );
 }
 
 /**
@@ -100,7 +100,7 @@ TEST( readGAR, worksProperly )
 
     EXPECT_CALL( w5500, read( 0x0001, _ ) ).WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_gar(), data );
+    EXPECT_EQ( w5500.read_gar(), data );
 }
 
 /**
@@ -128,7 +128,7 @@ TEST( readSUBR, worksProperly )
 
     EXPECT_CALL( w5500, read( 0x0005, _ ) ).WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_subr(), data );
+    EXPECT_EQ( w5500.read_subr(), data );
 }
 
 /**
@@ -156,7 +156,7 @@ TEST( readSHAR, worksProperly )
 
     EXPECT_CALL( w5500, read( 0x0009, _ ) ).WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_shar(), data );
+    EXPECT_EQ( w5500.read_shar(), data );
 }
 
 /**
@@ -184,7 +184,7 @@ TEST( readSIPR, worksProperly )
 
     EXPECT_CALL( w5500, read( 0x000F, _ ) ).WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_sipr(), data );
+    EXPECT_EQ( w5500.read_sipr(), data );
 }
 
 /**
@@ -212,7 +212,7 @@ TEST( readINTLEVEL, worksProperly )
 
     EXPECT_CALL( w5500, read( 0x0013, _ ) ).WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_intlevel(), data );
+    EXPECT_EQ( w5500.read_intlevel(), data );
 }
 
 /**
@@ -240,7 +240,7 @@ TEST( readIR, worksProperly )
 
     EXPECT_CALL( w5500, read( 0x0015 ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( w5500.read_ir(), data );
+    EXPECT_EQ( w5500.read_ir(), data );
 }
 
 /**
@@ -268,7 +268,7 @@ TEST( readIMR, worksProperly )
 
     EXPECT_CALL( w5500, read( 0x0016 ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( w5500.read_imr(), data );
+    EXPECT_EQ( w5500.read_imr(), data );
 }
 
 /**
@@ -296,7 +296,7 @@ TEST( readSIR, worksProperly )
 
     EXPECT_CALL( w5500, read( 0x0017 ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( w5500.read_sir(), data );
+    EXPECT_EQ( w5500.read_sir(), data );
 }
 
 /**
@@ -310,7 +310,7 @@ TEST( readSIMR, worksProperly )
 
     EXPECT_CALL( w5500, read( 0x0018 ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( w5500.read_simr(), data );
+    EXPECT_EQ( w5500.read_simr(), data );
 }
 
 /**
@@ -338,7 +338,7 @@ TEST( readRTR, worksProperly )
 
     EXPECT_CALL( w5500, read( 0x0019, _ ) ).WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_rtr(), data );
+    EXPECT_EQ( w5500.read_rtr(), data );
 }
 
 /**
@@ -366,7 +366,7 @@ TEST( readRCR, worksProperly )
 
     EXPECT_CALL( w5500, read( 0x001B ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( w5500.read_rcr(), data );
+    EXPECT_EQ( w5500.read_rcr(), data );
 }
 
 /**
@@ -394,7 +394,7 @@ TEST( readPTIMER, worksProperly )
 
     EXPECT_CALL( w5500, read( 0x001C ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( w5500.read_ptimer(), data );
+    EXPECT_EQ( w5500.read_ptimer(), data );
 }
 
 /**
@@ -422,7 +422,7 @@ TEST( readPMAGIC, worksProperly )
 
     EXPECT_CALL( w5500, read( 0x001D ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( w5500.read_pmagic(), data );
+    EXPECT_EQ( w5500.read_pmagic(), data );
 }
 
 /**
@@ -450,7 +450,7 @@ TEST( readPHAR, worksProperly )
 
     EXPECT_CALL( w5500, read( 0x001E, _ ) ).WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_phar(), data );
+    EXPECT_EQ( w5500.read_phar(), data );
 }
 
 /**
@@ -478,7 +478,7 @@ TEST( readPSID, worksProperly )
 
     EXPECT_CALL( w5500, read( 0x0024, _ ) ).WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_psid(), data );
+    EXPECT_EQ( w5500.read_psid(), data );
 }
 
 /**
@@ -506,7 +506,7 @@ TEST( readPMRU, worksProperly )
 
     EXPECT_CALL( w5500, read( 0x0026, _ ) ).WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_pmru(), data );
+    EXPECT_EQ( w5500.read_pmru(), data );
 }
 
 /**
@@ -534,7 +534,7 @@ TEST( readUIPR, worksProperly )
 
     EXPECT_CALL( w5500, read( 0x0028, _ ) ).WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_uipr(), data );
+    EXPECT_EQ( w5500.read_uipr(), data );
 }
 
 /**
@@ -548,7 +548,7 @@ TEST( readUPORTR, worksProperly )
 
     EXPECT_CALL( w5500, read( 0x002C, _ ) ).WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_uportr(), data );
+    EXPECT_EQ( w5500.read_uportr(), data );
 }
 
 /**
@@ -562,7 +562,7 @@ TEST( readPHYCFGR, worksProperly )
 
     EXPECT_CALL( w5500, read( 0x002E ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( w5500.read_phycfgr(), data );
+    EXPECT_EQ( w5500.read_phycfgr(), data );
 }
 
 /**
@@ -590,7 +590,7 @@ TEST( readVERSIONR, worksProperly )
 
     EXPECT_CALL( w5500, read( 0x0039 ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( w5500.read_versionr(), data );
+    EXPECT_EQ( w5500.read_versionr(), data );
 }
 
 /**
@@ -605,7 +605,7 @@ TEST( readSNMR, worksProperly )
 
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0000 ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( w5500.read_sn_mr( socket_id ), data );
+    EXPECT_EQ( w5500.read_sn_mr( socket_id ), data );
 }
 
 /**
@@ -635,7 +635,7 @@ TEST( readSNCR, worksProperly )
 
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0001 ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( w5500.read_sn_cr( socket_id ), data );
+    EXPECT_EQ( w5500.read_sn_cr( socket_id ), data );
 }
 
 /**
@@ -665,7 +665,7 @@ TEST( readSNIR, worksProperly )
 
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0002 ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( w5500.read_sn_ir( socket_id ), data );
+    EXPECT_EQ( w5500.read_sn_ir( socket_id ), data );
 }
 
 /**
@@ -695,7 +695,7 @@ TEST( readSNSR, worksProperly )
 
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0003 ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( w5500.read_sn_sr( socket_id ), data );
+    EXPECT_EQ( w5500.read_sn_sr( socket_id ), data );
 }
 
 /**
@@ -711,7 +711,7 @@ TEST( readSNPORT, worksProperly )
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0004, _ ) )
         .WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_sn_port( socket_id ), data );
+    EXPECT_EQ( w5500.read_sn_port( socket_id ), data );
 }
 
 /**
@@ -742,7 +742,7 @@ TEST( readSNDHAR, worksProperly )
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0006, _ ) )
         .WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_sn_dhar( socket_id ), data );
+    EXPECT_EQ( w5500.read_sn_dhar( socket_id ), data );
 }
 
 /**
@@ -773,7 +773,7 @@ TEST( readSNDIPR, worksProperly )
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x000C, _ ) )
         .WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_sn_dipr( socket_id ), data );
+    EXPECT_EQ( w5500.read_sn_dipr( socket_id ), data );
 }
 
 /**
@@ -804,7 +804,7 @@ TEST( readSNDPORT, worksProperly )
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0010, _ ) )
         .WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_sn_dport( socket_id ), data );
+    EXPECT_EQ( w5500.read_sn_dport( socket_id ), data );
 }
 
 /**
@@ -835,7 +835,7 @@ TEST( readSNMSSR, worksProperly )
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0012, _ ) )
         .WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_sn_mssr( socket_id ), data );
+    EXPECT_EQ( w5500.read_sn_mssr( socket_id ), data );
 }
 
 /**
@@ -865,7 +865,7 @@ TEST( readSNTOS, worksProperly )
 
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0015 ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( w5500.read_sn_tos( socket_id ), data );
+    EXPECT_EQ( w5500.read_sn_tos( socket_id ), data );
 }
 
 /**
@@ -895,7 +895,7 @@ TEST( readSNTTL, worksProperly )
 
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0016 ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( w5500.read_sn_ttl( socket_id ), data );
+    EXPECT_EQ( w5500.read_sn_ttl( socket_id ), data );
 }
 
 /**
@@ -925,7 +925,7 @@ TEST( readSNRXBUFSIZE, worksProperly )
 
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x001E ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( w5500.read_sn_rxbuf_size( socket_id ), data );
+    EXPECT_EQ( w5500.read_sn_rxbuf_size( socket_id ), data );
 }
 
 /**
@@ -955,7 +955,7 @@ TEST( readSNTXBUFSIZE, worksProperly )
 
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x001F ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( w5500.read_sn_txbuf_size( socket_id ), data );
+    EXPECT_EQ( w5500.read_sn_txbuf_size( socket_id ), data );
 }
 
 /**
@@ -993,7 +993,7 @@ TEST( readSNTXFSR, worksProperlyNotStable )
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0020, _ ) )
         .WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_sn_tx_fsr( socket_id ), data );
+    EXPECT_EQ( w5500.read_sn_tx_fsr( socket_id ), data );
 }
 
 /**
@@ -1014,7 +1014,7 @@ TEST( readSNTXFSR, worksProperlyStable )
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0020, _ ) )
         .WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_sn_tx_fsr( socket_id ), data );
+    EXPECT_EQ( w5500.read_sn_tx_fsr( socket_id ), data );
 }
 
 /**
@@ -1030,7 +1030,7 @@ TEST( readSNTXRD, worksProperly )
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0022, _ ) )
         .WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_sn_tx_rd( socket_id ), data );
+    EXPECT_EQ( w5500.read_sn_tx_rd( socket_id ), data );
 }
 
 /**
@@ -1046,7 +1046,7 @@ TEST( readSNTXWR, worksProperly )
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0024, _ ) )
         .WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_sn_tx_wr( socket_id ), data );
+    EXPECT_EQ( w5500.read_sn_tx_wr( socket_id ), data );
 }
 
 /**
@@ -1084,7 +1084,7 @@ TEST( readSNRXRSR, worksProperlyNotStable )
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0026, _ ) )
         .WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_sn_rx_rsr( socket_id ), data );
+    EXPECT_EQ( w5500.read_sn_rx_rsr( socket_id ), data );
 }
 
 /**
@@ -1105,7 +1105,7 @@ TEST( readSNRXRSR, worksProperlyStable )
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0026, _ ) )
         .WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_sn_rx_rsr( socket_id ), data );
+    EXPECT_EQ( w5500.read_sn_rx_rsr( socket_id ), data );
 }
 
 /**
@@ -1121,7 +1121,7 @@ TEST( readSNRXRD, worksProperly )
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x0028, _ ) )
         .WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_sn_rx_rd( socket_id ), data );
+    EXPECT_EQ( w5500.read_sn_rx_rd( socket_id ), data );
 }
 
 /**
@@ -1152,7 +1152,7 @@ TEST( readSNRXWR, worksProperly )
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x002A, _ ) )
         .WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_sn_rx_wr( socket_id ), data );
+    EXPECT_EQ( w5500.read_sn_rx_wr( socket_id ), data );
 }
 
 /**
@@ -1167,7 +1167,7 @@ TEST( readSNIMR, worksProperly )
 
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x002C ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( w5500.read_sn_imr( socket_id ), data );
+    EXPECT_EQ( w5500.read_sn_imr( socket_id ), data );
 }
 
 /**
@@ -1198,7 +1198,7 @@ TEST( readSNFRAG, worksProperly )
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x002D, _ ) )
         .WillOnce( Return( to_vector( data ) ) );
 
-    ASSERT_EQ( w5500.read_sn_frag( socket_id ), data );
+    EXPECT_EQ( w5500.read_sn_frag( socket_id ), data );
 }
 
 /**
@@ -1228,7 +1228,7 @@ TEST( readSNKPALVTR, worksProperly )
 
     EXPECT_CALL( w5500, read( socket_id, Socket_Memory_Block::REGISTERS, 0x002F ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( w5500.read_sn_kpalvtr( socket_id ), data );
+    EXPECT_EQ( w5500.read_sn_kpalvtr( socket_id ), data );
 }
 
 /**
@@ -1263,7 +1263,7 @@ TEST( readRXBuffer, worksProperly )
 
     w5500.read_rx_buffer( socket_id, memory_offset, &*data.begin(), &*data.end() );
 
-    ASSERT_EQ( data, data_expected );
+    EXPECT_EQ( data, data_expected );
 }
 
 /**

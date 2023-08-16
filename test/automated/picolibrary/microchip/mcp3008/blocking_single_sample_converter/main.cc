@@ -53,7 +53,7 @@ TEST( sample, worksProperly )
 
     EXPECT_CALL( mcp3008, sample( input ) ).WillOnce( Return( sample ) );
 
-    ASSERT_EQ( adc.sample(), sample );
+    EXPECT_EQ( adc.sample(), sample );
 }
 
 /**

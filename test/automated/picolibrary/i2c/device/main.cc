@@ -201,7 +201,7 @@ TEST_P( pingOperation, worksProperly )
     } // if
     EXPECT_CALL( controller, stop() );
 
-    ASSERT_EQ( device.ping( test_case.operation ), test_case.response );
+    EXPECT_EQ( device.ping( test_case.operation ), test_case.response );
 }
 
 /**
@@ -293,7 +293,7 @@ TEST_P( ping, worksProperly )
         .WillOnce( Return( test_case.response_write ) );
     EXPECT_CALL( controller, stop() );
 
-    ASSERT_EQ( device.ping(), test_case.response );
+    EXPECT_EQ( device.ping(), test_case.response );
 }
 
 /**
@@ -336,7 +336,7 @@ TEST( readRegister0BitRegisterAddress, worksProperly )
     EXPECT_CALL( controller, read( Response::NACK ) ).WillOnce( Return( data ) );
     EXPECT_CALL( controller, stop() );
 
-    ASSERT_EQ( device.read(), data );
+    EXPECT_EQ( device.read(), data );
 }
 
 /**
@@ -370,7 +370,7 @@ TEST( readRegisterBlock0BitRegisterAddress, worksProperly )
 
     device.read( &*data.begin(), &*data.end() );
 
-    ASSERT_EQ( data, data_expected );
+    EXPECT_EQ( data, data_expected );
 }
 
 /**
@@ -401,7 +401,7 @@ TEST( readRegister8BitRegisterAddress, worksProperly )
     EXPECT_CALL( controller, read( Response::NACK ) ).WillOnce( Return( data ) );
     EXPECT_CALL( controller, stop() );
 
-    ASSERT_EQ( device.read( register_address ), data );
+    EXPECT_EQ( device.read( register_address ), data );
 }
 
 /**
@@ -439,7 +439,7 @@ TEST( readRegisterBlock8BitRegisterAddress, worksProperly )
 
     device.read( register_address, &*data.begin(), &*data.end() );
 
-    ASSERT_EQ( data, data_expected );
+    EXPECT_EQ( data, data_expected );
 }
 
 /**
@@ -470,7 +470,7 @@ TEST( readRegister16BitRegisterAddress, worksProperly )
     EXPECT_CALL( controller, read( Response::NACK ) ).WillOnce( Return( data ) );
     EXPECT_CALL( controller, stop() );
 
-    ASSERT_EQ( device.read( register_address ), data );
+    EXPECT_EQ( device.read( register_address ), data );
 }
 
 /**
@@ -508,7 +508,7 @@ TEST( readRegisterBlock16BitRegisterAddress, worksProperly )
 
     device.read( register_address, &*data.begin(), &*data.end() );
 
-    ASSERT_EQ( data, data_expected );
+    EXPECT_EQ( data, data_expected );
 }
 
 /**

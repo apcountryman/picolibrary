@@ -91,7 +91,7 @@ TEST_P( constructor, worksProperly )
         controller, 95, device_selector.handle(), address
     };
 
-    ASSERT_EQ( communication_controller.address(), address );
+    EXPECT_EQ( communication_controller.address(), address );
 }
 
 /**
@@ -140,7 +140,7 @@ TEST( read, worksProperly )
     EXPECT_CALL( communication_controller, receive() ).WillOnce( Return( data ) );
     EXPECT_CALL( device_selector, deselect() );
 
-    ASSERT_EQ( communication_controller.read( register_address ), data );
+    EXPECT_EQ( communication_controller.read( register_address ), data );
 }
 
 /**

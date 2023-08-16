@@ -65,7 +65,7 @@ TEST( outputFormatterAdafruitPID781CustomCharacterIDPrintOutputStreamErrorHandli
 
     auto const result = stream.print( Custom_Character_ID::_4 );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
     EXPECT_FALSE( stream.end_of_file_reached() );
@@ -145,7 +145,7 @@ TEST_P( outputFormatterAdafruitPID781CustomCharacterIDPrintOutputStream, worksPr
 
     auto const result = stream.print( test_case.custom_character_id );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.vector().size() );
 
     EXPECT_TRUE( stream.is_nominal() );

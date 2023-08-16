@@ -100,7 +100,7 @@ TEST_P( setAndSaveBitRate, worksProperly )
 
     pid781.set_and_save_bit_rate( test_case.bit_rate );
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -139,7 +139,7 @@ TEST( reportBitRate, worksProperly )
 
     pid781.report_bit_rate();
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -200,7 +200,7 @@ TEST_P( setAndSaveLCDSize, worksProperly )
 
     pid781.set_and_save_lcd_size( test_case.lcd_size );
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -236,7 +236,7 @@ TEST( setAndSaveBacklightColor, worksProperly )
 
     pid781.set_and_save_backlight_color( color );
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -260,7 +260,7 @@ TEST( setAndSaveBacklightBrightness, worksProperly )
 
     pid781.set_and_save_backlight_brightness( brightness );
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -281,7 +281,7 @@ TEST( setAndSaveLCDContrast, worksProperly )
 
     pid781.set_and_save_lcd_contrast( contrast );
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -300,7 +300,7 @@ TEST( setAndSaveSplashScreen, worksProperly )
 
     pid781.set_and_save_splash_screen();
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -318,7 +318,7 @@ TEST( illuminateBacklight, worksProperly )
 
     pid781.illuminate_backlight();
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -337,7 +337,7 @@ TEST( extinguishBacklight, worksProperly )
 
     pid781.extinguish_backlight();
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -355,7 +355,7 @@ TEST( enableAutoScrolling, worksProperly )
 
     pid781.enable_auto_scrolling();
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -373,7 +373,7 @@ TEST( disableAutoScrolling, worksProperly )
 
     pid781.disable_auto_scrolling();
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -391,7 +391,7 @@ TEST( enableCursorUnderline, worksProperly )
 
     pid781.enable_cursor_underline();
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -409,7 +409,7 @@ TEST( disableCursorUnderline, worksProperly )
 
     pid781.disable_cursor_underline();
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -427,7 +427,7 @@ TEST( enableCursorBlink, worksProperly )
 
     pid781.enable_cursor_blink();
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -445,7 +445,7 @@ TEST( disableCursorBlink, worksProperly )
 
     pid781.disable_cursor_blink();
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -465,7 +465,7 @@ TEST( setCursorPosition, worksProperly )
 
     pid781.set_cursor_position( cursor_position );
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -484,7 +484,7 @@ TEST( homeCursor, worksProperly )
 
     pid781.home_cursor();
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -501,7 +501,7 @@ TEST( retreatCursor, worksProperly )
 
     pid781.retreat_cursor();
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -518,7 +518,7 @@ TEST( advanceCursor, worksProperly )
 
     pid781.advance_cursor();
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -535,7 +535,7 @@ TEST( clearScreen, worksProperly )
 
     pid781.clear_screen();
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -605,7 +605,7 @@ TEST_P( createCustomCharacter, worksProperly )
 
     pid781.create_custom_character( test_case.id, pixel_matrix );
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -720,7 +720,7 @@ TEST_P( createAndSaveCustomCharacter, worksProperly )
 
     pid781.create_and_save_custom_character( test_case.bank, test_case.id, pixel_matrix );
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -843,7 +843,7 @@ TEST_P( loadCustomCharacterBank, worksProperly )
 
     pid781.load_custom_character_bank( test_case.bank );
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -935,7 +935,7 @@ TEST_P( setAndSaveOutputPinInitialState, worksProperly )
 
     pid781.set_and_save_output_pin_initial_state( test_case.pin, test_case.initial_pin_state );
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -1034,7 +1034,7 @@ TEST_P( transitionOutputPinToHigh, worksProperly )
 
     pid781.transition_output_pin_to_high( test_case.pin );
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,
@@ -1064,7 +1064,7 @@ TEST_P( transitionOutputPinToLow, worksProperly )
 
     pid781.transition_output_pin_to_low( test_case.pin );
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         pid781.vector(),
         ( std::vector<std::uint8_t>{
             0xFE,

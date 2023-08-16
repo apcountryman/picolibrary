@@ -59,7 +59,7 @@ TEST( outputFormatterFormatHexPrintOutputStreamErrorHandling, putError )
 
     auto const result = stream.print( Hex{ 0x48B18626 } );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
     EXPECT_FALSE( stream.end_of_file_reached() );
@@ -132,7 +132,7 @@ TEST_P( outputFormatterFormatHexPrintOutputStreamI8, worksProperly )
 
     auto const result = stream.print( Hex{ test_case.value } );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
@@ -208,7 +208,7 @@ TEST_P( outputFormatterFormatHexPrintOutputStreamU8, worksProperly )
 
     auto const result = stream.print( Hex{ test_case.value } );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
@@ -284,7 +284,7 @@ TEST_P( outputFormatterFormatHexPrintOutputStreamI16, worksProperly )
 
     auto const result = stream.print( Hex{ test_case.value } );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
@@ -360,7 +360,7 @@ TEST_P( outputFormatterFormatHexPrintOutputStreamU16, worksProperly )
 
     auto const result = stream.print( Hex{ test_case.value } );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
@@ -436,7 +436,7 @@ TEST_P( outputFormatterFormatHexPrintOutputStreamI32, worksProperly )
 
     auto const result = stream.print( Hex{ test_case.value } );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
@@ -512,7 +512,7 @@ TEST_P( outputFormatterFormatHexPrintOutputStreamU32, worksProperly )
 
     auto const result = stream.print( Hex{ test_case.value } );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
@@ -588,7 +588,7 @@ TEST_P( outputFormatterFormatHexPrintOutputStreamI64, worksProperly )
 
     auto const result = stream.print( Hex{ test_case.value } );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
@@ -664,7 +664,7 @@ TEST_P( outputFormatterFormatHexPrintOutputStreamU64, worksProperly )
 
     auto const result = stream.print( Hex{ test_case.value } );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );

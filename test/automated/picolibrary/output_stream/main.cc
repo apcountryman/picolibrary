@@ -117,7 +117,7 @@ TEST( putCharErrorHandling, putError )
 
     auto const result = stream.put( 'W' );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
     EXPECT_FALSE( stream.end_of_file_reached() );
@@ -158,7 +158,7 @@ TEST( putCharBlockErrorHandling, putError )
 
     auto const result = stream.put( string.begin(), string.end() );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
     EXPECT_FALSE( stream.end_of_file_reached() );
@@ -197,7 +197,7 @@ TEST( putNullTerminatedStringErrorHandling, putError )
 
     auto const result = stream.put( "du1JWCGcsfXR3" );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
     EXPECT_FALSE( stream.end_of_file_reached() );
@@ -235,7 +235,7 @@ TEST( putUnsignedByteErrorHandling, putError )
 
     auto const result = stream.put( std::uint8_t{ 0xB6 } );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
     EXPECT_FALSE( stream.end_of_file_reached() );
@@ -276,7 +276,7 @@ TEST( putUnsignedByteBlockErrorHandling, putError )
 
     auto const result = stream.put( &*values.begin(), &*values.end() );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
     EXPECT_FALSE( stream.end_of_file_reached() );
@@ -315,7 +315,7 @@ TEST( putSignedByteErrorHandling, putError )
 
     auto const result = stream.put( std::int8_t{ 0x3D } );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
     EXPECT_FALSE( stream.end_of_file_reached() );
@@ -356,7 +356,7 @@ TEST( putSignedByteBlockErrorHandling, putError )
 
     auto const result = stream.put( &*values.begin(), &*values.end() );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
     EXPECT_FALSE( stream.end_of_file_reached() );
@@ -397,7 +397,7 @@ TEST( printErrorHandling, outputFormatterPrintError )
 
     auto const result = stream.print( Foo{ 89 }, Output_Formatter<Foo>{ formatter } );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
     EXPECT_FALSE( stream.end_of_file_reached() );
@@ -421,7 +421,7 @@ TEST( print, worksProperlySingleValue )
 
     auto const result = stream.print( foo, Output_Formatter<Foo>{ foo_formatter } );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), foo_size );
 
     EXPECT_TRUE( stream.is_nominal() );
@@ -450,7 +450,7 @@ TEST( print, worksProperlyMultipleValues )
     auto const result = stream.print(
         foo_a, Output_Formatter<Foo>{ foo_a_formatter }, foo_b, Output_Formatter<Foo>{ foo_b_formatter } );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), foo_a_size + foo_b_size );
 
     EXPECT_TRUE( stream.is_nominal() );
@@ -469,7 +469,7 @@ TEST( flushErrorHandling, flushError )
 
     auto const result = stream.flush();
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
     EXPECT_FALSE( stream.end_of_file_reached() );
@@ -505,7 +505,7 @@ TEST( outputFormatterCharPrintOutputStreamErrorHandling, putError )
 
     auto const result = stream.print( 'g' );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
     EXPECT_FALSE( stream.end_of_file_reached() );
@@ -525,7 +525,7 @@ TEST( outputFormatterCharPrintOutputStream, worksProperly )
 
     auto const result = stream.print( character );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
@@ -546,7 +546,7 @@ TEST( outputFormatterNullTerminatedStringPrintOutputStreamErrorHandling, putErro
 
     auto const result = stream.print( "FxYCgTqc4" );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
     EXPECT_FALSE( stream.end_of_file_reached() );
@@ -566,7 +566,7 @@ TEST( outputFormatterNullTerminatedStringPrintOutputStream, worksProperly )
 
     auto const result = stream.print( string );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
@@ -592,7 +592,7 @@ TEST( outputFormatterErrorCodePrintOutputStreamErrorHandling, putError )
 
     auto const result = stream.print( Mock_Error{ 150 } );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
     EXPECT_FALSE( stream.end_of_file_reached() );
@@ -619,7 +619,7 @@ TEST( outputFormatterErrorCodePrintOutputStream, worksProperlyErrorCode )
 
     auto const result = stream.print( Error_Code{ error } );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
@@ -645,7 +645,7 @@ TEST( outputFormatterErrorCodePrintOutputStream, worksProperlyErrorCodeEnum )
 
     auto const result = stream.print( error );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );

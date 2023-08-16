@@ -52,7 +52,7 @@ TEST_P( bitwiseCalculator8, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         Bitwise_Calculator{ test_case.calculation_parameters }.calculate(
             test_case.message.begin(), test_case.message.end() ),
         test_case.remainder );
@@ -73,7 +73,7 @@ TEST_P( bitwiseCalculator16, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         Bitwise_Calculator{ test_case.calculation_parameters }.calculate(
             test_case.message.begin(), test_case.message.end() ),
         test_case.remainder );
@@ -94,7 +94,7 @@ TEST_P( bitwiseCalculator32, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         Bitwise_Calculator{ test_case.calculation_parameters }.calculate(
             test_case.message.begin(), test_case.message.end() ),
         test_case.remainder );

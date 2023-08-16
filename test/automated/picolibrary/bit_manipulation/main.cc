@@ -87,7 +87,7 @@ TEST_P( highestBitSet8, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( highest_bit_set( test_case.value ), test_case.highest_bit_set );
+    EXPECT_EQ( highest_bit_set( test_case.value ), test_case.highest_bit_set );
 }
 
 /**
@@ -139,7 +139,7 @@ TEST_P( highestBitSet16, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( highest_bit_set( test_case.value ), test_case.highest_bit_set );
+    EXPECT_EQ( highest_bit_set( test_case.value ), test_case.highest_bit_set );
 }
 
 /**
@@ -215,7 +215,7 @@ TEST_P( highestBitSet32, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( highest_bit_set( test_case.value ), test_case.highest_bit_set );
+    EXPECT_EQ( highest_bit_set( test_case.value ), test_case.highest_bit_set );
 }
 
 /**
@@ -378,7 +378,7 @@ TEST_P( mask8, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( mask<std::uint8_t>( test_case.size, test_case.bit ), test_case.mask );
+    EXPECT_EQ( mask<std::uint8_t>( test_case.size, test_case.bit ), test_case.mask );
 }
 
 /**
@@ -458,7 +458,7 @@ TEST_P( mask16, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( mask<std::uint16_t>( test_case.size, test_case.bit ), test_case.mask );
+    EXPECT_EQ( mask<std::uint16_t>( test_case.size, test_case.bit ), test_case.mask );
 }
 
 /**
@@ -654,7 +654,7 @@ TEST_P( mask32, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( mask<std::uint32_t>( test_case.size, test_case.bit ), test_case.mask );
+    EXPECT_EQ( mask<std::uint32_t>( test_case.size, test_case.bit ), test_case.mask );
 }
 
 /**
@@ -1306,7 +1306,7 @@ TEST_P( reflect8, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( reflect( test_case.value ), test_case.reflection );
+    EXPECT_EQ( reflect( test_case.value ), test_case.reflection );
 }
 
 /**
@@ -1361,7 +1361,7 @@ TEST_P( reflect16, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( reflect( test_case.value ), test_case.reflection );
+    EXPECT_EQ( reflect( test_case.value ), test_case.reflection );
 }
 
 /**
@@ -1440,7 +1440,7 @@ TEST_P( reflect32, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( reflect( test_case.value ), test_case.reflection );
+    EXPECT_EQ( reflect( test_case.value ), test_case.reflection );
 }
 
 /**
@@ -1600,7 +1600,7 @@ TEST_P( isPowerOfTwo8, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( is_power_of_two( test_case.value ), test_case.is_power_of_two );
+    EXPECT_EQ( is_power_of_two( test_case.value ), test_case.is_power_of_two );
 }
 
 /**
@@ -1662,7 +1662,7 @@ TEST_P( isPowerOfTwo16, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( is_power_of_two( test_case.value ), test_case.is_power_of_two );
+    EXPECT_EQ( is_power_of_two( test_case.value ), test_case.is_power_of_two );
 }
 
 /**
@@ -1756,7 +1756,7 @@ TEST_P( isPowerOfTwo32, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( is_power_of_two( test_case.value ), test_case.is_power_of_two );
+    EXPECT_EQ( is_power_of_two( test_case.value ), test_case.is_power_of_two );
 }
 
 /**

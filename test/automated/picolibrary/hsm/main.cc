@@ -443,7 +443,7 @@ TEST( hsm, worksProperly )
         stream << '\n';
     } // for
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         stream.str(),
         "top-INIT;s-ENTRY;s2-ENTRY;s2-INIT;s21-ENTRY;s211-ENTRY;\n"
         "s21-G;s211-EXIT;s21-EXIT;s2-EXIT;s1-ENTRY;s11-ENTRY;\n"

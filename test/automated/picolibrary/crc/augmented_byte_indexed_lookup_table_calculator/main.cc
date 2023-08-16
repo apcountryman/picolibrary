@@ -56,7 +56,7 @@ TEST_P( augmentedByteIndexedLookupTableCalculator8, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         Augmented_Byte_Indexed_Lookup_Table_Calculator{ test_case.calculation_parameters }.calculate(
             test_case.message.begin(), test_case.message.end() ),
         test_case.remainder );
@@ -80,7 +80,7 @@ TEST_P( augmentedByteIndexedLookupTableCalculator16, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         Augmented_Byte_Indexed_Lookup_Table_Calculator{ test_case.calculation_parameters }.calculate(
             test_case.message.begin(), test_case.message.end() ),
         test_case.remainder );
@@ -104,7 +104,7 @@ TEST_P( augmentedByteIndexedLookupTableCalculator32, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         Augmented_Byte_Indexed_Lookup_Table_Calculator{ test_case.calculation_parameters }.calculate(
             test_case.message.begin(), test_case.message.end() ),
         test_case.remainder );

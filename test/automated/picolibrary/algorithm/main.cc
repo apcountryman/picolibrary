@@ -104,8 +104,8 @@ TEST( forEachFunctorCanFailReturnFunctorErrorHandling, functorError )
     auto const result = ::picolibrary::for_each<Functor_Can_Fail_Return_Functor>(
         values.begin(), values.end(), functor.AsStdFunction() );
 
-    ASSERT_TRUE( result.is_error() );
-    ASSERT_EQ( result.error(), error );
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
 }
 
 /**
@@ -136,11 +136,11 @@ TEST_P( forEachFunctorCanFailReturnFunctor, worksProperly )
 
     static_assert( std::is_same_v<decltype( result )::Value, decltype( functor.AsStdFunction() )> );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
 
     EXPECT_CALL( functor, Call( _ ) ).WillOnce( Return( Result<void>{} ) );
 
-    ASSERT_FALSE( result.value()( 0x06 ).is_error() );
+    EXPECT_FALSE( result.value()( 0x06 ).is_error() );
 }
 
 INSTANTIATE_TEST_SUITE_P( testCases, forEachFunctorCanFailReturnFunctor, ValuesIn( forEach_TEST_CASES ) );
@@ -162,8 +162,8 @@ TEST( forEachFunctorCanFailDiscardFunctorErrorHandling, functorError )
     auto const result = ::picolibrary::for_each<Functor_Can_Fail_Discard_Functor>(
         values.begin(), values.end(), functor.AsStdFunction() );
 
-    ASSERT_TRUE( result.is_error() );
-    ASSERT_EQ( result.error(), error );
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
 }
 
 /**
@@ -194,7 +194,7 @@ TEST_P( forEachFunctorCanFailDiscardFunctor, worksProperly )
 
     static_assert( std::is_same_v<decltype( result )::Value, void> );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
 }
 
 INSTANTIATE_TEST_SUITE_P( testCases, forEachFunctorCanFailDiscardFunctor, ValuesIn( forEach_TEST_CASES ) );
@@ -217,7 +217,7 @@ TEST_P( fill, worksProperly )
 
     ::picolibrary::fill( container.begin(), container.end(), value );
 
-    ASSERT_THAT( container, Each( value ) );
+    EXPECT_THAT( container, Each( value ) );
 }
 
 INSTANTIATE_TEST_SUITE_P( testCases, fill, Values<std::size_t>( 0, 5 ) );
@@ -255,7 +255,7 @@ TEST_P( generate, worksProperly )
 
     ::picolibrary::generate( output.begin(), output.end(), functor.AsStdFunction() );
 
-    ASSERT_EQ( output, values );
+    EXPECT_EQ( output, values );
 }
 
 INSTANTIATE_TEST_SUITE_P( testCases, generate, ValuesIn( generate_TEST_CASES ) );
@@ -276,8 +276,8 @@ TEST( generateFunctorCanFailErrorHandling, functorError )
     auto const result = ::picolibrary::generate<Functor_Can_Fail>(
         output.begin(), output.end(), functor.AsStdFunction() );
 
-    ASSERT_TRUE( result.is_error() );
-    ASSERT_EQ( result.error(), error );
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
 }
 
 /**
@@ -309,7 +309,7 @@ TEST_P( generateFunctorCanFail, functorError )
                       output.begin(), output.end(), functor.AsStdFunction() )
                       .is_error() );
 
-    ASSERT_EQ( output, values );
+    EXPECT_EQ( output, values );
 }
 
 INSTANTIATE_TEST_SUITE_P( testCases, generateFunctorCanFail, ValuesIn( generate_TEST_CASES ) );
@@ -323,7 +323,7 @@ TEST( min, worksProperlyALessBNotAdjacent )
     auto const a = std::uint_fast8_t{ 28 };
     auto const b = std::uint_fast8_t{ 199 };
 
-    ASSERT_THAT( ::picolibrary::min( a, b ), Ref( a ) );
+    EXPECT_THAT( ::picolibrary::min( a, b ), Ref( a ) );
 }
 
 /**
@@ -335,7 +335,7 @@ TEST( min, worksProperlyALessBAdjacent )
     auto const a = std::uint_fast8_t{ 198 };
     auto const b = std::uint_fast8_t{ 199 };
 
-    ASSERT_THAT( ::picolibrary::min( a, b ), Ref( a ) );
+    EXPECT_THAT( ::picolibrary::min( a, b ), Ref( a ) );
 }
 
 /**
@@ -346,7 +346,7 @@ TEST( min, worksProperlyAEqualB )
     auto const a = std::uint_fast8_t{ 199 };
     auto const b = std::uint_fast8_t{ 199 };
 
-    ASSERT_THAT( ::picolibrary::min( a, b ), Ref( a ) );
+    EXPECT_THAT( ::picolibrary::min( a, b ), Ref( a ) );
 }
 
 /**
@@ -358,7 +358,7 @@ TEST( min, worksProperlyAGreaterBAdjacent )
     auto const a = std::uint_fast8_t{ 200 };
     auto const b = std::uint_fast8_t{ 199 };
 
-    ASSERT_THAT( ::picolibrary::min( a, b ), Ref( b ) );
+    EXPECT_THAT( ::picolibrary::min( a, b ), Ref( b ) );
 }
 
 /**
@@ -370,7 +370,7 @@ TEST( min, worksProperlyAGreaterBNotAdjacent )
     auto const a = std::uint_fast8_t{ 232 };
     auto const b = std::uint_fast8_t{ 199 };
 
-    ASSERT_THAT( ::picolibrary::min( a, b ), Ref( b ) );
+    EXPECT_THAT( ::picolibrary::min( a, b ), Ref( b ) );
 }
 
 /**
@@ -382,7 +382,7 @@ TEST( max, worksProperlyALessBNotAdjacent )
     auto const a = std::uint_fast8_t{ 28 };
     auto const b = std::uint_fast8_t{ 199 };
 
-    ASSERT_THAT( ::picolibrary::max( a, b ), Ref( b ) );
+    EXPECT_THAT( ::picolibrary::max( a, b ), Ref( b ) );
 }
 
 /**
@@ -394,7 +394,7 @@ TEST( max, worksProperlyALessBAdjacent )
     auto const a = std::uint_fast8_t{ 198 };
     auto const b = std::uint_fast8_t{ 199 };
 
-    ASSERT_THAT( ::picolibrary::max( a, b ), Ref( b ) );
+    EXPECT_THAT( ::picolibrary::max( a, b ), Ref( b ) );
 }
 
 /**
@@ -405,7 +405,7 @@ TEST( max, worksProperlyAEqualB )
     auto const a = std::uint_fast8_t{ 199 };
     auto const b = std::uint_fast8_t{ 199 };
 
-    ASSERT_THAT( ::picolibrary::max( a, b ), Ref( a ) );
+    EXPECT_THAT( ::picolibrary::max( a, b ), Ref( a ) );
 }
 
 /**
@@ -417,7 +417,7 @@ TEST( max, worksProperlyAGreaterBAdjacent )
     auto const a = std::uint_fast8_t{ 200 };
     auto const b = std::uint_fast8_t{ 199 };
 
-    ASSERT_THAT( ::picolibrary::max( a, b ), Ref( a ) );
+    EXPECT_THAT( ::picolibrary::max( a, b ), Ref( a ) );
 }
 
 /**
@@ -429,7 +429,7 @@ TEST( max, worksProperlyAGreaterBNotAdjacent )
     auto const a = std::uint_fast8_t{ 232 };
     auto const b = std::uint_fast8_t{ 199 };
 
-    ASSERT_THAT( ::picolibrary::max( a, b ), Ref( a ) );
+    EXPECT_THAT( ::picolibrary::max( a, b ), Ref( a ) );
 }
 
 /**
@@ -503,7 +503,7 @@ TEST_P( equal3Iterators, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         ::picolibrary::equal(
             test_case.range_1.begin(), test_case.range_1.end(), test_case.range_2.begin() ),
         test_case.equal );
@@ -526,7 +526,7 @@ TEST_P( equal3IteratorsPredicate, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         ::picolibrary::equal(
             test_case.range_1.begin(),
             test_case.range_1.end(),
@@ -584,7 +584,7 @@ TEST_P( equal4Iterators, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         ::picolibrary::equal(
             test_case.range_1.begin(),
             test_case.range_1.end(),
@@ -610,7 +610,7 @@ TEST_P( equal4IteratorsPredicate, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         ::picolibrary::equal(
             test_case.range_1.begin(),
             test_case.range_1.end(),

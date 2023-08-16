@@ -113,7 +113,7 @@ TEST( putChar, worksProperly )
 
     stream.put( character );
 
-    ASSERT_TRUE( stream.is_nominal() );
+    EXPECT_TRUE( stream.is_nominal() );
 }
 
 /**
@@ -130,7 +130,7 @@ TEST( putCharBlock, worksProperly )
 
     stream.put( string.begin(), string.end() );
 
-    ASSERT_TRUE( stream.is_nominal() );
+    EXPECT_TRUE( stream.is_nominal() );
 }
 
 /**
@@ -146,7 +146,7 @@ TEST( putNullTerminatedString, worksProperly )
 
     stream.put( string );
 
-    ASSERT_TRUE( stream.is_nominal() );
+    EXPECT_TRUE( stream.is_nominal() );
 }
 
 /**
@@ -162,7 +162,7 @@ TEST( putUnsignedByte, worksProperly )
 
     stream.put( value );
 
-    ASSERT_TRUE( stream.is_nominal() );
+    EXPECT_TRUE( stream.is_nominal() );
 }
 
 /**
@@ -179,7 +179,7 @@ TEST( putUnsignedByteBlock, worksProperly )
 
     stream.put( &*values.begin(), &*values.end() );
 
-    ASSERT_TRUE( stream.is_nominal() );
+    EXPECT_TRUE( stream.is_nominal() );
 }
 
 /**
@@ -195,7 +195,7 @@ TEST( putSignedByte, worksProperly )
 
     stream.put( value );
 
-    ASSERT_TRUE( stream.is_nominal() );
+    EXPECT_TRUE( stream.is_nominal() );
 }
 
 /**
@@ -212,7 +212,7 @@ TEST( putSignedByteBlock, worksProperly )
 
     stream.put( &*values.begin(), &*values.end() );
 
-    ASSERT_TRUE( stream.is_nominal() );
+    EXPECT_TRUE( stream.is_nominal() );
 }
 
 /**
@@ -273,7 +273,7 @@ TEST( flush, worksProperly )
 
     stream.flush();
 
-    ASSERT_TRUE( stream.is_nominal() );
+    EXPECT_TRUE( stream.is_nominal() );
 }
 
 /**

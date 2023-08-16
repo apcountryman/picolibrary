@@ -363,7 +363,7 @@ TEST_P( w5500IsResponsive, worksProperly )
 
     EXPECT_CALL( network_stack.driver(), read_versionr() ).WillOnce( Return( test_case.versionr ) );
 
-    ASSERT_EQ( network_stack.w5500_is_responsive(), test_case.w5500_is_responsive );
+    EXPECT_EQ( network_stack.w5500_is_responsive(), test_case.w5500_is_responsive );
 }
 
 /**
@@ -437,7 +437,7 @@ TEST_P( phyMode, worksProperly )
 
     EXPECT_CALL( network_stack.driver(), read_phycfgr() ).WillOnce( Return( test_case.phycfgr ) );
 
-    ASSERT_EQ( network_stack.phy_mode(), test_case.phy_mode );
+    EXPECT_EQ( network_stack.phy_mode(), test_case.phy_mode );
 }
 
 /**
@@ -513,7 +513,7 @@ TEST_P( linkStatus, worksProperly )
 
     EXPECT_CALL( network_stack.driver(), read_phycfgr() ).WillOnce( Return( test_case.phycfgr ) );
 
-    ASSERT_EQ( network_stack.link_status(), test_case.link_status );
+    EXPECT_EQ( network_stack.link_status(), test_case.link_status );
 }
 
 /**
@@ -583,7 +583,7 @@ TEST_P( linkMode, worksProperly )
 
     EXPECT_CALL( network_stack.driver(), read_phycfgr() ).WillOnce( Return( test_case.phycfgr ) );
 
-    ASSERT_EQ( network_stack.link_mode(), test_case.link_mode );
+    EXPECT_EQ( network_stack.link_mode(), test_case.link_mode );
 }
 
 /**
@@ -653,7 +653,7 @@ TEST_P( linkSpeed, worksProperly )
 
     EXPECT_CALL( network_stack.driver(), read_phycfgr() ).WillOnce( Return( test_case.phycfgr ) );
 
-    ASSERT_EQ( network_stack.link_speed(), test_case.link_speed );
+    EXPECT_EQ( network_stack.link_speed(), test_case.link_speed );
 }
 
 /**
@@ -804,7 +804,7 @@ TEST_P( pingBlockingConfiguration, worksProperly )
 
     EXPECT_CALL( network_stack.driver(), read_mr() ).WillOnce( Return( test_case.mr ) );
 
-    ASSERT_EQ( network_stack.ping_blocking_configuration(), test_case.ping_blocking_configuration );
+    EXPECT_EQ( network_stack.ping_blocking_configuration(), test_case.ping_blocking_configuration );
 }
 
 /**
@@ -879,7 +879,7 @@ TEST_P( arpForcingConfiguration, worksProperly )
 
     EXPECT_CALL( network_stack.driver(), read_mr() ).WillOnce( Return( test_case.mr ) );
 
-    ASSERT_EQ( network_stack.arp_forcing_configuration(), test_case.arp_forcing_configuration );
+    EXPECT_EQ( network_stack.arp_forcing_configuration(), test_case.arp_forcing_configuration );
 }
 
 /**
@@ -917,7 +917,7 @@ TEST( retransmissionRetryTime, worksProperly )
 
     EXPECT_CALL( network_stack.driver(), read_rtr() ).WillOnce( Return( rtr ) );
 
-    ASSERT_EQ( network_stack.retransmission_retry_time(), rtr );
+    EXPECT_EQ( network_stack.retransmission_retry_time(), rtr );
 }
 
 /**
@@ -940,7 +940,7 @@ TEST( retransmissionRetryCount, worksProperly )
 
     EXPECT_CALL( network_stack.driver(), read_rcr() ).WillOnce( Return( rcr ) );
 
-    ASSERT_EQ( network_stack.retransmission_retry_count(), rcr );
+    EXPECT_EQ( network_stack.retransmission_retry_count(), rcr );
 }
 
 /**
@@ -962,7 +962,7 @@ TEST( macAddress, worksProperly )
 
     EXPECT_CALL( network_stack.driver(), read_shar() ).WillOnce( Return( shar ) );
 
-    ASSERT_EQ( network_stack.mac_address().as_byte_array(), shar );
+    EXPECT_EQ( network_stack.mac_address().as_byte_array(), shar );
 }
 
 /**
@@ -984,7 +984,7 @@ TEST( ipv4Address, worksProperly )
 
     EXPECT_CALL( network_stack.driver(), read_sipr() ).WillOnce( Return( sipr ) );
 
-    ASSERT_EQ( network_stack.ipv4_address().as_byte_array(), sipr );
+    EXPECT_EQ( network_stack.ipv4_address().as_byte_array(), sipr );
 }
 
 /**
@@ -1006,7 +1006,7 @@ TEST( ipv4GatewayAddress, worksProperly )
 
     EXPECT_CALL( network_stack.driver(), read_gar() ).WillOnce( Return( gar ) );
 
-    ASSERT_EQ( network_stack.ipv4_gateway_address().as_byte_array(), gar );
+    EXPECT_EQ( network_stack.ipv4_gateway_address().as_byte_array(), gar );
 }
 
 /**
@@ -1028,7 +1028,7 @@ TEST( ipv4SubnetMask, worksProperly )
 
     EXPECT_CALL( network_stack.driver(), read_subr() ).WillOnce( Return( subr ) );
 
-    ASSERT_EQ( network_stack.ipv4_subnet_mask().as_byte_array(), subr );
+    EXPECT_EQ( network_stack.ipv4_subnet_mask().as_byte_array(), subr );
 }
 
 /**
@@ -1051,7 +1051,7 @@ TEST( interruptAssertWaitTime, worksProperly )
 
     EXPECT_CALL( network_stack.driver(), read_intlevel() ).WillOnce( Return( intlevel ) );
 
-    ASSERT_EQ( network_stack.interrupt_assert_wait_time(), intlevel );
+    EXPECT_EQ( network_stack.interrupt_assert_wait_time(), intlevel );
 }
 
 /**
@@ -1143,7 +1143,7 @@ TEST( enabledInterrupts, worksProperly )
 
     EXPECT_CALL( network_stack.driver(), read_imr() ).WillOnce( Return( imr ) );
 
-    ASSERT_EQ( network_stack.enabled_interrupts(), imr );
+    EXPECT_EQ( network_stack.enabled_interrupts(), imr );
 }
 
 /**
@@ -1165,7 +1165,7 @@ TEST( interruptContext, worksProperly )
 
     EXPECT_CALL( network_stack.driver(), read_ir() ).WillOnce( Return( ir ) );
 
-    ASSERT_EQ( network_stack.interrupt_context(), ir );
+    EXPECT_EQ( network_stack.interrupt_context(), ir );
 }
 
 /**
@@ -1288,7 +1288,7 @@ TEST_P( socketInterruptsAreEnabled, worksProperly )
 
     EXPECT_CALL( network_stack.driver(), read_simr() ).WillOnce( Return( test_case.simr ) );
 
-    ASSERT_EQ( network_stack.socket_interrupts_are_enabled(), test_case.socket_interrupts_are_enabled );
+    EXPECT_EQ( network_stack.socket_interrupts_are_enabled(), test_case.socket_interrupts_are_enabled );
 }
 
 /**
@@ -1327,7 +1327,7 @@ TEST( socketInterruptContext, worksProperly )
 
     EXPECT_CALL( network_stack.driver(), read_sir() ).WillOnce( Return( sir ) );
 
-    ASSERT_EQ( network_stack.socket_interrupt_context(), sir );
+    EXPECT_EQ( network_stack.socket_interrupt_context(), sir );
 }
 
 /**
@@ -1351,7 +1351,7 @@ TEST( unreachableEndpoint, worksProperly )
     EXPECT_CALL( network_stack.driver(), read_uipr() ).WillOnce( Return( uipr ) );
     EXPECT_CALL( network_stack.driver(), read_uportr() ).WillOnce( Return( uportr ) );
 
-    ASSERT_EQ( network_stack.unreachable_endpoint(), ( Endpoint{ IPv4_Address{ uipr }, uportr } ) );
+    EXPECT_EQ( network_stack.unreachable_endpoint(), ( Endpoint{ IPv4_Address{ uipr }, uportr } ) );
 }
 
 /**
