@@ -34,7 +34,7 @@
 #include "picolibrary/result.h"
 #include "picolibrary/utility.h"
 #include "picolibrary/wiznet/w5500.h"
-#include "picolibrary/wiznet/w5500/ip/network_stack_keys.h"
+#include "picolibrary/wiznet/w5500/keys.h"
 
 /**
  * \brief WIZnet W5500 TCP over IP facilities.
@@ -77,8 +77,7 @@ class Client {
      * \param[in] network_stack The network stack the socket is associated with.
      * \param[in] socket_id The socket's socket ID.
      */
-    constexpr Client( Network_Stack_Socket_Construction_Key, Network_Stack & network_stack, Socket_ID socket_id ) noexcept
-        :
+    constexpr Client( Socket_Construction_Key, Network_Stack & network_stack, Socket_ID socket_id ) noexcept :
         m_state{ State::INITIALIZED },
         m_network_stack{ &network_stack },
         m_socket_id{ socket_id }
@@ -801,7 +800,7 @@ class Acceptor {
      *
      * \pre not socket_ids.empty()
      */
-    constexpr Acceptor( Network_Stack_Socket_Construction_Key, Network_Stack & network_stack, Socket_IDs const & socket_ids ) noexcept
+    constexpr Acceptor( Socket_Construction_Key, Network_Stack & network_stack, Socket_IDs const & socket_ids ) noexcept
         :
         m_state{ State::INITIALIZED },
         m_network_stack{ &network_stack },
@@ -1270,7 +1269,7 @@ class Acceptor {
      * \pre the socket has been allocated
      */
     // NOLINTNEXTLINE(readability-function-size)
-    void deallocate_socket( Network_Stack_TCP_Acceptor_Socket_Allocation_Key, Socket_ID socket_id ) noexcept
+    void deallocate_socket( Acceptor_Server_Deallocation_Key, Socket_ID socket_id ) noexcept
     {
         // #lizard forgives the length
 

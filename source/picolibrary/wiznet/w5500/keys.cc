@@ -17,7 +17,7 @@
 
 /**
  * \file
- * \brief picolibrary::WIZnet::W5500::IP::Network_Stack keys implementation.
+ * \brief picolibrary::WIZnet::W5500 keys implementation.
  */
 
-#include "picolibrary/wiznet/w5500/ip/network_stack_keys.h"
+#include "picolibrary/wiznet/w5500/keys.h"

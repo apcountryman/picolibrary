@@ -35,8 +35,8 @@
 #include "picolibrary/precondition.h"
 #include "picolibrary/utility.h"
 #include "picolibrary/wiznet/w5500.h"
-#include "picolibrary/wiznet/w5500/ip/network_stack_keys.h"
 #include "picolibrary/wiznet/w5500/ip/tcp.h"
+#include "picolibrary/wiznet/w5500/keys.h"
 
 namespace picolibrary::WIZnet::W5500::IP {
 
