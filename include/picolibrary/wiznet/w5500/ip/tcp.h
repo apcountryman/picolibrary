@@ -1269,7 +1269,7 @@ class Acceptor {
      * \pre the socket has been allocated
      */
     // NOLINTNEXTLINE(readability-function-size)
-    void deallocate_socket( Acceptor_Server_Deallocation_Key, Socket_ID socket_id ) noexcept
+    void deallocate_socket( Acceptor_Socket_Deallocation_Key, Socket_ID socket_id ) noexcept
     {
         // #lizard forgives the length
 
