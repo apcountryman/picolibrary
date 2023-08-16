@@ -75,7 +75,7 @@ class Client {
      * \brief Constructor.
      *
      * \param[in] network_stack The network stack the socket is associated with.
-     * \param[in] socket_id The socket's socket ID.
+     * \param[in] socket_id The socket's hardware socket ID.
      */
     constexpr Client( Socket_Construction_Key, Network_Stack & network_stack, Socket_ID socket_id ) noexcept :
         m_state{ State::INITIALIZED },
@@ -89,7 +89,7 @@ class Client {
      * \brief Constructor.
      *
      * \param[in] network_stack The network stack the socket is associated with.
-     * \param[in] socket_id The socket's socket ID.
+     * \param[in] socket_id The socket's hardware socket ID.
      * \param[in] state The socket's initial state.
      * \param[in] is_transmitting The socket's initial data transmission in progress
      *            status.
@@ -169,9 +169,9 @@ class Client {
     }
 
     /**
-     * \brief Get the socket's socket ID.
+     * \brief Get the socket's hardware socket ID.
      *
-     * \return The socket's socket ID.
+     * \return The socket's hardware socket ID.
      */
     constexpr auto socket_id() const noexcept -> Socket_ID
     {
@@ -754,7 +754,7 @@ class Client {
     Network_Stack * m_network_stack{};
 
     /**
-     * \brief The socket's socket ID.
+     * \brief The socket's hardware socket ID.
      */
     Socket_ID m_socket_id{};
 
@@ -773,7 +773,7 @@ template<typename Network_Stack>
 class Acceptor {
   public:
     /**
-     * \brief Socket IDs.
+     * \brief Hardware socket IDs.
      */
     using Socket_IDs = Fixed_Capacity_Vector<Socket_ID, SOCKETS>;
 
@@ -796,7 +796,7 @@ class Acceptor {
      * \brief Constructor.
      *
      * \param[in] network_stack The network stack the socket is associated with.
-     * \param[in] socket_ids The socket's socket IDs.
+     * \param[in] socket_ids The socket's hardware socket IDs.
      *
      * \pre not socket_ids.empty()
      */
@@ -814,7 +814,7 @@ class Acceptor {
      * \brief Constructor.
      *
      * \param[in] network_stack The network stack the socket is associated with.
-     * \param[in] socket_ids The socket's socket IDs.
+     * \param[in] socket_ids The socket's hardware socket IDs.
      * \param[in] state The socket's initial state.
      *
      * \pre not socket_ids.empty()
@@ -889,9 +889,9 @@ class Acceptor {
     }
 
     /**
-     * \brief Get the socket's socket IDs.
+     * \brief Get the socket's hardware socket IDs.
      *
-     * \return The socket's socket IDs.
+     * \return The socket's hardware socket IDs.
      */
     auto socket_ids() const noexcept -> Socket_IDs
     {
@@ -1264,7 +1264,7 @@ class Acceptor {
     /**
      * \brief Deallocate a socket.
      *
-     * \param[in] socket_id The socket ID for the socket to deallocate.
+     * \param[in] socket_id The hardware socket ID for the socket to deallocate.
      *
      * \pre the socket has been allocated
      */
@@ -1353,7 +1353,7 @@ class Acceptor {
         };
 
         /**
-         * \brief The socket's socket ID.
+         * \brief The socket's hardware socket ID.
          */
         Socket_ID id{};
 

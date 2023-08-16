@@ -161,7 +161,7 @@ TEST( socketIDs, worksProperly )
  */
 struct socketInterruptMask_Test_Case {
     /**
-     * \brief The socket's socket IDs.
+     * \brief The socket's hardware socket IDs.
      */
     Acceptor::Socket_IDs socket_ids;
 
@@ -952,12 +952,12 @@ struct listenBacklogGreaterThanSocketCount_Test_Case {
     std::uint_fast8_t backlog;
 
     /**
-     * \brief The socket's socket IDs (new).
+     * \brief The socket's hardware socket IDs (new).
      */
     Acceptor::Socket_IDs socket_ids_new;
 
     /**
-     * \brief The socket's socket IDs (final).
+     * \brief The socket's hardware socket IDs (final).
      */
     Acceptor::Socket_IDs socket_ids_final;
 };

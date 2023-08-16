@@ -161,7 +161,7 @@ TEST( socketId, worksProperly )
  */
 struct socketInterruptMask_Test_Case {
     /**
-     * \brief The socket's socket ID.
+     * \brief The socket's hardware socket ID.
      */
     Socket_ID socket_id;
 

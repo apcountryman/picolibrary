@@ -14,7 +14,7 @@ See the [`::picolibrary::IP::TCP::Client_Concept`
 documentation](../../../network/tcp_over_ip.md#client-socket) for more information.
 - To get a socket's state, use the
   `::picolibrary::WIZnet::W5500::IP::TCP::Client::state()` member function.
-- To get a socket's socket ID, use the
+- To get a socket's hardware socket ID, use the
   `::picolibrary::WIZnet::W5500::IP::TCP::Client::socket_id()` member function.
 - To get a socket's socket interrupt mask (mask used when checking the network stack's
   socket interrupt context), use the
@@ -82,7 +82,7 @@ See the [`::picolibrary::IP::TCP::Acceptor_Concept`
 documentation](../../../network/tcp_over_ip.md#acceptor-socket) for more information.
 - To get a socket's state, use the
   `::picolibrary::WIZnet::W5500::IP::TCP::Acceptor::state()` member function.
-- To get a socket's socket IDs, use the
+- To get a socket's hardware socket IDs, use the
   `::picolibrary::WIZnet::W5500::IP::TCP::Acceptor::socket_ids()` member function.
 - To get a socket's socket interrupt mask (mask used when checking the network stack's
   socket interrupt context), use the
