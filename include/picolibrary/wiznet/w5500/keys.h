@@ -137,8 +137,8 @@ class Network_Stack_Socket_Allocation_Key {
 };
 
 /**
- * \brief picolibrary::WIZnet::W5500::IP::Network_Stack TCP server socket detachment
- *        key.
+ * \brief picolibrary::WIZnet::W5500::IP::Network_Stack
+ *        picolibrary::WIZnet::W5500::IP::TCP::Server detachment key.
  */
 class Network_Stack_TCP_Server_Detachment_Key {
   public:
