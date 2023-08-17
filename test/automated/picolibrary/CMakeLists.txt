@@ -13,94 +13,94 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary automated tests CMake rules.
+# Description: picolibrary automated tests.
 
-# build the picolibrary::Adafruit automated tests
+# picolibrary::Adafruit automated tests
 add_subdirectory( adafruit )
 
-# build the picolibrary::ADC automated tests
+# picolibrary::ADC automated tests
 add_subdirectory( adc )
 
-# build the picolibrary algorithm automated tests
+# picolibrary algorithm automated tests
 add_subdirectory( algorithm )
 
-# build the picolibrary::Asynchronous_Serial automated tests
+# picolibrary::Asynchronous_Serial automated tests
 add_subdirectory( asynchronous_serial )
 
-# build the picolibrary bit manipulation automated tests
+# picolibrary bit manipulation automated tests
 add_subdirectory( bit_manipulation )
 
-# build the picolibrary::CRC automated tests
+# picolibrary::CRC automated tests
 add_subdirectory( crc )
 
-# build the picolibrary::Error_Code automated tests
+# picolibrary::Error_Code automated tests
 add_subdirectory( error_code )
 
-# build the picolibrary::Event automated tests
+# picolibrary::Event automated tests
 add_subdirectory( event )
 
-# build the picolibrary::Format automated tests
+# picolibrary::Format automated tests
 add_subdirectory( format )
 
-# build the picolibrary::Generic_Error automated tests
+# picolibrary::Generic_Error automated tests
 add_subdirectory( generic_error )
 
-# build the picolibrary::Generic_Error_Category automated tests
+# picolibrary::Generic_Error_Category automated tests
 add_subdirectory( generic_error_category )
 
-# build the picolibrary::GPIO automated tests
+# picolibrary::GPIO automated tests
 add_subdirectory( gpio )
 
-# build the picolibrary::HSM automated tests
+# picolibrary::HSM automated tests
 add_subdirectory( hsm )
 
-# build the picolibrary::I2C automated tests
+# picolibrary::I2C automated tests
 add_subdirectory( i2c )
 
-# build the picolibrary::Indicator automated tests
+# picolibrary::Indicator automated tests
 add_subdirectory( indicator )
 
-# build the picolibrary::Interrupt automated tests
+# picolibrary::Interrupt automated tests
 add_subdirectory( interrupt )
 
-# build the picolibrary::IP automated tests
+# picolibrary::IP automated tests
 add_subdirectory( ip )
 
-# build the picolibrary::IPv4 automated tests
+# picolibrary::IPv4 automated tests
 add_subdirectory( ipv4 )
 
-# build the picolibrary::MAC_Address automated tests
+# picolibrary::MAC_Address automated tests
 add_subdirectory( mac_address )
 
-# build the picolibrary::Microchip automated tests
+# picolibrary::Microchip automated tests
 add_subdirectory( microchip )
 
-# build the picolibrary::Output_Stream automated tests
+# picolibrary::Output_Stream automated tests
 add_subdirectory( output_stream )
 
-# build the picolibrary::Reliable_Output_Stream automated tests
+# picolibrary::Reliable_Output_Stream automated tests
 add_subdirectory( reliable_output_stream )
 
-# build the picolibrary::Reliable_Stream automated tests
+# picolibrary::Reliable_Stream automated tests
 add_subdirectory( reliable_stream )
 
-# build the picolibrary::Reliable_Stream_Buffer automated tests
+# picolibrary::Reliable_Stream_Buffer automated tests
 add_subdirectory( reliable_stream_buffer )
 
-# build the picolibrary::SPI automated tests
+# picolibrary::SPI automated tests
 add_subdirectory( spi )
 
-# build the picolibrary::State_Machine automated tests
+# picolibrary::State_Machine automated tests
 add_subdirectory( state_machine )
 
-# build the picolibrary::Stream automated tests
+# picolibrary::Stream automated tests
 add_subdirectory( stream )
 
-# build the picolibrary::Stream_Buffer automated tests
+# picolibrary::Stream_Buffer automated tests
 add_subdirectory( stream_buffer )
 
-# build the picolibrary::Texas_Instruments automated tests
+# picolibrary::Texas_Instruments automated tests
 add_subdirectory( texas_instruments )
 
-# build the picolibrary::WIZnet automated tests
+# picolibrary::WIZnet automated tests
 add_subdirectory( wiznet )

@@ -15,12 +15,11 @@
 
 # Description: picolibrary::Texas_Instruments::TCA9548A automated tests CMake rules.
 
-# build the picolibrary::Texas_Instruments::TCA9548A::Bus_Multiplexer_Aligner automated
-# tests
+# picolibrary::Texas_Instruments::TCA9548A::Bus_Multiplexer_Aligner automated tests
 add_subdirectory( bus_multiplexer_aligner )
 
-# build the picolibrary::Texas_Instruments::TCA9548A::Caching_Driver automated tests
+# picolibrary::Texas_Instruments::TCA9548A::Caching_Driver automated tests
 add_subdirectory( caching_driver )
 
-# build the picolibrary::Texas_Instruments::TCA9548A::Driver automated tests
+# picolibrary::Texas_Instruments::TCA9548A::Driver automated tests
 add_subdirectory( driver )

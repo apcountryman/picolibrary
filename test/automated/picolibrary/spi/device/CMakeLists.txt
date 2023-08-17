@@ -15,7 +15,7 @@
 
 # Description: picolibrary::SPI::Device automated tests CMake rules.
 
-# build the picolibrary::SPI::Device automated tests
+# picolibrary::SPI::Device automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-spi-device

@@ -15,7 +15,7 @@
 
 # Description: picolibrary::IPv4::Address automated tests CMake rules.
 
-# build the picolibrary::IPv4::Address automated tests
+# picolibrary::IPv4::Address automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-ipv4-address

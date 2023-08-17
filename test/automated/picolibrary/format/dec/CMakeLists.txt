@@ -15,7 +15,7 @@
 
 # Description: picolibrary::Format::Dec automated tests CMake rules.
 
-# build the picolibrary::Format::Dec automated tests
+# picolibrary::Format::Dec automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-format-dec

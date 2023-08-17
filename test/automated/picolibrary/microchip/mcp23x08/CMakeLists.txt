@@ -15,18 +15,17 @@
 
 # Description: picolibrary::Microchip::MCP23X08 automated tests CMake rules.
 
-# build the picolibrary::Microchip::MCP23X08::Caching_Driver automated tests
+# picolibrary::Microchip::MCP23X08::Caching_Driver automated tests
 add_subdirectory( caching_driver )
 
-# build the picolibrary::Microchip::MCP23X08::Internally_Pulled_Up_Input_Pin automated
-# tests
+# picolibrary::Microchip::MCP23X08::Internally_Pulled_Up_Input_Pin automated tests
 add_subdirectory( internally_pulled_up_input_pin )
 
-# build the picolibrary::Microchip::MCP23X08::Open_Drain_IO_Pin automated tests
+# picolibrary::Microchip::MCP23X08::Open_Drain_IO_Pin automated tests
 add_subdirectory( open_drain_io_pin )
 
-# build the picolibrary::Microchip::MCP23X08::Pin automated tests
+# picolibrary::Microchip::MCP23X08::Pin automated tests
 add_subdirectory( pin )
 
-# build the picolibrary::Microchip::MCP23X08::Push_Pull_IO_Pin automated tests
+# picolibrary::Microchip::MCP23X08::Push_Pull_IO_Pin automated tests
 add_subdirectory( push_pull_io_pin )

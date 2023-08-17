@@ -15,7 +15,7 @@
 
 # Description: picolibrary::MAC_Address automated tests CMake rules.
 
-# build the picolibrary::MAC_Address automated tests
+# picolibrary::MAC_Address automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-mac_address

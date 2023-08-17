@@ -13,9 +13,9 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary::ADC::Sample automated tests CMake rules.
+# Description: picolibrary::ADC::Sample automated tests.
 
-# build the picolibrary::ADC::Sample automated tests
+# picolibrary::ADC::Sample automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-adc-sample

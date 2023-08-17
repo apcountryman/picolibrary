@@ -15,14 +15,14 @@
 
 # Description: picolibrary::SPI automated tests CMake rules.
 
-# build the picolibrary::SPI::Controller automated tests
+# picolibrary::SPI::Controller automated tests
 add_subdirectory( controller )
 
-# build the picolibrary::SPI::Device automated tests
+# picolibrary::SPI::Device automated tests
 add_subdirectory( device )
 
-# build the picolibrary::SPI::Device_Selection_Guard automated tests
+# picolibrary::SPI::Device_Selection_Guard automated tests
 add_subdirectory( device_selection_guard )
 
-# build the picolibrary::SPI::GPIO_Output_Pin_Device_Selector automated tests
+# picolibrary::SPI::GPIO_Output_Pin_Device_Selector automated tests
 add_subdirectory( gpio_output_pin_device_selector )

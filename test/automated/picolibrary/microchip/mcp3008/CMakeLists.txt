@@ -15,9 +15,8 @@
 
 # Description: picolibrary::Microchip::MCP3008 automated tests CMake rules.
 
-# build the picolibrary::Microchip::MCP3008::Blocking_Single_Sample_Converter automated
-# tests
+# picolibrary::Microchip::MCP3008::Blocking_Single_Sample_Converter automated tests
 add_subdirectory( blocking_single_sample_converter )
 
-# build the picolibrary::Microchip::MCP3008::Driver automated tests
+# picolibrary::Microchip::MCP3008::Driver automated tests
 add_subdirectory( driver )

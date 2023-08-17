@@ -15,20 +15,17 @@
 
 # Description: picolibrary::CRC automated tests CMake rules.
 
-# build the picolibrary::CRC::Augmented_Byte_Indexed_Lookup_Table_Calculator automated
-# tests
+# picolibrary::CRC::Augmented_Byte_Indexed_Lookup_Table_Calculator automated tests
 add_subdirectory( augmented_byte_indexed_lookup_table_calculator )
 
-# build the picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator automated
-# tests
+# picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator automated tests
 add_subdirectory( augmented_nibble_indexed_lookup_table_calculator )
 
-# build the picolibrary::CRC::Bitwise_Calculator automated tests
+# picolibrary::CRC::Bitwise_Calculator automated tests
 add_subdirectory( bitwise_calculator )
 
-# build the picolibrary::CRC::Direct_Byte_Indexed_Lookup_Table_Calculator automated tests
+# picolibrary::CRC::Direct_Byte_Indexed_Lookup_Table_Calculator automated tests
 add_subdirectory( direct_byte_indexed_lookup_table_calculator )
 
-# build the picolibrary::CRC::Direct_Nibble_Indexed_Lookup_Table_Calculator automated
-# tests
+# picolibrary::CRC::Direct_Nibble_Indexed_Lookup_Table_Calculator automated tests
 add_subdirectory( direct_nibble_indexed_lookup_table_calculator )

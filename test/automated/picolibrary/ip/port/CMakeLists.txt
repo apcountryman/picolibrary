@@ -15,7 +15,7 @@
 
 # Description: picolibrary::IP::Port automated tests CMake rules.
 
-# build the picolibrary::IP::Port automated tests
+# picolibrary::IP::Port automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-ip-port

@@ -15,7 +15,7 @@
 
 # Description: picolibrary::Reliable_Output_Stream automated tests CMake rules.
 
-# build the picolibrary::Reliable_Output_Stream automated tests
+# picolibrary::Reliable_Output_Stream automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-reliable_output_stream

@@ -15,7 +15,7 @@
 
 # Description: picolibrary::Output_Stream automated tests CMake rules.
 
-# build the picolibrary::Output_Stream automated tests
+# picolibrary::Output_Stream automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-output_stream

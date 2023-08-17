@@ -16,8 +16,7 @@
 # Description: picolibrary::Indicator::GPIO_Output_Pin_Fixed_Intensity_Indicator automated
 #       tests CMake rules.
 
-# build the picolibrary::Indicator::GPIO_Output_Pin_Fixed_Intensity_Indicator automated
-# tests
+# picolibrary::Indicator::GPIO_Output_Pin_Fixed_Intensity_Indicator automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-indicator-gpio_output_pin_fixed_intensity_indicator

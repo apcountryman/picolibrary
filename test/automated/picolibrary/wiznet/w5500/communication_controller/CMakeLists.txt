@@ -16,7 +16,7 @@
 # Description: picolibrary::WIZnet::W5500::Communication_Controller automated tests CMake
 #       rules.
 
-# build the picolibrary::WIZnet::W5500::Communication_Controller automated tests
+# picolibrary::WIZnet::W5500::Communication_Controller automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-wiznet-w5500-communication_controller

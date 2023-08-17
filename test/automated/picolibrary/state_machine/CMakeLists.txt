@@ -15,7 +15,7 @@
 
 # Description: picolibrary::State_Machine automated tests CMake rules.
 
-# build the picolibrary::State_Machine automated tests
+# picolibrary::State_Machine automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-state_machine

@@ -15,5 +15,5 @@
 
 # Description: picolibrary::Microchip::MCP23008 automated tests CMake rules.
 
-# build the picolibrary::Microchip::MCP23008::Driver automated tests
+# picolibrary::Microchip::MCP23008::Driver automated tests
 add_subdirectory( driver )

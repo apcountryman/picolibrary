@@ -16,8 +16,7 @@
 # Description: picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator
 #       automated tests CMake rules.
 
-# build the picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator automated
-# tests
+# picolibrary::CRC::Augmented_Nibble_Indexed_Lookup_Table_Calculator automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-crc-augmented_nibble_indexed_lookup_table_calculator

@@ -15,7 +15,7 @@
 
 # Description: picolibrary::SPI::Device_Selection_Guard automated tests CMake rules.
 
-# build the picolibrary::SPI::Device_Selection_Guard automated tests
+# picolibrary::SPI::Device_Selection_Guard automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-spi-device_selection_guard

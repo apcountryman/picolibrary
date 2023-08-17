@@ -15,7 +15,7 @@
 
 # Description: picolibrary::Format::Bin automated tests CMake rules.
 
-# build the picolibrary::Format::Bin automated tests
+# picolibrary::Format::Bin automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-format-bin

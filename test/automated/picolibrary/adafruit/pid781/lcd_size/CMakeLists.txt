@@ -13,9 +13,9 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary::Adafruit::PID781::LCD_Size automated tests CMake rules.
+# Description: picolibrary::Adafruit::PID781::LCD_Size automated tests.
 
-# build the picolibrary::Adafruit::PID781::LCD_Size automated tests
+# picolibrary::Adafruit::PID781::LCD_Size automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-adafruit-pid781-lcd_size

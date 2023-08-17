@@ -15,7 +15,7 @@
 
 # Description: picolibrary::Asynchronous_Serial::Transmitter automated tests CMake rules.
 
-# build the picolibrary::Asynchronous_Serial::Transmitter automated tests
+# picolibrary::Asynchronous_Serial::Transmitter automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-asynchronous_serial-transmitter

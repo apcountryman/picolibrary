@@ -15,8 +15,8 @@
 
 # Description: picolibrary::WIZnet::W5500::IP::TCP automated tests CMake rules.
 
-# build the picolibrary::WIZnet::W5500::IP::TCP::Acceptor automated tests
+# picolibrary::WIZnet::W5500::IP::TCP::Acceptor automated tests
 add_subdirectory( acceptor )
 
-# build the picolibrary::WIZnet::W5500::IP::TCP::Client automated tests
+# picolibrary::WIZnet::W5500::IP::TCP::Client automated tests
 add_subdirectory( client )

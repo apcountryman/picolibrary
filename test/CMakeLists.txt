@@ -13,7 +13,7 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary tests CMake rules.
+# Description: picolibrary tests.
 
-# build the picolibrary automated tests
+# picolibrary automated tests
 add_subdirectory( automated )

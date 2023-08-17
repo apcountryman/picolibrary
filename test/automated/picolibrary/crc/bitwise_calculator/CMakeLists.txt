@@ -15,7 +15,7 @@
 
 # Description: picolibrary::CRC::Bitwise_Calculator automated tests CMake rules.
 
-# build the picolibrary::CRC::Bitwise_Calculator automated tests
+# picolibrary::CRC::Bitwise_Calculator automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-crc-bitwise_calculator

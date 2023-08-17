@@ -16,8 +16,8 @@
 # Description: picolibrary::Asynchronous_Serial::Reliable_Unbuffered_Output_Stream_Buffer
 #       automated tests CMake rules.
 
-# build the picolibrary::Asynchronous_Serial::Reliable_Unbuffered_Output_Stream_Buffer
-# automated tests
+# picolibrary::Asynchronous_Serial::Reliable_Unbuffered_Output_Stream_Buffer automated
+# tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-asynchronous_serial-reliable_unbuffered_output_stream_buffer

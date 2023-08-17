@@ -15,5 +15,5 @@
 
 # Description: picolibrary::IPv4 automated tests CMake rules.
 
-# build the picolibrary::IPv4::Address automated tests
+# picolibrary::IPv4::Address automated tests
 add_subdirectory( address )

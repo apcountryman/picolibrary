@@ -16,7 +16,7 @@
 # Description: picolibrary::SPI::GPIO_Output_Pin_Device_Selector automated tests CMake
 #       rules.
 
-# build the picolibrary::SPI::GPIO_Output_Pin_Device_Selector automated tests
+# picolibrary::SPI::GPIO_Output_Pin_Device_Selector automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-spi-gpio_output_pin_device_selector

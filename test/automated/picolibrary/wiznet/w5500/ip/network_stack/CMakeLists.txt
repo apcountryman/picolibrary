@@ -15,7 +15,7 @@
 
 # Description: picolibrary::WIZnet::W5500::IP::Network_Stack automated tests CMake rules.
 
-# build the picolibrary::WIZnet::W5500::IP::Network_Stack automated tests
+# picolibrary::WIZnet::W5500::IP::Network_Stack automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-wiznet-w5500-ip-network_stack

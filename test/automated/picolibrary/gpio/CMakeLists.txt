@@ -15,8 +15,8 @@
 
 # Description: picolibrary::GPIO automated tests CMake rules.
 
-# build the picolibrary::GPIO::Active_Low_Input_Pin automated tests
+# picolibrary::GPIO::Active_Low_Input_Pin automated tests
 add_subdirectory( active_low_input_pin )
 
-# build the picolibrary::GPIO::Active_Low_Output_Pin automated tests
+# picolibrary::GPIO::Active_Low_Output_Pin automated tests
 add_subdirectory( active_low_output_pin )

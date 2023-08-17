@@ -15,7 +15,7 @@
 
 # Description: picolibrary::Generic_Error automated tests CMake rules.
 
-# build the picolibrary::Generic_Error automated tests
+# picolibrary::Generic_Error automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-generic_error

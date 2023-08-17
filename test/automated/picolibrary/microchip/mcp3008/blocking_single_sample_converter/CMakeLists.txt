@@ -16,8 +16,7 @@
 # Description: picolibrary::Microchip::MCP3008::Blocking_Single_Sample_Converter automated
 #       tests CMake rules.
 
-# build the picolibrary::Microchip::MCP3008::Blocking_Single_Sample_Converter automated
-# tests
+# picolibrary::Microchip::MCP3008::Blocking_Single_Sample_Converter automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-microchip-mcp3008-blocking_single_sample_converter

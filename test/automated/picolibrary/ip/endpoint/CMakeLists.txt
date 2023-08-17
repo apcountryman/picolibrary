@@ -15,7 +15,7 @@
 
 # Description: picolibrary::IP::Endpoint automated tests CMake rules.
 
-# build the picolibrary::IP::Endpoint automated tests
+# picolibrary::IP::Endpoint automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-ip-endpoint

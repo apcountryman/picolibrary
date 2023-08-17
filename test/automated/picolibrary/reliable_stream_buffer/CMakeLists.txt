@@ -15,7 +15,7 @@
 
 # Description: picolibrary::Reliable_Stream_Buffer automated tests CMake rules.
 
-# build the picolibrary::Reliable_Stream_Buffer automated tests
+# picolibrary::Reliable_Stream_Buffer automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-reliable_stream_buffer

@@ -15,7 +15,7 @@
 
 # Description: picolibrary::Format::Hex_Dump automated tests CMake rules.
 
-# build the picolibrary::Format::Hex_Dump automated tests
+# picolibrary::Format::Hex_Dump automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-format-hex_dump
