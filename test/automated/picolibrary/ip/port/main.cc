@@ -182,7 +182,7 @@ TEST_P( equalityOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs == test_case.rhs, test_case.comparison_result );
+    EXPECT_EQ( test_case.lhs == test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -218,7 +218,7 @@ TEST_P( inequalityOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs != test_case.rhs, test_case.comparison_result );
+    EXPECT_EQ( test_case.lhs != test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -254,7 +254,7 @@ TEST_P( lessThanOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs < test_case.rhs, test_case.comparison_result );
+    EXPECT_EQ( test_case.lhs < test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -290,7 +290,7 @@ TEST_P( greaterThanOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs > test_case.rhs, test_case.comparison_result );
+    EXPECT_EQ( test_case.lhs > test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -326,7 +326,7 @@ TEST_P( lessThanOrEqualToOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs <= test_case.rhs, test_case.comparison_result );
+    EXPECT_EQ( test_case.lhs <= test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -362,7 +362,7 @@ TEST_P( greaterThanOrEqualToOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs >= test_case.rhs, test_case.comparison_result );
+    EXPECT_EQ( test_case.lhs >= test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -398,7 +398,7 @@ TEST( outputFormatterIPPortPrintOutputStreamErrorHandling, putError )
 
     auto const result = stream.print( Port{ 569 } );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
     EXPECT_FALSE( stream.end_of_file_reached() );
@@ -468,7 +468,7 @@ TEST_P( outputFormatterIPPortPrintOutputStream, worksProperly )
 
     auto const result = stream.print( test_case.port );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );

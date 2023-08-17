@@ -47,7 +47,7 @@ TEST( constructorDefault, worksProperly )
 {
     auto const address_numeric = Address_Numeric{};
 
-    ASSERT_EQ( address_numeric.as_unsigned_integer(), 0b01000'00 );
+    EXPECT_EQ( address_numeric.as_unsigned_integer(), 0b01000'00 );
 }
 
 /**
@@ -88,7 +88,7 @@ TEST_P( constructorUnsignedInteger, worksProperly )
 
     auto const address_numeric = Address_Numeric{ address };
 
-    ASSERT_EQ( address_numeric.as_unsigned_integer(), address );
+    EXPECT_EQ( address_numeric.as_unsigned_integer(), address );
 }
 
 INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger, ValuesIn( constructorUnsignedInteger_TEST_CASES ) );
@@ -115,7 +115,7 @@ TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger, worksProp
 
     auto const address_numeric = Address_Numeric{ BYPASS_PRECONDITION_EXPECTATION_CHECKS, address };
 
-    ASSERT_EQ( address_numeric.as_unsigned_integer(), address );
+    EXPECT_EQ( address_numeric.as_unsigned_integer(), address );
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -131,7 +131,7 @@ TEST( constructorAddressTransmitted, worksProperly )
 {
     auto const address_numeric = Address_Numeric{ Address_Transmitted{ 0b01000'01'0 } };
 
-    ASSERT_EQ( address_numeric.as_unsigned_integer(), 0b01000'01 );
+    EXPECT_EQ( address_numeric.as_unsigned_integer(), 0b01000'01 );
 }
 
 /**
@@ -204,7 +204,7 @@ TEST_P( equalityOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs == test_case.rhs, test_case.comparison_result );
+    EXPECT_EQ( test_case.lhs == test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -257,7 +257,7 @@ TEST_P( inequalityOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs != test_case.rhs, test_case.comparison_result );
+    EXPECT_EQ( test_case.lhs != test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -310,7 +310,7 @@ TEST_P( lessThanOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs < test_case.rhs, test_case.comparison_result );
+    EXPECT_EQ( test_case.lhs < test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -363,7 +363,7 @@ TEST_P( greaterThanOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs > test_case.rhs, test_case.comparison_result );
+    EXPECT_EQ( test_case.lhs > test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -416,7 +416,7 @@ TEST_P( lessThanOrEqualToOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs <= test_case.rhs, test_case.comparison_result );
+    EXPECT_EQ( test_case.lhs <= test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -469,7 +469,7 @@ TEST_P( greaterThanOrEqualToOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs >= test_case.rhs, test_case.comparison_result );
+    EXPECT_EQ( test_case.lhs >= test_case.rhs, test_case.comparison_result );
 }
 
 /**

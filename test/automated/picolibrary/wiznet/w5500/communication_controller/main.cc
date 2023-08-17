@@ -89,7 +89,7 @@ TEST( readCommonRegisterMemoryByte, worksProperly )
     EXPECT_CALL( communication_controller, receive() ).WillOnce( Return( data ) );
     EXPECT_CALL( device_selector, deselect() );
 
-    ASSERT_EQ( communication_controller.read( memory_offset ), data );
+    EXPECT_EQ( communication_controller.read( memory_offset ), data );
 }
 
 /**
@@ -119,7 +119,7 @@ TEST( readCommonRegisterMemoryBlock, worksProperly )
 
     communication_controller.read( memory_offset, &*data.begin(), &*data.end() );
 
-    ASSERT_EQ( data, data_expected );
+    EXPECT_EQ( data, data_expected );
 }
 
 /**
@@ -312,7 +312,7 @@ TEST_P( readSocketMemoryByte, worksProperly )
     EXPECT_CALL( communication_controller, receive() ).WillOnce( Return( data ) );
     EXPECT_CALL( device_selector, deselect() );
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         communication_controller.read( test_case.socket_id, test_case.socket_memory_block, memory_offset ),
         data );
 }
@@ -362,7 +362,7 @@ TEST_P( readSocketMemoryBlock, worksProperly )
     communication_controller.read(
         test_case.socket_id, test_case.socket_memory_block, memory_offset, &*data.begin(), &*data.end() );
 
-    ASSERT_EQ( data, data_expected );
+    EXPECT_EQ( data, data_expected );
 }
 
 INSTANTIATE_TEST_SUITE_P( testCases, readSocketMemoryBlock, ValuesIn( readSocketMemory_TEST_CASES ) );

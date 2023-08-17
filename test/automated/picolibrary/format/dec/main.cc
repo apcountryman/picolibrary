@@ -59,7 +59,7 @@ TEST( outputFormatterFormatDecPrintOutputStreamErrorHandling, putError )
 
     auto const result = stream.print( Dec{ 712629789 } );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
     EXPECT_FALSE( stream.end_of_file_reached() );
@@ -135,7 +135,7 @@ TEST_P( outputFormatterFormatDecPrintOutputStreamI8, worksProperly )
 
     auto const result = stream.print( Dec{ test_case.value } );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
@@ -211,7 +211,7 @@ TEST_P( outputFormatterFormatDecPrintOutputStreamU8, worksProperly )
 
     auto const result = stream.print( Dec{ test_case.value } );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
@@ -290,7 +290,7 @@ TEST_P( outputFormatterFormatDecPrintOutputStreamI16, worksProperly )
 
     auto const result = stream.print( Dec{ test_case.value } );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
@@ -366,7 +366,7 @@ TEST_P( outputFormatterFormatDecPrintOutputStreamU16, worksProperly )
 
     auto const result = stream.print( Dec{ test_case.value } );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
@@ -445,7 +445,7 @@ TEST_P( outputFormatterFormatDecPrintOutputStreamI32, worksProperly )
 
     auto const result = stream.print( Dec{ test_case.value } );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
@@ -521,7 +521,7 @@ TEST_P( outputFormatterFormatDecPrintOutputStreamU32, worksProperly )
 
     auto const result = stream.print( Dec{ test_case.value } );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
@@ -600,7 +600,7 @@ TEST_P( outputFormatterFormatDecPrintOutputStreamI64, worksProperly )
 
     auto const result = stream.print( Dec{ test_case.value } );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );
@@ -676,7 +676,7 @@ TEST_P( outputFormatterFormatDecPrintOutputStreamU64, worksProperly )
 
     auto const result = stream.print( Dec{ test_case.value } );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() );
 
     EXPECT_TRUE( stream.is_nominal() );

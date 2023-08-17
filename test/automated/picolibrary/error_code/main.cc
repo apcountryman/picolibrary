@@ -98,7 +98,7 @@ TEST( equalityOperator, worksProperlyCategoryEqualIDEqual )
     auto const category = Mock_Error_Category{};
     auto const id       = Error_ID{ 204 };
 
-    ASSERT_TRUE( ( Error_Code{ category, id } == Error_Code{ category, id } ) );
+    EXPECT_TRUE( ( Error_Code{ category, id } == Error_Code{ category, id } ) );
 }
 
 /**
@@ -112,7 +112,7 @@ TEST( equalityOperator, worksProperlyCategoryEqualIDNotEqual )
     auto const lhs_id   = Error_ID{ 204 };
     auto const rhs_id   = Error_ID{ 200 };
 
-    ASSERT_FALSE( ( Error_Code{ category, lhs_id } == Error_Code{ category, rhs_id } ) );
+    EXPECT_FALSE( ( Error_Code{ category, lhs_id } == Error_Code{ category, rhs_id } ) );
 }
 
 /**
@@ -126,7 +126,7 @@ TEST( equalityOperator, worksProperlyCategoryNotEqualIDEqual )
     auto const rhs_category = Mock_Error_Category{};
     auto const id           = Error_ID{ 204 };
 
-    ASSERT_FALSE( ( Error_Code{ lhs_category, id } == Error_Code{ rhs_category, id } ) );
+    EXPECT_FALSE( ( Error_Code{ lhs_category, id } == Error_Code{ rhs_category, id } ) );
 }
 
 /**
@@ -141,7 +141,7 @@ TEST( equalityOperator, worksProperlyCategoryNotEqualIDNotEqual )
     auto const lhs_id       = Error_ID{ 204 };
     auto const rhs_id       = Error_ID{ 200 };
 
-    ASSERT_FALSE( ( Error_Code{ lhs_category, lhs_id } == Error_Code{ rhs_category, rhs_id } ) );
+    EXPECT_FALSE( ( Error_Code{ lhs_category, lhs_id } == Error_Code{ rhs_category, rhs_id } ) );
 }
 
 /**
@@ -154,7 +154,7 @@ TEST( inequalityOperator, worksProperlyCategoryEqualIDEqual )
     auto const category = Mock_Error_Category{};
     auto const id       = Error_ID{ 204 };
 
-    ASSERT_FALSE( ( Error_Code{ category, id } != Error_Code{ category, id } ) );
+    EXPECT_FALSE( ( Error_Code{ category, id } != Error_Code{ category, id } ) );
 }
 
 /**
@@ -168,7 +168,7 @@ TEST( inequalityOperator, worksProperlyCategoryEqualIDNotEqual )
     auto const lhs_id   = Error_ID{ 204 };
     auto const rhs_id   = Error_ID{ 200 };
 
-    ASSERT_TRUE( ( Error_Code{ category, lhs_id } != Error_Code{ category, rhs_id } ) );
+    EXPECT_TRUE( ( Error_Code{ category, lhs_id } != Error_Code{ category, rhs_id } ) );
 }
 
 /**
@@ -182,7 +182,7 @@ TEST( inequalityOperator, worksProperlyCategoryNotEqualIDEqual )
     auto const rhs_category = Mock_Error_Category{};
     auto const id           = Error_ID{ 204 };
 
-    ASSERT_TRUE( ( Error_Code{ lhs_category, id } != Error_Code{ rhs_category, id } ) );
+    EXPECT_TRUE( ( Error_Code{ lhs_category, id } != Error_Code{ rhs_category, id } ) );
 }
 
 /**
@@ -197,7 +197,7 @@ TEST( inequalityOperator, worksProperlyCategoryNotEqualIDNotEqual )
     auto const lhs_id       = Error_ID{ 204 };
     auto const rhs_id       = Error_ID{ 200 };
 
-    ASSERT_TRUE( ( Error_Code{ lhs_category, lhs_id } != Error_Code{ rhs_category, rhs_id } ) );
+    EXPECT_TRUE( ( Error_Code{ lhs_category, lhs_id } != Error_Code{ rhs_category, rhs_id } ) );
 }
 
 /**

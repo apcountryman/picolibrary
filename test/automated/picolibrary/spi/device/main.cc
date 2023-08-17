@@ -127,7 +127,7 @@ TEST( exchange, worksProperly )
 
     EXPECT_CALL( controller, exchange( tx ) ).WillOnce( Return( rx ) );
 
-    ASSERT_EQ( device.exchange( tx ), rx );
+    EXPECT_EQ( device.exchange( tx ), rx );
 }
 
 /**
@@ -149,7 +149,7 @@ TEST( exchangeBlock, worksProperly )
 
     device.exchange( &*tx.begin(), &*tx.end(), &*rx.begin(), &*rx.end() );
 
-    ASSERT_EQ( rx, rx_expected );
+    EXPECT_EQ( rx, rx_expected );
 }
 
 /**
@@ -166,7 +166,7 @@ TEST( receive, worksProperly )
 
     EXPECT_CALL( controller, receive() ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( device.receive(), data );
+    EXPECT_EQ( device.receive(), data );
 }
 
 /**
@@ -187,7 +187,7 @@ TEST( receiveBlock, worksProperly )
 
     device.receive( &*data.begin(), &*data.end() );
 
-    ASSERT_EQ( data, data_expected );
+    EXPECT_EQ( data, data_expected );
 }
 
 /**

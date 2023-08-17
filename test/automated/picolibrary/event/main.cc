@@ -95,7 +95,7 @@ TEST( outputFormatterEventPrintOutputStreamErrorHandling, putError )
 
     auto const result = stream.print( static_cast<Event const &>( event ) );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
     EXPECT_FALSE( stream.end_of_file_reached() );
@@ -124,7 +124,7 @@ TEST( outputFormatterEventPrintOutputStreamErrorHandling, detailsPrintError )
 
     auto const result = stream.print( static_cast<Event const &>( event ) );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 
     EXPECT_FALSE( stream.end_of_file_reached() );
@@ -155,7 +155,7 @@ TEST( outputFormatterEventPrintOutputStream, worksProperly )
 
     auto const result = stream.print( static_cast<Event const &>( event ) );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), stream.string().size() + event_details_size );
 
     EXPECT_TRUE( stream.is_nominal() );

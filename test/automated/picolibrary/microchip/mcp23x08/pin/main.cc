@@ -145,7 +145,7 @@ TEST_P( pullUpIsDisabled, worksProperly )
 
     EXPECT_CALL( mcp23x08, gppu() ).WillOnce( Return( test_case.gppu ) );
 
-    ASSERT_EQ( pin.pull_up_is_disabled(), test_case.pull_up_is_disabled );
+    EXPECT_EQ( pin.pull_up_is_disabled(), test_case.pull_up_is_disabled );
 }
 
 /**
@@ -210,7 +210,7 @@ TEST_P( pullUpIsEnabled, worksProperly )
 
     EXPECT_CALL( mcp23x08, gppu() ).WillOnce( Return( test_case.gppu ) );
 
-    ASSERT_EQ( pin.pull_up_is_enabled(), test_case.pull_up_is_enabled );
+    EXPECT_EQ( pin.pull_up_is_enabled(), test_case.pull_up_is_enabled );
 }
 
 /**
@@ -308,7 +308,7 @@ TEST_P( isLow, worksProperly )
 
     EXPECT_CALL( mcp23x08, read_gpio() ).WillOnce( Return( test_case.gpio ) );
 
-    ASSERT_EQ( pin.is_low(), test_case.is_low );
+    EXPECT_EQ( pin.is_low(), test_case.is_low );
 }
 
 /**
@@ -372,7 +372,7 @@ TEST_P( isHigh, worksProperly )
 
     EXPECT_CALL( mcp23x08, read_gpio() ).WillOnce( Return( test_case.gpio ) );
 
-    ASSERT_EQ( pin.is_high(), test_case.is_high );
+    EXPECT_EQ( pin.is_high(), test_case.is_high );
 }
 
 /**

@@ -60,8 +60,8 @@ TEST( putCharBlockErrorHandling, putError )
 
     auto const result = buffer.Stream_Buffer::put( string.begin(), string.end() );
 
-    ASSERT_TRUE( result.is_error() );
-    ASSERT_EQ( result.error(), error );
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
 }
 
 /**
@@ -81,7 +81,7 @@ TEST( putCharBlock, worksProperly )
             .WillOnce( Return( Result<void>{} ) );
     } // for
 
-    ASSERT_FALSE( buffer.Stream_Buffer::put( string.begin(), string.end() ).is_error() );
+    EXPECT_FALSE( buffer.Stream_Buffer::put( string.begin(), string.end() ).is_error() );
 }
 
 /**
@@ -98,8 +98,8 @@ TEST( putNullTerminatedStringErrorHandling, putError )
 
     auto const result = buffer.Stream_Buffer::put( "ifYRD2I" );
 
-    ASSERT_TRUE( result.is_error() );
-    ASSERT_EQ( result.error(), error );
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
 }
 
 /**
@@ -118,7 +118,7 @@ TEST( putNullTerminatedString, worksProperly )
             .WillOnce( Return( Result<void>{} ) );
     } // for
 
-    ASSERT_FALSE( buffer.Stream_Buffer::put( string.data() ).is_error() );
+    EXPECT_FALSE( buffer.Stream_Buffer::put( string.data() ).is_error() );
 }
 
 /**
@@ -137,8 +137,8 @@ TEST( putUnsignedByteBlockErrorHandling, putError )
 
     auto const result = buffer.Stream_Buffer::put( &*values.begin(), &*values.end() );
 
-    ASSERT_TRUE( result.is_error() );
-    ASSERT_EQ( result.error(), error );
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
 }
 
 /**
@@ -158,7 +158,7 @@ TEST( putUnsignedByteBlock, worksProperly )
             .WillOnce( Return( Result<void>{} ) );
     } // for
 
-    ASSERT_FALSE( buffer.Stream_Buffer::put( &*values.begin(), &*values.end() ).is_error() );
+    EXPECT_FALSE( buffer.Stream_Buffer::put( &*values.begin(), &*values.end() ).is_error() );
 }
 
 /**
@@ -177,8 +177,8 @@ TEST( putSignedByteBlockErrorHandling, putError )
 
     auto const result = buffer.Stream_Buffer::put( &*values.begin(), &*values.end() );
 
-    ASSERT_TRUE( result.is_error() );
-    ASSERT_EQ( result.error(), error );
+    EXPECT_TRUE( result.is_error() );
+    EXPECT_EQ( result.error(), error );
 }
 
 /**
@@ -198,7 +198,7 @@ TEST( putSignedByteBlock, worksProperly )
             .WillOnce( Return( Result<void>{} ) );
     } // for
 
-    ASSERT_FALSE( buffer.Stream_Buffer::put( &*values.begin(), &*values.end() ).is_error() );
+    EXPECT_FALSE( buffer.Stream_Buffer::put( &*values.begin(), &*values.end() ).is_error() );
 }
 
 /**

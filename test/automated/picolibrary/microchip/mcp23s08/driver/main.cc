@@ -66,7 +66,7 @@ TEST_P( constructor, worksProperly )
         controller, 118, device_selector.handle(), address
     };
 
-    ASSERT_EQ( driver.address(), address );
+    EXPECT_EQ( driver.address(), address );
 }
 
 /**
@@ -98,7 +98,7 @@ TEST( readIODIR, worksProperly )
 
     EXPECT_CALL( mcp23s08, read( 0x00 ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( mcp23s08.read_iodir(), data );
+    EXPECT_EQ( mcp23s08.read_iodir(), data );
 }
 
 /**
@@ -126,7 +126,7 @@ TEST( readIPOL, worksProperly )
 
     EXPECT_CALL( mcp23s08, read( 0x01 ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( mcp23s08.read_ipol(), data );
+    EXPECT_EQ( mcp23s08.read_ipol(), data );
 }
 
 /**
@@ -154,7 +154,7 @@ TEST( readGPINTEN, worksProperly )
 
     EXPECT_CALL( mcp23s08, read( 0x02 ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( mcp23s08.read_gpinten(), data );
+    EXPECT_EQ( mcp23s08.read_gpinten(), data );
 }
 
 /**
@@ -182,7 +182,7 @@ TEST( readDEFVAL, worksProperly )
 
     EXPECT_CALL( mcp23s08, read( 0x03 ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( mcp23s08.read_defval(), data );
+    EXPECT_EQ( mcp23s08.read_defval(), data );
 }
 
 /**
@@ -210,7 +210,7 @@ TEST( readINTCON, worksProperly )
 
     EXPECT_CALL( mcp23s08, read( 0x04 ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( mcp23s08.read_intcon(), data );
+    EXPECT_EQ( mcp23s08.read_intcon(), data );
 }
 
 /**
@@ -238,7 +238,7 @@ TEST( readIOCON, worksProperly )
 
     EXPECT_CALL( mcp23s08, read( 0x05 ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( mcp23s08.read_iocon(), data );
+    EXPECT_EQ( mcp23s08.read_iocon(), data );
 }
 
 /**
@@ -266,7 +266,7 @@ TEST( readGPPU, worksProperly )
 
     EXPECT_CALL( mcp23s08, read( 0x06 ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( mcp23s08.read_gppu(), data );
+    EXPECT_EQ( mcp23s08.read_gppu(), data );
 }
 
 /**
@@ -294,7 +294,7 @@ TEST( readINTF, worksProperly )
 
     EXPECT_CALL( mcp23s08, read( 0x07 ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( mcp23s08.read_intf(), data );
+    EXPECT_EQ( mcp23s08.read_intf(), data );
 }
 
 /**
@@ -308,7 +308,7 @@ TEST( readINTCAP, worksProperly )
 
     EXPECT_CALL( mcp23s08, read( 0x08 ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( mcp23s08.read_intcap(), data );
+    EXPECT_EQ( mcp23s08.read_intcap(), data );
 }
 
 /**
@@ -322,7 +322,7 @@ TEST( readGPIO, worksProperly )
 
     EXPECT_CALL( mcp23s08, read( 0x09 ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( mcp23s08.read_gpio(), data );
+    EXPECT_EQ( mcp23s08.read_gpio(), data );
 }
 
 /**
@@ -350,7 +350,7 @@ TEST( readOLAT, worksProperly )
 
     EXPECT_CALL( mcp23s08, read( 0x0A ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( mcp23s08.read_olat(), data );
+    EXPECT_EQ( mcp23s08.read_olat(), data );
 }
 
 /**

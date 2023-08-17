@@ -150,7 +150,7 @@ TEST( socketIDs, worksProperly )
 
     auto const acceptor = Acceptor{ network_stack, socket_ids };
 
-    ASSERT_EQ( acceptor.socket_ids(), socket_ids );
+    EXPECT_EQ( acceptor.socket_ids(), socket_ids );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) ).Times( AnyNumber() );
 }
@@ -210,7 +210,7 @@ TEST_P( socketInterruptMask, worksProperly )
 
     auto const acceptor = Acceptor{ network_stack, test_case.socket_ids };
 
-    ASSERT_EQ( acceptor.socket_interrupt_mask(), test_case.socket_interrupt_mask );
+    EXPECT_EQ( acceptor.socket_interrupt_mask(), test_case.socket_interrupt_mask );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) ).Times( AnyNumber() );
 }
@@ -372,7 +372,7 @@ TEST_P( noDelayedACKUsageConfiguration, worksProperly )
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_mr( socket_ids.front() ) ).WillOnce( Return( test_case.sn_mr ) );
 
-    ASSERT_EQ( acceptor.no_delayed_ack_usage_configuration(), test_case.no_delayed_ack_usage_configuration );
+    EXPECT_EQ( acceptor.no_delayed_ack_usage_configuration(), test_case.no_delayed_ack_usage_configuration );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) ).Times( AnyNumber() );
 }
@@ -434,7 +434,7 @@ TEST( maximumSegmentSize, worksProperly )
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_mssr( socket_ids.front() ) ).WillOnce( Return( sn_mssr ) );
 
-    ASSERT_EQ( acceptor.maximum_segment_size(), sn_mssr );
+    EXPECT_EQ( acceptor.maximum_segment_size(), sn_mssr );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) ).Times( AnyNumber() );
 }
@@ -480,7 +480,7 @@ TEST( timeToLive, worksProperly )
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_ttl( socket_ids.front() ) ).WillOnce( Return( sn_ttl ) );
 
-    ASSERT_EQ( acceptor.time_to_live(), sn_ttl );
+    EXPECT_EQ( acceptor.time_to_live(), sn_ttl );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) ).Times( AnyNumber() );
 }
@@ -527,7 +527,7 @@ TEST( keepalivePeriod, worksProperly )
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_kpalvtr( socket_ids.front() ) ).WillOnce( Return( sn_kpalvtr ) );
 
-    ASSERT_EQ( acceptor.keepalive_period(), sn_kpalvtr );
+    EXPECT_EQ( acceptor.keepalive_period(), sn_kpalvtr );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) ).Times( AnyNumber() );
 }
@@ -621,7 +621,7 @@ TEST( enabledInterrupts, worksProperly )
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_imr( socket_ids.front() ) ).WillOnce( Return( sn_imr ) );
 
-    ASSERT_EQ( acceptor.enabled_interrupts(), sn_imr );
+    EXPECT_EQ( acceptor.enabled_interrupts(), sn_imr );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) ).Times( AnyNumber() );
 }
@@ -642,7 +642,7 @@ TEST( interruptContext, worksProperly )
     EXPECT_CALL( driver, read_sn_ir( socket_ids[ 0 ] ) ).WillOnce( Return( 0b0101'0100 ) );
     EXPECT_CALL( driver, read_sn_ir( socket_ids[ 1 ] ) ).WillOnce( Return( 0b0011'1100 ) );
 
-    ASSERT_EQ( acceptor.interrupt_context(), 0b0111'1100 );
+    EXPECT_EQ( acceptor.interrupt_context(), 0b0111'1100 );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) ).Times( AnyNumber() );
 }
@@ -1101,7 +1101,7 @@ TEST( localEndpoint, worksProperly )
 
     auto const endpoint = acceptor.local_endpoint();
 
-    ASSERT_TRUE( endpoint.address().is_ipv4() );
+    EXPECT_TRUE( endpoint.address().is_ipv4() );
     EXPECT_EQ( endpoint.address().ipv4().as_byte_array(), sipr );
     EXPECT_EQ( endpoint.port().as_unsigned_integer(), sn_port );
 
@@ -1119,7 +1119,7 @@ TEST( close, worksProperlyUninitialized )
 
     acceptor.close();
 
-    ASSERT_EQ( acceptor.state(), Acceptor::State::UNINITIALIZED );
+    EXPECT_EQ( acceptor.state(), Acceptor::State::UNINITIALIZED );
 }
 
 /**
@@ -1140,7 +1140,7 @@ TEST( close, worksProperlyInitialized )
 
     acceptor.close();
 
-    ASSERT_EQ( acceptor.state(), Acceptor::State::UNINITIALIZED );
+    EXPECT_EQ( acceptor.state(), Acceptor::State::UNINITIALIZED );
 }
 
 /**
@@ -1180,7 +1180,7 @@ TEST_P( closeOtherStates, worksProperly )
 
     acceptor.close();
 
-    ASSERT_EQ( acceptor.state(), Acceptor::State::UNINITIALIZED );
+    EXPECT_EQ( acceptor.state(), Acceptor::State::UNINITIALIZED );
 }
 
 INSTANTIATE_TEST_SUITE_P(

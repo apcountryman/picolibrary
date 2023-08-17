@@ -47,7 +47,7 @@ TEST( constructorDefault, worksProperly )
 {
     auto const sample = Sample<std::uint_fast16_t, 10>{};
 
-    ASSERT_EQ( sample.as_unsigned_integer(), 0 );
+    EXPECT_EQ( sample.as_unsigned_integer(), 0 );
 }
 
 /**
@@ -79,7 +79,7 @@ TEST_P( constructorUnsignedInteger8, worksProperly )
 
     auto const sample = Sample<std::uint_fast8_t, 8>{ unsigned_integer };
 
-    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+    EXPECT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
 INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger8, ValuesIn( constructorUnsignedInteger8_TEST_CASES ) );
@@ -105,7 +105,7 @@ TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger8, worksPro
     auto const sample = Sample<std::uint_fast8_t, 8>{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
                                                       unsigned_integer };
 
-    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+    EXPECT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -142,7 +142,7 @@ TEST_P( constructorUnsignedInteger10, worksProperly )
 
     auto const sample = Sample<std::uint_fast16_t, 10>{ unsigned_integer };
 
-    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+    EXPECT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
 INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger10, ValuesIn( constructorUnsignedInteger10_TEST_CASES ) );
@@ -169,7 +169,7 @@ TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger10, worksPr
     auto const sample = Sample<std::uint_fast16_t, 10>{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
                                                         unsigned_integer };
 
-    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+    EXPECT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -206,7 +206,7 @@ TEST_P( constructorUnsignedInteger12, worksProperly )
 
     auto const sample = Sample<std::uint_fast16_t, 12>{ unsigned_integer };
 
-    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+    EXPECT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
 INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger12, ValuesIn( constructorUnsignedInteger12_TEST_CASES ) );
@@ -233,7 +233,7 @@ TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger12, worksPr
     auto const sample = Sample<std::uint_fast16_t, 12>{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
                                                         unsigned_integer };
 
-    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+    EXPECT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -270,7 +270,7 @@ TEST_P( constructorUnsignedInteger14, worksProperly )
 
     auto const sample = Sample<std::uint_fast16_t, 14>{ unsigned_integer };
 
-    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+    EXPECT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
 INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger14, ValuesIn( constructorUnsignedInteger14_TEST_CASES ) );
@@ -297,7 +297,7 @@ TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger14, worksPr
     auto const sample = Sample<std::uint_fast16_t, 14>{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
                                                         unsigned_integer };
 
-    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+    EXPECT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -334,7 +334,7 @@ TEST_P( constructorUnsignedInteger16, worksProperly )
 
     auto const sample = Sample<std::uint_fast16_t, 16>{ unsigned_integer };
 
-    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+    EXPECT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
 INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger16, ValuesIn( constructorUnsignedInteger16_TEST_CASES ) );
@@ -361,7 +361,7 @@ TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger16, worksPr
     auto const sample = Sample<std::uint_fast16_t, 16>{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
                                                         unsigned_integer };
 
-    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+    EXPECT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -398,7 +398,7 @@ TEST_P( constructorUnsignedInteger18, worksProperly )
 
     auto const sample = Sample<std::uint_fast32_t, 18>{ unsigned_integer };
 
-    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+    EXPECT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
 INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger18, ValuesIn( constructorUnsignedInteger18_TEST_CASES ) );
@@ -425,7 +425,7 @@ TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger18, worksPr
     auto const sample = Sample<std::uint_fast32_t, 18>{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
                                                         unsigned_integer };
 
-    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+    EXPECT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -462,7 +462,7 @@ TEST_P( constructorUnsignedInteger20, worksProperly )
 
     auto const sample = Sample<std::uint_fast32_t, 20>{ unsigned_integer };
 
-    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+    EXPECT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
 INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger20, ValuesIn( constructorUnsignedInteger20_TEST_CASES ) );
@@ -489,7 +489,7 @@ TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger20, worksPr
     auto const sample = Sample<std::uint_fast32_t, 20>{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
                                                         unsigned_integer };
 
-    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+    EXPECT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -526,7 +526,7 @@ TEST_P( constructorUnsignedInteger24, worksProperly )
 
     auto const sample = Sample<std::uint_fast32_t, 24>{ unsigned_integer };
 
-    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+    EXPECT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
 INSTANTIATE_TEST_SUITE_P( testCases, constructorUnsignedInteger24, ValuesIn( constructorUnsignedInteger24_TEST_CASES ) );
@@ -553,7 +553,7 @@ TEST_P( constructorBypassPreconditionExpectationChecksUnsignedInteger24, worksPr
     auto const sample = Sample<std::uint_fast32_t, 24>{ BYPASS_PRECONDITION_EXPECTATION_CHECKS,
                                                         unsigned_integer };
 
-    ASSERT_EQ( sample.as_unsigned_integer(), unsigned_integer );
+    EXPECT_EQ( sample.as_unsigned_integer(), unsigned_integer );
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -619,7 +619,7 @@ TEST_P( equalityOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs == test_case.rhs, test_case.comparison_result );
+    EXPECT_EQ( test_case.lhs == test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -655,7 +655,7 @@ TEST_P( inequalityOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs != test_case.rhs, test_case.comparison_result );
+    EXPECT_EQ( test_case.lhs != test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -691,7 +691,7 @@ TEST_P( lessThanOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs < test_case.rhs, test_case.comparison_result );
+    EXPECT_EQ( test_case.lhs < test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -727,7 +727,7 @@ TEST_P( greaterThanOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs > test_case.rhs, test_case.comparison_result );
+    EXPECT_EQ( test_case.lhs > test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -763,7 +763,7 @@ TEST_P( lessThanOrEqualToOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs <= test_case.rhs, test_case.comparison_result );
+    EXPECT_EQ( test_case.lhs <= test_case.rhs, test_case.comparison_result );
 }
 
 /**
@@ -799,7 +799,7 @@ TEST_P( greaterThanOrEqualToOperator, worksProperly )
 {
     auto const test_case = GetParam();
 
-    ASSERT_EQ( test_case.lhs >= test_case.rhs, test_case.comparison_result );
+    EXPECT_EQ( test_case.lhs >= test_case.rhs, test_case.comparison_result );
 }
 
 /**

@@ -74,7 +74,7 @@ TEST( constructorDefault, worksProperly )
 {
     auto const client = Client{};
 
-    ASSERT_EQ( client.state(), Client::State::UNINITIALIZED );
+    EXPECT_EQ( client.state(), Client::State::UNINITIALIZED );
 }
 
 /**
@@ -151,7 +151,7 @@ TEST( socketId, worksProperly )
 
     auto const client = Client{ network_stack, socket_id };
 
-    ASSERT_EQ( client.socket_id(), socket_id );
+    EXPECT_EQ( client.socket_id(), socket_id );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) );
 }
@@ -204,7 +204,7 @@ TEST_P( socketInterruptMask, worksProperly )
 
     auto const client = Client{ network_stack, test_case.socket_id };
 
-    ASSERT_EQ( client.socket_interrupt_mask(), test_case.socket_interrupt_mask );
+    EXPECT_EQ( client.socket_interrupt_mask(), test_case.socket_interrupt_mask );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) );
 }
@@ -359,7 +359,7 @@ TEST_P( noDelayedACKUsageConfiguration, worksProperly )
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_mr( socket_id ) ).WillOnce( Return( test_case.sn_mr ) );
 
-    ASSERT_EQ( client.no_delayed_ack_usage_configuration(), test_case.no_delayed_ack_usage_configuration );
+    EXPECT_EQ( client.no_delayed_ack_usage_configuration(), test_case.no_delayed_ack_usage_configuration );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) );
 }
@@ -419,7 +419,7 @@ TEST( maximumSegmentSize, worksProperly )
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_mssr( socket_id ) ).WillOnce( Return( sn_mssr ) );
 
-    ASSERT_EQ( client.maximum_segment_size(), sn_mssr );
+    EXPECT_EQ( client.maximum_segment_size(), sn_mssr );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) );
 }
@@ -463,7 +463,7 @@ TEST( timeToLive, worksProperly )
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_ttl( socket_id ) ).WillOnce( Return( sn_ttl ) );
 
-    ASSERT_EQ( client.time_to_live(), sn_ttl );
+    EXPECT_EQ( client.time_to_live(), sn_ttl );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) );
 }
@@ -507,7 +507,7 @@ TEST( keepalivePeriod, worksProperly )
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_kpalvtr( socket_id ) ).WillOnce( Return( sn_kpalvtr ) );
 
-    ASSERT_EQ( client.keepalive_period(), sn_kpalvtr );
+    EXPECT_EQ( client.keepalive_period(), sn_kpalvtr );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) );
 }
@@ -595,7 +595,7 @@ TEST( enabledInterrupts, worksProperly )
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_imr( socket_id ) ).WillOnce( Return( sn_imr ) );
 
-    ASSERT_EQ( client.enabled_interrupts(), sn_imr );
+    EXPECT_EQ( client.enabled_interrupts(), sn_imr );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) );
 }
@@ -617,7 +617,7 @@ TEST( interruptContext, worksProperly )
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_ir( socket_id ) ).WillOnce( Return( sn_ir ) );
 
-    ASSERT_EQ( client.interrupt_context(), sn_ir );
+    EXPECT_EQ( client.interrupt_context(), sn_ir );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) );
 }
@@ -682,7 +682,7 @@ TEST_P( clearInterrupts, worksProperly )
 
     client.clear_interrupts( test_case.mask );
 
-    ASSERT_EQ( client.is_transmitting(), test_case.is_transmitting_final );
+    EXPECT_EQ( client.is_transmitting(), test_case.is_transmitting_final );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) );
 }
@@ -735,7 +735,7 @@ TEST( bind, worksProperlyDefaultEndpoint )
 
     client.bind();
 
-    ASSERT_EQ( client.state(), Client::State::BOUND );
+    EXPECT_EQ( client.state(), Client::State::BOUND );
 
     EXPECT_CALL( network_stack, tcp_port_allocator( _ ) ).WillOnce( ReturnRef( tcp_port_allocator ) );
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
@@ -776,7 +776,7 @@ TEST( bind, worksProperlyAnyAddressEphemeralPort )
 
     client.bind( {} );
 
-    ASSERT_EQ( client.state(), Client::State::BOUND );
+    EXPECT_EQ( client.state(), Client::State::BOUND );
 
     EXPECT_CALL( network_stack, tcp_port_allocator( _ ) ).WillOnce( ReturnRef( tcp_port_allocator ) );
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
@@ -817,7 +817,7 @@ TEST( bind, worksProperlyAnyAddressNonEphemeralPort )
 
     client.bind( port );
 
-    ASSERT_EQ( client.state(), Client::State::BOUND );
+    EXPECT_EQ( client.state(), Client::State::BOUND );
 
     EXPECT_CALL( network_stack, tcp_port_allocator( _ ) ).WillOnce( ReturnRef( tcp_port_allocator ) );
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
@@ -860,7 +860,7 @@ TEST( bind, worksProperlySpecificAddressEphemeralPort )
 
     client.bind( { address, {} } );
 
-    ASSERT_EQ( client.state(), Client::State::BOUND );
+    EXPECT_EQ( client.state(), Client::State::BOUND );
 
     EXPECT_CALL( network_stack, tcp_port_allocator( _ ) ).WillOnce( ReturnRef( tcp_port_allocator ) );
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
@@ -903,7 +903,7 @@ TEST( bind, worksProperlySpecificAddressNonEphemeralPort )
 
     client.bind( { address, port } );
 
-    ASSERT_EQ( client.state(), Client::State::BOUND );
+    EXPECT_EQ( client.state(), Client::State::BOUND );
 
     EXPECT_CALL( network_stack, tcp_port_allocator( _ ) ).WillOnce( ReturnRef( tcp_port_allocator ) );
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
@@ -929,7 +929,7 @@ TEST( connectErrorHandling, connectionTimeout )
 
     auto const result = client.connect( { Address{ { 191, 156, 3, 194 } }, 62778 } );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::OPERATION_TIMEOUT );
 
     EXPECT_EQ( client.state(), Client::State::CONNECTING );
@@ -967,7 +967,7 @@ TEST( connect, worksProperlyConnectionAttemptInitiated )
 
     auto const result = client.connect( endpoint );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::WOULD_BLOCK );
 
     EXPECT_EQ( client.state(), Client::State::CONNECTING );
@@ -1006,7 +1006,7 @@ TEST_P( connectConnectionAttemptInProgress, worksProperly )
 
     auto const result = client.connect( { Address{ { 110, 76, 229, 185 } }, 46793 } );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::WOULD_BLOCK );
 
     EXPECT_EQ( client.state(), Client::State::CONNECTING );
@@ -1109,7 +1109,7 @@ TEST_P( isConnected, worksProperly )
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( test_case.sn_sr ) );
 
-    ASSERT_EQ( client.is_connected(), test_case.is_connected );
+    EXPECT_EQ( client.is_connected(), test_case.is_connected );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) );
 }
@@ -1156,7 +1156,7 @@ TEST( remoteEndpoint, worksProperly )
 
     auto const endpoint = client.remote_endpoint();
 
-    ASSERT_TRUE( endpoint.address().is_ipv4() );
+    EXPECT_TRUE( endpoint.address().is_ipv4() );
     EXPECT_EQ( endpoint.address().ipv4().as_byte_array(), sn_dipr );
     EXPECT_EQ( endpoint.port().as_unsigned_integer(), sn_dport );
 
@@ -1184,7 +1184,7 @@ TEST( localEndpoint, worksProperly )
 
     auto const endpoint = client.local_endpoint();
 
-    ASSERT_TRUE( endpoint.address().is_ipv4() );
+    EXPECT_TRUE( endpoint.address().is_ipv4() );
     EXPECT_EQ( endpoint.address().ipv4().as_byte_array(), sipr );
     EXPECT_EQ( endpoint.port().as_unsigned_integer(), sn_port );
 
@@ -1250,7 +1250,7 @@ TEST_P( outstanding, worksProperly )
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_tx_fsr( socket_id ) ).WillOnce( Return( test_case.sn_tx_fsr ) );
 
-    ASSERT_EQ( client.outstanding(), test_case.outstanding );
+    EXPECT_EQ( client.outstanding(), test_case.outstanding );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) );
 }
@@ -1342,7 +1342,7 @@ TEST_P( transmitErrorHandlingConnectionLoss, connectionLoss )
     auto const data   = std::vector<std::uint8_t>{ 0x72, 0x5D };
     auto const result = client.transmit( &*data.begin(), &*data.end() );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::NOT_CONNECTED );
 
     EXPECT_EQ( client.state(), Client::State::CONNECTED );
@@ -1407,7 +1407,7 @@ TEST( transmit, worksProperlyInProgressTransmissionNotComplete )
     auto const data   = std::vector<std::uint8_t>{ 0x6D, 0x4A, 0xA0 };
     auto const result = client.transmit( &*data.begin(), &*data.end() );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::WOULD_BLOCK );
 
     EXPECT_EQ( client.state(), Client::State::CONNECTED );
@@ -1439,7 +1439,7 @@ TEST( transmit, worksProperlyTransmissionNotInProgressEmptyDataBlock )
     auto const data   = std::vector<std::uint8_t>{};
     auto const result = client.transmit( &*data.begin(), &*data.end() );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), &*data.end() );
 
     EXPECT_EQ( client.state(), Client::State::CONNECTED );
@@ -1475,7 +1475,7 @@ TEST( transmit, worksProperlyInProgressTransmissionCompleteEmptyDataBlock )
     auto const data   = std::vector<std::uint8_t>{};
     auto const result = client.transmit( &*data.begin(), &*data.end() );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), &*data.end() );
 
     EXPECT_EQ( client.state(), Client::State::CONNECTED );
@@ -1511,7 +1511,7 @@ TEST( transmit, worksProperlyTransmissionNotInProgressTransmitBufferFull )
     auto const data   = std::vector<std::uint8_t>{ 0xCA, 0x67 };
     auto const result = client.transmit( &*data.begin(), &*data.end() );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::WOULD_BLOCK );
 
     EXPECT_EQ( client.state(), Client::State::CONNECTED );
@@ -1549,7 +1549,7 @@ TEST( transmit, worksProperlyInProgressTransmissionCompleteTransmitBufferFull )
     auto const data   = std::vector<std::uint8_t>{ 0x68, 0x2B, 0x9E, 0x28 };
     auto const result = client.transmit( &*data.begin(), &*data.end() );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::WOULD_BLOCK );
 
     EXPECT_EQ( client.state(), Client::State::CONNECTED );
@@ -1647,7 +1647,7 @@ TEST_P( transmitSufficientTransmitBufferCapacity, worksProperlyTransmissionNotIn
 
     auto const result = client.transmit( &*data.begin(), &*data.end() );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), &*data.end() );
 
     EXPECT_EQ( client.state(), Client::State::CONNECTED );
@@ -1695,7 +1695,7 @@ TEST_P( transmitSufficientTransmitBufferCapacity, worksProperlyInProgressTransmi
 
     auto const result = client.transmit( &*data.begin(), &*data.end() );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), &*data.end() );
 
     EXPECT_EQ( client.state(), Client::State::CONNECTED );
@@ -1794,7 +1794,7 @@ TEST_P( transmitInsufficientTransmitBufferCapacity, worksProperlyTransmissionNot
 
     auto const result = client.transmit( &*data.begin(), &*data.end() );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), &*data.begin() + test_case.sn_tx_fsr );
 
     EXPECT_EQ( client.state(), Client::State::CONNECTED );
@@ -1847,7 +1847,7 @@ TEST_P( transmitInsufficientTransmitBufferCapacity, worksProperlyInProgressTrans
 
     auto const result = client.transmit( &*data.begin(), &*data.end() );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), &*data.begin() + test_case.sn_tx_fsr );
 
     EXPECT_EQ( client.state(), Client::State::CONNECTED );
@@ -1926,7 +1926,7 @@ TEST_P( transmitKeepaliveErrorHandlingConnectionLoss, connectionLoss )
 
     auto const result = client.transmit_keepalive();
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::NOT_CONNECTED );
 
     EXPECT_EQ( client.state(), Client::State::CONNECTED );
@@ -1964,7 +1964,7 @@ TEST( transmitKeepalive, worksProperly )
     EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( 0x39 ) );
     EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( 0x00 ) );
 
-    ASSERT_FALSE( client.transmit_keepalive().is_error() );
+    EXPECT_FALSE( client.transmit_keepalive().is_error() );
 
     EXPECT_EQ( client.state(), Client::State::CONNECTED );
 
@@ -2026,7 +2026,7 @@ TEST_P( available, worksProperly )
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_rx_rsr( socket_id ) ).WillOnce( Return( test_case.sn_rx_rsr ) );
 
-    ASSERT_EQ( client.available(), test_case.sn_rx_rsr );
+    EXPECT_EQ( client.available(), test_case.sn_rx_rsr );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) );
 }
@@ -2076,7 +2076,7 @@ TEST( receiveErrorHandling, connectionLoss )
     auto       data   = std::vector<std::uint8_t>( 3 );
     auto const result = client.receive( &*data.begin(), &*data.end() );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::NOT_CONNECTED );
 
     EXPECT_EQ( client.state(), Client::State::CONNECTED );
@@ -2116,7 +2116,7 @@ TEST_P( receiveGracefulShutdown, worksProperly )
     auto       data   = std::vector<std::uint8_t>( 2 );
     auto const result = client.receive( &*data.begin(), &*data.end() );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), Generic_Error::WOULD_BLOCK );
 
     EXPECT_EQ( client.state(), Client::State::CONNECTED );
@@ -2192,7 +2192,7 @@ TEST_P( receiveReceiveBufferEmpty, worksProperly )
     auto       data   = std::vector<std::uint8_t>( 5 );
     auto const result = client.receive( &*data.begin(), &*data.end() );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), test_case.error );
 
     EXPECT_EQ( client.state(), Client::State::CONNECTED );
@@ -2288,7 +2288,7 @@ TEST_P( receiveEmptyDataBlock, worksProperly )
     auto       data   = std::vector<std::uint8_t>{};
     auto const result = client.receive( &*data.begin(), &*data.end() );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), &*data.end() );
 
     EXPECT_CALL( network_stack, tcp_port_allocator( _ ) ).WillOnce( ReturnRef( tcp_port_allocator ) );
@@ -2558,7 +2558,7 @@ TEST_P( receiveSomeData, worksProperly )
     auto       data   = std::vector<std::uint8_t>( data_expected.size() );
     auto const result = client.receive( &*data.begin(), &*data.end() );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
     EXPECT_EQ( result.value(), &*data.end() );
 
     EXPECT_EQ( data, data_expected );
@@ -2721,7 +2721,7 @@ TEST( close, worksProperlyUninitialized )
 
     client.close();
 
-    ASSERT_EQ( client.state(), Client::State::UNINITIALIZED );
+    EXPECT_EQ( client.state(), Client::State::UNINITIALIZED );
 }
 
 /**
@@ -2741,7 +2741,7 @@ TEST( close, worksProperlyInitialized )
 
     client.close();
 
-    ASSERT_EQ( client.state(), Client::State::UNINITIALIZED );
+    EXPECT_EQ( client.state(), Client::State::UNINITIALIZED );
 }
 
 /**
@@ -2778,7 +2778,7 @@ TEST_P( closeOtherStates, worksProperly )
 
     client.close();
 
-    ASSERT_EQ( client.state(), Client::State::UNINITIALIZED );
+    EXPECT_EQ( client.state(), Client::State::UNINITIALIZED );
 }
 
 INSTANTIATE_TEST_SUITE_P(

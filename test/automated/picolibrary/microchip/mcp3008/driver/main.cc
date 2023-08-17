@@ -124,7 +124,7 @@ TEST_P( sample, worksProperly )
     EXPECT_CALL( mcp3008, exchange( test_case.tx ) ).WillOnce( Return( test_case.rx ) );
     EXPECT_CALL( device_selector, deselect() );
 
-    ASSERT_EQ( mcp3008.sample( test_case.input ), test_case.sample );
+    EXPECT_EQ( mcp3008.sample( test_case.input ), test_case.sample );
 }
 
 /**

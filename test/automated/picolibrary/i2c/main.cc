@@ -112,7 +112,7 @@ TEST_P( pingControllerI2CAddressTransmittedI2COperation, worksProperly )
     } // if
     EXPECT_CALL( controller, stop() );
 
-    ASSERT_EQ( ping( controller, address, test_case.operation ), test_case.response );
+    EXPECT_EQ( ping( controller, address, test_case.operation ), test_case.response );
 }
 
 /**
@@ -207,7 +207,7 @@ TEST_P( pingControllerI2CAddressTransmitted, worksProperly )
         .WillOnce( Return( test_case.response_write ) );
     EXPECT_CALL( controller, stop() );
 
-    ASSERT_EQ( ping( controller, address ), test_case.response );
+    EXPECT_EQ( ping( controller, address ), test_case.response );
 }
 
 /**
@@ -427,7 +427,7 @@ TEST( scanControllerFunctorFunctorCanFailReturnFunctorErrorHandling, functorErro
 
     auto const result = scan<Functor_Can_Fail_Return_Functor>( controller, functor.AsStdFunction() );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 }
 
@@ -471,7 +471,7 @@ TEST( scanControllerFunctorFunctorCanFailReturnFunctor, worksProperly )
 
     EXPECT_CALL( functor, Call( _, _, _ ) ).WillOnce( Return( Result<void>{} ) );
 
-    ASSERT_FALSE( result.value()( 0x18 << 1, Operation::WRITE, Response::NACK ).is_error() );
+    EXPECT_FALSE( result.value()( 0x18 << 1, Operation::WRITE, Response::NACK ).is_error() );
 }
 
 /**
@@ -494,7 +494,7 @@ TEST( scanControllerFunctorFunctorCanFailDiscardFunctorErrorHandling, functorErr
 
     auto const result = scan<Functor_Can_Fail_Discard_Functor>( controller, functor.AsStdFunction() );
 
-    ASSERT_TRUE( result.is_error() );
+    EXPECT_TRUE( result.is_error() );
     EXPECT_EQ( result.error(), error );
 }
 
@@ -534,7 +534,7 @@ TEST( scanControllerFunctorFunctorCanFailDiscardFunctor, worksProperly )
 
     static_assert( std::is_same_v<decltype( result )::Value, void> );
 
-    ASSERT_FALSE( result.is_error() );
+    EXPECT_FALSE( result.is_error() );
 }
 
 /**

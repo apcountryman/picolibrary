@@ -244,7 +244,7 @@ TEST( stateMachine, worksProperly )
         stream << '\n';
     } // for
 
-    ASSERT_EQ(
+    EXPECT_EQ(
         stream.str(),
         "start-INIT;s1-ENTRY;\n"
         "s1-A;\n"

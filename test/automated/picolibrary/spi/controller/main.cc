@@ -63,7 +63,7 @@ TEST( exchangeBlock, worksProperly )
 
     controller.exchange( tx.begin(), tx.end(), rx.begin(), rx.end() );
 
-    ASSERT_EQ( rx, rx_expected );
+    EXPECT_EQ( rx, rx_expected );
 }
 
 /**
@@ -77,7 +77,7 @@ TEST( receive, worksProperly )
 
     EXPECT_CALL( controller, exchange( _ ) ).WillOnce( Return( data ) );
 
-    ASSERT_EQ( controller.receive(), data );
+    EXPECT_EQ( controller.receive(), data );
 }
 
 /**
@@ -101,7 +101,7 @@ TEST( receiveBlock, worksProperly )
 
     controller.receive( data.begin(), data.end() );
 
-    ASSERT_EQ( data, data_expected );
+    EXPECT_EQ( data, data_expected );
 }
 
 /**
