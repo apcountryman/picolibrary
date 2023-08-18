@@ -15,5 +15,5 @@
 
 # Description: picolibrary::Adafruit automated tests CMake rules.
 
-# build the picolibrary::Adafruit::PID781 automated tests
+# picolibrary::Adafruit::PID781 automated tests
 add_subdirectory( pid781 )

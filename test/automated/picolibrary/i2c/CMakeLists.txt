@@ -15,22 +15,22 @@
 
 # Description: picolibrary::I2C automated tests CMake rules.
 
-# build the picolibrary::I2C::Address_Numeric automated tests
+# picolibrary::I2C::Address_Numeric automated tests
 add_subdirectory( address_numeric )
 
-# build the picolibrary::I2C::Address_Transmitted automated tests
+# picolibrary::I2C::Address_Transmitted automated tests
 add_subdirectory( address_transmitted )
 
-# build the picolibrary::I2C::Bus_Control_Guard automated tests
+# picolibrary::I2C::Bus_Control_Guard automated tests
 add_subdirectory( bus_control_guard )
 
-# build the picolibrary::I2C::Controller automated tests
+# picolibrary::I2C::Controller automated tests
 add_subdirectory( controller )
 
-# build the picolibrary::I2C::Device automated tests
+# picolibrary::I2C::Device automated tests
 add_subdirectory( device )
 
-# build the picolibrary::I2C automated tests
+# picolibrary::I2C automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-i2c

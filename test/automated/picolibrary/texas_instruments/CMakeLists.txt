@@ -15,5 +15,5 @@
 
 # Description: picolibrary::Texas_Instruments automated tests CMake rules.
 
-# build the picolibrary::Texas_Instruments::TCA9548A automated tests
+# picolibrary::Texas_Instruments::TCA9548A automated tests
 add_subdirectory( tca9548a )

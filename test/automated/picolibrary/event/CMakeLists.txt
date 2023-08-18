@@ -15,7 +15,7 @@
 
 # Description: picolibrary::Event automated tests CMake rules.
 
-# build the picolibrary::Event automated tests
+# picolibrary::Event automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-event

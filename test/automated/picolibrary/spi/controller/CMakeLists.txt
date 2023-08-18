@@ -15,7 +15,7 @@
 
 # Description: picolibrary::SPI::Controller automated tests CMake rules.
 
-# build the picolibrary::SPI::Controller automated tests
+# picolibrary::SPI::Controller automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-spi-controller

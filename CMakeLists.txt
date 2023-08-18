@@ -175,8 +175,8 @@ if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     enable_testing()
 endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
 
-# build the library
+# library
 add_subdirectory( source )
 
-# build the library's tests
+# library tests
 add_subdirectory( test )

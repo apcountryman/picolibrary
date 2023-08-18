@@ -15,13 +15,12 @@
 
 # Description: picolibrary::Asynchronous_Serial automated tests CMake rules.
 
-# build the picolibrary::Asynchronous_Serial::Reliable_Unbuffered_Output_Stream automated
-# tests
+# picolibrary::Asynchronous_Serial::Reliable_Unbuffered_Output_Stream automated tests
 add_subdirectory( reliable_unbuffered_output_stream )
 
-# build the picolibrary::Asynchronous_Serial::Reliable_Unbuffered_Output_Stream_Buffer
-# automated tests
+# picolibrary::Asynchronous_Serial::Reliable_Unbuffered_Output_Stream_Buffer automated
+# tests
 add_subdirectory( reliable_unbuffered_output_stream_buffer )
 
-# build the picolibrary::Asynchronous_Serial::Transmitter automated tests
+# picolibrary::Asynchronous_Serial::Transmitter automated tests
 add_subdirectory( transmitter )

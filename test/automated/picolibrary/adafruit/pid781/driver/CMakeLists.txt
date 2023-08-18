@@ -15,7 +15,7 @@
 
 # Description: picolibrary::Adafruit::PID781::Driver automated tests CMake rules.
 
-# build the picolibrary::Adafruit::PID781::Driver automated tests
+# picolibrary::Adafruit::PID781::Driver automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-adafruit-pid781-driver

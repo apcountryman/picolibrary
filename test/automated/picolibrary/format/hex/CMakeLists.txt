@@ -15,7 +15,7 @@
 
 # Description: picolibrary::Format::Hex automated tests CMake rules.
 
-# build the picolibrary::Format::Hex automated tests
+# picolibrary::Format::Hex automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-format-hex

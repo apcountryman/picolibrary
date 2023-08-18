@@ -15,11 +15,11 @@
 
 # Description: picolibrary::IP automated tests CMake rules.
 
-# build the picolibrary::IP::Address automated tests
+# picolibrary::IP::Address automated tests
 add_subdirectory( address )
 
-# build the picolibrary::IP::Endpoint automated tests
+# picolibrary::IP::Endpoint automated tests
 add_subdirectory( endpoint )
 
-# build the picolibrary::IP::Port automated tests
+# picolibrary::IP::Port automated tests
 add_subdirectory( port )

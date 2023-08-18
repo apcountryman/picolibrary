@@ -15,7 +15,7 @@
 
 # Description: picolibrary::I2C::Device automated tests CMake rules.
 
-# build the picolibrary::I2C::Device automated tests
+# picolibrary::I2C::Device automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-i2c-device

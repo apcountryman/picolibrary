@@ -15,5 +15,5 @@
 
 # Description: picolibrary::Interrupt automated tests CMake rules.
 
-# build the picolibrary::Interrupt::Critical_Section_Guard automated tests
+# picolibrary::Interrupt::Critical_Section_Guard automated tests
 add_subdirectory( critical_section_guard )

@@ -15,7 +15,7 @@
 
 # Description: picolibrary::Interrupt::Critical_Section_Guard automated tests CMake rules.
 
-# build the picolibrary::Interrupt::Critical_Section_Guard automated tests
+# picolibrary::Interrupt::Critical_Section_Guard automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-interrupt-critical_section_guard

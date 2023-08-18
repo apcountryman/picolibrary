@@ -15,7 +15,7 @@
 
 # Description: picolibrary::Microchip::MCP23008::Driver automated tests CMake rules.
 
-# build the picolibrary::Microchip::MCP23008::Driver automated tests
+# picolibrary::Microchip::MCP23008::Driver automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-microchip-mcp23008-driver

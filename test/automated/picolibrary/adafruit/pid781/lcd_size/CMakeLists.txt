@@ -15,7 +15,7 @@
 
 # Description: picolibrary::Adafruit::PID781::LCD_Size automated tests CMake rules.
 
-# build the picolibrary::Adafruit::PID781::LCD_Size automated tests
+# picolibrary::Adafruit::PID781::LCD_Size automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-adafruit-pid781-lcd_size

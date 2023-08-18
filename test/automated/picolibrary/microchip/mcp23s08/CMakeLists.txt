@@ -15,14 +15,14 @@
 
 # Description: picolibrary::Microchip::MCP23S08 automated tests CMake rules.
 
-# build the picolibrary::Microchip::MCP23S08::Address_Numeric automated tests
+# picolibrary::Microchip::MCP23S08::Address_Numeric automated tests
 add_subdirectory( address_numeric )
 
-# build the picolibrary::Microchip::MCP23S08::Address_Transmitted automated tests
+# picolibrary::Microchip::MCP23S08::Address_Transmitted automated tests
 add_subdirectory( address_transmitted )
 
-# build the picolibrary::Microchip::MCP23S08::Communication_Controller automated tests
+# picolibrary::Microchip::MCP23S08::Communication_Controller automated tests
 add_subdirectory( communication_controller )
 
-# build the picolibrary::Microchip::MCP23S08::Driver automated tests
+# picolibrary::Microchip::MCP23S08::Driver automated tests
 add_subdirectory( driver )

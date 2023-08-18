@@ -15,11 +15,11 @@
 
 # Description: picolibrary::Adafruit::PID781 automated tests CMake rules.
 
-# build the picolibrary::Adafruit::PID781::Custom_Character_ID automated tests
+# picolibrary::Adafruit::PID781::Custom_Character_ID automated tests
 add_subdirectory( custom_character_id )
 
-# build the picolibrary::Adafruit::PID781::Driver automated tests
+# picolibrary::Adafruit::PID781::Driver automated tests
 add_subdirectory( driver )
 
-# build the picolibrary::Adafruit::PID781::LCD_Size automated tests
+# picolibrary::Adafruit::PID781::LCD_Size automated tests
 add_subdirectory( lcd_size )

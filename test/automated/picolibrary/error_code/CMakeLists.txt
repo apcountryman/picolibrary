@@ -15,7 +15,7 @@
 
 # Description: picolibrary::Error_Code automated tests CMake rules.
 
-# build the picolibrary::Error_Code automated tests
+# picolibrary::Error_Code automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-error_code

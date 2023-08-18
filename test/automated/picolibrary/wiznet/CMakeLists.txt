@@ -15,5 +15,5 @@
 
 # Description: picolibrary::WIZnet automated tests CMake rules.
 
-# build the picolibrary::WIZnet::W5500 automated tests
+# picolibrary::WIZnet::W5500 automated tests
 add_subdirectory( w5500 )

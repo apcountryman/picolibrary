@@ -16,7 +16,7 @@
 # Description: picolibrary::Adafruit::PID781::Custom_Character_ID automated tests CMake
 #       rules.
 
-# build the picolibrary::Adafruit::PID781::Custom_Character_ID automated tests
+# picolibrary::Adafruit::PID781::Custom_Character_ID automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-adafruit-pid781-custom_character_id

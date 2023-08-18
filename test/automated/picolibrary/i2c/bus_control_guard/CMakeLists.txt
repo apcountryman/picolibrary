@@ -15,7 +15,7 @@
 
 # Description: picolibrary::I2C::Bus_Control_Guard automated tests CMake rules.
 
-# build the picolibrary::I2C::Bus_Control_Guard automated tests
+# picolibrary::I2C::Bus_Control_Guard automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-i2c-bus_control_guard

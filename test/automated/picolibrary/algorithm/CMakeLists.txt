@@ -15,7 +15,7 @@
 
 # Description: picolibrary algorithm automated tests CMake rules.
 
-# build the picolibrary algorithm automated tests
+# picolibrary algorithm automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-algorithm

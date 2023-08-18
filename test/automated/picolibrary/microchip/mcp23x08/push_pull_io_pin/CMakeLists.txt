@@ -16,7 +16,7 @@
 # Description: picolibrary::Microchip::MCP23X08::Push_Pull_IO_Pin automated tests CMake
 #       rules.
 
-# build the picolibrary::Microchip::MCP23X08::Push_Pull_IO_Pin automated tests
+# picolibrary::Microchip::MCP23X08::Push_Pull_IO_Pin automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-microchip-mcp23x08-push_pull_io_pin

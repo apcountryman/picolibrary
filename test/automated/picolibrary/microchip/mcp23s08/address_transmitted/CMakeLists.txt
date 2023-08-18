@@ -16,7 +16,7 @@
 # Description: picolibrary::Microchip::MCP23S08::Address_Transmitted automated tests CMake
 #       rules.
 
-# build the picolibrary::Microchip::MCP23S08::Address_Transmitted automated tests
+# picolibrary::Microchip::MCP23S08::Address_Transmitted automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-microchip-mcp23s08-address_transmitted

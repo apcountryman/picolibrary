@@ -16,7 +16,7 @@
 # Description: picolibrary::Texas_Instruments::TCA9548A::Caching_Driver automated tests
 #       CMake rules.
 
-# build the picolibrary::Texas_Instruments::TCA9548A::Caching_Driver automated tests
+# picolibrary::Texas_Instruments::TCA9548A::Caching_Driver automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
         test-automated-picolibrary-texas_instruments-tca9548a-caching_driver

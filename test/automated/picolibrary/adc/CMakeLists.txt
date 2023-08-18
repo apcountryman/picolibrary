@@ -15,5 +15,5 @@
 
 # Description: picolibrary::ADC automated tests CMake rules.
 
-# build the picolibrary::ADC::Sample automated tests
+# picolibrary::ADC::Sample automated tests
 add_subdirectory( sample )
