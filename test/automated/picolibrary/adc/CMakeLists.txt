@@ -13,7 +13,7 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary::ADC automated tests.
+# Description: picolibrary::ADC automated tests CMake rules.
 
 # picolibrary::ADC::Sample automated tests
 add_subdirectory( sample )
