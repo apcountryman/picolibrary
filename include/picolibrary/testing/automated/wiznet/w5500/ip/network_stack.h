@@ -139,7 +139,7 @@ class Mock_Network_Stack {
         ( (Fixed_Capacity_Vector<::picolibrary::WIZnet::W5500::Socket_ID, 8> const &)) );
 
     MOCK_METHOD( void, detach_tcp_server, ( std::uint_fast8_t, ::picolibrary::WIZnet::W5500::Socket_ID ) );
-    MOCK_METHOD( bool, tcp_server_is_detached, (), ( const ) );
+    MOCK_METHOD( bool, tcp_server_is_detached, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
 
     MOCK_METHOD( Mock_Port_Allocator &, tcp_port_allocator, ( std::uint_fast8_t ) );
 
