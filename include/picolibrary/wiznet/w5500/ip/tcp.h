@@ -1835,6 +1835,7 @@ class Acceptor {
      * \return picolibrary::Generic_Error::WOULD_BLOCK if an incoming connection request
      *         could not be accepted without blocking.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     auto accept() noexcept -> Result<Server>
     {
         // #lizard forgives the length
@@ -1853,10 +1854,10 @@ class Acceptor {
 
             if ( socket.status == Socket::Status::AVAILABLE_FOR_ALLOCATION ) {
                 switch ( driver.read_sn_sr( socket.id ) ) {
-                    case SN_SR::STATUS_SOCK_CLOSED:
-                        [[fallthrough]]; // NOLINT(bugprone-branch-clone)
-                    case SN_SR::STATUS_SOCK_ESTABLISHED:
-                        [[fallthrough]]; // NOLINT(bugprone-branch-clone)
+                    // NOLINTNEXTLINE(bugprone-branch-clone)
+                    case SN_SR::STATUS_SOCK_CLOSED: [[fallthrough]];
+                    // NOLINTNEXTLINE(bugprone-branch-clone)
+                    case SN_SR::STATUS_SOCK_ESTABLISHED: [[fallthrough]];
                     case SN_SR::STATUS_SOCK_CLOSE_WAIT:
                         socket.status = Socket::Status::ALLOCATED;
                         return Server{ {}, *m_network_stack, *this, socket.id };
