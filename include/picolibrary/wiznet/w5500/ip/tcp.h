@@ -1256,8 +1256,11 @@ class Server {
     /**
      * \brief Close the socket.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     constexpr void close() noexcept
     {
+        // #lizard forgives the length
+
         if ( m_state == State::UNINITIALIZED ) {
             return;
         } // if
@@ -1834,6 +1837,8 @@ class Acceptor {
      */
     auto accept() noexcept -> Result<Server>
     {
+        // #lizard forgives the length
+
         PICOLIBRARY_EXPECT( m_state == State::LISTENING, Generic_Error::LOGIC_ERROR );
 
         auto & driver = m_network_stack->driver( {} );
@@ -1848,8 +1853,10 @@ class Acceptor {
 
             if ( socket.status == Socket::Status::AVAILABLE_FOR_ALLOCATION ) {
                 switch ( driver.read_sn_sr( socket.id ) ) {
-                    case SN_SR::STATUS_SOCK_CLOSED: [[fallthrough]];
-                    case SN_SR::STATUS_SOCK_ESTABLISHED: [[fallthrough]];
+                    case SN_SR::STATUS_SOCK_CLOSED:
+                        [[fallthrough]]; // NOLINT(bugprone-branch-clone)
+                    case SN_SR::STATUS_SOCK_ESTABLISHED:
+                        [[fallthrough]]; // NOLINT(bugprone-branch-clone)
                     case SN_SR::STATUS_SOCK_CLOSE_WAIT:
                         socket.status = Socket::Status::ALLOCATED;
                         return Server{ {}, *m_network_stack, *this, socket.id };
