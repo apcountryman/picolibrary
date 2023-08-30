@@ -327,10 +327,235 @@ class Mock_Client {
 };
 
 /**
+ * \brief Mock server socket.
+ */
+class Mock_Server {
+  public:
+    using Size = std::uint16_t;
+
+    enum class State : std::uint_fast8_t {
+        UNINITIALIZED,
+        CONNECTED,
+    };
+
+    class Handle : public Mock_Handle<Mock_Server> {
+      public:
+        using Size = Mock_Server::Size;
+
+        using State = Mock_Server::State;
+
+        constexpr Handle() noexcept = default;
+
+        constexpr Handle( Mock_Server & mock ) noexcept : Mock_Handle<Mock_Server>{ mock }
+        {
+        }
+
+        constexpr Handle( Handle && source ) noexcept = default;
+
+        Handle( Handle const & ) = delete;
+
+        ~Handle() noexcept = default;
+
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
+
+        auto operator=( Handle const & ) = delete;
+
+        auto state() const -> State
+        {
+            return mock().state();
+        }
+
+        auto socket_id() const -> ::picolibrary::WIZnet::W5500::Socket_ID
+        {
+            return mock().socket_id();
+        }
+
+        auto socket_interrupt_mask() const -> std::uint8_t
+        {
+            return mock().socket_interrupt_mask();
+        }
+
+        auto no_delayed_ack_usage_configuration() const -> ::picolibrary::WIZnet::W5500::No_Delayed_ACK_Usage
+        {
+            return mock().no_delayed_ack_usage_configuration();
+        }
+
+        auto maximum_segment_size() const -> std::uint16_t
+        {
+            return mock().maximum_segment_size();
+        }
+
+        auto time_to_live() const -> std::uint8_t
+        {
+            return mock().time_to_live();
+        }
+
+        auto keepalive_period() const -> std::uint8_t
+        {
+            return mock().keepalive_period();
+        }
+
+        auto enabled_interrupts() const -> std::uint8_t
+        {
+            return mock().enabled_interrupts();
+        }
+
+        auto interrupt_context() const -> std::uint8_t
+        {
+            return mock().interrupt_context();
+        }
+
+        void clear_interrupts( std::uint8_t mask )
+        {
+            mock().clear_interrupts( mask );
+        }
+
+        auto is_connected() const -> bool
+        {
+            return mock().is_connected();
+        }
+
+        auto remote_endpoint() const -> ::picolibrary::IP::TCP::Endpoint
+        {
+            return mock().remote_endpoint();
+        }
+
+        auto local_endpoint() const -> ::picolibrary::IP::TCP::Endpoint
+        {
+            return mock().local_endpoint();
+        }
+
+        auto outstanding() const -> Size
+        {
+            return mock().outstanding();
+        }
+
+        auto is_transmitting() const -> bool
+        {
+            return mock().is_transmitting();
+        }
+
+        auto transmit( std::uint8_t const * begin, std::uint8_t const * end )
+            -> Result<std::uint8_t const *>
+        {
+            return mock().transmit( begin, end );
+        }
+
+        auto transmit_keepalive() -> Result<void>
+        {
+            return mock().transmit_keepalive();
+        }
+
+        auto available() const -> Size
+        {
+            return mock().available();
+        }
+
+        auto receive( std::uint8_t * begin, std::uint8_t * end ) -> Result<std::uint8_t *>
+        {
+            return mock().receive( begin, end );
+        }
+
+        void shutdown()
+        {
+            mock().shutdown();
+        }
+
+        void close()
+        {
+            mock().close();
+        }
+    };
+
+    Mock_Server() = default;
+
+    Mock_Server( Mock_Server && ) = delete;
+
+    Mock_Server( Mock_Server const & ) = delete;
+
+    ~Mock_Server() noexcept = default;
+
+    auto operator=( Mock_Server && ) = delete;
+
+    auto operator=( Mock_Server const & ) = delete;
+
+    auto handle() noexcept -> Handle
+    {
+        return { *this };
+    }
+
+    MOCK_METHOD( State, state, (), ( const ) );
+
+    MOCK_METHOD( ::picolibrary::WIZnet::W5500::Socket_ID, socket_id, (), ( const ) );
+
+    MOCK_METHOD( std::uint8_t, socket_interrupt_mask, (), ( const ) );
+
+    MOCK_METHOD( ::picolibrary::WIZnet::W5500::No_Delayed_ACK_Usage, no_delayed_ack_usage_configuration, (), ( const ) );
+
+    MOCK_METHOD( std::uint16_t, maximum_segment_size, (), ( const ) );
+
+    MOCK_METHOD( std::uint8_t, time_to_live, (), ( const ) );
+
+    MOCK_METHOD( std::uint8_t, keepalive_period, (), ( const ) );
+
+    MOCK_METHOD( std::uint8_t, enabled_interrupts, (), ( const ) );
+
+    MOCK_METHOD( std::uint8_t, interrupt_context, (), ( const ) );
+    MOCK_METHOD( void, clear_interrupts, ( std::uint8_t ) );
+
+    MOCK_METHOD( bool, is_connected, (), ( const ) );
+
+    MOCK_METHOD( ::picolibrary::IP::TCP::Endpoint, remote_endpoint, (), ( const ) );
+    MOCK_METHOD( ::picolibrary::IP::TCP::Endpoint, local_endpoint, (), ( const ) );
+
+    MOCK_METHOD( Size, outstanding, (), ( const ) );
+
+    MOCK_METHOD( bool, is_transmitting, (), ( const ) );
+
+    MOCK_METHOD( (Result<std::uint8_t const *>), transmit, (std::vector<std::uint8_t>));
+
+    auto transmit( std::uint8_t const * begin, std::uint8_t const * end )
+        -> Result<std::uint8_t const *>
+    {
+        return transmit( std::vector<std::uint8_t>{ begin, end } );
+    }
+
+    MOCK_METHOD( (Result<void>), transmit_keepalive, () );
+
+    MOCK_METHOD( Size, available, (), ( const ) );
+
+    MOCK_METHOD( (Result<std::vector<std::uint8_t>>), receive, () );
+
+    auto receive( std::uint8_t * begin, std::uint8_t * end ) -> Result<std::uint8_t *>
+    {
+        static_cast<void>( end );
+
+        auto const result = receive();
+        if ( result.is_error() ) {
+            return result.error();
+        } // if
+
+        for ( auto const data : result.value() ) {
+            *begin = data;
+
+            ++begin;
+        } // for
+
+        return begin;
+    }
+
+    MOCK_METHOD( void, shutdown, () );
+
+    MOCK_METHOD( void, close, () );
+};
+
+/**
  * \brief Mock client socket.
  */
 class Mock_Acceptor {
   public:
+    using Server = Mock_Server::Handle;
+
     using Socket_IDs = Fixed_Capacity_Vector<::picolibrary::WIZnet::W5500::Socket_ID, 8>;
 
     enum class State : std::uint_fast8_t {
@@ -342,6 +567,8 @@ class Mock_Acceptor {
 
     class Handle : public Mock_Handle<Mock_Acceptor> {
       public:
+        using Server = Mock_Acceptor::Server;
+
         using Socket_IDs = Mock_Acceptor::Socket_IDs;
 
         using State = Mock_Acceptor::State;
@@ -473,6 +700,11 @@ class Mock_Acceptor {
             return mock().local_endpoint();
         }
 
+        auto accept() -> Result<Server>
+        {
+            return mock().accept();
+        }
+
         void deallocate_socket( std::uint_fast8_t, ::picolibrary::WIZnet::W5500::Socket_ID socket_id )
         {
             mock().deallocate_socket( {}, socket_id );
@@ -534,6 +766,8 @@ class Mock_Acceptor {
     MOCK_METHOD( bool, is_listening, (), ( const ) );
 
     MOCK_METHOD( ::picolibrary::IP::TCP::Endpoint, local_endpoint, (), ( const ) );
+
+    MOCK_METHOD( (Result<Server>), accept, () );
 
     MOCK_METHOD( void, deallocate_socket, ( std::uint_fast8_t, ::picolibrary::WIZnet::W5500::Socket_ID ) );
 

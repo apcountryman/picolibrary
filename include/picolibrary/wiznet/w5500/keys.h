@@ -35,6 +35,9 @@ namespace picolibrary::WIZnet::W5500::IP::TCP {
 template<typename Network_Stack>
 class Client;
 
+template<typename Network_Stack, typename Acceptor>
+class Server;
+
 template<typename Network_Stack>
 class Acceptor;
 
@@ -96,6 +99,9 @@ class Network_Stack_Driver_Access_Key {
     template<typename Network_Stack>
     friend class TCP::Client;
 
+    template<typename Network_Stack, typename Acceptor>
+    friend class TCP::Server;
+
     template<typename Network_Stack>
     friend class TCP::Acceptor;
 
@@ -126,6 +132,9 @@ class Network_Stack_Socket_Allocation_Key {
   private:
     template<typename Network_Stack>
     friend class TCP::Client;
+
+    template<typename Network_Stack, typename Acceptor>
+    friend class TCP::Server;
 
     template<typename Network_Stack>
     friend class TCP::Acceptor;
@@ -187,6 +196,9 @@ class Network_Stack_TCP_Port_Allocator_Access_Key {
     template<typename Network_Stack>
     friend class TCP::Client;
 
+    template<typename Network_Stack, typename Acceptor>
+    friend class TCP::Server;
+
     template<typename Network_Stack>
     friend class TCP::Acceptor;
 
@@ -244,6 +256,9 @@ class Acceptor_Socket_Deallocation_Key {
     auto operator=( Acceptor_Socket_Deallocation_Key const & ) = delete;
 
   private:
+    template<typename Network_Stack, typename Acceptor>
+    friend class Server;
+
     /**
      * \brief Constructor.
      */

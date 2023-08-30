@@ -62,6 +62,12 @@ class Network_Stack {
     using TCP_Client = TCP::Client<Network_Stack>;
 
     /**
+     * \brief The type of TCP server socket that is used to interact with the network
+     *        stack.
+     */
+    using TCP_Server = TCP::Server<Network_Stack, TCP::Acceptor<Network_Stack>>;
+
+    /**
      * \brief The type of TCP acceptor socket that is used to interact with the network
      *        stack.
      */

@@ -765,6 +765,560 @@ class Client {
 };
 
 /**
+ * \brief Serverr socket.
+ *
+ * \tparam Network_Stack The type of network stack the socket is associated with.
+ * \tparam Acceptor The type of acceptor socket the socket is associated with.
+ */
+template<typename Network_Stack, typename Acceptor>
+class Server {
+  public:
+    /**
+     * \brief The unsigned integer type used to report transmit/receive buffer information.
+     */
+    using Size = std::uint16_t;
+
+    /**
+     * \brief Socket state.
+     */
+    enum class State : std::uint_fast8_t {
+        UNINITIALIZED, ///< Uninitialized.
+        CONNECTED,     ///< Connected.
+    };
+
+    /**
+     * \brief Constructor.
+     */
+    constexpr Server() noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] network_stack The network stack the socket is associated with.
+     * \param[in] acceptor The acceptor socket the socket is associated with.
+     * \param[in] socket_id The socket's hardware socket ID.
+     */
+    constexpr Server( Socket_Construction_Key, Network_Stack & network_stack, Acceptor & acceptor, Socket_ID socket_id ) noexcept
+        :
+        m_state{ State::CONNECTED },
+        m_network_stack{ &network_stack },
+        m_acceptor{ &acceptor },
+        m_socket_id{ socket_id }
+    {
+    }
+
+#ifdef PICOLIBRARY_ENABLE_AUTOMATED_TESTING
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] network_stack The network stack the socket is associated with.
+     * \param[in] socket_id The socket's hardware socket ID.
+     * \param[in] is_transmitting The socket's initial data transmission in progress
+     *            status.
+     */
+    constexpr Server( Network_Stack & network_stack, Acceptor & acceptor, Socket_ID socket_id, bool is_transmitting = false ) noexcept
+        :
+        m_state{ State::CONNECTED },
+        m_network_stack{ &network_stack },
+        m_acceptor{ &acceptor },
+        m_socket_id{ socket_id },
+        m_is_transmitting{ is_transmitting }
+    {
+    }
+#endif // PICOLIBRARY_ENABLE_AUTOMATED_TESTING
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Server( Server && source ) noexcept :
+        m_state{ source.m_state },
+        m_network_stack{ source.m_network_stack },
+        m_acceptor{ source.m_acceptor },
+        m_socket_id{ source.m_socket_id },
+        m_is_transmitting{ source.m_is_transmitting }
+    {
+        source.m_state         = State::UNINITIALIZED;
+        source.m_network_stack = nullptr;
+        source.m_acceptor      = nullptr;
+    }
+
+    Server( Server const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Server() noexcept
+    {
+        close();
+    }
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Server && expression ) noexcept -> Server &
+    {
+        if ( &expression != this ) {
+            close();
+
+            m_state           = expression.m_state;
+            m_network_stack   = expression.m_network_stack;
+            m_acceptor        = expression.m_acceptor;
+            m_socket_id       = expression.m_socket_id;
+            m_is_transmitting = expression.m_is_transmitting;
+
+            expression.m_state         = State::UNINITIALIZED;
+            expression.m_network_stack = nullptr;
+            expression.m_acceptor      = nullptr;
+        } // if
+
+        return *this;
+    }
+
+    auto operator=( Server const & ) = delete;
+
+    /**
+     * \brief Get the socket's state.
+     *
+     * \return The socket's state.
+     */
+    constexpr auto state() const noexcept -> State
+    {
+        return m_state;
+    }
+
+    /**
+     * \brief Get the socket's hardware socket ID.
+     *
+     * \return The socket's hardware socket ID.
+     */
+    constexpr auto socket_id() const noexcept -> Socket_ID
+    {
+        return m_socket_id;
+    }
+
+    /**
+     * \brief Get the socket's no delayed ACK usage configuration.
+     *
+     * \return The socket's no delayed ACK usage configuration.
+     */
+    auto no_delayed_ack_usage_configuration() const noexcept -> No_Delayed_ACK_Usage
+    {
+        return static_cast<No_Delayed_ACK_Usage>(
+            m_network_stack->driver( {} ).read_sn_mr( m_socket_id ) & SN_MR::Mask::ND );
+    }
+
+    /**
+     * \brief Get the socket's maximum segment size.
+     *
+     * \return The socket's maximum segment size.
+     */
+    auto maximum_segment_size() const noexcept -> std::uint16_t
+    {
+        return m_network_stack->driver( {} ).read_sn_mssr( m_socket_id );
+    }
+
+    /**
+     * \brief Get the socket's IPv4 time to live field value.
+     *
+     * \return The socket's IPv4 time to live field value.
+     */
+    auto time_to_live() const noexcept -> std::uint8_t
+    {
+        return m_network_stack->driver( {} ).read_sn_ttl( m_socket_id );
+    }
+
+    /**
+     * \brief Get the socket's keepalive packet transmission period (SN_KPALVTR register
+     *        value).
+     *
+     * \return The socket's keepalive packet transmission period.
+     */
+    auto keepalive_period() const noexcept -> std::uint8_t
+    {
+        return m_network_stack->driver( {} ).read_sn_kpalvtr( m_socket_id );
+    }
+
+    /**
+     * \brief Get the socket's socket interrupt mask (mask used when checking the network
+     *        stack's socket interrupt context).
+     *
+     * \return The socket's socket interrupt mask.
+     */
+    constexpr auto socket_interrupt_mask() const noexcept -> std::uint8_t
+    {
+        return 1 << ( to_underlying( m_socket_id ) >> Control_Byte::Bit::SOCKET );
+    }
+
+    /**
+     * \brief Get a mask identifying the interrupts that are enabled.
+     *
+     * \return A mask identifying the interrupts that are enabled.
+     */
+    auto enabled_interrupts() const noexcept -> std::uint8_t
+    {
+        return m_network_stack->driver( {} ).read_sn_imr( m_socket_id );
+    }
+
+    /**
+     * \brief Get the interrupt context (SN_IR register value).
+     *
+     * \return The socket's interrupt context.
+     */
+    auto interrupt_context() const noexcept -> std::uint8_t
+    {
+        return m_network_stack->driver( {} ).read_sn_ir( m_socket_id );
+    }
+
+    /**
+     * \brief Clear interrupts.
+     *
+     * \param[in] mask The mask identifying the interrupts to clear.
+     */
+    void clear_interrupts( std::uint8_t mask ) noexcept
+    {
+        m_network_stack->driver( {} ).write_sn_ir( m_socket_id, mask );
+
+        if ( mask & Socket_Interrupt::DATA_TRANSMITTED ) {
+            m_is_transmitting = false;
+        } // if
+    }
+
+    /**
+     * \brief Check if the socket is connected to a remote endpoint.
+     *
+     * \return true if the socket is connected to a remote endpoint.
+     * \return false if the socket is not connected to a remote endpoint.
+     */
+    auto is_connected() const noexcept -> bool
+    {
+        return m_network_stack->driver( {} ).read_sn_sr( m_socket_id ) == SN_SR::STATUS_SOCK_ESTABLISHED;
+    }
+
+    /**
+     * \brief Get the connection's remote endpoint.
+     *
+     * \return The connection's remote endpoint.
+     */
+    auto remote_endpoint() const noexcept -> ::picolibrary::IP::TCP::Endpoint
+    {
+        auto const & driver = m_network_stack->driver( {} );
+
+        return { { driver.read_sn_dipr( m_socket_id ) }, driver.read_sn_dport( m_socket_id ) };
+    }
+
+    /**
+     * \brief Get the connection's local endpoint.
+     *
+     * \return The connection's local endpoint.
+     */
+    auto local_endpoint() const noexcept -> ::picolibrary::IP::TCP::Endpoint
+    {
+        auto const & driver = m_network_stack->driver( {} );
+
+        return { { driver.read_sipr() }, driver.read_sn_port( m_socket_id ) };
+    }
+
+    /**
+     * \brief Get the amount of data that has yet to be transmitted to the remote
+     *        endpoint.
+     *
+     * \pre the W5500 is responsive
+     *
+     * \return The amount of data that has yet to be transmitted to the remote endpoint.
+     */
+    auto outstanding() const noexcept -> Size
+    {
+        auto const buffer_size = static_cast<Size>(
+            to_underlying( m_network_stack->socket_buffer_size() ) * 1024 );
+        auto const sn_tx_fsr = m_network_stack->driver( {} ).read_sn_tx_fsr( m_socket_id );
+
+        PICOLIBRARY_EXPECT( sn_tx_fsr <= buffer_size, m_network_stack->nonresponsive_device_error() );
+
+        return buffer_size - sn_tx_fsr;
+    }
+
+    /**
+     * \brief Check if data transmission is in progress.
+     *
+     * \return true if data transmission is in progress.
+     * \return false if data transmission is not in progress.
+     */
+    constexpr auto is_transmitting() const noexcept -> bool
+    {
+        return m_is_transmitting;
+    }
+
+    /**
+     * \brief Transmit data to the remote endpoint.
+     *
+     * \pre the socket has connected to a remote endpoint
+     * \pre the W5500 is responsive
+     *
+     * \param[in] begin The beginning of the block of data to write to the socket's
+     *            transmit buffer.
+     * \param[in] end The end of the block of data to write to the socket's transmit
+     *            buffer.
+     *
+     * \return The end of the data that was written to the socket's transmit buffer if
+     *         writing data to the socket's transmit buffer succeeded.
+     * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not connected to
+     *         a remote endpoint.
+     * \return picolibrary::Generic_Error::WOULD_BLOCK if no data could be written to the
+     *         socket's transmit buffer without blocking.
+     */
+    // NOLINTNEXTLINE(readability-function-size)
+    auto transmit( std::uint8_t const * begin, std::uint8_t const * end ) noexcept
+        -> Result<std::uint8_t const *>
+    {
+        // #lizard forgives the length
+
+        PICOLIBRARY_EXPECT( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
+
+        auto & driver = m_network_stack->driver( {} );
+
+        if ( driver.read_sn_sr( m_socket_id ) != SN_SR::STATUS_SOCK_ESTABLISHED ) {
+            return Generic_Error::NOT_CONNECTED;
+        } // if
+
+        if ( m_is_transmitting ) {
+            if ( not( driver.read_sn_ir( m_socket_id ) & Socket_Interrupt::DATA_TRANSMITTED ) ) {
+                return Generic_Error::WOULD_BLOCK;
+            } // if
+
+            driver.write_sn_ir( m_socket_id, Socket_Interrupt::DATA_TRANSMITTED );
+
+            m_is_transmitting = false;
+        } // if
+
+        if ( begin == end ) {
+            return end;
+        } // if
+
+        auto const buffer_size = static_cast<Size>(
+            to_underlying( m_network_stack->socket_buffer_size() ) * 1024 );
+        auto const sn_tx_fsr = driver.read_sn_tx_fsr( m_socket_id );
+
+        PICOLIBRARY_EXPECT( sn_tx_fsr <= buffer_size, m_network_stack->nonresponsive_device_error() );
+
+        if ( sn_tx_fsr == 0 ) {
+            return Generic_Error::WOULD_BLOCK;
+        } // if
+
+        if ( static_cast<std::uintptr_t>( end - begin ) > sn_tx_fsr ) {
+            end = begin + sn_tx_fsr;
+        } // if
+
+        auto const sn_tx_wr = driver.read_sn_tx_wr( m_socket_id );
+        driver.write_tx_buffer( m_socket_id, sn_tx_wr, begin, end );
+        driver.write_sn_tx_wr( m_socket_id, sn_tx_wr + ( end - begin ) );
+
+        driver.write_sn_cr( m_socket_id, SN_CR::COMMAND_SEND );
+        while ( driver.read_sn_cr( m_socket_id ) ) {} // while
+
+        m_is_transmitting = true;
+
+        return end;
+    }
+
+    /**
+     * \brief Manually transmit a keepalive packet.
+     *
+     * \pre the socket has connected to a remote endpoint
+     *
+     * \return Nothing if keepalive packet transmission succeeded.
+     * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not connected to
+     *         a remote endpoint.
+     */
+    auto transmit_keepalive() noexcept -> Result<void>
+    {
+        PICOLIBRARY_EXPECT( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
+
+        auto & driver = m_network_stack->driver( {} );
+
+        if ( driver.read_sn_sr( m_socket_id ) != SN_SR::STATUS_SOCK_ESTABLISHED ) {
+            return Generic_Error::NOT_CONNECTED;
+        } // if
+
+        driver.write_sn_cr( m_socket_id, SN_CR::COMMAND_SEND_KEEP );
+        while ( driver.read_sn_cr( m_socket_id ) ) {} // while
+
+        return {};
+    }
+
+    /**
+     * \brief Get the amount of data that is immediately available to be received from the
+     *        remote endpoint.
+     *
+     * \pre the W5500 is responsive
+     *
+     * \return The amount of data that is immediately available to be received from the
+     *         remote endpoint.
+     */
+    auto available() const noexcept -> Size
+    {
+        auto const buffer_size = static_cast<Size>(
+            to_underlying( m_network_stack->socket_buffer_size() ) * 1024 );
+        auto const sn_rx_rsr = m_network_stack->driver( {} ).read_sn_rx_rsr( m_socket_id );
+
+        PICOLIBRARY_EXPECT( sn_rx_rsr <= buffer_size, m_network_stack->nonresponsive_device_error() );
+
+        return sn_rx_rsr;
+    }
+
+    /**
+     * \brief Receive data from the remote endpoint.
+     *
+     * \pre the socket has connected to a remote endpoint
+     * \pre the W5500 is responsive
+     *
+     * \param[out] begin The beginning of the block of data read from the socket's receive
+     *             buffer.
+     * \param[out] end The end of the block of data read from the socket's receive buffer.
+     *
+     * \return The end of the data that was read from the socket's receive buffer if
+     *         reading data from the socket's receive buffer succeeded.
+     * \return picolibrary::Generic_Error::NOT_CONNECTED if the socket is not connected to
+     *         a remote endpoint.
+     * \return picolibrary::Generic_Error::WOULD_BLOCK if no data could be read from the
+     *         socket's receive buffer without blocking.
+     */
+    // NOLINTNEXTLINE(readability-function-size)
+    auto receive( std::uint8_t * begin, std::uint8_t * end ) noexcept -> Result<std::uint8_t *>
+    {
+        // #lizard forgives the length
+
+        PICOLIBRARY_EXPECT( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
+
+        auto & driver = m_network_stack->driver( {} );
+
+        auto close_wait = false;
+
+        switch ( driver.read_sn_sr( m_socket_id ) ) {
+            case SN_SR::STATUS_SOCK_CLOSED: return Generic_Error::NOT_CONNECTED;
+            case SN_SR::STATUS_SOCK_CLOSE_WAIT: close_wait = true; [[fallthrough]];
+            case SN_SR::STATUS_SOCK_ESTABLISHED: break;
+            default: return Generic_Error::WOULD_BLOCK;
+        } // switch
+
+        auto const buffer_size = static_cast<Size>(
+            to_underlying( m_network_stack->socket_buffer_size() ) * 1024 );
+        auto const sn_rx_rsr = driver.read_sn_rx_rsr( m_socket_id );
+
+        PICOLIBRARY_EXPECT( sn_rx_rsr <= buffer_size, m_network_stack->nonresponsive_device_error() );
+
+        if ( sn_rx_rsr == 0 ) {
+            return close_wait ? Generic_Error::NOT_CONNECTED : Generic_Error::WOULD_BLOCK;
+        } // if
+
+        if ( begin == end ) {
+            return end;
+        } // if
+
+        if ( static_cast<std::uintptr_t>( end - begin ) > sn_rx_rsr ) {
+            end = begin + sn_rx_rsr;
+        } // if
+
+        auto const sn_rx_rd = driver.read_sn_rx_rd( m_socket_id );
+        driver.read_rx_buffer( m_socket_id, sn_rx_rd, begin, end );
+        driver.write_sn_rx_rd( m_socket_id, sn_rx_rd + ( end - begin ) );
+
+        driver.write_sn_cr( m_socket_id, SN_CR::COMMAND_RECV );
+        while ( driver.read_sn_cr( m_socket_id ) ) {} // while
+
+        return end;
+    }
+
+    /**
+     * \brief Disable further data transmission and reception.
+     *
+     * \pre the socket has connected to a remote endpoint
+     */
+    void shutdown() noexcept
+    {
+        PICOLIBRARY_EXPECT( m_state == State::CONNECTED, Generic_Error::LOGIC_ERROR );
+
+        auto & driver = m_network_stack->driver( {} );
+
+        if ( driver.read_sn_sr( m_socket_id ) == SN_SR::STATUS_SOCK_CLOSED ) {
+            return;
+        } // if
+
+        driver.write_sn_cr( m_socket_id, SN_CR::COMMAND_DISCON );
+        while ( driver.read_sn_cr( m_socket_id ) ) {} // while
+    }
+
+    /**
+     * \brief Close the socket.
+     */
+    constexpr void close() noexcept
+    {
+        if ( m_state == State::UNINITIALIZED ) {
+            return;
+        } // if
+
+        if ( not m_network_stack->tcp_server_is_detached( m_socket_id ) ) {
+            m_acceptor->deallocate_socket( {}, m_socket_id );
+        } else {
+            auto & driver = m_network_stack->driver( {} );
+
+            auto const sn_port = driver.read_sn_port( m_socket_id );
+
+            auto       deallocate_port = true;
+            auto const sockets         = m_network_stack->sockets();
+            for ( auto socket = std::uint_fast8_t{}; socket < sockets; ++socket ) {
+                auto const socket_id = static_cast<Socket_ID>( socket << Control_Byte::Bit::SOCKET );
+
+                if ( socket_id != m_socket_id
+                     and ( driver.read_sn_mr( socket_id ) & SN_MR::Mask::P ) == SN_MR::P_TCP
+                     and driver.read_sn_port( socket_id ) == sn_port ) {
+                    deallocate_port = false;
+                } // if
+            }     // for
+
+            if ( deallocate_port ) {
+                m_network_stack->tcp_port_allocator( {} ).deallocate( sn_port );
+            } // if
+
+            m_network_stack->deallocate_socket( {}, m_socket_id );
+        } // else
+
+        m_state = State::UNINITIALIZED;
+    }
+
+  private:
+    /**
+     * \brief The socket's state.
+     */
+    State m_state{};
+
+    /**
+     * \brief The network stack the socket is associated with.
+     */
+    Network_Stack * m_network_stack{};
+
+    /**
+     * \brief The acceptor socket the socket is associated with.
+     */
+    Acceptor * m_acceptor{};
+
+    /**
+     * \brief The socket's hardware socket ID.
+     */
+    Socket_ID m_socket_id{};
+
+    /**
+     * \brief The socket's data transmission in progress flag.
+     */
+    bool m_is_transmitting{};
+};
+
+/**
  * \brief Acceptor socket.
  *
  * \tparam Network_Stack The type of network stack the socket is associated with.
@@ -772,6 +1326,11 @@ class Client {
 template<typename Network_Stack>
 class Acceptor {
   public:
+    /**
+     * \brief The type of server socket produced by the acceptor socket.
+     */
+    using Server = ::picolibrary::WIZnet::W5500::IP::TCP::Server<Network_Stack, Acceptor>;
+
     /**
      * \brief Hardware socket IDs.
      */
@@ -837,7 +1396,8 @@ class Acceptor {
     constexpr Acceptor( Acceptor && source ) noexcept :
         m_state{ source.m_state },
         m_network_stack{ source.m_network_stack },
-        m_sockets{ std::move( source.m_sockets ) }
+        m_sockets{ std::move( source.m_sockets ) },
+        m_accept_i{ source.m_accept_i }
     {
         source.m_state         = State::UNINITIALIZED;
         source.m_network_stack = nullptr;
@@ -868,6 +1428,7 @@ class Acceptor {
             m_state         = expression.m_state;
             m_network_stack = expression.m_network_stack;
             m_sockets       = std::move( expression.m_sockets );
+            m_accept_i      = expression.m_accept_i;
 
             expression.m_state         = State::UNINITIALIZED;
             expression.m_network_stack = nullptr;
@@ -1262,6 +1823,44 @@ class Acceptor {
     }
 
     /**
+     * \brief Accept an incoming connection request.
+     *
+     * \pre the socket is listening for incoming connection requests
+     *
+     * \return A server socket for handling the connection if accepting an incoming
+     *         connection request succeeded.
+     * \return picolibrary::Generic_Error::WOULD_BLOCK if an incoming connection request
+     *         could not be accepted without blocking.
+     */
+    auto accept() noexcept -> Result<Server>
+    {
+        PICOLIBRARY_EXPECT( m_state == State::LISTENING, Generic_Error::LOGIC_ERROR );
+
+        auto & driver = m_network_stack->driver( {} );
+
+        for ( auto n = std::uint_fast8_t{}; n < m_sockets.size(); ++n ) {
+            auto & socket = m_sockets[ m_accept_i ];
+
+            ++m_accept_i;
+            if ( m_accept_i >= m_sockets.size() ) {
+                m_accept_i = 0;
+            } // if
+
+            if ( socket.status == Socket::Status::AVAILABLE_FOR_ALLOCATION ) {
+                switch ( driver.read_sn_sr( socket.id ) ) {
+                    case SN_SR::STATUS_SOCK_CLOSED: [[fallthrough]];
+                    case SN_SR::STATUS_SOCK_ESTABLISHED: [[fallthrough]];
+                    case SN_SR::STATUS_SOCK_CLOSE_WAIT:
+                        socket.status = Socket::Status::ALLOCATED;
+                        return Server{ {}, *m_network_stack, *this, socket.id };
+                } // switch
+            }     // if
+        }         // for
+
+        return Generic_Error::WOULD_BLOCK;
+    }
+
+    /**
      * \brief Deallocate a socket.
      *
      * \param[in] socket_id The hardware socket ID for the socket to deallocate.
@@ -1377,6 +1976,11 @@ class Acceptor {
      * \brief The socket's socket information.
      */
     Fixed_Capacity_Vector<Socket, SOCKETS> m_sockets{};
+
+    /**
+     * \brief Connection request acceptance socket information index.
+     */
+    std::uint_fast8_t m_accept_i{};
 };
 
 } // namespace picolibrary::WIZnet::W5500::IP::TCP
