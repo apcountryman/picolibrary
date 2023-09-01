@@ -39,6 +39,7 @@
 #include "picolibrary/testing/automated/wiznet/w5500/ip.h"
 #include "picolibrary/testing/automated/wiznet/w5500/ip/network_stack.h"
 #include "picolibrary/testing/automated/wiznet/w5500/ip/tcp.h"
+#include "picolibrary/wiznet/w5500.h"
 #include "picolibrary/wiznet/w5500/ip/tcp.h"
 
 namespace {

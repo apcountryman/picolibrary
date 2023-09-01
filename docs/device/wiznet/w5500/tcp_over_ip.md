@@ -141,10 +141,6 @@ The `::picolibrary::WIZnet::W5500::IP::TCP::Server` template class implements a 
 IP server socket interface for interacting with a WIZnet W5500 socket.
 See the [`::picolibrary::IP::TCP::Server_Concept`
 documentation](../../../network/tcp_over_ip.md#server-socket) for more information.
-
-`::picolibrary::WIZnet::W5500::IP::TCP::Server` automated tests are defined in the
-[`test/automated/picolibrary/wiznet/w5500/ip/tcp/server/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/wiznet/w5500/ip/tcp/server/main.cc)
-source file.
 - To get a socket's state, use the
   `::picolibrary::WIZnet::W5500::IP::TCP::Server::state()` member function.
 - To get a socket's hardware socket ID, use the
@@ -172,6 +168,10 @@ source file.
   `::picolibrary::WIZnet::W5500::IP::TCP::Server::is_transmitting()` member function.
 - To manually transmit a keepalive packet, use the
   `::picolibrary::WIZnet::W5500::IP::TCP::Server::transmit_keepalive()` member function.
+
+`::picolibrary::WIZnet::W5500::IP::TCP::Server` automated tests are defined in the
+[`test/automated/picolibrary/wiznet/w5500/ip/tcp/server/main.cc`](https://github.com/apcountryman/picolibrary/blob/main/test/automated/picolibrary/wiznet/w5500/ip/tcp/server/main.cc)
+source file.
 
 The `::picolibrary::Testing::Automated::WIZnet::W5500::IP::TCP::Mock_Server` mock WIZnet
 W5500 TCP over IP server socket class is available if the

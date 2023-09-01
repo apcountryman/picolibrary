@@ -765,7 +765,7 @@ class Client {
 };
 
 /**
- * \brief Serverr socket.
+ * \brief Server socket.
  *
  * \tparam Network_Stack The type of network stack the socket is associated with.
  * \tparam Acceptor The type of acceptor socket the socket is associated with.
@@ -812,6 +812,7 @@ class Server {
      * \brief Constructor.
      *
      * \param[in] network_stack The network stack the socket is associated with.
+     * \param[in] acceptor The acceptor socket the socket is associated with.
      * \param[in] socket_id The socket's hardware socket ID.
      * \param[in] is_transmitting The socket's initial data transmission in progress
      *            status.
@@ -903,6 +904,17 @@ class Server {
     }
 
     /**
+     * \brief Get the socket's socket interrupt mask (mask used when checking the network
+     *        stack's socket interrupt context).
+     *
+     * \return The socket's socket interrupt mask.
+     */
+    constexpr auto socket_interrupt_mask() const noexcept -> std::uint8_t
+    {
+        return 1 << ( to_underlying( m_socket_id ) >> Control_Byte::Bit::SOCKET );
+    }
+
+    /**
      * \brief Get the socket's no delayed ACK usage configuration.
      *
      * \return The socket's no delayed ACK usage configuration.
@@ -942,17 +954,6 @@ class Server {
     auto keepalive_period() const noexcept -> std::uint8_t
     {
         return m_network_stack->driver( {} ).read_sn_kpalvtr( m_socket_id );
-    }
-
-    /**
-     * \brief Get the socket's socket interrupt mask (mask used when checking the network
-     *        stack's socket interrupt context).
-     *
-     * \return The socket's socket interrupt mask.
-     */
-    constexpr auto socket_interrupt_mask() const noexcept -> std::uint8_t
-    {
-        return 1 << ( to_underlying( m_socket_id ) >> Control_Byte::Bit::SOCKET );
     }
 
     /**
