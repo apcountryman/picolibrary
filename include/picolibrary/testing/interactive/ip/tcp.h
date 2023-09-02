@@ -319,6 +319,8 @@ template<typename Network_Stack, typename Socket_Options_Configurator>
     ::picolibrary::IP::TCP::Endpoint const & local_endpoint,
     std::uint_fast8_t                        backlog ) noexcept
 {
+    // #lizard forgives the length
+
     auto acceptor = network_stack.make_tcp_acceptor();
 
     configure_socket_options( acceptor );
