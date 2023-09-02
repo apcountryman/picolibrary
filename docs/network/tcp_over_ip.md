@@ -112,3 +112,10 @@ configuration option is `ON`.
 The mock is defined in the
 [`include/picolibrary/testing/automated/ip/tcp.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/ip/tcp.h)/[`source/picolibrary/testing/automated/ip/tcp.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/ip/tcp.cc)
 header/source file pair.
+
+The `::picolibrary::Testing::Interactive::IP::TCP::echo_server()` interactive test helper
+is available if the `PICOLIBRARY_ENABLE_INTERACTIVE_TESTING` project configuration option
+is `ON`.
+The interactive test helper is defined in the
+[`include/picolibrary/testing/interactive/ip/tcp.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/interactive/ip/tcp.h)/[`source/picolibrary/testing/interactive/ip/tcp.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/interactive/ip/tcp.cc)
+header/source file pair.

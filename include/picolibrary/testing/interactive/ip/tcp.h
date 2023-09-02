@@ -296,6 +296,55 @@ template<typename Network_Stack, typename Socket_Options_Configurator>
     }     // for
 }
 
+/**
+ * \brief Server socket echo interactive test helper.
+ *
+ * \tparam Network_Stack The type of network stack to use to construct an acceptor socket.
+ * \tparam Socket_Options_Configurator A unary functor that takes the acceptor socket
+ *         whose socket options are to be configured by reference, and configures the
+ *         acceptor socket's socket options.
+ *
+ * \param[in] stream The stream to write test output to.
+ * \param[in] network_stack The network stack to use to construct an acceptor socket.
+ * \param[in] configure_socket_options The functor to use to configure acceptor socket
+ *            socket options.
+ * \param[in] local_endpoint The local endpoint to bind the acceptor socket to.
+ * \param[in] backlog The maximum number of simultaneously connected clients.
+ */
+template<typename Network_Stack, typename Socket_Options_Configurator>
+[[noreturn]] void echo_server(
+    Reliable_Output_Stream &                 stream,
+    Network_Stack &                          network_stack,
+    Socket_Options_Configurator              configure_socket_options,
+    ::picolibrary::IP::TCP::Endpoint const & local_endpoint,
+    std::uint_fast8_t                        backlog ) noexcept
+{
+    // #lizard forgives the length
+
+    auto acceptor = network_stack.make_tcp_acceptor();
+
+    configure_socket_options( acceptor );
+
+    acceptor.bind( local_endpoint );
+
+    acceptor.listen( backlog );
+
+    stream.print(
+        PICOLIBRARY_ROM_STRING( "listening for incoming connection requests on " ),
+        acceptor.local_endpoint(),
+        '\n' );
+    stream.flush();
+
+    for ( ;; ) {
+        auto server = accept( acceptor );
+        stream.print(
+            PICOLIBRARY_ROM_STRING( "accepted connection request from " ), server.remote_endpoint(), '\n' );
+        stream.flush();
+
+        echo( stream, std::move( server ) );
+    } // for
+}
+
 } // namespace picolibrary::Testing::Interactive::IP::TCP
 
 #endif // PICOLIBRARY_TESTING_INTERACTIVE_IP_TCP_H
