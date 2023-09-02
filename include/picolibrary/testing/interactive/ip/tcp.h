@@ -216,6 +216,34 @@ auto connect( Client & client, ::picolibrary::IP::TCP::Endpoint const & endpoint
 }
 
 /**
+ * \brief Acceptor socket incoming connection request acceptance interactive testing
+ *        helper.
+ *
+ * \tparam Acceptor The type of acceptor socket to use to accept the incoming connection
+ *         request.
+ *
+ * \param[in] acceptor The acceptor socket to use to accept the incoming connection
+ *            request.
+ *
+ * \return A server socket for handling the connection.
+ */
+template<typename Acceptor>
+auto accept( Acceptor & acceptor ) noexcept -> typename Acceptor::Server
+{
+    for ( ;; ) {
+        auto result = acceptor.accept();
+        if ( result.is_error() ) {
+            PICOLIBRARY_EXPECT(
+                result.error() == Generic_Error::WOULD_BLOCK
+                    or result.error() == Generic_Error::OPERATION_TIMEOUT,
+                Generic_Error::LOGIC_ERROR );
+        } else {
+            return std::move( result ).value();
+        } // else
+    }     // for
+}
+
+/**
  * \brief Client socket echo interactive test helper.
  *
  * \tparam Network_Stack The type of network stack to use to construct client sockets.
