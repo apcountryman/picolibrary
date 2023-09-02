@@ -219,7 +219,7 @@ auto connect( Client & client, ::picolibrary::IP::TCP::Endpoint const & endpoint
  * \brief Acceptor socket incoming connection request acceptance interactive testing
  *        helper.
  *
- * \tparam Acceptor: The type of acceptor socket to use to accept the incoming connection
+ * \tparam Acceptor The type of acceptor socket to use to accept the incoming connection
  *         request.
  *
  * \param[in] acceptor The acceptor socket to use to accept the incoming connection
