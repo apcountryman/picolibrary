@@ -798,7 +798,7 @@ class Server {
      * \param[in] acceptor The acceptor socket the socket is associated with.
      * \param[in] socket_id The socket's hardware socket ID.
      */
-    constexpr Server( Socket_Construction_Key, Network_Stack & network_stack, Acceptor & acceptor, Socket_ID socket_id ) noexcept
+    constexpr Server( Server_Construction_Key, Network_Stack & network_stack, Acceptor & acceptor, Socket_ID socket_id ) noexcept
         :
         m_state{ State::CONNECTED },
         m_network_stack{ &network_stack },
