@@ -225,10 +225,10 @@ auto connect( Client & client, ::picolibrary::IP::TCP::Endpoint const & endpoint
  * \param[in] acceptor The acceptor socket to use to accept the incoming connection
  *            request.
  *
- * \return A server socket for handling the connection.
+ * \return A server connection handler socket for handling the connection.
  */
 template<typename Acceptor>
-auto accept( Acceptor & acceptor ) noexcept -> typename Acceptor::Server
+auto accept( Acceptor & acceptor ) noexcept -> typename Acceptor::Connection_Handler
 {
     for ( ;; ) {
         auto result = acceptor.accept();
@@ -336,12 +336,14 @@ template<typename Network_Stack, typename Socket_Options_Configurator>
     stream.flush();
 
     for ( ;; ) {
-        auto server = accept( acceptor );
+        auto connection_handler = accept( acceptor );
         stream.print(
-            PICOLIBRARY_ROM_STRING( "accepted connection request from " ), server.remote_endpoint(), '\n' );
+            PICOLIBRARY_ROM_STRING( "accepted connection request from " ),
+            connection_handler.remote_endpoint(),
+            '\n' );
         stream.flush();
 
-        echo( stream, std::move( server ) );
+        echo( stream, std::move( connection_handler ) );
     } // for
 }
 

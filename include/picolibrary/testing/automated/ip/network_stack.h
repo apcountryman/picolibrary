@@ -34,8 +34,6 @@ class Mock_Network_Stack {
   public:
     using TCP_Client = TCP::Mock_Client::Handle;
 
-    using TCP_Server = TCP::Mock_Server::Handle;
-
     using TCP_Acceptor = TCP::Mock_Acceptor::Handle;
 
     Mock_Network_Stack() = default;

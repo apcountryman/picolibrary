@@ -45,8 +45,6 @@ class Mock_Network_Stack {
   public:
     using TCP_Client = TCP::Mock_Client::Handle;
 
-    using TCP_Server = TCP::Mock_Server::Handle;
-
     using TCP_Acceptor = TCP::Mock_Acceptor::Handle;
 
     Mock_Network_Stack() = default;
@@ -140,8 +138,8 @@ class Mock_Network_Stack {
         make_tcp_acceptor,
         ( (Fixed_Capacity_Vector<::picolibrary::WIZnet::W5500::Socket_ID, 8> const &)) );
 
-    MOCK_METHOD( void, detach_tcp_server, ( std::uint_fast8_t, ::picolibrary::WIZnet::W5500::Socket_ID ) );
-    MOCK_METHOD( bool, tcp_server_is_detached, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
+    MOCK_METHOD( void, detach_tcp_server_connection_handler, ( std::uint_fast8_t, ::picolibrary::WIZnet::W5500::Socket_ID ) );
+    MOCK_METHOD( bool, tcp_server_connection_handler_is_detached, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
 
     MOCK_METHOD( Mock_Port_Allocator &, tcp_port_allocator, ( std::uint_fast8_t ) );
 

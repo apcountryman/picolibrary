@@ -765,13 +765,13 @@ class Client {
 };
 
 /**
- * \brief Server socket.
+ * \brief Server connection handler socket.
  *
  * \tparam Network_Stack The type of network stack the socket is associated with.
  * \tparam Acceptor The type of acceptor socket the socket is associated with.
  */
 template<typename Network_Stack, typename Acceptor>
-class Server {
+class Server_Connection_Handler {
   public:
     /**
      * \brief The unsigned integer type used to report transmit/receive buffer information.
@@ -789,7 +789,7 @@ class Server {
     /**
      * \brief Constructor.
      */
-    constexpr Server() noexcept = default;
+    constexpr Server_Connection_Handler() noexcept = default;
 
     /**
      * \brief Constructor.
@@ -798,8 +798,11 @@ class Server {
      * \param[in] acceptor The acceptor socket the socket is associated with.
      * \param[in] socket_id The socket's hardware socket ID.
      */
-    constexpr Server( Server_Construction_Key, Network_Stack & network_stack, Acceptor & acceptor, Socket_ID socket_id ) noexcept
-        :
+    constexpr Server_Connection_Handler(
+        Server_Connection_Handler_Construction_Key,
+        Network_Stack & network_stack,
+        Acceptor &      acceptor,
+        Socket_ID       socket_id ) noexcept :
         m_state{ State::CONNECTED },
         m_network_stack{ &network_stack },
         m_acceptor{ &acceptor },
@@ -817,8 +820,11 @@ class Server {
      * \param[in] is_transmitting The socket's initial data transmission in progress
      *            status.
      */
-    constexpr Server( Network_Stack & network_stack, Acceptor & acceptor, Socket_ID socket_id, bool is_transmitting = false ) noexcept
-        :
+    constexpr Server_Connection_Handler(
+        Network_Stack & network_stack,
+        Acceptor &      acceptor,
+        Socket_ID       socket_id,
+        bool            is_transmitting = false ) noexcept :
         m_state{ State::CONNECTED },
         m_network_stack{ &network_stack },
         m_acceptor{ &acceptor },
@@ -833,7 +839,7 @@ class Server {
      *
      * \param[in] source The source of the move.
      */
-    constexpr Server( Server && source ) noexcept :
+    constexpr Server_Connection_Handler( Server_Connection_Handler && source ) noexcept :
         m_state{ source.m_state },
         m_network_stack{ source.m_network_stack },
         m_acceptor{ source.m_acceptor },
@@ -845,12 +851,12 @@ class Server {
         source.m_acceptor      = nullptr;
     }
 
-    Server( Server const & ) = delete;
+    Server_Connection_Handler( Server_Connection_Handler const & ) = delete;
 
     /**
      * \brief Destructor.
      */
-    ~Server() noexcept
+    ~Server_Connection_Handler() noexcept
     {
         close();
     }
@@ -862,7 +868,8 @@ class Server {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Server && expression ) noexcept -> Server &
+    constexpr auto operator=( Server_Connection_Handler && expression ) noexcept
+        -> Server_Connection_Handler &
     {
         if ( &expression != this ) {
             close();
@@ -881,7 +888,7 @@ class Server {
         return *this;
     }
 
-    auto operator=( Server const & ) = delete;
+    auto operator=( Server_Connection_Handler const & ) = delete;
 
     /**
      * \brief Get the socket's state.
@@ -1266,7 +1273,7 @@ class Server {
             return;
         } // if
 
-        if ( not m_network_stack->tcp_server_is_detached( m_socket_id ) ) {
+        if ( not m_network_stack->tcp_server_connection_handler_is_detached( m_socket_id ) ) {
             m_acceptor->deallocate_socket( {}, m_socket_id );
         } else {
             auto & driver = m_network_stack->driver( {} );
@@ -1331,9 +1338,10 @@ template<typename Network_Stack>
 class Acceptor {
   public:
     /**
-     * \brief The type of server socket produced by the acceptor socket.
+     * \brief The type of server connection handler socket produced by the acceptor
+     *        socket.
      */
-    using Server = ::picolibrary::WIZnet::W5500::IP::TCP::Server<Network_Stack, Acceptor>;
+    using Connection_Handler = Server_Connection_Handler<Network_Stack, Acceptor>;
 
     /**
      * \brief Hardware socket IDs.
@@ -1831,13 +1839,13 @@ class Acceptor {
      *
      * \pre the socket is listening for incoming connection requests
      *
-     * \return A server socket for handling the connection if accepting an incoming
-     *         connection request succeeded.
+     * \return A server connection handler socket for handling the connection if accepting
+     *         an incoming connection request succeeded.
      * \return picolibrary::Generic_Error::WOULD_BLOCK if an incoming connection request
      *         could not be accepted without blocking.
      */
     // NOLINTNEXTLINE(readability-function-size)
-    auto accept() noexcept -> Result<Server>
+    auto accept() noexcept -> Result<Connection_Handler>
     {
         // #lizard forgives the length
 
@@ -1861,7 +1869,7 @@ class Acceptor {
                     case SN_SR::STATUS_SOCK_ESTABLISHED: [[fallthrough]];
                     case SN_SR::STATUS_SOCK_CLOSE_WAIT:
                         socket.status = Socket::Status::ALLOCATED;
-                        return Server{ {}, *m_network_stack, *this, socket.id };
+                        return Connection_Handler{ {}, *m_network_stack, *this, socket.id };
                 } // switch
             }     // if
         }         // for
@@ -1938,7 +1946,7 @@ class Acceptor {
 
         for ( auto const socket : m_sockets ) {
             if ( socket.status == Socket::Status::ALLOCATED ) {
-                m_network_stack->detach_tcp_server( {}, socket.id );
+                m_network_stack->detach_tcp_server_connection_handler( {}, socket.id );
             } else {
                 m_network_stack->deallocate_socket( {}, socket.id );
             } // else

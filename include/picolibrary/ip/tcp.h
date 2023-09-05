@@ -234,9 +234,9 @@ class Client_Concept {
 };
 
 /**
- * \brief Server socket concept.
+ * \brief Server connection handler socket concept.
  */
-class Server_Concept {
+class Server_Connection_Handler_Concept {
   public:
     /**
      * \brief The unsigned integer type used to report transmit/receive buffer
@@ -247,21 +247,21 @@ class Server_Concept {
     /**
      * \brief Constructor.
      */
-    Server_Concept() noexcept;
+    Server_Connection_Handler_Concept() noexcept;
 
     /**
      * \brief Constructor.
      *
      * \param[in] source The source of the move.
      */
-    Server_Concept( Server_Concept && source ) noexcept;
+    Server_Connection_Handler_Concept( Server_Connection_Handler_Concept && source ) noexcept;
 
-    Server_Concept( Server_Concept const & ) = delete;
+    Server_Connection_Handler_Concept( Server_Connection_Handler_Concept const & ) = delete;
 
     /**
      * \brief Destructor.
      */
-    ~Server_Concept() noexcept;
+    ~Server_Connection_Handler_Concept() noexcept;
 
     /**
      * \brief Assignment operator.
@@ -270,9 +270,10 @@ class Server_Concept {
      *
      * \return The assigned to object.
      */
-    auto operator=( Server_Concept && expression ) noexcept -> Server_Concept &;
+    auto operator=( Server_Connection_Handler_Concept && expression ) noexcept
+        -> Server_Connection_Handler_Concept &;
 
-    auto operator=( Server_Concept const & ) = delete;
+    auto operator=( Server_Connection_Handler_Concept const & ) = delete;
 
     /**
      * \brief Check if the socket is connected to a remote endpoint.
@@ -397,9 +398,10 @@ class Server_Concept {
 class Acceptor_Concept {
   public:
     /**
-     * \brief The type of server socket produced by the acceptor socket.
+     * \brief The type of server connection handler socket produced by the acceptor
+     *        socket.
      */
-    using Server = Server_Concept;
+    using Connection_Handler = Server_Connection_Handler_Concept;
 
     /**
      * \brief Constructor.
@@ -481,8 +483,8 @@ class Acceptor_Concept {
      *
      * \pre the socket is listening for incoming connection requests
      *
-     * \return A server socket for handling the connection if accepting an incoming
-     *         connection request succeeded.
+     * \return A server connection handler socket for handling the connection if accepting
+     *         an incoming connection request succeeded.
      * \return picolibrary::Generic_Error::WOULD_BLOCK or
      *         picolibrary::Generic_Error::OPERATION_TIMEOUT if the socket is in a
      *         non-blocking mode, and an incoming connection request could not be accepted
@@ -490,7 +492,7 @@ class Acceptor_Concept {
      * \return picolibrary::Generic_Error::OPERATION_TIMEOUT if a timeout occurred before
      *         an incoming connection request could be accepted.
      */
-    auto accept() noexcept -> Result<Server>;
+    auto accept() noexcept -> Result<Connection_Handler>;
 
     /**
      * \brief Close the socket.

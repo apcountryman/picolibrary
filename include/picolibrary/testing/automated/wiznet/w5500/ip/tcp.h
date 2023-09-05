@@ -327,9 +327,9 @@ class Mock_Client {
 };
 
 /**
- * \brief Mock server socket.
+ * \brief Mock server connection handler socket.
  */
-class Mock_Server {
+class Mock_Server_Connection_Handler {
   public:
     using Size = std::uint16_t;
 
@@ -338,15 +338,16 @@ class Mock_Server {
         CONNECTED,
     };
 
-    class Handle : public Mock_Handle<Mock_Server> {
+    class Handle : public Mock_Handle<Mock_Server_Connection_Handler> {
       public:
-        using Size = Mock_Server::Size;
+        using Size = Mock_Server_Connection_Handler::Size;
 
-        using State = Mock_Server::State;
+        using State = Mock_Server_Connection_Handler::State;
 
         constexpr Handle() noexcept = default;
 
-        constexpr Handle( Mock_Server & mock ) noexcept : Mock_Handle<Mock_Server>{ mock }
+        constexpr Handle( Mock_Server_Connection_Handler & mock ) noexcept :
+            Mock_Handle<Mock_Server_Connection_Handler>{ mock }
         {
         }
 
@@ -467,17 +468,17 @@ class Mock_Server {
         }
     };
 
-    Mock_Server() = default;
+    Mock_Server_Connection_Handler() = default;
 
-    Mock_Server( Mock_Server && ) = delete;
+    Mock_Server_Connection_Handler( Mock_Server_Connection_Handler && ) = delete;
 
-    Mock_Server( Mock_Server const & ) = delete;
+    Mock_Server_Connection_Handler( Mock_Server_Connection_Handler const & ) = delete;
 
-    ~Mock_Server() noexcept = default;
+    ~Mock_Server_Connection_Handler() noexcept = default;
 
-    auto operator=( Mock_Server && ) = delete;
+    auto operator=( Mock_Server_Connection_Handler && ) = delete;
 
-    auto operator=( Mock_Server const & ) = delete;
+    auto operator=( Mock_Server_Connection_Handler const & ) = delete;
 
     auto handle() noexcept -> Handle
     {
@@ -554,7 +555,7 @@ class Mock_Server {
  */
 class Mock_Acceptor {
   public:
-    using Server = Mock_Server::Handle;
+    using Connection_Handler = Mock_Server_Connection_Handler::Handle;
 
     using Socket_IDs = Fixed_Capacity_Vector<::picolibrary::WIZnet::W5500::Socket_ID, 8>;
 
@@ -567,7 +568,7 @@ class Mock_Acceptor {
 
     class Handle : public Mock_Handle<Mock_Acceptor> {
       public:
-        using Server = Mock_Acceptor::Server;
+        using Connection_Handler = Mock_Acceptor::Connection_Handler;
 
         using Socket_IDs = Mock_Acceptor::Socket_IDs;
 
@@ -700,7 +701,7 @@ class Mock_Acceptor {
             return mock().local_endpoint();
         }
 
-        auto accept() -> Result<Server>
+        auto accept() -> Result<Connection_Handler>
         {
             return mock().accept();
         }
@@ -767,7 +768,7 @@ class Mock_Acceptor {
 
     MOCK_METHOD( ::picolibrary::IP::TCP::Endpoint, local_endpoint, (), ( const ) );
 
-    MOCK_METHOD( (Result<Server>), accept, () );
+    MOCK_METHOD( (Result<Connection_Handler>), accept, () );
 
     MOCK_METHOD( void, deallocate_socket, ( std::uint_fast8_t, ::picolibrary::WIZnet::W5500::Socket_ID ) );
 

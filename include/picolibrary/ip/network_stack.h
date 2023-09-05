@@ -39,12 +39,6 @@ class Network_Stack_Concept {
     using TCP_Client = TCP::Client_Concept;
 
     /**
-     * \brief The type of TCP server socket that is used to interact with the network
-     *        stack.
-     */
-    using TCP_Server = TCP::Server_Concept;
-
-    /**
      * \brief The type of TCP acceptor socket that is used to interact with the network
      *        stack.
      */
