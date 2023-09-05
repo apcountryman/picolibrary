@@ -310,6 +310,7 @@ template<typename Network_Stack, typename Socket_Options_Configurator>
  * \param[in] backlog The maximum number of simultaneously connected clients.
  */
 template<typename Network_Stack, typename Socket_Options_Configurator>
+// NOLINTNEXTLINE(readability-function-size)
 [[noreturn]] void echo_server(
     Reliable_Output_Stream &                 stream,
     Network_Stack &                          network_stack,
