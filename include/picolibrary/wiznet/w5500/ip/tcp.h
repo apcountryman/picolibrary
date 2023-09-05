@@ -768,9 +768,9 @@ class Client {
  * \brief Server connection handler socket.
  *
  * \tparam Network_Stack The type of network stack the socket is associated with.
- * \tparam Acceptor The type of acceptor socket the socket is associated with.
+ * \tparam Server The type of server socket the socket is associated with.
  */
-template<typename Network_Stack, typename Acceptor>
+template<typename Network_Stack, typename Server>
 class Server_Connection_Handler {
   public:
     /**
@@ -795,17 +795,17 @@ class Server_Connection_Handler {
      * \brief Constructor.
      *
      * \param[in] network_stack The network stack the socket is associated with.
-     * \param[in] acceptor The acceptor socket the socket is associated with.
+     * \param[in] server The server socket the socket is associated with.
      * \param[in] socket_id The socket's hardware socket ID.
      */
     constexpr Server_Connection_Handler(
         Server_Connection_Handler_Construction_Key,
         Network_Stack & network_stack,
-        Acceptor &      acceptor,
+        Server &        server,
         Socket_ID       socket_id ) noexcept :
         m_state{ State::CONNECTED },
         m_network_stack{ &network_stack },
-        m_acceptor{ &acceptor },
+        m_server{ &server },
         m_socket_id{ socket_id }
     {
     }
@@ -815,19 +815,19 @@ class Server_Connection_Handler {
      * \brief Constructor.
      *
      * \param[in] network_stack The network stack the socket is associated with.
-     * \param[in] acceptor The acceptor socket the socket is associated with.
+     * \param[in] server The server socket the socket is associated with.
      * \param[in] socket_id The socket's hardware socket ID.
      * \param[in] is_transmitting The socket's initial data transmission in progress
      *            status.
      */
     constexpr Server_Connection_Handler(
         Network_Stack & network_stack,
-        Acceptor &      acceptor,
+        Server &        server,
         Socket_ID       socket_id,
         bool            is_transmitting = false ) noexcept :
         m_state{ State::CONNECTED },
         m_network_stack{ &network_stack },
-        m_acceptor{ &acceptor },
+        m_server{ &server },
         m_socket_id{ socket_id },
         m_is_transmitting{ is_transmitting }
     {
@@ -842,13 +842,13 @@ class Server_Connection_Handler {
     constexpr Server_Connection_Handler( Server_Connection_Handler && source ) noexcept :
         m_state{ source.m_state },
         m_network_stack{ source.m_network_stack },
-        m_acceptor{ source.m_acceptor },
+        m_server{ source.m_server },
         m_socket_id{ source.m_socket_id },
         m_is_transmitting{ source.m_is_transmitting }
     {
         source.m_state         = State::UNINITIALIZED;
         source.m_network_stack = nullptr;
-        source.m_acceptor      = nullptr;
+        source.m_server        = nullptr;
     }
 
     Server_Connection_Handler( Server_Connection_Handler const & ) = delete;
@@ -876,13 +876,13 @@ class Server_Connection_Handler {
 
             m_state           = expression.m_state;
             m_network_stack   = expression.m_network_stack;
-            m_acceptor        = expression.m_acceptor;
+            m_server          = expression.m_server;
             m_socket_id       = expression.m_socket_id;
             m_is_transmitting = expression.m_is_transmitting;
 
             expression.m_state         = State::UNINITIALIZED;
             expression.m_network_stack = nullptr;
-            expression.m_acceptor      = nullptr;
+            expression.m_server        = nullptr;
         } // if
 
         return *this;
@@ -1274,7 +1274,7 @@ class Server_Connection_Handler {
         } // if
 
         if ( not m_network_stack->tcp_server_connection_handler_is_detached( m_socket_id ) ) {
-            m_acceptor->deallocate_socket( {}, m_socket_id );
+            m_server->deallocate_socket( {}, m_socket_id );
         } else {
             auto & driver = m_network_stack->driver( {} );
 
@@ -1314,9 +1314,9 @@ class Server_Connection_Handler {
     Network_Stack * m_network_stack{};
 
     /**
-     * \brief The acceptor socket the socket is associated with.
+     * \brief The server socket the socket is associated with.
      */
-    Acceptor * m_acceptor{};
+    Server * m_server{};
 
     /**
      * \brief The socket's hardware socket ID.
@@ -1330,18 +1330,17 @@ class Server_Connection_Handler {
 };
 
 /**
- * \brief Acceptor socket.
+ * \brief Server socket.
  *
  * \tparam Network_Stack The type of network stack the socket is associated with.
  */
 template<typename Network_Stack>
-class Acceptor {
+class Server {
   public:
     /**
-     * \brief The type of server connection handler socket produced by the acceptor
-     *        socket.
+     * \brief The type of server connection handler socket produced by the server socket.
      */
-    using Connection_Handler = Server_Connection_Handler<Network_Stack, Acceptor>;
+    using Connection_Handler = Server_Connection_Handler<Network_Stack, Server>;
 
     /**
      * \brief Hardware socket IDs.
@@ -1361,7 +1360,7 @@ class Acceptor {
     /**
      * \brief Constructor.
      */
-    constexpr Acceptor() noexcept = default;
+    constexpr Server() noexcept = default;
 
     /**
      * \brief Constructor.
@@ -1371,7 +1370,7 @@ class Acceptor {
      *
      * \pre not socket_ids.empty()
      */
-    constexpr Acceptor( Socket_Construction_Key, Network_Stack & network_stack, Socket_IDs const & socket_ids ) noexcept
+    constexpr Server( Socket_Construction_Key, Network_Stack & network_stack, Socket_IDs const & socket_ids ) noexcept
         :
         m_state{ State::INITIALIZED },
         m_network_stack{ &network_stack },
@@ -1390,7 +1389,7 @@ class Acceptor {
      *
      * \pre not socket_ids.empty()
      */
-    constexpr Acceptor( Network_Stack & network_stack, Socket_IDs const & socket_ids, State state = State::INITIALIZED ) noexcept
+    constexpr Server( Network_Stack & network_stack, Socket_IDs const & socket_ids, State state = State::INITIALIZED ) noexcept
         :
         m_state{ state },
         m_network_stack{ &network_stack },
@@ -1405,7 +1404,7 @@ class Acceptor {
      *
      * \param[in] source The source of the move.
      */
-    constexpr Acceptor( Acceptor && source ) noexcept :
+    constexpr Server( Server && source ) noexcept :
         m_state{ source.m_state },
         m_network_stack{ source.m_network_stack },
         m_sockets{ std::move( source.m_sockets ) },
@@ -1415,12 +1414,12 @@ class Acceptor {
         source.m_network_stack = nullptr;
     }
 
-    Acceptor( Acceptor const & ) = delete;
+    Server( Server const & ) = delete;
 
     /**
      * \brief Destructor.
      */
-    ~Acceptor() noexcept
+    ~Server() noexcept
     {
         close();
     }
@@ -1432,7 +1431,7 @@ class Acceptor {
      *
      * \return The assigned to object.
      */
-    constexpr auto operator=( Acceptor && expression ) noexcept -> Acceptor &
+    constexpr auto operator=( Server && expression ) noexcept -> Server &
     {
         if ( &expression != this ) {
             close();
@@ -1449,7 +1448,7 @@ class Acceptor {
         return *this;
     }
 
-    auto operator=( Acceptor const & ) = delete;
+    auto operator=( Server const & ) = delete;
 
     /**
      * \brief Get the socket's state.
@@ -1495,8 +1494,8 @@ class Acceptor {
     /**
      * \brief Configure the socket's no delayed ACK usage (defaults to disabled).
      *
-     * \pre picolibrary::WIZnet::W5500::IP::TCP::Acceptor::state() ==
-     *      picolibrary::WIZnet::W5500::IP::TCP::Acceptor::State::INITIALIZED
+     * \pre picolibrary::WIZnet::W5500::IP::TCP::Server::state() ==
+     *      picolibrary::WIZnet::W5500::IP::TCP::Server::State::INITIALIZED
      *
      * \param[in] no_delayed_ack_usage_configuration The desired no delayed ACK usage
      *            configuration.
@@ -1526,8 +1525,8 @@ class Acceptor {
     /**
      * \brief Configure the socket's maximum segment size (defaults to 0x0000).
      *
-     * \pre picolibrary::WIZnet::W5500::IP::TCP::Acceptor::state() ==
-     *      picolibrary::WIZnet::W5500::IP::TCP::Acceptor::State::INITIALIZED
+     * \pre picolibrary::WIZnet::W5500::IP::TCP::Server::state() ==
+     *      picolibrary::WIZnet::W5500::IP::TCP::Server::State::INITIALIZED
      *
      * \param[in] maximum_segment_size The desired maximum segment size.
      */
@@ -1555,8 +1554,8 @@ class Acceptor {
     /**
      * \brief Configure the socket's IPv4 time to live field value (defaults to 0x80).
      *
-     * \pre picolibrary::WIZnet::W5500::IP::TCP::Acceptor::state() ==
-     *      picolibrary::WIZnet::W5500::IP::TCP::Acceptor::State::INITIALIZED
+     * \pre picolibrary::WIZnet::W5500::IP::TCP::Server::state() ==
+     *      picolibrary::WIZnet::W5500::IP::TCP::Server::State::INITIALIZED
      *
      * \param[in] time_to_live The desired IPv4 time to live field value.
      */
@@ -1585,8 +1584,8 @@ class Acceptor {
      * \brief Configure the socket's keepalive packet transmission period (SN_KPALVTR
      *        register value, defaults to 0x00).
      *
-     * \pre picolibrary::WIZnet::W5500::IP::TCP::Acceptor::state() ==
-     *      picolibrary::WIZnet::W5500::IP::TCP::Acceptor::State::INITIALIZED
+     * \pre picolibrary::WIZnet::W5500::IP::TCP::Server::state() ==
+     *      picolibrary::WIZnet::W5500::IP::TCP::Server::State::INITIALIZED
      *
      * \param[in] keepalive_period The desired keepalive packet transmission period.
      */
@@ -1885,7 +1884,7 @@ class Acceptor {
      * \pre the socket has been allocated
      */
     // NOLINTNEXTLINE(readability-function-size)
-    void deallocate_socket( Acceptor_Socket_Deallocation_Key, Socket_ID socket_id ) noexcept
+    void deallocate_socket( Server_Socket_Deallocation_Key, Socket_ID socket_id ) noexcept
     {
         // #lizard forgives the length
 

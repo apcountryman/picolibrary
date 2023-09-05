@@ -51,7 +51,7 @@ using ::picolibrary::IP::TCP::Port;
 using ::picolibrary::Testing::Automated::WIZnet::W5500::Mock_Driver;
 using ::picolibrary::Testing::Automated::WIZnet::W5500::IP::Mock_Network_Stack;
 using ::picolibrary::Testing::Automated::WIZnet::W5500::IP::Mock_Port_Allocator;
-using ::picolibrary::Testing::Automated::WIZnet::W5500::IP::TCP::Mock_Acceptor;
+using ::picolibrary::Testing::Automated::WIZnet::W5500::IP::TCP::Mock_Server;
 using ::picolibrary::WIZnet::W5500::No_Delayed_ACK_Usage;
 using ::picolibrary::WIZnet::W5500::Socket_Buffer_Size;
 using ::picolibrary::WIZnet::W5500::Socket_ID;
@@ -64,7 +64,7 @@ using ::testing::Values;
 using ::testing::ValuesIn;
 
 using Server_Connection_Handler =
-    ::picolibrary::WIZnet::W5500::IP::TCP::Server_Connection_Handler<Mock_Network_Stack, Mock_Acceptor>;
+    ::picolibrary::WIZnet::W5500::IP::TCP::Server_Connection_Handler<Mock_Network_Stack, Mock_Server>;
 
 } // namespace
 
@@ -97,7 +97,7 @@ TEST( destructor, worksProperlyUninitialized )
  *        picolibrary::WIZnet::W5500::IP::TCP::Server_Connection_Handler::~Server_Connection_Handler()
  *        works properly when the socket is in the
  *        picolibrary::WIZnet::W5500::IP::TCP::Server_Connection_Handler::State::CONNECTED
- *        state and the socket has not been detached from the acceptor socket it is
+ *        state and the socket has not been detached from the server socket it is
  *        associated with.
  */
 TEST( destructor, worksProperlyConnectedNotDetached )
@@ -105,13 +105,13 @@ TEST( destructor, worksProperlyConnectedNotDetached )
     auto const in_sequence = InSequence{};
 
     auto       network_stack = Mock_Network_Stack{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_1;
 
-    auto const connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto const connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( socket_id ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, socket_id ) );
+    EXPECT_CALL( server, deallocate_socket( _, socket_id ) );
 }
 
 /**
@@ -119,7 +119,7 @@ TEST( destructor, worksProperlyConnectedNotDetached )
  *        picolibrary::WIZnet::W5500::IP::TCP::Server_Connection_Handler::~Server_Connection_Handler()
  *        works properly when the socket is in the
  *        picolibrary::WIZnet::W5500::IP::TCP::Server_Connection_Handler::State::CONNECTED
- *        state, the socket has been detached from the acceptor socket it is associated
+ *        state, the socket has been detached from the server socket it is associated
  *        with, and the port is still in use.
  */
 TEST( destructor, worksProperlyConnectedDetachedPortStillInUse )
@@ -128,10 +128,10 @@ TEST( destructor, worksProperlyConnectedDetachedPortStillInUse )
 
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_1;
 
-    auto const connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto const connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     auto const sn_port = std::uint16_t{ 26387 };
 
@@ -157,7 +157,7 @@ TEST( destructor, worksProperlyConnectedDetachedPortStillInUse )
  *        picolibrary::WIZnet::W5500::IP::TCP::Server_Connection_Handler::~Server_Connection_Handler()
  *        works properly when the socket is in the
  *        picolibrary::WIZnet::W5500::IP::TCP::Server_Connection_Handler::State::CONNECTED
- *        state, the socket has been detached from the acceptor socket it is associated
+ *        state, the socket has been detached from the server socket it is associated
  *        with, and the port is not in use.
  */
 TEST( destructor, worksProperlyConnectedDetachedPortNotInUse )
@@ -167,10 +167,10 @@ TEST( destructor, worksProperlyConnectedDetachedPortNotInUse )
     auto       network_stack      = Mock_Network_Stack{};
     auto       driver             = Mock_Driver{};
     auto       tcp_port_allocator = Mock_Port_Allocator{};
-    auto       acceptor           = Mock_Acceptor{};
+    auto       server             = Mock_Server{};
     auto const socket_id          = Socket_ID::_2;
 
-    auto const connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto const connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     auto const sn_port = std::uint16_t{ 43787 };
 
@@ -196,15 +196,15 @@ TEST( destructor, worksProperlyConnectedDetachedPortNotInUse )
 TEST( socketId, worksProperly )
 {
     auto       network_stack = Mock_Network_Stack{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_1;
 
-    auto const connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto const connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     EXPECT_EQ( connection_handler.socket_id(), socket_id );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -254,16 +254,16 @@ TEST_P( socketInterruptMask, worksProperly )
     auto const test_case = GetParam();
 
     auto network_stack = Mock_Network_Stack{};
-    auto acceptor      = Mock_Acceptor{};
+    auto server        = Mock_Server{};
 
     auto const connection_handler = Server_Connection_Handler{ network_stack,
-                                                               acceptor,
+                                                               server,
                                                                test_case.socket_id };
 
     EXPECT_EQ( connection_handler.socket_interrupt_mask(), test_case.socket_interrupt_mask );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -335,10 +335,10 @@ TEST_P( noDelayedACKUsageConfiguration, worksProperly )
 
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_4;
 
-    auto const connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto const connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_mr( socket_id ) ).WillOnce( Return( test_case.sn_mr ) );
@@ -346,7 +346,7 @@ TEST_P( noDelayedACKUsageConfiguration, worksProperly )
     EXPECT_EQ( connection_handler.no_delayed_ack_usage_configuration(), test_case.no_delayed_ack_usage_configuration );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -373,10 +373,10 @@ TEST( maximumSegmentSize, worksProperly )
 {
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_2;
 
-    auto const connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto const connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     auto const sn_mssr = std::uint16_t{ 0x73D3 };
 
@@ -386,7 +386,7 @@ TEST( maximumSegmentSize, worksProperly )
     EXPECT_EQ( connection_handler.maximum_segment_size(), sn_mssr );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -398,10 +398,10 @@ TEST( timeToLive, worksProperly )
 {
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_0;
 
-    auto const connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto const connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     auto const sn_ttl = std::uint8_t{ 0x88 };
 
@@ -411,7 +411,7 @@ TEST( timeToLive, worksProperly )
     EXPECT_EQ( connection_handler.time_to_live(), sn_ttl );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -423,10 +423,10 @@ TEST( keepalivePeriod, worksProperly )
 {
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_0;
 
-    auto const connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto const connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     auto const sn_kpalvtr = std::uint8_t{ 0x9C };
 
@@ -436,7 +436,7 @@ TEST( keepalivePeriod, worksProperly )
     EXPECT_EQ( connection_handler.keepalive_period(), sn_kpalvtr );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -448,10 +448,10 @@ TEST( enabledInterrupts, worksProperly )
 {
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_1;
 
-    auto const connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto const connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     auto const sn_imr = std::uint8_t{ 0b00100111 };
 
@@ -461,7 +461,7 @@ TEST( enabledInterrupts, worksProperly )
     EXPECT_EQ( connection_handler.enabled_interrupts(), sn_imr );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -473,10 +473,10 @@ TEST( interruptContext, worksProperly )
 {
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_5;
 
-    auto const connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto const connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     auto const sn_ir = std::uint8_t{ 0b11010001 };
 
@@ -486,7 +486,7 @@ TEST( interruptContext, worksProperly )
     EXPECT_EQ( connection_handler.interrupt_context(), sn_ir );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -543,11 +543,11 @@ TEST_P( clearInterrupts, worksProperly )
 
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_4;
 
     auto connection_handler = Server_Connection_Handler{
-        network_stack, acceptor, socket_id, test_case.is_transmitting_initial
+        network_stack, server, socket_id, test_case.is_transmitting_initial
     };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
@@ -558,7 +558,7 @@ TEST_P( clearInterrupts, worksProperly )
     EXPECT_EQ( connection_handler.is_transmitting(), test_case.is_transmitting_final );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -625,10 +625,10 @@ TEST_P( isConnected, worksProperly )
 
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_7;
 
-    auto const connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto const connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( test_case.sn_sr ) );
@@ -636,7 +636,7 @@ TEST_P( isConnected, worksProperly )
     EXPECT_EQ( connection_handler.is_connected(), test_case.is_connected );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -670,10 +670,10 @@ TEST( remoteEndpoint, worksProperly )
 {
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_2;
 
-    auto const connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto const connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     auto const sn_dipr  = Array<std::uint8_t, 4>{ 71, 135, 47, 193 };
     auto const sn_dport = std::uint16_t{ 12224 };
@@ -689,7 +689,7 @@ TEST( remoteEndpoint, worksProperly )
     EXPECT_EQ( endpoint.port().as_unsigned_integer(), sn_dport );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -701,10 +701,10 @@ TEST( localEndpoint, worksProperly )
 {
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_2;
 
-    auto const connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto const connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     auto const sipr    = Array<std::uint8_t, 4>{ 99, 105, 185, 107 };
     auto const sn_port = std::uint16_t{ 32306 };
@@ -720,7 +720,7 @@ TEST( localEndpoint, worksProperly )
     EXPECT_EQ( endpoint.port().as_unsigned_integer(), sn_port );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -777,10 +777,10 @@ TEST_P( outstanding, worksProperly )
 
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_7;
 
-    auto const connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto const connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     EXPECT_CALL( network_stack, socket_buffer_size() ).WillOnce( Return( test_case.socket_buffer_size ) );
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
@@ -789,7 +789,7 @@ TEST_P( outstanding, worksProperly )
     EXPECT_EQ( connection_handler.outstanding(), test_case.outstanding );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -869,10 +869,10 @@ TEST_P( transmitErrorHandlingConnectionLoss, connectionLoss )
 
     auto network_stack = Mock_Network_Stack{};
     auto driver        = Mock_Driver{};
-    auto acceptor      = Mock_Acceptor{};
+    auto server        = Mock_Server{};
 
     auto connection_handler = Server_Connection_Handler{
-        network_stack, acceptor, Socket_ID::_5, test_case.is_transmitting
+        network_stack, server, Socket_ID::_5, test_case.is_transmitting
     };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
@@ -888,7 +888,7 @@ TEST_P( transmitErrorHandlingConnectionLoss, connectionLoss )
     EXPECT_EQ( connection_handler.is_transmitting(), test_case.is_transmitting );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -932,10 +932,10 @@ TEST( transmit, worksProperlyInProgressTransmissionNotComplete )
 
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_1;
 
-    auto connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id, true };
+    auto connection_handler = Server_Connection_Handler{ network_stack, server, socket_id, true };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x17 ) );
@@ -951,7 +951,7 @@ TEST( transmit, worksProperlyInProgressTransmissionNotComplete )
     EXPECT_TRUE( connection_handler.is_transmitting() );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -963,10 +963,10 @@ TEST( transmit, worksProperlyTransmissionNotInProgressEmptyDataBlock )
 {
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_4;
 
-    auto connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id, false };
+    auto connection_handler = Server_Connection_Handler{ network_stack, server, socket_id, false };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x17 ) );
@@ -981,7 +981,7 @@ TEST( transmit, worksProperlyTransmissionNotInProgressEmptyDataBlock )
     EXPECT_FALSE( connection_handler.is_transmitting() );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -996,10 +996,10 @@ TEST( transmit, worksProperlyInProgressTransmissionCompleteEmptyDataBlock )
 
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_4;
 
-    auto connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id, true };
+    auto connection_handler = Server_Connection_Handler{ network_stack, server, socket_id, true };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x17 ) );
@@ -1016,7 +1016,7 @@ TEST( transmit, worksProperlyInProgressTransmissionCompleteEmptyDataBlock )
     EXPECT_FALSE( connection_handler.is_transmitting() );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -1030,10 +1030,10 @@ TEST( transmit, worksProperlyTransmissionNotInProgressTransmitBufferFull )
 
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_3;
 
-    auto connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id, false };
+    auto connection_handler = Server_Connection_Handler{ network_stack, server, socket_id, false };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x17 ) );
@@ -1050,7 +1050,7 @@ TEST( transmit, worksProperlyTransmissionNotInProgressTransmitBufferFull )
     EXPECT_FALSE( connection_handler.is_transmitting() );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -1065,10 +1065,10 @@ TEST( transmit, worksProperlyInProgressTransmissionCompleteTransmitBufferFull )
 
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_3;
 
-    auto connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id, true };
+    auto connection_handler = Server_Connection_Handler{ network_stack, server, socket_id, true };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x17 ) );
@@ -1087,7 +1087,7 @@ TEST( transmit, worksProperlyInProgressTransmissionCompleteTransmitBufferFull )
     EXPECT_FALSE( connection_handler.is_transmitting() );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -1156,10 +1156,10 @@ TEST_P( transmitSufficientTransmitBufferCapacity, worksProperlyTransmissionNotIn
 
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_4;
 
-    auto connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id, false };
+    auto connection_handler = Server_Connection_Handler{ network_stack, server, socket_id, false };
 
     auto const data = std::vector<std::uint8_t>{ 0xA6, 0x94, 0x18, 0x2D };
 
@@ -1183,7 +1183,7 @@ TEST_P( transmitSufficientTransmitBufferCapacity, worksProperlyTransmissionNotIn
     EXPECT_TRUE( connection_handler.is_transmitting() );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -1200,10 +1200,10 @@ TEST_P( transmitSufficientTransmitBufferCapacity, worksProperlyInProgressTransmi
 
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_4;
 
-    auto connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id, true };
+    auto connection_handler = Server_Connection_Handler{ network_stack, server, socket_id, true };
 
     auto const data = std::vector<std::uint8_t>{ 0xA0, 0xA9, 0xC8, 0x3F };
 
@@ -1229,7 +1229,7 @@ TEST_P( transmitSufficientTransmitBufferCapacity, worksProperlyInProgressTransmi
     EXPECT_TRUE( connection_handler.is_transmitting() );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -1294,10 +1294,10 @@ TEST_P( transmitInsufficientTransmitBufferCapacity, worksProperlyTransmissionNot
 
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_4;
 
-    auto connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id, false };
+    auto connection_handler = Server_Connection_Handler{ network_stack, server, socket_id, false };
 
     auto const data = std::vector<std::uint8_t>{ 0x1C, 0x98, 0xAE, 0xBE };
 
@@ -1326,7 +1326,7 @@ TEST_P( transmitInsufficientTransmitBufferCapacity, worksProperlyTransmissionNot
     EXPECT_TRUE( connection_handler.is_transmitting() );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -1343,10 +1343,10 @@ TEST_P( transmitInsufficientTransmitBufferCapacity, worksProperlyInProgressTrans
 
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_4;
 
-    auto connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id, true };
+    auto connection_handler = Server_Connection_Handler{ network_stack, server, socket_id, true };
 
     auto const data = std::vector<std::uint8_t>{ 0x9A, 0x37, 0x71, 0xD9 };
 
@@ -1377,7 +1377,7 @@ TEST_P( transmitInsufficientTransmitBufferCapacity, worksProperlyInProgressTrans
     EXPECT_TRUE( connection_handler.is_transmitting() );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -1436,9 +1436,9 @@ TEST_P( transmitKeepaliveErrorHandlingConnectionLoss, connectionLoss )
 {
     auto network_stack = Mock_Network_Stack{};
     auto driver        = Mock_Driver{};
-    auto acceptor      = Mock_Acceptor{};
+    auto server        = Mock_Server{};
 
-    auto connection_handler = Server_Connection_Handler{ network_stack, acceptor, Socket_ID::_1 };
+    auto connection_handler = Server_Connection_Handler{ network_stack, server, Socket_ID::_1 };
 
     auto const sn_sr = GetParam();
 
@@ -1453,7 +1453,7 @@ TEST_P( transmitKeepaliveErrorHandlingConnectionLoss, connectionLoss )
     EXPECT_EQ( connection_handler.state(), Server_Connection_Handler::State::CONNECTED );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -1472,10 +1472,10 @@ TEST( transmitKeepalive, worksProperly )
 
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_2;
 
-    auto connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x17 ) );
@@ -1488,7 +1488,7 @@ TEST( transmitKeepalive, worksProperly )
     EXPECT_EQ( connection_handler.state(), Server_Connection_Handler::State::CONNECTED );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -1538,10 +1538,10 @@ TEST_P( available, worksProperly )
 
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_4;
 
-    auto const connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto const connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     EXPECT_CALL( network_stack, socket_buffer_size() ).WillOnce( Return( test_case.socket_buffer_size ) );
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
@@ -1550,7 +1550,7 @@ TEST_P( available, worksProperly )
     EXPECT_EQ( connection_handler.available(), test_case.sn_rx_rsr );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -1589,9 +1589,9 @@ TEST( receiveErrorHandling, connectionLoss )
 {
     auto network_stack = Mock_Network_Stack{};
     auto driver        = Mock_Driver{};
-    auto acceptor      = Mock_Acceptor{};
+    auto server        = Mock_Server{};
 
-    auto connection_handler = Server_Connection_Handler{ network_stack, acceptor, Socket_ID::_7 };
+    auto connection_handler = Server_Connection_Handler{ network_stack, server, Socket_ID::_7 };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_sr( _ ) ).WillOnce( Return( 0x00 ) );
@@ -1605,7 +1605,7 @@ TEST( receiveErrorHandling, connectionLoss )
     EXPECT_EQ( connection_handler.state(), Server_Connection_Handler::State::CONNECTED );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -1623,10 +1623,10 @@ TEST_P( receiveGracefulShutdown, worksProperly )
 {
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_6;
 
-    auto connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     auto const sn_sr = GetParam();
 
@@ -1642,7 +1642,7 @@ TEST_P( receiveGracefulShutdown, worksProperly )
     EXPECT_EQ( connection_handler.state(), Server_Connection_Handler::State::CONNECTED );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 INSTANTIATE_TEST_SUITE_P( testCases, receiveGracefulShutdown, Values<std::uint8_t>( 0x18, 0x1A, 0x1B, 0x1D ) );
@@ -1697,10 +1697,10 @@ TEST_P( receiveReceiveBufferEmpty, worksProperly )
 
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_1;
 
-    auto connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( test_case.sn_sr ) );
@@ -1716,7 +1716,7 @@ TEST_P( receiveReceiveBufferEmpty, worksProperly )
     EXPECT_EQ( connection_handler.state(), Server_Connection_Handler::State::CONNECTED );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -1790,10 +1790,10 @@ TEST_P( receiveEmptyDataBlock, worksProperly )
 
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_5;
 
-    auto connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( test_case.sn_sr ) );
@@ -1807,7 +1807,7 @@ TEST_P( receiveEmptyDataBlock, worksProperly )
     EXPECT_EQ( result.value(), &*data.end() );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -1923,10 +1923,10 @@ TEST_P( receiveAllData, worksProperly )
 
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_0;
 
-    auto connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     auto const data_expected = std::vector<std::uint8_t>{ 0x03, 0xA2, 0xAD };
 
@@ -1957,7 +1957,7 @@ TEST_P( receiveAllData, worksProperly )
     EXPECT_EQ( connection_handler.state(), Server_Connection_Handler::State::CONNECTED );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -2047,10 +2047,10 @@ TEST_P( receiveSomeData, worksProperly )
 
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_1;
 
-    auto connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     auto const data_expected = std::vector<std::uint8_t>{ 0x4B, 0x9F, 0x62, 0xB8 };
 
@@ -2076,7 +2076,7 @@ TEST_P( receiveSomeData, worksProperly )
     EXPECT_EQ( connection_handler.state(), Server_Connection_Handler::State::CONNECTED );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -2156,10 +2156,10 @@ TEST( shutdownConnectionLost, worksProperly )
 {
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_7;
 
-    auto connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x00 ) );
@@ -2169,7 +2169,7 @@ TEST( shutdownConnectionLost, worksProperly )
     EXPECT_EQ( connection_handler.state(), Server_Connection_Handler::State::CONNECTED );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 /**
@@ -2190,10 +2190,10 @@ TEST_P( shutdownConnectionNotLost, worksProperly )
 
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_2;
 
-    auto connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     auto const sn_sr = GetParam();
 
@@ -2208,7 +2208,7 @@ TEST_P( shutdownConnectionNotLost, worksProperly )
     EXPECT_EQ( connection_handler.state(), Server_Connection_Handler::State::CONNECTED );
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( _ ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, _ ) );
+    EXPECT_CALL( server, deallocate_socket( _, _ ) );
 }
 
 INSTANTIATE_TEST_SUITE_P( testCases, shutdownConnectionNotLost, Values( 0x17, 0x1C ) );
@@ -2232,7 +2232,7 @@ TEST( close, worksProperlyUninitialized )
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server_Connection_Handler::close()
  *        works properly when the socket is in the
  *        picolibrary::WIZnet::W5500::IP::TCP::Server_Connection_Handler::State::CONNECTED
- *        state and the socket has not been detached from the acceptor socket it is
+ *        state and the socket has not been detached from the server socket it is
  *        associated with.
  */
 TEST( close, worksProperlyConnectedNotDetached )
@@ -2240,13 +2240,13 @@ TEST( close, worksProperlyConnectedNotDetached )
     auto const in_sequence = InSequence{};
 
     auto       network_stack = Mock_Network_Stack{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_1;
 
-    auto connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     EXPECT_CALL( network_stack, tcp_server_connection_handler_is_detached( socket_id ) ).WillOnce( Return( false ) );
-    EXPECT_CALL( acceptor, deallocate_socket( _, socket_id ) );
+    EXPECT_CALL( server, deallocate_socket( _, socket_id ) );
 
     connection_handler.close();
 
@@ -2257,7 +2257,7 @@ TEST( close, worksProperlyConnectedNotDetached )
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server_Connection_Handler::close()
  *        works properly when the socket is in the
  *        picolibrary::WIZnet::W5500::IP::TCP::Server_Connection_Handler::State::CONNECTED
- *        state, the socket has been detached from the acceptor socket it is associated
+ *        state, the socket has been detached from the server socket it is associated
  *        with, and the port is still in use.
  */
 TEST( close, worksProperlyConnectedDetachedPortStillInUse )
@@ -2266,10 +2266,10 @@ TEST( close, worksProperlyConnectedDetachedPortStillInUse )
 
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto       acceptor      = Mock_Acceptor{};
+    auto       server        = Mock_Server{};
     auto const socket_id     = Socket_ID::_1;
 
-    auto connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     auto const sn_port = std::uint16_t{ 26387 };
 
@@ -2298,7 +2298,7 @@ TEST( close, worksProperlyConnectedDetachedPortStillInUse )
  * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server_Connection_Handler::close()
  *        works properly when the socket is in the
  *        picolibrary::WIZnet::W5500::IP::TCP::Server_Connection_Handler::State::CONNECTED
- *        state, the socket has been detached from the acceptor socket it is associated
+ *        state, the socket has been detached from the server socket it is associated
  *        with, and the port is not in use.
  */
 TEST( close, worksProperlyConnectedDetachedPortNotInUse )
@@ -2308,10 +2308,10 @@ TEST( close, worksProperlyConnectedDetachedPortNotInUse )
     auto       network_stack      = Mock_Network_Stack{};
     auto       driver             = Mock_Driver{};
     auto       tcp_port_allocator = Mock_Port_Allocator{};
-    auto       acceptor           = Mock_Acceptor{};
+    auto       server             = Mock_Server{};
     auto const socket_id          = Socket_ID::_2;
 
-    auto connection_handler = Server_Connection_Handler{ network_stack, acceptor, socket_id };
+    auto connection_handler = Server_Connection_Handler{ network_stack, server, socket_id };
 
     auto const sn_port = std::uint16_t{ 43787 };
 

@@ -62,10 +62,10 @@ class Network_Stack {
     using TCP_Client = TCP::Client<Network_Stack>;
 
     /**
-     * \brief The type of TCP acceptor socket that is used to interact with the network
+     * \brief The type of TCP server socket that is used to interact with the network
      *        stack.
      */
-    using TCP_Acceptor = TCP::Acceptor<Network_Stack>;
+    using TCP_Server = TCP::Server<Network_Stack>;
 
     /**
      * \brief Constructor.
@@ -693,37 +693,37 @@ class Network_Stack {
     }
 
     /**
-     * \brief Construct a TCP acceptor socket.
+     * \brief Construct a TCP server socket.
      *
      * \pre a socket is available
      *
-     * \return The constructed TCP acceptor socket.
+     * \return The constructed TCP server socket.
      */
-    auto make_tcp_acceptor() noexcept -> TCP_Acceptor
+    auto make_tcp_server() noexcept -> TCP_Server
     {
         return { {}, *this, allocate_sockets( 1 ) };
     }
 
     /**
-     * \brief Construct a TCP acceptor socket that uses specific hardware sockets.
+     * \brief Construct a TCP server socket that uses specific hardware sockets.
      *
      * \param[in] socket_ids The hardware socket IDs for the hardware sockets to use.
      *
      * \pre the requested sockets are available for allocation
      *
-     * \return The constructed TCP acceptor socket.
+     * \return The constructed TCP server socket.
      */
-    auto make_tcp_acceptor( Fixed_Capacity_Vector<Socket_ID, SOCKETS> const & socket_ids ) noexcept -> TCP_Acceptor
+    auto make_tcp_server( Fixed_Capacity_Vector<Socket_ID, SOCKETS> const & socket_ids ) noexcept -> TCP_Server
     {
         return { {}, *this, allocate_sockets( socket_ids ) };
     }
 
     /**
-     * \brief Detach a TCP server connection handler socket from the TCP acceptor socket
-     *        it is associated with.
+     * \brief Detach a TCP server connection handler socket from the TCP server socket it
+     *        is associated with.
      *
      * \param[in] socket_id The hardware socket ID for the TCP server connection handler
-     *            socket to detach from the TCP acceptor socket it is associated with.
+     *            socket to detach from the TCP server socket it is associated with.
      */
     void detach_tcp_server_connection_handler( Network_Stack_TCP_Server_Connection_Handler_Detachment_Key, Socket_ID socket_id ) noexcept
     {
@@ -735,15 +735,15 @@ class Network_Stack {
 
     /**
      * \brief Check if a TCP server connection handler socket has been detached from the
-     *        TCP acceptor socket it is associated with.
+     *        TCP server socket it is associated with.
      *
      * \param[in] socket_id The hardware socket ID for the TCP server connection handler
      *            socket to check.
      *
      * \return true if the TCP server connection handler socket has been detached from the
-     *         TCP acceptor socket it is associated with.
+     *         TCP server socket it is associated with.
      * \return false if the TCP server connection handler socket has not been detached
-     *         from the TCP acceptor socket it is associated with.
+     *         from the TCP server socket it is associated with.
      */
     constexpr auto tcp_server_connection_handler_is_detached( Socket_ID socket_id ) const noexcept -> bool
     {
@@ -825,7 +825,7 @@ class Network_Stack {
     Array<Socket_Status, SOCKETS> m_socket_status{};
 
     /**
-     * \brief The TCP server connection handler socket is detached from the TCP acceptor
+     * \brief The TCP server connection handler socket is detached from the TCP server
      *        socket it is associated with flag.
      */
     Array<bool, SOCKETS> m_tcp_server_connection_handler_is_detached{};

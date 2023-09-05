@@ -35,11 +35,11 @@ namespace picolibrary::WIZnet::W5500::IP::TCP {
 template<typename Network_Stack>
 class Client;
 
-template<typename Network_Stack, typename Acceptor>
+template<typename Network_Stack, typename Server>
 class Server_Connection_Handler;
 
 template<typename Network_Stack>
-class Acceptor;
+class Server;
 
 } // namespace picolibrary::WIZnet::W5500::IP::TCP
 
@@ -99,11 +99,11 @@ class Network_Stack_Driver_Access_Key {
     template<typename Network_Stack>
     friend class TCP::Client;
 
-    template<typename Network_Stack, typename Acceptor>
+    template<typename Network_Stack, typename Server>
     friend class TCP::Server_Connection_Handler;
 
     template<typename Network_Stack>
-    friend class TCP::Acceptor;
+    friend class TCP::Server;
 
     /**
      * \brief Constructor.
@@ -133,11 +133,11 @@ class Network_Stack_Socket_Allocation_Key {
     template<typename Network_Stack>
     friend class TCP::Client;
 
-    template<typename Network_Stack, typename Acceptor>
+    template<typename Network_Stack, typename Server>
     friend class TCP::Server_Connection_Handler;
 
     template<typename Network_Stack>
-    friend class TCP::Acceptor;
+    friend class TCP::Server;
 
     /**
      * \brief Constructor.
@@ -168,7 +168,7 @@ class Network_Stack_TCP_Server_Connection_Handler_Detachment_Key {
 
   private:
     template<typename Network_Stack>
-    friend class TCP::Acceptor;
+    friend class TCP::Server;
 
     /**
      * \brief Constructor.
@@ -198,11 +198,11 @@ class Network_Stack_TCP_Port_Allocator_Access_Key {
     template<typename Network_Stack>
     friend class TCP::Client;
 
-    template<typename Network_Stack, typename Acceptor>
+    template<typename Network_Stack, typename Server>
     friend class TCP::Server_Connection_Handler;
 
     template<typename Network_Stack>
-    friend class TCP::Acceptor;
+    friend class TCP::Server;
 
     /**
      * \brief Constructor.
@@ -240,31 +240,31 @@ class Network_Stack_UDP_Port_Allocator_Access_Key {
 namespace picolibrary::WIZnet::W5500::IP::TCP {
 
 /**
- * \brief picolibrary::WIZnet::W5500::IP::TCP::Acceptor socket deallocation key.
+ * \brief picolibrary::WIZnet::W5500::IP::TCP::Server socket deallocation key.
  */
-class Acceptor_Socket_Deallocation_Key {
+class Server_Socket_Deallocation_Key {
   public:
-    Acceptor_Socket_Deallocation_Key( Acceptor_Socket_Deallocation_Key && ) = delete;
+    Server_Socket_Deallocation_Key( Server_Socket_Deallocation_Key && ) = delete;
 
-    Acceptor_Socket_Deallocation_Key( Acceptor_Socket_Deallocation_Key const & ) = delete;
+    Server_Socket_Deallocation_Key( Server_Socket_Deallocation_Key const & ) = delete;
 
     /**
      * \brief Destructor.
      */
-    ~Acceptor_Socket_Deallocation_Key() noexcept = default;
+    ~Server_Socket_Deallocation_Key() noexcept = default;
 
-    auto operator=( Acceptor_Socket_Deallocation_Key && ) = delete;
+    auto operator=( Server_Socket_Deallocation_Key && ) = delete;
 
-    auto operator=( Acceptor_Socket_Deallocation_Key const & ) = delete;
+    auto operator=( Server_Socket_Deallocation_Key const & ) = delete;
 
   private:
-    template<typename Network_Stack, typename Acceptor>
+    template<typename Network_Stack, typename Server>
     friend class Server_Connection_Handler;
 
     /**
      * \brief Constructor.
      */
-    constexpr Acceptor_Socket_Deallocation_Key() noexcept = default;
+    constexpr Server_Socket_Deallocation_Key() noexcept = default;
 };
 
 /**
@@ -287,7 +287,7 @@ class Server_Connection_Handler_Construction_Key {
 
   private:
     template<typename Network_Stack>
-    friend class TCP::Acceptor;
+    friend class TCP::Server;
 
     /**
      * \brief Constructor.

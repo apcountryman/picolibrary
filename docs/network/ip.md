@@ -112,8 +112,8 @@ The `::picolibrary::IP::Network_Stack_Concept` concept class is defined in the
 header/source file pair.
 - To construct a TCP client socket, use a network stack implementation's
   `make_tcp_client()` member function.
-- To construct a TCP acceptor socket, use a network stack implementation's
-  `make_tcp_acceptor()` member function.
+- To construct a TCP server socket, use a network stack implementation's
+  `make_tcp_server()` member function.
 
 The `::picolibrary::Testing::Automated::IP::Mock_Network_Stack` mock IP network stack
 class is available if the `PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration

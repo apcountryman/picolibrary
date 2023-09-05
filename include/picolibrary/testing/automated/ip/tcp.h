@@ -326,20 +326,19 @@ class Mock_Server_Connection_Handler {
 };
 
 /**
- * \brief Mock acceptor socket.
+ * \brief Mock server socket.
  */
-class Mock_Acceptor {
+class Mock_Server {
   public:
     using Connection_Handler = Mock_Server_Connection_Handler::Handle;
 
-    class Handle : public Mock_Handle<Mock_Acceptor> {
+    class Handle : public Mock_Handle<Mock_Server> {
       public:
-        using Connection_Handler = Mock_Acceptor::Connection_Handler;
+        using Connection_Handler = Mock_Server::Connection_Handler;
 
         constexpr Handle() noexcept = default;
 
-        constexpr Handle( Mock_Acceptor & mock ) noexcept :
-            Mock_Handle<Mock_Acceptor>{ mock }
+        constexpr Handle( Mock_Server & mock ) noexcept : Mock_Handle<Mock_Server>{ mock }
         {
         }
 
@@ -389,17 +388,17 @@ class Mock_Acceptor {
         }
     };
 
-    Mock_Acceptor() = default;
+    Mock_Server() = default;
 
-    Mock_Acceptor( Mock_Acceptor && ) = delete;
+    Mock_Server( Mock_Server && ) = delete;
 
-    Mock_Acceptor( Mock_Acceptor const & ) = delete;
+    Mock_Server( Mock_Server const & ) = delete;
 
-    ~Mock_Acceptor() noexcept = default;
+    ~Mock_Server() noexcept = default;
 
-    auto operator=( Mock_Acceptor && ) = delete;
+    auto operator=( Mock_Server && ) = delete;
 
-    auto operator=( Mock_Acceptor const & ) = delete;
+    auto operator=( Mock_Server const & ) = delete;
 
     auto handle() noexcept -> Handle
     {

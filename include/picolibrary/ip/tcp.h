@@ -393,34 +393,33 @@ class Server_Connection_Handler_Concept {
 };
 
 /**
- * \brief Acceptor socket concept.
+ * \brief Server socket concept.
  */
-class Acceptor_Concept {
+class Server_Concept {
   public:
     /**
-     * \brief The type of server connection handler socket produced by the acceptor
-     *        socket.
+     * \brief The type of server connection handler socket produced by the server socket.
      */
     using Connection_Handler = Server_Connection_Handler_Concept;
 
     /**
      * \brief Constructor.
      */
-    Acceptor_Concept() noexcept;
+    Server_Concept() noexcept;
 
     /**
      * \brief Constructor.
      *
      * \param[in] source The source of the move.
      */
-    Acceptor_Concept( Acceptor_Concept && source ) noexcept;
+    Server_Concept( Server_Concept && source ) noexcept;
 
-    Acceptor_Concept( Acceptor_Concept const & ) = delete;
+    Server_Concept( Server_Concept const & ) = delete;
 
     /**
      * \brief Destructor.
      */
-    ~Acceptor_Concept() noexcept;
+    ~Server_Concept() noexcept;
 
     /**
      * \brief Assignment operator.
@@ -429,9 +428,9 @@ class Acceptor_Concept {
      *
      * \return The assigned to object.
      */
-    auto operator=( Acceptor_Concept && expression ) noexcept -> Acceptor_Concept &;
+    auto operator=( Server_Concept && expression ) noexcept -> Server_Concept &;
 
-    auto operator=( Acceptor_Concept const & ) = delete;
+    auto operator=( Server_Concept const & ) = delete;
 
     /**
      * \brief Bind the socket to a local endpoint.

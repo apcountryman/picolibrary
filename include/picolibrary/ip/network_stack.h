@@ -39,10 +39,10 @@ class Network_Stack_Concept {
     using TCP_Client = TCP::Client_Concept;
 
     /**
-     * \brief The type of TCP acceptor socket that is used to interact with the network
+     * \brief The type of TCP server socket that is used to interact with the network
      *        stack.
      */
-    using TCP_Acceptor = TCP::Acceptor_Concept;
+    using TCP_Server = TCP::Server_Concept;
 
     /**
      * \brief Constructor.
@@ -84,13 +84,13 @@ class Network_Stack_Concept {
     auto make_tcp_client() noexcept -> TCP_Client;
 
     /**
-     * \brief Construct a TCP acceptor socket.
+     * \brief Construct a TCP server socket.
      *
-     * \pre sufficient resources are available to create the acceptor socket
+     * \pre sufficient resources are available to create the server socket
      *
-     * \return The constructed TCP acceptor socket.
+     * \return The constructed TCP server socket.
      */
-    auto make_tcp_acceptor() noexcept -> TCP_Acceptor;
+    auto make_tcp_server() noexcept -> TCP_Server;
 };
 
 } // namespace picolibrary::IP

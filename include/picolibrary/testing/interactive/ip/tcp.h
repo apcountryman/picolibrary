@@ -216,22 +216,20 @@ auto connect( Client & client, ::picolibrary::IP::TCP::Endpoint const & endpoint
 }
 
 /**
- * \brief Acceptor socket incoming connection request acceptance interactive testing
- *        helper.
+ * \brief Server socket incoming connection request acceptance interactive testing helper.
  *
- * \tparam Acceptor The type of acceptor socket to use to accept the incoming connection
+ * \tparam Server The type of server socket to use to accept the incoming connection
  *         request.
  *
- * \param[in] acceptor The acceptor socket to use to accept the incoming connection
- *            request.
+ * \param[in] server The server socket to use to accept the incoming connection request.
  *
  * \return A server connection handler socket for handling the connection.
  */
-template<typename Acceptor>
-auto accept( Acceptor & acceptor ) noexcept -> typename Acceptor::Connection_Handler
+template<typename Server>
+auto accept( Server & server ) noexcept -> typename Server::Connection_Handler
 {
     for ( ;; ) {
-        auto result = acceptor.accept();
+        auto result = server.accept();
         if ( result.is_error() ) {
             PICOLIBRARY_EXPECT(
                 result.error() == Generic_Error::WOULD_BLOCK
@@ -299,16 +297,16 @@ template<typename Network_Stack, typename Socket_Options_Configurator>
 /**
  * \brief Server socket echo interactive test helper.
  *
- * \tparam Network_Stack The type of network stack to use to construct an acceptor socket.
- * \tparam Socket_Options_Configurator A unary functor that takes the acceptor socket
- *         whose socket options are to be configured by reference, and configures the
- *         acceptor socket's socket options.
+ * \tparam Network_Stack The type of network stack to use to construct a server socket.
+ * \tparam Socket_Options_Configurator A unary functor that takes the server socket whose
+ *         socket options are to be configured by reference, and configures the server
+ *         socket's socket options.
  *
  * \param[in] stream The stream to write test output to.
- * \param[in] network_stack The network stack to use to construct an acceptor socket.
- * \param[in] configure_socket_options The functor to use to configure acceptor socket
+ * \param[in] network_stack The network stack to use to construct a server socket.
+ * \param[in] configure_socket_options The functor to use to configure server socket
  *            socket options.
- * \param[in] local_endpoint The local endpoint to bind the acceptor socket to.
+ * \param[in] local_endpoint The local endpoint to bind the server socket to.
  * \param[in] backlog The maximum number of simultaneously connected clients.
  */
 template<typename Network_Stack, typename Socket_Options_Configurator>
@@ -321,22 +319,22 @@ template<typename Network_Stack, typename Socket_Options_Configurator>
 {
     // #lizard forgives the length
 
-    auto acceptor = network_stack.make_tcp_acceptor();
+    auto server = network_stack.make_tcp_server();
 
-    configure_socket_options( acceptor );
+    configure_socket_options( server );
 
-    acceptor.bind( local_endpoint );
+    server.bind( local_endpoint );
 
-    acceptor.listen( backlog );
+    server.listen( backlog );
 
     stream.print(
         PICOLIBRARY_ROM_STRING( "listening for incoming connection requests on " ),
-        acceptor.local_endpoint(),
+        server.local_endpoint(),
         '\n' );
     stream.flush();
 
     for ( ;; ) {
-        auto connection_handler = accept( acceptor );
+        auto connection_handler = accept( server );
         stream.print(
             PICOLIBRARY_ROM_STRING( "accepted connection request from " ),
             connection_handler.remote_endpoint(),

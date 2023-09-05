@@ -17,7 +17,7 @@
 
 /**
  * \file
- * \brief picolibrary::WIZnet::W5500::IP::TCP::Acceptor automated test program.
+ * \brief picolibrary::WIZnet::W5500::IP::TCP::Server automated test program.
  */
 
 #include <bitset>
@@ -56,42 +56,42 @@ using ::testing::TestWithParam;
 using ::testing::Values;
 using ::testing::ValuesIn;
 
-using Acceptor = ::picolibrary::WIZnet::W5500::IP::TCP::Acceptor<Mock_Network_Stack>;
+using Server = ::picolibrary::WIZnet::W5500::IP::TCP::Server<Mock_Network_Stack>;
 
 } // namespace
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::Acceptor() works properly.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::Server() works properly.
  */
 TEST( constructorDefault, worksProperly )
 {
-    auto const acceptor = Acceptor{};
+    auto const server = Server{};
 
-    EXPECT_EQ( acceptor.state(), Acceptor::State::UNINITIALIZED );
-    EXPECT_FALSE( acceptor.is_listening() );
+    EXPECT_EQ( server.state(), Server::State::UNINITIALIZED );
+    EXPECT_FALSE( server.is_listening() );
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::~Acceptor() works properly
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::~Server() works properly
  *        when the socket is in the
- *        picolibrary::WIZnet::W5500::IP::TCP::Acceptor::State::UNINITIALIZED state.
+ *        picolibrary::WIZnet::W5500::IP::TCP::Server::State::UNINITIALIZED state.
  */
 TEST( destructor, worksProperlyUninitialized )
 {
-    auto const acceptor = Acceptor{};
+    auto const server = Server{};
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::~Acceptor() works properly
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::~Server() works properly
  *        when the socket is in the
- *        picolibrary::WIZnet::W5500::IP::TCP::Acceptor::State::INITIALIZED state.
+ *        picolibrary::WIZnet::W5500::IP::TCP::Server::State::INITIALIZED state.
  */
 TEST( destructor, worksProperlyInitialized )
 {
     auto       network_stack = Mock_Network_Stack{};
-    auto const socket_ids = Acceptor::Socket_IDs{ Socket_ID::_0, Socket_ID::_7, Socket_ID::_5 };
+    auto const socket_ids = Server::Socket_IDs{ Socket_ID::_0, Socket_ID::_7, Socket_ID::_5 };
 
-    auto const acceptor = Acceptor{ network_stack, socket_ids };
+    auto const server = Server{ network_stack, socket_ids };
 
     for ( auto const socket_id : socket_ids ) {
         EXPECT_CALL( network_stack, deallocate_socket( _, socket_id ) );
@@ -99,17 +99,17 @@ TEST( destructor, worksProperlyInitialized )
 }
 
 /**
- * \brief picolibrary::WIZnet::W5500::IP::TCP::Acceptor::~Acceptor() other states test
+ * \brief picolibrary::WIZnet::W5500::IP::TCP::Server::~Server() other states test
  *        fixture.
  */
-class destructorOtherStates : public TestWithParam<Acceptor::State> {
+class destructorOtherStates : public TestWithParam<Server::State> {
 };
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::~Acceptor() works properly
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::~Server() works properly
  *        when the socket is in states other than
- *        picolibrary::WIZnet::W5500::IP::TCP::Acceptor::State::UNINITIALIZED, and
- *        picolibrary::WIZnet::W5500::IP::TCP::Acceptor::State::INITIALIZED.
+ *        picolibrary::WIZnet::W5500::IP::TCP::Server::State::UNINITIALIZED, and
+ *        picolibrary::WIZnet::W5500::IP::TCP::Server::State::INITIALIZED.
  */
 TEST_P( destructorOtherStates, worksProperly )
 {
@@ -118,10 +118,10 @@ TEST_P( destructorOtherStates, worksProperly )
     auto       network_stack      = Mock_Network_Stack{};
     auto       driver             = Mock_Driver{};
     auto       tcp_port_allocator = Mock_Port_Allocator{};
-    auto const socket_ids = Acceptor::Socket_IDs{ Socket_ID::_0, Socket_ID::_7, Socket_ID::_5 };
-    auto const state = GetParam();
+    auto const socket_ids = Server::Socket_IDs{ Socket_ID::_0, Socket_ID::_7, Socket_ID::_5 };
+    auto const state      = GetParam();
 
-    auto const acceptor = Acceptor{ network_stack, socket_ids, state };
+    auto const server = Server{ network_stack, socket_ids, state };
 
     auto const sn_port = std::uint16_t{ 13501 };
 
@@ -137,33 +137,31 @@ TEST_P( destructorOtherStates, worksProperly )
 INSTANTIATE_TEST_SUITE_P(
     testCases,
     destructorOtherStates,
-    Values<Acceptor::State>( Acceptor::State::BOUND, Acceptor::State::LISTENING ) );
+    Values<Server::State>( Server::State::BOUND, Server::State::LISTENING ) );
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::socket_ids() works
- *        properly.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::socket_ids() works properly.
  */
 TEST( socketIDs, worksProperly )
 {
     auto       network_stack = Mock_Network_Stack{};
-    auto const socket_ids = Acceptor::Socket_IDs{ Socket_ID::_3, Socket_ID::_0, Socket_ID::_4, Socket_ID::_2 };
+    auto const socket_ids = Server::Socket_IDs{ Socket_ID::_3, Socket_ID::_0, Socket_ID::_4, Socket_ID::_2 };
 
-    auto const acceptor = Acceptor{ network_stack, socket_ids };
+    auto const server = Server{ network_stack, socket_ids };
 
-    EXPECT_EQ( acceptor.socket_ids(), socket_ids );
+    EXPECT_EQ( server.socket_ids(), socket_ids );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) ).Times( AnyNumber() );
 }
 
 /**
- * \brief picolibrary::WIZnet::W5500::IP::TCP::Acceptor::socket_interrupt_mask() test
- *        case.
+ * \brief picolibrary::WIZnet::W5500::IP::TCP::Server::socket_interrupt_mask() test case.
  */
 struct socketInterruptMask_Test_Case {
     /**
      * \brief The socket's hardware socket IDs.
      */
-    Acceptor::Socket_IDs socket_ids;
+    Server::Socket_IDs socket_ids;
 
     /**
      * \brief The socket's socket interrupt mask.
@@ -192,14 +190,14 @@ auto operator<<( std::ostream & stream, socketInterruptMask_Test_Case const & te
 }
 
 /**
- * \brief picolibrary::WIZnet::W5500::IP::TCP::Acceptor::socket_interrupt_mask() test
+ * \brief picolibrary::WIZnet::W5500::IP::TCP::Server::socket_interrupt_mask() test
  *        fixture.
  */
 class socketInterruptMask : public TestWithParam<socketInterruptMask_Test_Case> {
 };
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::socket_interrupt_mask()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::socket_interrupt_mask()
  *        works properly.
  */
 TEST_P( socketInterruptMask, worksProperly )
@@ -208,16 +206,15 @@ TEST_P( socketInterruptMask, worksProperly )
 
     auto network_stack = Mock_Network_Stack{};
 
-    auto const acceptor = Acceptor{ network_stack, test_case.socket_ids };
+    auto const server = Server{ network_stack, test_case.socket_ids };
 
-    EXPECT_EQ( acceptor.socket_interrupt_mask(), test_case.socket_interrupt_mask );
+    EXPECT_EQ( server.socket_interrupt_mask(), test_case.socket_interrupt_mask );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) ).Times( AnyNumber() );
 }
 
 /**
- * \brief picolibrary::WIZnet::W5500::IP::TCP::Acceptor::socket_interrupt_mask() test
- *        cases.
+ * \brief picolibrary::WIZnet::W5500::IP::TCP::Server::socket_interrupt_mask() test cases.
  */
 socketInterruptMask_Test_Case const socketInterruptMask_TEST_CASES[]{
     // clang-format off
@@ -241,7 +238,7 @@ socketInterruptMask_Test_Case const socketInterruptMask_TEST_CASES[]{
 INSTANTIATE_TEST_SUITE_P( testCases, socketInterruptMask, ValuesIn( socketInterruptMask_TEST_CASES ) );
 
 /**
- * \brief picolibrary::WIZnet::W5500::IP::TCP::Acceptor::configure_no_delayed_ack_usage()
+ * \brief picolibrary::WIZnet::W5500::IP::TCP::Server::configure_no_delayed_ack_usage()
  *        test case.
  */
 struct configureNoDelayedACKUsage_Test_Case {
@@ -271,7 +268,7 @@ auto operator<<( std::ostream & stream, configureNoDelayedACKUsage_Test_Case con
 }
 
 /**
- * \brief picolibrary::WIZnet::W5500::IP::TCP::Acceptor::configure_no_delayed_ack_usage()
+ * \brief picolibrary::WIZnet::W5500::IP::TCP::Server::configure_no_delayed_ack_usage()
  *        test fixture.
  */
 class configureNoDelayedACKUsage : public TestWithParam<configureNoDelayedACKUsage_Test_Case> {
@@ -279,7 +276,7 @@ class configureNoDelayedACKUsage : public TestWithParam<configureNoDelayedACKUsa
 
 /**
  * \brief Verify
- *        picolibrary::WIZnet::W5500::IP::TCP::Acceptor::configure_no_delayed_ack_usage()
+ *        picolibrary::WIZnet::W5500::IP::TCP::Server::configure_no_delayed_ack_usage()
  *        works properly.
  */
 TEST_P( configureNoDelayedACKUsage, worksProperly )
@@ -288,22 +285,22 @@ TEST_P( configureNoDelayedACKUsage, worksProperly )
 
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto const socket_ids    = Acceptor::Socket_IDs{ Socket_ID::_7, Socket_ID::_2 };
+    auto const socket_ids    = Server::Socket_IDs{ Socket_ID::_7, Socket_ID::_2 };
 
-    auto acceptor = Acceptor{ network_stack, socket_ids };
+    auto server = Server{ network_stack, socket_ids };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     for ( auto const socket_id : socket_ids ) {
         EXPECT_CALL( driver, write_sn_mr( socket_id, test_case.sn_mr ) );
     } // for
 
-    acceptor.configure_no_delayed_ack_usage( test_case.no_delayed_ack_usage_configuration );
+    server.configure_no_delayed_ack_usage( test_case.no_delayed_ack_usage_configuration );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) ).Times( AnyNumber() );
 }
 
 /**
- * \brief picolibrary::WIZnet::W5500::IP::TCP::Acceptor::configure_no_delayed_ack_usage()
+ * \brief picolibrary::WIZnet::W5500::IP::TCP::Server::configure_no_delayed_ack_usage()
  *        test cases.
  */
 configureNoDelayedACKUsage_Test_Case const configureNoDelayedACKUsage_TEST_CASES[]{
@@ -318,7 +315,7 @@ configureNoDelayedACKUsage_Test_Case const configureNoDelayedACKUsage_TEST_CASES
 INSTANTIATE_TEST_SUITE_P( testCases, configureNoDelayedACKUsage, ValuesIn( configureNoDelayedACKUsage_TEST_CASES ) );
 
 /**
- * \brief picolibrary::WIZnet::W5500::IP::TCP::Acceptor::no_delayed_ack_usage_configuration()
+ * \brief picolibrary::WIZnet::W5500::IP::TCP::Server::no_delayed_ack_usage_configuration()
  *        test case.
  */
 struct noDelayedACKUsageConfiguration_Test_Case {
@@ -348,7 +345,7 @@ auto operator<<( std::ostream & stream, noDelayedACKUsageConfiguration_Test_Case
 }
 
 /**
- * \brief picolibrary::WIZnet::W5500::IP::TCP::Acceptor::no_delayed_ack_usage_configuration()
+ * \brief picolibrary::WIZnet::W5500::IP::TCP::Server::no_delayed_ack_usage_configuration()
  *        test fixture.
  */
 class noDelayedACKUsageConfiguration : public TestWithParam<noDelayedACKUsageConfiguration_Test_Case> {
@@ -356,7 +353,7 @@ class noDelayedACKUsageConfiguration : public TestWithParam<noDelayedACKUsageCon
 
 /**
  * \brief Verify
- *        picolibrary::WIZnet::W5500::IP::TCP::Acceptor::no_delayed_ack_usage_configuration()
+ *        picolibrary::WIZnet::W5500::IP::TCP::Server::no_delayed_ack_usage_configuration()
  *        works properly.
  */
 TEST_P( noDelayedACKUsageConfiguration, worksProperly )
@@ -365,20 +362,20 @@ TEST_P( noDelayedACKUsageConfiguration, worksProperly )
 
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto const socket_ids = Acceptor::Socket_IDs{ Socket_ID::_1, Socket_ID::_4, Socket_ID::_0, Socket_ID::_7 };
+    auto const socket_ids = Server::Socket_IDs{ Socket_ID::_1, Socket_ID::_4, Socket_ID::_0, Socket_ID::_7 };
 
-    auto const acceptor = Acceptor{ network_stack, socket_ids };
+    auto const server = Server{ network_stack, socket_ids };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_mr( socket_ids.front() ) ).WillOnce( Return( test_case.sn_mr ) );
 
-    EXPECT_EQ( acceptor.no_delayed_ack_usage_configuration(), test_case.no_delayed_ack_usage_configuration );
+    EXPECT_EQ( server.no_delayed_ack_usage_configuration(), test_case.no_delayed_ack_usage_configuration );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) ).Times( AnyNumber() );
 }
 
 /**
- * \brief picolibrary::WIZnet::W5500::IP::TCP::Acceptor::no_delayed_ack_usage_configuration()
+ * \brief picolibrary::WIZnet::W5500::IP::TCP::Server::no_delayed_ack_usage_configuration()
  *        test cases.
  */
 noDelayedACKUsageConfiguration_Test_Case const noDelayedACKUsageConfiguration_TEST_CASES[]{
@@ -394,16 +391,16 @@ INSTANTIATE_TEST_SUITE_P( testCases, noDelayedACKUsageConfiguration, ValuesIn( n
 
 /**
  * \brief Verify
- *        picolibrary::WIZnet::W5500::IP::TCP::Acceptor::configure_maximum_segment_size()
+ *        picolibrary::WIZnet::W5500::IP::TCP::Server::configure_maximum_segment_size()
  *        works properly.
  */
 TEST( configureMaximumSegmentSize, worksProperly )
 {
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto const socket_ids    = Acceptor::Socket_IDs{ Socket_ID::_4, Socket_ID::_2 };
+    auto const socket_ids    = Server::Socket_IDs{ Socket_ID::_4, Socket_ID::_2 };
 
-    auto acceptor = Acceptor{ network_stack, socket_ids };
+    auto server = Server{ network_stack, socket_ids };
 
     auto const maximum_segment_size = std::uint16_t{ 0x52B0 };
 
@@ -412,44 +409,44 @@ TEST( configureMaximumSegmentSize, worksProperly )
         EXPECT_CALL( driver, write_sn_mssr( socket_id, maximum_segment_size ) );
     } // for
 
-    acceptor.configure_maximum_segment_size( maximum_segment_size );
+    server.configure_maximum_segment_size( maximum_segment_size );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) ).Times( AnyNumber() );
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::maximum_segment_size()
- *        works properly.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::maximum_segment_size() works
+ *        properly.
  */
 TEST( maximumSegmentSize, worksProperly )
 {
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto const socket_ids = Acceptor::Socket_IDs{ Socket_ID::_2, Socket_ID::_5, Socket_ID::_3, Socket_ID::_1 };
+    auto const socket_ids = Server::Socket_IDs{ Socket_ID::_2, Socket_ID::_5, Socket_ID::_3, Socket_ID::_1 };
 
-    auto const acceptor = Acceptor{ network_stack, socket_ids };
+    auto const server = Server{ network_stack, socket_ids };
 
     auto const sn_mssr = std::uint16_t{ 0x9410 };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_mssr( socket_ids.front() ) ).WillOnce( Return( sn_mssr ) );
 
-    EXPECT_EQ( acceptor.maximum_segment_size(), sn_mssr );
+    EXPECT_EQ( server.maximum_segment_size(), sn_mssr );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) ).Times( AnyNumber() );
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::configure_time_to_live()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::configure_time_to_live()
  *        works properly.
  */
 TEST( configureTimeToLive, worksProperly )
 {
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto const socket_ids    = Acceptor::Socket_IDs{ Socket_ID::_1, Socket_ID::_7 };
+    auto const socket_ids    = Server::Socket_IDs{ Socket_ID::_1, Socket_ID::_7 };
 
-    auto acceptor = Acceptor{ network_stack, socket_ids };
+    auto server = Server{ network_stack, socket_ids };
 
     auto const time_to_live = std::uint8_t{ 0xAE };
 
@@ -458,45 +455,44 @@ TEST( configureTimeToLive, worksProperly )
         EXPECT_CALL( driver, write_sn_ttl( socket_id, time_to_live ) );
     } // for
 
-    acceptor.configure_time_to_live( time_to_live );
+    server.configure_time_to_live( time_to_live );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) ).Times( AnyNumber() );
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::time_to_live() works
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::time_to_live() works
  *        properly.
  */
 TEST( timeToLive, worksProperly )
 {
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto const socket_ids    = Acceptor::Socket_IDs{ Socket_ID::_1, Socket_ID::_3 };
+    auto const socket_ids    = Server::Socket_IDs{ Socket_ID::_1, Socket_ID::_3 };
 
-    auto const acceptor = Acceptor{ network_stack, socket_ids };
+    auto const server = Server{ network_stack, socket_ids };
 
     auto const sn_ttl = std::uint8_t{ 0x3B };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_ttl( socket_ids.front() ) ).WillOnce( Return( sn_ttl ) );
 
-    EXPECT_EQ( acceptor.time_to_live(), sn_ttl );
+    EXPECT_EQ( server.time_to_live(), sn_ttl );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) ).Times( AnyNumber() );
 }
 
 /**
- * \brief Verify
- *        picolibrary::WIZnet::W5500::IP::TCP::Acceptor::configure_keepalive_period()
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::configure_keepalive_period()
  *        works properly.
  */
 TEST( configureKeepalivePeriod, worksProperly )
 {
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto const socket_ids    = Acceptor::Socket_IDs{ Socket_ID::_3, Socket_ID::_2 };
+    auto const socket_ids    = Server::Socket_IDs{ Socket_ID::_3, Socket_ID::_2 };
 
-    auto acceptor = Acceptor{ network_stack, socket_ids };
+    auto server = Server{ network_stack, socket_ids };
 
     auto const keepalive_period = std::uint8_t{ 0x42 };
 
@@ -505,44 +501,44 @@ TEST( configureKeepalivePeriod, worksProperly )
         EXPECT_CALL( driver, write_sn_kpalvtr( socket_id, keepalive_period ) );
     } // for
 
-    acceptor.configure_keepalive_period( keepalive_period );
+    server.configure_keepalive_period( keepalive_period );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) ).Times( AnyNumber() );
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::keepalive_period() works
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::keepalive_period() works
  *        properly.
  */
 TEST( keepalivePeriod, worksProperly )
 {
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto const socket_ids = Acceptor::Socket_IDs{ Socket_ID::_5, Socket_ID::_6, Socket_ID::_0, Socket_ID::_1 };
+    auto const socket_ids = Server::Socket_IDs{ Socket_ID::_5, Socket_ID::_6, Socket_ID::_0, Socket_ID::_1 };
 
-    auto const acceptor = Acceptor{ network_stack, socket_ids };
+    auto const server = Server{ network_stack, socket_ids };
 
     auto const sn_kpalvtr = std::uint8_t{ 0x4D };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_kpalvtr( socket_ids.front() ) ).WillOnce( Return( sn_kpalvtr ) );
 
-    EXPECT_EQ( acceptor.keepalive_period(), sn_kpalvtr );
+    EXPECT_EQ( server.keepalive_period(), sn_kpalvtr );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) ).Times( AnyNumber() );
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::enable_interrupts() works
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::enable_interrupts() works
  *        properly.
  */
 TEST( enableInterrupts, worksProperly )
 {
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto const socket_ids    = Acceptor::Socket_IDs{ Socket_ID::_2, Socket_ID::_0 };
+    auto const socket_ids    = Server::Socket_IDs{ Socket_ID::_2, Socket_ID::_0 };
 
-    auto acceptor = Acceptor{ network_stack, socket_ids };
+    auto server = Server{ network_stack, socket_ids };
 
     auto const mask = std::uint8_t{ 0b0101'1111 };
 
@@ -552,22 +548,22 @@ TEST( enableInterrupts, worksProperly )
         EXPECT_CALL( driver, write_sn_imr( socket_id, 0b0111'1111 ) );
     } // for
 
-    acceptor.enable_interrupts( mask );
+    server.enable_interrupts( mask );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) ).Times( AnyNumber() );
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::disable_interrupts(
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::disable_interrupts(
  *        std::uint8_t ) works properly.
  */
 TEST( disableInterrupts, worksProperly )
 {
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto const socket_ids    = Acceptor::Socket_IDs{ Socket_ID::_1, Socket_ID::_5 };
+    auto const socket_ids    = Server::Socket_IDs{ Socket_ID::_1, Socket_ID::_5 };
 
-    auto acceptor = Acceptor{ network_stack, socket_ids };
+    auto server = Server{ network_stack, socket_ids };
 
     auto const mask = std::uint8_t{ 0b0101'0111 };
 
@@ -577,87 +573,87 @@ TEST( disableInterrupts, worksProperly )
         EXPECT_CALL( driver, write_sn_imr( socket_id, 0b0010'1000 ) );
     } // for
 
-    acceptor.disable_interrupts( mask );
+    server.disable_interrupts( mask );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) ).Times( AnyNumber() );
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::disable_interrupts() works
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::disable_interrupts() works
  *        properly.
  */
 TEST( disableAllInterrupts, worksProperly )
 {
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto const socket_ids    = Acceptor::Socket_IDs{ Socket_ID::_0, Socket_ID::_3 };
+    auto const socket_ids    = Server::Socket_IDs{ Socket_ID::_0, Socket_ID::_3 };
 
-    auto acceptor = Acceptor{ network_stack, socket_ids };
+    auto server = Server{ network_stack, socket_ids };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     for ( auto const socket_id : socket_ids ) {
         EXPECT_CALL( driver, write_sn_imr( socket_id, 0x00 ) );
     } // for
 
-    acceptor.disable_interrupts();
+    server.disable_interrupts();
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) ).Times( AnyNumber() );
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::enabled_interrupts() works
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::enabled_interrupts() works
  *        properly.
  */
 TEST( enabledInterrupts, worksProperly )
 {
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto const socket_ids    = Acceptor::Socket_IDs{ Socket_ID::_7, Socket_ID::_1 };
+    auto const socket_ids    = Server::Socket_IDs{ Socket_ID::_7, Socket_ID::_1 };
 
-    auto const acceptor = Acceptor{ network_stack, socket_ids };
+    auto const server = Server{ network_stack, socket_ids };
 
     auto const sn_imr{ 0b00100111 };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_imr( socket_ids.front() ) ).WillOnce( Return( sn_imr ) );
 
-    EXPECT_EQ( acceptor.enabled_interrupts(), sn_imr );
+    EXPECT_EQ( server.enabled_interrupts(), sn_imr );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) ).Times( AnyNumber() );
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::interrupt_context() works
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::interrupt_context() works
  *        properly.
  */
 TEST( interruptContext, worksProperly )
 {
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto const socket_ids    = Acceptor::Socket_IDs{ Socket_ID::_6, Socket_ID::_0 };
+    auto const socket_ids    = Server::Socket_IDs{ Socket_ID::_6, Socket_ID::_0 };
 
-    auto const acceptor = Acceptor{ network_stack, socket_ids };
+    auto const server = Server{ network_stack, socket_ids };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     EXPECT_CALL( driver, read_sn_ir( socket_ids[ 0 ] ) ).WillOnce( Return( 0b0101'0100 ) );
     EXPECT_CALL( driver, read_sn_ir( socket_ids[ 1 ] ) ).WillOnce( Return( 0b0011'1100 ) );
 
-    EXPECT_EQ( acceptor.interrupt_context(), 0b0111'1100 );
+    EXPECT_EQ( server.interrupt_context(), 0b0111'1100 );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) ).Times( AnyNumber() );
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::clear_interrupts() works
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::clear_interrupts() works
  *        properly.
  */
 TEST( clearInterrupts, worksProperly )
 {
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto const socket_ids    = Acceptor::Socket_IDs{ Socket_ID::_1, Socket_ID::_2 };
+    auto const socket_ids    = Server::Socket_IDs{ Socket_ID::_1, Socket_ID::_2 };
 
-    auto acceptor = Acceptor{ network_stack, socket_ids };
+    auto server = Server{ network_stack, socket_ids };
 
     auto const mask = std::uint8_t{ 0b111'0'0'0'1'1 };
 
@@ -666,13 +662,13 @@ TEST( clearInterrupts, worksProperly )
         EXPECT_CALL( driver, write_sn_ir( socket_id, mask ) );
     } // for
 
-    acceptor.clear_interrupts( mask );
+    server.clear_interrupts( mask );
 
     EXPECT_CALL( network_stack, deallocate_socket( _, _ ) ).Times( AnyNumber() );
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::bind() works properly when
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::bind() works properly when
  *        the default local endpoint is used.
  */
 TEST( bind, worksProperlyDefaultEndpoint )
@@ -682,9 +678,9 @@ TEST( bind, worksProperlyDefaultEndpoint )
     auto       network_stack      = Mock_Network_Stack{};
     auto       driver             = Mock_Driver{};
     auto       tcp_port_allocator = Mock_Port_Allocator{};
-    auto const socket_ids         = Acceptor::Socket_IDs{ Socket_ID::_4, Socket_ID::_0 };
+    auto const socket_ids         = Server::Socket_IDs{ Socket_ID::_4, Socket_ID::_0 };
 
-    auto acceptor = Acceptor{ network_stack, socket_ids };
+    auto server = Server{ network_stack, socket_ids };
 
     auto const port = Port{ 51561 };
 
@@ -703,10 +699,10 @@ TEST( bind, worksProperlyDefaultEndpoint )
         EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x13 ) );
     } // for
 
-    acceptor.bind();
+    server.bind();
 
-    EXPECT_EQ( acceptor.state(), Acceptor::State::BOUND );
-    EXPECT_FALSE( acceptor.is_listening() );
+    EXPECT_EQ( server.state(), Server::State::BOUND );
+    EXPECT_FALSE( server.is_listening() );
 
     EXPECT_CALL( network_stack, tcp_port_allocator( _ ) ).WillOnce( ReturnRef( tcp_port_allocator ) );
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
@@ -716,7 +712,7 @@ TEST( bind, worksProperlyDefaultEndpoint )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::bind() works properly when
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::bind() works properly when
  *        binding to any address and an ephemeral port.
  */
 TEST( bind, worksProperlyAnyAddressEphemeralPort )
@@ -726,9 +722,9 @@ TEST( bind, worksProperlyAnyAddressEphemeralPort )
     auto       network_stack      = Mock_Network_Stack{};
     auto       driver             = Mock_Driver{};
     auto       tcp_port_allocator = Mock_Port_Allocator{};
-    auto const socket_ids         = Acceptor::Socket_IDs{ Socket_ID::_7, Socket_ID::_4 };
+    auto const socket_ids         = Server::Socket_IDs{ Socket_ID::_7, Socket_ID::_4 };
 
-    auto acceptor = Acceptor{ network_stack, socket_ids };
+    auto server = Server{ network_stack, socket_ids };
 
     auto const port = Port{ 44597 };
 
@@ -747,10 +743,10 @@ TEST( bind, worksProperlyAnyAddressEphemeralPort )
         EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x13 ) );
     } // for
 
-    acceptor.bind( {} );
+    server.bind( {} );
 
-    EXPECT_EQ( acceptor.state(), Acceptor::State::BOUND );
-    EXPECT_FALSE( acceptor.is_listening() );
+    EXPECT_EQ( server.state(), Server::State::BOUND );
+    EXPECT_FALSE( server.is_listening() );
 
     EXPECT_CALL( network_stack, tcp_port_allocator( _ ) ).WillOnce( ReturnRef( tcp_port_allocator ) );
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
@@ -760,7 +756,7 @@ TEST( bind, worksProperlyAnyAddressEphemeralPort )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::bind() works properly when
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::bind() works properly when
  *        binding to any address and a non-ephemeral port.
  */
 TEST( bind, worksProperlyAnyAddressNonEphemeralPort )
@@ -770,9 +766,9 @@ TEST( bind, worksProperlyAnyAddressNonEphemeralPort )
     auto       network_stack      = Mock_Network_Stack{};
     auto       driver             = Mock_Driver{};
     auto       tcp_port_allocator = Mock_Port_Allocator{};
-    auto const socket_ids         = Acceptor::Socket_IDs{ Socket_ID::_3, Socket_ID::_4 };
+    auto const socket_ids         = Server::Socket_IDs{ Socket_ID::_3, Socket_ID::_4 };
 
-    auto acceptor = Acceptor{ network_stack, socket_ids };
+    auto server = Server{ network_stack, socket_ids };
 
     auto const port = Port{ 60790 };
 
@@ -791,10 +787,10 @@ TEST( bind, worksProperlyAnyAddressNonEphemeralPort )
         EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x13 ) );
     } // for
 
-    acceptor.bind( port );
+    server.bind( port );
 
-    EXPECT_EQ( acceptor.state(), Acceptor::State::BOUND );
-    EXPECT_FALSE( acceptor.is_listening() );
+    EXPECT_EQ( server.state(), Server::State::BOUND );
+    EXPECT_FALSE( server.is_listening() );
 
     EXPECT_CALL( network_stack, tcp_port_allocator( _ ) ).WillOnce( ReturnRef( tcp_port_allocator ) );
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
@@ -804,7 +800,7 @@ TEST( bind, worksProperlyAnyAddressNonEphemeralPort )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::bind() works properly when
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::bind() works properly when
  *        binding to a specific address and an ephemeral port.
  */
 TEST( bind, worksProperlySpecificAddressEphemeralPort )
@@ -814,9 +810,9 @@ TEST( bind, worksProperlySpecificAddressEphemeralPort )
     auto       network_stack      = Mock_Network_Stack{};
     auto       driver             = Mock_Driver{};
     auto       tcp_port_allocator = Mock_Port_Allocator{};
-    auto const socket_ids         = Acceptor::Socket_IDs{ Socket_ID::_6, Socket_ID::_5 };
+    auto const socket_ids         = Server::Socket_IDs{ Socket_ID::_6, Socket_ID::_5 };
 
-    auto acceptor = Acceptor{ network_stack, socket_ids };
+    auto server = Server{ network_stack, socket_ids };
 
     auto const address = Address{ { 17, 233, 244, 75 } };
     auto const port    = Port{ 17923 };
@@ -837,10 +833,10 @@ TEST( bind, worksProperlySpecificAddressEphemeralPort )
         EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x13 ) );
     } // for
 
-    acceptor.bind( { address, {} } );
+    server.bind( { address, {} } );
 
-    EXPECT_EQ( acceptor.state(), Acceptor::State::BOUND );
-    EXPECT_FALSE( acceptor.is_listening() );
+    EXPECT_EQ( server.state(), Server::State::BOUND );
+    EXPECT_FALSE( server.is_listening() );
 
     EXPECT_CALL( network_stack, tcp_port_allocator( _ ) ).WillOnce( ReturnRef( tcp_port_allocator ) );
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
@@ -850,7 +846,7 @@ TEST( bind, worksProperlySpecificAddressEphemeralPort )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::bind() works properly when
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::bind() works properly when
  *        binding to a specific address and a non-ephemeral port.
  */
 TEST( bind, worksProperlySpecificAddressNonEphemeralPort )
@@ -860,9 +856,9 @@ TEST( bind, worksProperlySpecificAddressNonEphemeralPort )
     auto       network_stack      = Mock_Network_Stack{};
     auto       driver             = Mock_Driver{};
     auto       tcp_port_allocator = Mock_Port_Allocator{};
-    auto const socket_ids         = Acceptor::Socket_IDs{ Socket_ID::_2, Socket_ID::_5 };
+    auto const socket_ids         = Server::Socket_IDs{ Socket_ID::_2, Socket_ID::_5 };
 
-    auto acceptor = Acceptor{ network_stack, socket_ids };
+    auto server = Server{ network_stack, socket_ids };
 
     auto const address = Address{ { 93, 188, 26, 253 } };
     auto const port    = Port{ 9090 };
@@ -883,10 +879,10 @@ TEST( bind, worksProperlySpecificAddressNonEphemeralPort )
         EXPECT_CALL( driver, read_sn_sr( socket_id ) ).WillOnce( Return( 0x13 ) );
     } // for
 
-    acceptor.bind( { address, port } );
+    server.bind( { address, port } );
 
-    EXPECT_EQ( acceptor.state(), Acceptor::State::BOUND );
-    EXPECT_FALSE( acceptor.is_listening() );
+    EXPECT_EQ( server.state(), Server::State::BOUND );
+    EXPECT_FALSE( server.is_listening() );
 
     EXPECT_CALL( network_stack, tcp_port_allocator( _ ) ).WillOnce( ReturnRef( tcp_port_allocator ) );
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
@@ -896,15 +892,15 @@ TEST( bind, worksProperlySpecificAddressNonEphemeralPort )
 }
 
 /**
- * \brief picolibrary::WIZnet::W5500::IP::TCP::Acceptor::listen() backlog less than or
- *        equal to socket count test fixture.
+ * \brief picolibrary::WIZnet::W5500::IP::TCP::Server::listen() backlog less than or equal
+ *        to socket count test fixture.
  */
 class listenBacklogLessThanOrEqualToSocketCount : public TestWithParam<std::uint_fast8_t> {
 };
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::listen() works properly
- *        when backlog is less than or equal to the socket count.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::listen() works properly when
+ *        backlog is less than or equal to the socket count.
  */
 TEST_P( listenBacklogLessThanOrEqualToSocketCount, worksProperly )
 {
@@ -913,9 +909,9 @@ TEST_P( listenBacklogLessThanOrEqualToSocketCount, worksProperly )
     auto       network_stack      = Mock_Network_Stack{};
     auto       driver             = Mock_Driver{};
     auto       tcp_port_allocator = Mock_Port_Allocator{};
-    auto const socket_ids         = Acceptor::Socket_IDs{ Socket_ID::_7, Socket_ID::_2 };
+    auto const socket_ids         = Server::Socket_IDs{ Socket_ID::_7, Socket_ID::_2 };
 
-    auto acceptor = Acceptor{ network_stack, socket_ids, Acceptor::State::BOUND };
+    auto server = Server{ network_stack, socket_ids, Server::State::BOUND };
 
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
     for ( auto const socket_id : socket_ids ) {
@@ -926,11 +922,11 @@ TEST_P( listenBacklogLessThanOrEqualToSocketCount, worksProperly )
 
     auto const backlog = GetParam();
 
-    acceptor.listen( backlog );
+    server.listen( backlog );
 
-    EXPECT_EQ( acceptor.state(), Acceptor::State::LISTENING );
-    EXPECT_EQ( acceptor.socket_ids(), socket_ids );
-    EXPECT_TRUE( acceptor.is_listening() );
+    EXPECT_EQ( server.state(), Server::State::LISTENING );
+    EXPECT_EQ( server.socket_ids(), socket_ids );
+    EXPECT_TRUE( server.is_listening() );
 
     EXPECT_CALL( network_stack, tcp_port_allocator( _ ) ).WillOnce( ReturnRef( tcp_port_allocator ) );
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
@@ -942,7 +938,7 @@ TEST_P( listenBacklogLessThanOrEqualToSocketCount, worksProperly )
 INSTANTIATE_TEST_SUITE_P( testCases, listenBacklogLessThanOrEqualToSocketCount, Values<std::uint8_t>( 1, 2 ) );
 
 /**
- * \brief picolibrary::WIZnet::W5500::IP::TCP::Acceptor::listen() backlog greater than
+ * \brief picolibrary::WIZnet::W5500::IP::TCP::Server::listen() backlog greater than
  *        socket count test case.
  */
 struct listenBacklogGreaterThanSocketCount_Test_Case {
@@ -954,12 +950,12 @@ struct listenBacklogGreaterThanSocketCount_Test_Case {
     /**
      * \brief The socket's hardware socket IDs (new).
      */
-    Acceptor::Socket_IDs socket_ids_new;
+    Server::Socket_IDs socket_ids_new;
 
     /**
      * \brief The socket's hardware socket IDs (final).
      */
-    Acceptor::Socket_IDs socket_ids_final;
+    Server::Socket_IDs socket_ids_final;
 };
 
 auto operator<<( std::ostream & stream, listenBacklogGreaterThanSocketCount_Test_Case const & test_case )
@@ -991,7 +987,7 @@ auto operator<<( std::ostream & stream, listenBacklogGreaterThanSocketCount_Test
 }
 
 /**
- * \brief picolibrary::WIZnet::W5500::IP::TCP::Acceptor::listen() backlog greater than
+ * \brief picolibrary::WIZnet::W5500::IP::TCP::Server::listen() backlog greater than
  *        socket count test fixture.
  */
 class listenBacklogGreaterThanSocketCount :
@@ -999,8 +995,8 @@ class listenBacklogGreaterThanSocketCount :
 };
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::listen() works properly
- *        when backlog is greater than the socket count.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::listen() works properly when
+ *        backlog is greater than the socket count.
  */
 TEST_P( listenBacklogGreaterThanSocketCount, worksProperly )
 {
@@ -1011,9 +1007,9 @@ TEST_P( listenBacklogGreaterThanSocketCount, worksProperly )
     auto       network_stack      = Mock_Network_Stack{};
     auto       driver             = Mock_Driver{};
     auto       tcp_port_allocator = Mock_Port_Allocator{};
-    auto const socket_ids_initial = Acceptor::Socket_IDs{ Socket_ID::_3, Socket_ID::_7 };
+    auto const socket_ids_initial = Server::Socket_IDs{ Socket_ID::_3, Socket_ID::_7 };
 
-    auto acceptor = Acceptor{ network_stack, socket_ids_initial, Acceptor::State::BOUND };
+    auto server = Server{ network_stack, socket_ids_initial, Server::State::BOUND };
 
     auto const sn_mr      = std::uint8_t{ 0x8B };
     auto const sn_port    = std::uint16_t{ 0x7B12 };
@@ -1051,11 +1047,11 @@ TEST_P( listenBacklogGreaterThanSocketCount, worksProperly )
         EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( 0x00 ) );
     } // for
 
-    acceptor.listen( test_case.backlog );
+    server.listen( test_case.backlog );
 
-    EXPECT_EQ( acceptor.state(), Acceptor::State::LISTENING );
-    EXPECT_EQ( acceptor.socket_ids(), test_case.socket_ids_final );
-    EXPECT_TRUE( acceptor.is_listening() );
+    EXPECT_EQ( server.state(), Server::State::LISTENING );
+    EXPECT_EQ( server.socket_ids(), test_case.socket_ids_final );
+    EXPECT_TRUE( server.is_listening() );
 
     EXPECT_CALL( network_stack, tcp_port_allocator( _ ) ).WillOnce( ReturnRef( tcp_port_allocator ) );
     EXPECT_CALL( network_stack, driver( _ ) ).WillOnce( ReturnRef( driver ) );
@@ -1065,7 +1061,7 @@ TEST_P( listenBacklogGreaterThanSocketCount, worksProperly )
 }
 
 /**
- * \brief picolibrary::WIZnet::W5500::IP::TCP::Acceptor::listen() backlog greater than
+ * \brief picolibrary::WIZnet::W5500::IP::TCP::Server::listen() backlog greater than
  *        socket count test cases.
  */
 listenBacklogGreaterThanSocketCount_Test_Case const listenBacklogGreaterThanSocketCount_TEST_CASES[]{
@@ -1081,16 +1077,16 @@ listenBacklogGreaterThanSocketCount_Test_Case const listenBacklogGreaterThanSock
 INSTANTIATE_TEST_SUITE_P( testCases, listenBacklogGreaterThanSocketCount, ValuesIn( listenBacklogGreaterThanSocketCount_TEST_CASES ) );
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::local_endpoint() works
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::local_endpoint() works
  *        properly.
  */
 TEST( localEndpoint, worksProperly )
 {
     auto       network_stack = Mock_Network_Stack{};
     auto       driver        = Mock_Driver{};
-    auto const socket_ids    = Acceptor::Socket_IDs{ Socket_ID::_1, Socket_ID::_0 };
+    auto const socket_ids    = Server::Socket_IDs{ Socket_ID::_1, Socket_ID::_0 };
 
-    auto const acceptor = Acceptor{ network_stack, socket_ids };
+    auto const server = Server{ network_stack, socket_ids };
 
     auto const sipr    = Array<std::uint8_t, 4>{ 116, 166, 96, 6 };
     auto const sn_port = std::uint16_t{ 46774 };
@@ -1099,7 +1095,7 @@ TEST( localEndpoint, worksProperly )
     EXPECT_CALL( driver, read_sipr() ).WillOnce( Return( sipr ) );
     EXPECT_CALL( driver, read_sn_port( socket_ids.front() ) ).WillOnce( Return( sn_port ) );
 
-    auto const endpoint = acceptor.local_endpoint();
+    auto const endpoint = server.local_endpoint();
 
     EXPECT_TRUE( endpoint.address().is_ipv4() );
     EXPECT_EQ( endpoint.address().ipv4().as_byte_array(), sipr );
@@ -1109,52 +1105,51 @@ TEST( localEndpoint, worksProperly )
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::close() works properly
- *        when the socket is in the
- *        picolibrary::WIZnet::W5500::IP::TCP::Acceptor::State::UNINITIALIZED state.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::close() works properly when
+ *        the socket is in the
+ *        picolibrary::WIZnet::W5500::IP::TCP::Server::State::UNINITIALIZED state.
  */
 TEST( close, worksProperlyUninitialized )
 {
-    auto acceptor = Acceptor{};
+    auto server = Server{};
 
-    acceptor.close();
+    server.close();
 
-    EXPECT_EQ( acceptor.state(), Acceptor::State::UNINITIALIZED );
+    EXPECT_EQ( server.state(), Server::State::UNINITIALIZED );
 }
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::close() works properly
- *        when the socket is in the
- *        picolibrary::WIZnet::W5500::IP::TCP::Acceptor::State::INITIALIZED state.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::close() works properly when
+ *        the socket is in the
+ *        picolibrary::WIZnet::W5500::IP::TCP::Server::State::INITIALIZED state.
  */
 TEST( close, worksProperlyInitialized )
 {
     auto       network_stack = Mock_Network_Stack{};
-    auto const socket_ids    = Acceptor::Socket_IDs{ Socket_ID::_5, Socket_ID::_4 };
+    auto const socket_ids    = Server::Socket_IDs{ Socket_ID::_5, Socket_ID::_4 };
 
-    auto acceptor = Acceptor{ network_stack, socket_ids };
+    auto server = Server{ network_stack, socket_ids };
 
     for ( auto const socket_id : socket_ids ) {
         EXPECT_CALL( network_stack, deallocate_socket( _, socket_id ) );
     } // for
 
-    acceptor.close();
+    server.close();
 
-    EXPECT_EQ( acceptor.state(), Acceptor::State::UNINITIALIZED );
+    EXPECT_EQ( server.state(), Server::State::UNINITIALIZED );
 }
 
 /**
- * \brief picolibrary::WIZnet::W5500::IP::TCP::Acceptor::close() other states test
- *        fixture.
+ * \brief picolibrary::WIZnet::W5500::IP::TCP::Server::close() other states test fixture.
  */
-class closeOtherStates : public TestWithParam<Acceptor::State> {
+class closeOtherStates : public TestWithParam<Server::State> {
 };
 
 /**
- * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Acceptor::close() works properly
- *        when the socket is in states other than
- *        picolibrary::WIZnet::W5500::IP::TCP::Acceptor::State::UNINITIALIZED, and
- *        picolibrary::WIZnet::W5500::IP::TCP::Acceptor::State::INITIALIZED.
+ * \brief Verify picolibrary::WIZnet::W5500::IP::TCP::Server::close() works properly when
+ *        the socket is in states other than
+ *        picolibrary::WIZnet::W5500::IP::TCP::Server::State::UNINITIALIZED, and
+ *        picolibrary::WIZnet::W5500::IP::TCP::Server::State::INITIALIZED.
  */
 TEST_P( closeOtherStates, worksProperly )
 {
@@ -1163,10 +1158,10 @@ TEST_P( closeOtherStates, worksProperly )
     auto       network_stack      = Mock_Network_Stack{};
     auto       driver             = Mock_Driver{};
     auto       tcp_port_allocator = Mock_Port_Allocator{};
-    auto const socket_ids         = Acceptor::Socket_IDs{ Socket_ID::_3, Socket_ID::_2 };
+    auto const socket_ids         = Server::Socket_IDs{ Socket_ID::_3, Socket_ID::_2 };
     auto const state              = GetParam();
 
-    auto acceptor = Acceptor{ network_stack, socket_ids, state };
+    auto server = Server{ network_stack, socket_ids, state };
 
     auto const sn_port = std::uint16_t{ 5144 };
 
@@ -1178,18 +1173,15 @@ TEST_P( closeOtherStates, worksProperly )
         EXPECT_CALL( network_stack, deallocate_socket( _, socket_id ) );
     } // for
 
-    acceptor.close();
+    server.close();
 
-    EXPECT_EQ( acceptor.state(), Acceptor::State::UNINITIALIZED );
+    EXPECT_EQ( server.state(), Server::State::UNINITIALIZED );
 }
 
-INSTANTIATE_TEST_SUITE_P(
-    testCases,
-    closeOtherStates,
-    Values<Acceptor::State>( Acceptor::State::BOUND, Acceptor::State::LISTENING ) );
+INSTANTIATE_TEST_SUITE_P( testCases, closeOtherStates, Values<Server::State>( Server::State::BOUND, Server::State::LISTENING ) );
 
 /**
- * \brief Execute the picolibrary::WIZnet::W5500::IP::TCP::Acceptor automated tests.
+ * \brief Execute the picolibrary::WIZnet::W5500::IP::TCP::Server automated tests.
  *
  * \param[in] argc The number of arguments to pass to testing::InitGoogleMock().
  * \param[in] argc The array of arguments to pass to testing::InitGoogleMock().

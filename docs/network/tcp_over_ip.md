@@ -7,7 +7,7 @@ header/source file pair.
 1. [Port](#port)
 1. [Endpoint](#endpoint)
 1. [Client Socket](#client-socket)
-1. [Acceptor Socket](#acceptor-socket)
+1. [Server Socket](#server-socket)
 1. [Server Connection Handler Socket](#server-connection-handler-socket)
 
 ## Port
@@ -60,24 +60,23 @@ The interactive test helper is defined in the
 [`include/picolibrary/testing/interactive/ip/tcp.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/interactive/ip/tcp.h)/[`source/picolibrary/testing/interactive/ip/tcp.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/interactive/ip/tcp.cc)
 header/source file pair.
 
-## Acceptor Socket
-The `::picolibrary::IP::TCP::Acceptor_Concept` concept class defines the expected
-interface of a TCP over IP acceptor socket.
-- To bind an acceptor socket to a local endpoint, use an acceptor socket implementation's
+## Server Socket
+The `::picolibrary::IP::TCP::Server_Concept` concept class defines the expected interface
+of a TCP over IP server socket.
+- To bind a server socket to a local endpoint, use a server socket implementation's
   `bind()` member function.
-- To listen for incoming connection requests, use an acceptor socket implementation's
+- To listen for incoming connection requests, use a server socket implementation's
   `listen()` member function.
-- To check if an acceptor socket is listening for incoming connection requests, use an
-  acceptor socket implementation's `is_listening()` member function.
-- To get the local endpoint on which an acceptor socket is listening for incoming
-  connection requests, use an acceptor socket implementation's `local_endpoint()` member
-  function.
-- To accept an incoming connection request, use an acceptor socket implementation's
+- To check if a server socket is listening for incoming connection requests, use a server
+  socket implementation's `is_listening()` member function.
+- To get the local endpoint on which a server socket is listening for incoming connection
+  requests, use a server socket implementation's `local_endpoint()` member function.
+- To accept an incoming connection request, use a server socket implementation's
   `accept()` member function.
-- To close an acceptor socket, use an acceptor socket implementation's `close()` member
+- To close a server socket, use a server socket implementation's `close()` member
   function.
 
-The `::picolibrary::Testing::Automated::IP::TCP::Mock_Acceptor` mock TCP over IP acceptor
+The `::picolibrary::Testing::Automated::IP::TCP::Mock_Server` mock TCP over IP server
 socket class is available if the `PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project
 configuration option is `ON`.
 The mock is defined in the
