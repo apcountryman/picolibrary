@@ -36,8 +36,6 @@ class Mock_Network_Stack {
 
     using TCP_Server = TCP::Mock_Server::Handle;
 
-    using TCP_Acceptor = TCP::Mock_Acceptor::Handle;
-
     Mock_Network_Stack() = default;
 
     Mock_Network_Stack( Mock_Network_Stack && ) = delete;
@@ -52,7 +50,7 @@ class Mock_Network_Stack {
 
     MOCK_METHOD( TCP_Client, make_tcp_client, () );
 
-    MOCK_METHOD( TCP_Acceptor, make_tcp_acceptor, () );
+    MOCK_METHOD( TCP_Server, make_tcp_server, () );
 };
 
 } // namespace picolibrary::Testing::Automated::IP

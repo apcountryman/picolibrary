@@ -15,11 +15,11 @@
 
 # Description: picolibrary::WIZnet::W5500::IP::TCP automated tests CMake rules.
 
-# picolibrary::WIZnet::W5500::IP::TCP::Acceptor automated tests
-add_subdirectory( acceptor )
-
 # picolibrary::WIZnet::W5500::IP::TCP::Client automated tests
 add_subdirectory( client )
 
 # picolibrary::WIZnet::W5500::IP::TCP::Server automated tests
 add_subdirectory( server )
+
+# picolibrary::WIZnet::W5500::IP::TCP::Server_Connection_Handler automated tests
+add_subdirectory( server_connection_handler )

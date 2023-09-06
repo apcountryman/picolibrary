@@ -35,11 +35,11 @@ namespace picolibrary::WIZnet::W5500::IP::TCP {
 template<typename Network_Stack>
 class Client;
 
-template<typename Network_Stack, typename Acceptor>
-class Server;
+template<typename Network_Stack, typename Server>
+class Server_Connection_Handler;
 
 template<typename Network_Stack>
-class Acceptor;
+class Server;
 
 } // namespace picolibrary::WIZnet::W5500::IP::TCP
 
@@ -99,11 +99,11 @@ class Network_Stack_Driver_Access_Key {
     template<typename Network_Stack>
     friend class TCP::Client;
 
-    template<typename Network_Stack, typename Acceptor>
-    friend class TCP::Server;
+    template<typename Network_Stack, typename Server>
+    friend class TCP::Server_Connection_Handler;
 
     template<typename Network_Stack>
-    friend class TCP::Acceptor;
+    friend class TCP::Server;
 
     /**
      * \brief Constructor.
@@ -133,11 +133,11 @@ class Network_Stack_Socket_Allocation_Key {
     template<typename Network_Stack>
     friend class TCP::Client;
 
-    template<typename Network_Stack, typename Acceptor>
-    friend class TCP::Server;
+    template<typename Network_Stack, typename Server>
+    friend class TCP::Server_Connection_Handler;
 
     template<typename Network_Stack>
-    friend class TCP::Acceptor;
+    friend class TCP::Server;
 
     /**
      * \brief Constructor.
@@ -147,31 +147,33 @@ class Network_Stack_Socket_Allocation_Key {
 
 /**
  * \brief picolibrary::WIZnet::W5500::IP::Network_Stack
- *        picolibrary::WIZnet::W5500::IP::TCP::Server detachment key.
+ *        picolibrary::WIZnet::W5500::IP::TCP::Server_Connection_Handler detachment key.
  */
-class Network_Stack_TCP_Server_Detachment_Key {
+class Network_Stack_TCP_Server_Connection_Handler_Detachment_Key {
   public:
-    Network_Stack_TCP_Server_Detachment_Key( Network_Stack_TCP_Server_Detachment_Key && ) = delete;
+    Network_Stack_TCP_Server_Connection_Handler_Detachment_Key(
+        Network_Stack_TCP_Server_Connection_Handler_Detachment_Key && ) = delete;
 
-    Network_Stack_TCP_Server_Detachment_Key( Network_Stack_TCP_Server_Detachment_Key const & ) = delete;
+    Network_Stack_TCP_Server_Connection_Handler_Detachment_Key(
+        Network_Stack_TCP_Server_Connection_Handler_Detachment_Key const & ) = delete;
 
     /**
      * \brief Destructor.
      */
-    ~Network_Stack_TCP_Server_Detachment_Key() noexcept = default;
+    ~Network_Stack_TCP_Server_Connection_Handler_Detachment_Key() noexcept = default;
 
-    auto operator=( Network_Stack_TCP_Server_Detachment_Key && ) = delete;
+    auto operator=( Network_Stack_TCP_Server_Connection_Handler_Detachment_Key && ) = delete;
 
-    auto operator=( Network_Stack_TCP_Server_Detachment_Key const & ) = delete;
+    auto operator=( Network_Stack_TCP_Server_Connection_Handler_Detachment_Key const & ) = delete;
 
   private:
     template<typename Network_Stack>
-    friend class TCP::Acceptor;
+    friend class TCP::Server;
 
     /**
      * \brief Constructor.
      */
-    constexpr Network_Stack_TCP_Server_Detachment_Key() noexcept = default;
+    constexpr Network_Stack_TCP_Server_Connection_Handler_Detachment_Key() noexcept = default;
 };
 
 /**
@@ -196,11 +198,11 @@ class Network_Stack_TCP_Port_Allocator_Access_Key {
     template<typename Network_Stack>
     friend class TCP::Client;
 
-    template<typename Network_Stack, typename Acceptor>
-    friend class TCP::Server;
+    template<typename Network_Stack, typename Server>
+    friend class TCP::Server_Connection_Handler;
 
     template<typename Network_Stack>
-    friend class TCP::Acceptor;
+    friend class TCP::Server;
 
     /**
      * \brief Constructor.
@@ -238,59 +240,59 @@ class Network_Stack_UDP_Port_Allocator_Access_Key {
 namespace picolibrary::WIZnet::W5500::IP::TCP {
 
 /**
- * \brief picolibrary::WIZnet::W5500::IP::TCP::Acceptor socket deallocation key.
+ * \brief picolibrary::WIZnet::W5500::IP::TCP::Server socket deallocation key.
  */
-class Acceptor_Socket_Deallocation_Key {
+class Server_Socket_Deallocation_Key {
   public:
-    Acceptor_Socket_Deallocation_Key( Acceptor_Socket_Deallocation_Key && ) = delete;
+    Server_Socket_Deallocation_Key( Server_Socket_Deallocation_Key && ) = delete;
 
-    Acceptor_Socket_Deallocation_Key( Acceptor_Socket_Deallocation_Key const & ) = delete;
+    Server_Socket_Deallocation_Key( Server_Socket_Deallocation_Key const & ) = delete;
 
     /**
      * \brief Destructor.
      */
-    ~Acceptor_Socket_Deallocation_Key() noexcept = default;
+    ~Server_Socket_Deallocation_Key() noexcept = default;
 
-    auto operator=( Acceptor_Socket_Deallocation_Key && ) = delete;
+    auto operator=( Server_Socket_Deallocation_Key && ) = delete;
 
-    auto operator=( Acceptor_Socket_Deallocation_Key const & ) = delete;
+    auto operator=( Server_Socket_Deallocation_Key const & ) = delete;
 
   private:
-    template<typename Network_Stack, typename Acceptor>
-    friend class Server;
+    template<typename Network_Stack, typename Server>
+    friend class Server_Connection_Handler;
 
     /**
      * \brief Constructor.
      */
-    constexpr Acceptor_Socket_Deallocation_Key() noexcept = default;
+    constexpr Server_Socket_Deallocation_Key() noexcept = default;
 };
 
 /**
- * \brief picolibrary::WIZnet::W5500::IP::TCP::Server construction key.
+ * \brief picolibrary::WIZnet::W5500::IP::TCP::Server_Connection_Handler construction key.
  */
-class Server_Construction_Key {
+class Server_Connection_Handler_Construction_Key {
   public:
-    Server_Construction_Key( Server_Construction_Key && ) = delete;
+    Server_Connection_Handler_Construction_Key( Server_Connection_Handler_Construction_Key && ) = delete;
 
-    Server_Construction_Key( Server_Construction_Key const & ) = delete;
+    Server_Connection_Handler_Construction_Key( Server_Connection_Handler_Construction_Key const & ) = delete;
 
     /**
      * \brief Destructor.
      */
-    ~Server_Construction_Key() noexcept = default;
+    ~Server_Connection_Handler_Construction_Key() noexcept = default;
 
-    auto operator=( Server_Construction_Key && ) = delete;
+    auto operator=( Server_Connection_Handler_Construction_Key && ) = delete;
 
-    auto operator=( Server_Construction_Key const & ) = delete;
+    auto operator=( Server_Connection_Handler_Construction_Key const & ) = delete;
 
   private:
     template<typename Network_Stack>
-    friend class TCP::Acceptor;
+    friend class TCP::Server;
 
     /**
      * \brief Constructor.
      */
-    constexpr Server_Construction_Key() noexcept = default;
+    constexpr Server_Connection_Handler_Construction_Key() noexcept = default;
 };
 
 } // namespace picolibrary::WIZnet::W5500::IP::TCP

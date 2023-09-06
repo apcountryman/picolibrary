@@ -219,7 +219,7 @@ template<typename Controller, typename Device_Selector>
  * \param[in] time_to_live The desired IPv4 time to live field value.
  * \param[in] keepalive_period The desired keepalive packet transmission period
  *            (SN_KPALVTR register value).
- * \param[in] local_endpoint The local endpoint to bind the acceptor socket to.
+ * \param[in] local_endpoint The local endpoint to bind the server socket to.
  * \param[in] backlog The maximum number of simultaneously connected clients.
  */
 template<typename Controller, typename Device_Selector>
@@ -325,11 +325,11 @@ template<typename Controller, typename Device_Selector>
         stream,
         network_stack,
         [ no_delayed_ack_usage_configuration, maximum_segment_size, time_to_live, keepalive_period ](
-            auto & acceptor ) noexcept {
-            acceptor.configure_no_delayed_ack_usage( no_delayed_ack_usage_configuration );
-            acceptor.configure_maximum_segment_size( maximum_segment_size );
-            acceptor.configure_time_to_live( time_to_live );
-            acceptor.configure_keepalive_period( keepalive_period );
+            auto & server ) noexcept {
+            server.configure_no_delayed_ack_usage( no_delayed_ack_usage_configuration );
+            server.configure_maximum_segment_size( maximum_segment_size );
+            server.configure_time_to_live( time_to_live );
+            server.configure_keepalive_period( keepalive_period );
         },
         local_endpoint,
         backlog );

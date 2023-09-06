@@ -13,21 +13,22 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary::WIZnet::W5500::IP::TCP::Acceptor automated tests CMake rules.
+# Description: picolibrary::WIZnet::W5500::IP::TCP::Server_Connection_Handler automated
+#       tests CMake rules.
 
-# picolibrary::WIZnet::W5500::IP::TCP::Acceptor automated tests
+# picolibrary::WIZnet::W5500::IP::TCP::Server_Connection_Handler automated tests
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
     add_executable(
-        test-automated-picolibrary-wiznet-w5500-ip-tcp-acceptor
+        test-automated-picolibrary-wiznet-w5500-ip-tcp-server_connection_handler
         main.cc
     )
     target_link_libraries(
-        test-automated-picolibrary-wiznet-w5500-ip-tcp-acceptor
+        test-automated-picolibrary-wiznet-w5500-ip-tcp-server_connection_handler
         picolibrary
         picolibrary-testing-automated-fatal_error
     )
     add_test(
-        NAME    test-automated-picolibrary-wiznet-w5500-ip-tcp-acceptor
-        COMMAND test-automated-picolibrary-wiznet-w5500-ip-tcp-acceptor --gtest_color=yes
+        NAME    test-automated-picolibrary-wiznet-w5500-ip-tcp-server_connection_handler
+        COMMAND test-automated-picolibrary-wiznet-w5500-ip-tcp-server_connection_handler --gtest_color=yes
     )
 endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
