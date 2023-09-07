@@ -1843,8 +1843,11 @@ class Server {
      * \return picolibrary::Generic_Error::WOULD_BLOCK if an incoming connection request
      *         could not be accepted without blocking.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     auto accept() noexcept -> Result<Connection_Handler>
     {
+        // #lizard forgives the length
+
         PICOLIBRARY_EXPECT( m_state == State::LISTENING, Generic_Error::LOGIC_ERROR );
 
         auto & driver = m_network_stack->driver( {} );
