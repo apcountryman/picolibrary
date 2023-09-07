@@ -1843,11 +1843,8 @@ class Server {
      * \return picolibrary::Generic_Error::WOULD_BLOCK if an incoming connection request
      *         could not be accepted without blocking.
      */
-    // NOLINTNEXTLINE(readability-function-size)
     auto accept() noexcept -> Result<Connection_Handler>
     {
-        // #lizard forgives the length
-
         PICOLIBRARY_EXPECT( m_state == State::LISTENING, Generic_Error::LOGIC_ERROR );
 
         auto & driver = m_network_stack->driver( {} );
@@ -1855,10 +1852,7 @@ class Server {
         for ( auto n = std::uint_fast8_t{}; n < m_sockets.size(); ++n ) {
             auto & socket = m_sockets[ m_accept_i ];
 
-            ++m_accept_i;
-            if ( m_accept_i >= m_sockets.size() ) {
-                m_accept_i = 0;
-            } // if
+            m_accept_i = ( m_accept_i + 1 ) % m_sockets.size();
 
             if ( socket.status == Socket::Status::AVAILABLE_FOR_ALLOCATION ) {
                 switch ( driver.read_sn_sr( socket.id ) ) {
