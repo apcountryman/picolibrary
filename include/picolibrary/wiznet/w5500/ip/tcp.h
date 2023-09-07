@@ -1855,10 +1855,7 @@ class Server {
         for ( auto n = std::uint_fast8_t{}; n < m_sockets.size(); ++n ) {
             auto & socket = m_sockets[ m_accept_i ];
 
-            ++m_accept_i;
-            if ( m_accept_i >= m_sockets.size() ) {
-                m_accept_i = 0;
-            } // if
+            m_accept_i = ( m_accept_i + 1 ) % m_sockets.size();
 
             if ( socket.status == Socket::Status::AVAILABLE_FOR_ALLOCATION ) {
                 switch ( driver.read_sn_sr( socket.id ) ) {
