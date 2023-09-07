@@ -335,6 +335,8 @@ template<typename Network_Stack, typename Socket_Options_Configurator>
     stream.flush();
 
     for ( ;; ) {
+        stream.put( PICOLIBRARY_ROM_STRING( "waiting for client connection\n" ) );
+        stream.flush();
         auto connection_handler = accept( server );
         stream.print(
             PICOLIBRARY_ROM_STRING( "accepted connection request from " ),
