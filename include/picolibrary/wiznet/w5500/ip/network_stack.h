@@ -701,7 +701,7 @@ class Network_Stack {
      */
     auto make_tcp_server() noexcept -> TCP_Server
     {
-        return { {}, *this, allocate_sockets( 1 ) };
+        return { {}, *this, { allocate_socket() } };
     }
 
     /**
