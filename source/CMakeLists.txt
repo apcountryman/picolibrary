@@ -33,6 +33,7 @@ set(
     "picolibrary/bit_manipulation.cc"
     "picolibrary/circular_buffer.cc"
     "picolibrary/crc.cc"
+    "picolibrary/debounce.cc"
     "picolibrary/error.cc"
     "picolibrary/event.cc"
     "picolibrary/fixed_capacity_vector.cc"
