@@ -33,6 +33,9 @@ add_subdirectory( bit_manipulation )
 # picolibrary::CRC automated tests
 add_subdirectory( crc )
 
+# picolibrary::Debounce automated tests
+add_subdirectory( debounce )
+
 # picolibrary::Error_Code automated tests
 add_subdirectory( error_code )
 
