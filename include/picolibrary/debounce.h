@@ -27,6 +27,7 @@
 #include <limits>
 #include <type_traits>
 
+#include "picolibrary/array.h"
 #include "picolibrary/bit_manipulation.h"
 
 /**
@@ -154,6 +155,115 @@ class Single_Signal_Debouncer {
      * \brief The debounced signal is in the high state.
      */
     bool m_is_high{};
+};
+
+/**
+ * \brief Multiple signals debouncer.
+ *
+ * \tparam State The unsigned integer type used to hold the state of the signals.
+ * \tparam SAMPLES The number of signal samples to use to determine whether a signal state
+ *         is stable.
+ */
+template<typename State, std::uint_fast8_t SAMPLES>
+class Multiple_Signals_Debouncer {
+  public:
+    static_assert( std::is_unsigned_v<State> );
+
+    Multiple_Signals_Debouncer() = delete;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param]in] state The initial debounced state of the signals.
+     */
+    constexpr Multiple_Signals_Debouncer( State state ) noexcept : m_state{ state }
+    {
+        for ( auto & sample : m_samples ) { sample = state; } // for
+    }
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    constexpr Multiple_Signals_Debouncer( Multiple_Signals_Debouncer && source ) noexcept = default;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] original The original to copy.
+     */
+    constexpr Multiple_Signals_Debouncer( Multiple_Signals_Debouncer const & original ) noexcept = default;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Multiple_Signals_Debouncer() noexcept = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Multiple_Signals_Debouncer && expression ) noexcept
+        -> Multiple_Signals_Debouncer & = default;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    constexpr auto operator=( Multiple_Signals_Debouncer const & expression ) noexcept
+        -> Multiple_Signals_Debouncer & = default;
+
+    /**
+     * \brief Update the debouncer with a new signals sample.
+     *
+     * \param[in] state The new signals sample to update the debouncer with.
+     */
+    constexpr void debounce( State state ) noexcept
+    {
+        m_samples[ m_samples_i ] = state;
+        m_samples_i              = ( m_samples_i + 1 ) % SAMPLES;
+
+        auto high = std::numeric_limits<State>::max();
+        auto low  = std::numeric_limits<State>::max();
+        for ( auto const sample : m_samples ) {
+            high &= sample;
+            low &= ~sample;
+        } // for
+        m_state = ( m_state | high ) & ~low;
+    }
+
+    /**
+     * \brief Get the debounced state of the signals.
+     *
+     * \return The debounced state of the signals.
+     */
+    constexpr auto state() const noexcept -> State
+    {
+        return m_state;
+    }
+
+  private:
+    /**
+     * \brief Signals samples circular buffer.
+     */
+    Array<State, SAMPLES> m_samples{};
+
+    /**
+     * \brief Signals samples circular buffer index.
+     */
+    std::uint_fast8_t m_samples_i{};
+
+    /**
+     * \brief The debounced state of the signals.
+     */
+    State m_state{};
 };
 
 } // namespace picolibrary::Debounce
