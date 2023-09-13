@@ -58,7 +58,6 @@ class Single_Signal_Debouncer {
         m_samples{ is_high ? SAMPLES_MASK : Samples{ 0 } },
         m_is_high{ is_high }
     {
-        static_cast<void>( is_high );
     }
 
     /**
