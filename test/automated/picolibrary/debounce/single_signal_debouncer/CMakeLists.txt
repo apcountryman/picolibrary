@@ -13,7 +13,21 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary::Debounce automated tests CMake rules.
+# Description: picolibrary::Debounce::Single_Signal_Debouncer automated tests CMake rules.
 
 # picolibrary::Debounce::Single_Signal_Debouncer automated tests
-add_subdirectory( single_signal_debouncer )
+if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
+    add_executable(
+        test-automated-picolibrary-debounce-single_signal_debouncer
+        main.cc
+    )
+    target_link_libraries(
+        test-automated-picolibrary-debounce-single_signal_debouncer
+        picolibrary
+        picolibrary-testing-automated-fatal_error
+    )
+    add_test(
+        NAME    test-automated-picolibrary-debounce-single_signal_debouncer
+        COMMAND test-automated-picolibrary-debounce-single_signal_debouncer --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
