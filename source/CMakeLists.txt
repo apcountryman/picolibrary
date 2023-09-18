@@ -46,6 +46,7 @@ set(
     "picolibrary/ip.cc"
     "picolibrary/ip/network_stack.cc"
     "picolibrary/ip/tcp.cc"
+    "picolibrary/ip/udp.cc"
     "picolibrary/ipv4.cc"
     "picolibrary/mac_address.cc"
     "picolibrary/microchip.cc"
