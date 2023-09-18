@@ -99,6 +99,7 @@ if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
         "picolibrary/testing/automated/ip.cc"
         "picolibrary/testing/automated/ip/network_stack.cc"
         "picolibrary/testing/automated/ip/tcp.cc"
+        "picolibrary/testing/automated/ip/udp.cc"
         "picolibrary/testing/automated/ipv4.cc"
         "picolibrary/testing/automated/mac_address.cc"
         "picolibrary/testing/automated/microchip.cc"
