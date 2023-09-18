@@ -35,6 +35,7 @@ microcontrollers.
     1. [IPv4 Facilities](network/ipv4.md)
     1. [IP Facilities](network/ip.md)
     1. [TCP Over IP Facilities](network/tcp_over_ip.md)
+    1. [UDP Over IP Facilities](network/udp_over_ip.md)
 1. Device Facilities
     1. Adafruit
         1. [PID781 Facilities](device/adafruit/pid781.md)

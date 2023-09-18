@@ -14,3 +14,4 @@
 - ROM: Read-Only Memory
 - SPI: Serial Peripheral Interface
 - TCP: Transmission Control Protocol
+- UDP: User Datagram Protocol
