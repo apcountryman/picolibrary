@@ -5,7 +5,14 @@ header/source file pair.
 
 ## Table of Contents
 1. [Port](#port)
+1. [Endpoint](#endpoint)
 
 ## Port
 The `::picolibrary::IP::UDP::Port` type alias is used to store a UDP port.
 See the [`::picolibrary::IP::Port` documentation](ip.md#port) for more information.
+
+## Endpoint
+The `::picolibrary::IP::UDP::Endpoint` type alias is used to store a UDP endpoint (IP
+address, UDP port pair).
+See the [`::picolibrary::IP::Endpoint` documentation](ip.md#endpoint) for more
+information.
