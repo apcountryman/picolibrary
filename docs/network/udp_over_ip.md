@@ -16,3 +16,7 @@ The `::picolibrary::IP::UDP::Endpoint` type alias is used to store a UDP endpoin
 address, UDP port pair).
 See the [`::picolibrary::IP::Endpoint` documentation](ip.md#endpoint) for more
 information.
+
+## Reception Result
+The `::picolibrary::IP::UDP::Reception_Result` struct is used to store a UDP reception
+result.
