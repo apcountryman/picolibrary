@@ -23,6 +23,8 @@
 #ifndef PICOLIBRARY_IP_UDP_H
 #define PICOLIBRARY_IP_UDP_H
 
+#include <cstdint>
+
 #include "picolibrary/ip.h"
 
 /**
@@ -39,6 +41,21 @@ using Port = ::picolibrary::IP::Port;
  * \brief Endpoint.
  */
 using Endpoint = ::picolibrary::IP::Endpoint;
+
+/**
+ * \brief Reception result.
+ */
+struct Reception_Result {
+    /**
+     * \brief The endpoint the datagram was received from.
+     */
+    Endpoint endpoint;
+
+    /**
+     * \brief The end of the data read from the datagram.
+     */
+    std::uint8_t * end;
+};
 
 } // namespace picolibrary::IP::UDP
 
