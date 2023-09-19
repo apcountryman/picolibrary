@@ -35,6 +35,11 @@ namespace picolibrary::IP::UDP {
  */
 using Port = ::picolibrary::IP::Port;
 
+/**
+ * \brief Endpoint.
+ */
+using Endpoint = ::picolibrary::IP::Endpoint;
+
 } // namespace picolibrary::IP::UDP
 
 #endif // PICOLIBRARY_IP_UDP_H
