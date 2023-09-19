@@ -23,10 +23,18 @@
 #ifndef PICOLIBRARY_IP_UDP_H
 #define PICOLIBRARY_IP_UDP_H
 
+#include "picolibrary/ip.h"
+
 /**
  * \brief UDP over IP facilities.
  */
 namespace picolibrary::IP::UDP {
+
+/**
+ * \brief Port.
+ */
+using Port = ::picolibrary::IP::Port;
+
 } // namespace picolibrary::IP::UDP
 
 #endif // PICOLIBRARY_IP_UDP_H

@@ -23,6 +23,8 @@
 #ifndef PICOLIBRARY_TESTING_AUTOMATED_IP_UDP_H
 #define PICOLIBRARY_TESTING_AUTOMATED_IP_UDP_H
 
+#include "picolibrary/testing/automated/ip.h"
+
 /**
  * \brief UDP over IP automated testing facilities.
  */

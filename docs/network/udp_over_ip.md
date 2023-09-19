@@ -4,3 +4,8 @@ UDP over IP facilities are defined in the
 header/source file pair.
 
 ## Table of Contents
+1. [Port](#port)
+
+## Port
+The `::picolibrary::IP::UDP::Port` type alias is used to store a UDP port.
+See the [`::picolibrary::IP::Port` documentation](ip.md#port) for more information.
