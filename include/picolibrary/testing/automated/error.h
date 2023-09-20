@@ -55,6 +55,7 @@ inline auto operator<<( std::ostream & stream, Generic_Error generic_error ) -> 
         case Generic_Error::BUS_ERROR:                        return stream << "::picolibrary::Generic_Error::BUS_ERROR";
         case Generic_Error::ENDPOINT_IN_USE:                  return stream << "::picolibrary::Generic_Error::ENDPOINT_IN_USE";
         case Generic_Error::EPHEMERAL_PORTS_EXHAUSTED:        return stream << "::picolibrary::Generic_Error::EPHEMERAL_PORTS_EXHAUSTED";
+        case Generic_Error::EXCESSIVE_MESSAGE_SIZE:           return stream << "::picolibrary::Generic_Error::EXCESSIVE_MESSAGE_SIZE";
         case Generic_Error::INSUFFICIENT_CAPACITY:            return stream << "::picolibrary::Generic_Error::INSUFFICIENT_CAPACITY";
         case Generic_Error::INSUFFICIENT_SOCKETS_AVAILABLE:   return stream << "::picolibrary::Generic_Error::INSUFFICIENT_SOCKETS_AVAILABLE";
         case Generic_Error::INVALID_ARGUMENT:                 return stream << "::picolibrary::Generic_Error::INVALID_ARGUMENT";

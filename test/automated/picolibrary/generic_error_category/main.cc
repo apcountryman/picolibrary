@@ -95,6 +95,7 @@ errorDescription_Test_Case const errorDescription_TEST_CASES[]{
     { to_underlying( Generic_Error::BUS_ERROR ),                        "BUS_ERROR"                        },
     { to_underlying( Generic_Error::ENDPOINT_IN_USE ),                  "ENDPOINT_IN_USE"                  },
     { to_underlying( Generic_Error::EPHEMERAL_PORTS_EXHAUSTED ),        "EPHEMERAL_PORTS_EXHAUSTED"        },
+    { to_underlying( Generic_Error::EXCESSIVE_MESSAGE_SIZE ),           "EXCESSIVE_MESSAGE_SIZE"           },
     { to_underlying( Generic_Error::INSUFFICIENT_CAPACITY ),            "INSUFFICIENT_CAPACITY"            },
     { to_underlying( Generic_Error::INSUFFICIENT_SOCKETS_AVAILABLE ),   "INSUFFICIENT_SOCKETS_AVAILABLE"   },
     { to_underlying( Generic_Error::INVALID_ARGUMENT ),                 "INVALID_ARGUMENT"                 },
