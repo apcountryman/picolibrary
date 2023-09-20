@@ -347,6 +347,7 @@ enum class Generic_Error : Error_ID {
     BUS_ERROR,                        ///< Bus error.
     ENDPOINT_IN_USE,                  ///< Endpoint in use.
     EPHEMERAL_PORTS_EXHAUSTED,        ///< Ephemeral ports exhausted.
+    EXCESSIVE_MESSAGE_SIZE,           ///< Excessive message size.
     INSUFFICIENT_CAPACITY,            ///< Insufficient capacity.
     INSUFFICIENT_SOCKETS_AVAILABLE,   ///< Insufficient sockets available.
     INVALID_ARGUMENT,                 ///< Invalid argument.
@@ -419,6 +420,7 @@ class Generic_Error_Category final : public Error_Category {
             case Generic_Error::BUS_ERROR: return PICOLIBRARY_ROM_STRING( "BUS_ERROR" );
             case Generic_Error::ENDPOINT_IN_USE: return PICOLIBRARY_ROM_STRING( "ENDPOINT_IN_USE" );
             case Generic_Error::EPHEMERAL_PORTS_EXHAUSTED: return PICOLIBRARY_ROM_STRING( "EPHEMERAL_PORTS_EXHAUSTED" );
+            case Generic_Error::EXCESSIVE_MESSAGE_SIZE: return PICOLIBRARY_ROM_STRING( "EXCESSIVE_MESSAGE_SIZE" );
             case Generic_Error::INSUFFICIENT_CAPACITY: return PICOLIBRARY_ROM_STRING( "INSUFFICIENT_CAPACITY" );
             case Generic_Error::INSUFFICIENT_SOCKETS_AVAILABLE: return PICOLIBRARY_ROM_STRING( "INSUFFICIENT_SOCKETS_AVAILABLE" );
             case Generic_Error::INVALID_ARGUMENT: return PICOLIBRARY_ROM_STRING( "INVALID_ARGUMENT" );
