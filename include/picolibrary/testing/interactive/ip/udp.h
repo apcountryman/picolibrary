@@ -25,9 +25,13 @@
 
 #include <cstdint>
 
+#include "picolibrary/array.h"
 #include "picolibrary/error.h"
+#include "picolibrary/format.h"
 #include "picolibrary/ip/udp.h"
 #include "picolibrary/precondition.h"
+#include "picolibrary/rom.h"
+#include "picolibrary/stream.h"
 
 /**
  * \brief UDP over IP interactive testing facilities.
@@ -93,6 +97,51 @@ void transmit(
             return;
         } // else
     }     // for
+}
+
+/**
+ * \brief Socket echo interactive test helper.
+ *
+ * \tparam Network Stack The type of network stack to use to construct a socket.
+ * \tparam Socket_Options_Configurator A unary functor that takes the socket whose socket
+ *         options are to be configured by reference, and configures the socket's socket
+ *         options.
+ *
+ * \param[in] stream The stream to write test output to.
+ * \param[in] network_stack The network stack to use to construct a socket.
+ * \param[in] configure_socket_options The functor to use to configure socket socket
+ *            options.
+ * \param[in] local_endpoint The local endpoint to bind the socket to.
+ */
+template<typename Network_Stack, typename Socket_Options_Configurator>
+[[noreturn]] void echo(
+    Reliable_Output_Stream &                 stream,
+    Network_Stack &                          network_stack,
+    Socket_Options_Configurator              configure_socket_options,
+    ::picolibrary::IP::UDP::Endpoint const & local_endpoint ) noexcept
+{
+    auto socket = network_stack.make_udp_socket();
+
+    configure_socket_options( socket );
+
+    socket.bind( local_endpoint );
+
+    stream.print( PICOLIBRARY_ROM_STRING( "echoing datagrams on " ), socket.local_endpoint(), '\n' );
+    stream.flush();
+
+    Array<std::uint8_t, 64> buffer;
+    for ( ;; ) {
+        auto const [ endpoint, end ] = receive( socket, buffer.begin(), buffer.end() );
+
+        stream.print(
+            PICOLIBRARY_ROM_STRING( "echoing datagram received from " ),
+            endpoint,
+            PICOLIBRARY_ROM_STRING( ":\n" ),
+            Format::Hex_Dump{ buffer.cbegin(), end } );
+        stream.flush();
+
+        transmit( socket, endpoint, buffer.cbegin(), end );
+    } // for
 }
 
 } // namespace picolibrary::Testing::Interactive::IP::UDP
