@@ -120,6 +120,8 @@ template<typename Network_Stack, typename Socket_Options_Configurator>
     Socket_Options_Configurator              configure_socket_options,
     ::picolibrary::IP::UDP::Endpoint const & local_endpoint ) noexcept
 {
+    // #lizard forgives the length
+
     auto socket = network_stack.make_udp_socket();
 
     configure_socket_options( socket );
