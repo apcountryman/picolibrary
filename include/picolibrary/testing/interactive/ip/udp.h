@@ -63,6 +63,38 @@ auto receive( Socket & socket, std::uint8_t * begin, std::uint8_t * end ) noexce
     }     // for
 }
 
+/**
+ * \brief Socket datagram transmission interactive testing helper.
+ *
+ * \tparam Socket The type of socket used to transmit datagrams.
+ *
+ * \param[in] socket The socket to use to transmit the datagram.
+ * \param[in] endpoint The beginning of the block of data to transmit in the datagram.
+ * \param[in] end The end of the block of data to transmit in the datagram.
+ */
+template<typename Socket>
+void transmit(
+    Socket &                                 socket,
+    ::picolibrary::IP::UDP::Endpoint const & endpoint,
+    std::uint8_t const *                     begin,
+    std::uint8_t const *                     end ) noexcept
+{
+    for ( ;; ) {
+        auto result = socket.transmit( endpoint, begin, end );
+        if ( result.is_error() ) {
+            PICOLIBRARY_EXPECT(
+                result.error() != Generic_Error::EXCESSIVE_MESSAGE_SIZE,
+                Generic_Error::EXCESSIVE_MESSAGE_SIZE );
+            PICOLIBRARY_EXPECT(
+                result.error() == Generic_Error::WOULD_BLOCK
+                    or result.error() == Generic_Error::OPERATION_TIMEOUT,
+                Generic_Error::LOGIC_ERROR );
+        } else {
+            return;
+        } // else
+    }     // for
+}
+
 } // namespace picolibrary::Testing::Interactive::IP::UDP
 
 #endif // PICOLIBRARY_TESTING_INTERACTIVE_IP_UDP_H
