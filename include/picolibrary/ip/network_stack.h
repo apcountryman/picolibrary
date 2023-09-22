@@ -24,6 +24,7 @@
 #define PICOLIBRARY_IP_NETWORK_STACK_H
 
 #include "picolibrary/ip/tcp.h"
+#include "picolibrary/ip/udp.h"
 
 namespace picolibrary::IP {
 
@@ -43,6 +44,11 @@ class Network_Stack_Concept {
      *        stack.
      */
     using TCP_Server = TCP::Server_Concept;
+
+    /**
+     * \brief The type of UDP socket that is used to interact with the network stack.
+     */
+    using UDP_Socket = UDP::Socket_Concept;
 
     /**
      * \brief Constructor.
@@ -91,6 +97,15 @@ class Network_Stack_Concept {
      * \return The constructed TCP server socket.
      */
     auto make_tcp_server() noexcept -> TCP_Server;
+
+    /**
+     * \brief Construct a UDP socket.
+     *
+     * \pre sufficient resources are available to create the socket
+     *
+     * \return The constructed UDP socket.
+     */
+    auto make_udp_socket() noexcept -> UDP_Socket;
 };
 
 } // namespace picolibrary::IP
