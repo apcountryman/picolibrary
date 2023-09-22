@@ -23,10 +23,46 @@
 #ifndef PICOLIBRARY_TESTING_INTERACTIVE_IP_UDP_H
 #define PICOLIBRARY_TESTING_INTERACTIVE_IP_UDP_H
 
+#include <cstdint>
+
+#include "picolibrary/error.h"
+#include "picolibrary/ip/udp.h"
+#include "picolibrary/precondition.h"
+
 /**
  * \brief UDP over IP interactive testing facilities.
  */
 namespace picolibrary::Testing::Interactive::IP::UDP {
+
+/**
+ * \brief Socket datagram reception interactive testing helper.
+ *
+ * \tparam Socket The type of socket used to receive datagrams.
+ *
+ * \param[in] socket The socket to use to receive a datagram.
+ * \param[out] begin The beginning of the block of data read from the datagram.
+ * \param[out] end The end of the block of data read from the datagram.
+ *
+ * \return The endpoint the datagram was received from and the end of the data read from
+ *         the datagram.
+ */
+template<typename Socket>
+auto receive( Socket & socket, std::uint8_t * begin, std::uint8_t * end ) noexcept
+    -> ::picolibrary::IP::UDP::Reception_Result
+{
+    for ( ;; ) {
+        auto result = socket.receive( begin, end );
+        if ( result.is_error() ) {
+            PICOLIBRARY_EXPECT(
+                result.error() == Generic_Error::WOULD_BLOCK
+                    or result.error() == Generic_Error::OPERATION_TIMEOUT,
+                Generic_Error::LOGIC_ERROR );
+        } else {
+            return result.value();
+        } // else
+    }     // for
+}
+
 } // namespace picolibrary::Testing::Interactive::IP::UDP
 
 #endif // PICOLIBRARY_TESTING_INTERACTIVE_IP_UDP_H
