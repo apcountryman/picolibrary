@@ -24,6 +24,7 @@
 #define PICOLIBRARY_TESTING_AUTOMATED_IP_NETWORK_STACK_H
 
 #include "picolibrary/testing/automated/ip/tcp.h"
+#include "picolibrary/testing/automated/ip/udp.h"
 
 namespace picolibrary::Testing::Automated::IP {
 
@@ -35,6 +36,8 @@ class Mock_Network_Stack {
     using TCP_Client = TCP::Mock_Client::Handle;
 
     using TCP_Server = TCP::Mock_Server::Handle;
+
+    using UDP_Socket = UDP::Mock_Socket::Handle;
 
     Mock_Network_Stack() = default;
 
@@ -51,6 +54,8 @@ class Mock_Network_Stack {
     MOCK_METHOD( TCP_Client, make_tcp_client, () );
 
     MOCK_METHOD( TCP_Server, make_tcp_server, () );
+
+    MOCK_METHOD( UDP_Socket, make_udp_socket, () );
 };
 
 } // namespace picolibrary::Testing::Automated::IP
