@@ -119,6 +119,7 @@ if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
         "picolibrary/testing/automated/wiznet/w5500/ip.cc"
         "picolibrary/testing/automated/wiznet/w5500/ip/network_stack.cc"
         "picolibrary/testing/automated/wiznet/w5500/ip/tcp.cc"
+        "picolibrary/testing/automated/wiznet/w5500/ip/udp.cc"
     )
     list(
         APPEND PICOLIBRARY_LINK_LIBRARIES
