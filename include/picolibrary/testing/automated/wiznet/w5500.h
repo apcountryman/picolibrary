@@ -284,15 +284,15 @@ inline auto operator<<( std::ostream & stream, No_Delayed_ACK_Usage no_delayed_a
  *
  * \param[in] stream The stream to write the
  *            picolibrary::WIZnet::W5500::Broadcast_Blocking to.
- * \param[in] no_delayed_ack_usage_configuration The
+ * \param[in] broadcast_blocking_configuration The
  *            picolibrary::WIZnet::W5500::Broadcast_Blocking to write to the stream.
  *
  * \return stream
  */
-inline auto operator<<( std::ostream & stream, Broadcast_Blocking no_delayed_ack_usage_configuration )
+inline auto operator<<( std::ostream & stream, Broadcast_Blocking broadcast_blocking_configuration )
     -> std::ostream &
 {
-    switch ( no_delayed_ack_usage_configuration ) {
+    switch ( broadcast_blocking_configuration ) {
             // clang-format off
 
         case Broadcast_Blocking::DISABLED: return stream << "::picolibrary::WIZnet::W5500::Broadcast_Blocking::DISABLED";
@@ -302,7 +302,7 @@ inline auto operator<<( std::ostream & stream, Broadcast_Blocking no_delayed_ack
     } // switch
 
     throw std::invalid_argument{
-        "no_delayed_ack_usage_configuration is not a valid "
+        "broadcast_blocking_configuration is not a valid "
         "::picolibrary::WIZnet::W5500::Broadcast_Blocking"
     };
 }
