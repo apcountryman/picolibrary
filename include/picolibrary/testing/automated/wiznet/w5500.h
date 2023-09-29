@@ -283,6 +283,34 @@ inline auto operator<<( std::ostream & stream, No_Delayed_ACK_Usage no_delayed_a
  * \brief Insertion operator.
  *
  * \param[in] stream The stream to write the
+ *            picolibrary::WIZnet::W5500::Broadcast_Blocking to.
+ * \param[in] no_delayed_ack_usage_configuration The
+ *            picolibrary::WIZnet::W5500::Broadcast_Blocking to write to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Broadcast_Blocking no_delayed_ack_usage_configuration )
+    -> std::ostream &
+{
+    switch ( no_delayed_ack_usage_configuration ) {
+            // clang-format off
+
+        case Broadcast_Blocking::DISABLED: return stream << "::picolibrary::WIZnet::W5500::Broadcast_Blocking::DISABLED";
+        case Broadcast_Blocking::ENABLED:  return stream << "::picolibrary::WIZnet::W5500::Broadcast_Blocking::ENABLED";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{
+        "no_delayed_ack_usage_configuration is not a valid "
+        "::picolibrary::WIZnet::W5500::Broadcast_Blocking"
+    };
+}
+
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the
  *            picolibrary::WIZnet::W5500::Socket_Buffer_Size to.
  * \param[in] socket_buffer_size The picolibrary::WIZnet::W5500::Socket_Buffer_Size to
  *            write to the stream.

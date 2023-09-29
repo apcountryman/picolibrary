@@ -3041,6 +3041,14 @@ enum class No_Delayed_ACK_Usage : SN_MR::Type {
 };
 
 /**
+ * \brief Broadcast blocking configuration.
+ */
+enum class Broadcast_Blocking : SN_MR::Type {
+    DISABLED = 0b0 << SN_MR::Bit::BCASTB, ///< Disabled.
+    ENABLED  = 0b1 << SN_MR::Bit::BCASTB, ///< Enabled.
+};
+
+/**
  * \brief Socket interrupt masks.
  */
 struct Socket_Interrupt {
