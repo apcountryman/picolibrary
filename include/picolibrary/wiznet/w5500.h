@@ -3033,6 +3033,14 @@ enum class Socket_Protocol : SN_MR::Type {
 };
 
 /**
+ * \brief Unicast blocking configuration.
+ */
+enum class Unicast_Blocking : SN_MR::Type {
+    DISABLED = 0b0 << SN_MR::Bit::UCASTB, ///< Disabled.
+    ENABLED  = 0b1 << SN_MR::Bit::UCASTB, ///< Enabled.
+};
+
+/**
  * \brief No delayed ACK usage configuration.
  */
 enum class No_Delayed_ACK_Usage : SN_MR::Type {
