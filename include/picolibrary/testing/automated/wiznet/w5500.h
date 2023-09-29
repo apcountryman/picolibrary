@@ -255,6 +255,34 @@ inline auto operator<<( std::ostream & stream, Link_Speed link_speed ) -> std::o
  * \brief Insertion operator.
  *
  * \param[in] stream The stream to write the
+ *            picolibrary::WIZnet::W5500::Unicast_Blocking to.
+ * \param[in] unicast_blocking_configuration The
+ *            picolibrary::WIZnet::W5500::Unicast_Blocking to write to the stream.
+ *
+ * \return stream
+ */
+inline auto operator<<( std::ostream & stream, Unicast_Blocking unicast_blocking_configuration )
+    -> std::ostream &
+{
+    switch ( unicast_blocking_configuration ) {
+            // clang-format off
+
+        case Unicast_Blocking::DISABLED: return stream << "::picolibrary::WIZnet::W5500::Unicast_Blocking::DISABLED";
+        case Unicast_Blocking::ENABLED:  return stream << "::picolibrary::WIZnet::W5500::Unicast_Blocking::ENABLED";
+
+            // clang-format on
+    } // switch
+
+    throw std::invalid_argument{
+        "unicast_blocking_configuration is not a valid "
+        "::picolibrary::WIZnet::W5500::Unicast_Blocking"
+    };
+}
+
+/**
+ * \brief Insertion operator.
+ *
+ * \param[in] stream The stream to write the
  *            picolibrary::WIZnet::W5500::No_Delayed_ACK_Usage to.
  * \param[in] no_delayed_ack_usage_configuration The
  *            picolibrary::WIZnet::W5500::No_Delayed_ACK_Usage to write to the stream.
