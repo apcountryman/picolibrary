@@ -348,8 +348,11 @@ class Socket {
      * \pre endpoint is not already in use
      * \pre if an ephemeral port is requested, and ephemeral port is available
      */
+    // NOLINTNEXTLINE(readability-function-size)
     void bind( ::picolibrary::IP::UDP::Endpoint const & endpoint = ::picolibrary::IP::UDP::Endpoint{} ) noexcept
     {
+        // #lizard forgives the length
+
         PICOLIBRARY_EXPECT( m_state == State::INITIALIZED, Generic_Error::LOGIC_ERROR );
 
         PICOLIBRARY_EXPECT(
@@ -421,11 +424,14 @@ class Socket {
      * \return picolibrary::Generic_Error::WOULD_BLOCK if the datagram cannot be
      *         transmitted without blocking.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     auto transmit(
         ::picolibrary::IP::UDP::Endpoint const & endpoint,
         std::uint8_t const *                     begin,
         std::uint8_t const *                     end ) noexcept -> Result<void>
     {
+        // #lizard forgives the length
+
         PICOLIBRARY_EXPECT(
             endpoint.address().version() == ::picolibrary::IP::Version::_4
                 and not endpoint.address().ipv4().is_any() and not endpoint.port().is_any(),
@@ -490,9 +496,12 @@ class Socket {
      * \return picolibrary::Generic_Error::WOULD_BLOCK if a datagram could not be received
      *         without blocking.
      */
+    // NOLINTNEXTLINE(readability-function-size)
     auto receive( std::uint8_t * begin, std::uint8_t * end ) noexcept
         -> Result<::picolibrary::IP::UDP::Reception_Result>
     {
+        // #lizard forgives the length
+
         auto & driver = m_network_stack->driver( {} );
 
         auto const buffer_size = static_cast<std::uint16_t>(
