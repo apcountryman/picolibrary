@@ -36,6 +36,7 @@
 #include "picolibrary/utility.h"
 #include "picolibrary/wiznet/w5500.h"
 #include "picolibrary/wiznet/w5500/ip/tcp.h"
+#include "picolibrary/wiznet/w5500/ip/udp.h"
 #include "picolibrary/wiznet/w5500/keys.h"
 
 namespace picolibrary::WIZnet::W5500::IP {
@@ -66,6 +67,11 @@ class Network_Stack {
      *        stack.
      */
     using TCP_Server = TCP::Server<Network_Stack>;
+
+    /**
+     * \brief The type of UDP socket that is used to interact with the network stack.
+     */
+    using UDP_Socket = UDP::Socket<Network_Stack>;
 
     /**
      * \brief Constructor.
@@ -761,6 +767,32 @@ class Network_Stack {
     auto tcp_port_allocator( Network_Stack_TCP_Port_Allocator_Access_Key ) noexcept -> TCP_Port_Allocator &
     {
         return m_tcp_port_allocator;
+    }
+
+    /**
+     * \brief Construct a UDP socket.
+     *
+     * \pre a socket is available
+     *
+     * \return The constructed UDP socket.
+     */
+    auto make_udp_socket() noexcept -> UDP_Socket
+    {
+        return { {}, *this, allocate_socket() };
+    }
+
+    /**
+     * \brief Construct a UDP socket that uses a specific hardware socket.
+     *
+     * \param[in] socket_id The hardware socket ID for the hardware socket to use.
+     *
+     * \pre the requested socket is available for allocation
+     *
+     * \return The constructed UDP socket.
+     */
+    auto make_udp_socket( Socket_ID socket_id ) noexcept -> UDP_Socket
+    {
+        return { {}, *this, allocate_socket( socket_id ) };
     }
 
     /**
