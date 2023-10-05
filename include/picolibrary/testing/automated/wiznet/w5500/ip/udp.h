@@ -187,7 +187,7 @@ class Mock_Socket {
     Mock_Socket() = default;
 
     Mock_Socket( Mock_Socket && ) = delete;
-    
+
     Mock_Socket( Mock_Socket const & ) = delete;
 
     ~Mock_Socket() noexcept = default;
