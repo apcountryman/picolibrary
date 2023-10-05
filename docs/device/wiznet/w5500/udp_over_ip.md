@@ -44,7 +44,7 @@ documentation](../../../network/udp_over_ip.md#socket) for more information.
   `::picolibrary::WIZnet::W5500::IP::UDP::Socket::interrupt_context()` member function.
 - To clear interrupts, use the
   `::picolibrary::WIZnet::W5500::IP::UDP::Socket::clear_interrupts()` member function.
-- To check if data transmission is in progress, use the
+- To check if datagram transmission is in progress, use the
   `::picolibrary::WIZnet::W5500::IP::UDP::Socket::is_transmitting()` member function.
 
 `::picolibrary::WIZnet::W5500::IP::UDP::Socket` automated tests are defined in the

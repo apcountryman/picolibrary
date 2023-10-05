@@ -34,6 +34,7 @@
 #include "picolibrary/error.h"
 #include "picolibrary/ip/udp.h"
 #include "picolibrary/ipv4.h"
+#include "picolibrary/testing/automated/error.h"
 #include "picolibrary/testing/automated/ip/udp.h"
 #include "picolibrary/testing/automated/wiznet/w5500.h"
 #include "picolibrary/testing/automated/wiznet/w5500/ip.h"
@@ -330,7 +331,7 @@ struct broadcastBlockingConfiguration_Test_Case {
     std::uint8_t sn_mr;
 
     /**
-     * \brief The desired broadcast blocking configuration.
+     * \brief The socket broadcast blocking configuration.
      */
     Broadcast_Blocking broadcast_blocking_configuration;
 };
@@ -489,7 +490,7 @@ struct unicastBlockingConfiguration_Test_Case {
     std::uint8_t sn_mr;
 
     /**
-     * \brief The desired unicast blocking configuration.
+     * \brief The socket unicast blocking configuration.
      */
     Unicast_Blocking unicast_blocking_configuration;
 };
@@ -1564,7 +1565,7 @@ TEST_P( receiveAllData, worksProperly )
     EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( 0x24 ) );
     EXPECT_CALL( driver, read_sn_cr( socket_id ) ).WillOnce( Return( 0x00 ) );
 
-    auto       data   = std::vector<std::uint8_t>( 4 );
+    auto       data   = std::vector<std::uint8_t>( 3 );
     auto const result = socket.receive( &*data.begin(), &*data.end() );
 
     ASSERT_FALSE( result.is_error() );

@@ -30,6 +30,7 @@
 #include "picolibrary/error.h"
 #include "picolibrary/ip.h"
 #include "picolibrary/ip/udp.h"
+#include "picolibrary/ipv4.h"
 #include "picolibrary/precondition.h"
 #include "picolibrary/result.h"
 #include "picolibrary/utility.h"
@@ -346,7 +347,7 @@ class Socket {
      *
      * \pre endpoint is a valid local endpoint
      * \pre endpoint is not already in use
-     * \pre if an ephemeral port is requested, and ephemeral port is available
+     * \pre if an ephemeral port is requested, an ephemeral port is available
      */
     // NOLINTNEXTLINE(readability-function-size)
     void bind( ::picolibrary::IP::UDP::Endpoint const & endpoint = ::picolibrary::IP::UDP::Endpoint{} ) noexcept
@@ -396,10 +397,10 @@ class Socket {
     }
 
     /**
-     * \brief Check if data transmission is in progress.
+     * \brief Check if datagram transmission is in progress.
      *
-     * \return true if data transmission is in progress.
-     * \return false if data transmission is not in progress.
+     * \return true if datagram transmission is in progress.
+     * \return false if datagram transmission is not in progress.
      */
     constexpr auto is_transmitting() const noexcept -> bool
     {

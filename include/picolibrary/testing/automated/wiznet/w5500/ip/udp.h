@@ -24,6 +24,7 @@
 #define PICOLIBRARY_TESTING_AUTOMATED_WIZNET_W5500_IP_UDP_H
 
 #include <cstdint>
+#include <utility>
 #include <vector>
 
 #include "gmock/gmock.h"
@@ -186,6 +187,8 @@ class Mock_Socket {
     Mock_Socket() = default;
 
     Mock_Socket( Mock_Socket && ) = delete;
+    
+    Mock_Socket( Mock_Socket const & ) = delete;
 
     ~Mock_Socket() noexcept = default;
 
