@@ -34,6 +34,7 @@
 #include "picolibrary/testing/automated/wiznet/w5500.h"
 #include "picolibrary/testing/automated/wiznet/w5500/ip.h"
 #include "picolibrary/testing/automated/wiznet/w5500/ip/tcp.h"
+#include "picolibrary/testing/automated/wiznet/w5500/ip/udp.h"
 #include "picolibrary/wiznet/w5500.h"
 
 namespace picolibrary::Testing::Automated::WIZnet::W5500::IP {
@@ -46,6 +47,8 @@ class Mock_Network_Stack {
     using TCP_Client = TCP::Mock_Client::Handle;
 
     using TCP_Server = TCP::Mock_Server::Handle;
+
+    using UDP_Socket = UDP::Mock_Socket::Handle;
 
     Mock_Network_Stack() = default;
 
@@ -142,6 +145,9 @@ class Mock_Network_Stack {
     MOCK_METHOD( bool, tcp_server_connection_handler_is_detached, ( ::picolibrary::WIZnet::W5500::Socket_ID ), ( const ) );
 
     MOCK_METHOD( Mock_Port_Allocator &, tcp_port_allocator, ( std::uint_fast8_t ) );
+
+    MOCK_METHOD( UDP_Socket, make_udp_socket, () );
+    MOCK_METHOD( UDP_Socket, make_udp_socket, ( ::picolibrary::WIZnet::W5500::Socket_ID ) );
 
     MOCK_METHOD( Mock_Port_Allocator &, udp_port_allocator, ( std::uint_fast8_t ) );
 };

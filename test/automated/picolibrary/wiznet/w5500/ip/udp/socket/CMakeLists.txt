@@ -13,7 +13,21 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: picolibrary::WIZnet::W5500::IP::UDP automated tests CMake rules.
+# Description: picolibrary::WIZnet::W5500::IP::UDP::Socket automated tests CMake rules.
 
 # picolibrary::WIZnet::W5500::IP::UDP::Socket automated tests
-add_subdirectory( socket )
+if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
+    add_executable(
+        test-automated-picolibrary-wiznet-w5500-ip-udp-socket
+        main.cc
+    )
+    target_link_libraries(
+        test-automated-picolibrary-wiznet-w5500-ip-udp-socket
+        picolibrary
+        picolibrary-testing-automated-fatal_error
+    )
+    add_test(
+        NAME    test-automated-picolibrary-wiznet-w5500-ip-udp-socket
+        COMMAND test-automated-picolibrary-wiznet-w5500-ip-udp-socket --gtest_color=yes
+    )
+endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
