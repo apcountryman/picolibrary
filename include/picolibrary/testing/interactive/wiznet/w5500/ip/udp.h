@@ -74,7 +74,8 @@ namespace picolibrary::Testing::Interactive::WIZnet::W5500::IP::UDP {
  * \param[in] local_endpoint The local endpoint to bind the socket to.
  */
 template<typename Controller, typename Device_Selector>
-[[noreturn]] void echo_server(
+// NOLINTNEXTLINE(readability-function-size)
+[[noreturn]] void echo(
     Reliable_Output_Stream &                         stream,
     Controller                                       controller,
     typename Controller::Configuration               configuration,
@@ -94,6 +95,9 @@ template<typename Controller, typename Device_Selector>
     std::uint8_t                                     time_to_live,
     ::picolibrary::IP::UDP::Endpoint                 local_endpoint ) noexcept
 {
+    // #lizard forgives the length
+    // #lizard forgives the parameter count
+
     controller.initialize();
 
     auto network_stack = ::picolibrary::WIZnet::W5500::IP::Network_Stack{
