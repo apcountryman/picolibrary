@@ -131,7 +131,8 @@ template<typename Network_Stack, typename Socket_Options_Configurator>
     stream.print( PICOLIBRARY_ROM_STRING( "echoing datagrams on " ), socket.local_endpoint(), '\n' );
     stream.flush();
 
-    Array<std::uint8_t, 64> buffer;
+    using Buffer = Array<std::uint8_t, 64>;
+    Buffer buffer;
     for ( ;; ) {
         auto const [ endpoint, end ] = receive( socket, buffer.begin(), buffer.end() );
 
@@ -139,7 +140,7 @@ template<typename Network_Stack, typename Socket_Options_Configurator>
             PICOLIBRARY_ROM_STRING( "echoing datagram received from " ),
             endpoint,
             PICOLIBRARY_ROM_STRING( ":\n" ),
-            Format::Hex_Dump{ buffer.cbegin(), end } );
+            Format::Hex_Dump{ buffer.cbegin(), static_cast<Buffer::Const_Iterator>( end ) } );
         stream.flush();
 
         transmit( socket, endpoint, buffer.cbegin(), end );
