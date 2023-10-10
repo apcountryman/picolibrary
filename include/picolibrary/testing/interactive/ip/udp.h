@@ -114,6 +114,7 @@ void transmit(
  * \param[in] local_endpoint The local endpoint to bind the socket to.
  */
 template<typename Network_Stack, typename Socket_Options_Configurator>
+// NOLINTNEXTLINE(readability-function-size)
 [[noreturn]] void echo(
     Reliable_Output_Stream &                 stream,
     Network_Stack &                          network_stack,
