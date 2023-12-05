@@ -58,12 +58,6 @@ picolibrary supports the following project configuration options:
   [`include/picolibrary/event.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/event.h)
   for more information)
 - `PICOLIBRARY_HIL_INCLUDE_DIR` (optional): HIL include directory
-- `PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS` (defaults to `ON`): use parent project's
-  build flags
-    - The following project configuration options are available if
-      `PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS` is `OFF`:
-        - `PICOLIBRARY_USE_STATIC_ANALYSIS_BUILD_FLAGS` (defaults to `OFF`): use static
-          analysis build flags
 
 ## Development
 The repository's Git `pre-commit` hook script is the simplest way to configure, build, and
