@@ -69,12 +69,7 @@ list(
 )
 
 # configure compilation and linking
-option(
-    PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS
-    "picolibrary: use parent project's build flags"
-    ON
-)
-if( NOT ${PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS} )
+if( "${PROJECT_SOURCE_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}" )
     set( CMAKE_CXX_STANDARD 17 )
     add_compile_options(
         -Werror -Wall -Wextra
@@ -119,7 +114,7 @@ if( NOT ${PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS} )
             -ftest-coverage
         )
     endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} )
-endif( NOT ${PICOLIBRARY_USE_PARENT_PROJECT_BUILD_FLAGS} )
+endif( "${PROJECT_SOURCE_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}" )
 
 # capture project version information
 include( git-utilities )
