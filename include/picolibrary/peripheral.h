@@ -23,10 +23,55 @@
 #ifndef PICOLIBRARY_PERIPHERAL_H
 #define PICOLIBRARY_PERIPHERAL_H
 
+#include <cstdint>
+
 /**
  * \brief Peripheral facilities.
  */
 namespace picolibrary::Peripheral {
+
+/**
+ * \brief Microcontroller peripheral instance.
+ *
+ * \tparam T The peripheral type.
+ * \tparam INSTANCE_ADDRESS The address of the peripheral instance.
+ */
+template<typename T, std::uintptr_t INSTANCE_ADDRESS>
+class Instance {
+  public:
+    /**
+     * \brief The peripheral type.
+     */
+    using Type = T;
+
+    /**
+     * \brief The address of the peripheral instance.
+     */
+    static constexpr auto ADDRESS = INSTANCE_ADDRESS;
+
+    /**
+     * \brief Access the peripheral instance.
+     *
+     * \return The peripheral instance.
+     */
+    static auto instance() noexcept -> Type &
+    {
+        return *reinterpret_cast<Type *>( ADDRESS );
+    }
+
+    Instance() = delete;
+
+    Instance( Instance && ) = delete;
+
+    Instance( Instance const & ) = delete;
+
+    ~Instance() = delete;
+
+    auto operator=( Instance && ) = delete;
+
+    auto operator=( Instance const & ) = delete;
+};
+
 } // namespace picolibrary::Peripheral
 
 #endif // PICOLIBRARY_PERIPHERAL_H

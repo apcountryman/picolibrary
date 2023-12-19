@@ -4,3 +4,10 @@ Peripheral facilities are defined in the
 header/source file pair.
 
 ## Table of Contents
+1. [Peripheral Instance](#peripheral-instance)
+
+## Peripheral Instance
+The `::picolibrary::Peripheral::Instance` template class is used to define microcontroller
+peripheral instances.
+- To access a peripheral instance, use the
+  `::picolibrary::Peripheral::Instance::instance()` static member function.
