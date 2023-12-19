@@ -1,5 +1,5 @@
 # Register Facilities
-Microcontroller register facilities are defined in the
+Register facilities are defined in the
 [`include/picolibrary/register.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/register.h)/[`source/picolibrary/register.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/register.cc)
 header/source file pair.
 
