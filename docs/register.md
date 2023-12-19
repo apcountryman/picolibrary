@@ -6,7 +6,6 @@ header/source file pair.
 ## Table of Contents
 1. [Register](#register)
 
-
 ## Register
 The `::picolibrary::Register` class is used to declare a microcontroller register that is
 not reserved.
