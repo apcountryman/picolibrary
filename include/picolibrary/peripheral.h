@@ -20,8 +20,8 @@
  * \brief picolibrary::Peripheral interface.
  */
 
-#ifndef PICOLIBRARY_ADAFRUIT_H
-#define PICOLIBRARY_ADAFRUIT_H
+#ifndef PICOLIBRARY_PERIPHERAL_H
+#define PICOLIBRARY_PERIPHERAL_H
 
 /**
  * \brief Peripheral facilities.
@@ -29,4 +29,4 @@
 namespace picolibrary::Peripheral {
 } // namespace picolibrary::Peripheral
 
-#endif // PICOLIBRARY_ADAFRUIT_H
+#endif // PICOLIBRARY_PERIPHERAL_H
