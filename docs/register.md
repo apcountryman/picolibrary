@@ -5,6 +5,7 @@ header/source file pair.
 
 ## Table of Contents
 1. [Register](#register)
+1. [Reserved Register](#reserved-register)
 
 ## Register
 The `::picolibrary::Register` class is used to declare a microcontroller register that is
@@ -15,3 +16,8 @@ Register access is restricted to the following operations:
 - Bitwise AND assignment
 - Bitwise OR assignment
 - Bitwise XOR assignment
+
+## Reserved Register
+The `::picolibrary::Reserved_Register` class is used to declare a microcontroller reserved
+register.
+Reserved registers cannot be accessed.
