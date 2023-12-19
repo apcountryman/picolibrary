@@ -54,6 +54,7 @@ set(
     "picolibrary/microchip/mcp23s08.cc"
     "picolibrary/microchip/mcp23x08.cc"
     "picolibrary/microchip/mcp3008.cc"
+    "picolibrary/peripheral.cc"
     "picolibrary/postcondition.cc"
     "picolibrary/precondition.cc"
     "picolibrary/register.cc"
