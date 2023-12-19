@@ -56,6 +56,7 @@ set(
     "picolibrary/microchip/mcp3008.cc"
     "picolibrary/postcondition.cc"
     "picolibrary/precondition.cc"
+    "picolibrary/register.cc"
     "picolibrary/result.cc"
     "picolibrary/rgb.cc"
     "picolibrary/rom.cc"

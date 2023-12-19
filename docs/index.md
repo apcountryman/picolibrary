@@ -8,6 +8,7 @@ microcontrollers.
 1. [HIL](hil.md)
 1. [Automated Testing](testing-automated.md)
 1. [Interactive Testing](testing-interactive.md)
+1. [Register Facilities](register.md)
 1. [ROM Facilities](rom.md)
 1. [Library Version](library_version.md)
 1. [Error Handling Facilities](error_handling.md)
