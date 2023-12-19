@@ -9,8 +9,5 @@ header/source file pair.
 ## Peripheral Instance
 The `::picolibrary::Peripheral::Instance` template class is used to define microcontroller
 peripheral instances.
-The `::picolibrary::Peripheral::Instance` template class is defined in the
-[`include/picolibrary/peripheral.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/peripheral.h)/[`source/picolibrary/peripheral.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/peripheral.cc)
-header/source file pair.
 - To access a peripheral instance, use the
   `::picolibrary::Peripheral::Instance::instance()` static member function.
