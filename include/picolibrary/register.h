@@ -25,6 +25,7 @@
 
 #include <type_traits>
 
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define PICOLIBRARY_PACKED __attribute__( ( __packed__ ) )
 
 namespace picolibrary {
