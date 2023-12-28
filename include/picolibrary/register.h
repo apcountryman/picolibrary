@@ -33,7 +33,7 @@ namespace picolibrary {
  * \tparam T The register's underlying integral type.
  */
 template<typename T>
-class Register {
+class __attribute__( ( packed ) ) Register {
   public:
     static_assert( std::is_integral_v<T> );
 
@@ -133,7 +133,7 @@ class Register {
  * \tparam T The reserved register's underlying integral type.
  */
 template<typename T>
-class Reserved_Register {
+class __attribute__( ( packed ) ) Reserved_Register {
   public:
     static_assert( std::is_integral_v<T> );
 
