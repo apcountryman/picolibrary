@@ -25,6 +25,8 @@
 
 #include <type_traits>
 
+#define PICOLIBRARY_PACKED __attribute__( ( __packed__ ) )
+
 namespace picolibrary {
 
 /**
@@ -33,7 +35,7 @@ namespace picolibrary {
  * \tparam T The register's underlying integral type.
  */
 template<typename T>
-class __attribute__( ( packed ) ) Register {
+class PICOLIBRARY_PACKED Register {
   public:
     static_assert( std::is_integral_v<T> );
 
@@ -133,7 +135,7 @@ class __attribute__( ( packed ) ) Register {
  * \tparam T The reserved register's underlying integral type.
  */
 template<typename T>
-class __attribute__( ( packed ) ) Reserved_Register {
+class PICOLIBRARY_PACKED Reserved_Register {
   public:
     static_assert( std::is_integral_v<T> );
 
