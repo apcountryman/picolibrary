@@ -367,6 +367,130 @@ class Mock_Internally_Pulled_Down_Input_Pin : public Mock_Input_Pin {
 };
 
 /**
+ * \brief Mock internally pulled input pin.
+ */
+class Mock_Internally_Pulled_Input_Pin : public Mock_Input_Pin {
+  public:
+    class Handle : public Mock_Input_Pin::Handle {
+      public:
+        constexpr Handle() noexcept = default;
+
+        constexpr Handle( Mock_Internally_Pulled_Input_Pin & mock ) noexcept :
+            Mock_Input_Pin::Handle{ mock }
+        {
+        }
+
+        constexpr Handle( Handle && source ) noexcept = default;
+
+        Handle( Handle const & ) = delete;
+
+        ~Handle() noexcept = default;
+
+        constexpr auto operator=( Handle && expression ) noexcept -> Handle & = default;
+
+        auto operator=( Handle const & ) = delete;
+
+        auto mock() noexcept -> Mock_Internally_Pulled_Input_Pin &
+        {
+            return static_cast<Mock_Internally_Pulled_Input_Pin &>( Mock_Input_Pin::Handle::mock() );
+        }
+
+        auto mock() const noexcept -> Mock_Internally_Pulled_Input_Pin const &
+        {
+            return static_cast<Mock_Internally_Pulled_Input_Pin const &>(
+                Mock_Input_Pin::Handle::mock() );
+        }
+
+        using Mock_Input_Pin::Handle::initialize;
+
+        void initialize( ::picolibrary::GPIO::Initial_Pull_Up_State initial_pull_up_state )
+        {
+            mock().initialize( initial_pull_up_state );
+        }
+
+        void initialize( ::picolibrary::GPIO::Initial_Pull_Down_State initial_pull_down_state )
+        {
+            mock().initialize( initial_pull_down_state );
+        }
+
+        auto pull_up_is_disabled() const -> bool
+        {
+            return mock().pull_up_is_disabled();
+        }
+
+        auto pull_up_is_enabled() const -> bool
+        {
+            return mock().pull_up_is_enabled();
+        }
+
+        auto pull_down_is_disabled() const -> bool
+        {
+            return mock().pull_down_is_disabled();
+        }
+
+        auto pull_down_is_enabled() const -> bool
+        {
+            return mock().pull_down_is_enabled();
+        }
+
+        void disable_pull_up()
+        {
+            mock().disable_pull_up();
+        }
+
+        void enable_pull_up()
+        {
+            mock().enable_pull_up();
+        }
+
+        void disable_pull_down()
+        {
+            mock().disable_pull_down();
+        }
+
+        void enable_pull_down()
+        {
+            mock().enable_pull_down();
+        }
+    };
+
+    Mock_Internally_Pulled_Input_Pin() = default;
+
+    Mock_Internally_Pulled_Input_Pin( Mock_Internally_Pulled_Input_Pin && ) = delete;
+
+    Mock_Internally_Pulled_Input_Pin( Mock_Internally_Pulled_Input_Pin const & ) = delete;
+
+    ~Mock_Internally_Pulled_Input_Pin() noexcept = default;
+
+    auto operator=( Mock_Internally_Pulled_Input_Pin && ) = delete;
+
+    auto operator=( Mock_Internally_Pulled_Input_Pin const & ) = delete;
+
+    auto handle() noexcept -> Handle
+    {
+        return Handle{ *this };
+    }
+
+    using Mock_Input_Pin::gmock_initialize;
+    using Mock_Input_Pin::initialize;
+
+    MOCK_METHOD( void, initialize, ( ::picolibrary::GPIO::Initial_Pull_Up_State ) );
+    MOCK_METHOD( void, initialize, ( ::picolibrary::GPIO::Initial_Pull_Down_State ) );
+
+    MOCK_METHOD( bool, pull_up_is_disabled, (), ( const ) );
+    MOCK_METHOD( bool, pull_up_is_enabled, (), ( const ) );
+
+    MOCK_METHOD( bool, pull_down_is_disabled, (), ( const ) );
+    MOCK_METHOD( bool, pull_down_is_enabled, (), ( const ) );
+
+    MOCK_METHOD( void, disable_pull_up, () );
+    MOCK_METHOD( void, enable_pull_up, () );
+
+    MOCK_METHOD( void, disable_pull_down, () );
+    MOCK_METHOD( void, enable_pull_down, () );
+};
+
+/**
  * \brief Mock output pin.
  */
 class Mock_Output_Pin {

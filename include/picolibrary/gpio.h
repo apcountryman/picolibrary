@@ -304,6 +304,143 @@ class Internally_Pulled_Down_Input_Pin_Concept {
 };
 
 /**
+ * \brief Internally pulled input pin concept.
+ *
+ * \attention This interface assumes that a pin's internal pull-up resistor and internal
+ *            pull-down resistor cannot be enabled at the same time (e.g. enabling a pin's
+ *            internal pull-down resistor implicitly disables the pin's internal pull-up
+ *            resistor.
+ *
+ * \attention picolibrary assumes that the high pin/signal state is the active pin/signal
+ *            state. All input pin implementations should use this assumption. If the high
+ *            pin/signal state is not the active pin/signal state,
+ *            picolibrary::GPIO::Active_Low_Input_Pin can be used to invert an input pin
+ *            implementation's behavior.
+ */
+class Internally_Pulled_Input_Pin_Concept {
+  public:
+    /**
+     * \brief Constructor.
+     */
+    Internally_Pulled_Input_Pin_Concept() noexcept;
+
+    /**
+     * \brief Constructor.
+     *
+     * \param[in] source The source of the move.
+     */
+    Internally_Pulled_Input_Pin_Concept( Internally_Pulled_Input_Pin_Concept && source ) noexcept;
+
+    Internally_Pulled_Input_Pin_Concept( Internally_Pulled_Input_Pin_Concept const & ) = delete;
+
+    /**
+     * \brief Destructor.
+     */
+    ~Internally_Pulled_Input_Pin_Concept() noexcept;
+
+    /**
+     * \brief Assignment operator.
+     *
+     * \param[in] expression The expression to be assigned.
+     *
+     * \return The assigned to object.
+     */
+    auto operator=( Internally_Pulled_Input_Pin_Concept && expression ) noexcept
+        -> Internally_Pulled_Input_Pin_Concept &;
+
+    auto operator=( Internally_Pulled_Input_Pin_Concept const & ) = delete;
+
+    /**
+     * \brief Initialize the pin's hardware.
+     */
+    void initialize() noexcept;
+
+    /**
+     * \brief Initialize the pin's hardware.
+     *
+     * \param[in] initial_pull_up_state The initial state of the pin's internal pull-up
+     *            resistor.
+     */
+    void initialize( Initial_Pull_Up_State initial_pull_up_state ) noexcept;
+
+    /**
+     * \brief Initialize the pin's hardware.
+     *
+     * \param[in] initial_pull_down_state The initial state of the pin's internal
+     *            pull-down resistor.
+     */
+    void initialize( Initial_Pull_Down_State initial_pull_down_state ) noexcept;
+
+    /**
+     * \brief Check if the pin's internal pull-up resistor is disabled.
+     *
+     * \return true if the pin's internal pull-up resistor is disabled.
+     * \return false if the pin's internal pull-up resistor is not disabled.
+     */
+    auto pull_up_is_disabled() const noexcept -> bool;
+
+    /**
+     * \brief Check if the pin's internal pull-up resistor is enabled.
+     *
+     * \return true if the pin's internal pull-up resistor is enabled.
+     * \return false if the pin's internal pull-up resistor is not enabled.
+     */
+    auto pull_up_is_enabled() const noexcept -> bool;
+
+    /**
+     * \brief Check if the pin's internal pull-down resistor is disabled.
+     *
+     * \return true if the pin's internal pull-down resistor is disabled.
+     * \return false if the pin's internal pull-down resistor is not disabled.
+     */
+    auto pull_down_is_disabled() const noexcept -> bool;
+
+    /**
+     * \brief Check if the pin's internal pull-down resistor is enabled.
+     *
+     * \return true if the pin's internal pull-down resistor is enabled.
+     * \return false if the pin's internal pull-down resistor is not enabled.
+     */
+    auto pull_down_is_enabled() const noexcept -> bool;
+
+    /**
+     * \brief Disable the pin's internal pull-up resistor.
+     */
+    void disable_pull_up() noexcept;
+
+    /**
+     * \brief Enable the pin's internal pull-up resistor.
+     */
+    void enable_pull_up() noexcept;
+
+    /**
+     * \brief Disable the pin's internal pull-down resistor.
+     */
+    void disable_pull_down() noexcept;
+
+    /**
+     * \brief Enable the pin's internal pull-down resistor.
+     */
+    void enable_pull_down() noexcept;
+
+    /**
+     * \brief Check if the pin is in the low state.
+     *
+     * \return true if the pin is in the low state.
+     * \return false if the pin is not in the low state.
+     */
+    auto is_low() const noexcept -> bool;
+
+    /**
+     * \brief Check if the pin is in the high state.
+     *
+     * \return true if the pin is in the high state.
+     * \return false if the pin is not in the high state.
+     */
+    auto is_high() const noexcept -> bool;
+};
+
+/**
  * \brief Output pin concept.
  *
  * \attention picolibrary assumes that the high pin/signal state is the active pin/signal
