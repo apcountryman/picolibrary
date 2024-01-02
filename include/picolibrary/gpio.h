@@ -39,6 +39,14 @@ enum class Initial_Pull_Up_State : std::uint_fast8_t {
 };
 
 /**
+ * \brief Initial internal pull-down resistor state.
+ */
+enum class Initial_Pull_Down_State : std::uint_fast8_t {
+    DISABLED, ///< Disabled.
+    ENABLED,  ///< Enabled.
+};
+
+/**
  * \brief Initial pin state.
  */
 enum class Initial_Pin_State : std::uint_fast8_t {
