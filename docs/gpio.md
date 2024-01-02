@@ -5,6 +5,7 @@ header/source file pair.
 
 ## Table of Contents
 1. [Initial Internal Pull-Up Resistor State Identification](#initial-internal-pull-up-resistor-state-identification)
+1. [Initial Internal Pull-Down Resistor State Identification](#initial-internal-pull-down-resistor-state-identification)
 1. [Initial Pin State Identification](#initial-pin-state-identification)
 1. [Input Pin](#input-pin)
 1. [Internally Pulled-Up Input Pin](#internally-pulled-up-input-pin)
@@ -18,6 +19,17 @@ internal pull-up resistor states.
 A `std::ostream` insertion operator is defined for
 `::picolibrary::GPIO::Initial_Pull_Up_State` if the `PICOLIBRARY_ENABLE_AUTOMATED_TESTING`
 project configuration option is `ON`.
+The insertion operator is defined in the
+[`include/picolibrary/testing/automated/gpio.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/gpio.h)/[`source/picolibrary/testing/automated/gpio.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/gpio.cc)
+header/source file pair.
+
+## Initial Internal Pull-Down Resistor State Identification
+The `::picolibrary::GPIO::Initial_Pull_Down_State` enum class is used to identify initial
+internal pull-down resistor states.
+
+A `std::ostream` insertion operator is defined for
+`::picolibrary::GPIO::Initial_Pull_Down_State` if the
+`PICOLIBRARY_ENABLE_AUTOMATED_TESTING` project configuration option is `ON`.
 The insertion operator is defined in the
 [`include/picolibrary/testing/automated/gpio.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/testing/automated/gpio.h)/[`source/picolibrary/testing/automated/gpio.cc`](https://github.com/apcountryman/picolibrary/blob/main/source/picolibrary/testing/automated/gpio.cc)
 header/source file pair.
