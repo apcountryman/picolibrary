@@ -182,7 +182,7 @@ class Mock_Input_Pin {
 };
 
 /**
- * \brief Mock internally pull-up input pin.
+ * \brief Mock internally pulled-up input pin.
  */
 class Mock_Internally_Pulled_Up_Input_Pin : public Mock_Input_Pin {
   public:
@@ -274,7 +274,7 @@ class Mock_Internally_Pulled_Up_Input_Pin : public Mock_Input_Pin {
 };
 
 /**
- * \brief Mock internally pull-down input pin.
+ * \brief Mock internally pulled-down input pin.
  */
 class Mock_Internally_Pulled_Down_Input_Pin : public Mock_Input_Pin {
   public:
