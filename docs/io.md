@@ -357,3 +357,4 @@ void foo( ::picolibrary::Reliable_Output_Stream & stream ) noexcept
     // assuming std::size_t is 64-bit
     stream.print( ::picolibrary::Format::Hex_Dump{ data.begin(), data.end() } );
 }
+```
