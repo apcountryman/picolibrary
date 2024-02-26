@@ -11,8 +11,7 @@ The `::picolibrary::ROM::String` type is used for handles to null-terminated str
 may be stored in ROM.
 This type defaults to `char const *`.
 A HIL can replace this type with a HIL specific version by doing the following:
-- Configure the `PICOLIBRARY_HIL_INCLUDE_DIR` picolibrary project configuration option
-- Provide `picolibrary/hil/rom.h`
+- Provide a `picolibrary-hil` library that provides `picolibrary/hil/rom.h`
 - Define `PICOLIBRARY_ROM_STRING_IS_HIL_DEFINED` in `picolibrary/hil/rom.h`
 - Define the HIL specific version of `::picolibrary::ROM::String` in
   `picolibrary/hil/rom.h`
@@ -43,8 +42,7 @@ auto foo() noexcept -> ::picolibrary::ROM::String
 ```
 If a toolchain does not store string literals in ROM automatically, a HIL can replace the
 `PICOLIBRARY_ROM_STRING()` macro by doing the following:
-- Configure the `PICOLIBRARY_HIL_INCLUDE_DIR` picolibrary project configuration option
-- Provide `picolibrary/hil/rom.h`
+- Provide a `picolibrary-hil` library that provides `picolibrary/hil/rom.h`
 - Define the macro replacement in `picolibrary/hil/rom.h`
 
 To get the length of a null-terminated string that may be stored in ROM, use the

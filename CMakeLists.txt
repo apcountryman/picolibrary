@@ -48,12 +48,6 @@ option(
     OFF
 )
 
-set(
-    PICOLIBRARY_HIL_INCLUDE_DIR
-    "" CACHE STRING
-    "picolibrary: HIL include directory"
-)
-
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} AND ${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION} )
     message( FATAL_ERROR "picolibrary automated tests require human readable error information" )
 endif( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} AND ${PICOLIBRARY_SUPPRESS_HUMAN_READABLE_ERROR_INFORMATION} )
