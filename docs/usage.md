@@ -57,7 +57,6 @@ picolibrary supports the following project configuration options:
   human readable event information (see
   [`include/picolibrary/event.h`](https://github.com/apcountryman/picolibrary/blob/main/include/picolibrary/event.h)
   for more information)
-- `PICOLIBRARY_HIL_INCLUDE_DIR` (optional): HIL include directory
 
 ## Development
 The repository's Git `pre-commit` hook script is the simplest way to configure, build, and

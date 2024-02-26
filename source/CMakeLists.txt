@@ -77,6 +77,13 @@ set(
 )
 set( PICOLIBRARY_LINK_LIBRARIES )
 
+if( TARGET picolibrary-hil )
+    list(
+        APPEND PICOLIBRARY_LINK_LIBRARIES
+        picolibrary-hil
+    )
+endif( TARGET picolibrary-hil )
+
 if( ${PICOLIBRARY_ENABLE_AUTOMATED_TESTING} OR ${PICOLIBRARY_ENABLE_INTERACTIVE_TESTING} )
     list(
         APPEND PICOLIBRARY_SOURCE_FILES
@@ -166,7 +173,6 @@ add_library(
 )
 target_include_directories(
     picolibrary
-    PUBLIC "${PICOLIBRARY_HIL_INCLUDE_DIR}"
     PUBLIC "${PROJECT_SOURCE_DIR}/include"
 )
 target_compile_definitions(
